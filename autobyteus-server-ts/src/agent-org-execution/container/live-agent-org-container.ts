@@ -1,6 +1,9 @@
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { OrgContainerPort } from "../../agent-collaboration/domain/org-container-port.js";
-import type { RootSnapshotConnection } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { RootSnapshotConnection, RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
+import { agentOrgCollaboratorPortFor } from "../services/agent-org-run-collaborators.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
@@ -44,6 +47,7 @@ export class LiveAgentOrgContainer implements ActiveRootMessageBoundary {
   constructor(private readonly input: Readonly<{
     container: AgentOrgContainer;
     composition: OrgViewComposition;
+    stream: RunViewStream<AgentOrgRunEvent>;
     directory: Pick<OrgContainerPort, "unitOfAgent">;
     roots: OrgUnitRoots;
   }>) {}
@@ -92,6 +96,19 @@ export class LiveAgentOrgContainer implements ActiveRootMessageBoundary {
     return { result: await this.commandAgentUnit(root, unit.orgAddress, command), executionKind: "agent" };
   }
 
+  /** The Org's catalog facts (the candidates query), from its composed tree, as the Org's were. */
+  collaboratorPort(): CollaboratorRootPort { return agentOrgCollaboratorPortFor(this.getExecutionTreeSnapshot()); }
+
+  /** The Org view's sequence and whether any unit has work running (as the Org's checkpoint was). */
+  getExecutionCheckpoint(): Readonly<{ orgRunId: string; changeSequence: number; hasOpenExecutionWork: boolean }> {
+    return Object.freeze({ orgRunId: this.orgRunId, changeSequence: this.input.stream.getCurrentChangeSequence(),
+      hasOpenExecutionWork: this.input.composition.hasOpenWork() });
+  }
+
+  /** The Org view's events (its units' composed), for the run status service's Org row. */
+  subscribeToEvents(listener: Parameters<RunViewStream<AgentOrgRunEvent>["subscribe"]>[0]): () => void { return this.input.stream.subscribe(listener); }
+  getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] { return this.input.composition.liveStatuses(); }
+
   /** `@` from the Org view, answered by the focused agent's unit root (restored: a message follows, DEC-006). */
   async resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     const unit = await this.input.directory.unitOfAgent(this.orgRunId, input.focusedAgentRunId);
@@ -101,13 +118,16 @@ export class LiveAgentOrgContainer implements ActiveRootMessageBoundary {
     return root.resolveCollaboratorMentions(input);
   }
 
-  /** DS-003: Stop stops every unit run (each through its own service); `false` when one did not stop. */
-  stop(): Promise<boolean> { return this.input.container.stop(); }
+  /** The container stopped (every unit run stopped): its view stops relaying (its stream stays, as every run's). */
+  compositionStopped(): void { this.input.composition.stop(); }
 
   hasAgentExecution(): boolean { return false; }
   ownsAgentRun(): boolean { return false; }
   deliverExactAgentMessage(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
   deliverToPeerRun(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
+  /** No message from another run, or from a peer node, is for the container itself (its units' roots take them). */
+  acceptFromRun(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
+  acceptPeerRunMessage(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
 
   /**
    * A direct Org agent's command: a user's message goes through its root's input path and is shown in its Org

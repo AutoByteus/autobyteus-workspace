@@ -26,6 +26,12 @@ import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { AgentOrgContainers } from "../container/agent-org-containers.js";
+import type { CreateAgentOrgContainerInput } from "../container/agent-org-container-manager.js";
+import { LiveAgentOrgContainer } from "../container/live-agent-org-container.js";
+
+/** A live Org: an Org container (its units are runs of their own), or a released Org run until its conversion. */
+export type LiveAgentOrg = AgentOrgRun | LiveAgentOrgContainer;
 
 export type AgentOrgRunManagerOptions = Readonly<{
   modelSelectionValidator?: RunModelSelectionValidator;
@@ -40,6 +46,8 @@ export type AgentOrgRunManagerOptions = Readonly<{
   communicationStore?: AgentOrgCommunicationMessagesStore;
   tokenUsageRunStore?: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
+  /** The Org containers (org-teams-follow-definition): new Orgs are containers; a stored container reopens as one. */
+  containers?: AgentOrgContainers;
 }>;
 
 /** The run's whole message log with the tree it was validated against (autobyteus-358: the one log reader). */
@@ -64,7 +72,8 @@ export class AgentOrgRunManager {
   private readonly communicationStore: AgentOrgCommunicationMessagesStore;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
-  private readonly active = new Map<string, AgentOrgRun>();
+  private readonly active = new Map<string, LiveAgentOrg>();
+  private readonly containers: AgentOrgContainers | null;
   private readonly transitions = new Map<string, Promise<void>>();
   private rootAdmissionOpen = true;
   private readonly workspaces: AgentOrgRunManagerOptions["workspaces"];
@@ -95,6 +104,25 @@ export class AgentOrgRunManager {
     this.communicationStore = options.communicationStore ?? new AgentOrgCommunicationMessagesStore();
     this.packageCatalog = new AgentOrgRunPackageCatalog(options.memoryDir);
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
+    this.containers = options.containers ?? null;
+  }
+
+  /** DS-001: a new Org as a container: each unit its own run (Offline), then the container file; registered and admitted. */
+  createContainer(input: CreateAgentOrgContainerInput): Promise<LiveAgentOrgContainer> {
+    this.assertRootAdmissionOpen();
+    const containers = this.requireContainers();
+    return this.withTransition(input.orgRunId, async () => {
+      this.assertNotActive(input.orgRunId);
+      const live = await containers.create(input);
+      try {
+        await this.packageCatalog.admit(input.orgRunId);
+        this.register(live);
+      } catch (error) {
+        await containers.stop(input.orgRunId).catch(() => false);
+        throw error;
+      }
+      return live;
+    });
   }
 
   create(tree: AgentOrgRunExecutionTreeFile): Promise<AgentOrgRun> {
@@ -107,7 +135,7 @@ export class AgentOrgRunManager {
     return this.withTransition(orgRunId, () => this.materialize(state, "fresh", true));
   }
 
-  restore(orgRunIdInput: string): Promise<AgentOrgRun> {
+  restore(orgRunIdInput: string): Promise<LiveAgentOrg> {
     this.assertRootAdmissionOpen();
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
@@ -116,6 +144,12 @@ export class AgentOrgRunManager {
       await this.packageCatalog.awaitReady();
       if (!this.packageCatalog.isAdmitted(orgRunId)) {
         throw new Error(`AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg '${orgRunId}' is not an admitted current package.`);
+      }
+      // DS-003: a container reopens from its file; its units are restored when first needed.
+      if (this.containers && await this.containers.isStored(orgRunId)) {
+        const live = await this.containers.restore(orgRunId);
+        this.register(live);
+        return live;
       }
       const loaded = await new AgentOrgStatePackageLoader({
         executionTree: this.executionTreeStore,
@@ -129,7 +163,7 @@ export class AgentOrgRunManager {
     });
   }
 
-  getActive(orgRunIdInput: string): AgentOrgRun | null {
+  getActive(orgRunIdInput: string): LiveAgentOrg | null {
     const run = this.active.get(required(orgRunIdInput, "orgRunId")) ?? null;
     return run?.isActive() ? run : null;
   }
@@ -137,7 +171,8 @@ export class AgentOrgRunManager {
   async storedRemoteLinkCheck(orgRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     if (this.active.has(orgRunId)) return "proceed";
-    const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    const tree = this.containers && await this.containers.isStored(orgRunId) ? true
+      : await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
     return storedRemoteLinkCheck(tree ? { run: { rootSubjectKind: "agent_org", rootRunId: orgRunId }, tree: this.delegationIndex } : null, query);
   }
   /**
@@ -148,6 +183,10 @@ export class AgentOrgRunManager {
   async getCollaborationRecordsSnapshot(orgRunIdInput: string): Promise<AgentOrgCollaborationRecordsSnapshot> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     const active = this.getActive(orgRunId);
+    // An Org container has no log: its messages are its units' (CM-9), read from each unit run.
+    if (active instanceof LiveAgentOrgContainer || (this.containers && await this.containers.isStored(orgRunId))) {
+      throw new Error(`AgentOrg '${orgRunId}' keeps no message log: its messages are in its units' runs.`);
+    }
     if (active) return Object.freeze({ executionTree: active.getExecutionTreeSnapshot(), messages: active.getCommunicationSnapshot() });
     const dir = this.layout.getOrgDirPath(orgRunId);
     const tree = await this.executionTreeStore.read(dir, orgRunId);
@@ -189,6 +228,9 @@ export class AgentOrgRunManager {
             lastMessageChangeSequence: connection.lastMessageChangeSequence });
         } finally { connection.close(); }
       }
+      // A stopped container: its file composed with its units' files (today's Org view shape).
+      const stored = this.containers && await this.containers.isStored(orgRunId) ? await this.containers.storedSnapshot(orgRunId) : null;
+      if (stored) return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null, snapshot: stored });
       // The view reads the tree only; the message log is read where it is shown (getCollaborationRecordsSnapshot).
       const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
       if (!tree) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
@@ -351,8 +393,9 @@ export class AgentOrgRunManager {
     return this.withTransition(orgRunId, async () => {
       const run = this.active.get(orgRunId);
       if (!run) return false;
-      const result = await run.terminate();
-      if (!result.accepted) return false;
+      // DS-003: an Org container's Stop stops every unit run; one that did not stop keeps it live (a retry stops the rest).
+      const stopped = run instanceof LiveAgentOrgContainer ? await this.requireContainers().stop(orgRunId) : (await run.terminate()).accepted;
+      if (!stopped) return false;
       return this.unregister(orgRunId, run) || !this.active.has(orgRunId);
     });
   }
@@ -404,7 +447,7 @@ export class AgentOrgRunManager {
     }
     return run;
   }
-  private register(run: AgentOrgRun): void {
+  private register(run: LiveAgentOrg): void {
     if (!run.isActive() || this.active.has(run.orgRunId)) throw new Error(`Cannot register AgentOrg '${run.orgRunId}'.`);
     const reservation = this.activeRootDirectory.reserve(run.rootIdentity, run);
     try {
@@ -416,7 +459,7 @@ export class AgentOrgRunManager {
       throw error;
     }
   }
-  private unregister(orgRunId: string, expected: AgentOrgRun): boolean {
+  private unregister(orgRunId: string, expected: LiveAgentOrg): boolean {
     if (this.active.get(orgRunId) !== expected) return false;
     this.active.delete(orgRunId);
     this.activeRootDirectory.unregister(createAgentOrgRootExecutionIdentity(orgRunId), expected);
@@ -429,7 +472,7 @@ export class AgentOrgRunManager {
    */
   private async completeStoppingRun(orgRunId: string): Promise<void> {
     const run = this.active.get(orgRunId);
-    if (!run || run.isActive()) return;
+    if (!run || run.isActive() || run instanceof LiveAgentOrgContainer) return;
     let result;
     try { result = await run.terminate(); }
     catch (error) { result = { accepted: false, message: error instanceof Error ? error.message : String(error) }; }
@@ -437,6 +480,10 @@ export class AgentOrgRunManager {
       throw new Error(`AGENT_ORG_STOP_INCOMPLETE: ${result.message ?? result.code ?? `AgentOrg '${orgRunId}' did not finish stopping.`}`);
     }
     this.unregister(orgRunId, run);
+  }
+  private requireContainers(): AgentOrgContainers {
+    if (!this.containers) throw new Error("AgentOrg containers are not configured.");
+    return this.containers;
   }
   private assertNotActive(orgRunId: string): void {
     if (this.active.has(orgRunId)) throw new Error(`AgentOrg '${orgRunId}' is already active.`);

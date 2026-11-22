@@ -1,3 +1,5 @@
+import { AgentOrgContainerStore } from "../run-history/store/agent-org-container-store.js";
+import { readStoredOrgTree } from "../agent-org-execution/container/stored-org-tree.js";
 import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { DelegatedRunRestorability } from "../agent-collaboration/execution/task/delegated-run-restorability.js";
 import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
@@ -44,7 +46,9 @@ export const createRunViewSources = (input: Readonly<{
     closedTasks: input.closedTasks,
     restorability: input.restorability,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
+    // A stopped Org container's tree is composed from its file and its units' files (org-teams-follow-definition).
     readStoredOrgTree: async (orgRunId) => {
+      if (await new AgentOrgContainerStore().readIfContainer(layout.getOrgDirPath(orgRunId), orgRunId)) return readStoredOrgTree(input.memoryDir, orgRunId);
       const tree = await orgTrees.read(layout.getOrgDirPath(orgRunId), orgRunId);
       if (tree) validateAgentOrgExecutionTree(tree);
       return tree;

@@ -41,6 +41,7 @@ class UnitDouble {
       statuses: () => [{ agentRunId: this.tree?.rootTeam.coordinatorAddress ? this.tree.rootTeam.members[0]!.agentRunId : this.unit.runId,
         status: "running", backgroundTasksRunning: this.published }],
       inputStates: () => [],
+      hasOpenWork: () => this.published > 0,
       subscribe: (listener) => { this.listeners.add(listener); return () => this.listeners.delete(listener); },
     };
   }

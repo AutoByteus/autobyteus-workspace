@@ -8,7 +8,7 @@ import { collaboratorSegmentForName } from "../../agent-collaboration/collaborat
 import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { teamCollaboratorPortFor } from "../../agent-team-execution/services/team-run-collaborators.js";
 import { AgentRunMetadataService } from "./agent-run-metadata-service.js";
-import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
+import { readStoredOrgTree } from "../../agent-org-execution/container/stored-org-tree.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 
 /** The live roots a run's collaborator port is read from first; a stopped run's comes from its own stored files. */
@@ -45,7 +45,8 @@ export const collaboratorPortOf = async (
     case "agent_org": {
       const active = sources.activeOrgRun(rootRunId);
       if (active) return active.collaboratorPort();
-      const tree = await new AgentOrgRunExecutionTreeStore().read(layout.getOrgDirPath(rootRunId), rootRunId);
+      // A stopped container's tree is composed from its units' files (org-teams-follow-definition).
+      const tree = await readStoredOrgTree(memoryDir, rootRunId);
       return tree ? agentOrgCollaboratorPortFor(tree) : null;
     }
     case "agent": {

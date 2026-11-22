@@ -1,5 +1,6 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
+import { LiveAgentOrgContainer } from "../agent-org-execution/container/live-agent-org-container.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
@@ -79,7 +80,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     },
     standalone: async (agentRunId) => { const found = await resolve("agent", agentRunId); return found?.kind === "agent" ? found.root : null; },
     team: async (teamRunId) => { const found = await resolve("agent_team", teamRunId); return found?.kind === "agent_team" ? found.root : null; },
-    org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
+    // An Org container hosts no agent: a peer's run delegated from an Org member is linked to the member's unit run.
+    org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" && !(found.root instanceof LiveAgentOrgContainer) ? found.root : null; },
     runAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().runAgents : input.teamRuns.runAgents,
     liveRoot: (root) => input.rootResolver.resolveActive(root)?.root ?? null,
   };

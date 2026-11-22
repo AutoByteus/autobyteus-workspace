@@ -32,6 +32,7 @@ const teamView = (root: RootTeamRun): LiveUnitView => Object.freeze({
     status: snapshot.details.status, backgroundTasksRunning: snapshot.details.backgroundTasksRunning,
     trigger: snapshot.details.trigger ?? null, errorMessage: snapshot.details.errorMessage ?? null })),
   inputStates: () => root.getInputStateSnapshots(),
+  hasOpenWork: () => root.hasOpenExecutionWork(),
   subscribe: (listener) => root.subscribeToEvents(({ event }) => {
     // The Team's own rows are its tree's (the Org's rows are composed from its units' trees).
     if (isRunTreeChangedEvent(event as never)) return;
@@ -57,6 +58,10 @@ const agentView = (root: StandaloneAgentRunRoot): LiveUnitView => Object.freeze(
   inputStates: () => {
     const run = root.activeAgentRun();
     return run?.isActive() ? [Object.freeze({ agent_run_id: root.agentRunId, state: run.getInputStateSnapshot() })] : [];
+  },
+  hasOpenWork: () => {
+    const run = root.activeAgentRun();
+    return Boolean(run?.isActive()) && ["running", "initializing", "error"].includes(String(run!.getStatusSnapshot().status).toLowerCase());
   },
   subscribe: (listener: (frame: UnitViewFrame) => void) => {
     const identity = createCollaborationMemberExecutionIdentity({ root: root.rootIdentity, memberAddress: root.agentAddress, agentRunId: root.agentRunId });

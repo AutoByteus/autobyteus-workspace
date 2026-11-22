@@ -1,3 +1,6 @@
+import { getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { composeAgentOrgContainers } from "../../agent-org-execution/container/compose-agent-org-containers.js";
+import { createOrgContainerDirectory } from "../../agent-org-execution/container/org-container-directory.js";
 import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import { AgentRunCommandCoordinator } from "../services/agent-run-command-coordinator.js";
@@ -243,6 +246,11 @@ export class GeneralProcessRunSupervisor {
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
+        // New Orgs are containers of runs (org-teams-follow-definition); the run services are bound below.
+        containers: composeAgentOrgContainers({ memoryDir, streams: input.viewStreams,
+          directory: input.orgContainers ?? createOrgContainerDirectory(memoryDir), registrations: getActiveCollaborationRootDirectory(),
+          teamRuns: () => teamRunService!, agentRuns: () => agentRunService!, standaloneRoots: () => standaloneRootManager!,
+          teamHistory: () => this.teamRunHistoryService }),
         taskRecords: input.taskRecords,
         delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,

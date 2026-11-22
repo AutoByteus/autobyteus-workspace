@@ -291,11 +291,14 @@ export const composeCollaboration = async (input: Readonly<{
       peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
       peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
       summaryChanged: (run) => feed.rowChanged(run) });
-    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run) });
+    // A unit run's rows are its Org container's too (org-teams-follow-definition, design DS-004).
+    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run),
+      containerOf: (run) => taskSide.containers.containerOfSync(run) });
     releases.push(feed.follow(tree));
     // SR-010: a member leaving shows only while its team run is live (registered).
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection,
-      isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null });
+      isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null,
+      unitRunsOf: (orgRunId) => taskSide.containers.unitRunsOf(orgRunId) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,

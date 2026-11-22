@@ -28,6 +28,8 @@ export type LiveUnitView = Readonly<{
   file(): OrgUnitFile | null;
   statuses(): readonly UnitAgentStatus[];
   inputStates(): readonly LiveAgentInputSnapshot[];
+  /** Whether the unit has work running now (an agent running, initializing or in error). */
+  hasOpenWork(): boolean;
   subscribe(listener: (frame: UnitViewFrame) => void): () => void;
 }>;
 
@@ -113,6 +115,20 @@ export class OrgViewComposition {
   publishPresentation(agentRunId: string, message: AgentPresentationMessage): void {
     const agent = this.agents.get(agentRunId);
     if (agent) this.publishAgent(agentRunId, agent.address, message);
+  }
+
+  /** Whether any live unit has work running now (the Org's execution checkpoint). */
+  hasOpenWork(): boolean {
+    return this.input.file().rootOrg.units.some((unit) => this.input.units.live(unit)?.hasOpenWork() ?? false);
+  }
+
+  /** The live agents' statuses now, at their Org addresses (an agent whose unit is not live is offline: not listed). */
+  liveStatuses(): readonly CollaborationAgentStatusSnapshot[] {
+    return this.input.file().rootOrg.units.flatMap((unit) => this.input.units.live(unit)?.statuses() ?? []).flatMap((status) => {
+      const agent = this.agents.get(status.agentRunId);
+      return agent ? [createCollaborationAgentStatusSnapshot({ execution: this.identity(status.agentRunId, agent.address), status: status.status,
+        backgroundTasksRunning: status.backgroundTasksRunning, trigger: status.trigger ?? null, errorMessage: status.errorMessage ?? null })] : [];
+    });
   }
 
   /** The Org's own parts now; the live units' are read before the first await (at the caller's base). */

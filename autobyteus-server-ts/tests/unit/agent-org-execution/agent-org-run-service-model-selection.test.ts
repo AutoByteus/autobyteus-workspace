@@ -2,6 +2,7 @@ import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js"
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
+import { liveOrgOfPlan } from "../../helpers/org-container-plan-tree.js";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
 import { RunModelSelectionService } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { AgyDiscoveryError } from "../../../src/runtime-management/antigravity-cli-capability.js";
@@ -31,12 +32,13 @@ const harness = (large = false) => {
     model_identifier, config_schema: { properties: { effort: { type: "string", enum: ["low", "high"] } } },
   })))) };
   const capacity = { resolveMany: vi.fn() };
-  const create = vi.fn(async (tree) => ({ orgRunId: tree.rootOrg.orgRunId, getExecutionTreeSnapshot: () => tree }));
+  // DS-001: the Org is created as a container; its tree is composed from the plan's units.
+  const create = vi.fn(async (input) => liveOrgOfPlan(input));
   let identitySequence = 0;
   const allocate = vi.fn(async (id: string) => `run-${id}-${++identitySequence}`);
   const validator = new RunModelSelectionService(catalog as never, NO_ON_DEMAND_MODELS, capacity);
   const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
-    manager: { create },
+    manager: { createContainer: create },
     admission: { requireAvailable: async () => ({ definition }) },
     agentDefinitions: { getAgentDefinitionById: async (id: string) => ({ id }) },
     teamDefinitions: { getDefinitionById: async () => team },

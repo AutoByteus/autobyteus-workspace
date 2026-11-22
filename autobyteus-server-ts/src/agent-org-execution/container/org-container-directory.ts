@@ -4,6 +4,7 @@ import type { CollaborationHandoff } from "../../agent-collaboration/domain/coll
 import type { ContainedIn } from "../../agent-collaboration/domain/contained-in.js";
 import type { OrgContainerPort, OrgUnitPlacement } from "../../agent-collaboration/domain/org-container-port.js";
 import {
+  createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
   createTeamRootExecutionIdentity,
   rootExecutionIdentityKey,
@@ -40,6 +41,8 @@ const errorText = (error: unknown): string => error instanceof Error ? error.mes
 export class OrgContainerDirectory implements OrgContainerPort {
   private readonly containedIn = new Map<string, ContainedIn | null>();
   private readonly loaded = new Map<string, AgentOrgContainerFile>();
+  /** Each known container's unit runs, by unit run key (learned from container files as they are read). */
+  private readonly containerOfUnit = new Map<string, string>();
   /** A live container's current file, without reading (`null`: not live); bound once the container manager exists. */
   private liveContainer: (orgRunId: string) => AgentOrgContainerFile | null = () => null;
 
@@ -145,7 +148,27 @@ export class OrgContainerDirectory implements OrgContainerPort {
   }
 
   /** The container's current file was written (a live container's change): later answers read it. */
-  updated(file: AgentOrgContainerFile): void { this.loaded.set(file.rootOrg.orgRunId, file); }
+  updated(file: AgentOrgContainerFile): void { this.learn(file); }
+
+  /** A known container's unit runs, read synchronously (a container read at least once, or live); `null` otherwise. */
+  unitRunsOf(orgRunId: string): readonly RootExecutionIdentity[] | null {
+    const file = this.liveContainer(orgRunId) ?? this.loaded.get(orgRunId);
+    return file ? file.rootOrg.units.map((unit) => unit.kind === "agent" ? createAgentRootExecutionIdentity(unit.runId) : createTeamRootExecutionIdentity(unit.runId)) : null;
+  }
+
+  /** The container of a unit run, read synchronously (its container read at least once, or live); `null` otherwise. */
+  containerOfSync(run: RootExecutionIdentity): RootExecutionIdentity | null {
+    const orgRunId = this.containerOfUnit.get(rootExecutionIdentityKey(run));
+    return orgRunId ? createAgentOrgRootExecutionIdentity(orgRunId) : null;
+  }
+
+  private learn(file: AgentOrgContainerFile): void {
+    this.loaded.set(file.rootOrg.orgRunId, file);
+    for (const unit of [...file.rootOrg.units, ...file.rootOrg.formerUnits]) {
+      const run = unit.kind === "agent" ? createAgentRootExecutionIdentity(unit.runId) : createTeamRootExecutionIdentity(unit.runId);
+      this.containerOfUnit.set(rootExecutionIdentityKey(run), file.rootOrg.orgRunId);
+    }
+  }
 
   async orgAddressOf(identity: Pick<CollaborationMemberExecutionIdentity, "root" | "memberAddress">): Promise<AgentTeamAddress | null> {
     const containedIn = await this.containedInOf(identity.root);
@@ -157,7 +180,7 @@ export class OrgContainerDirectory implements OrgContainerPort {
     const live = this.liveContainer(orgRunId);
     if (live) return live;
     const stored = await this.files.storedContainer(orgRunId);
-    if (stored) this.loaded.set(orgRunId, stored);
+    if (stored) this.learn(stored);
     return stored ?? this.loaded.get(orgRunId) ?? null;
   }
 

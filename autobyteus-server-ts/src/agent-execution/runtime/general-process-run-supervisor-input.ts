@@ -1,3 +1,4 @@
+import type { OrgContainerDirectory } from "../../agent-org-execution/container/org-container-directory.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
@@ -53,6 +54,8 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   delegationIndex: DelegationIndex;
   /** Each run's view stream, from the composition root (SR-062). */
   viewStreams: RunViewStreams;
+  /** The Org container directory the Task side's tree reads (org-teams-follow-definition); one over `memoryDir` when absent. */
+  orgContainers?: OrgContainerDirectory;
   /** The episodic catalogs of this node, told by the team and org services after a committed delete (autobyteus-493). */
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
   /** Every definition change: the live Team runs follow their definitions (D-TRIGGER). */

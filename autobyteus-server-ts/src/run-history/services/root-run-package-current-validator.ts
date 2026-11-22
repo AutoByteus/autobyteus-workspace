@@ -11,6 +11,9 @@ import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../store/team-run-execution-t
 import { validateTeamRunExecutionTree } from "./team-run-state-package-validator.js";
 
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
+import { isAgentOrgContainerPayload } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { validateAgentOrgContainerPayload } from "../store/agent-org-container-file-schema.js";
+import { readRawTreeFile } from "../store/raw-tree-file.js";
 
 export type RootRunPackageFamily = "agent_team" | "agent_org" | "agent";
 export type RootRunPackageReadinessDiagnostic = Readonly<{
@@ -199,6 +202,16 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MISSING_TREE", "Execution tree is missing; package preserved.");
       return;
     }
+    const raw = await readRawTreeFile(path.join(entry.packagePath, AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME)).catch(() => null);
+    if (isAgentOrgContainerPayload(raw)) {
+      try {
+        await this.validateContainer(rootRunId, raw);
+        target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
+      } catch (error) {
+        this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
+      }
+      return;
+    }
     const manifestError = await this.validateManifest(entry.packagePath, requiredOrgFiles, retiredOrgFiles,
       { name: "agent_org_communication_messages", exists: () => this.stores.orgMessages.hasLog(entry.packagePath) });
     if (manifestError) {
@@ -215,6 +228,23 @@ export class RootRunPackageCurrentValidator {
       target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
     } catch (error) {
       this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
+    }
+  }
+
+  /**
+   * An Org container (org-teams-follow-definition, contract §2, design R-5): its file, and both ends of each unit
+   * reference: the unit's run file exists and its `containedIn` names this container at the unit's address. It has no log.
+   */
+  private async validateContainer(rootRunId: string, raw: unknown): Promise<void> {
+    const file = validateAgentOrgContainerPayload(raw, rootRunId);
+    const metadata = new AgentRunMetadataStore(this.memoryDir);
+    for (const unit of file.rootOrg.units) {
+      const containedIn = unit.kind === "agent"
+        ? (await metadata.readMetadata(unit.runId))?.containedIn
+        : (await this.stores.teamTree.read(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId))?.containedIn;
+      if (containedIn?.orgRunId !== rootRunId || containedIn.address !== unit.address) {
+        throw new Error(`AgentOrg '${rootRunId}' unit ${unit.address} (run '${unit.runId}') does not name this Org at that address.`);
+      }
     }
   }
 

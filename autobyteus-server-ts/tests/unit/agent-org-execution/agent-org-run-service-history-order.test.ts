@@ -2,6 +2,7 @@ import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js"
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
+import { liveOrgOfPlan } from "../../helpers/org-container-plan-tree.js";
 
 describe("AgentOrgRunService history ordering", () => {
   it("creates the current Org package before recording its index-only history row", async () => {
@@ -12,12 +13,12 @@ describe("AgentOrgRunService history ordering", () => {
     const order: string[] = [];
     const recordCreated = vi.fn(async () => { order.push("history"); });
     const recordRunSummary = vi.fn(async () => undefined);
-    const managerCreate = vi.fn(async (tree) => {
+    const managerCreate = vi.fn(async (input) => {
       order.push("manager");
-      return { orgRunId: tree.rootOrg.orgRunId, getExecutionTreeSnapshot: () => tree };
+      return liveOrgOfPlan(input);
     });
     const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
-      manager: { create: managerCreate },
+      manager: { createContainer: managerCreate },
       admission: { requireAvailable: async () => ({ definition }) },
       agentDefinitions: { getAgentDefinitionById: async () => ({ id: "agent-1" }) },
       teamDefinitions: { getDefinitionById: async () => null },

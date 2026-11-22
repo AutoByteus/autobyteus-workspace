@@ -10,6 +10,9 @@ import type { DelegatedFrom } from "./agent-run-metadata-types.js";
 import { AgentOrgRunExecutionTreeStore } from "./agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "./team-run-execution-tree-store.js";
 import { AgentRunMetadataStore } from "./agent-run-metadata-store.js";
+import { AgentOrgContainerStore } from "./agent-org-container-store.js";
+import type { AgentOrgContainerFile } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { ContainedTeamAddressSpace } from "../../agent-team-execution/container/contained-team-address-space.js";
 
 /**
  * A delegated run's own record of its delegation, from its own file (SR-072 F-24, contract §3, U11): its `delegatedFrom`,
@@ -81,12 +84,34 @@ export class RunOwnAgentsReader implements RunFilesReader {
           mountedTeams: [] } : null;
       }
       case "agent_org": {
+        // An Org container hosts no agent: its units' agents are their own runs' (a unit run is never delegated).
+        if (await this.containerOf(run.rootRunId)) return { agents: [], formerAgents: [], coordinatorAddress: null, mountedTeams: [] };
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
         if (!tree) return null;
         const members = tree.rootOrg.members as readonly MemberNode[];
         return { agents: agentsOfMembers(members), formerAgents: [], coordinatorAddress: null, mountedTeams: mountedTeamsOf(members) };
       }
     }
+  }
+
+  /** The Org run's container file; `null` when absent or stored as a released Org tree (org-teams-follow-definition). */
+  private containerOf(orgRunId: string): Promise<AgentOrgContainerFile | null> {
+    return new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(orgRunId), orgRunId);
+  }
+
+  /** An Org container's parts as its tree shows them: each unit at its Org address, a Team unit's members at `P/x`. */
+  private async containerTreeOf(file: AgentOrgContainerFile): Promise<RunOwnTree> {
+    type Part = Extract<RunOwnTree, { kind: "agent_org" }>["parts"][number];
+    const parts: Part[] = [];
+    for (const unit of file.rootOrg.units) {
+      if (unit.kind === "agent") { parts.push({ kind: "agent", address: unit.address, agentRunId: unit.runId }); continue; }
+      const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId).catch(() => null);
+      if (!tree) { console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') has no row: its file cannot be read.`); continue; }
+      const space = ContainedTeamAddressSpace.of({ orgRunId: file.rootOrg.orgRunId, address: unit.address })!;
+      parts.push({ kind: "team", address: unit.address, teamRunId: unit.runId, coordinatorAddress: space.toOrg(tree.rootTeam.coordinatorAddress),
+        members: membersOf(tree.rootTeam.members as readonly MemberNode[]).map((member) => ({ ...member, address: space.toOrg(member.address) })) });
+    }
+    return { kind: "agent_org", orgRunId: file.rootOrg.orgRunId, parts, container: true };
   }
 
   /**
@@ -108,6 +133,8 @@ export class RunOwnAgentsReader implements RunFilesReader {
               .map((member) => Object.freeze({ ...member, leaving: true as const }))] } : null;
       }
       case "agent_org": {
+        const container = await this.containerOf(run.rootRunId);
+        if (container) return this.containerTreeOf(container);
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
         if (!tree) return null;
         type Part = Extract<RunOwnTree, { kind: "agent_org" }>["parts"][number];
@@ -187,6 +214,10 @@ export class RunOwnAgentsReader implements RunFilesReader {
   }
 
   async orgPlacementsOf(orgRunId: string): Promise<OrgPlacements | null> {
+    // A container: its direct agents (agent units) and its Org rules (an older entry naming the Org, contract E6).
+    const container = await this.containerOf(orgRunId);
+    if (container) return { orgDefinitionId: container.rootOrg.orgDefinitionId, handoffs: container.handoffs,
+      agentAddresses: container.rootOrg.units.flatMap((unit) => unit.kind === "agent" ? [unit.address] : []) };
     const tree = await this.stores.org.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
     if (!tree) return null;
     return { orgDefinitionId: tree.rootOrg.orgDefinitionId, handoffs: tree.handoffs,
@@ -200,6 +231,8 @@ export class RunOwnAgentsReader implements RunFilesReader {
       return node ? { node, handoffs: tree!.handoffs } : null;
     }
     if (run.rootSubjectKind === "agent_org") {
+      // A container answers no placement itself: a unit run's step 2 asks the container directory.
+      if (await this.containerOf(run.rootRunId)) return null;
       const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
       const node = tree?.rootOrg.members.find((member) => member.address === address);
       return node ? { node, handoffs: tree!.handoffs } : null;
