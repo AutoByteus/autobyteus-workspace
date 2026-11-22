@@ -1,0 +1,24 @@
+# IMP-03 web typecheck, guards and the whole web unit suite
+# command: pnpm -C autobyteus-web typecheck ; guard:web-boundary ; guard:localization-boundary ;
+#          audit:localization-literals ; cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run
+# commit: working tree = 597f2dc6d6 (run before the last two commits; same files)
+# env: macOS, Node v22.23.1
+# date: 2026-11-22
+# result: Pass.
+
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 41.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.0s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+guard:web-boundary: exit 0 — [guard:web-boundary] Passed.
+guard:localization-boundary: exit 0 — [guard:localization-boundary] Passed.
+audit:localization-literals: exit 0 — [audit:localization-literals] Passed with zero unresolved findings.
+
+ Test Files  796 passed (796)
+      Tests  6040 passed (6040)
+
+## the AGY fixture's own test after its optional label (autobyteus-server-ts)
+      Tests  18 passed (18)

@@ -1,0 +1,7 @@
+# IMP-06 the iOS demo build after the demo content lost contextText
+# command: pnpm -C autobyteus-web build:mobile-web --demo
+# commit: working tree = 597f2dc6d6
+# env: macOS, Node v22.23.1
+# date: 2026-11-22
+
+The demo answers all 252 compiled operations (handled or listed as unreachable).

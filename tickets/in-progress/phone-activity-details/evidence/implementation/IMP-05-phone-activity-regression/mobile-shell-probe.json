@@ -1,0 +1,1140 @@
+{
+  "startedAt": "2026-11-22T11:08:51.942Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58312,
+      "nodeId": "srv_YXUJJB_9zfLftku3-1JlERhV43Uhj0de",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58313,
+      "nodeId": "srv_jxYTGVBr2UcqBbPfo0m7YdamwwbiQHCW",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_1c6d8cd848e447fa82a809e670039017",
+    "writerRun": "release_notes_writer_8f1be3cf430940458ba22d14349336ed",
+    "squadRun": "docs_review_team_b9cb1244ec5844f1be9e1fd5e509465e",
+    "reviewer": "release_notes_writer_eb89f4c2bf3b40eca22dbc8ea9e5365c",
+    "memberDelegated": "fact_checker_7a6261639f3e43629ade6bc302226b64",
+    "remoteAgentRun": "publisher_90f5c72b090f4754b31254cb510233b9",
+    "remoteTeamRun": "studio_team_58755d4dab0d4317aa4c7ba323fe7b73",
+    "plain": [
+      "fact_checker_1e5c25465309412fb787dff42dac71f5",
+      "fact_checker_fce3054112014cf8af4d90e46b4a8184",
+      "fact_checker_dcdb1cb5e63043008996703b898e2e9f"
+    ],
+    "org": "delivery_org_0ea25cb2b7ec4d9b89435a929b359c1f",
+    "orgPlanner": "release_notes_writer_d1b3c07b1b394eab969f6bbad5bd32d0",
+    "reviewOrg": "review_org_cc6e09c2ffff407080869cec980ae60a",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_fad63a4808974831995cb4c828b7bc05",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_8dc8d90ef3004f9b8551db8d0a169bed",
+    "deliveryLead": "fact_checker_d4607ee7cb1a4776a80112bbd50b7586",
+    "deliveryMate": "release_notes_writer_33bce6a2202c413ba587c81be52a353d",
+    "leadDelegated": "changelog_helper_4318dae839d24245b407164d1ffbe601",
+    "approver": "approver_d069e7215ab0497d9356fd439c2e9400",
+    "taskA": "launch-8c3577-1",
+    "taskB": "launch-8c3577-2"
+  },
+  "cases": {
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 5.7,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed&screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_0ea25cb2b7ec4d9b89435a929b359c1f&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?pairing=…&rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_0ea25cb2b7ec4d9b89435a929b359c1f&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_0ea25cb2b7ec4d9b89435a929b359c1f&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed&screen=run"
+      }
+    },
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 14.2,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ],
+        [
+          "mobile-run-menu-settings",
+          "Settings"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 22, 11:09 AM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image fixture image"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Messages",
+        "Activity",
+        "Settings"
+      ],
+      "plainFirst": 50,
+      "plainMoreShown": true,
+      "plainRows": [
+        {
+          "text": "To publisherbeta-nodeNov 22, 11:09 AMPEER-NOTE-565 to beta.",
+          "chip": "beta-node"
+        },
+        {
+          "text": "From fact checkerNov 22, 11:09 AMPLAIN-NOTE-565 from a local run.",
+          "chip": null
+        }
+      ],
+      "rowCount": 57,
+      "toPeer": "{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"accepted\\\\\\\":true,\\\\\\\"code\\\\\\\":\\\\\\\"DELIVERED\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"Delivered message to publisher_90f5c72b090f4754b31254cb510233b9 on node \\\\\\\\\\\\\\\"beta-node\\\\\\\\\\\\\\\".\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"publisher_90f5c72b090f4754b31254cb510233b9\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Delivered message to publisher_90f5c72b090f4754b31254cb510233b9 on node \\\\\\\"beta-node\\\\\\\".\\\",\\\"target_agent_run_id\\\":\\\"publisher_90f5c72b090f4754b31254cb510233b9\\\"}}\",\"media\":null,\"ts\":1795345779.381}]",
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-33": {
+      "result": "Pass",
+      "seconds": 17,
+      "restored": [
+        {
+          "label": "agent Activity",
+          "before": "?row=agent:project_task_manager_1c6d8cd848e447fa82a809e670039017&screen=activity",
+          "after": "?row=agent:project_task_manager_1c6d8cd848e447fa82a809e670039017&screen=activity",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": null,
+              "activity": true,
+              "messages": false
+            }
+          ]
+        },
+        {
+          "label": "Team Messages",
+          "before": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed&screen=messages",
+          "after": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed&screen=messages",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": true
+            }
+          ]
+        },
+        {
+          "label": "Team member",
+          "before": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed/team_member:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed:release_notes_writer_33bce6a2202c413ba587c81be52a353d&screen=run",
+          "after": "?row=team:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed/team_member:delivery_team_8dc8d90ef3004f9b8551db8d0a169bed:release_notes_writer_33bce6a2202c413ba587c81be52a353d&screen=run",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "open",
+              "activity": false,
+              "messages": false
+            }
+          ]
+        },
+        {
+          "label": "delegated task agent",
+          "before": "?row=agent:project_task_manager_1c6d8cd848e447fa82a809e670039017/agent:release_notes_writer_8f1be3cf430940458ba22d14349336ed&screen=run",
+          "after": "?row=agent:project_task_manager_1c6d8cd848e447fa82a809e670039017/agent:release_notes_writer_8f1be3cf430940458ba22d14349336ed&screen=run",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "open",
+              "activity": false,
+              "messages": false
+            }
+          ]
+        }
+      ],
+      "gone": {
+        "reached": true,
+        "query": "?row=agent:no-such-run-435",
+        "activity": false,
+        "runScreen": null
+      },
+      "draftQuery": "?row=agent:temp-1795345799001-1&screen=run",
+      "beforeSend": {
+        "label": "reload before the first message",
+        "before": "?row=agent:temp-1795345799001-1&screen=run",
+        "after": "?row=agent:temp-1795345799001-1",
+        "reached": true,
+        "opening": true,
+        "listShown": true,
+        "trace": [
+          {
+            "list": false,
+            "run": null,
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": "opening",
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": true,
+            "run": null,
+            "activity": false,
+            "messages": false
+          }
+        ],
+        "runScreen": null
+      },
+      "createdQuery": "?row=agent:temp-1795345800950-1&screen=run",
+      "viewBeforeSend": "?row=agent:temp-1795345800950-1&screen=activity",
+      "afterSend": "?row=agent:project_task_manager_c713a34fe73e4cd69043ebbe73eedb21&screen=run",
+      "nodeRunId": "project_task_manager_c713a34fe73e4cd69043ebbe73eedb21",
+      "stored": true,
+      "forwardQuery": "?row=agent:project_task_manager_c713a34fe73e4cd69043ebbe73eedb21&screen=activity",
+      "afterCreate": {
+        "label": "created run Activity",
+        "before": "?row=agent:project_task_manager_c713a34fe73e4cd69043ebbe73eedb21&screen=activity",
+        "after": "?row=agent:project_task_manager_c713a34fe73e4cd69043ebbe73eedb21&screen=activity",
+        "reached": true,
+        "opening": true,
+        "listShown": false,
+        "trace": [
+          {
+            "list": false,
+            "run": null,
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": "opening",
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": null,
+            "activity": true,
+            "messages": false
+          }
+        ]
+      },
+      "backQuery": "?row=agent:project_task_manager_c713a34fe73e4cd69043ebbe73eedb21&screen=run"
+    },
+    "MSP-47": {
+      "result": "Pass",
+      "seconds": 26.7,
+      "run": "fact_checker_1986d91982d842d8bc450bb6e3b7da9c",
+      "firstTask": {
+        "taskId": "423fa712-7fb7-4265-ad15-7f1969b46760/task-11",
+        "status": "running",
+        "command": "sleep 25 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-22T11:10:04.052Z"
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 25 # background step 11RunningStarted 11:10 AM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 11:10 AM",
+          "end": "exit code 1"
+        }
+      ],
+      "section": "BACKGROUND TASKS 1 ended sleep 25 # background step 11 Failed exit code 1 Started 11:10 AM"
+    },
+    "MSP-48": {
+      "result": "Pass",
+      "seconds": 8.4,
+      "before": [
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 11:10 AM",
+          "end": "exit code 1"
+        }
+      ],
+      "live": [
+        {
+          "status": "running",
+          "text": "sleep 8 # background step 21RunningStarted 11:10 AM",
+          "end": null
+        },
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 11:10 AM",
+          "end": "exit code 1"
+        }
+      ],
+      "completed": [
+        {
+          "status": "completed",
+          "text": "sleep 8 # background step 21Completedexit code 0Started 11:10 AM",
+          "end": "exit code 0"
+        },
+        {
+          "status": "failed",
+          "text": "sleep 25 # background step 11Failedexit code 1Started 11:10 AM",
+          "end": "exit code 1"
+        }
+      ]
+    },
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 2.9,
+      "endRun": "fact_checker_0f2ce26eec704c9589192ad351acb5ac",
+      "task": {
+        "taskId": "46ab5ce8-153f-4e2f-8d8b-3bf1b3a4c37f/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-22T11:10:39.170Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 11:10 AM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 11:10 AM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-78": {
+      "result": "Pass",
+      "seconds": 8,
+      "lateRun": "fact_checker_1217bd9b5a6e43d8bd82ad32fbc4e95f",
+      "task": {
+        "taskId": "3d343b92-6dbf-4577-b2c7-52f97a15fa4d/task-11",
+        "status": "running",
+        "command": "sleep 5 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-22T11:10:42.010Z"
+      },
+      "nodeAfterEnd": [
+        {
+          "taskId": "3d343b92-6dbf-4577-b2c7-52f97a15fa4d/task-11",
+          "status": "failed",
+          "command": "sleep 5 # background step 11",
+          "summary": "Command exited with code 1",
+          "startedAt": "2026-11-22T11:10:42.010Z"
+        }
+      ],
+      "listed": [
+        {
+          "status": "failed",
+          "text": "sleep 5 # background step 11Failedexit code 1Started 11:10 AM",
+          "end": "exit code 1"
+        }
+      ]
+    },
+    "MSP-11": {
+      "result": "Pass",
+      "seconds": 38.2,
+      "results": {
+        "390x844": {
+          "screens": {
+            "list": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 36,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "304×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 12,
+              "small": [
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "304×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": [
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "286×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 40,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        },
+        "360x800": {
+          "screens": {
+            "list": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 36,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "274×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 12,
+              "small": [
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "274×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": [
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "256×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 40,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        }
+      },
+      "sharedSmall": [
+        "Context Files (0)(drag, paste, or upload 304×24",
+        "Upload files 28×28",
+        "Send message 36×36",
+        "artifact-viewer-zen-toggle 28×28",
+        "Context Files (0)(drag, paste, or upload 274×24"
+      ]
+    },
+    "MSP-12": {
+      "result": "Pass",
+      "seconds": 68.8,
+      "checksDuringPoll": 0,
+      "statusReadsIn": {
+        "list": 0,
+        "run": 0,
+        "view": 0,
+        "hidden": 0,
+        "shown again": 0
+      },
+      "onList": [
+        {
+          "dt": 2942,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        },
+        {
+          "dt": 7943,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        },
+        {
+          "dt": 12955,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        }
+      ],
+      "onRun": [],
+      "onView": [],
+      "afterBack": [
+        {
+          "dt": 480,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        },
+        {
+          "dt": 5480,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        }
+      ],
+      "hidden": [],
+      "afterShown": [
+        {
+          "dt": 9,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        },
+        {
+          "dt": 5012,
+          "window": null,
+          "status": 200,
+          "bytes": 7288
+        }
+      ],
+      "backAt": 1795345929476,
+      "shownAt": 1795345949349,
+      "bytesPerRead": {
+        "min": 5581,
+        "median": 5584,
+        "max": 7288
+      },
+      "firstRowsMs": 462,
+      "reads": 56
+    },
+    "MSP-74": {
+      "result": "Pass",
+      "seconds": 49.3,
+      "monacoPx": 17,
+      "cleanup": null,
+      "screens": {
+        "412-run-list": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-on-this-phone-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-connection-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-unpair-confirm": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-new-run": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-new-run-agent-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-conversation": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-run-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-artifacts": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-files": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-file-viewer": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-messages": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-activity": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-setup": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-pairing-link": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-connected-to": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-run-list": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-on-this-phone-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-connection-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-unpair-confirm": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-new-run": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-new-run-agent-sheet": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-conversation": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-run-menu": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-artifacts": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-files": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-file-viewer": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-messages": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-activity": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-setup": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-pairing-link": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-connected-to": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-background-row": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-background-run-screen": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "412-remote-run-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-background-row": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-background-run-screen": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        },
+        "360-remote-run-settings": {
+          "sideways": false,
+          "past": [],
+          "cut": []
+        }
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [
+    {
+      "case": "MSP-05",
+      "label": "phone",
+      "url": "http://192.168.77.10:58312/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-33",
+      "label": "phone-restore",
+      "url": "http://192.168.77.10:58312/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {
+    "historyReads": 56
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-05": "Pass",
+      "MSP-08": "Pass",
+      "MSP-33": "Pass",
+      "MSP-47": "Pass",
+      "MSP-48": "Pass",
+      "MSP-59": "Pass",
+      "MSP-78": "Pass",
+      "MSP-11": "Pass",
+      "MSP-12": "Pass",
+      "MSP-74": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T11:13:36.305Z"
+}
