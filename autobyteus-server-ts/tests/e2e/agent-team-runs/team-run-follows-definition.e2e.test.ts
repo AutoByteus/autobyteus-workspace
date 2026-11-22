@@ -433,17 +433,23 @@ suite("A Team run follows its Team definition (built server, scripted AGY)", () 
     view.interrupt(writerRunId);
     const released = await until(() => !view.snapshots().at(-1)!.members.some((entry) => entry.agentRunId === writerRunId),
       "the interrupted leaving writer was released", 60_000).then(() => true, () => false);
+    // The stream acknowledges the interrupt after its effects, the release included (autobyteus-602 F-1): wait for the ack
+    // as for any event of the server's, limited, so a missing ack still fails the assertion below.
+    const isInterruptAck = (frame: { payload: Rec }) => frame.payload.command_type === "INTERRUPT_GENERATION";
+    const acknowledged = await until(() => view.acks(errorsFrom).some(isInterruptAck), "the interrupt was acknowledged", OS_FILE_EVENT_WAIT_MS)
+      .then(() => true, () => false);
     const interruptErrors = view.errors(errorsFrom).filter((frame) => frame.payload.agent_run_id === writerRunId);
-    const interruptAck = view.acks(errorsFrom).find((frame) => frame.payload.command_type === "INTERRUPT_GENERATION")?.payload ?? null;
+    const interruptAck = view.acks(errorsFrom).find(isInterruptAck)?.payload ?? null;
     const writerFrames = view.frames.slice(errorsFrom).filter((frame) => JSON.stringify(frame.payload).includes(writerRunId))
       .map((frame) => `${frame.type} ${JSON.stringify(frame.payload).slice(0, 200)}`);
-    await keep("TF-04.json", { stored: stored(), okBefore, conversation: conversation.slice(-6), stillLeavingWhileHeld, interruptErrors, interruptAck, released,
+    await keep("TF-04.json", { stored: stored(), okBefore, conversation: conversation.slice(-6), stillLeavingWhileHeld, interruptErrors, interruptAck, acknowledged, released,
       writerFramesAfterInterrupt: writerFrames.slice(0, 40), snapshots: view.snapshots().slice(snapshotsBefore) });
     expect(interruptAck, "the leaving member's interrupt is accepted").toMatchObject({ state: "accepted", agent_run_id: writerRunId });
     expect(released, "the interrupted leaving writer was released").toBe(true);
     expect(stillLeavingWhileHeld, "a held turn keeps the member leaving").toBe(true);
     expect(interruptErrors).toEqual([]);
-  }, caseTimeout(2));
+    // Three waits limited by OS_FILE_EVENT_WAIT_MS (rejoin, leaving, the ack), with the 90 s, 60 s and 60 s waits in the other time.
+  }, caseTimeout(3));
 
   it("TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address", async () => {
     // A member at /scout, busy, swapped for another agent.
