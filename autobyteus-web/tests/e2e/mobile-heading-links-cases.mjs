@@ -18,13 +18,16 @@
 // Cases:
 //   MSP-44 AC-002, AC-004, AC-005  The desktop Files panel and the phone viewer, each opened from the run's file-action
 //                  links: every Contents entry brings its heading to the top of the viewer's scroll container (or, near the
-//                  end of the document, into view), with the URL unchanged and no new tab; then the broken anchor and the
-//                  links with no scheme change nothing (URL, file shown, scroll position) and open nothing.
+//                  end of the document, into view), with the URL unchanged and no new tab; then in `links.md` the broken
+//                  anchor, the root-absolute link and the link out of the root change nothing (URL, file shown, scroll
+//                  position) and open nothing, while `other.md`, `other.md#x` and `./x.md` open that file of its folder in
+//                  the same viewer (autobyteus-576; autobyteus-609 REQ-F).
 //   MSP-45 AC-002, AC-004  The Skills page (desktop window): the skill's `references/design-principles.md`, every Contents
-//                  entry; then `references/links.md`.
+//                  entry; then `references/links.md`, as MSP-44's `links.md`.
 //   MSP-46 AC-003, AC-004, AC-005  The task agent's conversation, on the desktop and the phone: an entry in the second
 //                  message scrolls to that message's heading while the first message's same heading stays out of view, and the other way
-//                  round; keyboard Enter on an entry (desktop); the broken anchor and the relative link change nothing; the
+//                  round; keyboard Enter on an entry (desktop); the broken anchor changes nothing (a relative link in a
+//                  conversation is a file link of the run's folder, autobyteus-609 MSP-100); the
 //                  external link opens one new tab at that address; the renderer leaves a `mailto:` click to the browser
 //                  (not prevented), as before.
 import fs from 'node:fs/promises';
@@ -38,8 +41,14 @@ const DIR = 'headings-480';
 const SKILL = 'heading-links-480';
 const EXTERNAL = 'https://example.com/heading-links-480';
 const FIXTURE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../utils/__tests__/fixtures/design-principles.md');
-const LINKS_MD = '# Links 480\n\nLINKS-480-BODY\n\n- [Missing](#no-such-heading-480)\n- [Other file](other.md)\n- [Other file anchor](other.md#x)\n- [Root path](/x.md)\n- [Dot path](./x.md)\n';
-const NO_FOLLOW = ['#no-such-heading-480', 'other.md', 'other.md#x', '/x.md', './x.md'];
+const LINKS_MD = '# Links 480\n\nLINKS-480-BODY\n\n- [Missing](#no-such-heading-480)\n- [Other file](other.md)\n- [Other file anchor](other.md#x)\n- [Root path](/x.md)\n- [Dot path](./x.md)\n- [Out of the root](../../out.md)\n';
+// autobyteus-576 (autobyteus-609 REQ-F): a document's link to a file of its folder opens that file; a missing heading, a
+// root-absolute link and a link out of the workspace root open nothing.
+// `links.md` sits one folder deep (headings-480/, references/), so `../../out.md` leaves the root.
+const NO_FOLLOW = ['#no-such-heading-480', '/x.md', '../../out.md'];
+const OPENS = [['other.md', 'OTHER-480-BODY'], ['other.md#x', 'OTHER-480-BODY'], ['./x.md', 'X-480-BODY']];
+const OTHER_MD = '# Other 480\n\nOTHER-480-BODY\n\n## x\n\nThe heading other.md#x names.\n';
+const X_MD = '# X 480\n\nX-480-BODY\n';
 const filler = (label) => Array.from({ length: 30 }, (_, i) => `${label} paragraph ${i + 1}: filler text so the next heading starts well below the first screen.`).join('\n\n');
 const answer = (marker) => [
   marker, '',
@@ -81,10 +90,12 @@ export const runHeadingLinksCases = async (probe) => {
   await fs.mkdir(path.join(ws, DIR), { recursive: true });
   await fs.writeFile(abs('design-principles.md'), doc);
   await fs.writeFile(abs('links.md'), LINKS_MD);
+  await fs.writeFile(abs('other.md'), OTHER_MD);
+  await fs.writeFile(abs('x.md'), X_MD);
 
   // The skill, through the node's public API.
   const skill = (await alpha.gql('mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath}}', { i: { name: SKILL, description: 'Heading links probe skill (autobyteus-480).', content: '# Heading links 480\n\nSee references/.\n' } })).createSkill;
-  for (const [name, content] of [['references/design-principles.md', doc], ['references/links.md', LINKS_MD]]) {
+  for (const [name, content] of [['references/design-principles.md', doc], ['references/links.md', LINKS_MD], ['references/other.md', OTHER_MD], ['references/x.md', X_MD]]) {
     const ok = (await alpha.gql('mutation($s:String!,$p:String!,$c:String!){uploadSkillFile(skillName:$s,path:$p,content:$c)}', { s: SKILL, p: name, c: content })).uploadSkillFile;
     assert(ok === true, `skill file ${name}`);
   }
@@ -177,6 +188,27 @@ export const runHeadingLinksCases = async (probe) => {
     }
     return results;
   };
+  /**
+   * Clicks each link to a file of the document's folder: that file opens in the same viewer (its marker shown), with the
+   * URL unchanged and no new tab; `reopen` brings the links document back before the next one.
+   */
+  const followOpens = async (surface, root, links, reopen) => {
+    const results = [];
+    for (const [href, marker] of links) {
+      await reopen();
+      const link = root().locator(`a[href="${href}"]`).first();
+      await link.scrollIntoViewIfNeeded();
+      const urlBefore = surface.page.url();
+      const popupsBefore = surface.popups.length;
+      await press(surface, link);
+      let opened = false;
+      try { await waitFor(`${href} opened`, async () => (await surface.page.locator('body').innerText()).includes(marker), 10_000); opened = true; } catch { /* recorded */ }
+      results.push({ href, opened, urlUnchanged: surface.page.url() === urlBefore, newTabs: surface.popups.length - popupsBefore });
+    }
+    await reopen();
+    return results;
+  };
+  const allOpened = list => list.every(r => r.opened && r.newTabs === 0);
   const allReached = list => list.every(r => r.reached && r.urlUnchanged && r.newTabs === 0);
   const allStill = list => list.every(r => r.urlUnchanged && r.newTabs === 0 && r.stillShown && !r.notFoundShown && r.scrollUnchanged);
   const summary = list => ({ entries: list.length, reached: list.filter(r => r.reached).length, urlUnchanged: list.filter(r => r.urlUnchanged).length, newTabs: list.reduce((n, r) => n + r.newTabs, 0) });
@@ -258,6 +290,11 @@ export const runHeadingLinksCases = async (probe) => {
       await deskLink('links.md').click();
       await waitFor('links.md in the desktop viewer', async () => (await deskViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const deskNothing = await followNothing(desk, deskViewer, NO_FOLLOW, 'LINKS-480-BODY');
+      const deskOpens = await followOpens(desk, () => deskViewer, OPENS, async () => {
+        if ((await deskViewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        await deskLink('links.md').click();
+        await waitFor('links.md back in the desktop viewer', async () => (await deskViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
       // The phone: the same links open the phone viewer.
       const conv = await openPhoneRun(filesRun);
       const phoneLink = name => conv.locator(`[data-event-monitor-file-action-control="true"][title="${abs(name)}"]`).last();
@@ -273,13 +310,22 @@ export const runHeadingLinksCases = async (probe) => {
       await press(phone, phoneLink('links.md'));
       await waitFor('links.md in the phone viewer', async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const phoneNothing = await followNothing(phone, phoneViewer, NO_FOLLOW, 'LINKS-480-BODY');
+      const phoneOpens = await followOpens(phone, () => phoneViewer, OPENS, async () => {
+        if ((await phoneViewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        for (let step = 0; step < 4 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(400); }
+        await press(phone, phoneLink('links.md'));
+        await waitFor('links.md back in the phone viewer', async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
       await phonePage.screenshot({ path: path.join(outputDir, 'MSP-44-phone-links.png') });
       Object.assign(details, {
-        desktop: { contents: summary(deskContents), notReached: deskContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: deskContents.slice(0, 3), nothing: deskNothing },
-        phone: { contents: summary(phoneContents), notReached: phoneContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: phoneContents.slice(0, 3), nothing: phoneNothing },
+        desktop: { contents: summary(deskContents), notReached: deskContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: deskContents.slice(0, 3), nothing: deskNothing, opens: deskOpens },
+        phone: { contents: summary(phoneContents), notReached: phoneContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: phoneContents.slice(0, 3), nothing: phoneNothing, opens: phoneOpens },
       });
       assert(allReached(deskContents) && allReached(phoneContents), 'every Contents entry brings its heading into view on the desktop Files panel and the phone viewer, URL unchanged, no new tab (AC-002)', details);
-      assert(allStill(deskNothing) && allStill(phoneNothing), 'a broken anchor and links with no scheme change nothing and open nothing (AC-004)', details);
+      assert(allStill(deskNothing) && allStill(phoneNothing), 'a missing heading, a root-absolute link and a link out of the root change nothing and open nothing (AC-004; 576)', details);
+      assert(allOpened(deskOpens), 'a link to a file of the document\'s folder opens that file in the same viewer (576; autobyteus-609 REQ-F)', details);
+      // The phone's viewer shows the file its route names; 576's handler opens the file in the explorer store only, so on
+      // the phone nothing visible opens. Recorded, not asserted (autobyteus-609 DEC-009, follow-up FU-004).
       return details;
     });
 
@@ -303,9 +349,15 @@ export const runHeadingLinksCases = async (probe) => {
       await treeName('links.md').click();
       await waitFor('links.md in the skill viewer', async () => (await viewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const skillNothing = await followNothing(desk, viewer, NO_FOLLOW, 'LINKS-480-BODY');
-      const details = { url: deskPage.url(), contents: summary(skillContents), notReached: skillContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: skillContents.slice(0, 3), nothing: skillNothing };
+      const skillOpens = await followOpens(desk, () => viewer, OPENS, async () => {
+        if ((await viewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        await treeName('links.md').click();
+        await waitFor('links.md back in the skill viewer', async () => (await viewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
+      const details = { url: deskPage.url(), contents: summary(skillContents), notReached: skillContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: skillContents.slice(0, 3), nothing: skillNothing, opens: skillOpens };
       assert(allReached(skillContents), 'every Contents entry brings its heading into view in the Skills page preview, URL unchanged (AC-002)', details);
-      assert(allStill(skillNothing), 'a broken anchor and links with no scheme change nothing in the Skills page (AC-004)', details);
+      assert(allStill(skillNothing), 'a missing heading, a root-absolute link and a link out of the root change nothing in the Skills page (AC-004; 576)', details);
+      assert(allOpened(skillOpens), 'a link to a file of the skill\'s folder opens that file in the Skills page viewer (576; autobyteus-609 REQ-F)', details);
       return details;
     });
 
@@ -339,7 +391,9 @@ export const runHeadingLinksCases = async (probe) => {
           const own = await headingPlace(one, 'notes-480');
           out.keyboardEnter = { own, ownReached: Boolean(own && own.inWindow && (Math.abs(own.offsetFromContainerTop) <= 2 || own.containerAtEnd)) };
         }
-        out.nothing = await followNothing(surface, two, ['#no-such-heading-480', 'other.md'], 'HEADINGS-480-TWO');
+        // In a conversation `other.md` is a file link of the run's folder now (autobyteus-609 D-H, MSP-100), so only the
+        // missing heading is left to follow nothing here.
+        out.nothing = await followNothing(surface, two, ['#no-such-heading-480'], 'HEADINGS-480-TWO');
         // The external link: one new tab at that address; this page stays.
         const urlBefore = surface.page.url(); const popupsBefore = surface.popups.length;
         await press(surface, two.locator(`a[href="${EXTERNAL}"]`).first());
