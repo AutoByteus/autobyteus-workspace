@@ -1,0 +1,73 @@
+# IMP-09 — Build-only release run (DESIGN.md rule 12, RELEASE.md)
+# Command: git push -u origin codex/arm64-appimage-libz; pnpm release:test --ref codex/arm64-appimage-libz; gh run watch <id> --exit-status; gh run download <id> -n linux-x64 / -n linux-arm64
+# Commit: 05996bd715 (run 44956618584, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/44956618584)
+# Environment: GitHub-hosted runners (ubuntu-22.04, ubuntu-24.04-arm, macos-15, windows-2022); artifact checks on the local aarch64 container
+# Date: 2026-11-21T23:24:53Z
+# Earlier runs on this branch: 44948221723 (7ad305aeb0, all five failed in the web typecheck gate, TS1484), 44952318117 (e692d8cfc6, Linux ARM64 failed: 7za EACCES; the other four passed).
+
+## jobs
+conclusion: success
+Resolve Release Metadata: success
+Build macOS ARM64: success
+Build macOS Intel x64: success
+Build Linux x64: success
+Build Linux ARM64: success
+Build Windows x64: success
+Sign authenticated Linux desktop releases: skipped
+Publish GitHub Release: skipped
+
+## Linux steps
+Build Linux x64 | Check native and signed-record units | success
+Build Linux x64 | Build Electron Linux x64 | success
+Build Linux x64 | Sign build-only final bytes with disposable trust | success
+Build Linux x64 | Verify Linux x64 AppImage and updater metadata | success
+Build Linux x64 | Verify Linux x64 AppImage runs in a clean Ubuntu image | success
+Build Linux x64 | Verify Linux x64 Prisma engines | success
+Build Linux x64 | Verify Linux x64 packaged server startup | success
+Build Linux ARM64 | Check native and signed-record units | success
+Build Linux ARM64 | Build Electron Linux ARM64 | success
+Build Linux ARM64 | Sign build-only final bytes with disposable trust | success
+Build Linux ARM64 | Verify Linux ARM64 AppImage and updater metadata | success
+Build Linux ARM64 | Verify Linux ARM64 AppImage runs in a clean Ubuntu image | success
+Build Linux ARM64 | Verify Linux ARM64 Prisma engines | success
+Build Linux ARM64 | Verify Linux ARM64 packaged server startup | success
+
+## clean-image step output (CI log)
+Verify Linux x64 AppImage runs in a clean Ubuntu image	2026-11-21T22:31:54.3130169Z Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+Verify Linux ARM64 AppImage runs in a clean Ubuntu image	2026-11-21T22:34:01.8656042Z Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+
+## artifacts (this run vs v1.5.14-beta.6 publish run 44901757001)
+linux-arm64 linux-x64 macos-arm64 macos-x64 windows-x64 
+linux-arm64 linux-authenticated-sidecars linux-x64 macos-arm64 macos-x64 windows-x64 (linux-authenticated-sidecars exists only in publish runs)
+
+## Linux artifact files
+linux-arm64:
+AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage.release.json
+AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage.release.json.sig
+latest-linux-arm64.yml
+
+linux-x64:
+AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage
+AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage.release.json
+AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage.release.json.sig
+latest-linux.yml
+
+## runtime prefixes
+AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage: {"size":360523609,"elfEnd":188392,"squashfsOffset":188392,"compression":"gzip","runtimeSha256":"24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30"}
+AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage: {"size":351223217,"elfEnd":936456,"squashfsOffset":936456,"compression":"gzip","runtimeSha256":"00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444"}
+legacy appimage-12.0.1 runtime-x64 sha256: 24da8e0e149b7211cbfb00a545189a1101cb18d1f27d4cfc1895837d2c30bc30
+x64 NEEDED:
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+arm64 NEEDED count: 0
+
+## latest*.yml key shape (CI) vs local v25 baseline
+latest-linux.yml: version: files:   - url:     sha512:     size:     blockMapSize: path: sha512: releaseDate: 
+latest-linux-arm64.yml: version: files:   - url:     sha512:     size:     blockMapSize: path: sha512: releaseDate: 
+v25 baseline latest-linux-arm64.yml: version: files:   - url:     sha512:     size:     blockMapSize: path: sha512: releaseDate:  
+
+## CI arm64 image in the local clean root
+exit=0

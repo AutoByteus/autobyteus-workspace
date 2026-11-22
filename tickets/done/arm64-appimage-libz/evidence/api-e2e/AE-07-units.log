@@ -1,0 +1,27 @@
+# AE-07 units, commit cd687a31e6, 2026-11-21T23:37:27Z, node v22.23.3, aarch64
+## node --test scripts/desktop-package/verify-clean-image-runtime.test.mjs
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 170.145916
+## (autobyteus-web) NUXT_TEST=true pnpm exec vitest run scripts/__tests__/linuxAppImageBuild.spec.ts
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web
+
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts (7 tests) 31ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  23:37:32
+   Duration  791ms (transform 111ms, setup 219ms, collect 40ms, tests 31ms, environment 0ms, prepare 124ms)
+

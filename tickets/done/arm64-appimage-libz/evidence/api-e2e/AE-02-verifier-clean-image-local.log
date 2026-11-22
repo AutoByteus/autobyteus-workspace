@@ -1,0 +1,28 @@
+# AE-02 verify-clean-image-runtime.mjs (worktree cd687a31e6) executing real images through the docker stand-in tickets/in-progress/arm64-appimage-libz/evidence/docker-chroot-shim/docker — 2026-11-21T23:38:53Z
+# stand-in: chroot of official ubuntu-base-24.04.5-base-arm64 (same content as ubuntu:24.04 arm64); host has no Docker
+
+## OLD published v1.5.14-beta.6 arm64 (expect failure naming libz.so)
+$ UBUNTU_BASE_TARBALL=/tmp/fu004-dl/ubuntu-base/ubuntu-base-24.04.5-base-arm64.tar.gz node scripts/desktop-package/verify-clean-image-runtime.mjs /tmp/ae28/dl/published/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+file:///home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/scripts/desktop-package/verify-clean-image-runtime.mjs:29
+  throw Error(`AppImage does not run in a clean ${CLEAN_IMAGE} image (exit ${result.status ?? result.signal}): ${result.stderr.trim()}`);
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 126): sh: 5: /autobyteus.AppImage: Permission denied
+exit=1
+
+## NEW CI artifact arm64 (expect pass)
+$ UBUNTU_BASE_TARBALL=/tmp/fu004-dl/ubuntu-base/ubuntu-base-24.04.5-base-arm64.tar.gz node scripts/desktop-package/verify-clean-image-runtime.mjs /tmp/ae28/dl/ci/linux-arm64/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+exit=0
+
+## precondition: clean image with libz.so symlink added (expect exit 3 before the image runs), NEW image
+$ UBUNTU_BASE_TARBALL=/tmp/ae28/libzroot/ubuntu-base-with-libz-so.tar.gz node scripts/desktop-package/verify-clean-image-runtime.mjs /tmp/ae28/dl/ci/linux-arm64/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+file:///home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/scripts/desktop-package/verify-clean-image-runtime.mjs:29
+  throw Error(`AppImage does not run in a clean ${CLEAN_IMAGE} image (exit ${result.status ?? result.signal}): ${result.stderr.trim()}`);
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 3): clean image has /lib/aarch64-linux-gnu/libz.so
+exit=1
+
+## RERUN OLD after chmod 0755 (setup fix: 'gh release download' writes 0644; the first OLD attempt above failed on the missing exec bit, exit 126, not on the runtime; the release job's built file and a user's chmod'ed download are executable)
+$ UBUNTU_BASE_TARBALL=/tmp/fu004-dl/ubuntu-base/ubuntu-base-24.04.5-base-arm64.tar.gz node scripts/desktop-package/verify-clean-image-runtime.mjs /tmp/ae28/dl/published/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+file:///home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/scripts/desktop-package/verify-clean-image-runtime.mjs:29
+  throw Error(`AppImage does not run in a clean ${CLEAN_IMAGE} image (exit ${result.status ?? result.signal}): ${result.stderr.trim()}`);
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 127): /autobyteus.AppImage: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=1

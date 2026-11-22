@@ -442,6 +442,9 @@ importers:
         specifier: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
         version: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
     devDependencies:
+      7zip-bin:
+        specifier: 5.2.0
+        version: 5.2.0
       '@autobyteus/agent-presentation-contracts':
         specifier: workspace:*
         version: link:../autobyteus-agent-presentation-contracts
