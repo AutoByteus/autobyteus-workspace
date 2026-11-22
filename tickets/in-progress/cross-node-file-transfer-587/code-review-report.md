@@ -389,7 +389,7 @@ Scope: `Full Re-Audit`, as the user asked for this ticket. Since CRR-009 the onl
 
 - **Spine and ownership.** Unchanged and sound: the router's one order on the `node` path, `PeerRunNodes` as RF-14's one owner, `admitPeerRun` as the closed rule's one owner (SR-012 keeps the order), the engine's plan → reserve → place → commit.
 - **Visible dependencies (P16).** Improved: each owner now names only what it uses, except CR-587-09's bundle. `OutgoingFiles`' process lookup of the run manager is unchanged (accepted at CRR-001).
-- **Sizes.** All under 500: `task-delegation.ts` 498 (untouched), `peer-client.ts` 480, `root-team-run.ts` 477, `agent-team-run-manager.ts` 470.
+- **Sizes.** All under 500: `task-delegation.ts` 498 (untouched), `peer-client.ts` 483, `root-team-run.ts` 480, `agent-team-run-manager.ts` 471.
 - **Evidence (I read it; reran nothing).** IMP-24: typechecks at baseline. IMP-25: the whole unit suite, 8821 tests. IMP-26: integration, 116. IMP-27: rebuilt two-server, 59/59.
 
 ### Scorecard (full re-audit)
