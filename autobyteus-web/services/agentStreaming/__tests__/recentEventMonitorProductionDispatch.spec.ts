@@ -41,7 +41,7 @@ const countVisualEvents = (context: AgentContext): number =>
     context.conversation,
     useAgentActivityStore().getCompactionActivities(context.state.runId),
   ).reduce((count, item) => count + (
-    item.kind === 'compaction' ? 1 : item.message.type === 'user' ? 1 : item.message.segments.length
+    item.kind !== 'message' ? 1 : item.message.type === 'user' ? 1 : item.message.segments.length
   ), 0);
 
 const retainedStableIds = (context: AgentContext): string[] =>

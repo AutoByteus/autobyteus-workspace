@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.14-beta.7 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
