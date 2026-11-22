@@ -56,3 +56,8 @@
 | 2026-11-22T21:32:43Z | COST-01 | Started | | opt-in cost measurement |
 | 2026-11-22T21:37:04Z | COST-01 | Finished | Pass (measured) | 1,347 MiB: conversion 2,220 ms; 23 follow-ups 1.3-2.2 s each; upgrade start 44.1 s vs 4.6 s (C-1). Attempt 1: my unprobed listener URL (test fixed) |
 | 2026-11-22T21:37:04Z | Round 4 | Finished | Pass | all criteria proven; C-1 observation for decision |
+| 2026-11-22T21:58:05Z | Round 5 | Started | | IR-009 70dd2b03f1 (HEAD aad78efc0b); BLD-01 rebuilt |
+| 2026-11-22T22:00:19Z | MIG | Finished | Pass | 75 files, 651 tests |
+| 2026-11-22T22:00:19Z | COST-01 | Finished | Pass (measured) | first start 8,663 ms vs 4,206 ms second; conversion 2,028 ms; 23 follow-ups 2,101 ms total (max 102) — T-1 fixed (round 4: 44,069 ms) |
+| 2026-11-22T22:04:41Z | OC-01..14, ORG-E2E, AOML, TC-01 | Finished | Pass | 14/14, 3/3, 2/2; typecheck baseline 973 |
+| 2026-11-22T22:04:41Z | Round 5 | Finished | Pass | T-1 resolved |

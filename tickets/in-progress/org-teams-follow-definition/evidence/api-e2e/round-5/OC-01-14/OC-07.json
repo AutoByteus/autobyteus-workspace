@@ -1,0 +1,55 @@
+{
+  "delegated": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "oc_concierge_6ba555_ae567a91c7874ed4899cfa1a2c5e0299",
+    "task_id": "ad_hoc_task_1de046f9-2982-4baa-bf16-78d198aed565",
+    "isError": false
+  },
+  "done": {
+    "task": {
+      "taskId": "ad_hoc_task_1de046f9-2982-4baa-bf16-78d198aed565",
+      "status": "DONE"
+    },
+    "isError": false
+  },
+  "otherWhileClosed": {
+    "accepted": false,
+    "code": "TASK_AGENT_RESOURCE_CLOSED",
+    "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).",
+    "isError": true
+  },
+  "reopened": {
+    "task": {
+      "taskId": "ad_hoc_task_1de046f9-2982-4baa-bf16-78d198aed565",
+      "status": "TODO"
+    },
+    "isError": false
+  },
+  "continued": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Message delivered. oc_concierge_6ba555_ae567a91c7874ed4899cfa1a2c5e0299 continues with its conversation.",
+    "target_agent_run_id": "oc_concierge_6ba555_ae567a91c7874ed4899cfa1a2c5e0299",
+    "isError": false
+  },
+  "conversation": [
+    "message",
+    "user",
+    "You have a new task from the agent with sender address \"/team/lead\" and sender run id \"oc_lead_6ba555_65ca218f8bac4fba9c8c7a8b96134c88\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nReply OK.",
+    "message",
+    "assistant",
+    "ba0f9bb1-596e-4422-80b3-f735d53f5d0a",
+    "OK",
+    "inter_agent_message",
+    "user",
+    "oc_lead_6ba555_65ca218f8bac4fba9c8c7a8b96134c88",
+    "memberinput_J7e9rNAzdrN1XmWOiNvgzS3haQgB_nUs",
+    "member_input:agent_team\u0000oc_team_6ba555_172fd082b70b45e69e9ab8e42564085c:oc_concierge_6ba555_ae567a91c7874ed4899cfa1a2c5e0299:memberinput_J7e9rNAzdrN1XmWOiNvgzS3haQgB_nUs",
+    "You received a message from the agent with sender address \"/team/lead\" and sender run id \"oc_lead_6ba555_65ca218f8bac4fba9c8c7a8b96134c88\".\nmessage:\nECHO_INPUT",
+    "message",
+    "assistant",
+    "0dc60c61-8305-43d3-b765-a873f30aed04",
+    "ECHO:\"You received a message from the agent with sender address \\\"/team/lead\\\" and sender run id \\\"oc_lead_6ba555_65ca218f8bac4fba9c8c7a8b96134c88\\\".\\nmessage:\\nECHO_INPUT\""
+  ]
+}

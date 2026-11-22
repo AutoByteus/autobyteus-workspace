@@ -18,7 +18,7 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
+- Current API/E2E Revision ID: `API-REV-005` (round 5: rerun of COST-01, MIG, OC, ORG-E2E, AOML on IR-009)
 - Current Investigation Round: 4 (after CRR-011 on IR-008: two `origin/personal` merges (SR-016), the typed path rewrite (SR-017/SR-018), Windows path forms (IR-007/IR-008))
 - Trigger: code reviewer, CRR-003 pass on implementation head `1f0aad498b` (review records `818e950d53`)
 - Prior Investigation Reviewed: none (first round)

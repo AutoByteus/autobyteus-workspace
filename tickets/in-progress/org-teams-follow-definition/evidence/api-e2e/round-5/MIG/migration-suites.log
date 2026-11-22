@@ -1,0 +1,871 @@
+# Case MIG | vitest run tests/app-data-migrations
+# Commit: aad78efc0b (implementation IR-009 70dd2b03f1)
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[org-units-path-pass-cost] large Org (10 Teams, 40 agents, 40000 lines) + 200 agent runs + 120 Team members (~140 MB): 699 ms
+ [32m✓[39m tests/app-data-migrations/agent-org-units-own-runs-v1/agent-org-units-path-rewrite.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 1872[2mms[22m[39m
+     [33m[2m✓[22m[39m is measured on the synthetic large Org with a synthetic node of many runs (sizes assumed: no user data is read) [33m 1354[2mms[22m[39m
+(node:62568) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/released-tree-skip-version-uLYVBb
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstderr[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mTask agent 'task-run' of agent_team run 'team-a' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39m[20261018_append_only_message_logs_v1] agent_team run 'no-tree': message log kept as JSON (PRESERVED_UNSUPPORTED): The run has no tree file.
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mInitialized server settings service with 35 predefined settings
+
+ [32m✓[39m tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4482[2mms[22m[39m
+   [33m[2m✓[22m[39m runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing [33m 4481[2mms[22m[39m
+(node:62595) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/authoring-migration-6xcBhX
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mInitialized server settings service with 35 predefined settings
+
+ [32m✓[39m tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 2717[2mms[22m[39m
+   [33m[2m✓[22m[39m runs the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history [33m 2573[2mms[22m[39m
+(node:62627) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mconverts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mconverts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mconverts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mconverts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006)
+[22m[39m[20261019_delegated_copy_own_file_complete_v1] delegated copy 'detached-team' is left unchanged and is not loaded (PRESERVED_UNSUPPORTED): It has no origin but is not in the current shape: Task agent team tree 'c4-qa' does not match 'detached-team'.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mconverts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006)
+[22m[39m[20261019_delegated_copy_own_file_complete_v1] delegated copy 'detached-helper' is left unchanged and is not loaded (PRESERVED_UNSUPPORTED): It has no origin but is not in the current shape: Task agent run metadata runId 'c1-reviewer' does not match 'detached-helper'.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mgives a gate-passing team run the same released classifier result before and after conversion (F-CLASSIFIER-SAME)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mgives a gate-passing team run the same released classifier result before and after conversion (F-CLASSIFIER-SAME)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mgives a gate-passing team run the same released classifier result before and after conversion (F-CLASSIFIER-SAME)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run fails in start 1 after ours converted its waiting run's log, and its retry in start 2 reads the converted log; every task agent's log is complete (F-PENDING-OWN-RUN)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run materializes a task agent team (an empty append-only log) and its JSON merge beside it is converted on the same start (F-OWN-RUN-UNMATERIALIZED-TEAM)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-c' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run materializes a task agent team (an empty append-only log) and its JSON merge beside it is converted on the same start (F-OWN-RUN-UNMATERIALIZED-TEAM)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts[2m > [22m[2m20261018_append_only_message_logs_v1[2m > [22m[2mwith task-agent-own-run in real runner order[2m > [22m[2mown-run materializes a task agent team (an empty append-only log) and its JSON merge beside it is converted on the same start (F-OWN-RUN-UNMATERIALIZED-TEAM)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ [32m✓[39m tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 1424[2mms[22m[39m
+     [33m[2m✓[22m[39m converts every log kind, keeps every message once with the same values, and the composed views stay equal (AC-004, AC-006) [33m 407[2mms[22m[39m
+     [33m[2m✓[22m[39m rotates a large log by the 4 MiB limit, keeping every message in order (F-HUB-LARGE, F-TEAM-LARGE, F-ORG-LARGE) [33m 396[2mms[22m[39m
+(node:62639) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-batch-boundaries.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-batch-boundaries.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 1442[2mms[22m[39m
+     [33m[2m✓[22m[39m enumerates 501 exact claimed roots over three pages without duplicates or omissions [33m 435[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back an exact root when member 251 has a contradictory claim, then corrects all 501 members and validates current readiness [33m 1006[2mms[22m[39m
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mmoves each task agent to its own run folder with its own file, links it, and keeps every byte (F-C1..F-C7, F-NS, F-ND, F-SE, F-MSG, F-UNMATERIALIZED)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mmoves each task agent to its own run folder with its own file, links it, and keeps every byte (F-C1..F-C7, F-NS, F-ND, F-SE, F-MSG, F-UNMATERIALIZED)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mmoves each task agent to its own run folder with its own file, links it, and keeps every byte (F-C1..F-C7, F-NS, F-ND, F-SE, F-MSG, F-UNMATERIALIZED)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 over every released shape[2m > [22m[2mchanges nothing on a second start: same files, sizes and hashes
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mone run's unreadable message log[2m > [22m[2mmoves its task agents, warns instead of failing, and still migrates every other run
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mone run's unreadable message log[2m > [22m[2mmoves its task agents, warns instead of failing, and still migrates every other run
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mone run's unreadable message log[2m > [22m[2mmoves its task agents, warns instead of failing, and still migrates every other run
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while writing an own file
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while reducing a tree
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mends where an uninterrupted run ends after a stop while merging a log
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mrecognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mrecognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mrecognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mrecognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mrecognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mnever treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mnever treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mnever treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+[22m[39mTask agent 'c1-reviewer' of agent run 'hub' is not available: Expected property name or '}' in JSON at position 2 (line 1 column 3)
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2ma stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)[2m > [22m[2mcontinues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts[2m > [22m[2mthe per-run input gate (F-PENDING-FAILED, contract §5.4)[2m > [22m[2mmigrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ [32m✓[39m tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 1735[2mms[22m[39m
+     [33m[2m✓[22m[39m never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a) [33m 512[2mms[22m[39m
+(node:62676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts[2m > [22m[2mfamily candidate scope and durable interruption boundaries[2m > [22m[2madds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+[22m[39mFAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":3.9887909999997646},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.5665839999996933}}
+
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1305[2mms[22m[39m
+(node:62718) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/app-data-migrations/token-usage-run-records-v1/token-usage-run-records-v1-source-token-decoding.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 955[2mms[22m[39m
+[org-units-migration-cost] 10 Teams, 40 agents, 40000 lines (~9 MB): 275 ms
+ [32m✓[39m tests/app-data-migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 728[2mms[22m[39m
+     [33m[2m✓[22m[39m guideline §9: the cost on a synthetic large Org (10 Teams, 40 agents, 40,000 log lines) is measured [33m 342[2mms[22m[39m
+(node:62768) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts[2m > [22m[2m20261111_delegated_runs_own_runs_v1[2m > [22m[2mis registered after its four predecessors and holds none of them (AR-005)
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 712[2mms[22m[39m
+(node:62780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts[2m > [22m[2m20261020_remove_skill_improvement_data[2m > [22m[2mis registered after every run-tree migration (only the autobyteus-290 stored-name renames and the raw-trace manifest runtime names follow), required on startup and startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 398[2mms[22m[39m
+(node:62792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 629[2mms[22m[39m
+(node:62804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/app-data-migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 676[2mms[22m[39m
+(node:62831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261019_delegated_copy_own_file_complete_v1[2m > [22m[2mis registered after every released run-tree migration (then the Skill Improvement data removal, the autobyteus-290 stored-name renames, the raw-trace manifest runtime names, and autobyteus-461's conversion), required on startup and startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcomposes every copy from its own file; a copy of a configured place takes its slot's values (AC-001, AC-005)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcomposes every copy from its own file; a copy of a configured place takes its slot's values (AC-001, AC-005)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcomposes every copy from its own file; a copy of a configured place takes its slot's values (AC-001, AC-005)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcontinues a stopped start: the next start completes both migrations (F-RERUN-MSG)
+[22m[39mTask agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcontinues a stopped start: the next start completes both migrations (F-RERUN-MSG)
+[22m[39mTask agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+[90mstderr[2m | tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts[2m > [22m[2m20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, read back by the released stores[2m > [22m[2mcontinues a stopped start: the next start completes both migrations (F-RERUN-MSG)
+[22m[39mTask agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ [32m✓[39m tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 617[2mms[22m[39m
+(node:62843) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mpreserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mpreserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+[22m[39mTask agent 'task' of agent_org run 'org' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mpreserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+[22m[39m[20261111_delegated_runs_own_runs_v1] 'agent_run:task' is left unchanged (PRESERVED_UNSUPPORTED): it has no workspace, which every ordinary run has
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mtransforms file-only user facts in actual complete nested archive paths and preserves current no-op/archive metadata
+[22m[39mTask agent 'task' of agent_org run 'org' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mtransforms file-only user facts in actual complete nested archive paths and preserves current no-op/archive metadata
+[22m[39m[20261111_delegated_runs_own_runs_v1] 'agent_run:task' is left unchanged (PRESERVED_UNSUPPORTED): it has no workspace, which every ordinary run has
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mfails missing owner proof before any record write, preserves bytes and withholds admission
+[22m[39m[20261018_append_only_message_logs_v1] agent_team run 'org': message log kept as JSON (PRESERVED_UNSUPPORTED): The run's tree is not in the current shape: rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mfails ambiguous owner proof before any record write, preserves bytes and withholds admission
+[22m[39m[20261018_append_only_message_logs_v1] agent_team run 'org': message log kept as JSON (PRESERVED_UNSUPPORTED): The run's tree is not in the current shape: rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mfinishes target-only interrupted cleanup with known Org locators, leaves foreign URLs/prose untouched and rejects invalid current targets
+[22m[39mTask agent 'task' of agent_org run 'org' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mfinishes target-only interrupted cleanup with known Org locators, leaves foreign URLs/prose untouched and rejects invalid current targets
+[22m[39m[20261111_delegated_runs_own_runs_v1] 'agent_run:task' is left unchanged (PRESERVED_UNSUPPORTED): it has no workspace, which every ordinary run has
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2mflat-families pending or interrupted, then the append-only log conversion[2m > [22m[2mkeeps a pre-flat team run on JSON while flat-families waits for its prerequisite, then converts the org it becomes (F-GATE-FLAT)
+[22m[39mTask agent 'task' of agent_org run 'org' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2mflat-families pending or interrupted, then the append-only log conversion[2m > [22m[2mkeeps a pre-flat team run on JSON while flat-families waits for its prerequisite, then converts the org it becomes (F-GATE-FLAT)
+[22m[39m[20261111_delegated_runs_own_runs_v1] 'agent_run:task' is left unchanged (PRESERVED_UNSUPPORTED): it has no workspace, which every ordinary run has
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2mflat-families pending or interrupted, then the append-only log conversion[2m > [22m[2mkeeps an interrupted cutover's org (retired team files still in its folder) on JSON until flat-families finishes it (F-GATE-FLAT-PARTIAL-TARGET)
+[22m[39mTask agent 'task' of agent_org run 'org' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+[90mstderr[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts[2m > [22m[2mflat-families pending or interrupted, then the append-only log conversion[2m > [22m[2mkeeps an interrupted cutover's org (retired team files still in its folder) on JSON until flat-families finishes it (F-GATE-FLAT-PARTIAL-TARGET)
+[22m[39m[20261111_delegated_runs_own_runs_v1] 'agent_run:task' is left unchanged (PRESERVED_UNSUPPORTED): it has no workspace, which every ordinary run has
+
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 528[2mms[22m[39m
+(node:62855) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/app-data-migrations/custom-provider-readable-id/custom-provider-readable-id-app-data-migration.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 439[2mms[22m[39m
+(node:62867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 296[2mms[22m[39m
+(node:62879) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts[2m > [22m[2mMigrateNativeWorkingContextSnapshotsV5Migration[2m > [22m[2mruns the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 340[2mms[22m[39m
+(node:62891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.test.ts[2m > [22m[2mthe follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078)[2m > [22m[2mone per predecessor, registered after our migration: requiredOnStartup, no hold, prerequisites our migration and its own predecessor only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 282[2mms[22m[39m
+(node:62903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-late-predecessors.test.ts[2m > [22m[2mevery late predecessor of 20261111_delegated_runs_own_runs_v1 (SR-079)[2m > [22m[2mevery migration registered before ours is classified once: a writer or reader with a follow-up, a rebuilder, or none
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/delegated-runs-own-runs-v1/delegated-runs-late-predecessors.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 185[2mms[22m[39m
+(node:62915) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts[2m > [22m[2m20261015_collaborators_to_delegated_runs_v1[2m > [22m[2mis registered right before task-agent-own-run (then the append-only log conversion), required on startup and startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 198[2mms[22m[39m
+(node:62927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts[2m > [22m[2mAgentOrg first-message summary startup migration[2m > [22m[2mis registered after every exact prerequisite as required startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 199[2mms[22m[39m
+(node:62939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/app-data-migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.test.ts[2m > [22m[2mproject-task-keys-v1 migration (AC-006)[2m > [22m[2mis a required STARTUP_ONLY definition registered after projects-per-folder-v1, its prerequisite
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 203[2mms[22m[39m
+(node:62952) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.test.ts[2m > [22m[2mprojects-per-folder-v1 migration (SR-024)[2m > [22m[2mis a registered required STARTUP_ONLY definition
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 130[2mms[22m[39m
+(node:62964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/project-task-titles/project-task-titles-app-data-migration.test.ts[2m > [22m[2mproject-task-titles migration (AC-004)[2m > [22m[2mis a required STARTUP_ONLY definition registered right after project-task-keys-v1, depending only on projects-per-folder-v1 (SR-012)
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/project-task-titles/project-task-titles-app-data-migration.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+[90mstdout[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:62976) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/retired-ptm-startup-bpFUDk/app-data
+
+[90mstdout[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mInitialized server settings service with 35 predefined settings
+
+[90mstdout[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/retired-ptm-startup-4hl6aD/app-data
+
+[90mstderr[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /tmp/retired-ptm-startup-4hl6aD/agent-repository
+
+[90mstdout[2m | tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/retired-ptm-startup-U3VsbY/app-data
+
+ [32m✓[39m tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 149[2mms[22m[39m
+(node:63002) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-exact-reference.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-exact-reference.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 129[2mms[22m[39m
+(node:63033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/raw-trace-manifest-runtime-names/raw-trace-manifest-runtime-names-migration.test.ts[2m > [22m[2mRawTraceManifestRuntimeNamesMigration: the frozen table and the registry[2m > [22m[2mis the last released migration, after both raw-trace layout migrations it names, required on startup and startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/raw-trace-manifest-runtime-names/raw-trace-manifest-runtime-names-migration.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 160[2mms[22m[39m
+(node:63045) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.test.ts[2m > [22m[2mthe follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)[2m > [22m[2mis registered right after the migration, both after the newest released entry (SR-017), required on startup, with no capability held back
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 131[2mms[22m[39m
+(node:63057) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/agent-org-units-own-runs-v1/agent-org-units-late-predecessors.test.ts[2m > [22m[2mevery late predecessor of 20261122_agent_org_units_own_runs_v1[2m > [22m[2mevery migration registered before ours is classified once: a writer or reader with a follow-up, a rebuilder, or none
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/agent-org-units-own-runs-v1/agent-org-units-late-predecessors.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 108[2mms[22m[39m
+(node:63069) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.test.ts[2m > [22m[2mTeamRunExecutionTreeV1AppDataMigration[2m > [22m[2mregisters the final TeamRun migration exactly once without the removed intermediate ID
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-golden-files.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/team-run-migration-state-classifier.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+[90mstdout[2m | tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts[2m > [22m[2mRemoveExternalRuntimeWorkingContextSnapshotsMigration[2m > [22m[2mpreserves snapshots when metadata is invalid or mismatched and reports actionable failures
+[22m[39mFailed reading run metadata for invalid-run: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts[2m > [22m[2mRemoveExternalRuntimeWorkingContextSnapshotsMigration[2m > [22m[2mpreserves snapshots when metadata is invalid or mismatched and reports actionable failures
+[22m[39mFailed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
+
+ [32m✓[39m tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 92[2mms[22m[39m
+(node:63117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts[2m > [22m[2mMemorySyncSourceIdNamesMigration (SM-2 … SM-5)[2m > [22m[2mis registered after every other storage rename but the raw-trace one, required on startup, startup-only, and holds back memory_sync
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-retired-built-in-agents/remove-retired-built-in-agents-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-external-messaging-data/remove-external-messaging-data-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+(node:63190) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.test.ts[2m > [22m[2mTeamAgentMemoryLayoutAppDataMigration[2m > [22m[2mregisters required-on-startup ANYTIME recovery after V1 and gates canonical snapshot migrations
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-work-trace-exports/remove-work-trace-exports-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/custom-provider-v1/custom-provider-v1-app-data-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/released-message-log-repairs.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+(node:63272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts[2m > [22m[2mTeamRunExecutionTreeV2AppDataMigration[2m > [22m[2mis registered once immediately after its memory-layout prerequisite
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+[90mstdout[2m | tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:63284) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts[2m > [22m[2mTeamRunHistoryIndexV2AppDataMigration[2m > [22m[2mkeeps optional persistence label fallback local without claiming the process service
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+Initialized server settings service with 35 predefined settings
+
+ [32m✓[39m tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+(node:63296) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts[2m > [22m[2mRawTraceActiveFileNameMigration[2m > [22m[2mregisters external cleanup then both raw-layout prerequisites before native snapshot conversion
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-metadata-member-tree/team-run-metadata-member-tree-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+(node:63332) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/team-communication-projection-address/team-communication-projection-address-migration.test.ts[2m > [22m[2mTeamCommunicationProjectionAddressMigration[2m > [22m[2mis registered as a startup-required app-data migration
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/team-communication-projection-address/team-communication-projection-address-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+[90mstdout[2m | tests/app-data-migrations/run-history-index-v2/run-history-index-v2-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:63351) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/app-data-migrations/run-history-index-v2/run-history-index-v2-migration.test.ts[2m > [22m[2mRunHistoryIndexV2AppDataMigration[2m > [22m[2muses persistence-only label lookup without claiming the process definition service
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+
+ [32m✓[39m tests/app-data-migrations/run-history-index-v2/run-history-index-v2-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-global-skill-discovery-mode/remove-global-skill-discovery-mode-migration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-late-repair.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/released-own-file-ownership.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/token-usage-run-records-v1/legacy-token-usage-run-fold.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-conversion.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/native-working-context-snapshot-shapes.test.ts [2m([22m[2m85 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/custom-provider-migration-name-snapshot.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/remove-self-evolution-run-metadata/remove-self-evolution-run-metadata-migration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/native-working-context-snapshot-v5-converter.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/token-usage-run-records-v1/legacy-token-usage-source-decoder.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition-classification.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/agent-org-run-history-summary-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/team-execution-address-normalizer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/token-usage-provider-name-snapshot-backfill/token-usage-provider-name-snapshot-backfill-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/frozen/predecessor-team-metadata-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/token-usage-custom-provider-model-value-backfill/token-usage-custom-provider-model-value-backfill-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-run-planner.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m75 passed[39m[22m[90m (75)[39m
+[2m      Tests [22m [1m[32m651 passed[39m[22m[90m (651)[39m
+[2m   Start at [22m 21:58:07
+[2m   Duration [22m 63.86s[2m (transform 7.27s, setup 2.37s, import 24.80s, tests 24.71s, environment 5ms)[22m
+

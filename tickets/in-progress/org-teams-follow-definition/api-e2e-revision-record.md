@@ -8,6 +8,7 @@
 | API-REV-002 | Code reviewer, CRR-005 pass (IR-004), round 2 | IR-004, CRR-004, CRR-005, SR-015 (DEC-007) | Fail / 83% | Fail / 91% |
 | API-REV-003 | Code reviewer, CRR-007 pass (IR-005), round 3 | IR-005, CRR-006, CRR-007 | Fail / 91% | Pass / 95% |
 | API-REV-004 | Code reviewer, CRR-011 pass (IR-008), round 4 | IR-006..IR-008, CRR-008..CRR-011, SR-016..SR-018 | Pass / 95% | Pass / 95% |
+| API-REV-005 | Code reviewer, CRR-013 pass (IR-009), round 5 | IR-009, CRR-012 (T-1), CRR-013 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -129,3 +130,28 @@ None open (API-REV-003 passed).
   - the clean-image AppImage step (Docker), and the macOS, x64 and Windows jobs need the release runner;
   - Windows paths are proven only in the migration suites;
   - FU-001 is a follow-up.
+
+### API-REV-005: rerun on IR-009; T-1 (C-1) resolved
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-013), round 5. The test-code review `api-e2e-test-review-report.md` (CRR-012) is open on T-1.
+- Triggering finding or case IDs: T-1 (round 4's C-1, COST-01)
+- Related revision IDs: IR-009 (`70dd2b03f1`), CRR-012, CRR-013
+- Why this revision was recorded: the requested rerun
+- Coverage decisions or durable test paths changed: none
+- Cases added, changed, removed, or rechecked:
+  - rechecked: COST-01, MIG (75/651), OC-01..OC-14 (14/14), ORG-E2E (3/3), AOML (2/2), TC-01;
+  - every other case reused from round 4 (IR-009 changes only the conversion's follow-ups).
+- Commands, environment, fixture, or broader-validation delta: none
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| C-1 / T-1: every upgrade start runs the node pass 24 times | Observation → Local Fix (CRR-012) | Resolved (IR-009) | COST-01: first start 8,663 ms vs 4,206 ms (was 44,069 ms); follow-ups 2,101 ms in total |
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md`, `api-e2e-test-progress.md`, `evidence/api-e2e/round-5/`
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (the test-code review, open on T-1)
+- Remaining risks, blocked evidence, or untested scope: the clean-image AppImage step (Docker); the macOS, x64 and Windows jobs; FU-001
