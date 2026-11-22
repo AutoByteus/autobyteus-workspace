@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-012 | Design | Architecture review ARCH-REV-006 Fail (contract) | AR-008, AR-009 | Approved; design Ready (contract reviewed Fail) | Approved; design Ready (contract aligned) | REQ-003, Out of Scope (application-bound) | counterpart rule pinned with code points and test; one application-ownership rule; residue decision |
 | SR-011 | Design | The user, 2026-11-22: write the storage contract and validate it | V-1..V-6, F-1, F-2 | Approved; design Ready (passed ARCH-REV-005) | Approved; design Ready (contract added) | REQ-001, REQ-003, REQ-006, REQ-007 | org-container-storage-contract.md + contract-validation.md |
 | SR-010 | Design | Architecture re-review ARCH-REV-004 Fail | AR-001 (mapping of `P`) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | `P` per surface as today: coordinator for messages, CM-1 refusal for delegation, shown as `P` |
 | SR-009 | Design | Architecture re-review ARCH-REV-003 Fail | AR-001 (narrowed) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | Translator as the contained Team root's one tool-facing boundary, all surfaces inventoried |
@@ -103,3 +104,10 @@
 - Validation: examples through the real (and in-progress) validators — first run found that `skillAccessMode` (released launch key) is dropped by the current reader (F-1, contract fixed), then 4/4 pass; conversion mapping walked read-only over the user's Org (8 members, 19 Team-own and 2 Org-level rules, 30 intra-Team and 2 cross-unit log lines, no unmapped data; F-2 Team display name via the definition-names port); every use case traced to a stored field.
 - Intended behavior changed: No. Design structure unchanged; the contract makes the storage normative.
 - Route: architecture reviewer (revised package after its pass); implementation is in progress on SR-010 and should follow the contract.
+
+### SR-012 — Contract aligned after ARCH-REV-006
+
+- Trigger: ARCH-REV-006 (Fail, Design Impact) on the SR-011 contract: AR-008 (cross-unit `counterpart` recording and team-space receiver address, MP-08), AR-009 (a) application binding on Team units but not agent units, (b) delegation-records file residue vs Removal Plan.
+- AR-008: contract §5 pins that `same_container` records `counterpart` on both lines (as for unrelated pairs), with Org addresses: sender line at `cross-run-message-delivery.ts:214`, receiver line at `root-communication-engine.ts:315` using the boundary's `toOrg` sender address (the passed `senderAddress`), not `senderIdentity.memberAddress`; test added; live and converted lines identical.
+- AR-009 (a): contract §11 + design Change Scope: every unit of an application-owned Org carries the same ownership (Team `applicationBinding`, agent `applicationExecutionContext`), written once → not followed, Settings blocked, as today. (b): the delegation-records file stays as inert residue; design Removal Plan aligned.
+- Intended behavior changed: No. Next action: architecture re-review; then forward the contract to implementation.

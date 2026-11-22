@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-011` (SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-012` (SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
@@ -30,7 +30,7 @@ The Org run becomes a container. Each mounted Team is a Team run (`agent_teams/<
 
 - In scope: UC-001..UC-006. Areas: `agent-org-execution` (container root, planner, follow), `agent-team-execution` and the standalone agent root (`containedIn`, cross-run step 2 into the container), `agent-collaboration` (container address resolution, Org-rule merge for a unit's rules, delegation origin), `agent-collaboration/delegation` (rows for container units), `services/agent-streaming` (Org view composition, command routing), `run-history` / `agent-memory` (Org readers over units; contained runs not listed as top-level runs), `app-data-migrations` (new migration and follow-ups), `remote-collaboration` (FU-003), docs (collaboration model, agent_orgs, agent_memory, glossary).
 - Derived consumers: the 28 `agent_org` sites (AF-05) get a disposition each in implementation, by this rule: a site that treats the Org run as the host of its members' execution, log or delegations moves to the unit run; a site that lists, shows or launches the Org stays on the container.
-- Deliberately left alone: the web Org workspace (it keeps its one Org stream), Org definitions and their editor, Team runs outside Orgs, standalone agent runs outside Orgs, placement copies, application-bound Orgs (they convert like others; their binding stays on the container and is passed to units as today's `applicationExecutionContext`).
+- Deliberately left alone: the web Org workspace (it keeps its one Org stream), Org definitions and their editor, Team runs outside Orgs, standalone agent runs outside Orgs, placement copies, application-bound Orgs (they convert like others; the container keeps its binding and each unit carries the same ownership, written once: a Team unit's `applicationBinding`, an agent unit's `applicationExecutionContext`; so every unit of an application-owned Org is application-owned, not followed and Settings-blocked, as today; contract §11, SR-012).
 - Follow-ups: none yet.
 
 ## Relevant Behavior And Production-Path Map
@@ -126,7 +126,7 @@ The Org run becomes a container. Each mounted Team is a Team run (`agent_teams/<
 | Org communication sidecar as message authority | Messages belong to the two runs (CM-9) | Units' logs; container composes the view |
 | Org as delegating run for its members' delegations | Delegations come from the unit run | `delegatedFrom` naming the unit run |
 | `TeamRunMembership`'s "Org-mounted, fixed" branch (autobyteus-22) | Org Teams are Team roots | Removed |
-| Org task delegation records file | Task entries of unit runs | Converted, then removed |
+| Org task delegation records file | No current reader (only migrations read it) | Left in place as inert residue; nothing deletes history (contract §9, SR-012) |
 
 ## Exact Texts
 

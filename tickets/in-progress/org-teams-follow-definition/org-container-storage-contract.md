@@ -170,8 +170,16 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 ```
 
 - A message between two units (for example `/concierge` → `/software_engineering_team/solution_designer`): one line
-  in **each** unit's log, same `messageId`, receiver's first; each line records the other side with `counterpart`
-  (its Org address, `nodeId: null` for this node), so each run names it after a reload:
+  in **each** unit's log, same `messageId`, receiver's first; **both** lines record the other side with `counterpart`
+  (its **Org address**, `nodeId: null` for this node), so each run names it after a reload. Recording rule (SR-012):
+  `CrossRunMessageDelivery` records `counterpart` for a `same_container` pair exactly as for an unrelated pair, on both
+  lines — the sender line at `cross-run-message-delivery.ts:214` (today `kind.related ? null : …`: `same_container`
+  counts as not related for recording) with the receiver's Org address, and the receiver line at
+  `root-communication-engine.ts:315` (today `input.senderIdentity.memberAddress`, which is team space for a contained
+  Team member) with the sender's Org address given by the contained Team root's boundary (`toOrg`, design R-1''),
+  i.e. the `senderAddress` the delivery already passes, never the raw member address. Test: a message between an agent
+  unit and a Team unit member, then a reload of both logs: each line's `counterpart.address` is the other side's Org
+  address, and it equals what the conversion writes for the same pair (§9).
 
 ```json
 {"messageId":"collabmsg_b","senderAgentRunId":"concierge_1","receiverAgentRunId":"solution_designer_1","content":"…","messageType":"handoff","referenceFiles":[],"createdAt":"2026-11-22T10:05:00.000Z","counterpart":{"address":"/concierge","nodeId":null}}
@@ -213,13 +221,24 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | `rootOrg.address/orgDefinitionId/orgDefinitionName/orgRunId/defaultLaunchConfiguration` | container `rootOrg`, unchanged |
 | Any `launchConfiguration` / `defaultLaunchConfiguration` key outside the current launch shape (`runtimeKind`, `llmModelIdentifier`, `llmConfig`, `autoExecuteTools`, `workspaceRootPath`), e.g. released `skillAccessMode` (removed by `remove-global-skill-discovery-mode`, which never visited Org trees) | dropped (the current reader ignores it; the writer writes the exact current shape). Validated: the current Team tree reader drops `skillAccessMode` (contract-validation.md V-2) |
 | `rootOrg.collaborators` (released residue, no current reader) | dropped from the container (inert; not read since `collaborators-to-delegated-runs-v1`) |
-| `rootOrg.members[]` Team node `{address, teamDefinitionId, teamRunId, coordinatorAddress, defaultLaunchConfiguration, role, description, members[]}` | container unit `{address, kind:"agent_team", runId: teamRunId, definitionId: teamDefinitionId}` + Team file (§3): `rootTeam.teamRunId`, `teamDefinitionId`, `teamDefinitionName` (released Team nodes have no name: read through the migration runner's existing definition-names port, guideline §4 "Sealed migration area"; a definition that no longer exists → its definition ID), `defaultLaunchConfiguration` (Team node's), `coordinatorAddress` and each member's `address` with the Team address stripped, members' `agentDefinitionId/agentRunId/platformAgentRunId/launchConfiguration/role/description` unchanged; `createdAt`/`archivedAt`/`applicationBinding` from the Org |
-| `rootOrg.members[]` agent node `{address, agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration, role, description}` | container unit `{kind:"agent"}` + `run_metadata.json` (§4): `runId`, `agentDefinitionId`, `platformAgentRunId`, `address`, launch fields from `launchConfiguration`, `memoryDir` at its new place, `containedIn` |
+| `rootOrg.members[]` Team node `{address, teamDefinitionId, teamRunId, coordinatorAddress, defaultLaunchConfiguration, role, description, members[]}` | container unit `{address, kind:"agent_team", runId: teamRunId, definitionId: teamDefinitionId}` + Team file (§3): `applicationBinding` per §11, `rootTeam.teamRunId`, `teamDefinitionId`, `teamDefinitionName` (released Team nodes have no name: read through the migration runner's existing definition-names port, guideline §4 "Sealed migration area"; a definition that no longer exists → its definition ID), `defaultLaunchConfiguration` (Team node's), `coordinatorAddress` and each member's `address` with the Team address stripped, members' `agentDefinitionId/agentRunId/platformAgentRunId/launchConfiguration/role/description` unchanged; `createdAt`/`archivedAt` from the Org |
+| `rootOrg.members[]` agent node `{address, agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration, role, description}` | container unit `{kind:"agent"}` + `run_metadata.json` (§4): `runId`, `agentDefinitionId`, `platformAgentRunId`, `address`, launch fields from `launchConfiguration`, `memoryDir` at its new place, `containedIn`, `applicationExecutionContext` per §11 |
 | `handoffs[]` | wholly inside one Team (`from` and `to` under the Team's address) → that Team file, team space; every other → container `handoffs` |
 | Org log line (keys `messageId, senderAgentRunId, receiverAgentRunId, content, messageType, referenceFiles, createdAt`, optional `counterpart`) | both parties in one Team → that Team's log, unchanged; parties in two units → each unit's log, with `counterpart` = the other's Org address, `nodeId: null`; one party outside the Org (has `counterpart`) → the member's unit log, unchanged |
 | Task entries / `delegatedFrom` naming the Org | §6 |
-| `agent_org_task_delegation_records.json` | left as inert residue (no current reader) |
+| `agent_org_task_delegation_records.json` | left in place as inert residue: no current reader (only migrations read it), and nothing deletes history (design Removal Plan aligned, SR-012) |
 | Member folders | renamed (§1) |
+
+## 11. Application-owned Orgs (one rule for both unit kinds, SR-012)
+
+- An Org started by an application has `applicationBinding` on its container. Each of its units carries the same
+  ownership, written once at creation (or by the conversion) and never edited: a Team unit's `applicationBinding` is the
+  container's; an agent unit's `applicationExecutionContext` is the one today's Org run gives that agent (built from the
+  binding as `agent-org-execution-scope-builder.ts:143-146` does). An Org outside applications: `applicationBinding: null`
+  on the Team unit, no `applicationExecutionContext` on the agent unit.
+- Result, identical for both kinds and for the container: an application-owned unit is not followed (Out of Scope:
+  application-bound runs) and its Settings are blocked, as an application-owned Org is today
+  (`agent-org-run-manager.ts:244`).
 
 ## 10. Use cases against the files
 
@@ -239,7 +258,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Context file from the Org view | container `units` + unit Team file members | `{orgRunId, agentRunId}` → unit folder (§7) |
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
 
-## 11. Validation
+## 12. Validation
 
 See `contract-validation.md` (examples of §2–§4 run through the current/in-progress validators; use cases walked
 against these files).
