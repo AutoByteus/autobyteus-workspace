@@ -13,6 +13,10 @@ interface ToolDisplaySummaryOptions {
 
 const FILE_ARG_KEYS = ['path', 'file_path', 'filepath', 'filename', 'target_path'];
 const COMMAND_ARG_KEYS = ['command', 'cmd', 'script'];
+// The platform's agent tools (autobyteus-590 DEC-006): whom a message or a delegation addresses, and which Task a Task tool
+// reads or changes. After the command and file keys, before the generic text keys.
+const RECIPIENT_ARG_KEYS = ['recipient_address'];
+const TASK_ARG_KEYS = ['task_id'];
 const TEXT_ARG_KEYS = ['query', 'prompt', 'url', 'message', 'text', 'title', 'name', 'raw'];
 
 const normalizeToolName = (toolName: string): string => toolName.trim().toLowerCase();
@@ -109,6 +113,15 @@ const compactPath = (path: string): string => {
   return segments.slice(-2).join('/');
 };
 
+/** One leading `cd <folder> &&` or `cd <folder>;` (DEC-007): the folder every command of a run repeats. */
+const LEADING_CD = /^cd\s+(?:"[^"]*"|'[^']*'|[^\s;&]+)\s*(?:&&|;)\s*/;
+
+/** A command without its leading `cd`, unless nothing would be left. */
+const withoutLeadingCd = (command: string): string => {
+  const rest = command.replace(LEADING_CD, '');
+  return rest.trim() ? rest : command;
+};
+
 const redactSecrets = (text: string): string => {
   let sanitized = text;
   sanitized = sanitized.replace(/(api[_-]?key|token|password|passwd|secret)\s*=\s*([^\s]+)/gi, '$1=***');
@@ -130,7 +143,7 @@ export const getToolDisplaySummary = (
     const sanitized = redactSecrets(commandText);
     return {
       kind: 'command',
-      text: sanitized,
+      text: withoutLeadingCd(sanitized),
       title: sanitized,
     };
   }
@@ -144,6 +157,17 @@ export const getToolDisplaySummary = (
       text: options.preferCompactPath ? compactPath(fullPath) : fullPath,
       title: fullPath,
     };
+  }
+
+  const recipient = pickFirstString(args, RECIPIENT_ARG_KEYS);
+  if (recipient) {
+    const text = `→ ${recipient}`;
+    return { kind: 'text', text, title: text };
+  }
+
+  const taskKey = pickFirstString(args, TASK_ARG_KEYS);
+  if (taskKey) {
+    return { kind: 'text', text: taskKey, title: taskKey };
   }
 
   const genericText = pickFirstString(args, TEXT_ARG_KEYS) || fallbackText;

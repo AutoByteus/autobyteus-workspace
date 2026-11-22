@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildEventMonitorPageToolCardPresentation,
   buildToolCardPresentation,
   getToolCardPresentationWitnessValues,
 } from '../toolCardPresentation';
@@ -79,4 +80,21 @@ describe('toolCardPresentation', () => {
     expect(getToolCardPresentationWitnessValues(presentation)).not.toContain(diagnostic);
     expect(presentation.statusKey).toBe('error');
   });
+
+  // autobyteus-590 D-2a: the conversation's tool cards read the shared summary, so they show the agent tools' recipient and
+  // Task, and a command without its leading cd (the full command stays in the title).
+  it('a card names whom an agent tool addresses and which Task, and drops a leading cd from a command', () => {
+    expect(buildToolCardPresentation(toolSegment({ toolName: 'send_message_to', arguments: { recipient_address: '/architecture_reviewer', content: 'Review it.' } })).summary)
+      .toEqual({ kind: 'text', text: '→ /architecture_reviewer', title: '→ /architecture_reviewer' });
+    expect(buildToolCardPresentation(toolSegment({ toolName: 'update_task', arguments: { task_id: 'autobyteus-590', status: 'DONE' } })).summary?.text)
+      .toBe('autobyteus-590');
+    const command = buildToolCardPresentation({ ...toolSegment(), type: 'terminal_command', toolName: 'run_bash', arguments: { command: 'cd /Users/me/repo && pnpm test' }, command: '' } as any);
+    expect(command.summary).toEqual({ kind: 'command', text: 'pnpm test', title: 'cd /Users/me/repo && pnpm test' });
+  });
+
+  it('an event monitor page card drops a leading cd too', () => {
+    const card = buildEventMonitorPageToolCardPresentation({ invocationId: 'i-1', toolName: 'run_bash', statusKey: 'success', summaryArgs: { command: 'cd /w && make build' }, approvalTarget: null });
+    expect(card.summary).toEqual({ kind: 'command', text: 'make build', title: 'cd /w && make build' });
+  });
 });
+
