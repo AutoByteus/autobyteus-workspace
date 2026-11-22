@@ -240,6 +240,18 @@ the first process open receives only `sessionId`, later and restored opens recei
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
 
+A restore whose saved session the runtime reports as not existing throws
+`SavedRuntimeSessionMissingError` from the backend that knows the answer
+(autobyteus-599): Codex `no rollout found for thread id <id>` on `thread/resume`;
+Antigravity's `conversation "<id>" not found` warning when it opens another
+conversation (any other mismatch stays `AGY_CONVERSATION_ID_CONFLICT`); Grok's
+`FS_NOT_FOUND` and DeepSeek Harness's `session is not resumable: <id>` through
+the ACP profile's `isMissingSession`; Claude through `verifyResumable`, which
+opens a restored session's process at activation and awaits the SDK's
+initialization (a new session still opens at its first input). Only the
+activation owners act on it, by a session renewal (see `run_history.md`); every
+other restore error still fails closed.
+
 ### Previous Runtime Release Before Restore
 
 When a published run's backend reports inactive (for example after an
