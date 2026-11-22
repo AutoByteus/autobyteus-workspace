@@ -17,6 +17,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
+import { labelFileEventTimeout, OS_FILE_EVENT_PROBE_MS } from "../../helpers/os-file-event-probe.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
@@ -179,14 +180,19 @@ describe("Agent package definitions live refresh at the real server/wire boundar
   /**
    * Waits for a change on disk to reach GraphQL. The latency is the OS file event's, so the limit is the shared one;
    * the measured time is kept in the evidence, not compared with the product's 5 s goal (DEC-002 of autobyteus-517).
+   * At the limit the shared probe labels the failure `ENVIRONMENT` or `INCONCLUSIVE` (autobyteus-579 I-3), writing its
+   * sentinel in `watched` (the package folder the test changed) while it still exists.
    */
-  const waitFor = async <T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string, timeoutMs = OS_FILE_EVENT_WAIT_MS) => {
+  const waitFor = async <T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string, watched?: string) => {
     const started = Date.now();
     let last: T | undefined;
     for (;;) {
       last = await read();
       if (accept(last)) return { value: last, elapsedMs: Date.now() - started };
-      if (Date.now() - started > timeoutMs) throw new Error(`${label}: not met within ${timeoutMs} ms; last value: ${JSON.stringify(last)?.slice(0, 2000)}`);
+      if (Date.now() - started > OS_FILE_EVENT_WAIT_MS) {
+        throw await labelFileEventTimeout(`${label}: not met within ${OS_FILE_EVENT_WAIT_MS} ms; last value: ${JSON.stringify(last)?.slice(0, 2000)}`,
+          { dir: watched });
+      }
       await sleep(50);
     }
   };
@@ -349,20 +355,20 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await writeAgent(path.join(root, "agents", "scout"), "APAR Scout");
     await writeTeam(path.join(root, "agent-teams", "squad"), "APAR Squad", [{ memberName: "lead", ref: "scout", refScope: "shared" }]);
     const created = await waitFor(async () => ({ agents: (await agents()).map((entry) => entry.id), teams: (await teams()).map((entry) => entry.id) }),
-      (value) => value.agents.includes("scout") && value.teams.includes("squad"), "new agent and Team listed");
+      (value) => value.agents.includes("scout") && value.teams.includes("squad"), "new agent and Team listed", root);
     await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_teams")), "feed frame for the new definitions", OS_FILE_EVENT_WAIT_MS);
     record.createdVisibleMs = created.elapsedMs;
     record.createdFrames = changed(monitor, mark);
 
     // AC-002: an edit reaches every GraphQL reader.
     await writeAgent(path.join(root, "agents", "scout"), "APAR Scout", "Scout with the second playbook.");
-    const edited = await waitFor(() => agent("scout"), (value) => value?.instructions?.trim() === "Scout with the second playbook.", "edited instructions");
+    const edited = await waitFor(() => agent("scout"), (value) => value?.instructions?.trim() === "Scout with the second playbook.", "edited instructions", root);
     record.editVisibleMs = edited.elapsedMs;
 
     // AC-004: a broken edit keeps the last good version listed with an issue naming the file and reason.
     const configPath = path.join(root, "agents", "planner", "agent-config.json");
     await write(configPath, "{ \"toolNames\": [");
-    const broken = await waitFor(() => agent("planner"), (value) => value?.loadIssue !== null && value?.loadIssue !== undefined, "planner issue");
+    const broken = await waitFor(() => agent("planner"), (value) => value?.loadIssue !== null && value?.loadIssue !== undefined, "planner issue", root);
     expect(broken.value!.loadIssue).toMatchObject({ code: "DEFINITION_CONTRACT_INVALID", definitionPath: configPath, packageRoot: root });
     expect(broken.value!.loadIssue.reason).toMatch(/JSON/i);
     expect(broken.value!.name).toBe("APAR Planner");
@@ -370,14 +376,14 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     expect(await diagnostics("AGENT")).toContainEqual(expect.objectContaining({
       kind: "AGENT", definitionId: "planner", code: "DEFINITION_CONTRACT_INVALID", definitionPath: configPath, usingLastGood: true }));
     await write(configPath, JSON.stringify({ toolNames: [], skillNames: [] }));
-    const fixed = await waitFor(() => agent("planner"), (value) => value?.loadIssue === null, "planner issue cleared");
+    const fixed = await waitFor(() => agent("planner"), (value) => value?.loadIssue === null, "planner issue cleared", root);
     expect((await diagnostics("AGENT")).some((entry) => entry.definitionId === "planner")).toBe(false);
     record.fixClearedMs = fixed.elapsedMs;
 
     // DSN-003: a broken team-local agent keeps its last good version and its Team stays listed.
     const localPath = path.join(root, "agent-teams", "crew", "agents", "lead", "agent.md");
     await write(localPath, "half-written");
-    const nested = await waitFor(() => diagnostics("AGENT"), (list) => list.some((entry) => entry.definitionPath === localPath), "nested issue");
+    const nested = await waitFor(() => diagnostics("AGENT"), (list) => list.some((entry) => entry.definitionPath === localPath), "nested issue", root);
     expect(nested.value.find((entry) => entry.definitionPath === localPath)).toMatchObject({ code: "DEFINITION_CONTRACT_INVALID", usingLastGood: true });
     // SR-008/DSN-004: the owning Team (its card on the Teams page) carries the nested issue with name, file and reason.
     const crew = (await teams()).find((entry) => entry.id === "crew");
@@ -385,7 +391,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
       code: "DEFINITION_CONTRACT_INVALID", reason: expect.any(String), definitionPath: localPath, packageRoot: root, usingLastGood: true }]);
     expect((await diagnostics("AGENT_TEAM")).some((entry) => entry.definitionId === "crew")).toBe(false);
     await writeAgent(path.join(root, "agent-teams", "crew", "agents", "lead"), "APAR Crew Lead");
-    await waitFor(() => diagnostics("AGENT"), (list) => !list.some((entry) => entry.definitionPath === localPath), "nested issue cleared");
+    await waitFor(() => diagnostics("AGENT"), (list) => !list.some((entry) => entry.definitionPath === localPath), "nested issue cleared", root);
     expect((await teams()).find((entry) => entry.id === "crew")?.loadIssues).toEqual([]);
 
     // AC-005: a new invalid Team is unavailable with a diagnostic; other Teams are unaffected.
@@ -396,7 +402,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // final state (both written), not the first one for this Team.
     const finalDiagnostic = (entry: Record<string, any>) => entry.definitionId === "broken-team"
       && entry.code === "DEFINITION_CONTRACT_INVALID" && entry.definitionPath === brokenTeam && entry.usingLastGood === false;
-    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some(finalDiagnostic), "invalid Team diagnostic");
+    const unavailable = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some(finalDiagnostic), "invalid Team diagnostic", root);
     expect(unavailable.value.find((entry) => entry.definitionId === "broken-team")).toMatchObject({
       code: "DEFINITION_CONTRACT_INVALID", definitionPath: brokenTeam, usingLastGood: false });
     expect((await teams()).map((entry) => entry.id)).toEqual(expect.arrayContaining(["squad", "crew"]));
@@ -416,14 +422,14 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // AC-003 + AR-001: deleting the agent removes it, and its dependent Team becomes unavailable (dependent lists told).
     mark = monitor.frames.length;
     await fs.rm(path.join(root, "agents", "scout"), { recursive: true });
-    const removed = await waitFor(() => agents(), (list) => !list.some((entry) => entry.id === "scout"), "deleted agent gone");
+    const removed = await waitFor(() => agents(), (list) => !list.some((entry) => entry.id === "scout"), "deleted agent gone", root);
     await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_teams")), "dependent Team list told", OS_FILE_EVENT_WAIT_MS);
-    const squad = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some((entry) => entry.definitionId === "squad"), "Team without its agent");
+    const squad = await waitFor(() => diagnostics("AGENT_TEAM"), (list) => list.some((entry) => entry.definitionId === "squad"), "Team without its agent", root);
     expect(squad.value.find((entry) => entry.definitionId === "squad")?.code).toBe("DEFINITION_REFERENCE_UNRESOLVED");
     expect((await teams()).map((entry) => entry.id)).not.toContain("squad");
     record.deleteVisibleMs = removed.elapsedMs;
     evidence.dcf002 = record;
-  }, 90_000);
+  }, 90_000 + OS_FILE_EVENT_PROBE_MS);
 
   it("DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it", async () => {
     const root = await newPackage("movable-package");
@@ -433,18 +439,18 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const moved = `${root}-moved`;
     let mark = monitor.frames.length;
     await fs.rename(root, moved);
-    const missing = await waitFor(() => packageAt(root), (value) => value?.autoRefresh?.state === "FOLDER_MISSING", "FOLDER_MISSING");
+    const missing = await waitFor(() => packageAt(root), (value) => value?.autoRefresh?.state === "FOLDER_MISSING", "FOLDER_MISSING", root);
     expect(missing.value?.autoRefresh?.message).toBeTruthy();
     await until(() => changed(monitor, mark).some((frame) => frame.changedLists?.includes("agent_packages")), "agent_package frame");
-    const kept = await waitFor(() => agent("nomad"), (value) => value?.loadIssue?.code === "DEFINITION_SOURCE_UNAVAILABLE", "last good kept with issue");
+    const kept = await waitFor(() => agent("nomad"), (value) => value?.loadIssue?.code === "DEFINITION_SOURCE_UNAVAILABLE", "last good kept with issue", root);
     expect(kept.value?.name).toBe("APAR Nomad");
 
     await fs.rename(moved, root);
-    const back = await waitFor(() => packageAt(root), (value) => value?.autoRefresh?.state === "WATCHING", "WATCHING again");
-    await waitFor(() => agent("nomad"), (value) => value?.loadIssue === null, "issue cleared");
+    const back = await waitFor(() => packageAt(root), (value) => value?.autoRefresh?.state === "WATCHING", "WATCHING again", root);
+    await waitFor(() => agent("nomad"), (value) => value?.loadIssue === null, "issue cleared", root);
     await sleep(1000);
     await writeAgent(path.join(root, "agents", "nomad"), "APAR Nomad", "Back home.");
-    await waitFor(() => agent("nomad"), (value) => value?.instructions?.trim() === "Back home.", "edits resume");
+    await waitFor(() => agent("nomad"), (value) => value?.instructions?.trim() === "Back home.", "edits resume", root);
 
     // Removing the package releases its watch: its definitions go and later edits there are ignored.
     await graphql(`mutation($id:String!){ removeAgentPackage(packageId:$id){ packageId } }`, { id: row.packageId });
@@ -456,7 +462,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     expect(changed(monitor, mark)).toEqual([]);
     expect(await agent("after-removal")).toBeNull();
     evidence.dcf003 = { missing: missing.value?.autoRefresh, missingMs: missing.elapsedMs, restoredMs: back.elapsedMs };
-  }, 60_000);
+  }, 60_000 + OS_FILE_EVENT_PROBE_MS);
 
   it("DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list", async () => {
     const root = await newPackage("reload-package");
@@ -513,13 +519,13 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     await until(() => changed(other, mark).some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_packages")), "Update published", OS_FILE_EVENT_WAIT_MS);
     expect((await agents()).map((entry) => entry.id)).toEqual(expect.arrayContaining(["gh-alpha", "gh-beta"]));
     // The managed folder was replaced by rename; the monitor re-armed the new folder.
-    const after = await waitFor(() => packageAt(row.path), (value) => value?.autoRefresh?.state === "WATCHING", "managed root re-armed");
+    const after = await waitFor(() => packageAt(row.path), (value) => value?.autoRefresh?.state === "WATCHING", "managed root re-armed", row.path);
     other.socket.close();
     await graphql(`mutation($id:String!){ removeAgentPackage(packageId:$id){ packageId } }`, { id: row.packageId });
     expect((await agents()).map((entry) => entry.id)).not.toContain("gh-alpha");
     evidence.dcf005 = { githubRequests, updateFrames: changed(other, mark), autoRefreshAfterUpdate: after.value?.autoRefresh };
     // Its own import, check and update work (60 s), plus its two OS file-event waits (Update published, root re-armed).
-  }, 60_000 + 2 * OS_FILE_EVENT_WAIT_MS);
+  }, 60_000 + 2 * OS_FILE_EVENT_WAIT_MS + OS_FILE_EVENT_PROBE_MS);
 
   it("DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone", async () => {
     // The new route greets every connection (covered above); the retired route is not served at all.
@@ -605,7 +611,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const mark = monitor.frames.length;
     await write(writerConfig, "{ \"toolNames\": [");
     await write(leadMd, "half-written");
-    const broken = await waitFor(studio, (value) => (value?.loadIssues?.length ?? 0) === 2, "org-owned issues on the Org");
+    const broken = await waitFor(studio, (value) => (value?.loadIssues?.length ?? 0) === 2, "org-owned issues on the Org", root);
     expect(broken.value!.loadIssues).toEqual([
       { kind: "AGENT", definitionId: ownedAgentId, name: "APAR Studio Writer", code: "DEFINITION_CONTRACT_INVALID",
         reason: expect.stringMatching(/JSON/i), definitionPath: writerConfig, packageRoot: root, usingLastGood: true },
@@ -620,15 +626,15 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // Breaking the org-owned Team itself lists it too; fixing everything clears the Org's list.
     const squadMd = path.join(orgDir, "agent-teams", "squad", "team.md");
     await write(squadMd, "no front matter");
-    const three = await waitFor(studio, (value) => (value?.loadIssues?.length ?? 0) === 3, "org-owned Team issue on the Org");
+    const three = await waitFor(studio, (value) => (value?.loadIssues?.length ?? 0) === 3, "org-owned Team issue on the Org", root);
     expect(three.value!.loadIssues.map((entry: any) => [entry.kind, entry.definitionId, entry.usingLastGood]))
       .toEqual([["AGENT", ownedAgentId, true], ["AGENT_TEAM", ownedTeamId, true], ["AGENT", squadLeadId, true]]);
     await writeAgent(path.join(orgDir, "agents", "writer"), "APAR Studio Writer");
     await writeAgent(path.join(orgDir, "agent-teams", "squad", "agents", "lead"), "APAR Studio Squad Lead");
     await writeTeam(path.join(orgDir, "agent-teams", "squad"), "APAR Studio Squad", [{ memberName: "lead", ref: "lead", refScope: "team_local" }]);
-    const cleared = await waitFor(studio, (value) => value?.loadIssues?.length === 0, "Org issues cleared");
+    const cleared = await waitFor(studio, (value) => value?.loadIssues?.length === 0, "Org issues cleared", root);
     evidence.dcf009 = { brokenVisibleMs: broken.elapsedMs, issues: three.value!.loadIssues, clearedMs: cleared.elapsedMs };
-  }, 60_000);
+  }, 60_000 + OS_FILE_EVENT_PROBE_MS);
 
   // ---- Real agent tools and runs (scripted AGY actor) ----
 
@@ -724,14 +730,14 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const listedAfterWrite = (await waitFor(async () => {
       publishedBeforeLookup = changed(monitor, mark);
       return listNames();
-    }, (names) => names.includes("APAR Fresh Scout"), "the next lookup lists the detected agent")).value;
+    }, (names) => names.includes("APAR Fresh Scout"), "the next lookup lists the detected agent", root)).value;
     record.listAfterWriteMs = Date.now() - writtenAt;
     record.framesWhenListed = changed(monitor, mark);
     expect(publishedBeforeLookup, "still inside the 1 s settle window when the lookup applied the change").toEqual([]);
     expect(listedAfterWrite).toContain("APAR Fresh Scout");
     // The Team is found by the next delegation (AC-015). On a loaded machine its folder can be detected after the first
     // lookup; REQ-018 covers changes already detected, and real use has a model turn here.
-    const squadListed = await waitFor(listNames, (names) => names.includes("APAR Fresh Squad"), "new Team listed by the tool");
+    const squadListed = await waitFor(listNames, (names) => names.includes("APAR Fresh Squad"), "new Team listed by the tool", root);
     record.teamListedAfterWriteMs = Date.now() - writtenAt;
     expect(squadListed.value).toContain("APAR Fresh Scout");
     const scoutCopy = await delegateAndReadPrompt(`/${segment("APAR Fresh Scout")}`);
@@ -781,7 +787,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     expect(JSON.parse(refused.text)).toEqual({ delegated: false,
       message: "'/apar_doomed' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." });
     evidence.dcf007 = record;
-  }, 240_000);
+  }, 240_000 + OS_FILE_EVENT_PROBE_MS);
 
   itAgy("DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found", async () => {
     const root = await newPackage("steady-package");
@@ -795,7 +801,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
 
     // Edit: the active run keeps working with its original definition (no restart); a new run uses the edit.
     await writeAgent(path.join(root, "agents", "apar-steady"), "APAR Steady", "Hold steady. MARK_STEADY_V2");
-    await waitFor(() => agent("apar-steady"), (value) => value?.instructions?.trim() === "Hold steady. MARK_STEADY_V2", "edit visible");
+    await waitFor(() => agent("apar-steady"), (value) => value?.instructions?.trim() === "Hold steady. MARK_STEADY_V2", "edit visible", root);
     const stillOriginal = await promptOf(runId, socket);
     expect(stillOriginal).toContain("MARK_STEADY_V1");
     expect(stillOriginal).not.toContain("MARK_STEADY_V2");
@@ -808,7 +814,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
 
     // Removal: the active run still answers; after it stops, restoring it reports the definition as not found.
     await fs.rm(path.join(root, "agents", "apar-steady"), { recursive: true });
-    await waitFor(() => agent("apar-steady"), (value) => value === null, "removal visible");
+    await waitFor(() => agent("apar-steady"), (value) => value === null, "removal visible", root);
     // The scripted actor answers a plain message with `OK` (the message itself does not contain the marker).
     expect(await ask(socket, runId, "Are you still there?", "OK")).toBe("");
     await terminateRun(runId);
@@ -817,5 +823,5 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // The existing per-runtime "definition not found" error (unchanged from base: agy-agent-run-backend-factory).
     expect(restored.message).toMatch(/AGY_AGENT_DEFINITION_MISSING: apar-steady/);
     evidence.dcf008 = { restored, launchesBefore, launchesAfterEdit };
-  }, 180_000);
+  }, 180_000 + OS_FILE_EVENT_PROBE_MS);
 });

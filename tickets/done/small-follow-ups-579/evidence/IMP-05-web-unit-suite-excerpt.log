@@ -1,0 +1,13 @@
+# IMP-05 whole web unit suite
+# Command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run (after pnpm -C autobyteus-web exec nuxi prepare)
+# Commit: 4c77e3e78a
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  797 passed (797)
+      Tests  6048 passed | 2 skipped (6050)
+   Start at  19:48:17
+   Duration  297.72s (transform 31.69s, setup 1987.29s, collect 204.31s, tests 92.53s, environment 153.53s, prepare 95.18s)
+exit 0

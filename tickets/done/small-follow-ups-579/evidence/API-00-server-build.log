@@ -1,0 +1,4 @@
+# API-00 server build | commit b6b8020bf5 (code 4c77e3e78a) | 2026-11-22T18:59:53Z | load { 10.53 32.71 36.56 }
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

@@ -14,6 +14,8 @@ import { resetProjectServiceForTests } from "../../../src/projects/services/proj
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import { createFakeEmbeddingIndex, fakeModel } from "../../helpers/fake-embedding-model.js";
+// autobyteus-579 I-2: a test that waits only for this server's answers, which a busy FSEvents stalls (TESTING.md).
+import { SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 
 // Settings → Server Settings → Embedding over the real Studio HTTP (GraphQL) and the real composition, over
 // test-owned files. The catalog keeps its real ids, names and sizes; only downloads and the model runtime are
@@ -131,7 +133,7 @@ describe("Embedding settings over the production GraphQL boundary", () => {
     await until((current) => indexOf(current, projectId).state === "READY");
     expect(await refusal("mutation($p:String!){indexProjectTasks(projectId:$p)}", { p: "project_missing" })).toMatchObject({ code: "PROJECT_NOT_FOUND" });
     expect(await refusal("mutation($p:String!){rebuildProjectTaskIndex(projectId:$p)}", { p: "project_missing" })).toMatchObject({ code: "PROJECT_NOT_FOUND" });
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 
   it("downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing the active model", async () => {
     fake.holdDownloads();

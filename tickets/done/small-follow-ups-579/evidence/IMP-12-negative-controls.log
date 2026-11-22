@@ -1,0 +1,88 @@
+# IMP-12 one negative control per change (each edit reverted after its run)
+# Command: /tmp/579-tools/controls.sh <worktree> (script below)
+# Commit: 4c77e3e78a
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# Expected: each control fails a test; "After the controls" lists no changed file. NC-I3b shows the chokidar test failing with the probe's INCONCLUSIVE label (this host delivered the fresh stream's event).
+
+
+## NC-I1 fileContent answers a missing file as JSON text again
+edit: src/api/graphql/types/file-explorer.ts
+     × handles file lifecycle via GraphQL 17ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { Object (fileContent) } to match object { message: StringContaining{…}, …(1) }
+      Tests  1 failed | 1 passed (2)
+
+## NC-I1b a workspace access refusal loses its code
+edit: src/api/graphql/types/file-explorer.ts
+     × lists links as link rows and refuses their content; reads regular files (AC-006) 16ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected GraphQLError{ …(10) } to match object { message: StringMatching{…}, …(1) }
+      Tests  1 failed | 4 passed (5)
+
+## NC-I3 the probe labels a silent OS INCONCLUSIVE (labels swapped)
+edit: tests/helpers/os-file-event-probe.ts
+     × labels ENVIRONMENT when the OS delivers no event to a fresh raw watch, then gives the wait's message 216ms
+     × labels INCONCLUSIVE when a fresh raw watch gets its event 12ms
+     × probes in the watched folder when it exists, and leaves no sentinel there 9ms
+     × probes in a new temp folder when the watched folder is gone (a moved package) 209ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected false to be true // Object.is equality
+     29|     expect(error.message.startsWith("ENVIRONMENT:")).toBe(true);
+AssertionError: expected 'ENVIRONMENT: the OS delivered no file…' to be 'INCONCLUSIVE: the watcher saw no chan…' // Object.is equality
+
+## NC-I3b a chokidar wait that is never met fails with the probe's label (wiring)
+edit: tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts
+     × reports a change in the folder and never one inside a linked folder's target 3121ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.
+      Tests  1 failed (1)
+
+## NC-I2 a refused origin among the accepted ones still fails the concurrent check
+edit: tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+     × accepts each allowed-origin class and refuses near misses (AC-002) 420ms
+     × accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003) 22ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ { label: 'no Origin', …(1) }, …(7) ] to deeply equal [ { label: 'no Origin', …(1) }, …(7) ]
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+      Tests  2 failed | 9 passed (11)
+
+## After the controls
+
+
+== the script ==
+#!/bin/bash
+# IMP-xx (autobyteus-579): one negative control per change; each edit is reverted right after its run.
+cd "$1/autobyteus-server-ts" || exit 1
+run() { pnpm exec vitest run "$@" --no-watch 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E "Tests +[0-9]|^ +× |^(Error|AssertionError)|ENVIRONMENT:|INCONCLUSIVE:" | head -8; }
+control() { # label file old new test-files...
+  local label="$1" file="$2" old="$3" new="$4"; shift 4
+  cp "$file" /tmp/579-tools/bak; python3 -I -c "import sys;p,o,n=sys.argv[1:4];s=open(p).read();assert s.count(o)==1,o;open(p,'w').write(s.replace(o,n))" "$file" "$old" "$new" || { echo "CONTROL EDIT FAILED: $label"; return; }
+  echo; echo "## $label"; echo "edit: $file"; run "$@"; cp /tmp/579-tools/bak "$file"
+}
+R=src/api/graphql/types/file-explorer.ts
+control "NC-I1 fileContent answers a missing file as JSON text again" $R \
+  'if (lower.includes("file not found")) throw fileContentRefusal(message, "FILE_NOT_FOUND");' \
+  'if (lower.includes("file not found")) return jsonError(message);' \
+  tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+control "NC-I1b a workspace access refusal loses its code" $R \
+  'if (error instanceof WorkspaceAccessError) throw fileContentRefusal(message, error.code);' \
+  'if (error instanceof WorkspaceAccessError) throw fileContentRefusal(message, "FILE_READ_FAILED");' \
+  tests/unit/api/semantic-memory-workspace-access.test.ts
+P=tests/helpers/os-file-event-probe.ts
+control "NC-I3 the probe labels a silent OS INCONCLUSIVE (labels swapped)" $P \
+  'return new Error(`${await osDeliversFileEvents(options) ? INCONCLUSIVE_LABEL : ENVIRONMENT_LABEL}\n${detail}`);' \
+  'return new Error(`${await osDeliversFileEvents(options) ? ENVIRONMENT_LABEL : INCONCLUSIVE_LABEL}\n${detail}`);' \
+  tests/unit/e2e-helpers/os-file-event-probe.test.ts
+C=tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts
+control "NC-I3b a chokidar wait that is never met fails with the probe's label (wiring)" $C \
+  'await waitFor(() => rawPaths().some((p) => p.endsWith("notes.md")), 15_000, "the notes.md event");' \
+  'await waitFor(() => rawPaths().some((p) => p.endsWith("never-written.md")), 3_000, "the never-written.md event");' \
+  $C
+Q=tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+control "NC-I2 a refused origin among the accepted ones still fails the concurrent check" $Q \
+  '      ["configured origin", { Origin: CONFIGURED_ORIGIN }],' \
+  '      ["configured origin", { Origin: CONFIGURED_ORIGIN }],
+      ["a near miss", { Origin: "https://desktop.tail.ts.net.evil.example", Host: "desktop.tail.ts.net" }],' \
+  $Q
+echo; echo "## After the controls"; git status --short src tests

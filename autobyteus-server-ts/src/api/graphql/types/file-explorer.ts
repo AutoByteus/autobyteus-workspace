@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
@@ -10,6 +11,12 @@ const logger = {
 };
 
 const jsonError = (message: string): string => JSON.stringify({ error: message });
+
+/**
+ * A file the node does not give (autobyteus-579): `fileContent` answers exact text, so a refusal is a GraphQL error with its
+ * code in `extensions.code`, never text a viewer would show as the file.
+ */
+const fileContentRefusal = (message: string, code: string): GraphQLError => new GraphQLError(message, { extensions: { code } });
 
 const toMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -49,7 +56,7 @@ export class FileExplorerResolver {
   ): Promise<string> {
     const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
-      return jsonError("Workspace not found");
+      throw fileContentRefusal("Workspace not found", "WORKSPACE_NOT_FOUND");
     }
 
     const lease = await workspace.acquireFileExplorer("graphql-file-content");
@@ -57,17 +64,14 @@ export class FileExplorerResolver {
       return await lease.fileExplorer.readFileContent(filePath);
     } catch (error) {
       const message = toMessage(error);
-      if (
-        error instanceof WorkspaceAccessError ||
-        message.toLowerCase().includes("file not found") ||
-        message.toLowerCase().includes("permission") ||
-        message.toLowerCase().includes("access denied")
-      ) {
-        return jsonError(message);
-      }
+      const lower = message.toLowerCase();
+      if (error instanceof WorkspaceAccessError) throw fileContentRefusal(message, error.code);
+      if (lower.includes("file not found")) throw fileContentRefusal(message, "FILE_NOT_FOUND");
+      if (lower.includes("access denied")) throw fileContentRefusal(message, "WORKSPACE_ACCESS_REFUSED");
+      if (lower.includes("permission")) throw fileContentRefusal(message, "FILE_PERMISSION_DENIED");
 
       logger.error(`Error reading file content: ${message}`);
-      return jsonError("An unexpected error occurred while reading the file");
+      throw fileContentRefusal("An unexpected error occurred while reading the file", "FILE_READ_FAILED");
     } finally {
       await lease.release();
     }

@@ -144,7 +144,7 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     vi.restoreAllMocks();
     await closeLiveServerVault();
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
-    fakeRuntimes?.dispose();
+    await fakeRuntimes?.dispose();
   }, 120_000);
 
   const openSocket = async (runId: string) => {

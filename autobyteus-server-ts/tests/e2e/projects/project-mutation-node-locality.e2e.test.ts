@@ -11,6 +11,14 @@ import {promisify} from "node:util";
 import {expect, it} from "vitest";
 import {builtServerLaunchEnvironment} from "../helpers/built-server-launch-credential.js";
 
+/**
+ * How long a node gets for its graceful exit before it is killed (then the stop fails: exit code null). On a busy-FSEvents
+ * Mac a graceful exit took over 10 s (autobyteus-576 API-08b, autobyteus-583 API-07b), here 30–80 ms at load 127 with
+ * `fseventsd` at 60% (autobyteus-579 I-2). Why it can take that long is autobyteus-579 FU-001; the watcher-close rule does
+ * not explain it, since a built server leaves its watchers to its exit (TESTING.md).
+ */
+const BUILT_NODE_GRACEFUL_STOP_LIMIT_MS = 30_000;
+
 // Prerequisite: current-worktree server prebuild + build. Never use installed binaries.
 // Two real built-process Studio/HTTP/MCP/SQLite nodes, private HOME/data/free ports.
 // Separate public registration remains node-local; path association needs none. Scripted session selection, no model or UI.
@@ -60,7 +68,7 @@ class NodeFixture {
     const child = this.child;
     if (!child || child.exitCode !== null || child.signalCode !== null) return;
     const exit = once(child, "exit"); child.kill("SIGTERM");
-    const force = setTimeout(() => child.kill("SIGKILL"), 10_000);
+    const force = setTimeout(() => child.kill("SIGKILL"), BUILT_NODE_GRACEFUL_STOP_LIMIT_MS);
     try { await exit; expect(child.exitCode, this.logs).toBe(0); } finally {clearTimeout(force);}
     // Both public and private listeners must be gone before restart/removal.
     for (const url of [this.origin, this.mcpUrl]) {

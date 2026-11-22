@@ -1,0 +1,87 @@
+{
+  "startedAt": "2026-11-22T19:25:41.245Z",
+  "platform": "darwin-arm64",
+  "boundaries": "GraphQL saved Org/member fixture + initial metadata failure; subsequent metadata/registration HTTP, native IPC/bytes, production renderer/shell real. Responsive device metrics explicitly emulated.",
+  "cases": {
+    "N-001": {
+      "title": "owned packaged launch and passive selected missing metadata",
+      "result": "Fail",
+      "error": "evalmachine.<anonymous>:4\nvar runTreeFixtures_1 = require(\"~/test-support/runTreeFixtures\");\n                        ^\n\nReferenceError: require is not defined\n    at evalmachine.<anonymous>:4:25\n    at Script.runInContext (node:vm:149:12)\n    at Script.runInNewContext (node:vm:154:17)\n    at Object.runInNewContext (node:vm:310:38)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:129:8\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:34:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:110:3",
+      "failureState": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+        "width": 1200,
+        "height": 768,
+        "target": {},
+        "preview": null,
+        "files": [],
+        "visible": false,
+        "drawer": false,
+        "dock": false,
+        "tabFocused": false,
+        "focusText": "",
+        "otherNode": false
+      },
+      "finishedAt": "2026-11-22T19:31:45.657Z"
+    },
+    "N-008": {
+      "title": "owned resources cleaned and ports released",
+      "result": "Pass",
+      "details": {
+        "stop": {
+          "instanceId": "iso-59768-d44f",
+          "wasRunning": true,
+          "forced": true,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-r4y03j",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        },
+        "fixtureRemoved": true,
+        "instances": {
+          "instances": []
+        }
+      },
+      "finishedAt": "2026-11-22T19:31:55.923Z"
+    }
+  },
+  "requests": [],
+  "pageErrors": [],
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-59768-d44f",
+      "wasRunning": true,
+      "forced": true,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-r4y03j",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "fixtureRemoved": true,
+    "instances": {
+      "instances": []
+    }
+  },
+  "fixture": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-8MzqFr",
+  "instance": {
+    "instanceId": "iso-59768-d44f",
+    "pid": 74651,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59769",
+    "graphqlUrl": "http://127.0.0.1:59769/graphql",
+    "controlEndpoint": "http://127.0.0.1:59768",
+    "controlPort": 59768,
+    "serverPort": 59769,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-r4y03j",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-r4y03j/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59768-d44f.log"
+  },
+  "appAsarSha256": "3cffc44a488d3dee197c8294f1f6c233b5829182d8ccb9750a92f5af0c32b7fd",
+  "engine": "148.0.7778.280",
+  "failure": "evalmachine.<anonymous>:4\nvar runTreeFixtures_1 = require(\"~/test-support/runTreeFixtures\");\n                        ^\n\nReferenceError: require is not defined\n    at evalmachine.<anonymous>:4:25\n    at Script.runInContext (node:vm:149:12)\n    at Script.runInNewContext (node:vm:154:17)\n    at Object.runInNewContext (node:vm:310:38)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:129:8\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:34:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:110:3",
+  "finishedAt": "2026-11-22T19:31:55.923Z"
+}

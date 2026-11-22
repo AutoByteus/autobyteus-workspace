@@ -220,8 +220,10 @@ try {
     const inside = await read('brief.md'); assert.equal(inside.data?.fileContent, markdown); assert(!inside.errors);
     const outside = await read('../A/private.md');
     evidence.workspaceContentHttp = { workspaceId, inside, outside }; await save();
-    // This current public query deliberately returns content-or-JSON-error strings.
-    assert.match(JSON.parse(outside.data.fileContent).error, /Access denied: File is outside the workspace/);
+    // A refusal is a GraphQL error with its code, never text (autobyteus-579).
+    assert.equal(outside.data?.fileContent ?? null, null);
+    assert.match(outside.errors?.[0]?.message ?? '', /Access denied: File is outside the workspace/);
+    assert.equal(outside.errors?.[0]?.extensions?.code, 'WORKSPACE_ACCESS_REFUSED');
     assert(!JSON.stringify(outside).includes('OUTSIDE A SECRET MUST NOT LEAK'));
     return { workspaceId, inside, outside };
   });

@@ -182,11 +182,21 @@ const assertExactConfigurationTree = (root: Record<string, unknown>, p: Projecti
   expect(normalizeExactConfigurationTree(root, p)).toEqual(expected);
 };
 
+/**
+ * Stops the server and returns only once its process has exited (autobyteus-579 I-5): a stop that fails kills it, and a
+ * killed server still writes into its runtime folder until it exits, so removing the folder before that fails (ENOTEMPTY).
+ */
+const stopAndAwaitExit = async (server: RunningTestServer): Promise<void> => {
+  const { child } = server;
+  if (child.exitCode !== null || child.signalCode !== null) return;
+  const exited = new Promise<void>((resolve) => child.once("exit", () => resolve()));
+  await server.stop().catch(() => { child.kill("SIGKILL"); });
+  if (child.exitCode === null && child.signalCode === null) await exited;
+};
+
 afterEach(async () => {
   for (const server of [...ownedServers]) {
-    if (server.child.exitCode === null) {
-      await server.stop().catch(() => server.child.kill("SIGKILL"));
-    }
+    await stopAndAwaitExit(server);
     ownedServers.delete(server);
   }
   for (const target of ownedTargets.splice(0)) {

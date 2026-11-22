@@ -1,0 +1,17 @@
+# IMP-04 whole server E2E suite (AC-003, AC-006)
+# Command: env -i PATH="$PATH" HOME=<new temp dir> TMPDIR="$TMPDIR" pnpm test:e2e (repo root)
+# Commit: 02ee9c2237
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# Excerpt; the full log was /tmp/579-suite-e2e.log on the implementation machine, not committed. Gated suites are skipped without their gates (160 files).
+
+# root test:e2e | commit 02ee9c2237 | 2026-11-22T18:23:39Z | load 7.32 12.08 26.35 | fseventsd 25.8%
+TASK_PART_CLOSE_FAILED {
+TAU-2 first start: FAILED (5 task agent item(s) are not migrated yet; the next start continues.)
+ACP_REOPEN_FAILED: run=reopen_failure_f7d2e8_4327c04715d24178b8abaaf0d44bf341: Error: ACP connection closed
+ Test Files  128 passed | 160 skipped (288)
+      Tests  575 passed | 759 skipped (1334)
+   Start at  19:23:46
+   Duration  1179.17s (transform 16.95s, setup 6.07s, import 357.39s, tests 790.50s, environment 15ms)
+exit 0
+ENOTEMPTY occurrences in the full log: 0

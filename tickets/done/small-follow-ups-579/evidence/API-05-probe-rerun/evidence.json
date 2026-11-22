@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-11-22T19:34:18.265Z",
+  "platform": "darwin-arm64",
+  "boundaries": "GraphQL saved Org/member fixture + initial metadata failure; subsequent metadata/registration HTTP, native IPC/bytes, production renderer/shell real. Responsive device metrics explicitly emulated.",
+  "cases": {
+    "N-001": {
+      "title": "owned packaged launch and passive selected missing metadata",
+      "result": "Started"
+    }
+  },
+  "requests": [],
+  "pageErrors": [],
+  "cleanup": {}
+}

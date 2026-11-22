@@ -481,7 +481,7 @@ interface OpenFileState {
 | ------------------------------------------------- | ---------------------------- |
 | `openFile()`                                      | Opens file in full edit mode |
 | `openFilePreview()`                               | Opens file in preview mode   |
-| `fetchFileContent()`                              | Loads text file via GraphQL  |
+| `fetchFileContent()`                              | Loads text file via GraphQL; a refusal (a GraphQL error) becomes the file's `error` |
 | `saveFileContentFromEditor()`                     | Saves text content via mutation and suppresses self-echo modify events |
 | `toggleFolder()`                                  | Expands/collapses folder     |
 | `searchFiles()`                                   | Searches files via GraphQL   |
@@ -491,6 +491,13 @@ interface OpenFileState {
 | `moveFileOrFolder()`                              | Moves a node, remaps open/path-scoped state, and applies the returned tree change |
 | `closePathScopedFiles()`                          | Removes open-file/active-file state for a deleted file or containing folder |
 | `navigateToNextTab()` / `navigateToPreviousTab()` | Tab navigation               |
+
+A file the node refuses to give (missing, outside the workspace root, a link not opened, no permission)
+arrives as a GraphQL error, never as text (autobyteus-579). `fetchFileContent` keeps its message as the
+file's `error`, and `FileExplorerTabs` shows the viewer's error state (a red `role="alert"` line: "Error!" and
+the node's message); an unsaved draft stays visible as before. A file whose own text is `{"error":…}` opens as text. The two
+fire-and-forget reads (the open path and `invalidateFileContent`) swallow the rejection themselves, since the
+refusal is already the file's error state.
 
 > **Important:** All actions and getters in `FileExplorerStore` require a mandatory `workspaceId` parameter. The store is **workspace-agnostic** and does not assume any "active" workspace.
 
