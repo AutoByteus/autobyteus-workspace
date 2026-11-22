@@ -17,6 +17,11 @@
 //   - AC-005 a background task whose command is long shows it in full on tap (aria-expanded); its `run_command` row's
 //     summary is the command (AGY's `CommandLine`);
 //   - AC-003 a running call (HOLD_TURN) updates live while its details are open: the run is stopped, the status changes.
+// MSP-97 runs on its own node (scripted AGY, `native_arguments`: one turn of Antigravity's own tools with their PascalCase
+// arguments, as `agy-native-arguments-turn.mjs` records them) and its own paired phone:
+//   - AC-001 an Antigravity file tool's row shows its file: `write_to_file` and `replace_file_content` (`TargetFile`) as
+//     `view_file` (`AbsolutePath`) does; `run_command` (`CommandLine`) shows its command; no row shows its name twice.
+//     What the search and listing tools' rows show (`grep_search`, `find_by_name`, `list_dir`) is recorded.
 // The scripted AGY CLI does not stream tool logs (only the Codex and native runtimes send TOOL_LOG), so a Logs section and
 // its growth while open are covered by the web unit tests (MobileActivityDetail.spec), not here.
 import path from 'node:path';
@@ -32,10 +37,11 @@ const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConf
 
 /**
  * @param probe `runCase`, `page` (the paired phone), `stack`, `alpha`, `sel`, `toList`, `openRow`, `menuOpen`, `shot`,
- *   `waitFor`, `sleep`, `assert`, `serverAt`, `freePort`, `chromium`, `executablePath`, `selected`.
+ *   `waitFor`, `sleep`, `assert`, `serverAt`, `freePort`, `chromium`, `executablePath`, `selected`, `root` (the probe's
+ *   folder: a node named N has its HOME at `<root>/N/home`).
  */
 export const runActivityDetailsCases = async (probe) => {
-  const { runCase, page, stack, alpha, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, serverAt, freePort, chromium, executablePath, selected } = probe;
+  const { runCase, page, stack, alpha, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, serverAt, freePort, chromium, executablePath, selected, root } = probe;
   const wants = (id) => !selected || selected.has(id);
 
   /** What the Activity list shows: each row's name, summary, status (its word, or its icon's name) and error excerpt. */
@@ -89,29 +95,34 @@ export const runActivityDetailsCases = async (probe) => {
 
   /**
    * A node of its own (its scripted AGY CLI in `agyCase`) with one agent run that has had `messages` (each answered), and
-   * phones paired to it (one per locale); `use` gets them; everything is stopped after.
+   * phones paired to it (one per locale); `use` gets them; everything is stopped after. `options.launch(node)` gives the
+   * run's launch instead of the scripted AGY, `options.toolNames` and `options.instructions` the agent's.
    */
-  const withNodeAndPhones = async (name, agyCase, extraEnv, messages, locales, use) => {
+  const withNodeAndPhones = async (name, agyCase, extraEnv, messages, locales, use, options = {}) => {
     const node = await serverAt(name, await freePort(), { AGY_FAKE_CASE: agyCase, ...extraEnv });
     const phoneOrigin = `http://${PHONE_HOST}:${node.port}`;
     const browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
     try {
+      const launch = options.launch ? await options.launch(node) : agy;
       const definition = (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Activity Probe', role: 'assistant',
-        description: 'Activity details (phone probe)', instructions: 'Follow the request.', toolNames: [], defaultLaunchConfig: agy } })).createAgentDefinition.id;
+        description: 'Activity details (phone probe)', instructions: options.instructions ?? 'Follow the request.', toolNames: options.toolNames ?? [], defaultLaunchConfig: launch } })).createAgentDefinition.id;
       const workspace = path.join(node.dataDir, '..', 'workspace');
       await fs.mkdir(workspace, { recursive: true });
-      const created = (await node.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: definition, workspaceRootPath: workspace, autoExecuteTools: true, ...agy } })).createAgentRun;
+      const created = (await node.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: definition, workspaceRootPath: workspace, autoExecuteTools: true, ...launch } })).createAgentRun;
       assert(created.success, created.message);
       const run = created.runId;
       const projection = async () => (await node.gql('query($id:String!){getRunProjection(runId:$id){conversation activities}}', { id: run })).getRunProjection ?? {};
-      for (const [content, reply] of messages) {
+      const say = async (content) => {
         const socket = new WebSocket(ownerSocketUrl(`${node.baseUrl.replace(/^http/, 'ws')}/ws/agent/${run}`));
         await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
         await sleep(300);
         socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: randomUUID(), dedupe_key: `agent_run_input:probe:${randomUUID()}`, context_file_paths: [], image_urls: [], agent_run_id: run, content } }));
         await sleep(600);
         socket.close();
-        await waitFor(`${name}: the reply ${reply}`, async () => JSON.stringify(await projection()).includes(reply), 60_000);
+      };
+      for (const [content, reply] of messages) {
+        await say(content);
+        await waitFor(`${name}: the reply ${reply}`, async () => JSON.stringify(await projection()).includes(reply), options.replyTimeoutMs ?? 60_000);
       }
       const settings = await node.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
       assert(settings.status === 200, `${name} Phone Access on`, settings);
@@ -130,7 +141,7 @@ export const runActivityDetailsCases = async (probe) => {
         await phone.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
         phones.push(phone);
       }
-      return await use({ node, run, workspace, projection, phones });
+      return await use({ node, run, workspace, projection, phones, say });
     } finally {
       await browser.close().catch(() => undefined);
       await node.stop();
@@ -256,5 +267,74 @@ export const runActivityDetailsCases = async (probe) => {
     ].filter(([ok]) => !ok).map(([, text]) => text);
     assert(failures.length === 0, failures.join('; '), details);
     return details;
+  });
+
+  // Antigravity's own tools (`native_arguments`): the node's HOME and the run's workspace are the ones the fixture requires.
+  if (wants('MSP-97')) await runCase('MSP-97', async () => withNodeAndPhones('kappa', 'native_arguments',
+    { AGY_FAKE_ARGUMENT_HOME: path.join(root, 'kappa', 'home'), AGY_FAKE_ARGUMENT_WORKSPACE: path.join(root, 'kappa', 'workspace') },
+    [['Use the native tools.', 'NATIVE_ARGUMENTS_DONE']], ['en-US'], async ({ run, workspace, phones: [phone] }) => {
+      await waitFor('the native calls listed', async () => (await activityRows(phone)).length >= 9, 30_000).catch(() => undefined);
+      await listScroller(phone).evaluate((el) => { el.scrollTop = 0; });
+      const rows = (await activityRows(phone)).map(({ height, ...row }) => row);
+      await shot(phone, 'MSP-97-native-tool-rows');
+      const named = (name) => rows.filter((row) => row.name === name);
+      const marker = path.join(workspace, 'marker.txt');
+      const showsFile = (row) => Boolean(row?.summary) && row.summaryTitle === marker;
+      const details = { run, workspace, rows };
+      const twice = rows.filter((row) => row.name && row.text.split(row.name).length > 2);
+      const failures = [
+        [named('view_file').length === 1 && showsFile(named('view_file')[0]), 'AC-001 an Antigravity view_file row shows its file (AbsolutePath)'],
+        [named('write_to_file').length === 1 && showsFile(named('write_to_file')[0]), 'AC-001 an Antigravity write_to_file row shows its file (TargetFile)'],
+        [named('replace_file_content').length === 2 && named('replace_file_content').every(showsFile), 'AC-001 an Antigravity replace_file_content row shows its file (TargetFile)'],
+        [named('run_command').some((row) => row.summary === 'printf NATIVE_ARGUMENTS_PREFIX_VERIFIED'), 'AC-001 an Antigravity run_command row shows its command (CommandLine)'],
+        [twice.length === 0, 'AC-001 no row shows the tool name twice'],
+      ].filter(([ok]) => !ok).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
+      return details;
+    }));
+
+  // A running call's Logs grow while its details are open (AC-003). The native runtime logs `[TOOL_CALL]` when a call starts
+  // and `[TOOL_RESULT]` when it ends; a real model drives it, so the case is gated: RUN_MOBILE_SHELL_LIVE_TOOL_LOGS=1 with the
+  // test vault (AUTOBYTEUS_TEST_VAULT, `provider.openai.api-key`; TESTING.md#test-vault). Only its node reads the vault.
+  const liveToolLogs = process.env.RUN_MOBILE_SHELL_LIVE_TOOL_LOGS === '1' && Boolean(process.env.AUTOBYTEUS_TEST_VAULT);
+  if (wants('MSP-98') && !liveToolLogs) console.log('[mobile-shell] MSP-98 skipped: set RUN_MOBILE_SHELL_LIVE_TOOL_LOGS=1 and AUTOBYTEUS_TEST_VAULT (a real model)');
+  if (wants('MSP-98') && liveToolLogs) await runCase('MSP-98', async () => {
+    const model = process.env.MOBILE_SHELL_LIVE_OPENAI_MODEL?.trim() || 'gpt-5.4-mini';
+    const command = 'for i in 1 2 3 4 5 6 7 8 9 10; do echo tick $i; sleep 1; done; echo LOGS-590-DONE';
+    const launch = async (node) => {
+      const models = (await node.gql('mutation($p:String!,$r:String){ensureProviderModelCatalog(providerId:$p,runtimeKind:$r){llmModels{modelIdentifier value}}}', { p: 'OPENAI', r: 'autobyteus' }))
+        .ensureProviderModelCatalog.llmModels;
+      const found = models.find((entry) => entry.value === model) ?? models.find((entry) => entry.modelIdentifier === model);
+      assert(found, `OPENAI model ${model} in the catalog (test vault key provider.openai.api-key)`, models.map((entry) => entry.value));
+      return { runtimeKind: 'autobyteus', llmModelIdentifier: found.modelIdentifier, llmConfig: null };
+    };
+    return withNodeAndPhones('lambda', 'linked_skills', { AUTOBYTEUS_TEST_VAULT: process.env.AUTOBYTEUS_TEST_VAULT }, [['Reply with one word: the word ready, in capital letters.', 'READY']], ['en-US'],
+      async ({ run, say, phones: [phone] }) => {
+        await say(`Run this exact command once with run_bash, in the foreground (not in the background), then reply with the single word FINISHED: ${command}`);
+        const running = phone.locator('[data-testid="mobile-activity"] [data-testid="mobile-run-activity-row"][data-status="executing"]').filter({ hasText: 'run_bash' }).first();
+        await waitFor('the running run_bash call listed', async () => (await running.count()) > 0, 120_000);
+        const logsOf = (shown) => shown?.sections.find((section) => section.key === 'logs')?.text?.split('\n').filter(Boolean) ?? [];
+        const runningShown = await openDetails(phone, running, 'live-logs-running', (shown) => shown.status === 'Running' && logsOf(shown).length > 0, 'MSP-98');
+        const linesWhileRunning = logsOf(runningShown);
+        let liveShown = null;
+        await waitFor('the open details show the call\'s end and its result log', async () => {
+          liveShown = await detailNow(phone);
+          return liveShown?.status !== 'Running' && logsOf(liveShown).some((line) => line.includes('[TOOL_RESULT]'));
+        }, 90_000).catch(() => undefined);
+        await shot(phone, 'MSP-98-live-logs-ended');
+        const linesAfter = logsOf(liveShown);
+        await back(phone);
+        const details = { run, model, runningStatus: runningShown?.status ?? null, linesWhileRunning, endStatus: liveShown?.status ?? null, linesAfter,
+          summary: liveShown?.summary ?? null, sections: liveShown?.sections.map((section) => section.key) ?? [] };
+        const failures = [
+          [runningShown?.status === 'Running' && linesWhileRunning.some((line) => line.includes('[TOOL_CALL]')) && !linesWhileRunning.some((line) => line.includes('[TOOL_RESULT]')),
+            'the running call\'s details show its Logs so far ([TOOL_CALL], no result yet)'],
+          [liveShown?.status === 'Success' && linesAfter.length > linesWhileRunning.length && linesAfter.some((line) => line.startsWith('[TOOL_RESULT]')) && linesAfter.some((line) => line.trim() === 'LOGS-590-DONE'),
+            'AC-003 a running tool\'s Logs grow while its details are open (the result log arrives; the status changes to Success)'],
+          [details.summary?.includes('LOGS-590-DONE') && details.sections.includes('arguments') && details.sections.includes('result'), 'the ended call\'s details show its command, Arguments and Result'],
+        ].filter(([ok]) => !ok).map(([, text]) => text);
+        assert(failures.length === 0, failures.join('; '), details);
+        return details;
+      }, { launch, toolNames: ['run_bash'], instructions: 'You are a careful assistant. Use run_bash for shell commands. Keep replies short.', replyTimeoutMs: 180_000 });
   });
 };
