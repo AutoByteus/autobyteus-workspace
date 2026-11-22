@@ -30,3 +30,4 @@ Architecture re-review of SR-002, then implementation per the design's Change / 
 ## Routing record
 
 - 2026-11-21: `get_handoff_rules` → rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/architecture_reviewer`.
+- 2026-11-21: architecture re-review Pass, ARCH-REV-002 on SR-002 (`design-review-report.md`, `architecture-review-revision-record.md`); the reviewer routed to `/implementation_engineer` with non-blocking notes N-2 (assertion fails when no AppImage is produced) and N-3 (one tar mechanism); ARCH-REV-001 N-1/R-1/R-2 no longer apply, R-3 carried, R-4 resolved. Informational; no Solution Designer action.
