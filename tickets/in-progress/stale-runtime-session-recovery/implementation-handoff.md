@@ -30,7 +30,7 @@ A run whose saved external runtime session the runtime itself reports as missing
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001`, `CRR-002` (Pass, round 2, `code-review-report.md`; next: API/E2E)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: CR-001, CR-002
