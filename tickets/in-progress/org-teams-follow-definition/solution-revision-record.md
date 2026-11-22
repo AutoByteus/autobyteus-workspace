@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-013 | Design | Source review CRR-001 (Fail) | CR-001 (Design Impact) | Approved; design Ready (implemented, review Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-003 | Step 2 of runs delegated by a unit: container placements at Org addresses; same_container through the delegation chain |
 | SR-012 | Design | Architecture review ARCH-REV-006 Fail (contract) | AR-008, AR-009 | Approved; design Ready (contract reviewed Fail) | Approved; design Ready (contract aligned) | REQ-003, Out of Scope (application-bound) | counterpart rule pinned with code points and test; one application-ownership rule; residue decision |
 | SR-011 | Design | The user, 2026-11-22: write the storage contract and validate it | V-1..V-6, F-1, F-2 | Approved; design Ready (passed ARCH-REV-005) | Approved; design Ready (contract added) | REQ-001, REQ-003, REQ-006, REQ-007 | org-container-storage-contract.md + contract-validation.md |
 | SR-010 | Design | Architecture re-review ARCH-REV-004 Fail | AR-001 (mapping of `P`) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | `P` per surface as today: coordinator for messages, CM-1 refusal for delegation, shown as `P` |
@@ -115,3 +116,10 @@
 #### Review note on SR-012 (no new revision)
 
 - 2026-11-22: architecture review `ARCH-REV-007` — Pass on SR-012 (contract aligned), AR-008 and AR-009 resolved, Large / High; the reviewer forwarded the storage contract and its validation to `/implementation_engineer`. Not-reachable note recorded by the reviewer: agent units of an application-bound Org would be collaboration-ineligible if such Orgs are ever created (none exist).
+
+### SR-013 — Step 2 of runs delegated by an Org unit
+
+- Trigger: `/code_reviewer` CRR-001 (source review, Fail): CR-001 Design Impact — a run delegated by an Org unit lost step-2 reach to the Org's agents by Org address (assigner is now the unit run; `standingOf(unit run)` covers only its own agents, team space for a Team unit); base test B-4 and `agent_orgs.md:222-225` contradicted. CR-002..CR-004, N-1 are implementation local fixes (handled there).
+- R-8: a contained assigner contributes its container's placements at Org addresses (same set as `containerStepTwo()`), never team-space standing; order unchanged; delivery admitted by `same_container` extended to the sender's delegation chain containing a unit of the receiver's container (DEC-006 wake applies); converted delegations covered; docs and tests named; contract §10 row added.
+- Intended behavior changed: No (restores today's behavior). Classification: Large / High.
+- Route: revised design → architecture review (handoff rule); CR-002..CR-004 and N-1 continue as implementation local fixes in the same round.

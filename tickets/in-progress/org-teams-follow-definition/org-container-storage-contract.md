@@ -257,6 +257,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Org view, rows, history | container + unit files | composed; contained runs under their Org (§8) |
 | Context file from the Org view | container `units` + unit Team file members | `{orgRunId, agentRunId}` → unit folder (§7) |
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
+| A run delegated by an Org member reaches the Org's agents by Org address (design R-8) | child `delegatedFrom` → unit run → its `containedIn` → container `units` + unit files | the container's placements at Org addresses; delivery admitted `same_container` through the delegation chain |
 
 ## 12. Validation
 

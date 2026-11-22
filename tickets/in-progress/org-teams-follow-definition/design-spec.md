@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-012` (SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-013` (SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
@@ -327,3 +327,42 @@ Example (replaces the two `delegate_task` lines of R-1''; from `/software_engine
 - `delegate_task('/product_design_prototyping_team')` → another unit → allowed (as today).
 
 Tests: `send_message_to(P)` reaches the coordinator; `delegate_task(P)` and `delegate_task(P/x)` give the exact CM-1 text; the own Team mention and `list_available_agents` entry show `P`.
+
+## SR-013 Revision (after CRR-001 CR-001: step 2 of runs delegated by an Org unit)
+
+### R-8 A run delegated by an Org unit reaches the Org by Org addresses, as today
+
+Today a run an Org member delegated has the Org run as its step-2 assigner, whose standing is every Org member and mounted
+Team at its Org address (`agent_orgs.md:222-225`, contract §2.3 step 2; base test `collaboration-tree-reach.test.ts`
+B-4). After the restructuring the assigner is the member's unit run (contract §6), whose own standing is only its own
+agents (a Team unit's in team space). Rule:
+
+- **Reach.** In `CollaborationTree.stepTwo` (`collaboration-tree.ts:175-194`), an assigner that is a unit run (its own
+  file has `containedIn`) contributes **its container's placements at Org addresses** — the same set `containerStepTwo()`
+  gives the units themselves: every unit's agents at their Org addresses (a Team unit's members as `P/x`), each Team unit's
+  address answered by its coordinator, every agent unit at its address — instead of `standingOf(unit run)`. A Team unit's
+  team-space standing is never exposed. Order is unchanged: assigners in their order, the first assigner with an address
+  wins it; a contained assigner's container set is one assigner's contribution, rank `configured`.
+- **Delivery.** A message from such a delegated run to an agent of one of the container's units is admitted by the
+  same-container rule extended to delegation: `same_container` holds when both runs are units of one container, **or**
+  when the sender's delegation chain (`DelegationIndex.chainOf`, assigners upward) contains a unit run of the receiver's
+  container. So a stopped receiver is woken (DEC-006), as today where every member was part of the assigner run. One fact,
+  answered by the container directory (`sameContainer`, N-1), now taking the sender's chain into account.
+- **Converted delegations** keep the reach: the migration rewrites their `delegatedFrom` to unit runs (contract §6), and
+  the rule above gives them the same Org reach.
+- **Unchanged:** a delegated run's own members still reach each other in its own space (step 1); a run delegated by a
+  run outside any Org is unaffected.
+
+Example: Team unit member `/software_engineering_team/solution_designer` delegates a Task to a copy of
+`/product_design_prototyping_team` (another unit, allowed by R-1'''). The copy's members:
+`send_message_to('/software_engineering_team/solution_designer')` → step 2, contained assigner → the Team unit member
+(Org address) → admitted `same_container` through the chain → delivered, woken if stopped. `send_message_to('/concierge')`
+→ the agent unit, likewise. Before this rule both were `COLLABORATION_TARGET_NOT_FOUND`.
+
+Docs: `agent_orgs.md` § Addresses And Handoffs (the "a delegated team run … reaches the org's standing agents" paragraph)
+is rewritten for unit runs as assigners; `collaboration_model.md` §2.3 step 2 notes the container rule.
+
+Tests (entering through `send_message_to`, not the resolver directly): from a run delegated by an agent unit, and from a
+run delegated by a Team unit member, reaching (a) an agent unit by Org address, (b) a Team unit member by `P/x`, (c) a
+Team unit by `P` (its coordinator); each also with the receiver unit stopped (woken). Base B-4 updated to the container
+rule. A converted delegation (fixture) reaches the Org the same way.
