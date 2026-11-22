@@ -12,7 +12,7 @@ definition gets its new tool list, with its conversation kept:
 
 A removed tool stops working at once on every runtime, because the Agent Tools
 MCP endpoint refuses it from the next request on. The agent gets one short
-notice of what changed, and the user sees a "Tools updated" card in the run.
+notice of what changed, and the user sees a "Tools updated" notice row in the run.
 
 ## TS Source
 
@@ -131,7 +131,7 @@ search_memory." once, when its seen record was written before that.
 - A busy run whose runtime took the change at once gets it now through
   `AgentRun.postUserMessage`, as skill notices do.
 - A delivered notice publishes the run's `SYSTEM_TASK_NOTIFICATION`; the web
-  shows it as a "Tools updated" card with "Now available: … No longer
+  shows it as a "Tools updated" notice row (its own light row, autobyteus-585) with "Now available: … No longer
   available: …". A notice not delivered stays pending for the next input.
 
 ## Persisted State

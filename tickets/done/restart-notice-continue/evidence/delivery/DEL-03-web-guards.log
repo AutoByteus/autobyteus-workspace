@@ -1,0 +1,6 @@
+guard:web-boundary exit=0
+[guard:web-boundary] Passed.
+guard:localization-boundary exit=0
+[guard:localization-boundary] Passed.
+audit:localization-literals exit=0
+(Use `node --trace-warnings ...` to show where the warning was created)
