@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/implementation_engineer`, `implementation-handoff.md`, round 1 | SR-002, IR-001 | N/A | Fail / 89.7% |
+| API-REV-002 | `/implementation_engineer`, `implementation-handoff.md` IR-002 (CRR-001 Local Fix), round 2 | SR-002, IR-002, CRR-001 | Fail / 89.7% | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -28,3 +29,28 @@ None
 - New or remaining failure IDs: F-1 (AGY `TargetFile` and search/list arguments not summarized; MSP-97), F-2 (TESTING.md not committed alone)
 - Recommended owner: implementation engineer (Local Fix), through the failure-origin review
 - Remaining risks, blocked evidence, or untested scope: FS-1 fresh-start build; physical phone (DEC-005); MSP-44/45 stale since autobyteus-576 (outside, follow-up candidate)
+
+### API-REV-002 — Rerun after IR-002: AGY summaries complete; fresh-start and build-only release runs
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-002, Local Fix for CRR-001 in `code-review-report.md`), round 2
+- Triggering finding or case IDs: F-1 (MSP-97), F-2
+- Related revision IDs: SR-002, IR-002, CRR-001
+- Why recorded: rerun after the fix
+- Coverage decisions or durable test paths changed: MSP-97 also asserts `grep_search` → its query, `find_by_name` → its pattern, `list_dir` → its folder (`648a8e0299`)
+- Cases added, changed, removed, or rechecked: R2-CR-1, R2-TD-2, R2-U-1, R2-WS-1 (whole phone suite incl. MSP-94…97), R2-MSP-98, FS-1, RR-1 (added: DESIGN.md rule 12 / RELEASE.md build-only run, the 586 change edits what the typecheck gate reads)
+- Commands, environment, fixture, or broader-validation delta: fresh clone `/tmp/api590/fs-1`; branch pushed with `HEAD:refs/heads/codex/phone-activity-details` after the Secret Gate; build-only Desktop Release run 45029500186
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-1: AGY `write_to_file`/`replace_file_content` (`TargetFile`) and search/list rows without summary | Local Fix (CRR-001) | `70f7040ee1` adds `TargetFile`, `DirectoryPath` (file) and `Query`, `Pattern` (text) | R2-CR-1, R2-WS-1 (MSP-97), R2-U-1 |
+| F-2: TESTING.md committed with `nuxt.config.ts` | Local Fix (CRR-001) | split into `7a2a62dcee` + `37ed9cdf00 docs(testing): …` | R2-TD-2 |
+| MSP-44/45 (outside) | Follow-up | FU-006 (base, autobyteus-576) | — |
+
+- Canonical artifacts and sections updated: report (round-2 cases first, round-1 rows prefixed `R1`), investigation (round 2 meta and planned cases), progress log, `evidence/api-e2e/R2-*`, `FS-1-fresh-start-build.log`, `RR-1-release-run.txt`
+- Prior result and confidence: Fail / 89.7%
+- Current result and confidence: Pass / 95.4%
+- New or remaining failure IDs: None in this ticket. Outside: FU-006; MSP-55's allowlist misses `net::ERR_SOCKET_NOT_CONNECTED` from its own deliberate link cut (follow-up candidate)
+- Recommended owner: delivery engineer
+- Remaining risks, blocked evidence, or untested scope: physical phone (DEC-005, accepted); signing/notarization (runner, tag time)

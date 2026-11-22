@@ -9,17 +9,18 @@
 - Supplemental Task Artifacts: `follow-ups.md` (FU-001…FU-005), `handoff-architecture-design-complete.md`, `handoff-design-revised-sr-002.md`
 - Design Review Report: `N/A — not applicable` (direct route)
 - Architecture Review Revision Record: `N/A — not applicable`
-- Implementation Handoff: `implementation-handoff.md` (IMP-01…IMP-06)
-- Implementation Revision Record: `implementation-revision-record.md` (IR-001)
-- Code Review Report: `N/A — not applicable` (direct route)
-- Code Review Revision Record: `N/A — not applicable`
+- Implementation Handoff: `implementation-handoff.md` (IMP-01…IMP-07; hash map of the F-2 history rewrite)
+- Implementation Revision Record: `implementation-revision-record.md` (IR-001, IR-002)
+- Code Review Report: `code-review-report.md` (failure-origin review, CRR-001: Local Fix F-1, F-2; FU-006 for MSP-44/45)
+- Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: `/implementation_engineer`, IR-001 ready for API/E2E (direct route, Medium / Low), branch `codex/phone-activity-details` at `f411294735` (base `origin/personal` `0da6bfbfc1`); two implementation decisions to check (Antigravity PascalCase argument keys; a background task's title unfolds)
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger (round 2): `/implementation_engineer`, IR-002 Local Fix for CRR-001 at `3de03fef6e`: `70f7040ee1` adds `TargetFile`, `DirectoryPath` (file keys) and `Query`, `Pattern` (text keys); F-2 split `767cb3b61a` into `7a2a62dcee` + `37ed9cdf00` (`docs(testing): …`), later commits cherry-picked unchanged (`git diff 5b9979ba05 c48316e28b` and `git diff 22434418c5 da16a2b221` empty)
+- Trigger (round 1): `/implementation_engineer`, IR-001 ready for API/E2E (direct route, Medium / Low), branch `codex/phone-activity-details` at `f411294735` (base `origin/personal` `0da6bfbfc1`); two implementation decisions to check (Antigravity PascalCase argument keys; a background task's title unfolds)
+- Prior Investigation Reviewed: round 1 of this file (API-REV-001, Fail F-1/F-2)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -101,7 +102,7 @@
 | Path / Test | Current Assertion Or Intent | Related Requirement / AC / Design | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/tests/e2e/mobile-activity-details-cases.mjs` MSP-94/95/96 | Rows, details, Back, compaction, background unfold, live status | AC-001…AC-005 | Still Valid | IMP-04 | Rerun |
-| `autobyteus-web/utils/__tests__/toolDisplaySummary.spec.ts` | Summary keys incl. AGY `CommandLine`/`Path`/`AbsolutePath`, recipient, Task, `cd` | AC-001 | Needs Update (no `TargetFile` case) | code read | Owner adds with the fix |
+| `autobyteus-web/utils/__tests__/toolDisplaySummary.spec.ts` | Summary keys incl. AGY `CommandLine`/`Path`/`AbsolutePath`, recipient, Task, `cd`; round 2: `TargetFile`, `DirectoryPath`, `Query`, `Pattern` (6 cases, `70f7040ee1`) | AC-001 | Still Valid | IMP-07 | U-1 rerun |
 | `components/mobile/views/__tests__/MobileActivityDetail.spec.ts` | Logs grow, result arrives while open; Back | AC-003 | Still Valid | IMP-03 | Reuse |
 | Other MSP cases (whole `test:e2e:mobile-shell`) | Phone journeys | Regression | Still Valid | — | Whole run |
 
@@ -122,6 +123,8 @@
 | DP-1 | AC-006 | Desktop Activity parity | Reused | IMP-02 | Components unchanged since |
 | WS-1 | Regression | Whole `test:e2e:mobile-shell` | Existing Test | `pnpm -C autobyteus-web test:e2e:mobile-shell` | Phone row markup changed for every case |
 | WS-2 | Regression cause | MSP-44/MSP-45 alone, code read | Existing Test | `--cases=MSP-44,MSP-45` | Added during execution: find why they failed in WS-1 (rule 9) |
+| R2-MSP-97 | AC-001 | Phone rows for AGY's own tools, now also asserting `grep_search` → `AFTER`, `find_by_name` → `*.txt`, `list_dir` → its folder | Durable (updated) | whole `test:e2e:mobile-shell` | F-1's acceptance, and the search/list summaries the fix adds |
+| R2-TD-2 | F-2 | TESTING.md commit on its own | Journey | `git show --stat 37ed9cdf00`, `git show --stat 7a2a62dcee` | F-2's acceptance |
 | FS-1 | Build input `nuxt.config.ts` | Fresh-start build | Existing Test | fresh `git clone --no-local`, `pnpm install --frozen-lockfile`, release job's mac build | TESTING.md fresh-start rule |
 
 - Test progress log needed: `Yes` (`api-e2e-test-progress.md`)
@@ -137,6 +140,7 @@
 
 | Case ID | Existing Path / Test | Required Update | Notes |
 | --- | --- | --- | --- |
+| R2-MSP-97 | `mobile-activity-details-cases.mjs` MSP-97 | Assert the search and listing rows' summaries | round 2 |
 | MSP-97, MSP-98 | `mobile-activity-details-cases.mjs` `withNodeAndPhones` | Optional launch, tools, instructions; `say` | AGY default unchanged |
 | MSP-97 | `mobile-shell-probe.mjs` | Pass the probe `root` to the cases (a node's HOME) | — |
 
@@ -165,4 +169,5 @@ None
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (MSP-97, MSP-98)
 - Reroute Required Before Validation Execution: `No` (F-1 found during execution; the round ends `Fail`)
 - Recommended Owner If Reroute Required: implementation engineer (through the failure-origin review)
-- Notes: FS-1 and WS-1 after the fix are `Next Round` if this round fails, since the fix changes the shared summary every phone and desktop row reads.
+- Notes (round 2): planned order, one heavy run at a time: U-1 (`pnpm -C autobyteus-web test:nuxt`, guards, typecheck) → phone bundle → WS-1 (includes MSP-94…97) → MSP-98 with its gate → FS-1. MSP-44/45 are FU-006 (base).
+- Notes (round 1): FS-1 and WS-1 after the fix are `Next Round` if this round fails, since the fix changes the shared summary every phone and desktop row reads.
