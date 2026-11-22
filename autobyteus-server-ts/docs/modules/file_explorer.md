@@ -44,6 +44,13 @@ Boundary expectations:
   `.gitignore`-matched folders without projecting them into the cached tree.
 - `folderChildren`, `fileContent`, and `writeFileContent` reject `..` traversal
   or same-prefix sibling escapes before returning or writing external content.
+- `fileContent` answers the file's exact text, so a refusal is never text: it is a
+  GraphQL error whose `extensions.code` says why (autobyteus-579): `WORKSPACE_NOT_FOUND`,
+  `FILE_NOT_FOUND`, `WORKSPACE_ACCESS_REFUSED` (a path outside the workspace),
+  `FILE_PERMISSION_DENIED`, the workspace's own access codes such as
+  `WORKSPACE_LINK_NOT_OPENED`, and `FILE_READ_FAILED` (an unexpected error: a generic
+  message, the cause logged). A file whose own text is `{"error":…}` is therefore a
+  file like any other. `folderChildren` still answers its refusals as JSON.
 - `renameFileOrFolder` accepts only a leaf `newName`; path-like names are
   rejected before any filesystem rename is attempted.
 - Rejected boundary operations remain snapshot-only and must not start a live
