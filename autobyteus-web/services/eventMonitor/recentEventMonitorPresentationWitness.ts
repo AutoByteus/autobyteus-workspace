@@ -113,6 +113,15 @@ export const buildRecentEventMonitorPresentationWitness = (
       visualOrdinal += 1;
       continue;
     }
+    if (item.kind === 'notice') {
+      tokens.push({
+        kind: item.segment.type,
+        identity: getSegmentIdentity(item.segment, visualOrdinal),
+        values: buildSegmentValues(item.segment, ''),
+      });
+      visualOrdinal += 1;
+      continue;
+    }
     if (item.message.type === 'user') {
       tokens.push({
         kind: 'user',
@@ -122,7 +131,7 @@ export const buildRecentEventMonitorPresentationWitness = (
       visualOrdinal += 1;
       continue;
     }
-    const usageText = getRecentEventMonitorMessageUsageText(item.message);
+    const usageText = item.showsUsage ? getRecentEventMonitorMessageUsageText(item.message) : '';
     const lastSegmentIndex = item.message.segments.length - 1;
     item.message.segments.forEach((segment, segmentIndex) => {
       tokens.push({

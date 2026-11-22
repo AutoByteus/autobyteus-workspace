@@ -1,0 +1,12 @@
+# IMP-06
+# Command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-99 --output-dir=<evidence>/IMP-06-phone-msp99
+# Commit: 75e085d889 (branch codex/restart-notice-continue) (IMP-02/IMP-03/IMP-04 ran on the same source before the commit; only e2e files changed after them, and IMP-02 was rerun after)
+# Environment: macOS arm64, Node, headless Chrome; 2026-11-22
+
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-99 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/tickets/in-progress/restart-notice-continue/evidence/impl/IMP-06-phone-msp99
+
+[mobile-shell] MSP-99 …
+[mobile-shell] MSP-99 Pass
+mobile-shell probe: Pass

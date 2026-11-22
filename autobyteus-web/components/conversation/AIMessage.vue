@@ -50,12 +50,6 @@
               :segment="segment"
               :conversation-id="runId"
             />
-            <SystemTaskNotificationSegment
-              v-else-if="segment.type === 'system_task_notification'"
-              :segment="segment"
-              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
-              @file-path-action="emit('file-path-action', $event)"
-            />
             <InterAgentMessageSegment
               v-else-if="segment.type === 'inter_agent_message'"
               :segment="segment"
@@ -86,7 +80,6 @@ import TerminalCommandSegment from '~/components/conversation/segments/TerminalC
 import ThinkSegment from '~/components/conversation/segments/ThinkSegment.vue';
 import ToolCallSegment from '~/components/conversation/segments/ToolCallSegment.vue';
 import WriteFileCommandSegment from '~/components/conversation/segments/WriteFileCommandSegment.vue';
-import SystemTaskNotificationSegment from '~/components/conversation/segments/SystemTaskNotificationSegment.vue';
 import InterAgentMessageSegment from '~/components/conversation/segments/InterAgentMessageSegment.vue';
 import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ErrorSegment from '~/components/conversation/segments/ErrorSegment.vue';

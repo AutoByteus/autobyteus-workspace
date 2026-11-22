@@ -167,6 +167,9 @@
 //                  time in the viewer's zone; the agent got UTC. MSP-76, MSP-77 (SR-002): a Team's coordinator and an Org's
 //                  member told that their background build ended show that notice once, live and after a reload:
 //                  `mobile-restored-run-cases.mjs` (its own node delta).
+//   MSP-99 autobyteus-585 AC-005  A platform notice is its own labelled row on the phone (a background-tasks notice that
+//                  wakes the run, then a restart reminder), never inside the agent's message, and the agent row after it
+//                  shows the agent's avatar and name again; live and after a reload: `mobile-restored-run-cases.mjs`.
 //   MSP-60…66, MSP-74 autobyteus-458/506/525  The readable phone conversation at 412 and 360 px (body width − 24, 17 px / 1.5, one
 //                  avatar and speaker line per turn, composer 8 px above the bottom; another agent's message keeps its arrow
 //                  and type line, as on the desktop); the run list's ⋮ → Text size (three steps; the whole phone at

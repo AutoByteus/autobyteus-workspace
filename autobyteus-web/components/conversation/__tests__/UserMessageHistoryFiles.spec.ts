@@ -15,7 +15,7 @@ const reference = { uri, fileType: 'text', fileName: 'accepted label.txt' };
 const entry = { kind: 'message', role: 'user', content: '', ts: 10, fileAttachments: [reference] };
 const hydrate = (entries = [entry]) => buildConversationFromProjection('exact-run', entries, defaults);
 const witness = (message: UserMessage) => buildRecentEventMonitorPresentationWitness([
-  { kind: 'message', key: 'user', messageIndex: 0, message },
+  { kind: 'message', key: 'user', messageIndex: 0, message, showsUsage: true },
 ]);
 
 describe('cold and paged user file associations use shared UserMessage Open', () => {

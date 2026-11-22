@@ -1,0 +1,21 @@
+# whole phone suite (node tests/e2e/mobile-shell-probe.mjs) at e9ae5ad3c7 + my fix
+passed cases: 91
+[mobile-shell] MSP-44 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+[mobile-shell] MSP-45 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+mobile-shell probe: Fail
+# MSP-44,45,46 alone on head
+[mobile-shell] MSP-44 …
+[mobile-shell] MSP-44 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+[mobile-shell] MSP-46 …
+[mobile-shell] MSP-46 Pass
+mobile-shell probe: Fail
+# MSP-44,45,46 on base 0da6bfbfc1 (temporary worktree, removed)
+[mobile-shell] MSP-44 …
+[mobile-shell] MSP-44 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Fail: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+[mobile-shell] MSP-46 …
+[mobile-shell] MSP-46 Pass
+mobile-shell probe: Fail

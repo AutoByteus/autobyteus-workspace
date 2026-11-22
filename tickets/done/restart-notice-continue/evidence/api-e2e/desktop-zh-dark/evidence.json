@@ -1,0 +1,111 @@
+{
+  "startedAt": "2026-11-22T21:33:49.150Z",
+  "routePath": "/api-e2e-notice-row-presentation",
+  "checks": {
+    "rows in order: user, agent (text + tool card), notice, agent (reply)": true,
+    "the agent row before the notice holds the tool card and not the notice": true,
+    "the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note": false,
+    "the notice row has an icon and no agent avatar or name": true,
+    "the body has no [Platform notice — …] line and shows the restart time in the viewer's zone": false,
+    "light: no panel, no border, muted body, not monospace": false,
+    "the agent row after the notice is the agent's own, with its avatar": true,
+    "the message usage shows once, under its last row": true
+  },
+  "rows": [
+    {
+      "speaker": "user",
+      "text": "You Rebuild the app and tell me when it is done.",
+      "avatarShown": true,
+      "agentAvatar": false,
+      "notice": null
+    },
+    {
+      "speaker": "agent",
+      "text": "B Builder Starting the build in the background; I will check on it when it finishes. run_bash · pnpm build",
+      "avatarShown": true,
+      "agentAvatar": true,
+      "notice": null
+    },
+    {
+      "speaker": "system",
+      "text": "应用已重启 The application restarted at 2026年11月21日 GMT+1 08:32 (reason: a restart). Background commands you started before it were stopped. Continue your task.",
+      "avatarShown": true,
+      "agentAvatar": false,
+      "notice": {
+        "role": "note",
+        "ariaLabel": "应用已重启",
+        "label": "应用已重启",
+        "labelShown": true,
+        "phoneSpeakerShown": false,
+        "icon": true,
+        "body": "The application restarted at 2026年11月21日 GMT+1 08:32 (reason: a restart). Background commands you started before it were stopped. Continue your task.",
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px",
+        "bodyColor": "rgb(203, 213, 225)",
+        "bodyFont": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+      }
+    },
+    {
+      "speaker": "agent",
+      "text": "B Builder The restart stopped my build. I have stopped and am waiting for you before I start it again. 1840 tokens / $0.0184",
+      "avatarShown": true,
+      "agentAvatar": true,
+      "notice": null
+    }
+  ],
+  "browserErrors": [],
+  "failures": [
+    {
+      "message": "Failed checks: the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note; the body has no [Platform notice — …] line and shows the restart time in the viewer's zone; light: no panel, no border, muted body, not monospace",
+      "details": [
+        {
+          "speaker": "user",
+          "text": "You Rebuild the app and tell me when it is done.",
+          "avatarShown": true,
+          "agentAvatar": false,
+          "notice": null
+        },
+        {
+          "speaker": "agent",
+          "text": "B Builder Starting the build in the background; I will check on it when it finishes. run_bash · pnpm build",
+          "avatarShown": true,
+          "agentAvatar": true,
+          "notice": null
+        },
+        {
+          "speaker": "system",
+          "text": "应用已重启 The application restarted at 2026年11月21日 GMT+1 08:32 (reason: a restart). Background commands you started before it were stopped. Continue your task.",
+          "avatarShown": true,
+          "agentAvatar": false,
+          "notice": {
+            "role": "note",
+            "ariaLabel": "应用已重启",
+            "label": "应用已重启",
+            "labelShown": true,
+            "phoneSpeakerShown": false,
+            "icon": true,
+            "body": "The application restarted at 2026年11月21日 GMT+1 08:32 (reason: a restart). Background commands you started before it were stopped. Continue your task.",
+            "background": "rgba(0, 0, 0, 0)",
+            "border": "0px",
+            "bodyColor": "rgb(203, 213, 225)",
+            "bodyFont": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+          }
+        },
+        {
+          "speaker": "agent",
+          "text": "B Builder The restart stopped my build. I have stopped and am waiting for you before I start it again. 1840 tokens / $0.0184",
+          "avatarShown": true,
+          "agentAvatar": true,
+          "notice": null
+        }
+      ],
+      "stack": "Error: Failed checks: the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note; the body has no [Platform notice — …] line and shows the restart time in the viewer's zone; light: no panel, no border, muted body, not monospace\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/autobyteus-web/tests/e2e/notice-row-presentation-zh-dark.tmp.mjs:34:87)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/autobyteus-web/tests/e2e/notice-row-presentation-zh-dark.tmp.mjs:131:3"
+    }
+  ],
+  "cleanup": {
+    "nuxt": "stopped",
+    "installedFixture": "removed"
+  },
+  "result": "Fail",
+  "finishedAt": "2026-11-22T21:34:03.538Z"
+}

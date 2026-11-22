@@ -1,0 +1,80 @@
+{
+  "startedAt": "2026-11-22T21:40:55.117Z",
+  "routePath": "/api-e2e-notice-row-presentation",
+  "checks": {
+    "rows in order: user, agent (text + tool card), notice, agent (reply)": false,
+    "the agent row before the notice holds the tool card and not the notice": false,
+    "the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note": false,
+    "light: no panel, no border, muted body, not monospace": false,
+    "the agent row after the notice is the agent's own, with its avatar": false
+  },
+  "rows": [
+    {
+      "speaker": "user",
+      "text": "You Rebuild the app and tell me when it is done.",
+      "avatarShown": true,
+      "agentAvatar": false,
+      "notice": null
+    },
+    {
+      "speaker": "agent",
+      "text": "B Builder Starting the build in the background; I will check on it when it finishes. run_bash · pnpm build [Platform notice — application restarted] The application restarted at 21 Nov 2026, 08:32 CET (reason: a restart). Background commands you started before it were stopped. Continue your task. The restart stopped my build. I have stopped and am waiting for you before I start it again. 1840 tokens / $0.0184",
+      "avatarShown": true,
+      "agentAvatar": true,
+      "notice": {
+        "role": "note",
+        "ariaLabel": "System Task Notification",
+        "label": null,
+        "labelShown": false,
+        "phoneSpeakerShown": false,
+        "icon": false,
+        "body": "",
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "0px",
+        "bodyColor": null,
+        "bodyFont": null
+      }
+    }
+  ],
+  "browserErrors": [],
+  "failures": [
+    {
+      "message": "Failed checks: rows in order: user, agent (text + tool card), notice, agent (reply); the agent row before the notice holds the tool card and not the notice; the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note; the notice row has an icon and no agent avatar or name; the body has no [Platform notice — …] line and shows the restart time in the viewer's zone; light: no panel, no border, muted body, not monospace; the agent row after the notice is the agent's own, with its avatar; the message usage shows once, under its last row",
+      "details": [
+        {
+          "speaker": "user",
+          "text": "You Rebuild the app and tell me when it is done.",
+          "avatarShown": true,
+          "agentAvatar": false,
+          "notice": null
+        },
+        {
+          "speaker": "agent",
+          "text": "B Builder Starting the build in the background; I will check on it when it finishes. run_bash · pnpm build [Platform notice — application restarted] The application restarted at 21 Nov 2026, 08:32 CET (reason: a restart). Background commands you started before it were stopped. Continue your task. The restart stopped my build. I have stopped and am waiting for you before I start it again. 1840 tokens / $0.0184",
+          "avatarShown": true,
+          "agentAvatar": true,
+          "notice": {
+            "role": "note",
+            "ariaLabel": "System Task Notification",
+            "label": null,
+            "labelShown": false,
+            "phoneSpeakerShown": false,
+            "icon": false,
+            "body": "",
+            "background": "rgba(0, 0, 0, 0)",
+            "border": "0px",
+            "bodyColor": null,
+            "bodyFont": null
+          }
+        }
+      ],
+      "stack": "Error: Failed checks: rows in order: user, agent (text + tool card), notice, agent (reply); the agent row before the notice holds the tool card and not the notice; the notice row is labelled \"Application restarted\" above its body, as its aria-label, role note; the notice row has an icon and no agent avatar or name; the body has no [Platform notice — …] line and shows the restart time in the viewer's zone; light: no panel, no border, muted body, not monospace; the agent row after the notice is the agent's own, with its avatar; the message usage shows once, under its last row\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/api585-base-0da6bfbfc1/autobyteus-web/tests/e2e/notice-row-presentation-dark.tmp.mjs:34:87)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api585-base-0da6bfbfc1/autobyteus-web/tests/e2e/notice-row-presentation-dark.tmp.mjs:130:3"
+    }
+  ],
+  "cleanup": {
+    "nuxt": "stopped",
+    "installedFixture": "removed"
+  },
+  "result": "Fail",
+  "finishedAt": "2026-11-22T21:41:08.581Z"
+}
