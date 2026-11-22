@@ -37,8 +37,7 @@ import type {
 } from "../domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../domain/configured-agent-execution.js";
 import { AgentActivationFence, completedLocalTermination, describeActivationFailure, wrapPreparedLocalTermination } from "./configured-agent-execution-support.js";
-import { platformBindingChangeExecution, platformBindingChangeSessionId, type CollaborationAgentNoConversationBindingReplacement,
-  type CollaborationAgentPlatformBinding } from "../domain/collaboration-agent-platform-binding.js";
+import { platformBindingChangeExecution, platformBindingChangeSessionId } from "../domain/collaboration-agent-platform-binding.js";
 import type { RuntimeSwitchMemory } from "../../../agent-execution/domain/runtime-switch-memory-port.js";
 import type { ConfiguredAgentSwitchAttempt } from "./configured-agent-switch-attempt.js";
 import type {
@@ -49,13 +48,6 @@ import type { AgentRunActivationOperation } from "../../../agent-execution/servi
 import type { ConfiguredAgentActivationOperation } from "./configured-agent-activation-planner.js";
 import { ConfiguredAgentActivationPlanner } from "./configured-agent-activation-planner.js";
 import { ConfiguredAgentStatusOverlay } from "./configured-agent-status-overlay.js";
-
-export type PreparedConfiguredAgentActivation = Readonly<{
-  stagedPlatformBindings: readonly CollaborationAgentPlatformBinding[];
-  stagedNoConversationBindingReplacements: readonly CollaborationAgentNoConversationBindingReplacement[];
-  commitAfterDurability(): void;
-  abort(): Promise<void>;
-}>;
 
 /** Root-neutral owner of one configured or task AgentRun's provider/local mechanics. */
 export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionControl {
@@ -242,46 +234,6 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return run && !this.isStale(run)
       ? run.fenceInputAndInterruptForRootShutdown()
       : { accepted: true };
-  }
-
-  async prepareConfiguredActivation(): Promise<PreparedConfiguredAgentActivation> {
-    if (this.rootShutdownFenced) {
-      throw new Error(`AgentRun '${this.identity.agentRunId}' is fenced for root shutdown.`);
-    }
-    if (this.agentRun || this.readinessAttempt) {
-      throw new Error(`AgentRun '${this.identity.agentRunId}' already entered live readiness.`);
-    }
-    if (this.execution.pendingRuntimeSwitch) {
-      throw new Error(`AgentRun '${this.identity.agentRunId}' has a pending agent runtime switch that a staged activation cannot make.`);
-    }
-    const prepared = await this.prepareActivation();
-    let state: "prepared" | "published" | "aborted" = "prepared";
-    return Object.freeze({
-      stagedPlatformBindings: Object.freeze(
-        prepared.bindingChange?.kind === "adopt_or_retain" ? [prepared.bindingChange.binding] : [],
-      ),
-      stagedNoConversationBindingReplacements: Object.freeze(
-        prepared.bindingChange?.kind === "replace_without_conversation"
-          ? [prepared.bindingChange.replacement]
-          : [],
-      ),
-      commitAfterDurability: () => {
-        if (state !== "prepared") throw new Error(`AgentRun '${prepared.candidate.runId}' is not publishable.`);
-        if (prepared.bindingChange) this.platformAgentRunId = platformBindingChangeSessionId(prepared.bindingChange);
-        const run = prepared.candidate.commitPublication();
-        this.activationMode = "restore";
-        this.agentRun = run;
-        this.activationOperation = null;
-        state = "published";
-        this.bindEvents(run);
-      },
-      abort: async () => {
-        if (state === "aborted") return;
-        const cleanup = await this.releaseRuntime();
-        if (!cleanup.accepted) throw new Error(cleanup.message ?? "Configured Agent cleanup remains pending.");
-        state = "aborted";
-      },
-    });
   }
 
   cancelActivation(): void {

@@ -12,7 +12,7 @@ export const taskTeamNode = (id: string) => testAgentTeamNode({
 });
 
 /** Provider/Agent execution double only; Org registries, flat/recursive factories and task owners stay real. */
-export const observeConfiguredHandles = (activationFailure?: Error) => {
+export const observeConfiguredHandles = () => {
   const build = (input: Parameters<ConfiguredAgentExecutionFactory["create"]>[0]) => {
     let status: AgentApiStatus = "offline";
     /** Whether the handle's AgentRun is active (AR-005 liveness); a shutdown clears only the run. */
@@ -45,15 +45,6 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
       hasOpenExecutionWork: () => status === "running" || status === "initializing" || status === "error",
       getStatusSnapshot: snapshot,
       getInputStateSnapshots: vi.fn(() => [] as unknown[]),
-      prepareConfiguredActivation: vi.fn(async () => {
-        emit("initializing");
-        if (activationFailure) throw activationFailure;
-        return {
-          stagedPlatformBindings: [], stagedNoConversationBindingReplacements: [],
-          commitAfterDurability: () => { runActive = true; emit("idle"); },
-          abort: async () => emit("offline"),
-        };
-      }),
       postMessage: vi.fn(async () => { emit("running"); return { accepted: true as const }; }),
       interrupt: vi.fn(async () => ({ accepted: true as const })),
       approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),

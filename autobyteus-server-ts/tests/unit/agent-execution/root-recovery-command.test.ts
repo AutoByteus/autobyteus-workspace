@@ -29,7 +29,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   activationMode:'fresh',memberExecutionContext,callbacks:{publishAgentEvent:vi.fn(),commitPlatformBindingChange:vi.fn()},
   agentRunManager:testActivationManager({newPreparation: prepareNewAgentRun,getActiveRun:()=>f.run}) as any,
   memoryLocator:{getMemoryDir:()=>'/unused/test-owned'} as any});
- const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
+ await handle.getOrCreateAgentRun();
  const send=vi.fn(); const connection={send,close:vi.fn()};
  const publisher=new RunViewStream<any>({ isMessageEvent: () => false });
  const executeAgentCommand=async (id:string,command:any)=>{

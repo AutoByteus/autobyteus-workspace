@@ -7,10 +7,7 @@ import type { AgentRunManager } from "../../agent-execution/services/agent-run-m
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
-import type {
-  ConfiguredAgentExecutionHandle,
-  PreparedConfiguredAgentActivation,
-} from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
+import type { ConfiguredAgentExecutionHandle } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
 import type {
   ConfiguredAgentSelection,
   RetainedAgentExecutionControl,
@@ -84,9 +81,6 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     const construction = this.construction;
     if (construction) await construction.catch(() => null);
     return this.handle ? this.handle.fenceForRootShutdown() : { accepted: true as const };
-  }
-  async prepareConfiguredActivation(): Promise<PreparedConfiguredAgentActivation> {
-    return (await this.getHandle()).prepareConfiguredActivation();
   }
   cancelActivation(): void {
     this.rootShutdownFenced = true;

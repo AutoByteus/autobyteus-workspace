@@ -140,28 +140,17 @@ describe("ConfiguredAgentExecutionHandle", () => {
     "prepares and publishes one root-neutral configured Agent under %s",
     async (kind) => {
       const fixture = build(kind);
-      const prepared = await fixture.handle.prepareConfiguredActivation();
-      expect(prepared.stagedPlatformBindings).toEqual([]);
-      expect(prepared.stagedNoConversationBindingReplacements).toEqual([]);
       expect(fixture.handle.isActive()).toBe(false);
+      await expect(fixture.handle.getOrCreateAgentRun()).resolves.toBe(fixture.fakeRun);
       const preparedInput = fixture.prepareNewAgentRun.mock.calls[0]![0];
       expect(preparedInput.runId).toBe("agent-run");
       expect(preparedInput.config.memberExecutionContext).toBe(fixture.memberExecutionContext);
       expect(preparedInput.config.memoryDir).toContain(`/${kind}/root-run/`);
-      prepared.commitAfterDurability();
       expect(fixture.handle.isActive()).toBe(true);
       await expect(fixture.handle.getOrCreateAgentRun()).resolves.toBe(fixture.fakeRun);
+      expect(fixture.prepareNewAgentRun).toHaveBeenCalledOnce();
     },
   );
-
-  it("aborts a prepared candidate without publishing it", async () => {
-    const fixture = build("agent_org");
-    const prepared = await fixture.handle.prepareConfiguredActivation();
-    await prepared.abort();
-    expect(fixture.abort).toHaveBeenCalledTimes(1);
-    expect(fixture.handle.isActive()).toBe(false);
-    expect(() => prepared.commitAfterDurability()).toThrow("is not publishable");
-  });
 
   it("rejects identity, physical scope, and sender-bound context mismatches", () => {
     const fixture = build("agent_team");
@@ -181,8 +170,7 @@ describe("ConfiguredAgentExecutionHandle", () => {
 describe("accepted task-system input presentation", () => {
   it.each(Object.values(RuntimeKind))("publishes only genuinely accepted marked input through the shared %s handle", async (runtimeKind) => {
     const f = build("agent_org", runtimeKind);
-    const prepared = await f.handle.prepareConfiguredActivation();
-    prepared.commitAfterDurability();
+    await f.handle.getOrCreateAgentRun();
     f.publishAgentEvent.mockClear();
     const input = new AgentInputUserMessage("Saved task result is ready.", SenderType.SYSTEM, null,
       markTaskDelegationSystemTaskNotificationMetadata({ task_id: "task-one" }));
@@ -489,10 +477,9 @@ describe("re-activation after the member's runtime died", () => {
     expect(f.prepareNewAgentRun).toHaveBeenCalledOnce();
   });
 
-  it("switches to restore after eager (prepared) publication too", async () => {
+  it("switches to restore after a fresh publication", async () => {
     const f = build("agent_team", RuntimeKind.AUTOBYTEUS, "fresh");
-    const prepared = await f.handle.prepareConfiguredActivation();
-    prepared.commitAfterDurability();
+    await f.handle.getOrCreateAgentRun();
     f.activity.kind = "present";
     f.fakeRun.isActive.mockReturnValueOnce(false);
     await f.handle.getOrCreateAgentRun();
