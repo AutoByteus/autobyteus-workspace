@@ -3,9 +3,9 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package: `phone-activity-details`; Task autobyteus-590 (absorbs autobyteus-586); requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`); date 2026-11-22
-- Approved by: `Solution Designer within the direction (user informed)`; reference: SR-001 and the message to the user in the Solution Designer's conversation, 2026-11-22.
+- Approved by: SR-001 by the Solution Designer within the direction (user informed, 2026-11-22); SR-002's refinements (DEC-006…DEC-008) by the **user**, 2026-11-22, in the Solution Designer's conversation, after the proposed row and detail mock-ups: "Yeah I trusted your decision because I think you have very very good understanding of user experience and yeah and our applications as well".
 
 ## Problem And Desired Outcome
 
@@ -35,8 +35,8 @@
 
 | REQ | Requirement | Source |
 | --- | --- | --- |
-| REQ-001 | A phone tool row shows the tool name and, below it, the shared summary of the call (the same summary the desktop conversation's tool card shows: its command, its file, or its text argument), computed from the activity's current arguments; never the tool name a second time; nothing when there is nothing to summarize | Founder report |
-| REQ-002 | The row's status uses the desktop's labels and colors (Success, Failed, Running, Review, Denied, Approved, Parsed) | Parity |
+| REQ-001 | A phone tool row shows the tool name and, below it, the shared summary of the call (the same summary the desktop conversation's tool card shows: its command, its file, its text argument, or for the platform's agent tools whom it addresses or which Task: "→ /architecture_reviewer", "autobyteus-590"), computed from the activity's current arguments, at most two lines; a command's one-line summary leaves out a leading `cd <folder> &&` (the full command stays in its tooltip and the detail screen); never the tool name a second time; nothing when there is nothing to summarize | Founder report; user, SR-002 (DEC-006, DEC-007) |
+| REQ-002 | The row's status never relies on color alone: a success shows a small check icon only (its label "Success" for screen readers); every other status shows an icon and its word (Failed, Running, Review, Denied, Approved, Parsed); the words and tones are the desktop's; the detail screen spells the status out | Parity; accessibility (WCAG 1.4.1); user, SR-002 (DEC-008) |
 | REQ-003 | Tapping a tool row opens a detail screen with the tool name, status, the full summary (full path or command), Arguments, Logs, Result and Error, each shown when present, readable on a narrow screen (wrapping, monospace for data), updating live while open; the system Back returns to the list at the same scroll position | Founder report; Task direction 2 |
 | REQ-004 | Tapping a compaction row opens its details: the desktop's detail rows, including its error | Task direction 3 |
 | REQ-005 | Tapping a background task shows its full command and full end summary (the desktop's expanded view) | Task direction 3 |
@@ -49,8 +49,8 @@
 
 | AC | REQ | Outcome | Verification (evidence and how) |
 | --- | --- | --- | --- |
-| AC-001 | REQ-001 | `run_command` shows its command; `edit_file`/`read_file`/`write_file` show their file (also with `file_path`, also when the arguments arrive after the row appears); `create_task` shows its title; `update_task` with no summarizable argument shows its name once; no row shows the name twice | Web unit; phone probe |
-| AC-002 | REQ-002 | Status chips read Success / Failed / Running / Review … as on the desktop | Web unit |
+| AC-001 | REQ-001 | `run_command`/`Bash` show their command, without a leading `cd <folder> &&` on the row; `edit_file`/`read_file`/`write_file` show their file (also with `file_path`, also when the arguments arrive after the row appears); `send_message_to` and `delegate_task` show "→ <recipient>"; `get_project_task`/`update_task` show their Task key; `create_task` shows its title; a tool with nothing to summarize shows its name once; no row shows the name twice; the conversation's tool cards show the same summaries | Web unit (incl. the conversation tool card specs); phone probe |
+| AC-002 | REQ-002 | A successful row shows only the check icon (accessible name "Success"); a failed, running, review, denied row shows its icon and word; the detail screen shows the status word | Web unit; phone probe |
 | AC-003 | REQ-003 | A tool row opens its detail screen with Arguments, Logs, Result, Error as present; a running tool's logs grow while it is open; Back returns to the list at the same place | Phone probe (production bundle, 390×844) + unit |
 | AC-004 | REQ-004, REQ-006 | A compaction row opens its rows; a failed tool and a failed compaction show the full error | Unit + phone probe |
 | AC-005 | REQ-005 | A background task with a long command and summary shows both in full on tap | Phone probe (scripted AGY background task) + unit |
@@ -65,4 +65,7 @@
 | DEC-002 | What is the row's second line? | The shared summary the desktop conversation already uses (command / file / text, secrets redacted), derived from current arguments; nothing when there is nothing to summarize. **Shared summary** | Solution Designer | Decided |
 | DEC-003 | Background tasks: detail screen or expand in place? | The desktop expands in place; a task's content is two text fields. **Expand in place on tap** | Solution Designer | Decided |
 | DEC-004 | The node's `contextText` | Stored-run projections use it for dedupe; changing it touches the projection contract; the phone no longer needs it. **Leave it; FU-001** | Solution Designer | Decided |
+| DEC-006 | Summaries for the platform's agent tools | `send_message_to`, `get_project_task`, `update_task` repeated their name (their keys `recipient_address`, `task_id` are not summary keys) — user's screenshot 2026-11-22 | Add `recipient_address` ("→ <address>") and `task_id` to the shared summary's keys; the conversation's tool cards improve the same way | User (approved the recommendation) | Decided |
+| DEC-007 | Long commands that start with `cd <folder> &&` | Every row repeated the same folder (user's screenshot) | Leave the leading `cd …&&` out of a command's one-line summary; full command in the tooltip and details | User (approved the recommendation) | Decided |
+| DEC-008 | Is a "Success" badge needed when green already says it? | Color alone fails colour-blind readers and sunlight/dimmed screens, and several states exist | Success: a check icon only; every other status: icon + word | User (approved the recommendation) | Decided |
 | DEC-005 | Evidence for the phone (AC-003…005) | The production phone bundle in `test:e2e:mobile-shell` is the project's phone evidence; no physical phone is available; the untested scope is a physical device's WebView rendering of ordinary HTML/CSS from the same bundle — low risk. **Use the phone probe; accept the physical-device scope as untested** | Solution Designer | Decided |
