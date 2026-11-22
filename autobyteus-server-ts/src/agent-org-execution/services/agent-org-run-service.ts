@@ -18,7 +18,6 @@ import { runtimeKindFromString, type RuntimeKind } from "../../runtime-managemen
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
-import type { AgentOrgRun } from "../domain/agent-org-run.js";
 import { AgentOrgRunManager, type LiveAgentOrg } from "./agent-org-run-manager.js";
 import { planAgentOrgContainer } from "../container/agent-org-container-plan.js";
 import { AgentOrgRunPlanner, type ResolvedAgentOrgLaunchPlan } from "./agent-org-run-planner.js";

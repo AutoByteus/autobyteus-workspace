@@ -18,7 +18,7 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
 | 1 | `containedIn` on Team and agent runs; container file; `AgentOrgContainer` creates unit runs; Stop/reopen | part 1 done (building blocks; wiring with slice 3) | see git log |
 | 2 | Container address resolution (step 2 via `OrgContainerPort`), `same_container` admission in `CrossRunMessageDelivery`, `ContainedTeamAddressSpace` (R-1''/R-1'''), Org rules merged into unit rules, delegation origin = unit run | done (part 1: all surfaces with unit tests) | see git log |
 | 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | done (parts 1-4): composition, live container, creation switch, rows, stored view, readiness, history (no unit rows, archive/delete with units), member views/messages/last activity from units, stopped-Org settings, REST edges, memory attribution and sync exclusion | see git log |
-| 4 | Remove the hosting machinery (Removal Plan, R-5 H rows) | | |
+| 4 | Remove the hosting machinery (Removal Plan, R-5 H rows) | done: old root, scope builder, persistence, Org log, loader/validator, recipient resolver removed; manager containers-only; readers containers-only; tests converted (stored-container helper) or removed with the hosting they covered | see git log |
 | 5 | Migration `20261122_agent_org_units_own_runs_v1` + follow-ups + §9 fixtures + registry classification | | |
 | 6 | Org follow (DS-006) | | |
 | 7 | FU-003 peer members notice + reconcile (DS-007) | | |
@@ -85,6 +85,18 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
   application backend workers / Brief Studio packages (no built `dist/`), `app-config` env text, Socratic app tests, the
   studio HTTP contract's network refusal (the test client address is admitted in this container).
 - `agent-org-run-manager.ts` is 515 lines while the released root still lives beside the container; slice 4 removes it.
+
+- Slice 4: removed test suites that covered only the removed Org root (scope builder, Org manager lifecycle/restore
+  self-heal/termination/inspection/config on the released tree, Org member scope, Org collaborators, Org command kind,
+  Org communication presentation, status traversal, the Org cases of the configured-root fixtures, the
+  agent-org-flat-team-families-v1 runtime continuation tests). Their behaviors live in the Team/agent roots' suites and
+  the container suites; the continuation into the runtime returns with the slice 5 migration tests. Reader suites keep
+  their Org cases on stored containers (`tests/helpers/stored-org-container.ts`).
+- An Org file that is not a container (a released Org tree its conversion left: a preserved skip or a failure) is not a
+  current package (readiness diagnostic) and is never loaded; its history row can still be archived/deleted (the history
+  catalog keeps its released-tree path for that residue).
+- Environment-dependent e2e failures seen here (not this ticket's): memory explorer GraphQL e2e counts the definitions
+  this worktree's data dir ships (26 Teams, 3 Orgs) where the test expects none.
 
 ## Open questions
 

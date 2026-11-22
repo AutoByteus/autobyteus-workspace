@@ -34,7 +34,6 @@ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
-import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import {
@@ -251,23 +250,8 @@ export class GeneralProcessRunSupervisor {
           directory: input.orgContainers ?? createOrgContainerDirectory(memoryDir), registrations: getActiveCollaborationRootDirectory(),
           teamRuns: () => teamRunService!, agentRuns: () => agentRunService!, standaloneRoots: () => standaloneRootManager!,
           teamHistory: () => this.teamRunHistoryService }),
-        taskRecords: input.taskRecords,
         delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,
-        scopeBuilder: new AgentOrgExecutionScopeBuilder({
-          flatTeamExecutionFactory,
-          executionFactory,
-          taskRecords: input.taskRecords,
-          delegationIndex: input.delegationIndex,
-          remoteChannel: input.remoteChannel,
-          viewStreams: input.viewStreams,
-          orgDefinitions: input.agentOrgDefinitionService,
-          teamDefinitions: input.agentTeamDefinitionService,
-          agentRunManager: generalAgentRunManager,
-          memoryLocator,
-          activityInspector,
-          workspaceManager,
-        }),
       });
       const tokenUsageReadiness = new TokenUsageCapability();
       const provisioningService = new AgentRunProvisioningService(memoryDir, {

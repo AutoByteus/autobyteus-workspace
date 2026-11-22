@@ -1,4 +1,3 @@
-import { AgentOrgContainerStore } from "../run-history/store/agent-org-container-store.js";
 import { readStoredOrgTree } from "../agent-org-execution/container/stored-org-tree.js";
 import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { DelegatedRunRestorability } from "../agent-collaboration/execution/task/delegated-run-restorability.js";
@@ -6,8 +5,6 @@ import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-
 import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
-import { validateAgentOrgExecutionTree } from "../agent-org-execution/services/agent-org-state-package-validator.js";
-import { AgentOrgRunExecutionTreeStore } from "../run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../run-history/store/team-run-execution-tree-store.js";
 import type { TeamRunExecutionTreeSnapshot } from "../agent-team-execution/domain/team-run-execution-tree.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../agent-org-execution/domain/agent-org-run-execution-tree.js";
@@ -38,7 +35,6 @@ export const createRunViewSources = (input: Readonly<{
 }>): RunViewSources => {
   const layout = new AgentMemoryLayout(input.memoryDir);
   const teamTrees = new TeamRunExecutionTreeStore();
-  const orgTrees = new AgentOrgRunExecutionTreeStore();
   return Object.freeze({
     streams: input.streams,
     rows: input.rows,
@@ -47,11 +43,6 @@ export const createRunViewSources = (input: Readonly<{
     restorability: input.restorability,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
     // A stopped Org container's tree is composed from its file and its units' files (org-teams-follow-definition).
-    readStoredOrgTree: async (orgRunId) => {
-      if (await new AgentOrgContainerStore().readIfContainer(layout.getOrgDirPath(orgRunId), orgRunId)) return readStoredOrgTree(input.memoryDir, orgRunId);
-      const tree = await orgTrees.read(layout.getOrgDirPath(orgRunId), orgRunId);
-      if (tree) validateAgentOrgExecutionTree(tree);
-      return tree;
-    },
+    readStoredOrgTree: (orgRunId) => readStoredOrgTree(input.memoryDir, orgRunId),
   });
 };

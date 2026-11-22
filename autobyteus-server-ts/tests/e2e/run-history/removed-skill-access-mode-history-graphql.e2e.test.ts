@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { MessageLog } from "../../../src/run-history/store/message-log.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
@@ -121,12 +121,8 @@ const seedStoredHistory = async (memoryDir: string, mode: (typeof STORED_MODES)[
   const orgDir = path.join(memoryDir, "agent_orgs", orgRunId);
   const orgTreePath = getAgentOrgRunExecutionTreePath(orgDir);
   writeJson(orgTreePath, org.tree);
-  await new AgentOrgCommunicationMessagesStore().write(orgDir, {
-    schemaVersion: 1,
-    subjectKind: "agent_org",
-    orgRunId,
-    messages: [],
-  });
+  // The released Org's (empty) log, as released builds wrote it; the startup conversion converts the Org (slice 5).
+  await new MessageLog(orgDir, "agent_org_communication_messages").appendBatch([]);
 
   expect(team.launchConfigurations).toBe(3);
   expect(org.launchConfigurations).toBe(4);

@@ -3,7 +3,6 @@ import type {
   LocatedExecutionGroup,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunManager } from "./agent-org-run-manager.js";
 import { AgentOrgExecutionIndex, type AgentOrgExecutionKind } from "./agent-org-execution-index.js";
@@ -16,7 +15,6 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
 import { isAgentOrgContainerPayload } from "../domain/agent-org-container-file.js";
 import { composeOrgExecutionTree, type OrgUnitFile } from "../container/org-execution-tree-composition.js";
 import { readStoredUnitFiles } from "../container/stored-org-tree.js";
-import { LiveAgentOrgContainer } from "../container/live-agent-org-container.js";
 import { validateAgentOrgContainerPayload } from "../../run-history/store/agent-org-container-file-schema.js";
 
 export type LocatedAgentOrgAgentExecution = Readonly<{
@@ -46,16 +44,12 @@ const STORED_ONLY: Manager = Object.freeze({ getActive: () => null, listActiveOr
 export class AgentOrgExecutionTreeLocationService {
   private readonly layout: AgentMemoryLayout;
   private readonly manager: Manager;
-  private readonly store: AgentOrgRunExecutionTreeStore;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
-  /** Org runs read as containers (org-teams-follow-definition): their agents' memory is in their unit runs. */
-  private readonly containers = new Set<string>();
   private readonly memoryDir: string;
-  constructor(input: { memoryDir: string; manager?: Manager; store?: AgentOrgRunExecutionTreeStore }) {
+  constructor(input: { memoryDir: string; manager?: Manager }) {
     this.memoryDir = input.memoryDir;
     this.layout = new AgentMemoryLayout(input.memoryDir);
     this.manager = input.manager ?? STORED_ONLY;
-    this.store = input.store ?? new AgentOrgRunExecutionTreeStore();
     this.packageCatalog = new AgentOrgRunPackageCatalog(input.memoryDir);
   }
   async findAgent(input: AgentLookup): Promise<LocatedAgentOrgAgentExecution | null> {
@@ -154,12 +148,10 @@ export class AgentOrgExecutionTreeLocationService {
       executionKind: agent.executionKind,
       startedAt: null,
       groupPath: Object.freeze(groupPath),
-      memoryDir: this.isContainer(tree.rootOrg.orgRunId)
-        // A unit's agent lives in its unit run: a Team unit's member in its Team run, a direct agent in its own run.
-        ? agent.host.hostKind === "team"
-          ? this.layout.getTeamAgentRunDirPath({ rootTeamRunId: agent.host.hostRunId, ancestorTeamRunIds: [] }, agentRunId)
-          : this.layout.getStandaloneRunDirPath(agentRunId)
-        : this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agentRunId), agentRunId),
+      // An Org's agent lives in its unit run: a Team unit's member in its Team run, a direct agent in its own run.
+      memoryDir: agent.host.hostKind === "team"
+        ? this.layout.getTeamAgentRunDirPath({ rootTeamRunId: agent.host.hostRunId, ancestorTeamRunIds: [] }, agentRunId)
+        : this.layout.getStandaloneRunDirPath(agentRunId),
       tree,
       // A shut-down child of an active root stays addressable: input wakes it.
       isActive,
@@ -188,20 +180,15 @@ export class AgentOrgExecutionTreeLocationService {
   private listStoredRootIdsSync(): string[] {
     return this.packageCatalog.listAdmitted();
   }
-  /** A stored Org's tree: a container's composed from its units' files, a released Org tree as stored. */
+  /** A stored Org's tree: its container file composed with its units' files (an unreadable file rejects, naming why). */
   private async readStoredTree(id: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
-    // A file that cannot be read as a container is read (and refused) as a released Org tree, with that reader's error.
-    const container = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(id), id).catch(() => null);
-    if (!container) return this.store.read(this.layout.getOrgDirPath(id), id);
-    this.containers.add(id);
-    return composeOrgExecutionTree(container, await readStoredUnitFiles(this.memoryDir, container));
+    const container = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(id), id);
+    return container ? composeOrgExecutionTree(container, await readStoredUnitFiles(this.memoryDir, container)) : null;
   }
   /** The synchronous read: a container's Team units from their trees, its direct agents from the container (their launch). */
   private readStoredTreeSync(id: string): AgentOrgRunExecutionTreeSnapshot | null {
-    let raw: unknown = null;
-    try { raw = readRawTreeFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id))); } catch { raw = null; }
-    if (!isAgentOrgContainerPayload(raw)) return this.store.readSync(this.layout.getOrgDirPath(id), id);
-    this.containers.add(id);
+    const raw = readRawTreeFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id)));
+    if (!isAgentOrgContainerPayload(raw)) return null;
     const container = validateAgentOrgContainerPayload(raw, id);
     const teams = new TeamRunExecutionTreeStore();
     const files = new Map<string, OrgUnitFile>(container.rootOrg.units.map((unit) => [unit.runId, unit.kind === "agent_team"
@@ -210,8 +197,5 @@ export class AgentOrgExecutionTreeLocationService {
         ...container.rootOrg.defaultLaunchConfiguration, llmConfig: container.rootOrg.defaultLaunchConfiguration.llmConfig as Record<string, unknown> | null,
         workspaceRootPath: container.rootOrg.defaultLaunchConfiguration.workspaceRootPath ?? "", memoryDir: this.layout.getStandaloneRunDirPath(unit.runId) } }]));
     return composeOrgExecutionTree(container, files);
-  }
-  private isContainer(orgRunId: string): boolean {
-    return this.containers.has(orgRunId) || this.manager.getActive(orgRunId) instanceof LiveAgentOrgContainer;
   }
 }

@@ -13,7 +13,9 @@ import { RunFileChangeProjectionService } from "../../../src/run-history/service
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { AgentOrgContainerStore } from "../../../src/run-history/store/agent-org-container-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
+import { readStoredOrgTree } from "../../../src/agent-org-execution/container/stored-org-tree.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
@@ -199,40 +201,27 @@ describe("org member file-change reads name the org run and member", () => {
     const agentRunIds = ["org-director", "org-lead", "org-copy", "org-team-copy"];
     const workspaces = await seedWorkspaces(agentRunIds);
     const layout = new AgentMemoryLayout(memoryDir);
-    const node = (address: string, agentRunId: string) => ({
-      ...testOrgAgentNode(address, agentRunId),
-      launchConfiguration: testOrgLaunchConfiguration(workspaces.get(agentRunId)!),
-    });
-    // Direct agents and mounted-team members, each on its own workspace.
-    const tree: AgentOrgRunExecutionTreeSnapshot = testAgentOrgExecutionTree({
-      orgRunId: "org-1",
-      members: [
-        node("/director", "org-director"),
-        node("/analyst", "org-copy"),
-        testOrgTeamNode({ address: "/delivery", teamRunId: "org-team", coordinatorAddress: "/delivery/lead",
-          members: [node("/delivery/lead", "org-lead"), node("/delivery/tester", "org-team-copy")] }),
-      ],
-    });
-    const writeOrg = async (orgRunId: string, orgTree: AgentOrgRunExecutionTreeSnapshot) => {
-      const directory = layout.getOrgDirPath(orgRunId);
-      await new AgentOrgRunExecutionTreeStore().write(directory, orgTree);
-      await fs.writeFile(path.join(directory, "agent_org_communication_messages_active.jsonl"), "");
-    };
-    await writeOrg("org-1", tree);
+    // An Org container (org-teams-follow-definition): direct agents and a Team unit's members, each on its own workspace.
+    const workspace = (agentRunId: string) => workspaces.get(agentRunId)!;
+    const writeOrg = (orgRunId: string, units: Parameters<typeof writeStoredOrgContainer>[1]["units"]) => writeStoredOrgContainer(memoryDir, { orgRunId, units });
+    await writeOrg("org-1", [
+      { kind: "agent", address: "/director", runId: "org-director", workspaceRootPath: workspace("org-director") },
+      { kind: "agent", address: "/analyst", runId: "org-copy", workspaceRootPath: workspace("org-copy") },
+      { kind: "agent_team", address: "/delivery", runId: "org-team", coordinatorAddress: "/lead", members: [
+        { address: "/lead", agentRunId: "org-lead", workspaceRootPath: workspace("org-lead") },
+        { address: "/tester", agentRunId: "org-team-copy", workspaceRootPath: workspace("org-team-copy") }] },
+    ]);
     for (let index = 0; index < UNRELATED_ROOTS; index += 1) {
-      await writeOrg(`other-org-${index}`, testAgentOrgExecutionTree({
-        orgRunId: `other-org-${index}`,
-        members: [testOrgAgentNode("/director", `other-director-${index}`)],
-      }));
+      await writeOrg(`other-org-${index}`, [{ kind: "agent", address: "/director", runId: `other-director-${index}` }]);
     }
+    const tree = (await readStoredOrgTree(memoryDir, "org-1"))!;
 
-    const store = new AgentOrgRunExecutionTreeStore();
     const manager = {
       getActive: vi.fn((orgRunId: string) => input.running && orgRunId === "org-1"
         ? { getExecutionTreeSnapshot: () => tree } : null),
       listActiveOrgRunIds: vi.fn(() => input.running ? ["org-1"] : []),
     };
-    const locations = new AgentOrgExecutionTreeLocationService({ memoryDir, manager: manager as never, store });
+    const locations = new AgentOrgExecutionTreeLocationService({ memoryDir, manager: manager as never });
     const addresses = new Map<string, string>();
     const projectionStore = new RunFileChangeProjectionStore();
     for (const agentRunId of agentRunIds) {
@@ -240,7 +229,9 @@ describe("org member file-change reads name the org run and member", () => {
       addresses.set(agentRunId, located!.memberAddress);
       await projectionStore.writeProjection(located!.memoryDir, { version: 2, entries: recordedChanges(agentRunId) });
     }
-    const read = vi.spyOn(store, "read");
+    // The prototype's spy outlives one case: only this case's reads are counted.
+    const read = vi.spyOn(AgentOrgContainerStore.prototype, "readIfContainer");
+    read.mockClear();
     const live = liveChanges();
     const views = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       memoryDir,

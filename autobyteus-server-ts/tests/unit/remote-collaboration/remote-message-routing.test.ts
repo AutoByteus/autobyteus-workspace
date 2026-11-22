@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
@@ -8,7 +7,6 @@ import {
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import { AgentOrgRunMessageDelivery } from "../../../src/agent-org-execution/services/agent-org-run-message-delivery.js";
 import { TeamRunMessageDelivery } from "../../../src/agent-team-execution/services/team-run-message-delivery.js";
 import { StandaloneRootMessageDelivery } from "../../../src/standalone-agent-run-root/services/standalone-root-message-delivery.js";
 import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
@@ -63,21 +61,9 @@ const team = (): Harness => {
   return { root, ...c, deliverExact: (target) => delivery.deliverExact(input(root, target) as never, c.local) };
 };
 
-const org = (): Harness => {
-  const c = common();
-  const root = createAgentOrgRootExecutionIdentity("org_a");
-  const delivery = new AgentOrgRunMessageDelivery({ remoteLinks: links(), remoteSend: c.remoteSend, authorizeIdentity: vi.fn(),
-    getIndex: () => ({ getAgent: () => null }) } as never);
-  return { root, ...c, deliverExact: async (target) => {
-    const result = await delivery.deliverExact(input(root, target) as never);
-    return result.code === "TARGET_AGENT_RUN_NOT_FOUND" ? c.local() : result;
-  } };
-};
-
 describe.each([
   { kind: "standalone Agent root", build: standalone },
   { kind: "Team root", build: team },
-  { kind: "Org root", build: org },
 ])("$kind: run-ID routing (AR-008)", ({ build }) => {
   it("sends to a remote endpoint through the shared RemoteMessageSend", async () => {
     const h = build();

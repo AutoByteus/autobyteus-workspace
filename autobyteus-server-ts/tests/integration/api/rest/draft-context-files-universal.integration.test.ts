@@ -16,7 +16,7 @@ vi.mock("../../../../src/config/app-config-provider.js", () => ({ appConfigProvi
 
 import { registerContextFileRoutes } from "../../../../src/api/rest/context-files.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { writeStoredOrgContainer } from "../../../helpers/stored-org-container.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { ContextFileLayout } from "../../../../src/context-files/store/context-file-layout.js";
 import { ContextFileLocalPathResolver } from "../../../../src/context-files/services/context-file-local-path-resolver.js";
@@ -71,13 +71,9 @@ const put = async (file: string, value: unknown) => {
   await fs.writeFile(file, typeof value === "string" ? value : JSON.stringify(value));
 };
 
-const writeOrgFixture = async (memoryDir: string) => {
-  const direct = testOrgAgentNode("/shared", "configured-direct");
-  const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct] }));
-  const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath("org");
-  await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, "org"));
-  writeAttachmentSidecars(dir, "org");
-};
+/** An Org container with one direct agent `/shared` (org-teams-follow-definition): its files are in its own agent run. */
+const writeOrgFixture = (memoryDir: string) => writeStoredOrgContainer(memoryDir, { orgRunId: "org",
+  units: [{ kind: "agent", address: "/shared", runId: "configured-direct" }] });
 
 /**
  * A standalone run and an Agent run it delegated to (the 19.png owner kind). Written as the app writes it

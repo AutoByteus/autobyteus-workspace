@@ -9,7 +9,6 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
@@ -259,7 +258,6 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     // A tool call is held open across a cross-root Task closure: more than the MCP client's 60 s default on a loaded host.
     process.env["AGY_FAKE_TOOL_TIMEOUT_MS"] = "240000";
     gateStore(StandaloneRootPackageStore.prototype as any, "appendMessage");
-    gateStore(AgentOrgCommunicationMessagesStore.prototype as any, "appendMessage");
     gateStore(TeamCommunicationStore.prototype as any, "appendMessage");
     spyDeliveries();
     appConfigProvider.config.setCustomAppDataDir(dataDir);
@@ -487,7 +485,8 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     await until(async () => { writtenIn.clear(); await savedHistory(rootAgents(), writtenIn); return (writtenIn.get(race1) ?? []).length >= 2; },
       `${kind}: TDR-001 record in both logs`, 15_000).catch(() => undefined);
     record.tdr001writtenIn = writtenIn.get(race1) ?? [];
-    const managerDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    // An Org's `/manager` is a direct Org agent: its own agent run keeps its log (org-teams-follow-definition, CM-9).
+    const managerDir = kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agents/${root.managerRunId}/`;
     expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the sender's log`).toEqual(expect.arrayContaining([expect.stringContaining(managerDir)]));
     expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the receiver's log`).toEqual(expect.arrayContaining([expect.stringContaining(`memory/agent_teams/${copyC.teamRunId}/`)]));
     expect(await root.snapshotMessages(), `${kind} TDR-001 record shown in the root view`).toContain(race1);
@@ -541,7 +540,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     await root.answered(copyA.members.lead, after);
     // The Team tab of the root (SR-072, SR-074): the root's own log and its open subtree's logs (copy A; B and C closed),
     // by base's in-view rule. Computed from the saved logs by that rule.
-    const rootDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    const rootDir = kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agents/${root.managerRunId}/`;
     const openDirs = [rootDir, `memory/agent_teams/${copyA.teamRunId}/`];
     const treeAgents = new Set([root.managerRunId, ...Object.values(copyA.members).map((member) => member.agentRunId)]);
     const inView = async () => {

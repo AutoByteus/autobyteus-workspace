@@ -4,7 +4,9 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { writeStoredOrgContainer } from "../../../helpers/stored-org-container.js";
+import { readStoredOrgTree } from "../../../../src/agent-org-execution/container/stored-org-tree.js";
+import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
@@ -79,41 +81,26 @@ describe("first mixed collaboration history after restart", () => {
       terminatedAt: "2026-09-01T01:00:00.000Z",
     }]);
 
-    const orgTree = testAgentOrgExecutionTree({
-      orgRunId,
-      members: [testOrgAgentNode("/direct", "retained-org-agent-run")],
-    });
-    const orgPackagePath = layout.getOrgDirPath(orgRunId);
-    await fs.mkdir(orgPackagePath, { recursive: true });
-    await Promise.all([
-      new AgentOrgRunExecutionTreeStore().write(orgPackagePath, orgTree),
-      new AgentOrgCommunicationMessagesStore().write(orgPackagePath, {
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        messages: [],
-      }),
-    ]);
-
+    // An Org container with one direct agent unit (org-teams-follow-definition).
+    await writeStoredOrgContainer(memoryDir, { orgRunId, createdAt: "2026-09-01T00:00:00.000Z",
+      units: [{ kind: "agent", address: "/direct", runId: "retained-org-agent-run" }] });
+    const orgTree = (await readStoredOrgTree(memoryDir, orgRunId))!;
     await new AgentOrgRunHistoryIndexStore(memoryDir).writeIndex([projectAgentOrgRunHistoryRow(orgTree)]);
 
+    // The Org package's validation (its unit's back-link read) is held until released.
     let releaseOrgValidation!: () => void;
     let reportOrgValidationStarted!: () => void;
     const orgValidationGate = new Promise<void>((resolve) => { releaseOrgValidation = resolve; });
     const orgValidationStarted = new Promise<void>((resolve) => { reportOrgValidationStarted = resolve; });
-    const originalOrgRead = AgentOrgRunExecutionTreeStore.prototype.read;
+    const originalMetadataRead = AgentRunMetadataStore.prototype.readMetadata;
     let heldFirstOrgRead = false;
-    vi.spyOn(AgentOrgRunExecutionTreeStore.prototype, "read").mockImplementation(async function (
-      this: AgentOrgRunExecutionTreeStore,
-      packagePath: string,
-      expectedOrgRunId?: string,
-    ) {
-      if (!heldFirstOrgRead) {
+    vi.spyOn(AgentRunMetadataStore.prototype, "readMetadata").mockImplementation(async function (this: AgentRunMetadataStore, runId: string) {
+      if (runId === "retained-org-agent-run" && !heldFirstOrgRead) {
         heldFirstOrgRead = true;
         reportOrgValidationStarted();
         await orgValidationGate;
       }
-      return originalOrgRead.call(this, packagePath, expectedOrgRunId);
+      return originalMetadataRead.call(this, runId);
     });
 
     const teamManager = {

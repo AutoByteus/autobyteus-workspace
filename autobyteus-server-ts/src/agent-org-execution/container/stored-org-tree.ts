@@ -1,6 +1,5 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgContainerStore } from "../../run-history/store/agent-org-container-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { AgentOrgContainerFile } from "../domain/agent-org-container-file.js";
@@ -26,12 +25,10 @@ export const readStoredUnitFiles = async (memoryDir: string, file: AgentOrgConta
 };
 
 /**
- * A stored Org's tree in today's shape (DEC-004): a container's file composed with its units' stored files; a released
- * Org tree (not converted yet) as it is stored. `null` when the Org run has no file.
+ * A stored Org's tree in today's shape (DEC-004): its container file composed with its units' stored files. `null` when
+ * the Org run has no container file (absent, or a released Org tree its conversion left as it was).
  */
 export const readStoredOrgTree = async (memoryDir: string, orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> => {
-  const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId);
-  const container = await new AgentOrgContainerStore().readIfContainer(dir, orgRunId);
-  if (container) return composeOrgExecutionTree(container, await readStoredUnitFiles(memoryDir, container));
-  return new AgentOrgRunExecutionTreeStore().read(dir, orgRunId);
+  const container = await new AgentOrgContainerStore().readIfContainer(new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId), orgRunId);
+  return container ? composeOrgExecutionTree(container, await readStoredUnitFiles(memoryDir, container)) : null;
 };

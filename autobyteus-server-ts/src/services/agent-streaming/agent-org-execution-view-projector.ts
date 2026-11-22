@@ -6,7 +6,7 @@ import {
   type RootExecutionEventDto,
   type RootExecutionViewDto,
 } from "@autobyteus/collaboration-stream-contracts";
-import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-package-snapshot.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 

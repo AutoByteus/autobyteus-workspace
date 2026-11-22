@@ -14,17 +14,10 @@ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/loca
 import { materializeTeamRoot } from '../../../src/agent-team-execution/services/team-root-materializer.js';
 import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
 import { buildInitialTeamRunExecutionTree } from '../../../src/agent-team-execution/services/team-run-execution-tree-builder.js';
-import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
-import { AgentOrgRunPersistenceCoordinator } from '../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js';
-import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
-import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
-import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
 import { TeamCommunicationStore } from '../../../src/services/team-communication/team-communication-store.js';
-import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
 import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const dirs: string[] = [];
@@ -86,20 +79,6 @@ const fixture = () => {
     release() { release?.(); }, fail(id: string) { fail = id; },
   };
 };
-const org = async (f: ReturnType<typeof fixture>) => {
-  const direct = (address: string, id: string) => { const n = testOrgAgentNode(address, id); return { ...n,
-    launchConfiguration: { ...n.launchConfiguration, runtimeKind: RuntimeKind.CODEX_APP_SERVER } }; };
-  const tree = testAgentOrgExecutionTree({ orgRunId: 'org-lazy', members: [direct('/director', 'director'), direct('/receiver', 'receiver'),
-    testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead',
-      members: [direct('/team/lead', 'lead'), direct('/team/unused', 'unused')] })] });
-  const state = validateAgentOrgStatePackage({ executionTree: tree,
-    communicationMessages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', messages: [] } });
-  const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
-    executionTreeStore: new AgentOrgRunExecutionTreeStore(),
-    communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
-  return new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
-  }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
-};
 const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') => {
   f.useTeamTree();
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
@@ -111,30 +90,8 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
     communicationStore: new TeamCommunicationStore(), onTerminated: vi.fn(),
   });
 };
-const identity = (id: string) => createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('org-lazy'), agentRunId: id, memberAddress: `/${id}` });
 
 describe('fresh and restored configured scope use deferred readiness', () => {
-  it('publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none', async () => {
-    const f = fixture(); const run = await org(f);
-    expect(run.isActive()).toBe(true);
-    expect(run.getAgentStatusSnapshots()).toHaveLength(4);
-    expect(run.getAgentStatusSnapshots().map(s => s.details.status)).toEqual(['offline', 'offline', 'offline', 'offline']);
-    const snapshot = await run.openViewSnapshotConnection(() => undefined, (own) => own); snapshot.close();
-    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
-    expect(() => run.authorizeIdentity(identity('receiver'))).toThrow('not a live execution');
-    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
-    await expect(run.deliverLogicalMessage(identity('receiver'), { recipientAddress: '/director', content: 'unauthorized', messageType: 'message', referenceFiles: [] })).rejects.toThrow('not a live execution');
-    expect(() => run.authorizeIdentity({ ...identity('director'), memberAddress: '/receiver' })).toThrow('not a live execution');
-    expect(() => run.authorizeIdentity(createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('other-root'), memberAddress: '/director', agentRunId: 'director' }))).toThrow();
-    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
-    await expect(run.executeAgentCommand('director', { kind: 'post_message', message: new AgentInputUserMessage('start') })).resolves.toMatchObject({ accepted: true });
-    await expect(run.deliverLogicalMessage(identity('director'), { recipientAddress: '/receiver', content: 'handoff', messageType: 'handoff', referenceFiles: [] })).resolves.toMatchObject({ accepted: true });
-    await expect(run.deliverLogicalMessage(identity('director'), { recipientAddress: '/team', content: 'team work', messageType: 'handoff', referenceFiles: [] })).resolves.toMatchObject({ accepted: true });
-    expect(f.inputs).toEqual(['director', 'receiver', 'lead']);
-    expect(f.prepareNewAgentRun.mock.calls.map(([x]) => x.runId)).toEqual(['director', 'receiver', 'lead']);
-    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRunId === 'unused')?.details.status).toBe('offline');
-    expect(run.getCommunicationSnapshot().messages).toHaveLength(2);
-  });
   it('fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness', async () => {
     const f = fixture(); const run = await team(f, 'fresh');
     expect(run.isActive()).toBe(true); expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
@@ -169,22 +126,23 @@ describe('fresh and restored configured scope use deferred readiness', () => {
     expect(run.getLeafAgentStatusSnapshots().map(s => s.details.status)).toEqual(['idle', 'idle']);
   });
   it('readiness rejection remains an error for the exact worker, without starting other members', async () => {
-    const f = fixture(); const run = await org(f); f.fail('director');
-    await expect(run.executeAgentCommand('director', { kind: 'post_message', message: new AgentInputUserMessage('work') })).resolves.toMatchObject({ accepted: false });
-    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRunId === 'director')?.details.status).toBe('error');
+    const f = fixture(); const run = await team(f, 'fresh'); f.fail('lead');
+    await expect(run.executeAgentCommand('lead', { kind: 'post_message', message: new AgentInputUserMessage('work') })).resolves.toMatchObject({ accepted: false });
+    expect(run.getLeafAgentStatusSnapshots().find(s => s.execution.agentRunId === 'lead')?.details.status).toBe('error');
     expect(f.active.size).toBe(0); expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
   });
-  it.each(['org', 'team'] as const)('%s Stop before first use fences all unused workers without startup', async (kind) => {
-    const f = fixture(); const run = kind === 'org' ? await org(f) : await team(f, 'fresh');
+  // An Org's units are Team and agent runs of their own (org-teams-follow-definition): the Team root is the configured scope.
+  it.each(['team'] as const)('%s Stop before first use fences all unused workers without startup', async () => {
+    const f = fixture(); const run = await team(f, 'fresh');
     await expect(run.terminate()).resolves.toMatchObject({ accepted: true });
     expect(run.isActive()).toBe(false);
-    await expect(run.executeAgentCommand(kind === 'org' ? 'director' : 'lead', { kind: 'post_message', message: new AgentInputUserMessage('late') })).rejects.toThrow('not accepting');
+    await expect(run.executeAgentCommand('lead', { kind: 'post_message', message: new AgentInputUserMessage('late') })).rejects.toThrow('not accepting');
     expect(f.prepareNewAgentRun).not.toHaveBeenCalled(); expect(f.inputs).toEqual([]);
   });
 
-  it.each(['org', 'team'] as const)('%s Stop drains first readiness and leaves no published worker after success', async (kind) => {
-    const f = fixture(); const run = kind === 'org' ? await org(f) : await team(f, 'fresh');
-    const id = kind === 'org' ? 'director' : 'lead'; f.block(id);
+  it.each(['team'] as const)('%s Stop drains first readiness and leaves no published worker after success', async () => {
+    const f = fixture(); const run = await team(f, 'fresh');
+    const id = 'lead'; f.block(id);
     const input = run.executeAgentCommand(id, { kind: 'post_message', message: new AgentInputUserMessage('first') });
     await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1));
     const stop = run.terminate(); f.release(); await input;

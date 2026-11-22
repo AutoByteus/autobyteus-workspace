@@ -16,18 +16,17 @@ import { FlatTeamExecutionFactory } from "../../src/agent-team-execution/local/f
 import { materializeTeamRoot } from "../../src/agent-team-execution/services/team-root-materializer.js";
 import { MemberExecutionContextBuilder } from "../../src/agent-team-execution/services/member-team-context-builder.js";
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
-import { AgentOrgExecutionScopeBuilder } from "../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
-import { AgentOrgRunPersistenceCoordinator } from "../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
-import { validateAgentOrgStatePackage } from "../../src/agent-org-execution/services/agent-org-state-package-validator.js";
-import { AgentOrgRunExecutionTreeStore } from "../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { testAgentNode, testTeamRunConfig } from "./current-team-run-fixtures.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "./current-agent-org-run-fixtures.js";
 import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
 
-export type Placement = "standalone_team" | "direct_org" | "mounted_team";
-export const placements: readonly Placement[] = ["standalone_team", "direct_org", "mounted_team"];
+/**
+ * A configured root's placement (org-teams-follow-definition: an Org's mounted Team and direct agents are runs of their
+ * own, so a Team root is the one configured root; an Org's units are covered by the Team and standalone agent roots).
+ */
+export type Placement = "standalone_team";
+export const placements: readonly Placement[] = ["standalone_team"];
 export const deferred = () => {
   let resolve!: () => void;
   const promise = new Promise<void>((done) => { resolve = done; });
@@ -99,10 +98,10 @@ export const configuredRootFixture = async (placement: Placement, options: {
   const factory = new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, ...dependencies });
   const materialize = vi.spyOn(factory, "beginMaterialization");
   const definitions = { getDefinitionById: vi.fn(async () => null) };
-  const prefix = placement === "mounted_team" ? "/Team" : "";
+  const prefix = "";
   const addresses = ["Coordinator", "Worker", "Unused"].map((name) => `${prefix}/${name}`) as [string, string, string];
   const ids = ["agent-coordinator", "agent-worker", "agent-unused"] as const;
-  const actualStore = placement === "standalone_team" ? new TeamRunExecutionTreeStore() : new AgentOrgRunExecutionTreeStore();
+  const actualStore = new TeamRunExecutionTreeStore();
   const control: { hold: Promise<void> | null; failure: RunPackageFileWriteResult | null } = { hold: null, failure: null };
   const write = vi.fn(async (dir: string, tree: never) => {
     await control.hold;
@@ -142,31 +141,5 @@ export const configuredRootFixture = async (placement: Placement, options: {
       reload: async () => (await new TeamRunExecutionTreeStore().read(memoryDir, rootId))!.rootTeam.members,
     };
   }
-  const members = addresses.map((address, i) => {
-    const member = testOrgAgentNode(address, ids[i]!);
-    const pending = i === 1 ? options.pendingSwitch : undefined;
-    return { ...member, platformAgentRunId: pending ? null : initialBinding, ...(pending ? { pendingRuntimeSwitch: pending } : {}),
-      launchConfiguration: { ...member.launchConfiguration, runtimeKind, workspaceRootPath: null } };
-  });
-  const tree = testAgentOrgExecutionTree({ orgRunId: rootId, members: placement === "direct_org" ? members : [
-    testOrgTeamNode({ address: "/Team", teamRunId: "mounted-team", coordinatorAddress: addresses[0], members }),
-  ] });
-  await actualStore.write(memoryDir, tree as never);
-  const state = validateAgentOrgStatePackage({ executionTree: tree,
-    communicationMessages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: rootId, messages: [] },
-  });
-  const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: rootId, orgMemoryDir: memoryDir,
-    executionTreeStore: { write } as never,
-    communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
-  });
-  const root = await new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
-    ...dependencies,
-  }).build({ state, persistence, activationMode: mode, persistInitialPackage: false });
-  const flatten = (tree: typeof state.executionTree) => tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member] : [...member.members]);
-  return { ...common, root,
-    send: (id: string = ids[1]) => root.executeAgentCommand(id, { kind: "post_message", message: new AgentInputUserMessage("Continue this conversation") }),
-    statuses: () => root.getAgentStatusSnapshots(),
-    members: () => flatten(root.getExecutionTreeSnapshot()),
-    reload: async () => flatten((await new AgentOrgRunExecutionTreeStore().read(memoryDir, rootId))!),
-  };
+  throw new Error(`Unknown configured root placement '${placement}'.`);
 };

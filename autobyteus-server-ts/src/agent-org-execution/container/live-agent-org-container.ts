@@ -16,7 +16,7 @@ import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution
 import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
-import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-package-snapshot.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgContainer } from "./agent-org-container.js";

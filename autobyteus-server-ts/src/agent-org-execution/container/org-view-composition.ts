@@ -5,7 +5,7 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { LiveAgentInputSnapshot } from "../../agent-collaboration/execution/domain/live-agent-input-snapshot.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-package-snapshot.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgContainerFile, AgentOrgUnit } from "../domain/agent-org-container-file.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";

@@ -5,7 +5,7 @@ import {
   createTeamRootExecutionIdentity,
   type RootExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-package-snapshot.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgContainer } from "./agent-org-container.js";
 import type { AgentOrgContainerManager, CreateAgentOrgContainerInput } from "./agent-org-container-manager.js";

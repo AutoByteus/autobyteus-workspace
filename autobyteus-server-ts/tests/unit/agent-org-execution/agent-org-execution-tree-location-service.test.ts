@@ -3,24 +3,23 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { AgentOrgContainerStore } from "../../../src/run-history/store/agent-org-container-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const directories: string[] = [];
 afterEach(async () => { await Promise.all(directories.splice(0).map((directory) => fs.rm(directory, { recursive: true, force: true }))); });
+/** An Org container (org-teams-follow-definition): a direct agent `/shared` and the Team unit `/delivery` with its `/lead`. */
 const createStoredOrg = async (memoryDir: string, orgRunId: string) => {
-  const direct = testOrgAgentNode("/shared", `${orgRunId}-direct`);
-  const member = testOrgAgentNode("/delivery/lead", `${orgRunId}-lead`);
-  const team = testOrgTeamNode({ address: "/delivery", teamRunId: `${orgRunId}-team`, coordinatorAddress: member.address, members: [member] });
-  const tree = testAgentOrgExecutionTree({ orgRunId, members: [direct, team] });
-  const directory = new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId);
-  await new AgentOrgRunExecutionTreeStore().write(directory, tree);
-  await fs.writeFile(path.join(directory, "agent_org_communication_messages_active.jsonl"), "");
-  return { direct, member, team, tree };
+  const direct = { address: "/shared", agentRunId: `${orgRunId}-direct` };
+  const member = { address: "/delivery/lead", agentRunId: `${orgRunId}-lead` };
+  const team = { address: "/delivery", teamRunId: `${orgRunId}-team` };
+  await writeStoredOrgContainer(memoryDir, { orgRunId, units: [{ kind: "agent", address: direct.address, runId: direct.agentRunId },
+    { kind: "agent_team", address: team.address, runId: team.teamRunId, coordinatorAddress: "/lead", members: [{ address: "/lead", agentRunId: member.agentRunId }] }] });
+  return { direct, member, team };
 };
 
 describe("AgentOrg and compound execution locations", () => {
@@ -29,10 +28,11 @@ describe("AgentOrg and compound execution locations", () => {
     const fixture = await createStoredOrg(memoryDir, "org-one"); const service = new AgentOrgExecutionTreeLocationService({ memoryDir });
     const direct = await service.findAgent({ rootRunId: "org-one", memberAddress: fixture.direct.address });
     expect(direct).toMatchObject({ rootSubjectKind: "agent_org", rootRunId: "org-one", containingTeamRunId: null, ancestorTeamRunIds: [], agentRunId: fixture.direct.agentRunId });
-    expect(direct?.memoryDir).toBe(path.join(memoryDir, "agent_orgs", "org-one", fixture.direct.agentRunId));
+    // A unit's agent lives in its unit run: a direct agent in its own run, a Team unit member in its Team run.
+    expect(direct?.memoryDir).toBe(path.join(memoryDir, "agents", fixture.direct.agentRunId));
     const mounted = service.findAgentSync({ rootRunId: "org-one", memberAddress: fixture.member.address });
     expect(mounted).toMatchObject({ containingTeamRunId: fixture.team.teamRunId, ancestorTeamRunIds: [fixture.team.teamRunId], agentRunId: fixture.member.agentRunId });
-    expect(mounted?.memoryDir).toBe(path.join(memoryDir, "agent_orgs", "org-one", fixture.team.teamRunId, fixture.member.agentRunId));
+    expect(mounted?.memoryDir).toBe(path.join(memoryDir, "agent_teams", fixture.team.teamRunId, fixture.member.agentRunId));
   });
 
   it("uses the explicit Org root when the same address exists in multiple stored Orgs", async () => {
@@ -51,9 +51,8 @@ describe("AgentOrg and compound execution locations", () => {
   it("lists one requested root's Agent executions from a single tree read and exposes sorted root IDs", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
     const second = await createStoredOrg(memoryDir, "org-b"); await createStoredOrg(memoryDir, "org-a");
-    const store = new AgentOrgRunExecutionTreeStore();
-    const read = vi.spyOn(store, "read");
-    const service = new AgentOrgExecutionTreeLocationService({ memoryDir, store });
+    const read = vi.spyOn(AgentOrgContainerStore.prototype, "readIfContainer");
+    const service = new AgentOrgExecutionTreeLocationService({ memoryDir });
 
     expect(await service.listRootRunIds()).toEqual(["org-a", "org-b"]);
     const scoped = await service.listAgents({ rootRunId: "org-b" });
@@ -69,11 +68,12 @@ describe("AgentOrg and compound execution locations", () => {
   it("respects root-package admission for a root-scoped listing", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
     await createStoredOrg(memoryDir, "org-a");
-    await fs.unlink(path.join(memoryDir, "agent_orgs", "org-a", "agent_org_communication_messages_active.jsonl"));
+    // A unit that no longer names its Org back: the container is not a current package.
+    await fs.rm(path.join(memoryDir, "agents", "org-a-direct"), { recursive: true, force: true });
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
     await readiness.rebuild();
     try {
-      // A required sidecar is absent, so the readiness rebuild excludes the incomplete package.
+      // A unit reference is broken, so the readiness rebuild excludes the incomplete package.
       expect(readiness.isAdmitted("agent_org", "org-a")).toBe(false);
       const service = new AgentOrgExecutionTreeLocationService({ memoryDir });
       expect(await service.listAgents({ rootRunId: "org-a" })).toEqual([]);

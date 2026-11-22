@@ -6,7 +6,7 @@ import {
 import type { RootSnapshotConnection, RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-package-snapshot.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
