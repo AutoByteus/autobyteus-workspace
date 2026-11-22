@@ -1,0 +1,378 @@
+{
+  "migrations": [
+    {
+      "migrationId": "20261122_agent_org_units_own_runs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.813Z",
+      "completedAt": "2026-11-22T22:13:11.844Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_org_flat_team_families_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.848Z",
+      "completedAt": "2026-11-22T22:13:11.857Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.860Z",
+      "completedAt": "2026-11-22T22:13:11.866Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_append_only_message_logs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.871Z",
+      "completedAt": "2026-11-22T22:13:11.878Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_delegated_runs_own_runs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.881Z",
+      "completedAt": "2026-11-22T22:13:11.889Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_task_agent_own_run_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.892Z",
+      "completedAt": "2026-11-22T22:13:11.897Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_own_file_complete_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.901Z",
+      "completedAt": "2026-11-22T22:13:11.907Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_append_only_logs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.910Z",
+      "completedAt": "2026-11-22T22:13:11.916Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.921Z",
+      "completedAt": "2026-11-22T22:13:11.927Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v2",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.930Z",
+      "completedAt": "2026-11-22T22:13:11.937Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_org_flat_team_families_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.940Z",
+      "completedAt": "2026-11-22T22:13:11.946Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_collaborators_to_delegated_runs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.948Z",
+      "completedAt": "2026-11-22T22:13:11.954Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_team_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.956Z",
+      "completedAt": "2026-11-22T22:13:11.962Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_preserved_items_after_remove_skill_improvement_data",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.965Z",
+      "completedAt": "2026-11-22T22:13:11.970Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_raw_trace_rotation_layout",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.973Z",
+      "completedAt": "2026-11-22T22:13:11.979Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_team_communication_projection_addresses",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.982Z",
+      "completedAt": "2026-11-22T22:13:11.988Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_raw_trace_active_file_name",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:11.990Z",
+      "completedAt": "2026-11-22T22:13:11.996Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_delegated_run_own_attachment_links",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.000Z",
+      "completedAt": "2026-11-22T22:13:12.006Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_delegated_run_own_attachment_links_after_task_agent_own_run",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.010Z",
+      "completedAt": "2026-11-22T22:13:12.016Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_agent_org_history_first_message_summary_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.019Z",
+      "completedAt": "2026-11-22T22:13:12.024Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_team_context_file_execution_locators_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.027Z",
+      "completedAt": "2026-11-22T22:13:12.032Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_collaborators_to_delegated_runs_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.034Z",
+      "completedAt": "2026-11-22T22:13:12.041Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_task_agent_own_run_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.044Z",
+      "completedAt": "2026-11-22T22:13:12.051Z"
+    },
+    {
+      "migrationId": "20261122_agent_org_units_after_delegated_copy_own_file_complete_v1",
+      "status": "SUCCEEDED",
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "startedAt": "2026-11-22T22:13:12.053Z",
+      "completedAt": "2026-11-22T22:13:12.059Z"
+    }
+  ],
+  "old": {
+    "spec": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md",
+    "notes": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/set_team_1/code_reviewer_1/notes.md",
+    "brief": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/concierge_1/received_files/peer_lead_2/brief.pdf",
+    "picture": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/concierge_1/received_files/peer_lead_2/picture.png"
+  },
+  "now": {
+    "spec": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md",
+    "notes": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/notes.md",
+    "brief": "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/brief.pdf",
+    "picture": "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/picture.png"
+  },
+  "teamLine": {
+    "messageId": "m_peer_member",
+    "senderAgentRunId": "peer_lead_1",
+    "receiverAgentRunId": "code_reviewer_1",
+    "content": "m_peer_member content",
+    "messageType": "handoff",
+    "referenceFiles": [
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md"
+    ],
+    "createdAt": "2026-11-22T10:00:00.000Z",
+    "counterpart": {
+      "address": null,
+      "nodeId": "srv_peer_node"
+    }
+  },
+  "conciergeLine": {
+    "messageId": "m_peer_agent",
+    "senderAgentRunId": "peer_lead_2",
+    "receiverAgentRunId": "concierge_1",
+    "content": "m_peer_agent content",
+    "messageType": "handoff",
+    "referenceFiles": [
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/brief.pdf",
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/picture.png"
+    ],
+    "createdAt": "2026-11-22T10:00:00.000Z",
+    "counterpart": {
+      "address": null,
+      "nodeId": "srv_peer_node"
+    }
+  },
+  "foreignLine": {
+    "messageId": "m_foreign",
+    "senderAgentRunId": "concierge_1",
+    "receiverAgentRunId": "solution_designer_1",
+    "content": "m_foreign content",
+    "messageType": "handoff",
+    "referenceFiles": [
+      "/srv/other-data/memory/agent_orgs/sdd_org_1/concierge_1/received_files/x/old.md"
+    ],
+    "createdAt": "2026-11-22T10:00:00.000Z",
+    "counterpart": {
+      "address": "/software_engineering_team/solution_designer",
+      "nodeId": null
+    }
+  },
+  "sealedForward": {
+    "messageId": "m_fwd_old",
+    "senderAgentRunId": "code_reviewer_1",
+    "receiverAgentRunId": "delegated_writer_1",
+    "content": "m_fwd_old content",
+    "messageType": "handoff",
+    "referenceFiles": [
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/notes.md"
+    ],
+    "createdAt": "2026-11-22T10:00:00.000Z"
+  },
+  "activeForward": {
+    "messageId": "m_fwd",
+    "senderAgentRunId": "code_reviewer_1",
+    "receiverAgentRunId": "delegated_writer_1",
+    "content": "m_fwd content",
+    "messageType": "handoff",
+    "referenceFiles": [
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/notes.md",
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md"
+    ],
+    "createdAt": "2026-11-22T10:00:00.000Z"
+  },
+  "task": {
+    "taskId": "task_cross",
+    "description": "Review the spec.",
+    "referenceFiles": [
+      "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md"
+    ],
+    "status": "IN_PROGRESS",
+    "createdAt": "2026-09-21T11:47:04.136Z",
+    "updatedAt": "2026-09-21T11:47:04.136Z"
+  },
+  "reviewerTraces": [
+    {
+      "id": "t1",
+      "trace_type": "user",
+      "content": "Message from peer_lead.\nReference files:\n- /tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md",
+      "file_attachments": [
+        {
+          "uri": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md",
+          "file_type": "text",
+          "file_name": "spec.md"
+        }
+      ]
+    },
+    {
+      "id": "t2",
+      "trace_type": "assistant",
+      "content": "I read /tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/set_team_1/code_reviewer_1/received_files/peer_lead_1/spec.md."
+    }
+  ],
+  "reviewerSealed": {
+    "id": "t0",
+    "trace_type": "user",
+    "content": "Earlier.",
+    "file_attachments": [
+      {
+        "uri": "/tmp/oc-paths-e2e-JkaA1v/memory/agent_teams/set_team_1/code_reviewer_1/notes.md",
+        "file_type": "text",
+        "file_name": "notes.md"
+      }
+    ]
+  },
+  "conciergeTrace": {
+    "id": "c1",
+    "trace_type": "user",
+    "content": "Message from peer_lead.\nReference files:\n- /tmp/oc-paths-e2e-JkaA1v/memory/agent_orgs/sdd_org_1/concierge_1/received_files/peer_lead_2/brief.pdf",
+    "media": {
+      "images": [
+        "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/picture.png"
+      ]
+    },
+    "file_attachments": [
+      {
+        "uri": "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/brief.pdf",
+        "file_type": "pdf",
+        "file_name": "brief.pdf"
+      }
+    ]
+  },
+  "orgMessages": [],
+  "orgMessageIds": [
+    "m_cross",
+    "m_cross_back",
+    "m_foreign",
+    "m_intra"
+  ],
+  "orgViewAgents": [
+    "solution_designer_1",
+    "code_reviewer_1",
+    "product_prototyper_1",
+    "concierge_1"
+  ],
+  "unitViews": {
+    "team": [
+      {
+        "messageId": "m_intra",
+        "referenceFiles": []
+      }
+    ],
+    "concierge": [
+      {
+        "messageId": "m_cross",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "m_cross_back",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "m_foreign",
+        "referenceFiles": [
+          "/srv/other-data/memory/agent_orgs/sdd_org_1/concierge_1/received_files/x/old.md"
+        ]
+      },
+      {
+        "messageId": "m_peer_agent",
+        "referenceFiles": [
+          "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/brief.pdf",
+          "/tmp/oc-paths-e2e-JkaA1v/memory/agents/concierge_1/received_files/peer_lead_2/picture.png"
+        ]
+      },
+      {
+        "messageId": "m_user",
+        "referenceFiles": []
+      }
+    ]
+  },
+  "reads": {
+    "orgSpec": {
+      "status": 200,
+      "text": "SPEC BYTES"
+    },
+    "orgBrief": {
+      "status": 200,
+      "text": "BRIEF BYTES"
+    },
+    "teamSpec": {
+      "status": 200,
+      "text": "SPEC BYTES"
+    },
+    "agentBrief": {
+      "status": 200,
+      "text": "BRIEF BYTES"
+    }
+  },
+  "secondStartUnchanged": true
+}

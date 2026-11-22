@@ -412,9 +412,11 @@ guarantee one point-in-time snapshot when files are edited concurrently with it.
 ### Team Runs Follow Their Definition
 
 When a Team definition's members, coordinator or handoff rules change (a package
-edit, a save in the app), a standalone Team run and a copy of a Team definition
-change with it on the server (rules, which runs follow, and the members' notices:
-[Agent Team Execution](../../autobyteus-server-ts/docs/modules/agent_team_execution.md#membership-follows-the-definition)).
+edit, a save in the app), a standalone Team run, a copy of a Team definition and
+a Team inside an Org change with it on the server (rules, which runs follow, and
+the members' notices:
+[Agent Team Execution](../../autobyteus-server-ts/docs/modules/agent_team_execution.md#membership-follows-the-definition);
+the Org view: [Agent Orgs](./agent_orgs.md#the-org-follows-its-definitions)).
 The Team view shows the change as the run tree's next change, without a reload:
 
 - **A new member** appears in the Team tree, Offline until its first message; the

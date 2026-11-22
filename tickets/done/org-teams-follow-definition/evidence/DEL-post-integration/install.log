@@ -1,0 +1,16 @@
+# 2026-11-22T22:07:18Z pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 2.9s using pnpm v10.28.2

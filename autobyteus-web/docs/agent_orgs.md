@@ -541,6 +541,25 @@ A copy's row is under the agent or member that delegated it in the Org's tree
 not the mounted Team's (REQ-007). Each row's status is its own run's, by the run ID
 the server names; no client walks the Team structure for statuses.
 
+### The Org Follows Its Definitions
+
+A running Org follows its Org definition, and each of its Teams follows its Team
+definition, on the server
+([Org Container](../../autobyteus-server-ts/docs/modules/agent_orgs.md#org-container-since-org-teams-follow-definition)).
+The Org view shows the change as the Org tree's next change, without a reload:
+
+- **A new unit or member** (a Team mounted in the Org definition, an Org agent
+  added to it, or a member added to a Team's definition) appears in the Org tree,
+  Offline until its first message.
+- **A removed unit or member** leaves the tree. While it is still finishing its
+  turn, its row stays, tagged **Leaving** (title "Removed from the team; finishing
+  its current turn"), as a Team's leaving member is in the Team view
+  ([Agent Teams](./agent_teams.md#team-runs-follow-their-definition)).
+  `AgentOrgRunMemberTree.vue` shows the tag from `leaving` on the run-tree row. The
+  row goes once the unit or member stops.
+- The Org view otherwise looks as before: its Teams and agents are now runs of their
+  own on the server, but the tree, messages and focus are unchanged for the user.
+
 ## History, Restore, And Stop
 
 AgentOrg history is a distinct root family projected into the same unified
