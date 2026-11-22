@@ -1,0 +1,5 @@
+# server typecheck with the new and changed tests | 2026-11-22T15:12:18Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.4s
+[typecheck] server tests (tsconfig.tests.json): 1000 errors, exit 2, 27.9s
+[typecheck] production errors: 0; test-file errors: 1000 in 313 files (baseline 1000 in 313 files)
+[typecheck] PASS

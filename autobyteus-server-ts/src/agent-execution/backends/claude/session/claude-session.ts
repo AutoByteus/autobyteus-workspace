@@ -47,6 +47,7 @@ import {
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding } from "../../../domain/claude-sdk-usage.js";
 import type { AgentBackgroundTask } from "../../../domain/agent-background-task.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
+import { verifyClaudeSessionResumable } from "./claude-session-resume-check.js";
 
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 
@@ -140,6 +141,9 @@ export class ClaudeSession {
   get sessionConfig(): ClaudeSessionConfig {
     return this.runContext.runtimeContext.sessionConfig;
   }
+
+  /** Restore only (autobyteus-599, DS-003): opens the process and awaits initialization; a lost session is the typed error. */
+  verifyResumable(): Promise<void> { return verifyClaudeSessionResumable(this.process, this.sessionId); }
 
   get sessionId(): string {
     return this.providerSessionLifecycle.sessionId;

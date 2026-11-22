@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingWithoutConversationInTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
+import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingInTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -102,7 +102,7 @@ describe("adoptAgentPlatformBindingInTree", () => {
     }).tree;
     const replacementBinding = binding("/coordinator", "run-coordinator", "thread-new");
 
-    const replaced = replaceAgentPlatformBindingWithoutConversationInTree({
+    const replaced = replaceAgentPlatformBindingInTree({
       tree: prior,
       replacement: {
         binding: replacementBinding,
@@ -111,7 +111,7 @@ describe("adoptAgentPlatformBindingInTree", () => {
     });
 
     expect(replaced.rootTeam.members[0]).toMatchObject({ platformAgentRunId: "thread-new" });
-    expect(() => replaceAgentPlatformBindingWithoutConversationInTree({
+    expect(() => replaceAgentPlatformBindingInTree({
       tree: prior,
       replacement: {
         binding: replacementBinding,

@@ -70,7 +70,7 @@ export const adoptAgentPlatformBindingInTree = (input: {
   };
 };
 
-export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
+export const replaceAgentPlatformBindingInTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
   replacement: Readonly<{
     binding: TeamAgentPlatformBinding;
@@ -91,7 +91,7 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     if (agent.platformAgentRunId !== input.replacement.expectedPreviousPlatformAgentRunId) {
       throw new TeamAgentPlatformBindingError(
         "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
-        "The no-conversation binding replacement does not match the persisted provider binding.",
+        "The binding replacement does not match the persisted provider binding.",
       );
     }
     return { ...agent, platformAgentRunId: input.replacement.binding.platformAgentRunId };

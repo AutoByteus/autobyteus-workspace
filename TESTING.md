@@ -84,7 +84,7 @@ closes the remaining confidence gap.
 | Desktop-shell behavior: Electron main, preload/IPC, updater, windows, lifecycle, embedded server startup, packaging | Electron main-process tests + an isolated desktop instance |
 | A full real-product journey a user would perform | An isolated desktop instance of a worktree build |
 | Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
-| GraphQL operations (`autobyteus-web/graphql/**`, or an operation defined elsewhere in the web source) or the iOS app's demo node (`autobyteus-web/demo/**`) | The demo's operation coverage on the source, in seconds and without a build: `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts` (it names every operation the demo neither answers nor lists, and every stale list entry); then the demo build, whose own check is the authority: `autobyteus-ios/scripts/prepare-demo-web.sh --build` (it builds the workspace packages the web imports, then `build:mobile-web --demo`). A `autobyteus-web/dist-mobile-demo/` left by the demo build makes `pnpm -C autobyteus-web typecheck` run out of memory (the Nuxt typecheck reads it; only `dist-mobile/` is excluded): remove it before the typecheck |
+| GraphQL operations (`autobyteus-web/graphql/**`, or an operation defined elsewhere in the web source) or the iOS app's demo node (`autobyteus-web/demo/**`) | The demo's operation coverage on the source, in seconds and without a build: `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts` (it names every operation the demo neither answers nor lists, and every stale list entry); then the demo build, whose own check is the authority: `autobyteus-ios/scripts/prepare-demo-web.sh --build` (it builds the workspace packages the web imports, then `build:mobile-web --demo`). |
 | The product logo (`autobyteus-web/public/autobyteus-icon.svg`), the iOS app icon set (`autobyteus-ios/AutoByteusMobile/Assets.xcassets/AppIcon.appiconset/`) or the iOS app's `Info.plist` | `pnpm --dir autobyteus-web ios-icon:check` (every slot at its size, RGB without alpha, matching the logo's render; after a logo change run `ios-icon:build` and commit the regenerated PNGs) and `autobyteus-ios/scripts/ios-release-contract-check.py` (the icon set's structure without node, `ITSAppUsesNonExemptEncryption = false`, the workflow's icon step) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 | The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
@@ -290,6 +290,21 @@ or because Gradle's cache already holds a dependency the runner must download.
     When the installed `agy` keeps no `antigravity-oauth-token` file, a throwaway `HOME` gives a
     signed-out `agy`; live AGY suites then run on the host login with the real `HOME`, and each
     run adds its own conversations to the user's `agy` history. Say so in your report.
+  - **Claude Code (`claude`).** It keeps its login, settings and saved sessions under
+    `CLAUDE_CONFIG_DIR` (default `$HOME/.claude`). For a test-owned Claude, give the server a
+    throwaway `HOME` and `CLAUDE_CONFIG_DIR`, and set `CLAUDE_AGENT_SDK_AUTH_MODE=api-key` with the
+    [test vault](#test-vault): the server then hands the vault's `provider.anthropic.api-key` to
+    the CLI child only, so nothing of the user's `~/.claude` is read or written. A built server
+    gets the vault through `startBuiltTestServer({ testVaultSetting })` (read the setting with
+    `capturedTestVaultSetting()`: the test setup takes `AUTOBYTEUS_TEST_VAULT` out of the
+    environment); an in-process suite calls `initializeLiveServerVault()`. Example:
+    `autobyteus-server-ts/tests/e2e/runtime/lost-session-renewal-live.e2e.test.ts`.
+  - **A recorder in front of a CLI** (`CLAUDE_CODE_EXECUTABLE_PATH`, `CODEX_APP_SERVER_COMMAND`,
+    `GROK_BUILD_COMMAND`) runs the real CLI unchanged and keeps what the server sends it. Inside an
+    ES-module package (such as `autobyteus-server-ts/tests/.tmp/`) name a CommonJS recorder `.cjs`,
+    or Node loads it as a module and it fails. The server uses `CLAUDE_CODE_EXECUTABLE_PATH` only
+    when it answers `--version` with exit 0 within 3 s, and otherwise silently runs the real
+    `claude`; check that before the server starts.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process

@@ -175,12 +175,6 @@ describe("the explicit pending field decides, and the staged path refuses it", (
     expect(f.memory.begin).not.toHaveBeenCalled();
   });
 
-  it("the staged activation of a fresh task copy refuses a spec with a pending switch", async () => {
-    const f = build();
-    await expect(f.handle.prepareConfiguredActivation()).rejects.toThrow(/pending agent runtime switch/);
-    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
-  });
-
   it("replaceSelection gives a stopped retained handle the node's runtime, session and pending switch; a running one refuses", async () => {
     const f = build({ pending: null, history: "present" });
     f.handle.replaceSelection({

@@ -28,6 +28,17 @@ export class ClaudeSessionProcess {
   get isOpen(): boolean { return this.currentState === "OPEN" && !this.closing && this.current?.session != null; }
   get capabilities(): ReadonlySet<string> | null { return this.current?.session?.capabilities ?? null; }
 
+  /**
+   * Opens the process, then awaits the SDK's initialization with the CLI (autobyteus-599, DS-003): a restore learns here, before
+   * any input, whether the CLI has the session. A rejection is the CLI's own reason; the stream's end releases the generation.
+   */
+  async ensureInitialized(): Promise<void> {
+    await this.ensureOpen();
+    const session = this.current?.session;
+    if (!session) throw new Error("CLAUDE_SESSION_NOT_OPEN: Process is not open.");
+    await session.initialized;
+  }
+
   ensureOpen(): Promise<void> {
     if (this.closing) return Promise.reject(new Error("CLAUDE_SESSION_CLOSED: Process closed."));
     if (this.isOpen) return Promise.resolve();

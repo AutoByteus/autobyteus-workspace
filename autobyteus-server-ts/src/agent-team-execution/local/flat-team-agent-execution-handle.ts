@@ -7,10 +7,7 @@ import type { AgentRunManager } from "../../agent-execution/services/agent-run-m
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
-import type {
-  ConfiguredAgentExecutionHandle,
-  PreparedConfiguredAgentActivation,
-} from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
+import type { ConfiguredAgentExecutionHandle } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
 import type {
   ConfiguredAgentSelection,
   RetainedAgentExecutionControl,
@@ -84,9 +81,6 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     const construction = this.construction;
     if (construction) await construction.catch(() => null);
     return this.handle ? this.handle.fenceForRootShutdown() : { accepted: true as const };
-  }
-  async prepareConfiguredActivation(): Promise<PreparedConfiguredAgentActivation> {
-    return (await this.getHandle()).prepareConfiguredActivation();
   }
   cancelActivation(): void {
     this.rootShutdownFenced = true;
@@ -185,7 +179,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
           }
           const previous = this.context.getPlatformAgentRunId();
           if (change.kind === "runtime_switch" ? previous !== null
-            : change.kind === "replace_without_conversation"
+            : change.kind === "replace_without_conversation" || change.kind === "replace_lost_session"
               ? previous !== change.replacement.expectedPreviousPlatformAgentRunId
               : previous !== null && previous !== change.binding.platformAgentRunId) {
             throw new Error("Flat Team Agent execution has a conflicting provider binding.");
@@ -197,10 +191,14 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
               this.context.refreshSelection({ runtimeKind: this.context.runtimeKind, platformAgentRunId: change.platformAgentRunId });
               const { pendingRuntimeSwitch: _pending, ...rest } = this.config;
               this.config = Object.freeze({ ...rest, platformAgentRunId: change.platformAgentRunId });
-            } else if (change.kind === "replace_without_conversation") {
+            } else if (change.kind === "replace_without_conversation" || change.kind === "replace_lost_session") {
               this.context.replaceCommittedPlatformAgentRunId(
                 change.replacement.expectedPreviousPlatformAgentRunId, change.replacement.binding.platformAgentRunId,
               );
+              // autobyteus-599: a renewal's new session is the one a later re-created configured handle restores.
+              if (change.kind === "replace_lost_session") {
+                this.config = Object.freeze({ ...this.config, platformAgentRunId: change.replacement.binding.platformAgentRunId });
+              }
             } else this.context.adoptPlatformAgentRunId(change.binding.platformAgentRunId);
           } catch (cause) {
             throw new CollaborationAgentActivationError(

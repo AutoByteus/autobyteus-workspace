@@ -123,6 +123,14 @@ const messages = {
     "{{count}} 个已覆盖",
   "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "已自定义",
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
+  "workspace.components.mobile.views.MobileActivityDetail.logs":
+    "日志（{{count}}）",
+  "workspace.components.mobile.views.MobileActivityDetail.status":
+    "状态",
+  "workspace.components.mobile.views.MobileActivityDetail.call":
+    "调用",
+  "workspace.components.mobile.views.MobileActivityDetail.no_longer_available":
+    "此活动已不可用。",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
   "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。",

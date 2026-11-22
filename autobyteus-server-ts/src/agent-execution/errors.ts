@@ -1,3 +1,5 @@
+import type { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
+
 export class AgentExecutionError extends Error {
   constructor(message = "Agent execution error") {
     super(message);
@@ -28,7 +30,9 @@ export type AgentRunActivationErrorCode =
   | "PLATFORM_AGENT_RUN_RESTORE_FAILED"
   | "PLATFORM_AGENT_RUN_BINDING_INVALID"
   /** G-5: the run's saved model is no longer offered by its runtime. */
-  | "RUN_MODEL_NOT_OFFERED";
+  | "RUN_MODEL_NOT_OFFERED"
+  /** autobyteus-599: the runtime reports that the run's saved session does not exist (a lost runtime session). */
+  | "SAVED_RUNTIME_SESSION_MISSING";
 
 export class AgentRunActivationError extends AgentExecutionError {
   constructor(
@@ -46,6 +50,23 @@ export class PlatformAgentRunRestoreError extends AgentRunActivationError {
   constructor(message = "The persisted provider conversation could not be restored.", cause?: unknown) {
     super("PLATFORM_AGENT_RUN_RESTORE_FAILED", message, { cause });
     this.name = "PlatformAgentRunRestoreError";
+  }
+}
+
+/**
+ * A lost runtime session (autobyteus-599): the run's runtime reports, by its own exact signal, that the run's saved session
+ * does not exist. Thrown only by a backend's platform-restore preparation, after it released what it started; only the two
+ * activation owners catch it, and they continue the run in a fresh session of the same runtime and model (a session renewal).
+ * Any other restore failure is never this error.
+ */
+export class SavedRuntimeSessionMissingError extends AgentRunActivationError {
+  constructor(
+    readonly runtimeKind: RuntimeKind,
+    readonly platformAgentRunId: string,
+    options: { cause?: unknown } = {},
+  ) {
+    super("SAVED_RUNTIME_SESSION_MISSING", `The saved ${runtimeKind} session '${platformAgentRunId}' of this run no longer exists.`, options);
+    this.name = "SavedRuntimeSessionMissingError";
   }
 }
 

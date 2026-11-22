@@ -1,0 +1,29 @@
+{
+  "writerTarget": {
+    "memberAddress": "/writer",
+    "agentRunId": "tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10",
+    "agentDefinitionId": "tf-writer-6ba8ec"
+  },
+  "entries": [
+    {
+      "teamRunId": "tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef",
+      "memberTargets": [
+        {
+          "memberAddress": "/lead",
+          "agentRunId": "tf_lead_6ba8ec_62a06c0440004179841555720a331fa4",
+          "agentDefinitionId": "tf-lead-6ba8ec"
+        },
+        {
+          "memberAddress": "/reviewer",
+          "agentRunId": "tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a",
+          "agentDefinitionId": "tf-reviewer-6ba8ec"
+        },
+        {
+          "memberAddress": "/writer",
+          "agentRunId": "tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10",
+          "agentDefinitionId": "tf-writer-6ba8ec"
+        }
+      ]
+    }
+  ]
+}

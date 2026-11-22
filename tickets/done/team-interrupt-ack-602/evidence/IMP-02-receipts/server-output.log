@@ -1,0 +1,760 @@
+===== server #1
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db/production.db"
+
+SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db/production.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:82931) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-22T10:05:58.173Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 35 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795341958549,"pid":82931,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50879"}
+{"level":30,"time":1795341958574,"pid":82931,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50881"}
+[2026-11-22T10:05:58.575Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795341958615,"pid":82931,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.293916000000081,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Created and registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Created agent session 28aea58d-c378-4bef-9b29-d1c4405166e5 for run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent team websocket attached for team run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent Team WebSocket connected: session=28aea58d-c378-4bef-9b29-d1c4405166e5, run=tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_62a06c0440004179841555720a331fa4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+AGY compaction detection off for run tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_9364b31e713f467ca03a364138be803a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+AGY compaction detection off for run tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_writer_6ba8ec_919a31e41d8f4b11be7d97d1979fdb10/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+AGY compaction detection off for run tf_reviewer_6ba8ec_c5d7c56185bc4f9daf2307e754c59937: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_c5d7c56185bc4f9daf2307e754c59937/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_alt_6ba8ec_bf96339c713642f4ac837cd1b9c44069: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_alt_6ba8ec_bf96339c713642f4ac837cd1b9c44069/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_alt_6ba8ec_bf96339c713642f4ac837cd1b9c44069/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef' keeps its members: Team definition 'tf-team-6ba8ec' could not be read (Invalid JSON: Unexpected token 'o', ..."mbers": [ oops" is not valid JSON); its last good version is not followed.
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef' keeps its members: Team definition 'tf-team-6ba8ec' could not be read (Invalid JSON: Unexpected token 'o', "not json at all" is not valid JSON); its last good version is not followed.
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef' keeps its members: Team definition 'tf-team-6ba8ec' cannot be used (AgentDefinition 'tf-no-such-agent-6ba8ec' cannot be loaded for agent run identity allocation.).
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+TEAM_RUN_DEFINITION_NOT_FOLLOWED: Team run 'tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef' keeps its members: Team definition 'tf-team-6ba8ec' was not found.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Closed agent session 28aea58d-c378-4bef-9b29-d1c4405166e5
+Created agent session 4beacf16-18f6-4b0b-9a24-834331b41136 for run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent team websocket attached for team run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent Team WebSocket connected: session=4beacf16-18f6-4b0b-9a24-834331b41136, run=tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_62a06c0440004179841555720a331fa4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Closed agent session 4beacf16-18f6-4b0b-9a24-834331b41136
+
+===== server #2
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:3583) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-22T10:06:28.274Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 35 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795341988502,"pid":3583,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50955"}
+{"level":30,"time":1795341988528,"pid":3583,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50957"}
+[2026-11-22T10:06:28.528Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795341988583,"pid":3583,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.375040999999783,"msg":"http request completed"}
+Created agent session d2d08e49-4514-4d39-90a2-ef593b817267 for run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent team websocket attached for team run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent Team WebSocket connected: session=d2d08e49-4514-4d39-90a2-ef593b817267, run=tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Created and registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_62a06c0440004179841555720a331fa4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+AGY compaction detection off for run tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Agent websocket attached for run tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a
+Created agent session 6afb7514-0f63-489e-9906-11ed9a733b89 for run tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a
+Agent WebSocket connected: session=6afb7514-0f63-489e-9906-11ed9a733b89, run=tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agents/tf_host_6ba8ec_cf4b10caec5e4f9fb1d0017529305f3a/raw_traces_manifest.json
+Created agent session 36ae34fe-fa8b-473a-812d-4c7908560fb5 for run tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d
+Agent team websocket attached for team run tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d
+Agent Team WebSocket connected: session=36ae34fe-fa8b-473a-812d-4c7908560fb5, run=tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+AGY compaction detection off for run tf_reviewer_6ba8ec_020dc3f78e5a420a93d693b48b6e4b59: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_reviewer_6ba8ec_020dc3f78e5a420a93d693b48b6e4b59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_lead_6ba8ec_877b407ee5d14d5cb59b489a8b8e03c5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_e86a981c89fd4d9a829cdf0e06b5b94d/tf_reviewer_6ba8ec_020dc3f78e5a420a93d693b48b6e4b59/raw_traces_manifest.json
+Closed agent session 36ae34fe-fa8b-473a-812d-4c7908560fb5
+Closed agent session 6afb7514-0f63-489e-9906-11ed9a733b89
+Agent WebSocket disconnected: 6afb7514-0f63-489e-9906-11ed9a733b89
+Agent Definition created successfully with ID: tf-own-lead-6ba8ec
+Agent Definition created successfully with ID: tf-own-mate-6ba8ec
+Agent Definition created successfully with ID: tf-own-extra-6ba8ec
+Agent Team Definition created successfully with ID: tf-own-team-6ba8ec
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Created agent session 7e55cf4e-fe60-4758-8a56-8947a932002a for run tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606
+Agent team websocket attached for team run tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606
+Agent Team WebSocket connected: session=7e55cf4e-fe60-4758-8a56-8947a932002a, run=tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+AGY compaction detection off for run tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Agent Team Definition with ID tf-own-team-6ba8ec updated successfully.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606/tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72/raw_traces_manifest.json
+Closed agent session 7e55cf4e-fe60-4758-8a56-8947a932002a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+AGY compaction detection off for run tf_reviewer_6ba8ec_3d7c6e97bf8d4fde8672703aaf6dd5d8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_3d7c6e97bf8d4fde8672703aaf6dd5d8/raw_traces_manifest.json
+Closed agent session d2d08e49-4514-4d39-90a2-ef593b817267
+Created agent session bcb5c93c-610d-4b2c-b59f-bf6e43ad987b for run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent team websocket attached for team run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent Team WebSocket connected: session=bcb5c93c-610d-4b2c-b59f-bf6e43ad987b, run=tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_62a06c0440004179841555720a331fa4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Reusing registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+AGY compaction detection off for run tf_reviewer_6ba8ec_3d7c6e97bf8d4fde8672703aaf6dd5d8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_reviewer_6ba8ec_3d7c6e97bf8d4fde8672703aaf6dd5d8/raw_traces_manifest.json
+Closed agent session bcb5c93c-610d-4b2c-b59f-bf6e43ad987b
+
+===== server #3
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/team-interrupt-ack-602/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10758) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-22T10:06:38.939Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 35 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795341999148,"pid":10758,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50994"}
+{"level":30,"time":1795341999175,"pid":10758,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50996"}
+[2026-11-22T10:06:39.175Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795341999223,"pid":10758,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.3459589999999935,"msg":"http request completed"}
+Created agent session c15550c6-2612-45a2-aa5d-18df8b4fea65 for run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent team websocket attached for team run tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Agent Team WebSocket connected: session=c15550c6-2612-45a2-aa5d-18df8b4fea65, run=tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace.
+Created and registered workspace ID: agent_ws_86fd59364bca6ae7806c1bed026c2660f4ea9ee55aec061d970726fa36fb62aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+AGY compaction detection off for run tf_lead_6ba8ec_62a06c0440004179841555720a331fa4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/memory/agent_teams/tf_team_6ba8ec_22ed692c6de14cf89d7e484bdbfbf0ef/tf_lead_6ba8ec_62a06c0440004179841555720a331fa4/raw_traces_manifest.json
+Closed agent session c15550c6-2612-45a2-aa5d-18df8b4fea65

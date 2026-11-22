@@ -1,0 +1,168 @@
+# IMP-12 round-2 focused tests, then one negative control per wiring piece
+# Command: /tmp/599-ev/controls-r2.sh <worktree> (script below the results)
+# Commit: 132471ccd9 (1df7771aac differs only by a type-only line in tests/helpers/session-renewal-wiring.ts)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Expected: baseline all pass; each NC fails at least one test, except NC-R2-02a/02b, which are covered together by NC-R2-02c (see the note at the end).
+
+## Focused files
+tests/unit/application-platform/application-scope-session-renewal.test.ts
+tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+tests/unit/standalone-application-host/host-session-renewal-wiring.test.ts
+tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+tests/unit/agent-execution/domain/runtime-switch-session-renewal.test.ts
+tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+
+## Baseline (unchanged source)
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-01 Application scope: no input preface
+edit: src/application-platform/execution/application-execution-scope-kernel-builder.ts: '      inputPreface: platformInputNotices,
+' -> ''
+application-scope-session-renewal.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+application-scope-session-renewal.test.ts:       Tests  2 failed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-02a Application scope: run manager without the lifecycle observer
+edit: src/application-platform/execution/application-execution-scope-kernel-builder.ts: '      lifecycleObserver: platformInputNotices,
+    });
+    const metadataService' -> '    });
+    const metadataService'
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-02b Application scope: resource manager without the lifecycle observer
+edit: src/application-platform/execution/application-execution-scope-kernel-builder.ts: '      lifecycleObserver: platformInputNotices,
+      mcpServerInstances' -> '      mcpServerInstances'
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-03 Application scope: no switch memory
+edit: src/application-platform/execution/application-execution-scope-kernel-builder.ts: '      switching: { memory: getDefaultRuntimeSwitchMemory() },
+' -> ''
+application-scope-session-renewal.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+application-scope-session-renewal.test.ts:       Tests  2 failed (2)
+application-execution-scope-kernel-builder.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+application-execution-scope-kernel-builder.test.ts:       Tests  1 failed | 11 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-04 Host: no runtimeSwitching
+edit: src/standalone-application-host/start-standalone-application-host.ts: '        runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
+' -> ''
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+standalone-application-host-lifecycle.test.ts:       Tests  1 failed | 16 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-05 Host: hand-over notice last, not first
+edit: src/standalone-application-host/start-standalone-application-host.ts: '          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),
+          ...platformNotices.sources,' -> '          ...platformNotices.sources,
+          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),'
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+standalone-application-host-lifecycle.test.ts:       Tests  1 failed | 16 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-06 Host: no hand-over notice
+edit: src/standalone-application-host/start-standalone-application-host.ts: '          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),
+' -> ''
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts:       Tests  1 passed (1)
+standalone-application-host-lifecycle.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+standalone-application-host-lifecycle.test.ts:       Tests  1 failed | 16 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-07 Supervisor: no input preface
+edit: src/agent-execution/runtime/general-process-run-supervisor.ts: '        inputPreface: input.platformInputNotices ?? null,
+' -> ''
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+host-session-renewal-wiring.test.ts:       Tests  1 failed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## NC-R2-08 Supervisor: lifecycle without the switch port
+edit: src/agent-execution/runtime/general-process-run-supervisor.ts: '        switching: input.runtimeSwitching ?? null,' -> '        switching: null,'
+application-scope-session-renewal.test.ts:       Tests  2 passed (2)
+application-execution-scope-kernel-builder.test.ts:       Tests  12 passed (12)
+host-session-renewal-wiring.test.ts: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+host-session-renewal-wiring.test.ts:       Tests  1 failed (1)
+standalone-application-host-lifecycle.test.ts:       Tests  17 passed (17)
+runtime-switch-session-renewal.test.ts:       Tests  6 passed (6)
+codex-thread-manager.test.ts:       Tests  14 passed (14)
+
+## After the controls
+
+## NC-R2-02c Application scope: neither manager has the lifecycle observer (both lines removed; run separately after the script)
+     × a run that already took an input in this scope still gets the notice after its later renewal (the lifecycle observers) 197ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 1 passed (2)
+Note: NC-R2-02a and NC-R2-02b pass because either observer alone clears the notice cache (on publication or on release); without both the test fails.
+
+
+## The script
+#!/bin/bash
+# IMP-12: round-2 focused tests on HEAD, then one negative control per wiring piece (each edit reverted right after).
+cd "$1/autobyteus-server-ts" || exit 1
+FILES="tests/unit/application-platform/application-scope-session-renewal.test.ts tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts tests/unit/standalone-application-host/host-session-renewal-wiring.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts tests/unit/agent-execution/domain/runtime-switch-session-renewal.test.ts tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts"
+run() { for f in $FILES; do pnpm exec vitest run $f 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E "Tests +[0-9]" | sed "s|^|$(basename $f): |"; done; }
+echo "## Focused files"; echo "$FILES" | tr ' ' '\n'
+echo; echo "## Baseline (unchanged source)"; run
+control() {
+  cp "$2" /tmp/599-ev/bak; python3 -I -c "import sys;p,o,n=sys.argv[1:4];s=open(p).read();assert s.count(o)==1,o;open(p,'w').write(s.replace(o,n))" "$2" "$3" "$4" || { echo "CONTROL EDIT FAILED: $1"; return; }
+  echo; echo "## $1"; echo "edit: $2: '$3' -> '$4'"; run; cp /tmp/599-ev/bak "$2"
+}
+K=src/application-platform/execution/application-execution-scope-kernel-builder.ts
+H=src/standalone-application-host/start-standalone-application-host.ts
+G=src/agent-execution/runtime/general-process-run-supervisor.ts
+control "NC-R2-01 Application scope: no input preface" $K '      inputPreface: platformInputNotices,
+' ''
+control "NC-R2-02a Application scope: run manager without the lifecycle observer" $K '      lifecycleObserver: platformInputNotices,
+    });
+    const metadataService' '    });
+    const metadataService'
+control "NC-R2-02b Application scope: resource manager without the lifecycle observer" $K '      lifecycleObserver: platformInputNotices,
+      mcpServerInstances' '      mcpServerInstances'
+control "NC-R2-03 Application scope: no switch memory" $K '      switching: { memory: getDefaultRuntimeSwitchMemory() },
+' ''
+control "NC-R2-04 Host: no runtimeSwitching" $H '        runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
+' ''
+control "NC-R2-05 Host: hand-over notice last, not first" $H '          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),
+          ...platformNotices.sources,' '          ...platformNotices.sources,
+          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),'
+control "NC-R2-06 Host: no hand-over notice" $H '          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),
+' ''
+control "NC-R2-07 Supervisor: no input preface" $G '        inputPreface: input.platformInputNotices ?? null,
+' ''
+control "NC-R2-08 Supervisor: lifecycle without the switch port" $G '        switching: input.runtimeSwitching ?? null,' '        switching: null,'
+echo; echo "## After the controls"; git status --short src

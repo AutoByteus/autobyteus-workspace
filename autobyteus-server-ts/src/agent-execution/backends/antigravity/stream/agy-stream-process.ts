@@ -66,6 +66,19 @@ export class AgyStreamProcess {
     finally { clearTimeout(timer); }
   }
 
+  /**
+   * Whether AGY's stderr shows `text` within `timeoutMs`. stderr and stdout are separate pipes, so a line AGY writes before an
+   * event can arrive after it.
+   */
+  async stderrShows(text: string, timeoutMs: number): Promise<boolean> {
+    const deadline = Date.now() + timeoutMs;
+    while (!this.stderrTail.includes(text)) {
+      if (Date.now() >= deadline) return false;
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    return true;
+  }
+
   subscribe(listener: (message: AgyStreamMessage) => void): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);

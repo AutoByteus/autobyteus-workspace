@@ -1,0 +1,5 @@
+# API-00 server build | commit b220b6ce38 (code 1df7771aac) | Node v22.23.1 | 2026-11-22T14:55:25Z | load { 7.92 7.35 9.86 }
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

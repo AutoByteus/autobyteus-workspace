@@ -1,0 +1,30 @@
+# IMP-09 application-scope lifecycle gets the switch memory (N-4)
+# Command: pnpm exec vitest run tests/unit/application-platform tests/architecture tests/unit/agent-execution/standalone-session-renewal.test.ts
+# Commit: 2acd842c95
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12
+# Date: 2026-11-22
+# Negative control (before the commit): the line `switching: { memory: getDefaultRuntimeSwitchMemory() },` removed from
+# application-execution-scope-kernel-builder.ts, then pnpm exec vitest run tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts:
+#   × gives the scope's standalone lifecycle the switch memory, so a lost runtime session renews (autobyteus-599, N-4) 4ms
+#   ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+#         Tests  1 failed | 11 passed (12)
+
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+
+ Test Files  26 passed (26)
+      Tests  181 passed (181)
+   Start at  14:39:31
+   Duration  52.35s (transform 7.42s, setup 771ms, import 19.02s, tests 29.52s, environment 1ms)
+

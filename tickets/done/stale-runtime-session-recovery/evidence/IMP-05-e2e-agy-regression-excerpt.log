@@ -1,0 +1,52 @@
+# IMP-05 existing Antigravity E2Es with the changed fixture (regression)
+# Command: env -i ... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts tests/e2e/runtime/agy-failure-transport.e2e.test.ts tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts --no-watch
+# Commit: c1d316f60b
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Excerpt (result lines only); the full 269 KB log was /tmp/599-runs/e2e-agy-regression.log on the implementation machine, not committed.
+
+SEND_MESSAGE command not accepted for agent run named_6cb0395d_21869063a88145229a208448b7838abb: [ACTIVATION_FAILED] Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.
+TOOL_LIST_UPDATE_APPLY_FAILED:lead_0f0785bf_e908c6dad76949ca9268f591cd1d23e8: Error: Agent run 'lead_0f0785bf_e908c6dad76949ca9268f591cd1d23e8' is not active.
+TOOL_LIST_UPDATE_APPLY_FAILED:all_installed_1612c652_b5708a7a3f7148ca8ef609b2e0c3438d: Error: Agent run 'all_installed_1612c652_b5708a7a3f7148ca8ef609b2e0c3438d' is not active.
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 8128ms
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  590ms
+     ✓ E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)  481ms
+     ✓ E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)  498ms
+     ✓ E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)  931ms
+     ✓ E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)  482ms
+     ✓ E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006)  734ms
+     ✓ E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006)  1114ms
+     ✓ E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)  1123ms
+     ✓ E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)  515ms
+     ✓ E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)  607ms
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 19203ms
+     ✓ SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry  7395ms
+     ✓ SB-02: a delegated copy Antigravity -> native -> Antigravity  4854ms
+     ✓ SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era  4333ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 11305ms
+     ✓ retains native-image denial privacy without fabricating tool success  333ms
+     ✓ agent: supplied quota error survives actual public transport and normal next user turn  338ms
+     ✓ agent: supplied unfamiliar error survives actual public transport and normal next user turn  339ms
+     ✓ agent: supplied structured error survives actual public transport and normal next user turn  341ms
+     ✓ agent: supplied missing error survives actual public transport and normal next user turn  341ms
+     ✓ agent: supplied empty error survives actual public transport and normal next user turn  339ms
+     ✓ agent: supplied malformed error survives actual public transport and normal next user turn  343ms
+     ✓ agent: supplied credential error survives actual public transport and normal next user turn  341ms
+     ✓ team: supplied quota error survives actual public transport and normal next user turn  494ms
+     ✓ team: supplied unfamiliar error survives actual public transport and normal next user turn  493ms
+     ✓ team: supplied structured error survives actual public transport and normal next user turn  480ms
+     ✓ team: supplied missing error survives actual public transport and normal next user turn  485ms
+     ✓ team: supplied empty error survives actual public transport and normal next user turn  479ms
+     ✓ team: supplied malformed error survives actual public transport and normal next user turn  496ms
+     ✓ team: supplied credential error survives actual public transport and normal next user turn  488ms
+     ✓ org: supplied quota error survives actual public transport and normal next user turn  570ms
+     ✓ org: supplied unfamiliar error survives actual public transport and normal next user turn  559ms
+     ✓ org: supplied structured error survives actual public transport and normal next user turn  562ms
+     ✓ org: supplied missing error survives actual public transport and normal next user turn  564ms
+     ✓ org: supplied empty error survives actual public transport and normal next user turn  560ms
+     ✓ org: supplied malformed error survives actual public transport and normal next user turn  561ms
+     ✓ org: supplied credential error survives actual public transport and normal next user turn  573ms
+     ✓ restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work  644ms
+ Test Files  3 passed (3)
+      Tests  37 passed | 1 skipped (38)
+   Duration  49.49s (transform 6.30s, setup 106ms, import 10.11s, tests 38.64s, environment 0ms)

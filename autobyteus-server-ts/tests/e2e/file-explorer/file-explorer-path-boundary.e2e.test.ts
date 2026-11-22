@@ -204,13 +204,11 @@ describe("File explorer GraphQL path-boundary e2e", () => {
         fileContent(workspaceId: $workspaceId, filePath: $filePath)
       }
     `;
-    const readData = await execGraphql<{ fileContent: string }>(readQuery, {
-      workspaceId,
-      filePath: "../ws-sibling/leak.txt",
-    });
-    const readPayload = JSON.parse(readData.fileContent) as { error?: string };
-    expect(readPayload.error).toContain("Access denied: File is outside the workspace");
-    expect(readData.fileContent).not.toContain("sibling leak");
+    // A refusal is a GraphQL error with its code, never text (autobyteus-579).
+    const readError = await expectGraphqlError(readQuery, { workspaceId, filePath: "../ws-sibling/leak.txt" },
+      "Access denied: File is outside the workspace");
+    expect(readError.extensions?.code).toBe("WORKSPACE_ACCESS_REFUSED");
+    expect(JSON.stringify(readError)).not.toContain("sibling leak");
 
     const writeMutation = `
       mutation WriteFileContent($workspaceId: String!, $filePath: String!, $content: String!) {

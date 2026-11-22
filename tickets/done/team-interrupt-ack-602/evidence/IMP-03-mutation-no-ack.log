@@ -1,0 +1,25 @@
+# IMP-03 mutation check (not committed): isInterruptAck matches no frame ("IMP03_NO_SUCH_COMMAND"), so no ack is ever seen; TF-04 must fail after its limit
+# command: the IMP-02 command, on 51b49e22e3 plus that one-line local mutation, reverted afterwards
+# env: macOS Darwin 25.5.0; load before: 28.85 37.48 33.15
+# date: 2026-11-22 11:07 CET
+
+     ✓ TF-01 (AC-001, AC-006): an added member and rule reach the running team; the lead is told, the new member starts on its first message  1790ms
+     ✓ TF-02 (AC-002, AC-010, AC-006): a removed idle member is refused by address and run ID, leaves the view, keeps its history  1522ms
+     ✓ TF-03 (AC-003, DEC-002): a member removed mid-turn is leaving, refused at once, its send is delivered, then it is released  1572ms
+     × TF-04 (DEC-007, AC-003): a removed member added back keeps its run and conversation; its interrupt works while leaving 35594ms
+     ↓ TF-05 (DEC-006): another agent at a busy member's address: the old one finishes, the new one is reached at the address
+     ↓ TF-06 (AC-008): a new coordinator is the run's coordinator in the stored tree and the open view
+     ↓ TF-07 (AC-007): an unusable Team definition leaves the run unchanged; the problem is reported
+     ↓ TF-08 (AC-004): a change made while the run is stopped is applied when it is reopened, also after a server restart
+     ↓ TF-09 (AC-005): a Team copy started by an agent's delegate_task follows the same edits
+     ↓ TF-10 (AC-001 by the app's editor): a user's own Team saved through updateAgentTeamDefinition: its run follows
+     ↓ TF-11 (AC-003, SR-010): a Stop while a member is leaving shows no leaving row; reopening clears the marker
+     ↓ TF-12 (AC-003, AC-004, SR-010): a server restart while a member is leaving shows no leaving row; reopening clears the marker
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the leaving member's interrupt is accepted: expected null to match object { state: 'accepted', …(1) }
+- Expected:
++ Received:
+    447|     expect(interruptAck, "the leaving member's interrupt is accepted")…
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 8 skipped (12)
+   Duration  57.13s (transform 8.87s, setup 74ms, import 12.25s, tests 44.25s, environment 0ms)

@@ -338,6 +338,47 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
     }
   }, 60_000);
 
+  it("waits for a Grok that answers initialize after 35 s: the model list reads grok-4.7, and a run starts and completes a turn (autobyteus-551 AC-001, AC-002)", async () => {
+    // Grok's own startup step took 5–35 s on a loaded machine (autobyteus-551). The recorded session, with the agent
+    // answering `initialize` 35 s late: past the old 15 s discovery and 30 s start-up bounds, inside the 90 s ones.
+    // Each Grok model list read is a fresh discovery (no cache), so the read waits for the late answer (AC-001). Creating
+    // the run opens its own Grok process, which answers late too (AC-002; the base source fails it at 30 s).
+    const STARTUP_DELAY_MS = 35_000;
+    const rows = await readFixture("prompt");
+    const initialize = rows.findIndex((row) => row.dir === "out" && row.msg.method === "initialize");
+    const fixture = await writeFixture("prompt-slow-initialize", [...rows.slice(0, initialize + 1),
+      { dir: "pause", ms: STARTUP_DELAY_MS }, ...rows.slice(initialize + 1)]);
+    const restore = overrideEnv({ FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: undefined });
+    let run: Awaited<ReturnType<typeof createGrokRun>> | null = null;
+    try {
+      const readStarted = Date.now();
+      const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }>;
+        sources: Array<{ state: string; safeMessage: string | null }> }> }>(
+        "query { providerModelCatalogSnapshots(runtimeKind: \"grok_build\") { llmModels { modelIdentifier } sources { state safeMessage } } }");
+      const readMs = Date.now() - readStarted;
+      const snapshots = catalog.providerModelCatalogSnapshots;
+      expect(snapshots.flatMap((snapshot) => snapshot.llmModels.map((model) => model.modelIdentifier)),
+        JSON.stringify(snapshots.flatMap((snapshot) => snapshot.sources))).toEqual(["grok-4.7"]);
+      expect(readMs, "the model list read waited for Grok's late initialize answer").toBeGreaterThanOrEqual(STARTUP_DELAY_MS);
+      restore();
+
+      const createStarted = Date.now();
+      run = await createGrokRun({ fixture, autoExecuteTools: true });
+      const createMs = Date.now() - createStarted;
+      expect(createMs, "the run's Grok process start waited for its late initialize answer").toBeGreaterThanOrEqual(STARTUP_DELAY_MS);
+      const { socket, messages } = await openAgentSocket(run.runId);
+      sendE2eSendMessageCommand(socket, { agent_run_id: run.runId, content: "List the current directory, then reply briefly." });
+      await waitFor(messages, (message) => message.type === "TURN_COMPLETED", "TURN_COMPLETED after a slow start", 120_000);
+      expect(messages.some((message) => message.type === "ERROR")).toBe(false);
+      // The run's own Grok process answered `initialize` late too: the turn could only complete after it.
+      expect((await run.recorded()).filter((message) => message.method === "initialize").length).toBeGreaterThan(0);
+      console.info("GROK_SLOW_INITIALIZE", JSON.stringify({ readMs, createMs, turnCompletedAfterCreateMs: Date.now() - createStarted - createMs }));
+    } finally {
+      run?.restore();
+      restore();
+    }
+  }, 300_000);
+
   it("ends the turn as interrupted with an explicit runtime error when the Grok process exits mid-turn (QR-006)", async () => {
     const rows = await readFixture("prompt");
     const promptIndex = rows.findIndex((row) => row.dir === "out" && row.msg.method === "session/prompt");

@@ -16,6 +16,8 @@ import { resetProjectServiceForTests } from "../../../src/projects/services/proj
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+// autobyteus-579 I-2: a test that waits only for this server's answers, which a busy FSEvents stalls (TESTING.md).
+import { SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 
 // Real Studio HTTP (GraphQL), the real composition (search service, delete hooks) and the default MCP host, over
 // test-owned files. Only the embedding model is a deterministic stand-in (tests/helpers/fake-embedding-model.ts),
@@ -107,7 +109,7 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     expect(gone.errors?.[0]?.extensions?.code).toBe("PROJECT_NOT_FOUND");
     const rows = await fs.readdir(path.join(root, "embeddings"));
     expect(rows).toContain("embeddings.sqlite");
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 
   // task-part-of AC-015: search results name each result's parent and parts by key (parts in numeric key order), from the whole Project.
   it("POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID", async () => {

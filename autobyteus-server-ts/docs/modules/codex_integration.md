@@ -55,7 +55,11 @@ Codex conversation identity is exact and durability-gated. A fresh standalone
 or Team candidate is private until its returned thread ID has been committed to
 standalone metadata or the authoritative Team execution tree. Restore supplies
 that stored ID to `thread/resume`; a resume error or returned-ID mismatch is
-terminal and never falls back to `thread/start`. The local AgentRun ID is not a
+terminal for the backend, which never falls back to `thread/start`. The one
+error the activation owner acts on is the runtime's own `no rollout found for
+thread id <id>` for exactly the saved thread: it starts a session renewal, a
+fresh thread through the runtime-switch steps, never a fallback of the backend
+(autobyteus-599; see [Agent Execution](./agent_execution.md)). The local AgentRun ID is not a
 Codex thread ID. Existing local replay can reopen visible history, but it is not
 a substitute for the canonical provider binding required to continue runtime
 context.

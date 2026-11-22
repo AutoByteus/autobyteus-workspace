@@ -56,10 +56,10 @@ const fake = await vi.hoisted(async () => {
   process.env.BROWSER = "/usr/local/bin/open-vnc-browser-url.sh";
   return {
     ...prepared,
-    dispose: () => {
+    dispose: async () => {
       if (previousBrowser === undefined) delete process.env.BROWSER; else process.env.BROWSER = previousBrowser;
       if (previousDsh === undefined) delete process.env.DEEPSEEK_HARNESS_COMMAND; else process.env.DEEPSEEK_HARNESS_COMMAND = previousDsh;
-      prepared.dispose();
+      await prepared.dispose();
     },
   };
 });
@@ -122,7 +122,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     if (!closed) await fastify?.close();
     sources?.restore();
     restoreStreams?.();
-    fake.dispose();
+    await fake.dispose();
   }, 60_000);
 
   it("AR-01 lists the five runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)", async () => {

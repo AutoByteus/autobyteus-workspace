@@ -1,0 +1,72 @@
+# IMP-13 negative control: the studio built with the hand-over notice removed from its notices (build-studio-server.ts), then rebuilt from the real source
+# Command: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts --no-watch (after pnpm build)
+# Commit: f79773703d + the control edit (reverted; git diff clean afterwards)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Expected: LS-01 and LS-02 fail on "the first input begins with the hand-over notice (AC-008)"; LS-03 passes.
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts (3 tests | 2 failed) 8818ms
+     × LS-01: a standalone run continues in a fresh session behind the marker; after a restart the renewed session is restored 1946ms
+     × LS-02: a Team member is renewed through the Team root, and a later activation resumes the renewed session (AC-005) 1809ms
+     ✓ LS-03: a different conversation without the not-found warning is still a conflict: the message fails and nothing changes (AC-003)  2523ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts > a lost runtime session on the built server: standalone run and Team member > LS-01: a standalone run continues in a fresh session behind the marker; after a restart the renewed session is restored
+AssertionError: the first input begins with the hand-over notice (AC-008): expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:183:130
+    181|     expect((await runMetadata(dir())).runtimeKind).toBe(AGY);
+    182|     expect(echoed(dir()).at(-1), "the agent answered the message").toC…
+    183|     expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "t…
+       |                                                                                                                                  ^
+    184|
+    185|     await terminate(runId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts > a lost runtime session on the built server: standalone run and Team member > LS-02: a Team member is renewed through the Team root, and a later activation resumes the renewed session (AC-005)
+AssertionError: the first input begins with the hand-over notice (AC-008): expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:234:130
+    232|     expect((await node("/lead")).platformAgentRunId, "the other member…
+    233|     expect(echoed(dir()).at(-1)).toContain("ECHO_INPUT after the loss"…
+    234|     expect(echoed(dir()).at(-1)!.startsWith(HANDOVER_NOTICE_START), "t…
+       |                                                                                                                                  ^
+    235|
+    236|     await stopTeam();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  15:06:38
+   Duration  9.33s (transform 55ms, setup 59ms, import 75ms, tests 8.82s, environment 0ms)
+

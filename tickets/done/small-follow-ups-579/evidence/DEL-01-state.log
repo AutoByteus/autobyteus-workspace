@@ -1,0 +1,4 @@
+HEAD a107a3c2d1
+20:38  up 1 day,  6:55, 9 users, load averages: 37.45 35.12 29.11
+vm.swapusage: total = 2048.00M  used = 990.38M  free = 1057.62M  (encrypted)
+  324   0.1  77200 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd

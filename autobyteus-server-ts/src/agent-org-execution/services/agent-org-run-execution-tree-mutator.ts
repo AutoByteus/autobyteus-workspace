@@ -1,7 +1,7 @@
 import { commitRuntimeSwitchOnRecord } from "../../run-history/domain/runtime-selection-rule.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type {
-  CollaborationAgentNoConversationBindingReplacement,
+  CollaborationAgentBindingReplacement,
   CollaborationAgentPlatformBinding,
   CollaborationAgentRuntimeSwitchCommit,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
@@ -47,9 +47,9 @@ export const adoptAgentOrgPlatformBinding = (input: {
   });
 };
 
-export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
+export const replaceAgentOrgPlatformBinding = (input: {
   tree: AgentOrgRunExecutionTreeSnapshot;
-  replacement: CollaborationAgentNoConversationBindingReplacement;
+  replacement: CollaborationAgentBindingReplacement;
 }): AgentOrgRunExecutionTreeSnapshot => {
   const identity = input.replacement.binding.execution;
   if (identity.root.rootSubjectKind !== "agent_org" || identity.root.rootRunId !== input.tree.rootOrg.orgRunId) {
@@ -60,7 +60,7 @@ export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
     if (value.agentRunId !== identity.agentRunId || value.address !== identity.memberAddress) return value;
     matches += 1;
     if (value.platformAgentRunId !== input.replacement.expectedPreviousPlatformAgentRunId) {
-      throw new Error("AgentOrg no-conversation binding replacement does not match the persisted provider binding.");
+      throw new Error("AgentOrg binding replacement does not match the persisted provider binding.");
     }
     return { ...value, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };

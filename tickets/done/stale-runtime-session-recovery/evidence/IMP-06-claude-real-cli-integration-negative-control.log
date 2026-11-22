@@ -1,0 +1,43 @@
+# IMP-06 negative control: matcher text changed to "No conversation found with ID" (claude-session-resume-check.ts), then restored
+# Command: RUN_CLAUDE_CLI_INTEGRATION=1 pnpm exec vitest run tests/integration/agent-execution/claude-session-resume-check.integration.test.ts --no-watch
+# Commit: c1d316f60b + the control edit (reverted)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Expected: the missing-session case fails; the present-session case passes.
+
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ❯ tests/integration/agent-execution/claude-session-resume-check.integration.test.ts (2 tests | 1 failed) 756ms
+     × a session the CLI does not have is the typed lost-session error, with the SDK's own reason as its cause 472ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/claude-session-resume-check.integration.test.ts > the Claude restore check with the real CLI (isolated config, no model call) > a session the CLI does not have is the typed lost-session error, with the SDK's own reason as its cause
+AssertionError: expected Error: Claude Code returned an error resu… { …(2) } to be an instance of SavedRuntimeSessionMissingError
+ ❯ tests/integration/agent-execution/claude-session-resume-check.integration.test.ts:59:19
+     57|     const missing = randomUUID();
+     58|     const error = await check(missing).catch((caught: unknown) => caug…
+     59|     expect(error).toBeInstanceOf(SavedRuntimeSessionMissingError);
+       |                   ^
+     60|     expect(error).toMatchObject({ code: "SAVED_RUNTIME_SESSION_MISSING…
+     61|     expect(((error as Error).cause as Error).message).toBe(`Claude Cod…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  12:12:24
+   Duration  1.38s (transform 46ms, setup 55ms, import 104ms, tests 756ms, environment 0ms)
+

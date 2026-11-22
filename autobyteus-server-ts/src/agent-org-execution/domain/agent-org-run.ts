@@ -26,7 +26,7 @@ import { createAgentOrgCommunicationPort } from "../services/agent-org-communica
 import {
   adoptAgentOrgPlatformBinding,
   commitAgentOrgRuntimeSwitch,
-  replaceAgentOrgPlatformBindingWithoutConversation,
+  replaceAgentOrgPlatformBinding,
 } from "../services/agent-org-run-execution-tree-mutator.js";
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
@@ -250,7 +250,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
             ? adoptAgentOrgPlatformBinding({ tree: this.tree, binding: change.binding }).tree
             : change.kind === "runtime_switch"
               ? commitAgentOrgRuntimeSwitch({ tree: this.tree, commit: change })
-              : replaceAgentOrgPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
+              : replaceAgentOrgPlatformBinding({ tree: this.tree, replacement: change.replacement });
           return {
             nextTree: tree,
             cancelBeforeDurability: () => undefined,

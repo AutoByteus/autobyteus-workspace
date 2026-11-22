@@ -1,0 +1,38 @@
+import { describe, expect, it, vi } from 'vitest';
+vi.mock('@iconify/vue', async () => { const { defineComponent, h } = await import('vue'); return { Icon: defineComponent({ props: ['icon'], setup: (p) => () => h('i', { 'data-icon': p.icon }) }) }; });
+import { mount as baseMount } from '@vue/test-utils';
+const mount = (component: any, options: any) => baseMount(component, options);
+import ToolActivityItem from '../ToolActivityItem.vue';
+import OldTool from '../TmpOldToolActivityItem.vue';
+import CompactionActivityItem from '../CompactionActivityItem.vue';
+import OldCompaction from '../TmpOldCompactionActivityItem.vue';
+
+const html = (w: { html(): string }) => w.html().replace(/ data-v-[0-9a-f]+=""/g, '');
+const statuses = ['parsing', 'parsed', 'awaiting-approval', 'approved', 'executing', 'success', 'error', 'denied', 'interrupted'] as const;
+const tool = (status: string, full: boolean) => ({ kind: 'tool', activityId: 'a', timestamp: new Date(0), invocationId: 'inv-123456789', toolName: 'run_bash', type: 'terminal_command', status,
+  contextText: 'x', arguments: full ? { command: 'ls -la', nested: { a: [1, 2] } } : {}, logs: full ? ['line 1', 'line 2'] : [], result: full ? { ok: true, n: 3 } : null, error: full ? 'boom\nstack' : null });
+
+describe('temporary: desktop output before and after the extraction', () => {
+  it('ToolActivityItem renders the same HTML for every status, highlighted or not, with and without sections', async () => {
+    let compared = 0;
+    for (const status of statuses) for (const isHighlighted of [false, true]) for (const full of [false, true]) {
+      const props = { activity: tool(status, full) as never, isHighlighted };
+      const before = mount(OldTool, { props }); const after = mount(ToolActivityItem, { props });
+      expect(html(after)).toBe(html(before));
+      for (const toggle of ['args', 'logs', 'result', 'error']) void toggle;
+      const open = async (w: ReturnType<typeof mount>) => { for (const header of w.findAll('.cursor-pointer.hover\\:text-gray-800, [data-test="tool-activity-error-toggle"]')) await header.trigger('click'); return html(w); };
+      expect(await open(after)).toBe(await open(before));
+      compared += 1;
+    }
+    expect(compared).toBe(36);
+  });
+
+  it('CompactionActivityItem renders the same HTML', () => {
+    for (const phase of ['requested', 'started', 'completed', 'failed', 'stopped'] as const) for (const isHighlighted of [false, true]) {
+      const activity = { kind: 'compaction', activityId: 'c-abcdef', timestamp: new Date(0), updatedAt: new Date(0), phase, message: 'm', turnId: 't1', compactionTaskId: 'task', provider: 'p', boundaryKey: 'b',
+        sourceSurface: 's', compactionRunId: 'r', compactionAgentName: 'ag', compactionModelIdentifier: 'mo', summarizerProvider: 'sp', completionStatus: 'cs', summaryCharCount: 10, summaryTokenCount: 0,
+        rawTraceCount: 3, compactedBlockCount: 2, semanticFactCount: null, errorMessage: phase === 'failed' ? 'bad' : null };
+      expect(html(mount(CompactionActivityItem, { props: { activity: activity as never, isHighlighted } }))).toBe(html(mount(OldCompaction, { props: { activity: activity as never, isHighlighted } })));
+    }
+  });
+});

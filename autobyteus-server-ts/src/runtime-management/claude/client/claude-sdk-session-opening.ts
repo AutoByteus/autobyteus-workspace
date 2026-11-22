@@ -28,6 +28,7 @@ export function beginClaudeSdkSessionOpening(input: {
   let malformedQuery = false;
   let rawQuery: unknown = null;
   let query: ClaudeSdkQueryLike | null = null;
+  let initialization: Promise<unknown> | null = null;
   let session: ClaudeSdkStreamingSession | null = null;
   let acquisition: Promise<ClaudeSdkStreamingSession> | null = null;
   let releasing: Promise<ClaudeSdkOpeningReleaseResult> | null = null;
@@ -54,8 +55,10 @@ export function beginClaudeSdkSessionOpening(input: {
               throw new Error("CLAUDE_QUERY_INVALID: Public initialization observation missing.");
             }
             initializationSettled = false;
-            // Observe public initialization, not a new initialization call or second iterator.
-            void Promise.resolve(candidate.initializationResult()).then(() => undefined, () => undefined).finally(() => {
+            // Observe public initialization, not a new initialization call or second iterator. The session exposes this one
+            // promise (autobyteus-599); the handler below already observes it.
+            initialization = Promise.resolve(candidate.initializationResult());
+            void initialization.then(() => undefined, () => undefined).finally(() => {
               initializationSettled = true;
               if (cancelled) void operation.release();
             });
@@ -68,7 +71,7 @@ export function beginClaudeSdkSessionOpening(input: {
           } });
         assertAccepting();
         if (!query) throw new Error("CLAUDE_QUERY_INVALID: No acquired query.");
-        session = createClaudeSdkStreamingSession(query, channel, assertAccepting);
+        session = createClaudeSdkStreamingSession(query, channel, assertAccepting, initialization!);
         return session;
       })().finally(() => {
         settled = true;

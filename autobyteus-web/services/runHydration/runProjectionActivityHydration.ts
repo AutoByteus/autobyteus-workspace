@@ -14,7 +14,6 @@ export interface RunProjectionToolActivityEntry {
   toolName?: string | null;
   type?: ToolActivity['type'] | null;
   status?: ToolInvocationStatus | null;
-  contextText?: string | null;
   arguments?: Record<string, unknown> | null;
   logs?: string[] | null;
   result?: unknown | null;
@@ -115,26 +114,6 @@ const inferActivityType = (
   return 'tool_call';
 };
 
-const resolveContextText = (
-  toolName: string,
-  args: Record<string, unknown>,
-  contextText?: string | null,
-): string => {
-  const normalizedContextText = typeof contextText === 'string' ? contextText.trim() : '';
-  if (normalizedContextText) {
-    return normalizedContextText;
-  }
-  const pathCandidate = typeof args.path === 'string' ? args.path.trim() : '';
-  if (pathCandidate) {
-    return pathCandidate;
-  }
-  const commandCandidate = typeof args.command === 'string' ? args.command.trim() : '';
-  if (commandCandidate) {
-    return commandCandidate;
-  }
-  return toolName;
-};
-
 const resolveStatus = (
   entry: RunProjectionToolActivityEntry,
 ): ToolInvocationStatus => {
@@ -173,7 +152,6 @@ const toToolActivity = (entry: RunProjectionToolActivityEntry): ToolActivity | n
     toolName,
     type: entry.type || inferActivityType(toolName, argumentsPayload),
     status: resolveStatus(entry),
-    contextText: resolveContextText(toolName, argumentsPayload, entry.contextText),
     arguments: argumentsPayload,
     logs: toLogs(entry.logs),
     result: entry.result ?? null,

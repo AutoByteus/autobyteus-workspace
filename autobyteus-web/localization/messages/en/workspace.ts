@@ -123,6 +123,14 @@ const messages = {
     "{{count}} overridden",
   "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "Customized",
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
+  "workspace.components.mobile.views.MobileActivityDetail.logs":
+    "Logs ({{count}})",
+  "workspace.components.mobile.views.MobileActivityDetail.status":
+    "Status",
+  "workspace.components.mobile.views.MobileActivityDetail.call":
+    "Call",
+  "workspace.components.mobile.views.MobileActivityDetail.no_longer_available":
+    "This activity is no longer available.",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
   "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "Tracked commands continuing beyond their turn. Recent runtime observations, not all system processes.",

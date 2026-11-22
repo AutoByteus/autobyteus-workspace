@@ -1,0 +1,23 @@
+# IMP-10 I-4: the race test, old (settle) and new (condition waits), five runs each under 8 CPU spinners; then a control
+# Command: pnpm exec vitest run tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts (old version from HEAD before c27b85c52a, new version)
+# Commit: c27b85c52a
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# Neither version failed under this load (the original failure was under whole-suite load). The control shows a wait that never holds failing with its own assertion at the 10 s guard, inside the 15 s test limit.
+
+old run 1:       Tests  2 passed (2)
+old run 2:       Tests  2 passed (2)
+old run 3:       Tests  2 passed (2)
+old run 4:       Tests  2 passed (2)
+old run 5:       Tests  2 passed (2)
+new run 1:       Tests  2 passed (2)
+new run 2:       Tests  2 passed (2)
+new run 3:       Tests  2 passed (2)
+new run 4:       Tests  2 passed (2)
+new run 5:       Tests  2 passed (2)
+
+== control: a wait for a text that never comes ==
+     × keeps the first provider turn's queued text when the runtime has already moved on (AC-002) 10021ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ …(3) ] to include 'Turn two text that never comes.'
+      Tests  1 failed | 1 passed (2)

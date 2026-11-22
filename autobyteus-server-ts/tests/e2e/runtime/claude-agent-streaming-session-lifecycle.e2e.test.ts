@@ -5,7 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { deflateSync } from "node:zlib";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
@@ -24,10 +24,13 @@ import {
   type ClaudeLiveAgentHarness,
   type StreamMessage,
 } from "../helpers/claude-live-agent-harness.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 // Live proof of the one-process-per-run Claude lifecycle (REQ-001/004/005/006/007/008/011)
-// through the real AgentRun, Claude backend/session, SDK and CLI. Gated: RUN_CLAUDE_E2E=1.
+// through the real AgentRun, Claude backend/session, SDK and CLI. Gated: RUN_CLAUDE_E2E=1 (the host's Claude login).
+// On a test-owned Claude home instead: also CLAUDE_AGENT_SDK_AUTH_MODE=api-key AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault
+// with HOME and CLAUDE_CONFIG_DIR set to your own folders; the CLI then gets the test vault's Anthropic key.
 const cliCandidates = resolveClaudeCliExecutableCandidates();
 const describeLiveClaudeRuntime =
   process.env.RUN_CLAUDE_E2E === "1" && cliCandidates.length > 0 ? describe : describe.skip;
@@ -141,6 +144,10 @@ const solidColorPng = (rgb: [number, number, number]): Buffer => {
 
 describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () => {
   const cleanups: Array<() => Promise<void>> = [];
+  const apiKeyMode = process.env.CLAUDE_AGENT_SDK_AUTH_MODE === "api-key";
+
+  beforeAll(async () => { if (apiKeyMode) await initializeLiveServerVault(); }, 120_000);
+  afterAll(async () => { if (apiKeyMode) await closeLiveServerVault(); });
 
   afterEach(async () => {
     for (const cleanup of cleanups.splice(0).reverse()) {
@@ -451,10 +458,12 @@ describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () =>
 
       const { harness: restored } = await startHarness("restore", { runId, sessionId, workspaceRoot });
       expect(restored.session.sessionId).toBe(sessionId);
-      expect(findClaudeCliProcessIds(sessionId), "restored run opens its process lazily").toEqual([]);
+      // A restore opens its process at activation to check the CLI still has the session (autobyteus-599 RSK-003).
+      const openedAtRestore = singleCliPid(sessionId);
       const recall = await sendAndAwaitTurn(restored, "Reply only with the codeword I asked you to remember.");
       expect(assistantTextSince(restored, recall.startIndex)).toContain(codeword);
       const restoredPid = singleCliPid(sessionId);
+      expect(restoredPid, "the process opened at the restore serves the turn").toBe(openedAtRestore);
       expect(restoredPid).not.toBe(originalPid);
       expect(commandLineOf(restoredPid)).toMatch(/--resume/u);
     },

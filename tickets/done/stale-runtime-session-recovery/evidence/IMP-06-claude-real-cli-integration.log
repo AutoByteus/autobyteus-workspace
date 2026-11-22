@@ -1,0 +1,26 @@
+# IMP-06 Claude restore check with the real Claude Code CLI 2.1.330 and SDK 0.3.280, isolated HOME and CLAUDE_CONFIG_DIR, no key, no model call
+# Command: RUN_CLAUDE_CLI_INTEGRATION=1 pnpm exec vitest run tests/integration/agent-execution/claude-session-resume-check.integration.test.ts --no-watch
+# Commit: c1d316f60b
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Afterwards no test file was written under the user's ~/.claude (only this Claude Code session's own transcript files changed there).
+
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:12:14
+   Duration  1.66s (transform 50ms, setup 58ms, import 106ms, tests 1.05s, environment 0ms)
+

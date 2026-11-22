@@ -14,6 +14,18 @@ function harness(prepare: () => Promise<never | object>, release: () => Promise<
   return { registry, operation, resources, constructRun };
 }
 describe('retained private Agent activation authority', () => {
+  // autobyteus-599 (DS-001): the session renewal starts only once the failed restore is released. The rejection itself carries
+  // the original error, and the next releasePrivate() after it confirms the release, so the run's claim is free for a fresh session.
+  it('confirms the release of a preparation that failed cleanly, right after its rejection, and frees the claim', async () => {
+    const lost = new Error('the runtime has no such session');
+    const release = vi.fn(async () => undefined);
+    const h = harness(async () => { throw lost; }, release);
+    await expect(h.operation.prepare()).rejects.toBe(lost);
+    expect(await h.operation.releasePrivate()).toEqual({ kind: 'released' });
+    expect(h.operation.inspect()).toBe('released');
+    expect(release).toHaveBeenCalledOnce();
+    expect(h.registry.claim('owned-A')).toBeDefined();
+  });
   it('retries the same rejected pre-candidate resource without preparation or publication', async () => {
     let failing = true;
     const prepare = vi.fn(async () => { throw new Error('provider initialization failed after acquisition'); });

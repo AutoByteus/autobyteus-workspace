@@ -9,6 +9,15 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from '../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
+// autobyteus-579 I-2: a test that waits only for this server's answers, which a busy FSEvents stalls (TESTING.md).
+import { SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS } from '../../helpers/os-latency-under-load.js';
+
+/**
+ * The built server's stop waits up to 15 s for its exit (`test-runtime-bootstrap.mjs`), longer than vitest's 10 s hook default,
+ * and on a busy-FSEvents Mac it took over 10 s (autobyteus-576 API-08b: this afterAll). Why the stop is that slow is
+ * autobyteus-579 FU-001: not the watcher-close rule, since a built server leaves its watchers to its exit (TESTING.md).
+ */
+const BUILT_SERVER_STOP_HOOK_TIMEOUT_MS = 30_000;
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 
@@ -125,7 +134,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
   afterAll(async () => {
     if (server?.child.exitCode === null) await server.stop();
     if (runtimeRoot && database) await removeOwnedTestRuntime(runtimeRoot, database);
-  });
+  }, BUILT_SERVER_STOP_HOOK_TIMEOUT_MS);
 
   it('saves and replaces a provider key without value readback', async () => {
     expect((await provider('LMSTUDIO'))?.apiKeyConfigured).toBe(false);
@@ -355,7 +364,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     })).not.toContain(expressCanary);
     expect(fs.readFileSync(server.runtimeEnvironmentPath, 'utf8')).not.toContain(aiCanary);
     expect(fs.readFileSync(server.runtimeEnvironmentPath, 'utf8')).not.toContain(expressCanary);
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 
   it('keeps vault status and built-in catalogs value-free and available with missing credentials', async () => {
     const status = await execute<{
@@ -386,7 +395,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     expect(JSON.stringify({ status, catalogs })).not.toMatch(
       /synthetic-(?:graphql-secret|gemini)/,
     );
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 
   it('probes, creates, discovers, and deletes a custom provider through GraphQL and the vault', async () => {
     const syntheticCredential = 'synthetic-custom-provider-credential';
@@ -507,5 +516,5 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       }
       await new Promise<void>((resolve) => fixture.close(() => resolve()));
     }
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 });

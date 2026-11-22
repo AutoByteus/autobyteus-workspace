@@ -9,6 +9,7 @@ import { readFixture } from "../../agent-execution/backends/acp/acp-fake-agent-h
 
 const initializeResult = (): InitializeResponse =>
   readFixture("handshake").find((row) => row.dir === "in" && row.msg.result?.agentCapabilities)!.msg.result as InitializeResponse;
+const modelState = (): unknown => (initializeResult()._meta as Record<string, unknown>).modelState;
 
 const runRequest = (overrides: Partial<AcpRunLaunchRequest> = {}): AcpRunLaunchRequest => ({
   runId: "run-1", workingDirectory: "/tmp/ws", instructions: "Be helpful.", model: "grok-4.7", reasoningEffort: "high",
@@ -37,8 +38,21 @@ describe("grokBuildLaunchProfile", () => {
     await expect(launch.release()).resolves.toBeUndefined();
   });
 
+  // autobyteus-551 REQ-003 / QR-002: a run's Grok trusts its workspace for this process alone, so it loads the
+  // workspace's own `.grok/skills`; discovery processes (models, billing) stay untrusted; `--trust`, which would save
+  // the folder in the user's Grok settings, is never passed.
+  it("trusts the run workspace per process with GROK_FOLDER_TRUST=0 in run launches only, never with --trust", async () => {
+    const run = await grokBuildLaunchProfile.runLaunch(runRequest());
+    const discovery = await grokBuildLaunchProfile.discoveryLaunch({ relayBaseUrl: null });
+    expect(run.env.GROK_FOLDER_TRUST).toBe("0");
+    expect(discovery.env.GROK_FOLDER_TRUST).toBeUndefined();
+    expect(discovery.env).toMatchObject({ GROK_SUBAGENTS: "0", GROK_WORKFLOWS: "0", GROK_ASK_USER_QUESTION: "0" });
+    expect([...run.args, ...discovery.args].some((arg) => arg.startsWith("--trust"))).toBe(false);
+    expect(process.env.GROK_FOLDER_TRUST).toBeUndefined();
+  });
+
   it("offers the agent-reported models with context capacity and the reasoning-effort schema (AC-002)", () => {
-    expect(normalizeGrokBuildModels(initializeResult())).toEqual([expect.objectContaining({
+    expect(normalizeGrokBuildModels(modelState())).toEqual([expect.objectContaining({
       model_identifier: "grok-4.7", display_name: "Grok 4.7", provider_type: "GROK", provider_name: "Grok Build",
       max_context_tokens: 500000,
       config_schema: expect.objectContaining({ properties: { reasoning_effort: expect.objectContaining({
@@ -46,8 +60,16 @@ describe("grokBuildLaunchProfile", () => {
     })]);
   });
 
+  // autobyteus-551: Grok's `_x.ai/models/update` params have the shape of `initialize._meta.modelState` (P16).
+  it("reads the same model state shape from Grok's models announcement", () => {
+    expect(normalizeGrokBuildModels({ currentModelId: "grok-4.7", availableModels: [
+      { modelId: "grok-4.7", name: "Grok 4.7", _meta: { totalContextTokens: 500000 } },
+    ] }).map((model) => [model.model_identifier, model.max_context_tokens])).toEqual([["grok-4.7", 500000]]);
+  });
+
   it("returns no models for a malformed catalog", () => {
-    expect(normalizeGrokBuildModels({ protocolVersion: 1, _meta: { modelState: { availableModels: [{ modelId: "bad id!" }, "x"] } } } as never)).toEqual([]);
-    expect(normalizeGrokBuildModels({ protocolVersion: 1 } as never)).toEqual([]);
+    expect(normalizeGrokBuildModels({ availableModels: [{ modelId: "bad id!" }, "x"] })).toEqual([]);
+    expect(normalizeGrokBuildModels(undefined)).toEqual([]);
+    expect(normalizeGrokBuildModels({ availableModels: "grok-4.7" })).toEqual([]);
   });
 });

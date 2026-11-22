@@ -77,6 +77,9 @@ import { composeRunningAgents } from "../compositions/running-agents-composition
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
+import { readPendingRuntimeHandover } from "../agent-memory/services/runtime-handover-reader.js";
+import { RuntimeSwitchRecorder } from "../agent-memory/services/runtime-switch-recorder.js";
+import { RuntimeHandoverNoticeService } from "../runtime-handover-notices/services/runtime-handover-notice-service.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -286,9 +289,15 @@ export const startStandaloneApplicationHost = async (
         taskRecords: taskSide.taskRecords,
         delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
         episodicCatalog: currentEpisodicCatalog,
-        // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
-        platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
+        // One notice slot, as the studio orders it: the agent runtime hand-over first (a session renewal's notice must not wait
+        // one input; autobyteus-599, DEC-007), then tool list updates, skill notices and background task notices.
+        platformInputNotices: new AgentRunPlatformNotices([
+          new RuntimeHandoverNoticeService({ journals: getWorkJournalService(), readPending: readPendingRuntimeHandover }),
+          ...platformNotices.sources,
+        ]),
         definitionChanges: hostDefinitionServices.agentDefinitionChanges, teamChangeNotices: platformNotices.teamChangeNotices,
+        // The fresh-session steps of a session renewal. No switch is offered here: this host serves no run-selection surface.
+        runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
         // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011): its file transfer refuses any file.
         remoteChannel: () => null,
         peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,

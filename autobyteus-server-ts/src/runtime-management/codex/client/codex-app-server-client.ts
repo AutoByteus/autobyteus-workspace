@@ -312,11 +312,11 @@ export class CodexAppServerClient {
       this.pendingRequests.delete(id);
       if (error) {
         const rpcError = error as JsonRpcResponseError;
+        const rpcMessage = typeof rpcError.message === "string" ? rpcError.message : null;
         pending.reject(
           new CodexAppServerRpcError(
-            `Codex app server RPC error${typeof rpcError.code === "number" ? ` ${rpcError.code}` : ""}: ${
-              typeof rpcError.message === "string" ? rpcError.message : "Unknown error"
-            }`,
+            `Codex app server RPC error${typeof rpcError.code === "number" ? ` ${rpcError.code}` : ""}: ${rpcMessage ?? "Unknown error"}`,
+            rpcMessage,
           ),
         );
         return;
@@ -394,5 +394,10 @@ function getOpenFileDescriptorCount(): number | null {
   return null;
 }
 
-/** Explicit provider RPC rejection, distinct from transport/acceptance uncertainty. */
-export class CodexAppServerRpcError extends Error {}
+/** Explicit provider RPC rejection, distinct from transport/acceptance uncertainty; keeps the provider's own message. */
+export class CodexAppServerRpcError extends Error {
+  constructor(message: string, readonly rpcMessage: string | null) {
+    super(message);
+    this.name = "CodexAppServerRpcError";
+  }
+}

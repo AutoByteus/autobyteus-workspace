@@ -6,7 +6,7 @@ import {
 } from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
-import { AgentCreationError } from "../../../errors.js";
+import { AgentCreationError, SavedRuntimeSessionMissingError } from "../../../errors.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type {
   AcpAgentLaunchProfile,
@@ -154,8 +154,14 @@ export class AcpSessionLauncher {
       } else {
         sessionId = request.sessionId;
         const reopen = { sessionId, cwd: request.workingDirectory, mcpServers };
-        configOptions = (capabilities.restoreMethod() === "load"
-          ? await session.openLoad(reopen) : await session.openResume(reopen)).configOptions;
+        try {
+          configOptions = (capabilities.restoreMethod() === "load"
+            ? await session.openLoad(reopen) : await session.openResume(reopen)).configOptions;
+        } catch (error) {
+          // A lost runtime session (autobyteus-599): the agent's own exact answer that this session does not exist.
+          if (sessionProfile.isMissingSession(error, sessionId)) throw new SavedRuntimeSessionMissingError(config.runtimeKind, sessionId, { cause: error });
+          throw error;
+        }
       }
       await session.applyConfigSelection(
         { model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }, configOptions ?? []);
@@ -170,6 +176,7 @@ export class AcpSessionLauncher {
       }
       return Object.freeze({ sessionId });
     } catch (error) {
+      if (error instanceof SavedRuntimeSessionMissingError) throw error;
       const message = describeAcpActivationError(launchProfile.agentLabel, error);
       throw message ? new AgentCreationError(message) : error;
     }

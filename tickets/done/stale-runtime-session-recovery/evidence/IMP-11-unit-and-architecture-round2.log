@@ -1,0 +1,35 @@
+# IMP-11 all unit and architecture tests (IR-002)
+# Command: pnpm exec vitest run tests/unit tests/architecture
+# Commit: 1df7771aac
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# The APP_DATA_STARTUP_GATE_FAILED JSON line is the expected output of an existing startup-gate test, not a failure.
+
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+[autobyteus-565 measure] read of a 2,500-message log from disk: 16.1 ms, 2500 messages
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+runtime-bootstrap-console-check
+runtime-bootstrap-fastify-check
+runtime-bootstrap-info-should-appear
+runtime-bootstrap-debug-should-appear
+[autobyteus-565 measure] first page of a 2,500-message own list: 2.6 ms, 50 rows, 40 named
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+
+ Test Files  981 passed | 4 skipped (985)
+      Tests  8043 passed | 7 skipped (8050)
+   Start at  15:33:24
+   Duration  643.03s (transform 15.60s, setup 20.74s, import 273.87s, tests 264.76s, environment 617ms)
+

@@ -1,0 +1,8 @@
+# API-05 event-monitor-file-preview packaged probe (N-009) | commit b6b8020bf5 | 2026-11-22T19:25:40Z | load { 5.50 8.44 14.99 }
+{"ok":false,"evidence":"/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/tickets/in-progress/small-follow-ups-579/evidence/API-05-probe/evidence.json","cases":{"N-001":"Fail","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-59768-d44f","wasRunning":true,"forced":true,"dataRo
+exit 1
+## rerun after the baseline fix (--skip-build: the packaged app built by the first run at b6b8020bf5) | 2026-11-22T19:34:17Z | load { 28.16 35.26 27.51 }
+    at Proxy.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/lib/client/page.js:91:51)
+
+Node.js v22.23.1
+exit 1

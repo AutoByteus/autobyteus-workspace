@@ -1,0 +1,37 @@
+# IMP-03 live AC-005: the AC-104 case x3 with grok-4.7 (workspace's own .grok/skills vs a same-named package skill)
+# command (x3): env -i PATH HOME USER LOGNAME TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GROK_E2E=1
+#   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts -t "AC-104" --no-watch --reporter=verbose
+# commit: 5054f97a17; Grok Build 1.0.92; in-process server, temp data/package/workspace folders; load average 33-41; 2026-11-22 08:14-08:16 UTC
+# trust list (QR-002): shasum ~/.grok/trusted_folders.toml (hash only; the file was not read or copied)
+#   before: 5631cafe35f6bab389a9a7d6252b19d2a879f530  /Users/normy/.grok/trusted_folders.toml
+#   after:  5631cafe35f6bab389a9a7d6252b19d2a879f530  /Users/normy/.grok/trusted_folders.toml
+#   unchanged: yes
+# Each repeat: the configured-skill agent is refused with the collision error (unchanged behaviour), and the
+# all-installed agent answers with the workspace's own code (OWNCODE-*), not the package skill's code.
+
+## repeat 1
+SKILL_LINKS_LIVE_MODEL {"runtime":"grok","model":"grok-4.7"}
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-f9ff4049': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-Z0za7a/grok-collision-ws-QYFFOo/.grok/skills/link-probe-f9ff4049' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to use the link-probe skill and reply with only the code. I need to read the skill file.The skill says the new-run link probe code is OWNCODE-f9ff4049. The user asked me to reply wit","tools":["read_file"]}
+ ✓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104) 5083ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Duration  21.26s (transform 7.42s, setup 65ms, import 10.07s, tests 10.61s, environment 0ms)
+
+## repeat 2
+SKILL_LINKS_LIVE_MODEL {"runtime":"grok","model":"grok-4.7"}
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-ef3722bc': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-0m2MRy/grok-collision-ws-VyZg6n/.grok/skills/link-probe-ef3722bc' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to follow the link-probe skill and reply with only the code. Let me read the skill.The skill says the new-run link probe code is OWNCODE-ef3722bc. I should reply with only the code.O","tools":["read_file"]}
+ ✓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104) 5262ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Duration  20.21s (transform 6.92s, setup 65ms, import 9.15s, tests 10.52s, environment 0ms)
+
+## repeat 3
+SKILL_LINKS_LIVE_MODEL {"runtime":"grok","model":"grok-4.7"}
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-8f3b0d3c': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-V4mOFL/grok-collision-ws-xqo1sA/.grok/skills/link-probe-8f3b0d3c' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to follow the link-probe skill and reply with only the code. Let me read the skill.The skill says the new-run link probe code is OWNCODE-8f3b0d3c. The user asked me to reply with onl","tools":["read_file"]}
+ ✓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104) 5237ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Duration  20.05s (transform 6.85s, setup 56ms, import 9.07s, tests 10.48s, environment 0ms)

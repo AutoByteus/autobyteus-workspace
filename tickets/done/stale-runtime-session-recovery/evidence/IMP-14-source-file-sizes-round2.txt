@@ -1,0 +1,11 @@
+# IMP-14 round-2 changed source files: effective non-empty lines now, before round 2, and changed lines since c419bb4b36
+# Command: grep -cv "^\s*$"; git diff --numstat c419bb4b36..HEAD
+# Commit: 1df7771aac
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+
+372 (before round 2: 360) changed-lines: 16  autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+428 (before round 2: 419) changed-lines: 13  autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+123 (before round 2: 119) changed-lines: 8  autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor-input.ts
+77 (before round 2: 85) changed-lines: 15  autobyteus-server-ts/src/agent-execution/domain/runtime-switch.ts
+363 (before round 2: 368) changed-lines: 13  autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts
