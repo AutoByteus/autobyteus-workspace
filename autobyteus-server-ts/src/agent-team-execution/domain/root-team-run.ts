@@ -222,6 +222,7 @@ export class RootTeamRun {
     return Object.freeze([...live, ...dormant]);
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
+  getInputStateSnapshots() { return this.options.rootRun.getInputStateSnapshots(); }
   /** Run-ID membership: the team's own members and its peer endpoints. */
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());

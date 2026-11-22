@@ -52,6 +52,7 @@ export const projectAgentOrgExecutionEvent = (
   let event;
   switch (source.kind) {
     case "lifecycle":
+    case "composition_changed":
       return null;
     case "agent_presentation":
       event = {

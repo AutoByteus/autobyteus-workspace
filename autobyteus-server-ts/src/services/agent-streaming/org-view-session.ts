@@ -6,7 +6,7 @@ import {
 import type { RootSnapshotConnection, RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { inOrderViewDelivery, isReadBeforeSending, readTreeAtBase, readViewTree, type RunViewRowSources } from "./run-view-rows.js";
@@ -38,13 +38,25 @@ export class OrgRunNotRestorableError extends Error {
 type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; tree: RunTreeSessionRows }>;
 
 /**
+ * A live Org as its view reads it: an Org container (its units' views composed, design R-3) or, until its conversion, a
+ * released Org run.
+ */
+export type LiveOrgView = Readonly<{
+  isActive(): boolean;
+  openViewSnapshotConnection<TAtBase, TSnapshot>(atBase: () => TAtBase,
+    read: (own: AgentOrgRunPackageSnapshot, atBase: TAtBase) => Promise<TSnapshot> | TSnapshot): Promise<RootSnapshotConnection<TSnapshot, AgentOrgRunEvent>>;
+}>;
+
+/**
  * One connection's view of an Org run (autobyteus-461 DS-8; SR-045, SR-046, SR-061 … SR-063), as `TeamViewSession` for a
  * team run: in base's shapes, from the run's one `RunViewStream`; it never restores the run; a snapshot reads the base
  * and its tree in one synchronous step, then the run's own parts (a live run's, or a stopped run's stored
  * tree); every frame after the base follows in order; a mode switch is an in-band snapshot at the current sequence.
  */
 export class OrgViewSession {
-  private mode: Readonly<{ kind: "live"; run: AgentOrgRun } | { kind: "stored" }> | null = null;
+  private mode: Readonly<{ kind: "live"; run: LiveOrgView } | { kind: "stored" }> | null = null;
+  /** The container's units changed (`composition_changed`): the next follow takes a new snapshot of the same live Org. */
+  private recompose = false;
   private leaveMode: (() => void) | null = null;
   private readonly stopFollowing: () => void;
   private readonly identity: RootExecutionIdentity;
@@ -60,7 +72,7 @@ export class OrgViewSession {
     readonly orgRunId: string,
     private readonly send: (message: CollaborationStreamServerMessage) => void,
     private readonly sources: OrgViewSources & Readonly<{
-      activeOrgRun(orgRunId: string): AgentOrgRun | null;
+      activeOrgRun(orgRunId: string): LiveOrgView | null;
       /** Base's restore admission of the stopped Org (SR-078, CR-461-069), asked before its stored file is read. */
       restoreRefusal(orgRunId: string): Promise<RootRestoreRefusal | null>;
     }>,
@@ -115,7 +127,9 @@ export class OrgViewSession {
   private async follow(): Promise<void> {
     if (this.closed) return;
     const run = this.sources.activeOrgRun(this.orgRunId);
-    if (run ? this.mode?.kind === "live" && this.mode.run === run : this.mode?.kind === "stored") return;
+    const recompose = this.recompose;
+    this.recompose = false;
+    if (!recompose && (run ? this.mode?.kind === "live" && this.mode.run === run : this.mode?.kind === "stored")) return;
     this.leaveMode?.();
     this.leaveMode = null;
     if (run) await this.enterLive(run);
@@ -124,7 +138,7 @@ export class OrgViewSession {
 
   private atBase() { return readTreeAtBase(this.sources.rows, this.identity); }
 
-  private async enterLive(run: AgentOrgRun): Promise<void> {
+  private async enterLive(run: LiveOrgView): Promise<void> {
     const connection = await run.openViewSnapshotConnection(() => this.atBase(),
       async (own, atBase): Promise<ViewSnapshot> => ({ own, tree: await readViewTree(this.sources.rows, this.identity, atBase) }));
     try {
@@ -180,6 +194,8 @@ export class OrgViewSession {
     const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isReadBeforeSending(sequenced.event), async (sequenced) => {
       if (!open) return;
       try {
+        // An Org container's units changed: an in-band snapshot (the web accepts one after the first, SR-046).
+        if (sequenced.event.kind === "composition_changed") { this.recompose = true; this.switchMode(); return; }
         if (isRunTreeChangedEvent(sequenced.event)) {
           const change = await tree.next();
           if (open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: { root_subject_kind: "agent_org",

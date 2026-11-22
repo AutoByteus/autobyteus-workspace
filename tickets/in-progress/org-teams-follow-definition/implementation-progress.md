@@ -24,6 +24,24 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
 | 7 | FU-003 peer members notice + reconcile (DS-007) | | |
 | 8 | Docs (collaboration model CM-3/§3/§5, agent_orgs, agent_memory, glossary), release notes | | |
 
+## Slice 3 plan (working)
+
+- 3a `composeOrgExecutionTree` (pure): container file + unit files → today's `AgentOrgRunExecutionTreeSnapshot` (agent
+  nodes from agent unit metadata, Team nodes from Team trees with `toOrg`, handoffs = Org rules + Team rules `toOrg`), so
+  the web Org contract and `projectAgentOrgExecutionTree` stay unchanged.
+- 3b `OrgViewComposition` (R-3, R-3''): per live unit `openViewSnapshotConnection`; Team events: AGENT →
+  `agent_presentation` (payload is an `AgentPresentationEvent` → `projectAgentPresentationMessage`), MEMBER_INPUT →
+  `agent_presentation` MEMBER_INPUT_MESSAGE (same fields), COMMUNICATION → `communication` (relay rule: the unit that has
+  the receiver; a message leaving the Org from the sender's unit), MEMBERSHIP → in-band re-snapshot. Agent unit: its root's
+  view gives communication + lifecycle; its agent's presentation comes from `AgentRun.subscribeToEvents` through
+  `AgentRunPresentationAdapter` (INTER_AGENT_MESSAGE is a collaboration duplicate); a user message sent from the Org view
+  to an agent unit is published by the composition as MEMBER_INPUT_MESSAGE (the Org root did it via its handle callbacks).
+- 3c a live container facade with the stream handler's interface (`isActive`, `openViewSnapshotConnection`,
+  `executeAgentCommand(WithExecutionKind)`, `resolveCollaboratorMentions`) routing to unit roots (restore on SEND_MESSAGE).
+- 3d service/manager: create → container; `getActive` → container; restore/terminate/archive/delete/inspection;
+  history catalog; rows (`run-tree-view` Org path from units); readers (records, member views, last activity); REST edges
+  (R-7); top-level lists skip `containedIn` runs; statuses; `RunOwnAgentsReader` agent_org branches read containers.
+
 ## Decisions taken during implementation
 
 - Slice 1 (part 1): `containedIn` is a shared domain type (`agent-collaboration/domain/contained-in.ts`) with one schema
