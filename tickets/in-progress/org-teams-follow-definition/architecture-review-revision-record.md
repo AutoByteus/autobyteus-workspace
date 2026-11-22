@@ -7,6 +7,7 @@
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-005) | SR-002, SR-004, SR-005 | N/A | Fail (Design Impact; one Requirement Gap) | AR-001..AR-006 |
 | ARCH-REV-002 | Round 2 / SR-006, SR-007 resubmission | SR-006, SR-007 | Fail | Fail (Design Impact) | AR-001, AR-002 (narrowed), AR-007 (new); AR-003..AR-006 resolved |
 | ARCH-REV-003 | Round 3 / SR-008 resubmission | SR-008 | Fail | Fail (Design Impact) | AR-001 (narrowed); AR-002, AR-007 resolved |
+| ARCH-REV-004 | Round 4 / SR-009 resubmission | SR-009 | Fail | Fail (Design Impact) | AR-001 (one mapping: `P` itself) |
 
 ## Revision Entries
 
@@ -85,3 +86,26 @@ None.
 - Material classification changes: None (Large / High)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: none beyond the report's notes
+
+### ARCH-REV-004 — Re-review of SR-009
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 4; Solution Designer resubmission at SR-009 (commit `ba4fb98497`) after ARCH-REV-003
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-001
+- Relevant solution revision IDs: SR-009
+- Prior authoritative decision: Fail
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - The ARCH-REV-003 gaps are resolved: one tool-facing boundary with an in/out surface inventory covering `delegate_task` normalization, `reachingAddressOf`, `agentAddress`, mentions and `list_available_agents`.
+  - New evidence on one mapping: `fromOrgInput(P) = /`. `send_message_to(P)` reaches the coordinator today (`team-execution-index.ts:161-169`, `message-recipient-resolution.ts:51-52`) but would be refused as a root address (`team-recipient-resolver.ts:42-46`). `delegate_task(P)` is refused with the root-address error instead of the CM-1 text (`collaborator-errors.ts:81-82`), because the own-team check does not see `/` (`team-execution-index.ts:147-153`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Open (Medium) | Still open (one mapping) | R-1'' | Surface inventory complete; `P` mapping wrong for both tools (MP-07; MP-05's refusal text) |
+
+- New or remaining finding IDs: AR-001 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: none beyond earlier notes

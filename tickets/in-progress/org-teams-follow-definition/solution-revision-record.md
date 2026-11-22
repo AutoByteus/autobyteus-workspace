@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-010 | Design | Architecture re-review ARCH-REV-004 Fail | AR-001 (mapping of `P`) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | `P` per surface as today: coordinator for messages, CM-1 refusal for delegation, shown as `P` |
 | SR-009 | Design | Architecture re-review ARCH-REV-003 Fail | AR-001 (narrowed) | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-003 | Translator as the contained Team root's one tool-facing boundary, all surfaces inventoried |
 | SR-008 | Design | Architecture re-review ARCH-REV-002 Fail | AR-001 (narrowed), AR-002 (narrowed), AR-007, N-1, N-2 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-003, REQ-006, REQ-007; DEC-004 kept | Team space + one translator; per-unit snapshot connections; Org routes as container edges; no trace rewrite |
 | SR-007 | Requirements | The user's DEC-006, 2026-11-22 | AR-004 | Ready for Approval | Approved | DEC-006, REQ-005; design R-2, R-3 | A message wakes a unit the user stopped |
@@ -82,4 +83,10 @@
 
 - Trigger: ARCH-REV-003 (Fail): AR-002 and AR-007 resolved; AR-001 narrowed: `delegate_task` self/own-Team checks (MP-05), received sender address (MP-06), `send_message_to` result address.
 - R-1'': `ContainedTeamAddressSpace` is the contained Team root's one tool-facing boundary: every incoming address normalized (`P/x` → team space; `P` → own Team, CM-1 refusal; else Org space via the container), every shown address translated; ten surfaces inventoried with code; example extended with `delegate_task`; tests for MP-05/MP-06.
+- Intended behavior changed: No. Next action: architecture re-review.
+
+### SR-010 — The Team's own Org address per surface
+
+- Trigger: ARCH-REV-004 (Fail): only AR-001's mapping `fromOrgInput(P) = /` remains (MP-07: `send_message_to(P)` would hit the root-address refusal; `delegate_task(P)` the wrong refusal text).
+- R-1''': `P` never maps to `/`: messages → the coordinator's team-space address (result shown as `P`); `delegate_task(P | P/x)` → own-Team CM-1 refusal before `requireNonRootAddress`; mentions and `list_available_agents` show `P`. Example fixed; tests added.
 - Intended behavior changed: No. Next action: architecture re-review.

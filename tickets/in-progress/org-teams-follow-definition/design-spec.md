@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-010` (SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged.
 - User approval of the design: `Not required`.
@@ -305,3 +305,25 @@ Example (extends R-1'): from `/software_engineering_team/code_reviewer` (stored 
 - A message from the teammate `/solution_designer` shows its sender as `/software_engineering_team/solution_designer`, as today.
 
 Tests: MP-05 (`delegate_task` to `P` and to `P/teammate` refused), MP-06 (received teammate header shows `P/x`), each surface above in and out.
+
+## SR-010 Revision (after ARCH-REV-004: AR-001's mapping of `P`; supersedes R-1'''s "`P` itself → the agent's own Team (team instance `/`)" and the two `delegate_task('/software_engineering_team…')` example lines)
+
+### R-1''' The Team's own Org address `P`, per surface, as today
+
+`P` is never mapped to the root `/` (the root is not a collaboration recipient, `team-recipient-resolver.ts:42-46`). The boundary gives it the meaning it has today in an Org:
+
+| Surface | `P` today (in the Org root) | After (contained Team root) |
+| --- | --- | --- |
+| `send_message_to('P')` | Step 1 includes the instance address (`message-recipient-resolution.ts:51-52`) → `memberOfInstance` → the Team's coordinator (`team-execution-index.ts:161-169`) | The boundary maps `P` to the coordinator's team-space address before resolution → the coordinator; the result's `agentAddress` is shown as `P` (the address the sender used, as today) |
+| `delegate_task('P')` | Own Team → `ownTeamDelegationRefusedMessage(P)` (`collaborator-errors.ts:81-82`, CM-1) | The boundary recognizes `P` (and any `P/x`) as own Team **before** `requireNonRootAddress` and refuses with `ownTeamDelegationRefusedMessage` naming the address the agent gave |
+| Mentions (`@`) | Input is a definition; the own Team mention answers its instance address with relation `own_team` (`collaborator-admission.ts` `ownTeamMention`) | Same; its address is shown as `P` (out) |
+| `list_available_agents` | Own Team entry at its instance address (when listed) | Shown as `P` (out) |
+| Received header / `reachingAddressOf` | A sender is named by its member address | Unchanged by `P` (a sender is a member, `P/x`) |
+
+Example (replaces the two `delegate_task` lines of R-1''; from `/software_engineering_team/code_reviewer`, stored `/code_reviewer`, `P = /software_engineering_team`):
+- `send_message_to('/software_engineering_team')` → the Team's coordinator (as today); result `agentAddress` `/software_engineering_team`.
+- `delegate_task('/software_engineering_team')` → refused: "/software_engineering_team is in your own team; you can't delegate to it. Talk with it using send_message_to." (as today).
+- `delegate_task('/software_engineering_team/architecture_reviewer')` → refused with the same text naming that address (as today).
+- `delegate_task('/product_design_prototyping_team')` → another unit → allowed (as today).
+
+Tests: `send_message_to(P)` reaches the coordinator; `delegate_task(P)` and `delegate_task(P/x)` give the exact CM-1 text; the own Team mention and `list_available_agents` entry show `P`.
