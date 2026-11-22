@@ -229,6 +229,7 @@ export declare const teamRunTreeSnapshotPayloadSchema: z.ZodObject<{
             title: z.ZodNullable<z.ZodString>;
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
+        leaving: z.ZodOptional<z.ZodLiteral<true>>;
     }, z.core.$strict>>;
 }, z.core.$strict>;
 /** The Team view's tree changed, numbered in its one sequence (an empty change still counts). */
@@ -327,6 +328,7 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
             title: z.ZodNullable<z.ZodString>;
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
+        leaving: z.ZodOptional<z.ZodLiteral<true>>;
     }, z.core.$strict>>;
     removed: z.ZodArray<z.ZodString>;
     updated: z.ZodArray<z.ZodObject<{
@@ -423,6 +425,7 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
             title: z.ZodNullable<z.ZodString>;
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
+        leaving: z.ZodOptional<z.ZodLiteral<true>>;
     }, z.core.$strict>>;
     change_sequence: z.ZodNumber;
 }, z.core.$strict>;
@@ -1403,6 +1406,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 title: z.ZodNullable<z.ZodString>;
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
+            leaving: z.ZodOptional<z.ZodLiteral<true>>;
         }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
@@ -1502,6 +1506,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 title: z.ZodNullable<z.ZodString>;
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
+            leaving: z.ZodOptional<z.ZodLiteral<true>>;
         }, z.core.$strict>>;
         removed: z.ZodArray<z.ZodString>;
         updated: z.ZodArray<z.ZodObject<{
@@ -1598,6 +1603,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 title: z.ZodNullable<z.ZodString>;
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
+            leaving: z.ZodOptional<z.ZodLiteral<true>>;
         }, z.core.$strict>>;
         change_sequence: z.ZodNumber;
     }, z.core.$strict>;
