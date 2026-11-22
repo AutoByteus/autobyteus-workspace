@@ -1,0 +1,38 @@
+# Case FSB-01 | /tmp/oc-job.sh: build-linux-arm64 job of .github/workflows/release-desktop.yml from a fresh git clone --no-local of 818e950d53
+# Commit: 818e950d53 (implementation 1f0aad498b) + API/E2E round-1 test files, uncommitted at run time
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+# FSB-01 fresh-start build (build-linux-arm64 job parsed from .github/workflows/release-desktop.yml), clean clone of 818e950d53, 2026-11-22T13:41:19Z
+4:== SKIP (action, emulated): Checkout workspace + submodules
+5:== SKIP (action, emulated): Setup pnpm
+6:== SKIP (action, emulated): Setup Node
+7:== SKIP (host package install, libarchive-tools present?): Install Linux build deps
+8:== STEP: Install workspace dependencies
+42:== SKIP (action, emulated): Setup pinned native toolchain
+43:== STEP: Prepare desktop public trust or disposable build-only identity
+44:== STEP: Check native and signed-record units
+1197:# tests 74
+1199:# pass 47
+1200:# fail 27
+1218:UNITS STEP finished (node --test result in the TAP summary above)
+1219:== STEP: Build Electron Linux ARM64
+1288:[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 69.5s
+1289:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.9s
+1290:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+1291:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 41.2s
+1292:[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+1293:[typecheck] PASS
+2129:  • building        target=AppImage arch=arm64 file=electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+2132:  '/root/.autobyteus-e2e/oc-fs-job/clone/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage'
+2134:== STEP: Sign build-only final bytes with disposable trust
+2136:== NOTE: libz.so provided on LD_LIBRARY_PATH (the runner image has it; FU-004)
+2137:== STEP: Verify Linux ARM64 AppImage and updater metadata
+2139:autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha
+2140:Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+2141:== STEP: Verify Linux ARM64 Prisma engines
+2144:== STEP: Verify Linux ARM64 packaged server startup
+2347:Packaged server startup validation passed for /root/.autobyteus-e2e/oc-fs-job/clone/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+2348:== SKIP (action, emulated): Upload Linux ARM64 artifacts
+2349:FRESH_START_JOB_DONE
+2350:exit 0

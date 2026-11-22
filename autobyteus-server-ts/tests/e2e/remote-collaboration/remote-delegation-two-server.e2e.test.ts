@@ -44,6 +44,8 @@ import { SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_NODE_DESCRIPTION, targ
  *   workspace and auto-approve on); RC-08 AC-107 unlinked senders; RC-09 AC-108 files and saved Tasks; RC-10/RC-11
  *   AC-109 Task closure; RC-12 AC-106 idle shutdown on B and restore; RC-13 restart of B, then of A (inbound restores
  *   every root kind); RC-14 history deleted; RC-15 QR-102 partition and stopped peer; RC-16 identity mismatch;
+ *   org-teams-follow-definition (autobyteus-29, FU-003): RC-56 alpha's record of beta's Team copy (Task entry members, rows,
+ *   run-ID messages) follows the copy's members, and a change made while alpha is down is reconciled at alpha's next contact.
  *   team-run-follows-definition (autobyteus-22): RC-51 beta's peer-started Studio Team copy (copiedFrom team_definition) follows
  *   its Team definition when beta's owner adds a member and a rule and removes them again (AC-005).
  *   247: RC-21 a Team member on alpha delegates beta's shared Team "Studio Team" (AC-301); RC-22 messages with the
@@ -148,7 +150,9 @@ const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/mes
   // autobyteus-492: a message to a running agent by its run ID only, and the running runs a person started.
   runMessages: "/rest/remote/run-messages", runningAgents: "/rest/remote/running-agents",
   // autobyteus-591: a delegated run's state (closed, open) from its delegating node.
-  runStates: "/rest/remote/delegated-run-states" } as const;
+  runStates: "/rest/remote/delegated-run-states",
+  // org-teams-follow-definition FU-003: a peer Team copy's members after a committed change, to its delegating node.
+  peerRunMembers: "/rest/remote/peer-run-members" } as const;
 /** The Brief Studio sample application's importable package (`pnpm -C autobyteus-server-ts test:integration:prepare`):
  * beta loads it, so beta has an application-owned Agent Team that discovery must not list (261 AC-402). */
 const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
@@ -1277,7 +1281,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const r5 = delegated.target_agent_run_id as string;
     ids.org.r5 = r5;
     const remote = composeOnBeta(r5);
-    expect((await betaMetadata(r5)).delegatedFrom).toEqual({ nodeId: alpha.nodeId, delegatingRun: { kind: "agent_org", runId: orgRunId }, delegatorAgentRunId: lead.runId });
+    // org-teams-follow-definition (contract §6): the Org member's delegation comes from its own unit run (an agent run).
+    expect((await betaMetadata(r5)).delegatedFrom).toEqual({ nodeId: alpha.nodeId, delegatingRun: { kind: "agent", runId: lead.runId }, delegatorAgentRunId: lead.runId });
     await receives(remote, "ORG-PACKET");
     expect(await calls(remote, "send_message_to", { target_agent_run_id: lead.runId, content: "REPLY-TO-ORG-LEAD" })).toMatchObject({ accepted: true });
     expect(await receives(lead, "REPLY-TO-ORG-LEAD")).toContain(`sender run id "${r5}" on node "${LABEL.beta}"`);
@@ -1290,7 +1295,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(mate, "LOCAL-AFTER-REMOTE-ORG");
     await until(() => view.frames.some((frame) => frame.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT" && JSON.stringify(frame.payload).includes("LOCAL-AFTER-REMOTE-ORG")), "local message on the Org view", 20_000);
 
-    const orgLinks = await linksOf("agent_org", orgRunId);
+    // org-teams-follow-definition (contract §6): the Org lead's Task entry names its own unit run (an agent run) as delegating run.
+    expect(await linksOf("agent_org", orgRunId), "no delegation names the Org container").toEqual([]);
+    const orgLinks = await linksOf("agent", lead.runId);
     expect(orgLinks).toEqual([{ address: "/publisher", agentRunId: r5, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String) }]);
     const sequences = sequenceCheck(view.frames, "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
@@ -2269,6 +2276,72 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       formerMembers: ((removed.rootTeam.formerMembers ?? []) as Rec[]).map((member) => member.address), refused: textOf(refused) });
   }, 240_000);
 
+  it("RC-56 org-teams-follow-definition AC-007 (FU-003, REQ-008): alpha's record of beta's Team copy follows its members: a member added on beta is in alpha's Task entry and rows and reached by run ID; removed, it leaves them; a change while alpha is down is reconciled at alpha's next contact", async () => {
+    const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
+    const definitionOf = async () => ((await beta.gql(`{ agentTeamDefinitions { id revision nodes { memberName ref refScope } handoffs { from to rules } } }`))
+      .agentTeamDefinitions as Rec[]).find((definition) => definition.id === defs.studioTeam)!;
+    const save = async (nodes: Rec[]) => {
+      const current = await definitionOf();
+      await beta.gql(`mutation($input:UpdateAgentTeamDefinitionInput!){updateAgentTeamDefinition(input:$input){id}}`,
+        { input: { id: defs.studioTeam, expectedRevision: current.revision, coordinatorMemberName: "lead", nodes, handoffs: current.handoffs ?? [] } });
+    };
+    const original = await definitionOf();
+    const nodes = (original.nodes as Rec[]).map((node) => ({ memberName: node.memberName, ref: node.ref, refScope: String(node.refScope).toUpperCase() }));
+    const studioLink = async () => (await linksOf("agent_team", ids.team.teamRunId)).find((link) => link.teamRunId === ids.studio.teamRunId)!;
+    const linkMembers = async () => Object.fromEntries(((await studioLink()).members as Rec[]).map((member) => [member.address, member.agentRunId as string]));
+    const betaMembers = async () => Object.fromEntries(((await betaTeamTree(ids.studio.teamRunId)).rootTeam.members as Rec[]).map((member) => [member.address, member.agentRunId as string]));
+    const alphaRows = async () => (await alpha.gql(`query($k:String!,$r:String!){runTree(kind:$k,runId:$r)}`, { k: "agent_team", r: ids.team.teamRunId })).runTree as { rows: Rec[] };
+    const before = await linkMembers();
+    // 1. Beta's owner adds a member to the copy's definition: beta's copy follows (autobyteus-22); alpha's Task entry follows (the notice).
+    await save([...nodes, { memberName: "auditor", ref: defs.checker, refScope: "SHARED" }]);
+    await until(async () => Boolean((await betaMembers())["/auditor"]), "beta's copy gained the auditor", 60_000);
+    const auditor = (await betaMembers())["/auditor"]!;
+    await until(async () => (await linkMembers())["/auditor"] === auditor, "alpha's Task entry lists the auditor", 30_000);
+    const linkAfterAdd = await studioLink();
+    const rowsAfterAdd = await alphaRows();
+    const toAuditor = await calls(lead, "send_message_to", { target_agent_run_id: auditor, content: "Marker AUDITOR-PACKET." });
+    await receives(teamActor(beta, ids.studio.teamRunId, auditor, "beta studio auditor"), "AUDITOR-PACKET");
+    // 2. Removed again on beta: alpha's Task entry drops it.
+    await save(nodes);
+    await until(async () => !(await linkMembers())["/auditor"], "alpha's Task entry dropped the auditor", 30_000);
+    const linkAfterRemove = await studioLink();
+    const rowsAfterRemove = await alphaRows();
+    // 3. Alpha is down while beta's copy gains a member; alpha's next contact with beta reconciles its record.
+    let scout = "";
+    let linkAtRestart: Record<string, string> = {};
+    let rowsAtContact: { rows: Rec[] } | null = null;
+    let linkAfterContact: Rec = {};
+    try {
+      await alpha.stop();
+      await save([...nodes, { memberName: "scout", ref: defs.checker, refScope: "SHARED" }]);
+      await until(async () => Boolean((await betaMembers())["/scout"]), "beta's copy gained the scout while alpha is down", 60_000);
+      scout = (await betaMembers())["/scout"]!;
+      await alpha.start();
+      linkAtRestart = await linkMembers();
+      // The next contact: a window on alpha shows the peer Team copy (its statuses on /ws/run-status: asked when first held).
+      const held = await runStatus(alpha, "agent_team", ids.studio.teamRunId);
+      try {
+        await until(async () => (await linkMembers())["/scout"] === scout, "alpha reconciled the scout at its next contact", 45_000);
+        rowsAtContact = await alphaRows();
+      } finally { held.socket.close(); }
+      linkAfterContact = await studioLink();
+    } finally {
+      // Beta's definition back to what later cases expect (alpha is up: its record follows again).
+      if (alpha.child?.exitCode !== null) await alpha.start().catch(() => undefined);
+      await save(nodes);
+    }
+    await until(async () => !(await linkMembers())["/scout"], "alpha's Task entry dropped the scout", 30_000);
+    record("RC-56", { before, linkAfterAdd, rowsAfterAdd, toAuditor, linkAfterRemove, rowsAfterRemove, linkAtRestart, linkAfterContact, rowsAtContact,
+      peerMembersLog: [...beta.logs, ...alpha.logs].filter((line) => line.includes("PEER_RUN_MEMBERS")).slice(-20) });
+    expect(linkAfterAdd.coordinatorAgentRunId, "the coordinator is unchanged").toBe(ids.studio.coord);
+    expect(JSON.stringify(rowsAfterAdd), "alpha's rows show the auditor").toContain(auditor);
+    expect(toAuditor, JSON.stringify(toAuditor)).toMatchObject({ accepted: true });
+    expect((linkAfterRemove.members as Rec[]).map((member) => member.address).sort(), "back to the members before").toEqual(Object.keys(before).sort());
+    expect(JSON.stringify(rowsAfterRemove), "alpha's rows no longer show the auditor").not.toContain(auditor);
+    expect(linkAtRestart["/scout"], "alpha was down: not told").toBeUndefined();
+    expect(JSON.stringify(rowsAtContact), "alpha's rows show the scout after the contact").toContain(scout);
+  }, 360_000);
+
   it("RC-23 247 AC-305, 591 AC-003/AC-002/REQ-006: a saved Task is given to the running remote Team and a new remote Team with task_id is refused; DONE on one Task while the Team has another open sends nothing and it keeps running; CANCELLED on the last one with its coordinator mid-turn stops the whole Team on beta within 30 s; messages both ways are then refused", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const delegated = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", description: "Closure work. Marker CLOSURE-PACKET." });
@@ -2850,7 +2923,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       "the unused Team run has no messages").toEqual([]);
     const studioListed = (await teamRuns()).find((run) => run.teamRunId === ids.studio.teamRunId);
     const teamLaunchesBefore = (await beta.launches()).length;
-    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-IDLE-TO-STUDIO" })).toMatchObject({ accepted: true });
+    const afterIdle = await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-IDLE-TO-STUDIO" });
+    expect(afterIdle, JSON.stringify({ afterIdle, link: (await linksOf("agent_team", ids.team.teamRunId)).find((link) => link.teamRunId === ids.studio.teamRunId) })).toMatchObject({ accepted: true });
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "AFTER-IDLE-TO-STUDIO");
     const teamRelaunches = (await beta.launches()).slice(teamLaunchesBefore).filter((launch) => launch.cwd.includes(ids.studio.coord));
     expect(teamRelaunches.filter((launch) => launch.argv.includes("--conversation")), "the coordinator restored with its conversation").toHaveLength(1);
@@ -2887,7 +2961,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const teamLead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
     const orgLead = orgActor(alpha, ids.org.orgRunId, "/lead", ids.org.lead, "alpha org lead");
     // The peer links as the Task entries record them (contract §3.1).
-    const linksNow = async () => ({ solo: await linksOf("agent", ids.solo), team: await linksOf("agent_team", ids.team.teamRunId), org: await linksOf("agent_org", ids.org.orgRunId) });
+    const linksNow = async () => ({ solo: await linksOf("agent", ids.solo), team: await linksOf("agent_team", ids.team.teamRunId), org: await linksOf("agent", ids.org.lead) });
     const linksBefore = await linksNow();
     const backLinksBefore = await Promise.all([ids.r1, ids.team.r2, ids.org.r5].map(async (id) => (await betaMetadata(id)).delegatedFrom));
     const studioBackLinkBefore = (await betaTeamTree(ids.studio.teamRunId)).delegatedFrom;
@@ -3871,7 +3945,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   it("RC-20 AC-111/REQ-113/REQ-114, 437 NAS-20: every captured request between the nodes carries only its peer signature (never the secret, no other credential) and only the contract's fields", () => {
     const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents,
       PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations, PATHS.agentStreamSnapshot,
-      PATHS.runMessages, PATHS.runningAgents, PATHS.runStates]);
+      PATHS.runMessages, PATHS.runningAgents, PATHS.runStates, PATHS.peerRunMembers]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
       [PATHS.runs]: ["address", "delegatingRun", "delegator", "fromNodeId", "task", "toNodeId"],
@@ -3889,6 +3963,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       [PATHS.runningAgents]: ["fromNodeId", "toNodeId"],
       // 591 DN-2: a delegated run's state, the run and open only.
       [PATHS.runStates]: ["fromNodeId", "open", "run", "toNodeId"],
+      // org-teams-follow-definition FU-003: the peer Team copy, its coordinator and members (addresses and run IDs only).
+      [PATHS.peerRunMembers]: ["coordinatorAddress", "fromNodeId", "members", "run", "toNodeId"],
       work_packet: ["content", "createdAt", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toBeta: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toAlpha: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
@@ -3914,7 +3990,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       const body = entry.body as Rec;
       expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
       const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents, PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands,
-        PATHS.agentStreamSnapshot, PATHS.runMessages, PATHS.runningAgents, PATHS.runStates].includes(entry.path as never) ? entry.path
+        PATHS.agentStreamSnapshot, PATHS.runMessages, PATHS.runningAgents, PATHS.runStates, PATHS.peerRunMembers].includes(entry.path as never) ? entry.path
         : body.kind === "work_packet" ? "work_packet" : entry.via;
       // 261 REQ-403: an accepted discovery answer carries only the contract's fields.
       const answer = entry.answer as Rec | undefined;

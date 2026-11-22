@@ -1,0 +1,17 @@
+{
+  "stoppedTeam": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /team/lead.",
+    "target_agent_run_id": "oc_lead_425572_449185fa37544d07b6885d38cbed504d",
+    "isError": false
+  },
+  "stoppedAgent": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

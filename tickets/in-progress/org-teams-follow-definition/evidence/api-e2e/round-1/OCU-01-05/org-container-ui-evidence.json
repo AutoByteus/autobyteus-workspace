@@ -1,0 +1,582 @@
+{
+  "startedAt": "2026-11-22T15:56:26.193Z",
+  "steps": [
+    {
+      "at": "2026-11-22T15:56:48.518Z",
+      "text": "Org run created",
+      "details": {
+        "orgRunId": "ocu_org_38090c_649b75003fb14c25a31c887121a292ea",
+        "units": [
+          {
+            "address": "/concierge",
+            "kind": "agent",
+            "runId": "ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "definitionId": "ocu-concierge-38090c"
+          },
+          {
+            "address": "/team",
+            "kind": "agent_team",
+            "runId": "ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "definitionId": "ocu-team-38090c"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-22T15:57:09.811Z",
+      "text": "Org tree rendered",
+      "details": {
+        "rows": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, offline, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "offline",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Offline",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "label": "writer, offline, /team/writer, ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "text": "W writer",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-22T15:57:13.500Z",
+      "text": "Org view messages",
+      "details": {
+        "tabFound": false,
+        "shown": {
+          "there": true,
+          "back": true
+        },
+        "writer": "ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107"
+      }
+    },
+    {
+      "at": "2026-11-22T15:57:21.617Z",
+      "text": "new member row",
+      "details": {
+        "rows": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Idle",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "label": "writer, idle, /team/writer, ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "text": "W writer",
+            "status": "idle",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-22T15:58:00.843Z",
+      "text": "rows while the writer is leaving",
+      "details": {
+        "whileLeaving": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Offline",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ],
+        "writerRow": null
+      }
+    },
+    {
+      "at": "2026-11-22T15:58:12.640Z",
+      "text": "rows while /team is leaving",
+      "details": {
+        "whileLeaving": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40",
+            "label": "team2. Team status: Offline",
+            "text": "team2",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "label": "lead2, offline, /team2/lead2, ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "text": "L lead2",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Running",
+            "text": "team Leaving",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": true
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, running, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead Leaving",
+            "status": "running",
+            "level": "2",
+            "expanded": null,
+            "leaving": true
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor Leaving",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": true
+          }
+        ],
+        "teamRow": {
+          "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+          "label": "team. Team status: Running",
+          "text": "team Leaving",
+          "status": null,
+          "level": "1",
+          "expanded": "true",
+          "leaving": true
+        }
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 8667
+    },
+    {
+      "label": "frontend",
+      "pid": 8764
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 8764,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 8667,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/root/.autobyteus-e2e/org-container-ui-probe-qjLWPp"
+    }
+  ],
+  "browserErrors": [],
+  "cases": {
+    "OCU-01": {
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, offline, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "offline",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Offline",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "label": "writer, offline, /team/writer, ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "text": "W writer",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      },
+      "ms": 6688
+    },
+    "OCU-02": {
+      "result": "Pass",
+      "details": {
+        "tabFound": false,
+        "shown": {
+          "there": true,
+          "back": true
+        }
+      },
+      "ms": 3690
+    },
+    "OCU-03": {
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Idle",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "label": "writer, idle, /team/writer, ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107",
+            "text": "W writer",
+            "status": "idle",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      },
+      "ms": 8116
+    },
+    "OCU-04": {
+      "result": "Fail",
+      "error": "the leaving writer row stays, tagged Leaving (autobyteus-22 AC-003 in the Org view)",
+      "details": {
+        "writerRow": null,
+        "whileLeaving": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Offline",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      },
+      "ms": 39837
+    },
+    "OCU-05": {
+      "result": "Pass",
+      "details": {
+        "mounted": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Offline",
+            "text": "team",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, offline, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40",
+            "label": "team2. Team status: Offline",
+            "text": "team2",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "label": "lead2, offline, /team2/lead2, ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "text": "L lead2",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ],
+        "whileLeaving": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40",
+            "label": "team2. Team status: Offline",
+            "text": "team2",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "label": "lead2, offline, /team2/lead2, ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "text": "L lead2",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team_38090c_aa56d53208144aa2b48bce76346d4656",
+            "label": "team. Team status: Running",
+            "text": "team Leaving",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": true
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "label": "lead, running, /team/lead, ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef",
+            "text": "L lead Leaving",
+            "status": "running",
+            "level": "2",
+            "expanded": null,
+            "leaving": true
+          },
+          {
+            "test": "agent-org-agent-row-ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "label": "editor, offline, /team/editor, ocu_editor_38090c_1d178b5f80fc4bf28426658116c0a310",
+            "text": "E editor Leaving",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": true
+          }
+        ],
+        "afterRelease": [
+          {
+            "test": "agent-org-agent-row-ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "label": "concierge, idle, /concierge, ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82",
+            "text": "C concierge",
+            "status": "idle",
+            "level": "1",
+            "expanded": null,
+            "leaving": false
+          },
+          {
+            "test": "agent-org-team-row-ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40",
+            "label": "team2. Team status: Offline",
+            "text": "team2",
+            "status": null,
+            "level": "1",
+            "expanded": "true",
+            "leaving": false
+          },
+          {
+            "test": "agent-org-agent-row-ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "label": "lead2, offline, /team2/lead2, ocu_lead2_38090c_91681da1e99543019855151aae78e56f",
+            "text": "L lead2",
+            "status": "offline",
+            "level": "2",
+            "expanded": null,
+            "leaving": false
+          }
+        ]
+      },
+      "ms": 12252
+    }
+  },
+  "ownedRoot": "/root/.autobyteus-e2e/org-container-ui-probe-qjLWPp",
+  "backendUrl": "http://127.0.0.1:45681",
+  "frontUrl": "http://127.0.0.1:39191",
+  "completedAt": "2026-11-22T15:58:13.948Z"
+}

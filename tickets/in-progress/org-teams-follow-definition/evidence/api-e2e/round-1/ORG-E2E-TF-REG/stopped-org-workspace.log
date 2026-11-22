@@ -1,0 +1,134 @@
+# Case ORG-E2E-TF-REG | vitest run tests/e2e/agent-org-runs/{stopped-org-workspace-graphql,scoped-org-history-graphql,controlled-org-publication-http}.e2e.test.ts; vitest run tests/e2e/agent-team-runs/team-run-follows-definition.e2e.test.ts
+# Commit: 818e950d53 (implementation 1f0aad498b) + API/E2E round-1 test files, uncommitted at run time
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ [31m❯[39m tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 5557[2mms[22m[39m
+[31m     [31m×[31m atomically saves every configured child, preserves other scopes, and reads the same current (version-less Org tree) package after restart[39m[33m 5556[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts[2m > [22mstopped Org workspace real GraphQL lifecycle[2m > [22matomically saves every configured child, preserves other scopes, and reads the same current (version-less Org tree) package after restart
+[31m[1mAssertionError[22m[39m: {"mixed":{"success":false,"outcome":"PERSISTENCE_INDETERMINATE","canonical":{"subjectKind":"agent_org","createdAt":"2026-11-22T13:53:34.514Z","archivedAt":null,"applicationBinding":null,"handoffs":[],"rootOrg":{"address":"/","orgDefinitionId":"stopped-org-workspace-58833-1795355609162","orgDefinitionName":"stopped-org-workspace-58833-1795355609162","orgRunId":"stopped_org_workspace_58833_1795355609162_47198b56d0904b8d90a0b1e196624e29","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"},"members":[{"address":"/direct","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_fa6e2c3f7c9142c09b3c9afe4fc7f8a6","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}},{"address":"/team","teamDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"teamRunId":"stopped_org_workspace_58833_1795355609162_598aa1586cc04945be4110494f5bbb60","coordinatorAddress":"/team/lead","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"},"members":[{"address":"/team/lead","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_c882a9ecf5f045318f888fd5c4fc9d76","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"high"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"}},{"address":"/team/unused","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_f92a93f2fac64a18911867f0b78eeeb2","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"high"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"}}]},{"address":"/sibling","teamDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"teamRunId":"stopped_org_workspace_58833_1795355609162_6f2366caa7344973b0f5e30bbbe74b6f","coordinatorAddress":"/sibling/lead","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"},"members":[{"address":"/sibling/lead","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_cd335912452c4619b97da117f79a9cb0","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}},{"address":"/sibling/unused","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_36156fdd44b54cc39c9d186c60c82fc8","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}}]}]}},"isActive":false,"editability":{"editable":true,"reason":null},"fieldErrors":[]},"expected":{"subjectKind":"agent_org","createdAt":"2026-11-22T13:53:34.514Z","archivedAt":null,"applicationBinding":null,"handoffs":[],"rootOrg":{"address":"/","orgDefinitionId":"stopped-org-workspace-58833-1795355609162","orgDefinitionName":"stopped-org-workspace-58833-1795355609162","orgRunId":"stopped_org_workspace_58833_1795355609162_47198b56d0904b8d90a0b1e196624e29","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"},"members":[{"address":"/direct","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_fa6e2c3f7c9142c09b3c9afe4fc7f8a6","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}},{"address":"/team","teamDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"teamRunId":"stopped_org_workspace_58833_1795355609162_598aa1586cc04945be4110494f5bbb60","coordinatorAddress":"/team/lead","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"},"members":[{"address":"/team/lead","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_c882a9ecf5f045318f888fd5c4fc9d76","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"high"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"}},{"address":"/team/unused","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_f92a93f2fac64a18911867f0b78eeeb2","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"high"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/C"}}]},{"address":"/sibling","teamDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"teamRunId":"stopped_org_workspace_58833_1795355609162_6f2366caa7344973b0f5e30bbbe74b6f","coordinatorAddress":"/sibling/lead","defaultLaunchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"},"members":[{"address":"/sibling/lead","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_cd335912452c4619b97da117f79a9cb0","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}},{"address":"/sibling/unused","agentDefinitionId":"stopped-org-workspace-58833-1795355609162","role":null,"description":null,"agentRunId":"stopped_org_workspace_58833_1795355609162_36156fdd44b54cc39c9d186c60c82fc8","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":{"reasoning_effort":"low"},"autoExecuteTools":false,"workspaceRootPath":"/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/stopped-org-workspace-58833-1795355609162/workspaces/A"}}]}]}}}: expected { success: false, …(5) } to match object { success: true, outcome: 'UPDATED' }
+(12 matching properties omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "outcome": "UPDATED",[39m
+[32m-   "success": true,[39m
+[31m+   "outcome": "PERSISTENCE_INDETERMINATE",[39m
+[31m+   "success": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts:[2m176:74[22m[39m
+    [90m174|[39m     for (const member of affected.members) member.launchConfiguration.…
+    [90m175|[39m     affected.members.find((member: Json) => member.address === "/team/…
+    [90m176|[39m     expect(mixed, JSON.stringify({ mixed, expected: stored(expected) }…
+    [90m   |[39m                                                                          [31m^[39m
+    [90m177|[39m     [34mexpect[39m([34mstored[39m(mixed[33m.[39mcanonical))[33m.[39m[34mtoEqual[39m([34mstored[39m(expected))[33m;[39m
+    [90m178|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 13:53:28
+[2m   Duration [22m 6.46s[2m (transform 97ms, setup 100ms, import 39ms, tests 5.56s, environment 0ms)[22m
+

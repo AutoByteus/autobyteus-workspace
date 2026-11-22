@@ -1,0 +1,215 @@
+# Case OCU-01-05 | node tickets/in-progress/org-teams-follow-definition/probes/org-container-ui-probe.mjs --output-dir <this folder>
+# Commit: 818e950d53 (implementation 1f0aad498b) + API/E2E round-1 test files, uncommitted at run time
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data
+Config file path: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/.env
+Loading environment from: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/.env
+◇ injected env (0) from ../../../../../../../root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:45681
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:45681
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data
+DB DIRECTORY: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/db
+LOGS DIRECTORY: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/logs
+DOWNLOAD DIRECTORY: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/download
+MEMORY DIRECTORY: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.34                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:8667) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-22T15:56:31.997Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/temp_workspace.
+Initialized TempWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795362992931,"pid":8667,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:46843"}
+{"level":30,"time":1795362992977,"pid":8667,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:45681"}
+[2026-11-22T15:56:32.978Z] [INFO] [server.runtime] Server listening on 127.0.0.1:45681
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Created and registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+Created terminal session 9de5b1d7-18bb-4c80-bd9e-7e11f674cbce using backend PtySession for target /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Terminal WebSocket connected: 9de5b1d7-18bb-4c80-bd9e-7e11f674cbce
+Terminal websocket attached for cwd /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Closed PTY session 9de5b1d7-18bb-4c80-bd9e-7e11f674cbce
+Terminal WebSocket disconnected: 9de5b1d7-18bb-4c80-bd9e-7e11f674cbce
+Created terminal session 45963c56-da08-4c77-b908-6ddf7dacc3f1 using backend PtySession for target /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Terminal WebSocket connected: 45963c56-da08-4c77-b908-6ddf7dacc3f1
+Terminal websocket attached for cwd /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+AGY compaction detection off for run ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+AGY compaction detection off for run ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_writer_38090c_df9dd7c026094d23a3f162cc38afc107/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agents/ocu_concierge_38090c_f1e7ed8c2a9b42daaed6e7de0db80d82/raw_traces_manifest.json
+Closed PTY session 45963c56-da08-4c77-b908-6ddf7dacc3f1
+Terminal WebSocket disconnected: 45963c56-da08-4c77-b908-6ddf7dacc3f1
+Created terminal session 776caada-3958-4dc0-acbb-20182b023076 using backend PtySession for target /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Terminal WebSocket connected: 776caada-3958-4dc0-acbb-20182b023076
+Terminal websocket attached for cwd /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Closed PTY session 776caada-3958-4dc0-acbb-20182b023076
+Terminal WebSocket disconnected: 776caada-3958-4dc0-acbb-20182b023076
+Created terminal session 2013041e-ec66-466d-9ef9-0f4d3e658468 using backend PtySession for target /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Terminal WebSocket connected: 2013041e-ec66-466d-9ef9-0f4d3e658468
+Terminal websocket attached for cwd /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+A run view could not switch modes: [
+  {
+    "code": "custom",
+    "message": "AgentOrg input-state identity mismatch.",
+    "path": []
+  }
+]
+A run view could not switch modes: [
+  {
+    "code": "custom",
+    "message": "AgentOrg input-state identity mismatch.",
+    "path": []
+  }
+]
+Closed PTY session 2013041e-ec66-466d-9ef9-0f4d3e658468
+Terminal WebSocket disconnected: 2013041e-ec66-466d-9ef9-0f4d3e658468
+Created terminal session abbe83f3-7e32-4838-8c3b-c6f0ffc017ca using backend PtySession for target /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Terminal WebSocket connected: abbe83f3-7e32-4838-8c3b-c6f0ffc017ca
+Terminal websocket attached for cwd /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/home
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40/ocu_lead2_38090c_91681da1e99543019855151aae78e56f/raw_traces_manifest.json
+Creating new workspace for rootPath: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/workspace.
+Reusing registered workspace ID: agent_ws_dc1c59e0c91c824d2fead712ecdc97751524ea30ddbbe0a474cc7e8d0bec8608
+AGY compaction detection off for run ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team_38090c_aa56d53208144aa2b48bce76346d4656/ocu_lead_38090c_ae167de5edba44668ca56a650e2be4ef/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40/ocu_lead2_38090c_91681da1e99543019855151aae78e56f/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40/ocu_lead2_38090c_91681da1e99543019855151aae78e56f/raw_traces_manifest.json
+Memory file missing: /root/.autobyteus-e2e/org-container-ui-probe-qjLWPp/data/memory/agent_teams/ocu_team2_38090c_111d356fd43146d1a2732431d3aa9d40/ocu_lead2_38090c_91681da1e99543019855151aae78e56f/raw_traces_manifest.json
+Closed PTY session abbe83f3-7e32-4838-8c3b-c6f0ffc017ca
+Terminal WebSocket disconnected: abbe83f3-7e32-4838-8c3b-c6f0ffc017ca

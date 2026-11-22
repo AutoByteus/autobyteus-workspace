@@ -1,0 +1,167 @@
+{
+  "migration": {
+    "migrationId": "20261122_agent_org_units_own_runs_v1",
+    "status": "SUCCEEDED",
+    "summary": "Scanned 1; migrated 1; skipped 0; failed 0."
+  },
+  "converted": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-21T11:47:04.136Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/team",
+        "rules": [
+          "When a software request arrives."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "cv-org-ea3be2",
+      "orgDefinitionName": "cv-org-ea3be2",
+      "orgRunId": "cv_org_ea3be2",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-conv-e2e-TtAnuh/workspace"
+      },
+      "units": [
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "cv_team_ea3be2",
+          "definitionId": "cv-team-ea3be2"
+        },
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "cv_concierge_ea3be2",
+          "definitionId": "cv-concierge-ea3be2"
+        }
+      ],
+      "formerUnits": []
+    }
+  },
+  "teamTree": {
+    "createdAt": "2026-09-21T11:47:04.136Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "cv-team-ea3be2",
+      "teamDefinitionName": "cv-team-ea3be2",
+      "teamRunId": "cv_team_ea3be2",
+      "coordinatorAddress": "/lead",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-conv-e2e-TtAnuh/workspace"
+      },
+      "members": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "cv-lead-ea3be2",
+          "role": null,
+          "description": null,
+          "agentRunId": "cv_lead_ea3be2",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-conv-e2e-TtAnuh/workspace"
+          }
+        },
+        {
+          "address": "/writer",
+          "agentDefinitionId": "cv-writer-ea3be2",
+          "role": null,
+          "description": null,
+          "agentRunId": "cv_writer_ea3be2",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-conv-e2e-TtAnuh/workspace"
+          }
+        }
+      ]
+    },
+    "containedIn": {
+      "orgRunId": "cv_org_ea3be2",
+      "address": "/team"
+    }
+  },
+  "conciergeMetadata": {
+    "runId": "cv_concierge_ea3be2",
+    "agentDefinitionId": "cv-concierge-ea3be2",
+    "workspaceRootPath": "/tmp/oc-conv-e2e-TtAnuh/workspace",
+    "memoryDir": "/tmp/oc-conv-e2e-TtAnuh/memory/agents/cv_concierge_ea3be2",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": null,
+    "preparedAt": "2026-09-21T11:47:04.136Z",
+    "preparedExpiresAt": "2026-09-22T11:47:04.136Z",
+    "startedAt": null,
+    "applicationExecutionContext": null,
+    "containedIn": {
+      "orgRunId": "cv_org_ea3be2",
+      "address": "/concierge"
+    },
+    "address": "/concierge"
+  },
+  "conciergeLine": {
+    "messageId": "m_cross_ea3be2",
+    "senderAgentRunId": "cv_concierge_ea3be2",
+    "receiverAgentRunId": "cv_lead_ea3be2",
+    "content": "RELEASED-CROSS-ea3be2",
+    "messageType": "handoff",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T10:00:00.000Z",
+    "counterpart": {
+      "address": "/team/lead",
+      "nodeId": null
+    }
+  },
+  "teamLine": {
+    "messageId": "m_cross_ea3be2",
+    "senderAgentRunId": "cv_concierge_ea3be2",
+    "receiverAgentRunId": "cv_lead_ea3be2",
+    "content": "RELEASED-CROSS-ea3be2",
+    "messageType": "handoff",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T10:00:00.000Z",
+    "counterpart": {
+      "address": "/concierge",
+      "nodeId": null
+    }
+  },
+  "members": [
+    {
+      "address": "/lead",
+      "agentRunId": "cv_lead_ea3be2"
+    },
+    {
+      "address": "/writer",
+      "agentRunId": "cv_writer_ea3be2"
+    },
+    {
+      "address": "/editor",
+      "agentRunId": "cv_editor_ea3be2_ce8292efbeba48fd8715b2b690f1cc41"
+    }
+  ],
+  "leadInput": "Your team changed: its definition was updated.\nJoined: editor at /team/editor.\nYour handoff rules are unchanged.\n\nECHO_INPUT"
+}
