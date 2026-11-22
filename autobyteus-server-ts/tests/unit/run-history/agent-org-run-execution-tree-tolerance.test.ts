@@ -3,9 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 /**
@@ -59,18 +56,10 @@ describe("AgentOrgRun execution tree tolerant reading and exact writing", () => 
       .toThrow("subjectKind must be 'agent_org'");
   });
 
-  it("writes the exact current shape and reads back the same tree", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-tree-exact-"));
-    const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-run");
-    try {
-      const store = new AgentOrgRunExecutionTreeStore();
-      await store.write(dir, { ...releasedOrg() } as never);
-      const written = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
-      expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
-      expect(JSON.stringify(written)).not.toMatch(/schemaVersion|settledAt|taskExecutions/);
-      expect(await store.read(dir, "org-run")).toEqual(validateAgentOrgRunExecutionTreePayload(currentOrg(), "org-run"));
-    } finally {
-      await fs.rm(memoryDir, { recursive: true, force: true });
-    }
+  it("reads a released tree as the exact current shape (no released-only field), the same tree as the current payload", () => {
+    const parsed = validateAgentOrgRunExecutionTreePayload({ ...releasedOrg() }, "org-run");
+    expect(keys(parsed as unknown as Record<string, unknown>)).toEqual(TOP_LEVEL_KEYS);
+    expect(JSON.stringify(parsed)).not.toMatch(/schemaVersion|settledAt|taskExecutions/);
+    expect(parsed).toEqual(validateAgentOrgRunExecutionTreePayload(currentOrg(), "org-run"));
   });
 });

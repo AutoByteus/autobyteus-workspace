@@ -91,7 +91,7 @@ const harness = async () => {
   const live = new Set<string>();
   const restored: string[] = [];
   const delivery = new CrossRunMessageDelivery({
-    tree: () => index, tasks: () => ({ isOpen: () => true }) as never,
+    tree: () => index, tasks: () => tasks,
     senderRoot: (run) => engineOf(run),
     receiverRoot: async (run) => {
       if (!live.has(run.rootRunId)) { restored.push(run.rootRunId); live.add(run.rootRunId); }
@@ -113,7 +113,7 @@ const harness = async () => {
     dispatcher.dispatch({ toolName: "send_message_to", rawArguments: { ...target, content }, sender: buildAgentRunMessageSenderContext({ senderRunId: agentRunId,
       memberExecutionContext: { identity: member(agentRunId), collaboration: { deliverLogicalMessage: async () => ({ accepted: false,
         code: "COLLABORATION_TARGET_NOT_FOUND", message: "Not a member of your own run." }) } } as never }) });
-  return { send, engineOf, live, restored, index, scope: new MessageViewScope({ tree: index }) };
+  return { send, engineOf, live, restored, index, tasks, scope: new MessageViewScope({ tree: index }) };
 };
 const last = (engine: RootCommunicationEngine) => JSON.parse(JSON.stringify(engine.getMessages().at(-1))) as Record<string, unknown>;
 
@@ -147,6 +147,24 @@ describe("R-8, SR-014: a run an Org unit delegated messages the Org's units by O
     expect(h.restored).toEqual(["pdp_copy"]);
     expect(last(h.engineOf(PDP_COPY))).not.toHaveProperty("counterpart");
     expect(last(h.engineOf(CONCIERGE))).toEqual(last(h.engineOf(PDP_COPY)));
+  });
+
+  it("CR-005: a unit agent continues a closed Task it delegated (reopened and delivered); a unit that did not delegate it is refused as closed", async () => {
+    for (const [delegator, copyAgent, copyRun, taskId] of [["concierge_1", "writer_copy", WRITER_COPY, "T1"], ["solution_designer_1", "pdp_copy_lead", PDP_COPY, "T2"]] as const) {
+      const h = await harness();
+      const execution = copyRun.rootSubjectKind === "agent" ? { agentRunId: copyRun.rootRunId } : { teamRunId: copyRun.rootRunId };
+      await h.tasks.markStarted(execution);
+      h.tasks.close(taskId);
+      // Closed: no unit is related to it any more (the Task rule's condition); a unit that did not delegate it is refused.
+      const other = delegator === "concierge_1" ? "architecture_reviewer_1" : "concierge_1";
+      await expect(h.send(other, { target_agent_run_id: copyAgent })).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+      // The Task back to TODO: its assigner's message continues it.
+      h.tasks.setTaskOpen(taskId);
+      await expect(h.send(delegator, { target_agent_run_id: copyAgent }), `${delegator} continues ${copyAgent}`)
+        .resolves.toMatchObject({ accepted: true, message: expect.stringContaining("continues with its conversation") });
+      expect(h.tasks.isOpen(execution)).toBe(true);
+      expect(last(h.engineOf(copyRun))).toMatchObject({ senderAgentRunId: delegator, receiverAgentRunId: copyAgent });
+    }
   });
 
   it("two units stay same_container (counterpart Org addresses), and a run no unit delegated reaches no Org address", async () => {

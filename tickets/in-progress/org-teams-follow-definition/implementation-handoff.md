@@ -28,19 +28,37 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 baseline)
+- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002)
 - Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`
 - Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
 
-## IR-002 (this round)
+## IR-003 (CRR-002 Local Fixes)
+
+- **CR-005**: the container-chain relation now applies under the Task rule's own condition, the delegated run having an open Task entry (as `canMessage` counts it). This is one rule for both directions, and `chainedUnitOf` uses it too.
+  - A closed delegation is therefore related to no unit. A unit agent's message to its own closed delegation reaches the assigner's continuation in `admit` again (reopened and delivered).
+  - Any other unit gets `TASK_AGENT_RESOURCE_CLOSED`, as at base and in IR-001.
+  - Tests go through `send_message_to`: the agent unit (`writer_copy`) and a Team unit member (`pdp_copy`) each continue their closed delegation after the Task is set back to TODO, and a non-delegating unit is refused. The case fails without the condition.
+  - `agent_orgs.md` now says "while its Task is open".
+- **CR-006**: `chainContainerOf` and `relatedThroughContainer` moved out of `DelegationIndex` into their own `agent-collaboration/delegation/container-chain-relation.ts`, as functions over the index (`chainOf`, `tasksOf`) and the container port. `delegation-index.ts` is back to 492 effective lines.
+- **CR-007**: `PeerRunMembersReceiver` declares its own port, `PeerRunMembersTaskSide`. `remote-collaboration-composition.ts` and the receiver no longer import `projects/`, so `tests/architecture/projects-boundaries.test.ts` passes. `tests/architecture` (all 13 files) is now part of my runs.
+- **CR-002 (remaining)**:
+  - `run-history/store/agent-org-run-execution-tree-store.ts` is deleted (migrations use the frozen copy).
+  - Its unused test imports are removed; two migration tests that read released trees now import the frozen store; the allocator test keeps its filesystem-read check.
+  - The tolerance tests' store-only cases now check the same claims through `validateAgentOrgRunExecutionTreePayload`: the exact current shape, no released-only fields, no `skillAccessMode`.
+- Validation:
+  - typecheck: production 0 errors, tests 974 in 300 files (baseline);
+  - 357 files / 2591 tests pass: architecture, collaboration, Org execution, communication, remote, run history, memory, API, projects, migrations, integration. `tracked-imports` passes once the new file is tracked.
+  - The built-server e2e was not rerun: this round's runtime changes are the open-entry condition and a type-only port.
+
+## IR-002
 
 - **R-8 reach** (`agent-collaboration/delegation/collaboration-tree.ts`):
   - In `stepTwo`, an assigner that is a unit run contributes its container's placements at Org addresses (`containerReach`, shared with `containerStepTwo`): every unit's agents, a Team unit's members as `P/x`, a Team unit's `P` answered by its coordinator, and every agent unit at its address. A Team unit's team-space standing is never exposed. Assigner order and first-wins are unchanged; the contribution has rank `configured`.

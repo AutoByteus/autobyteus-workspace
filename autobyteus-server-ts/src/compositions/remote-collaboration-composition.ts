@@ -1,6 +1,5 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
-import { PeerRunMembersReceiver } from "../remote-collaboration/inbound/peer-run-members-receiver.js";
-import type { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
+import { PeerRunMembersReceiver, type PeerRunMembersTaskSide } from "../remote-collaboration/inbound/peer-run-members-receiver.js";
 import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
 import { LiveAgentOrgContainer } from "../agent-org-execution/container/live-agent-org-container.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
@@ -70,7 +69,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   /** autobyteus-591: the peer-started runs their delegating node closed, loaded (the state handler and S-5 write it). */
   closedDelegations: ClosedDelegations;
   /** FU-003: this node's Task entries, which keep the members of a Team run a peer started for this node's delegation. */
-  taskResources: Pick<TaskExecutionResourceService, "updatePeerRunMembers">;
+  taskResources: PeerRunMembersTaskSide;
 }>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));

@@ -354,31 +354,6 @@ export class DelegationIndex implements TaskEntriesListener {
     return assigns(a, openB) || assigns(b, openA);
   }
 
-  /**
-   * design SR-014: the Org container of a unit run in this run's delegation chain (assigners upward, the run itself not
-   * counted); `null` when none: the container whose units this delegated run is related to, as when the Org was its assigner.
-   */
-  async chainContainerOf(run: RootExecutionIdentity): Promise<string | null> {
-    if (!this.containers) return null;
-    for (const link of this.chainOf(run).slice(1)) {
-      // The container itself: a converted delegation that named no delegator stays with it (contract §6).
-      if (link.rootSubjectKind === "agent_org") return link.rootRunId;
-      const containedIn = await this.containers.containedInOf(link);
-      if (containedIn) return containedIn.orgRunId;
-    }
-    return null;
-  }
-
-  /** design SR-014: the Task relation extended along the chain: one run is a unit of the container of a unit in the other's chain. */
-  async relatedThroughContainer(a: RootExecutionIdentity, b: RootExecutionIdentity): Promise<boolean> {
-    if (!this.containers) return false;
-    for (const [unit, delegated] of [[a, b], [b, a]] as const) {
-      const containedIn = await this.containers.containedInOf(unit);
-      if (containedIn && await this.chainContainerOf(delegated) === containedIn.orgRunId) return true;
-    }
-    return false;
-  }
-
   /** Which run an agent run is in (contract §10.5); null for an agent of a run no Task names. */
   async runOfAgent(agentRunId: string): Promise<RootExecutionIdentity | null> {
     const id = agentRunId.trim();

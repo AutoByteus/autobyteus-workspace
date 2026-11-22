@@ -231,8 +231,10 @@ container, which contributes the same placements. Its messages to the container'
 units are related runs' messages (design SR-014: the Task relation extended along
 its delegation chain): a stopped unit is restored, neither line records
 `counterpart`, and the message shows as a related line (in the two runs' views
-and the Org view; the delegating unit's view only when it is a party). A unit's
-message to such a run, by run ID, is related the same way. Reaching another run is
+and the Org view; the delegating unit's view only when it is a party), while its
+Task is open. A unit's message to such a run, by run ID, is related the same way
+while its Task is open; once it is closed, only its assigner continues it (after
+the Task's reopen), as any delegated run. Reaching another run is
 possible only by run ID.
 
 ## Launch Configuration And Admission

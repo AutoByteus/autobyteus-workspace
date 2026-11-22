@@ -20,6 +20,7 @@ import type { RunningAgents } from "../running/running-agents.js";
 import type { PeerRunStateNotices } from "../execution/remote/peer-run-state-notices.js";
 import type { CrossRunAcceptInput } from "./cross-run-accept-input.js";
 import type { OrgContainerPort } from "../domain/org-container-port.js";
+import { chainContainerOf, relatedThroughContainer } from "../delegation/container-chain-relation.js";
 
 /** The sender's root: it prepares a message to another run and records it in its own log once delivered. */
 export type CrossRunSenderRoot = Readonly<{
@@ -96,7 +97,7 @@ const taskRefusal = (error: unknown): AgentOperationResult => {
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf" | "chainContainerOf" | "relatedThroughContainer">;
+    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf" | "chainOf">;
     tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "assertReopenable" | "reopenAssignment">;
     /** The sender's root (it is running: its agent is sending). */
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
@@ -171,9 +172,9 @@ export class CrossRunMessageDelivery {
   }
 
   /** The unit of the Org container in the sender's delegation chain that has the target agent (design SR-014). */
-  private async chainedUnitOf(tree: Pick<DelegationIndex, "chainContainerOf">, senderRun: RootExecutionIdentity, targetAgentRunId: string): Promise<ContainerUnit | null> {
+  private async chainedUnitOf(tree: Pick<DelegationIndex, "chainOf" | "tasksOf">, senderRun: RootExecutionIdentity, targetAgentRunId: string): Promise<ContainerUnit | null> {
     const containers = this.dependencies.containers;
-    const orgRunId = containers ? await tree.chainContainerOf(senderRun) : null;
+    const orgRunId = containers ? await chainContainerOf(tree, containers, senderRun) : null;
     return orgRunId ? containers!.unitOfAgent(orgRunId, targetAgentRunId) : null;
   }
 
@@ -287,10 +288,12 @@ export class CrossRunMessageDelivery {
   }
 
   /** Step 2 (`model.py` `_admit`). Refusals throw. */
-  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf" | "relatedThroughContainer">, senderRun: RootExecutionIdentity,
+  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf" | "chainOf">, senderRun: RootExecutionIdentity,
     receiverRun: RootExecutionIdentity, senderAgentRunId: string): Promise<Admission> {
-    // A unit's message to a run a unit of its container delegated is related too (SR-014: as when the Org was its assigner).
-    if (tree.canMessage(senderRun, receiverRun) || await tree.relatedThroughContainer(senderRun, receiverRun)) return "related";
+    // A unit's message to a run a unit of its container delegated, while its Task is open, is related too (SR-014: as when
+    // the Org was its assigner); a closed one goes on to the assigner's continuation, as any closed delegated run.
+    const containers = this.dependencies.containers;
+    if (tree.canMessage(senderRun, receiverRun) || (containers && await relatedThroughContainer(tree, containers, senderRun, receiverRun))) return "related";
     const receiverReference = runReferenceOf(receiverRun);
     const receiverEntries = receiverReference ? [...tree.tasksOf(receiverReference)].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)) : [];
     // The assigner's continuation: the receiver's last entry only.

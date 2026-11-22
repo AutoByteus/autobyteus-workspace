@@ -8,7 +8,6 @@ import { writeStoredOrgContainer } from "../../../helpers/stored-org-container.j
 import { readStoredOrgTree } from "../../../../src/agent-org-execution/container/stored-org-tree.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../../src/run-history/store/agent-org-run-history-index-store.js";

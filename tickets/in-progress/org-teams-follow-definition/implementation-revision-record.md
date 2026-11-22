@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-005 pass on SR-010; ARCH-REV-007 pass on the storage contract, SR-011/SR-012) | N/A (residual notes addressed) | `Initial Baseline` | SR-010, SR-011, SR-012, ARCH-REV-005, ARCH-REV-007 | Implemented; handed to Code Review |
 | IR-002 | Architecture Reviewer, `design-review-report.md` ARCH-REV-009 (pass on SR-013/SR-014, after CRR-001) | CR-001 (Design Impact via SR-013 R-8, SR-014), CR-002, CR-003, CR-004 (Local Fix), N-1 | `Design Impact` realization + `Local Fix` | SR-013, SR-014, ARCH-REV-009, CRR-001 | Implemented; handed to Code Review |
+| IR-003 | Code Reviewer, `code-review-report.md` CRR-002 (review of IR-002) | CR-005, CR-006, CR-007, CR-002 (remaining) | `Local Fix` | CRR-002 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -67,3 +68,17 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - a doc comment is moved back;
   - two deviations are recorded with their reasons.
 - Validation: see `implementation-handoff.md` § IR-002 and `evidence/implementation/ir-002/`.
+
+### IR-003 — CRR-002 Local Fixes
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-002 (Fail; all open findings Local Fix).
+- Triggering finding IDs: CR-005, CR-006, CR-007, CR-002 (remaining).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002 (`5545e20f3a`). Current authoritative result: the IR-003 commit (see `implementation-handoff.md` § IR-003).
+- Related code-review revision IDs: CRR-002.
+- Implementation delta:
+  - the container-chain relation applies only while the delegated run's Task entry is open, so a closed delegation is continued by its assigner again;
+  - the relation moved to `container-chain-relation.ts`;
+  - the FU-003 receiver has its own Task-side port (the projects boundary holds);
+  - the unused live Org tree store is deleted, with its test imports and store-only cases, which now check through the schema.
+- Validation: see `implementation-handoff.md` § IR-003.

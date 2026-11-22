@@ -1,8 +1,17 @@
-import type { TaskExecutionResourceService } from "../../projects/services/task-execution-resource-service.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { PeerHandlerRefusal } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type { PeerRunMembersRequest } from "../domain/remote-requests.js";
+
+/**
+ * What the receiver needs of this node's Task entries (the Task side's `updatePeerRunMembers`, bound by the composition root):
+ * every entry naming the run on that node takes the members; `not_linked` when none names it.
+ */
+export type PeerRunMembersTaskSide = Readonly<{
+  updatePeerRunMembers(execution: TaskExecutionReference, nodeId: string, members: readonly Readonly<{ address: string; agentRunId: string }>[],
+    coordinatorAgentRunId: string): Promise<"updated" | "unchanged" | "not_linked">;
+}>;
 
 const refusal = (code: string, message: string): PeerHandlerRefusal => Object.freeze({ accepted: false, code, message });
 
@@ -13,7 +22,7 @@ const refusal = (code: string, message: string): PeerHandlerRefusal => Object.fr
  * the tree and its rows follow. Idempotent: the same members again change nothing.
  */
 export class PeerRunMembersReceiver {
-  constructor(private readonly dependencies: Readonly<{ tasks: Pick<TaskExecutionResourceService, "updatePeerRunMembers"> }>) {}
+  constructor(private readonly dependencies: Readonly<{ tasks: PeerRunMembersTaskSide }>) {}
 
   async apply(request: PeerRunMembersRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal> {
     if (request.run.kind !== "agent_team") return refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, "Only a Team run has members.");
