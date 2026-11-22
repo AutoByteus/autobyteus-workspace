@@ -31,3 +31,5 @@ Own progress log while tests run. Read it first when picking the run back up. Ro
 | 2026-11-22T00:40 | AE-06 | Completed | Pass | attempts 5 + 6A: OLD 127 libz.so; NEW ready 8s, window + UI, health 200, sandbox ns, Ctrl+C and window close stop all processes; evidence/api-e2e/AE-06-* |
 | 2026-11-22T00:40 | AE-11 | Started | | extract-and-run cleanup: static vs legacy runtime, minimal + app, strace |
 | 2026-11-22T00:40 | AE-11 | Completed | Fail | static runtime leaves appimage_extracted_<md5> (1.2 GB) after exit; legacy removes it; no cleanup syscalls; rerouted Design Impact to Solution Designer. Keep /tmp/ae28 for rerun |
+| 2026-11-22T00:45 | AE-11 | Checkpoint | | DEC-006 (SR-003): accepted risk, docs note, FU-004; no rerun needed. Round 1 finalized Pass, 95% |
+| 2026-11-22T00:45 | cleanup | Completed | | no namespace/Xvfb/app processes left (count 0), no ae28 mounts (0); /tmp/ae28 removed (yes) |
