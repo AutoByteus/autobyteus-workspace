@@ -1,0 +1,41 @@
+# IMP-01 (586, D-1) every build output present, then the web typecheck
+# command: cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 ;
+#          pnpm -C autobyteus-web build:mobile-web ; autobyteus-ios/scripts/prepare-demo-web.sh --build ;
+#          git ls-files --others --ignored --exclude-standard --directory autobyteus-web ; pnpm -C autobyteus-web typecheck
+# commit: working tree = the D-1 commit (nuxt.config.ts, TESTING.md), on d4f32abdd9
+# env: macOS arm64, Node v22.23.1; local unsigned desktop build (TESTING.md Fresh-start build command)
+# date: 2026-11-22
+# result: Pass. All three builds passed; with dist-mobile-demo/ present the typecheck passes at its baseline.
+
+## desktop build (its own typecheck ran before the outputs existed)
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg'
+
+## phone and demo builds
+Mobile web assets written to <worktree>/autobyteus-web/dist-mobile/public
+The demo answers all 252 compiled operations (handled or listed as unreachable).
+
+## ignored outputs inside autobyteus-web after the three builds; JS/TS/Vue files outside node_modules; size; excluded from the Nuxt type project
+## (untracked, not ignored: none)
+.nuxt/             180   14M   no: it is the generated project itself (tsconfig, types)
+build/dist/         13   84K   yes: ../build/**
+build/icons/*        0         no JS
+dist-mobile-demo/  147   13M   yes: ../dist-mobile-demo/** (new, D-1)
+dist-mobile/       147   13M   yes: ../dist-mobile/**
+dist/              147   15M   yes: ../dist (Nuxt's own exclude)
+electron-dist/    4369  1.9G   yes: ../electron-dist/**
+resources/        4369  578M   yes: ../resources/**
+not present on macOS: .output/ (../.output/**), .data/ (Nuxt's ../.data), .server-packaging-stage/ (Windows only:
+  prepare-server.mjs stages the bundled server there and never removes it; the macOS/Linux prepare-server.sh writes
+  resources/server directly) -> now excluded too: ../.server-packaging-stage/** (new, D-1)
+
+## excludes in the generated .nuxt/tsconfig.json
+build true; dist-mobile-demo true; dist-mobile true; dist true; electron-dist true; resources true; .server-packaging-stage true; .output true; .data true
+
+## typecheck with all outputs present
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 40.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.7s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
