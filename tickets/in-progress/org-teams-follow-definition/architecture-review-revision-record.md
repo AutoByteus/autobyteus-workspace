@@ -11,6 +11,9 @@
 | ARCH-REV-005 | Round 5 / SR-010 resubmission | SR-010 | Fail | Pass | AR-001 (resolved) |
 | ARCH-REV-006 | Round 6 / SR-011 storage contract | SR-011 | Pass | Fail (Design Impact) | AR-008, AR-009 (new) |
 | ARCH-REV-007 | Round 7 / SR-012 contract alignment | SR-012 | Fail | Pass | AR-008, AR-009 (resolved) |
+| ARCH-REV-008 | Round 8 / SR-013 after CRR-001 CR-001 | SR-013 | Pass | Fail (Design Impact) | AR-010 (new) |
+| ARCH-REV-009 | Round 9 / SR-014 resubmission | SR-014 | Fail | Pass | AR-010 (resolved) |
+| ARCH-REV-010 | Round 10 / SR-015 after CRR-004 A-1 | SR-015 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -183,3 +186,72 @@ None.
 - Material classification changes: None (Large / High)
 - Recommended recipient: implementation, per the handoff rules, with the contract
 - Remaining risks or uncertainty: MP-09 note; earlier implementation notes
+
+### ARCH-REV-008 — Review of SR-013 (R-8, after CRR-001 CR-001)
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 8; SR-013 (commit `4af1427fc3`) after the code reviewer's CRR-001 CR-001 (Design Impact). Implementation at `46e53e9ed0`.
+- Triggering role, report path, and finding IDs: code reviewer, `code-review-report.md`, CR-001; Solution Designer, SR-013
+- Relevant solution revision IDs: SR-013
+- Prior authoritative decision: Pass (ARCH-REV-007)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - R-8's reach rule (a contained assigner contributes its container's Org-address placements) is accepted.
+  - New AR-010: R-8's delivery is given as a `same_container` admission. In the implemented code, the relation also sets `counterpart` (`root-communication-engine.ts:318-319`, `cross-run-message-delivery.ts:251-252`) and view scope (`message-view-scope.ts:27` vs `:28-33`). Today these messages are `related`.
+- Review gap acknowledged: ARCH-REV-001..005 accepted "delegation origin = unit run" without tracing step-2 reach for runs those units delegate. CRR-001 found it.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-009 | Resolved | Resolved | — | Unaffected by R-8 |
+
+- New or remaining finding IDs: AR-010 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer; CR-002..CR-004 and N-1 go to implementation with the next pass
+- Remaining risks or uncertainty: contract §9 wording note
+
+### ARCH-REV-009 — Re-review of SR-014
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 9; SR-014 (commit `239e1dd0de`) after ARCH-REV-008
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-010
+- Relevant solution revision IDs: SR-014
+- Prior authoritative decision: Fail
+- Current authoritative decision: Pass
+- What changed:
+  - The delegation-chain case is `related` (the Task rule extended through `chainOf`): restored when stopped, no `counterpart`, `MessageViewScope` rule 1.
+  - `same_container` applies to two units only, with one decision order.
+  - The contract's §5, §9 and §10 are aligned.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-010 | Open (Medium) | Resolved | § SR-014, contract §5/§9/§10 | Related branch at `cross-run-message-delivery.ts:214`, `root-communication-engine.ts:315`; view rule `message-view-scope.ts:28-33`; live/converted identity test named |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules, with CRR-001's CR-002..CR-004 and N-1
+- Remaining risks or uncertainty: test-wording note on which views show another-unit messages
+
+### ARCH-REV-010 — Review of SR-015 (former-member refusal for other units)
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 10; SR-015 (commit `be7e3110c0`) after the code reviewer's failure-origin review CRR-004 A-1 (Requirement Gap, decided as DEC-007 by the Solution Designer within REQ-002, user informed)
+- Triggering role, report path, and finding IDs: code reviewer, `code-review-report.md`, A-1; Solution Designer, SR-015
+- Relevant solution revision IDs: SR-015
+- Prior authoritative decision: Pass (ARCH-REV-009)
+- Current authoritative decision: Pass
+- What changed:
+  - `CollaborationTree.resolve` refuses a Team unit's former or leaving member at `P/x` with autobyteus-22's exact text. It asks the owning Team unit (`formerMemberAt`) and presents the address through `ContainedTeamAddressSpace`.
+  - The test wording follows the ARCH-REV-009 note.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules
+- Remaining risks or uncertainty: answer `formerMemberAt` from the stored tree for a non-live unit (no wake to refuse); wording suggestion only
