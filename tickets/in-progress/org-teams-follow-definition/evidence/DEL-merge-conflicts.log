@@ -1,0 +1,72 @@
+Auto-merging GLOSSARY.md
+Auto-merging autobyteus-server-ts/docs/design/collaboration_model.md
+CONFLICT (content): Merge conflict in autobyteus-server-ts/docs/design/collaboration_model.md
+Auto-merging autobyteus-server-ts/src/agent-collaboration/communication/cross-run-message-delivery.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/remote/remote-run-channel.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor-input.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-options.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-port.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-port.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-message-delivery.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-message-delivery.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+Auto-merging autobyteus-server-ts/src/api/rest/remote.ts
+Auto-merging autobyteus-server-ts/src/compositions/build-studio-server.ts
+Auto-merging autobyteus-server-ts/src/compositions/collaboration-composition.ts
+Auto-merging autobyteus-server-ts/src/compositions/remote-collaboration-composition.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/compositions/remote-collaboration-composition.ts
+Auto-merging autobyteus-server-ts/src/remote-collaboration/channel/peer-client.ts
+Auto-merging autobyteus-server-ts/src/remote-collaboration/channel/peer-gateway.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/remote-collaboration/channel/peer-gateway.ts
+Auto-merging autobyteus-server-ts/src/remote-collaboration/domain/remote-requests.ts
+Auto-merging autobyteus-server-ts/src/remote-collaboration/inbound/remote-message-receiver.ts
+Auto-merging autobyteus-server-ts/src/remote-collaboration/remote-collaboration-services.ts
+Auto-merging autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/fixtures/configured-root-first-work-fixture.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/helpers/org-migration-continuation-fixtures.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/helpers/org-migration-continuation-fixtures.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-collaboration/result-catalogue.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-member-scope.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-config.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-config.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-inspection.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-inspection.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-restore-self-heal.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-task-root-harness.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-task-root-harness.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/api/rest/remote-run-observations-route.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/node-identity-hold-back.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/remote-collaboration/node-identity-hold-back.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/peer-gateway.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/remote-collaboration/peer-gateway.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/remote-message-receiver.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/remote-collaboration/remote-message-routing.test.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/remote-collaboration/remote-message-routing.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/remote-message-view-sequence.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/remote-collaboration/remote-message-view-sequence.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/remote-run-view-provider.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/running-agents-messaging.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/remote-collaboration/running-agents-messaging.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/standalone-remote-delegation.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/remote-collaboration/team-remote-delegation.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/remote-collaboration/team-remote-delegation.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-delegation.test.ts
+Auto-merging autobyteus-server-ts/typecheck-baseline.json
+Automatic merge failed; fix conflicts and then commit the result.
