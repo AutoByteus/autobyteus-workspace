@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Fail | CR-001, CR-002, CR-003, CR-004 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 complete | Fail | Fail | CR-001, CR-002, CR-003, CR-004, CR-005, CR-006, CR-007 |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 complete | Fail | Pass | CR-002, CR-005, CR-006, CR-007 |
+| CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 failed | Pass | Fail | F-1, F-2, F-3, F-4, A-1 |
 
 ## Revision Entries
 
@@ -113,3 +114,37 @@ None.
 - Material score or classification changes: average 9.1 → 9.45, every category at least 9.4; Large/High preserved
 - Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
 - Remaining risks or uncertainty: real-runtime, two-node and rendered-view proof pending in API/E2E; built-server e2e not rerun after IR-003; FU-001 holds as a follow-up.
+
+### CRR-004: Failure-origin review of API-REV-001
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001, commit `fa1f957778`); F-1 (OC-04, OCL-02, OCU-04), F-2 (RC-47), F-3 (ORG-E2E), F-4 (RC-12/13/24 after RC-56), A-1
+- Relevant solution revision IDs: SR-007, SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-009
+- Relevant implementation revision IDs: IR-003 (`1f0aad498b`)
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003, implementation review)
+- Current authoritative result: Fail (implementation-owned)
+- What changed in the review result and why:
+  - F-1 (Read): the Org rows and the view composition use a Team unit's current members only, so a leaving member's frames and status never reach the Org view.
+  - F-2 (Read): `listingFactsOf` treats a contained run as started by a person.
+  - F-3 (Reproduced in-process): `ContainerConfigTrees.write` drops the `launchSource` a model patch sets, so the readback differs.
+  - F-4 (Measured): two two-server runs, the second with temporary diagnostics; then Reproduced on the Org Team-unit shape. `validateTeamRunStatePackage` counts only current members as endpoints, so a Team whose removed member exchanged a message with an outside agent cannot be restored. Pre-existing since autobyteus-22; in this ticket by the scope test (REQ-002/AC-005 Team units, AC-007's follow-up).
+  - A-1: Requirement Gap (minor).
+  - F-1, F-2 and F-3 were detectable in source review and I missed them (CRR-001..CRR-003), so CRR-003's Runtime Correctness and API/E2E Readiness rationale does not hold.
+  - All diagnostics and scratch tests were removed; the worktree is clean.
+- Supported product scenario / material-premise basis changes: none; the failing scenarios are approved behavior.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-001..CR-007, N-1 | — | Still resolved | Unchanged implementation `1f0aad498b` |
+
+- New or remaining finding IDs: F-1, F-2, F-3, F-4 (Local Fix, implementation); A-1 (Requirement Gap, Solution Designer)
+- Material score or classification changes: not rescored; Large/High preserved
+- Recommended recipient: Implementation engineer (F-1..F-4); Solution Designer (A-1)
+- Remaining risks or uncertainty: restore errors on a peer node are swallowed silently (logging recommended).
