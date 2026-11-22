@@ -1,0 +1,43 @@
+# IMP-01 typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: e06715d0a5 (rerun before 0681fcd3af with the same content: PASS, same baseline)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+
+
+> autobyteus-server-ts@0.1.1 pretypecheck <worktree>/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source <worktree>/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared <worktree>/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 132ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 typecheck <worktree>/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.2s
+[typecheck] server tests (tsconfig.tests.json): 1000 errors, exit 2, 31.6s
+[typecheck] production errors: 0; test-file errors: 1000 in 313 files (baseline 1000 in 313 files)
+[typecheck] PASS
+typecheck exit 0

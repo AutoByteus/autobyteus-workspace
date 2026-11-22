@@ -359,3 +359,19 @@ Principle 1 (confirm the premise the design rests on); DESIGN.md rule 5 (bounded
 - **The fix:** stay on electron-builder 25 and hand its AppImage tool a prepared toolset folder whose `runtime-arm64` is the official static runtime (pinned checksums), with a build assertion that the produced image uses it. Only the arm64 AppImage changes; the upgrade became its own follow-up.
 - **Why it mattered:** a one-architecture runtime fix had become a change to how every desktop target is packaged, with effects nobody had measured.
 - **Notice it by:** a fix whose mechanism is "upgrade X to the next major version" when the defect is narrow. Before choosing it, measure the upgrade alone against the current output (one build, diff the package), or find the narrowest lever on the current version first; a risk row is not a measurement.
+
+### Case 26: A New Kind In A Union Without Its Consumers (autobyteus-599, ARCH-REV-001 AR-001)
+
+Principle 11 (derived consumers of a changed structure).
+
+- **The design said:** members record a lost session's fresh ID with a new binding change kind, `replace_lost_session`, "applied by the same tree writer as `replace_without_conversation`". It named one consumer.
+- **What the code does:** `CollaborationAgentPlatformBindingChange` is switched on by kind in five places:
+  - two helpers;
+  - the configured handle, which clears its switch attempt only for `runtime_switch`;
+  - the Flat Team handle's conflict guard and cache;
+  - the Team tree committer;
+  - the Org tree writer.
+  The Flat Team guard treats every other kind as an adoption. So a renewal would have thrown "conflicting provider binding" for every Team member, the very case the founder hit. The two tree writers would have read it as a no-conversation replacement.
+- **The fix (SR-002):** the design lists all five consumers with a decision for each. The new kind carries the same `replacement` payload, so each writer reuses its compare-and-set, under a neutral name the two kinds share. AC-005 is verified through the real Team and Org roots.
+- **Why it mattered:** the renewal would have worked for standalone runs and failed for exactly the observed member.
+- **Notice it by:** a design that adds a kind, variant or enum value and names "its writer" or "the handler". Search every `kind ===`, `switch` and ternary chain on that union, and list each with a decision. A fallthrough `else` that treats unknown kinds as one known kind is where the new one goes wrong.

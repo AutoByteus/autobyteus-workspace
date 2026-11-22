@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `investigation-notes.md` (data counts) | Claude Code deletes saved sessions after 30 days by default (`cleanupPeriodDays` unset in `~/.claude/settings.json`), so every Claude run left idle for a month loses its native session. With this ticket it continues from its journal, but the native context (tool state, prompt cache) is gone. | 1,819 session files, none older than about 30 days; the observed run idle 36 days | This ticket recovers; prevention changes the founder's global Claude setting, which also governs his own interactive Claude, and is his decision | No | "Decide whether AutoByteus should keep Claude sessions longer: for example ask the founder to set `cleanupPeriodDays` in `~/.claude/settings.json`, or give AutoByteus-run Claude processes their own `CLAUDE_CONFIG_DIR` with a long retention. Weigh disk use and his own Claude's behavior." | |

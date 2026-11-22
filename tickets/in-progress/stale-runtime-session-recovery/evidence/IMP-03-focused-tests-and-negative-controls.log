@@ -1,0 +1,235 @@
+# IMP-03 focused renewal tests, then one negative control per piece
+# Command: /tmp/599-ev/controls.sh <worktree> (script reproduced below the results; each control edits one source line, runs the focused files, then restores the file)
+# Commit: 0681fcd3af
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Expected: baseline all pass; every NC-xx shows failed tests; "After the controls" lists no changed source file.
+
+## Focused files
+tests/unit/agent-execution/domain/runtime-switch-session-renewal.test.ts
+tests/unit/agent-execution/backends/acp/acp-missing-session.test.ts
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+tests/unit/agent-execution/backends/claude/backend/claude-agent-run-backend-factory-restore-check.test.ts
+tests/unit/agent-execution/standalone-session-renewal.test.ts
+tests/unit/agent-execution/services/agent-run-activation-operation.test.ts
+tests/unit/agent-collaboration/member-session-renewal.test.ts
+
+## Baseline (unchanged source)
+ Test Files  10 passed (10)
+      Tests  185 passed (185)
+
+## NC-01 Codex: matcher text changed
+edit: src/agent-execution/backends/codex/thread/codex-missing-thread.ts: 'rpcMessage === `no rollout found for thread id' -> 'rpcMessage === `no rollout for thread id'
+       × is a lost runtime session: the typed error with the thread, and no replacement thread 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 184 passed (185)
+
+## NC-02 Grok: data code changed
+edit: src/agent-execution/backends/grok/grok-build-session-profile.ts: '"FS_NOT_FOUND"' -> '"FS_MISSING"'
+       × is a lost runtime session for Grok's FS_NOT_FOUND (PRB-005) 43ms
+     × is the FS_NOT_FOUND answer (PRB-005), whatever the session ID 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 8 passed (10)
+      Tests  2 failed | 183 passed (185)
+
+## NC-03 DeepSeek: message changed
+edit: src/agent-execution/backends/deepseek-harness/deepseek-harness-session-profile.ts: 'session is not resumable: ' -> 'session not resumable: '
+     × is the -32602 not-resumable answer for exactly this session (PRB-008) 13ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 184 passed (185)
+
+## NC-04 ACP launcher: no typed error on restore
+edit: src/agent-execution/backends/acp/session/acp-session-launcher.ts: 'throw new SavedRuntimeSessionMissingError(' -> 'throw error; throw new SavedRuntimeSessionMissingError('
+     × surfaces a load failure as an AgentCreationError carrying the agent text (restore wraps it as cause, AR-006) 40ms
+       × is a lost runtime session for Grok's FS_NOT_FOUND (PRB-005) 37ms
+       × keeps an auth error what it was: no lost session 38ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  3 failed | 182 passed (185)
+
+## NC-05 Antigravity: warning text changed
+edit: src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts: '`conversation "${expectedId}" not found`' -> '`NC-NEVER ${expectedId}`'
+     × is a lost runtime session when AGY warns that this exact conversation is not found 11ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 184 passed (185)
+
+## NC-06 Claude: matcher text changed
+edit: src/agent-execution/backends/claude/session/claude-session-resume-check.ts: 'No conversation found with session ID: ${sessionId}' -> 'No conversation found with ID: ${sessionId}'
+     × is the typed error for a session the CLI does not have, and its error result and exit fail no turn 11ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 184 passed (185)
+
+## NC-07 Claude factory: restore not verified
+edit: src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts: 'if (platformAgentRunId) await opened.verifyResumable();' -> ''
+     × a lost session fails the preparation with the typed error, and the opened session is released 7ms
+     × a present session is verified before the backend is returned 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 183 passed (185)
+
+## NC-08 Standalone: no renewal (rethrow)
+edit: src/agent-execution/services/standalone-agent-run-lifecycle-service.ts: 'if (!this.switching || (await failed.releasePrivate()).kind !== "released") throw lost;' -> 'throw lost;'
+     × continues in a fresh session of the same runtime and model behind the lost-session marker (AC-001, REQ-007) 7ms
+     × a delegated copy takes the same path with its member context (N-2, AC-005) 2ms
+     × a failure after the marker, before the commit, completes on the next message with one marker and one segment (AC-004) 4ms
+     × a failure before the marker changes nothing, and the next message tries again (AC-004) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  4 failed | 181 passed (185)
+
+## NC-09 Standalone: release not confirmed first
+edit: src/agent-execution/services/standalone-agent-run-lifecycle-service.ts: 'if (!this.switching || (await failed.releasePrivate()).kind !== "released") throw lost;' -> 'if (!this.switching) throw lost;'
+     × keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 184 passed (185)
+
+## NC-10 Member: no renewal branch
+edit: src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts: 'const renewal = await beginMemberSessionRenewal(' -> 'throw failure; const renewal = await beginMemberSessionRenewal('
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 48ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 24ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 27ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 33ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 29ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 19ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 19ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 16ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 23ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 26ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 27ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 21ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 26ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 18ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  14 failed | 171 passed (185)
+
+## NC-11 Member: planner does not report the restored session
+edit: src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts: 'restoring: plan.kind === "restore_external" ? plan.platformAgentRunId : null,' -> 'restoring: null,'
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 38ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 20ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 19ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 25ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 48ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 21ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 17ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 16ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 16ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 17ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 56ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 18ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 15ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 25ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  14 failed | 171 passed (185)
+
+## NC-12 Member: renewal without the marker ticket
+edit: src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts: 'return this.beginFreshSession(config, renewal, ' -> 'return this.beginFreshSession(config, null, '
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 88ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 59ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 59ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 23ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 29ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 35ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 55ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 23ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 34ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 29ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 42ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 42ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 16ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 37ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  14 failed | 171 passed (185)
+
+## NC-13 Member: any typed error renews (not only the restored session)
+edit: src/agent-collaboration/execution/backends/configured-agent-session-renewal.ts: ' || failure.platformAgentRunId !== lost' -> ''
+     × fails as today for the not-found answer for another session: no fresh session, no marker, the binding unchanged (AC-003) 133ms
+     × fails as today for the not-found answer for another session: no fresh session, no marker, the binding unchanged (AC-003) 78ms
+     × fails as today for the not-found answer for another session: no fresh session, no marker, the binding unchanged (AC-003) 95ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  3 failed | 182 passed (185)
+
+## NC-14 Flat Team: guard and cache without replace_lost_session
+edit: src/agent-team-execution/local/flat-team-agent-execution-handle.ts: 'change.kind === "replace_without_conversation" || change.kind === "replace_lost_session"
+              ? previous' -> 'change.kind === "replace_without_conversation"
+              ? previous'
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 525ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 110ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 126ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 84ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 66ms
+     × continues in a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID (AC-005) 79ms
+     × a later re-activation restores the renewed session: no second marker, no second fresh session 63ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 85ms
+     × a commit that does not land after the marker publishes nothing; the next input completes it with one marker and one segment (AC-004) 108ms
+     × a fresh session that fails to start leaves nothing; the next input tries again (AC-004) 77ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  10 failed | 175 passed (185)
+
+## NC-15 Flat Team: config keeps the lost ID
+edit: src/agent-team-execution/local/flat-team-agent-execution-handle.ts: 'this.config = Object.freeze({ ...this.config, platformAgentRunId: change.replacement.binding.platformAgentRunId });' -> ''
+     × a re-created configured handle restores the renewed session (Change Scope #3) 157ms
+     × a re-created configured handle restores the renewed session (Change Scope #3) 108ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 183 passed (185)
+
+## NC-16 Member: release not confirmed first
+edit: src/agent-collaboration/execution/backends/configured-agent-session-renewal.ts: '  if ((await failed.operation.releasePrivate()).kind !== "released") throw failure;
+' -> ''
+     × keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written 94ms
+     × keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written 68ms
+     × keeps the error when the failed restore's release is not confirmed: no fresh session, nothing written 74ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 9 passed (10)
+      Tests  3 failed | 182 passed (185)
+
+## After the controls
+
+
+## The script
+#!/bin/bash
+# IMP-03: focused renewal tests on HEAD, then one negative control per piece (each edit reverted right after).
+cd "$1/autobyteus-server-ts" || exit 1
+FOCUSED="tests/unit/agent-execution/domain/runtime-switch-session-renewal.test.ts tests/unit/agent-execution/backends/acp/acp-missing-session.test.ts tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts tests/unit/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/backend/claude-agent-run-backend-factory-restore-check.test.ts tests/unit/agent-execution/standalone-session-renewal.test.ts tests/unit/agent-execution/services/agent-run-activation-operation.test.ts tests/unit/agent-collaboration/member-session-renewal.test.ts"
+for f in $FOCUSED; do [ -f "$f" ] || f=$(find tests/unit -name "$(basename $f)" | head -1); echo "$f"; done > /tmp/599-ev/focused.txt
+FILES=$(cat /tmp/599-ev/focused.txt | tr '\n' ' ')
+run() { pnpm exec vitest run $FILES 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E "^ +(×|✓) |Test Files|Tests +[0-9]" | grep -vE "^ +✓ " ; }
+echo "## Focused files"; cat /tmp/599-ev/focused.txt
+echo; echo "## Baseline (unchanged source)"; run
+control() { # $1 label, $2 file, $3 python old, $4 new
+  cp "$2" /tmp/599-ev/bak; python3 -I -c "import sys;p,o,n=sys.argv[1:4];s=open(p).read();assert s.count(o)==1,o;open(p,'w').write(s.replace(o,n))" "$2" "$3" "$4" || { echo "CONTROL EDIT FAILED: $1"; return; }
+  echo; echo "## $1"; echo "edit: $2: '$3' -> '$4'"; run; cp /tmp/599-ev/bak "$2"
+}
+control "NC-01 Codex: matcher text changed" src/agent-execution/backends/codex/thread/codex-missing-thread.ts 'rpcMessage === `no rollout found for thread id' 'rpcMessage === `no rollout for thread id'
+control "NC-02 Grok: data code changed" src/agent-execution/backends/grok/grok-build-session-profile.ts '"FS_NOT_FOUND"' '"FS_MISSING"'
+control "NC-03 DeepSeek: message changed" src/agent-execution/backends/deepseek-harness/deepseek-harness-session-profile.ts 'session is not resumable: ' 'session not resumable: '
+control "NC-04 ACP launcher: no typed error on restore" src/agent-execution/backends/acp/session/acp-session-launcher.ts 'throw new SavedRuntimeSessionMissingError(' 'throw error; throw new SavedRuntimeSessionMissingError('
+control "NC-05 Antigravity: warning text changed" src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts '`conversation "${expectedId}" not found`' '`NC-NEVER ${expectedId}`'
+control "NC-06 Claude: matcher text changed" src/agent-execution/backends/claude/session/claude-session-resume-check.ts 'No conversation found with session ID: ${sessionId}' 'No conversation found with ID: ${sessionId}'
+control "NC-07 Claude factory: restore not verified" src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts 'if (platformAgentRunId) await opened.verifyResumable();' ''
+control "NC-08 Standalone: no renewal (rethrow)" src/agent-execution/services/standalone-agent-run-lifecycle-service.ts 'if (!this.switching || (await failed.releasePrivate()).kind !== "released") throw lost;' 'throw lost;'
+control "NC-09 Standalone: release not confirmed first" src/agent-execution/services/standalone-agent-run-lifecycle-service.ts 'if (!this.switching || (await failed.releasePrivate()).kind !== "released") throw lost;' 'if (!this.switching) throw lost;'
+control "NC-10 Member: no renewal branch" src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts 'const renewal = await beginMemberSessionRenewal(' 'throw failure; const renewal = await beginMemberSessionRenewal('
+control "NC-11 Member: planner does not report the restored session" src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts 'restoring: plan.kind === "restore_external" ? plan.platformAgentRunId : null,' 'restoring: null,'
+control "NC-12 Member: renewal without the marker ticket" src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts 'return this.beginFreshSession(config, renewal, ' 'return this.beginFreshSession(config, null, '
+control "NC-13 Member: any typed error renews (not only the restored session)" src/agent-collaboration/execution/backends/configured-agent-session-renewal.ts ' || failure.platformAgentRunId !== lost' ''
+control "NC-14 Flat Team: guard and cache without replace_lost_session" src/agent-team-execution/local/flat-team-agent-execution-handle.ts 'change.kind === "replace_without_conversation" || change.kind === "replace_lost_session"
+              ? previous' 'change.kind === "replace_without_conversation"
+              ? previous'
+control "NC-15 Flat Team: config keeps the lost ID" src/agent-team-execution/local/flat-team-agent-execution-handle.ts 'this.config = Object.freeze({ ...this.config, platformAgentRunId: change.replacement.binding.platformAgentRunId });' ''
+control "NC-16 Member: release not confirmed first" src/agent-collaboration/execution/backends/configured-agent-session-renewal.ts '  if ((await failed.operation.releasePrivate()).kind !== "released") throw failure;
+' ''
+echo; echo "## After the controls"; git status --short src
