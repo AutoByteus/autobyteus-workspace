@@ -1,0 +1,23 @@
+notices: 31
+runtime {'Antigravity CLI': 1, 'Claude Agent SDK': 29, 'Codex App Server': 1}
+reason {'an update to v1.5.14-beta.6': 3, 'an update to v1.5.13': 6, 'an update to v1.5.14-beta.1': 1, 'an update to v1.5.14-beta.4': 3, 'an update to v1.5.13-beta.9': 6, 'an update to v1.5.13-beta.10': 4, 'an update to v1.5.14-beta.7': 2, 'an update to v1.5.14-beta.5': 2, 'an update to v1.5.14-beta.3': 2, 'an update to v1.5.14-beta.2': 1, '?': 1}
+interrupted {True: 23, False: 8}
+carried {False: 31}
+continued (acted after notice): 30 / 31
+  runtime=Antigravity CLI interrupted=True acted=True: 1
+  runtime=Claude Agent SDK interrupted=False acted=True: 8
+  runtime=Claude Agent SDK interrupted=True acted=False: 1
+  runtime=Claude Agent SDK interrupted=True acted=True: 20
+  runtime=Codex App Server interrupted=True acted=True: 1
+
+# Exposure to the Claude runtime's own "stop and wait" tool result (Solution Designer, 2026-11-22)
+# The last recorded tool result before each interrupted-turn notice, from the run's raw_traces*.jsonl:
+#   Claude Agent SDK: 17 ok (the cut-off call left no recorded result), 4 with tool_error
+#     "The user doesn't want to proceed with this tool use. ... STOP what you are doing and wait for the user ...
+#      Correction to the text above: this call was stopped while running ... The instruction to stop and wait still stands."
+#     (source_event TOOL_EXECUTION_FAILED, recorded at the shutdown, 4-10 min before the notice)
+#   Antigravity CLI: 1 with tool_error "Tool execution interrupted."
+#   Codex App Server: 1 ok
+# Of the 4 Claude notices that followed the "stop and wait" result: 3 continued, 1 stopped
+#   (implementation_engineer_1fa447d4b6f64bf08caec2bc046335f0, autobyteus-584, 2026-11-21 07:32 UTC, update to v1.5.14-beta.4).
+# The text is the Claude Agent SDK 0.3.280 binary's own (strings in claude-agent-sdk-darwin-arm64/claude).
