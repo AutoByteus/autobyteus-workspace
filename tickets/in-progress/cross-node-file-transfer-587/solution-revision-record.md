@@ -87,3 +87,11 @@
 - AR-008: RF-14 applied to the third form (a saved Task given to an existing copy on another node takes `node`), per the founder's rule with no exception; RFC-001 RF-14 and row 4c, DEC-006, AC-012, design R3 note. The implementer told before building 4c.
 - AR-007: DS-001, DS-002, DS-005 lines now show the SR-010/011 shapes.
 - Residual for the founder (reviewer's note): an agent can attach a file to a Task itself (`create_task`/`update_task` `context_files`), and the RF-3 exception then lets it travel — the same visible-step model as copying into the workspace.
+
+### SR-012 — Code review CRR-009: CR-587-08 decided
+
+- Trigger: CRR-009 (Fail): CR-587-08 (security Requirement Gap), CR-587-06/07 (Local Fix), CR-587-05 (API/E2E, scope confirmed at SR-010); recommendation: a read-only closed pre-check before the upload.
+- CR-587-08 → DEC-010 (c): accepted and recorded; the founder delegated the choice (2026-11-22). No intended behavior or design change.
+- Recommendation not taken: keep SR-010 R1's order (one owner of the closed rule, `admitPeerRun`); a non-assigner's message with files to a closed peer run uploads, then is refused, and its bytes are swept after 24 h (rare; costs only bandwidth).
+- Note for implementation: `task-delegation.ts` is at 498 non-empty lines; any addition there splits the file (DESIGN.md size rule).
+- Next: implementation applies CR-587-06/07; API/E2E CR-587-05; then code review.
