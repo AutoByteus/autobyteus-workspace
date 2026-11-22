@@ -25,7 +25,7 @@ runtime".
 
 | Path (`src/`) | Layer | Owns |
 | --- | --- | --- |
-| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize`, request timeouts, per-`sessionId` callback routing, buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
+| `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize` (90 s, `AGENT_START_TIMEOUT_MS`, the one start-up bound of every ACP agent) and the other short requests (30 s, `REQUEST_TIMEOUT_MS`; session opens keep 120 s, prompts have none), per-`sessionId` callback routing, an optional listener for notifications that carry no session (`onConnectionNotification`, used only by the discovery handshake; a run registers none, so connection-wide notifications stay dropped there), buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
 | `agent-execution/backends/acp/` | ACP (neutral) | `AcpAgentRunBackendFactory` (create/restore sequencing, rollback, start-time error conversion), `AcpAgentRunBackend`, `AcpAgentSession` (session state machine), `AcpPermissionBridge`, `AcpSessionUpdateConverter`, `AcpPromptBuilder`, session-profile contract |
 | `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; no provider relay), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
 | `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), prompt signals (`grok-build-prompt-signals.ts`), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
@@ -386,7 +386,10 @@ collision, repair, and release rules as `.codex/skills` and `.claude/skills`.
 The symlinks are removed on terminate or failure. A skill added to the agent's
 definition while the run is going is linked there too, through the run's
 `RunWorkspaceSkills` (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)),
-and released with the others.
+and released with the others. Grok loads a folder's own skills only in a trusted
+folder, so a run's process is started with the run-only workspace trust described
+under [Process, session, and identity](#process-session-and-identity): without it
+the linked skills are invisible at session start.
 
 ## Persistence
 
@@ -412,9 +415,13 @@ migrated.
   a future ticket.
 - **Web search.** Grok web search runs on the provider side and is not a
   function tool, so its live use depends on the user's plan.
-- **Protocol drift.** Grok CLI updates can change `_x.ai/*` shapes. Those
-  shapes are handled only in the Grok profile, behind the minimum-version
-  gate, and unknown traffic is ignored.
+- **Protocol drift.** Grok CLI updates can change `_x.ai/*` shapes (the
+  `_x.ai/models/update` announcement, the queue and turn signals) and Grok's own
+  names (`GROK_FOLDER_TRUST`). Those shapes are handled only in the Grok
+  profile, behind the minimum-version gate, and unknown traffic is ignored. The
+  live suites (the AC-104 case, the release smoke) would show such a change: a run
+  that no longer sees its workspace skills, or a model list that stays on Grok's
+  built-in start-up list.
 - **Out of scope.** Grok leader mode, headless `grok -p`, `grok agent serve`,
   Grok sandbox/permission-rule settings, and CLI provisioning in Docker or
   Electron are outside this runtime.
