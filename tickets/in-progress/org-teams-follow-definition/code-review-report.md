@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-005, IR-006
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-010`
-- Current Review Round: `10`
+- Current Code Review Revision ID: `CRR-011`
+- Current Review Round: `11`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round >1):
   - The base's own changes (autobyteus-587, -599, -579) were reviewed in their own tickets. This round covers:
@@ -25,12 +25,12 @@
     - all new code of `dd310a30eb`, read in full: `org-path-rewrite.ts` (new); the migration's step order; `org-conversion.ts`, `org-log-split.ts` and the follow-ups;
     - the new tests.
   - I re-traced the conversion order from the migration runner and ran the gate.
-- Trigger: IR-007 (`d2fb8782bd`) ready for a targeted delta review of CRR-009's CR-008 and CR-009 (this report keeps CRR-009's IR-006 audit and adds the IR-007 delta below)
-- Prior Review Round Reviewed: CRR-009 (Fail)
-- Latest Authoritative Round: 10
+- Trigger: IR-008 (`26c6240f33`) ready for a targeted delta review of CRR-010's CR-008 remainder (this report keeps CRR-009's IR-006 audit and the IR-007/IR-008 deltas below)
+- Prior Review Round Reviewed: CRR-010 (Fail)
+- Latest Authoritative Round: 11
 - API/E2E and delivery records: API-REV-003 (Pass, before IR-006); delivery DR-001 (integration blocked, the cause of SR-016)
 
-Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `d2fb8782bd` (IR-007 on IR-006 `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
+Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `26c6240f33` (IR-008 and IR-007 on IR-006 `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
 
 ## Routing Classification Review
 
@@ -76,17 +76,28 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
   - typecheck PASS (973);
   - `tests/app-data-migrations tests/unit/agent-org-execution tests/unit/remote-collaboration tests/architecture`: 132 files, 1030 tests pass.
 
+## IR-008 Delta (CRR-011)
+
+- **CR-008: resolved.**
+  - `moveNeedles` adds each move's resolved old folder with forward slashes (`from.replace(/\\/g, "/")`; its JSON encoding is the same text). Together with the raw and JSON-encoded backslash forms (IR-007), every stored shape the app writes on Windows is found: 587's `path.join` paths and agent-named reference files normalized by `normalizeAgentRunFilePathDisplay`. On POSIX the three forms collapse to one (a `Set`).
+  - `movedPath` keeps a forward-slash Windows path in that form (`slashes`: `sep` is `\\`, the value has `/` and no `\\`), so the rewritten value matches the app's own normalization. A second pass finds no old form, so it is idempotent by structure.
+  - A lower-case drive letter stays unmatched, consistent with the app's case-sensitive comparison (`isAgentRunFilePathWithinRoot`).
+- Test: "CRR-010: a Windows path the app stored with forward slashes … is found and moved, in its form" (`path.win32`). **Control (mine):** with the forward-slash needle removed, it fails (1 failed / 13). Restored: 13/13. Worktree clean.
+- Gate on `26c6240f33`:
+  - typecheck PASS (973);
+  - `tests/app-data-migrations tests/unit/agent-org-execution tests/unit/remote-collaboration tests/architecture`: 132 files, 1031 tests pass.
+
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: REQ-007/AC-006: a converted Org keeps every conversation, message, memory folder, Task link and history entry. SR-017 adds that stored typed paths into a moved member folder follow it. SR-018 makes the container file the one completion marker, written only after every candidate file was visited with the Org's moves.
 - Design-spec behavior map verified against the implementation: Yes on Linux and macOS. **Not on Windows**, a shipped platform (RELEASE.md: "the Windows `.exe`"): CR-008.
-- Behavior-basis status: `Contradicted` on Windows (the completion marker's meaning does not hold there).
+- Behavior-basis status: `Confirmed` (after IR-007/IR-008, the completion marker's meaning holds on Windows too).
 
 | Behavior ID | Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
 | SR-016 base behaviors in units | Confirmed | Traced above | Agent-unit cross-node file case not tested (CR-009) |
 | SR-017 typed path rewrite (POSIX) | Confirmed | Traced above; beta.7 cross-node fixture test: every typed entry names the new folder, the Org route and the units' readers open it, prose and foreign paths stay; re-run changes no byte | — |
-| SR-017/SR-018 on Windows | **Contradicted** | The byte pre-check needle is `Buffer.from("agent_orgs/<orgRunId>/")` (`org-path-rewrite.ts`, `rewriteMovedFolderPaths`). Every candidate is JSON or JSON lines, and a Windows path in JSON is stored as `C:\\…\\agent_orgs\\<orgRunId>\\…`. **Measured:** `JSON.stringify({referenceFiles:["C:\\Users\\u\\.autobyteus\\memory\\agent_orgs\\org1\\team1\\received_files\\a.txt"]}).includes("agent_orgs/org1/")` → `false`. So on Windows no candidate is ever parsed, no path is moved, the pass "succeeds", and the container file is written | Earlier migrations in this repository handle Windows paths (`path.sep`/`win32` in `team-agent-memory-layout`, `agent-org-flat-team-families-v1`, `team-context-file-execution-locators-v1`, …) |
+| SR-017/SR-018 on Windows | Confirmed after IR-008 (was **Contradicted** at IR-006) | The byte pre-check needle is `Buffer.from("agent_orgs/<orgRunId>/")` (`org-path-rewrite.ts`, `rewriteMovedFolderPaths`). Every candidate is JSON or JSON lines, and a Windows path in JSON is stored as `C:\\…\\agent_orgs\\<orgRunId>\\…`. **Measured:** `JSON.stringify({referenceFiles:["C:\\Users\\u\\.autobyteus\\memory\\agent_orgs\\org1\\team1\\received_files\\a.txt"]}).includes("agent_orgs/org1/")` → `false`. So on Windows no candidate is ever parsed, no path is moved, the pass "succeeds", and the container file is written | Earlier migrations in this repository handle Windows paths (`path.sep`/`win32` in `team-agent-memory-layout`, `agent-org-flat-team-families-v1`, `team-context-file-execution-locators-v1`, …) |
 | SR-018 step order and retry | Confirmed | Container file last; interrupt-before-pass, interrupt-after-pass, failed-Org-isolation, writer-wait and late-writer follow-up tests | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
@@ -111,7 +122,7 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
 | Check | Result (`Pass`/`Pass — deviation recorded, reason holds`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | — | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | SR-017/SR-018 not met on Windows (C-34) | CR-008 |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | SR-017/SR-018 met on every platform after IR-007/IR-008 | — |
 | Data-flow spine inventory clarity and preservation | Pass | Classify → units → one pass → container last | — |
 | Ownership boundary preservation and clarity | Pass | One module owns the path map and the pass; the frozen visitor owns the record formats | — |
 | Off-spine concern clarity | Pass | — | — |
@@ -130,10 +141,10 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
 | No unjustified duplication of code / repeated structures in changed scope | Pass | `notesOf` shared by both item kinds | — |
 | Patch-on-patch complexity control | Pass | — | — |
 | Dead code removed in the touched files and modules (Core Principle 7) | Pass | — | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | No Windows-path case; the agent-unit 587 case is missing | CR-008, CR-009 |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Windows forms and the agent-unit 587 case added | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `released-org-tree-v1-fixtures.ts` extended with the beta.7 shape | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | `remote-message-routing.test.ts` dropped (deleted on the base; this ticket's edit only removed the Org root case) | — |
-| API/E2E readiness for the next workflow stage | Fail | CR-008 | CR-008 |
+| API/E2E readiness for the next workflow stage | Pass | Gate green | — |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -146,9 +157,9 @@ Effective non-empty lines at HEAD: `agent-org-units-own-runs-v1-app-data-migrati
 | No backward-compatibility mechanisms in changed scope | Pass | Readers unchanged; no lasting mapping (SR-017 option (a)) |
 | No legacy old-behavior retention in changed scope | Pass | Org-hosting code from the base not ported |
 | Dead code removed in the touched files and modules (Core Principle 7) | Pass | — |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Fail | The transition misses Windows paths (CR-008) |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Every stored path form on every platform |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | — |
-| Approved transition mechanics match the reviewed design | Fail on Windows | CR-008 |
+| Approved transition mechanics match the reviewed design | Pass | — |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -156,7 +167,7 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`, done (`agent_orgs.md`, `release-notes.md`). The release notes should not claim path moves on Windows until CR-008 is fixed.
+- Docs impact: `Yes`, done (`agent_orgs.md`, `release-notes.md`). CR-008 is fixed, so the release notes' path-move statement holds on every platform.
 
 ## Additional Material Premise Validation (When Required)
 
@@ -177,7 +188,7 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.3/10` (simple average; not the decision rule). Pass bar: at least 9.4 in every category (user's standing instruction).
+- Overall score: `9.45/10` (simple average; not the decision rule). Pass bar: at least 9.4 in every category (user's standing instruction).
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -187,16 +198,18 @@ None.
 | `4` | `Separation of Concerns and File Placement` | 9.4 | — | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Frozen visitor reused | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.4 | Clear headers with the predecessor evidence | — | — |
-| `7` | `API/E2E Readiness` | 9.0 | Conversion tests incl. a real `path.win32` pass (backslash form); agent-unit 587 case added | No case for the forward-slash Windows form | CR-008 |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.0 | Correct on POSIX and for Windows backslash paths | On Windows an agent-named (forward-slash) path is skipped while the Org is marked done | CR-008 |
+| `7` | `API/E2E Readiness` | 9.4 | Conversion tests with real `path.win32` passes for every stored form; agent-unit 587 case; reruns named | — | — |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | The completion marker holds on every platform; stored forms kept | — | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | — | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | Org-hosting code from the base not ported; stale test dropped | — | — |
 
 ## Findings
 
+No open findings.
+
 | ID | Finding | Evidence | Required Action | Classification | Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-008 (remaining) | On Windows the node pass still skips a file whose old path is stored with forward slashes, and still writes the container file. Agent-named reference files are stored that way on every platform (`normalizeAgentRunFilePathDisplay` replaces `\` with `/`). IR-007's needles cover the backslash forms only. | IR-007 Delta above; measured needle | Add the forward-slash form of each move's resolved old folder to `moveNeedles` (`from.split(path.sep).join("/")`; its JSON encoding is the same text). Add a `path.win32` pass case with a log line holding `C:/…/agent_orgs/<org>/<unit>/x` (an agent-named reference), moved and not re-moved by a second pass. `movedPath` already maps it. A lower-case drive letter written by an agent stays unmatched by both the needle and `movedPath`. That is consistent with how the app compares paths elsewhere (`isAgentRunFilePathWithinRoot`, case-sensitive) and is not required here. | `Local Fix` | Implementation engineer |
+| CR-008 | — | IR-007 (backslash raw and JSON forms) + IR-008 (forward-slash form); `path.win32` pass tests; control | — | Resolved | — |
 | CR-009 | — | `org-units-remote-files-and-renewal.test.ts:86` | — | Resolved | — |
 
 ## Follow-ups
@@ -205,11 +218,11 @@ None.
 
 ## Classification
 
-- CR-008 (remaining): `Local Fix`, implementation-owned. CR-009 resolved. Large/High preserved.
+- N/A (Pass). Large/High preserved.
 
 ## Recommended Recipient
 
-Implementation engineer (`get_handoff_rules`: implementation-owned Local Fix before executable coverage). After the fix: a targeted delta review, then API/E2E. Its next round should rerun the migration suites, OC-11/OC-12, the two-server file (now 62 cases), OF, AOML, OC + stopped-org, and the SR-017 conversion through the built server if feasible.
+API/E2E engineer (implementation review passes), then the informational note to the implementation engineer. The next API/E2E round covers IR-006..IR-008: the migration suites, OC-11/OC-12, the two-server file (62 cases), OF, AOML, OC + stopped-org, and the SR-017 conversion on the built server (a released Org whose member received a file from another node and forwarded its own file, if feasible).
 
 ## Residual Risks
 
@@ -219,11 +232,11 @@ Implementation engineer (`get_handoff_rules`: implementation-owned Local Fix bef
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Fail` (S-14, forward-slash form)
-- Material-Premise Gate: `Fail` (MP-CR-03, for agent-named paths on Windows)
-- Score Summary: 9.3/10 average; below the 9.4 bar: API/E2E Readiness 9.0, Runtime Correctness 9.0
-- Failure Origin: N/A (implementation review)
-- Recommended Recipient: Implementation engineer
-- Notes: one needle form left: the forward-slash old folder. Everything else in IR-006/IR-007 holds.
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass` (MP-CR-03 resolved)
+- Score Summary: 9.45/10 average; every category at least 9.4
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: SR-016..SR-018 are implemented and correct on every platform. CR-001..CR-009, N-1, F-1..F-5 and A-1 are all resolved.

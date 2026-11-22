@@ -14,6 +14,7 @@
 | CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 passed | N/A | Pass | None |
 | CRR-009 | `code-review-report.md` | Implementation Review / IR-006 complete | Pass (CRR-007) | Fail | CR-008, CR-009 |
 | CRR-010 | `code-review-report.md` | Implementation Review / IR-007 complete | Fail | Fail | CR-008, CR-009 |
+| CRR-011 | `code-review-report.md` | Implementation Review / IR-008 complete | Fail | Pass | CR-008 |
 
 ## Revision Entries
 
@@ -337,3 +338,34 @@ None (first test review).
 - Material score or classification changes: average 9.3; Runtime Correctness 9.0, API/E2E Readiness 9.0; Large/High preserved
 - Recommended recipient: Implementation engineer
 - Remaining risks or uncertainty: lower-case drive letters written by agents stay unmatched (consistent with the app's case-sensitive path comparison elsewhere).
+
+### CRR-011: Targeted delta review of IR-008
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md` (§ IR-008 Delta)
+- Review entry point and round: Implementation Review, round 11
+- Review scope: `Targeted Delta Review` (`5960cba4c7..26c6240f33`: `org-path-rewrite.ts`, one test)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-008; CR-008 (remaining)
+- Relevant solution revision IDs: SR-017, SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-010)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The forward-slash needle covers agent-named Windows paths, and `movedPath` keeps the stored form.
+  - Control: the new case fails without the needle.
+  - Gate: typecheck PASS; 1031 tests pass.
+  - Every category is at least 9.4.
+- Supported product scenario / material-premise basis changes: S-14 confirmed; MP-CR-03 resolved.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-008 | Local Fix | Resolved | Needles for raw, JSON-encoded and forward-slash forms; `path.win32` pass tests; control |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: every category at least 9.4 (average 9.45); Large/High preserved
+- Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
+- Remaining risks or uncertainty: cost measured with assumed node sizes; a non-terminal path-writer predecessor holds every Org (design-owned); FU-001.
