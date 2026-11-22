@@ -47,7 +47,7 @@ const addSystemActivity = (runId: string, activityId: string) =>
 const addToolActivity = (runId: string, invocationId: string) =>
   useAgentActivityStore().addToolActivity(runId, {
     kind: 'tool', activityId: invocationId, invocationId, toolName: 'read_file', type: 'tool_call',
-    status: 'parsed', contextText: 'README.md', arguments: {}, logs: [], result: null, error: null,
+    status: 'parsed', arguments: {}, logs: [], result: null, error: null,
     approvalTarget: null, timestamp: new Date(),
   });
 

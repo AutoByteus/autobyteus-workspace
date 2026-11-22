@@ -3,19 +3,20 @@ import { buildActivitiesFromProjection } from '../runProjectionActivityHydration
 
 describe('runProjectionActivityHydration', () => {
   it('builds projected history rows without writing a store', () => {
-    const activities = buildActivitiesFromProjection([
-      {
-        kind: 'tool',
-        invocationId: 'history-1',
-        toolName: 'run_bash',
-        status: 'success',
-        contextText: 'pwd',
-        arguments: { command: 'pwd' },
-        result: { stdout: '/tmp' },
-        logs: ['done'],
-        ts: 10,
-      },
-    ]);
+    // The node still sends its own contextText for a stored activity (FU-001); the web reads the arguments instead
+    // (autobyteus-590 D-2), so it does not reach the activity.
+    const fromNode = {
+      kind: 'tool' as const,
+      invocationId: 'history-1',
+      toolName: 'run_bash',
+      status: 'success' as const,
+      contextText: 'run_bash',
+      arguments: { command: 'pwd' },
+      result: { stdout: '/tmp' },
+      logs: ['done'],
+      ts: 10,
+    };
+    const activities = buildActivitiesFromProjection([fromNode]);
 
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
@@ -24,9 +25,10 @@ describe('runProjectionActivityHydration', () => {
         toolName: 'run_bash',
         type: 'terminal_command',
         status: 'success',
-        contextText: 'pwd',
+        arguments: { command: 'pwd' },
       }),
     );
+    expect(activities[0]).not.toHaveProperty('contextText');
     const activity = activities[0];
     expect(activity?.kind === 'tool' ? activity.logs : null).toEqual(['done']);
   });
@@ -38,14 +40,12 @@ describe('runProjectionActivityHydration', () => {
         invocationId: '',
         toolName: 'broken',
         status: 'parsed',
-        contextText: 'broken',
       },
       {
         kind: 'tool',
         invocationId: 'history-2',
         toolName: 'edit_file',
         status: 'parsed',
-        contextText: 'src/app.ts',
         arguments: { path: 'src/app.ts', patch: '...' },
         ts: 20,
       },
@@ -66,7 +66,7 @@ describe('runProjectionActivityHydration', () => {
       { kind: 'system_instruction', activityId: 'raw-system', content: '  exact\ntext  ', ts: 40 },
       {
         kind: 'tool', invocationId: 'tool-after-bad', toolName: 'read_file',
-        status: 'success', contextText: 'README.md', ts: 41,
+        status: 'success', ts: 41,
       },
     ]);
 

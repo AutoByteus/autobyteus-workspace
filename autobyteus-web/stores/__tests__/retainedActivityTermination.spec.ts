@@ -26,7 +26,7 @@ afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentTeamRunStore(
 const seed = (id: string) => {
   const activity = useAgentActivityStore()
   activity.upsertSystemInstructionActivity(id, { kind: 'system_instruction', activityId: `${id}-system`, content: `Instructions for ${id}`, timestamp: new Date(1000) })
-  activity.addToolActivity(id, { kind: 'tool', activityId: `${id}-tool`, invocationId: `${id}-invocation`, toolName: 'send_message_to', type: 'tool_call', status: 'success', contextText: '', arguments: { message: `message-${id}` }, logs: [], result: `delivered-${id}`, error: null, timestamp: new Date(2000) })
+  activity.addToolActivity(id, { kind: 'tool', activityId: `${id}-tool`, invocationId: `${id}-invocation`, toolName: 'send_message_to', type: 'tool_call', status: 'success', arguments: { message: `message-${id}` }, logs: [], result: `delivered-${id}`, error: null, timestamp: new Date(2000) })
   return activity.getActivities(id).slice()
 }
 const setup = () => {

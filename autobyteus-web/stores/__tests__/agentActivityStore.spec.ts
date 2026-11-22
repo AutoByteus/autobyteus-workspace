@@ -10,7 +10,6 @@ const buildToolActivity = (overrides: Partial<ToolActivity> = {}): ToolActivity 
   toolName: 'tool',
   type: 'tool_call',
   status: 'parsing',
-  contextText: '',
   arguments: {},
   logs: [],
   result: null,
@@ -28,7 +27,7 @@ describe('agentActivityStore', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';
 
-    store.addToolActivity(agentId, buildToolActivity({ toolName: 'my_tool', contextText: 'foo' }));
+    store.addToolActivity(agentId, buildToolActivity({ toolName: 'my_tool' }));
 
     const activities = store.getToolActivities(agentId);
     expect(activities).toHaveLength(1);

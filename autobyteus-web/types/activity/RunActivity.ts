@@ -16,7 +16,6 @@ export interface ToolActivity extends RunActivityBase<'tool'> {
   toolName: string;
   type: ToolActivityType;
   status: ToolInvocationStatus;
-  contextText: string;
   arguments: Record<string, any>;
   approvalTarget?: ToolApprovalTarget | null;
   logs: string[];
