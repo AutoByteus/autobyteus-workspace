@@ -1,0 +1,18 @@
+# DEL-03 server typecheck on merged state fa87a5d289
+$ pnpm -C autobyteus-server-ts typecheck
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 218ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 typecheck /home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 17.1s
+[typecheck] server tests (tsconfig.tests.json): 1001 errors, exit 2, 65.9s
+[typecheck] production errors: 0; test-file errors: 1001 in 313 files (baseline 1001 in 313 files)
+[typecheck] PASS
+exit=0

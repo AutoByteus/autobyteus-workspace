@@ -1,0 +1,18 @@
+# DEL-02 web typecheck on merged state fa87a5d289
+$ pnpm -C autobyteus-web typecheck
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 70.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.2s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 39.7s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit=0

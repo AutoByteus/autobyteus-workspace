@@ -521,6 +521,18 @@ with electron-builder's own `toolsets.appimage` option. Before that upgrade, che
 that 26 still packages `resources/server/node_modules`: every 26.x release drops a
 copy source's root `node_modules` (autobyteus-28 IR-001, FU-003).
 
+Without FUSE, the arm64 AppImage's `--appimage-extract-and-run` (or
+`APPIMAGE_EXTRACT_AND_RUN=1`) leaves the whole extracted app (about 1.2 GB) in
+`$TMPDIR/appimage_extracted_<md5>` after the app quits: the static runtime does not
+remove it, although the legacy runtime did. A later start of the same version
+reuses that folder, so one copy per version remains; where `/tmp` is a tmpfs it
+uses memory until reboot. The cleaner choice without FUSE is to extract once with
+`--appimage-extract` and start `squashfs-root/AppRun`, which leaves nothing in
+`$TMPDIR` (the user owns `squashfs-root/`). A system with FUSE 3 mounts the image
+and never takes this path. Upstream has the cleanup in its source but not in its
+released binaries (autobyteus-28 DEC-006, FU-004); drop this note when the pinned
+runtime is updated to a release that removes the folder.
+
 The Desktop Release runs each Linux AppImage in a clean `ubuntu:24.04` container
 of the runner's architecture, without `libz.so`
 (`scripts/desktop-package/verify-clean-image-runtime.mjs`), because the build
