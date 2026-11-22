@@ -16,6 +16,11 @@
 //                  "exit code 1".)
 //   MSP-78 autobyteus-517 AC-002  A task that ended (code 1) before the phone opened the run's Activity is still listed
 //                  there (the Antigravity view keeps ended tasks): Failed, with the line "exit code 1".
+//   MSP-99 autobyteus-609 AC-I  A task's end update is lost: the phone's socket for the run swallows every
+//                  BACKGROUND_TASK_UPDATED frame before the app reads it (the page's WebSocket wrapped before the run is
+//                  opened). The run is terminated
+//                  while its task runs and Activity is open: within 10 s the row reads Stopped and "Stopped: the run
+//                  ended", from the run's stop alone (the list ends a stopped run's running tasks, D-I).
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
@@ -174,6 +179,65 @@ export const runBackgroundTaskCases = async (probe) => {
     assert(listed.length === 1 && listed[0].status === 'failed' && /Failed/.test(listed[0].text) && listed[0].text.includes(task.command),
       'autobyteus-517 AC-002 Activity opened after the end lists the task as Failed, with its command', details);
     assert(listed[0].end === 'exit code 1', 'autobyteus-517 AC-002 the phone shows its end line "exit code 1"', details);
+    await page.goBack();
+    return details;
+  });
+  await runCase('MSP-99', async () => {
+    const lostRun = await createRun();
+    const tasks = await startTask(lostRun, 120, 0, 'BG-609-LOST');
+    const task = tasks.find(entry => entry.status === 'running');
+    // Every live task update of this run is lost before the app reads it; every other frame passes. The page's WebSocket
+    // is wrapped before the run is opened: this run's agent socket swallows BACKGROUND_TASK_UPDATED frames ahead of the
+    // app's own handlers. (Playwright's routeWebSocket proxy cannot reach the node here: the phone's address is mapped
+    // to 127.0.0.1 only inside Chrome, and the proxied socket neither connected nor closed.)
+    await page.evaluate((runId) => {
+      const probe = window.__probeLostTaskUpdates ?? (window.__probeLostTaskUpdates = { runs: new Set(), dropped: 0 });
+      probe.runs.add(runId);
+      if (window.__probeLostTaskUpdatesInstalled) return;
+      window.__probeLostTaskUpdatesInstalled = true;
+      const Native = window.WebSocket;
+      window.WebSocket = class extends Native {
+        constructor(url, protocols) {
+          super(url, protocols);
+          const path = new URL(String(url), location.href).pathname;
+          if (![...probe.runs].some((id) => path === `/ws/agent/${id}`)) return;
+          // Registered before the app's handlers, so it runs first and can stop the frame.
+          this.addEventListener('message', (event) => {
+            try {
+              if (JSON.parse(String(event.data)).type === 'BACKGROUND_TASK_UPDATED') { probe.dropped += 1; event.stopImmediatePropagation(); }
+            } catch { /* not JSON: passed */ }
+          });
+        }
+      };
+    }, lostRun);
+    const droppedNow = () => page.evaluate(() => window.__probeLostTaskUpdates?.dropped ?? 0);
+    await toList(page);
+    await waitFor('the run in the phone list', async () => (await page.locator(sel(`mobile-run-row-agent:${lostRun}`)).count()) > 0, 30_000);
+    await openRow(page, `agent:${lostRun}`);
+    await menuOpen(page, 'activity');
+    await page.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
+    await waitFor('the task listed running on the phone', async () => (await phoneRows()).some(row => row.status === 'running'), 20_000).catch(() => undefined);
+    const listed = await phoneRows();
+    const droppedBeforeStop = await droppedNow();
+    const stoppedAt = Date.now();
+    const terminated = (await alpha.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: lostRun })).terminateAgentRun;
+    let shownStoppedAfterMs = null;
+    try {
+      await waitFor('the task shown stopped within 10 s', async () => (await phoneRows()).some(row => row.status === 'stopped'), 10_000);
+      shownStoppedAfterMs = Date.now() - stoppedAt;
+    } catch { /* recorded */ }
+    await sleep(1_500);
+    const ended = await phoneRows();
+    const nodeAfterStop = await nodeTasks(lostRun);
+    await shot(page, 'MSP-99-activity-end-lost');
+    const droppedUpdates = await droppedNow();
+    const details = { lostRun, task, terminated, listed, ended, shownStoppedAfterMs, droppedUpdates, droppedBeforeStop, nodeAfterStop };
+    assert(listed.length === 1 && listed[0].status === 'running', 'the task is listed running before the run stops', details);
+    assert(terminated.success === true, 'the run was terminated', details);
+    assert(droppedUpdates > droppedBeforeStop, 'the run end\'s task update reached the phone and was lost on purpose', details);
+    assert(shownStoppedAfterMs !== null && ended.length === 1 && ended[0].status === 'stopped' && /Stopped/.test(ended[0].text),
+      'AC-I within 10 s of the stop the task shows Stopped, though its end update was lost', details);
+    assert(ended[0].end === 'Stopped: the run ended', 'AC-I the phone shows "Stopped: the run ended"', details);
     await page.goBack();
     return details;
   });
