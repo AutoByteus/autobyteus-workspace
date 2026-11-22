@@ -382,6 +382,19 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   the word *media*: media means image, audio and video (media default models,
   media storage, the native runtime's media input).
 
+## Received Files
+
+- **Reference file:** a file an agent attaches to `send_message_to` or `delegate_task` (`reference_files`), by its
+  absolute path on the sender's node. On one node the recipient reads that path; to another node it is copied.
+- **Received file:** a reference file another node sent to an agent (autobyteus-587): it lives in that agent's own
+  folder under `received_files/<sender's run ID>/<file name>`, read-only, and goes when the run's history is deleted.
+- **The node's received files:** `<data>/received_files/` on the receiving node: the bytes of every received file, once
+  per content (named by its SHA-256), linked into every agent folder that received it. Not run memory, never a run.
+- **Transfer:** moving one file into the receiving node's received files, in signed pieces, before the message or
+  work packet that names it is delivered.
+- **Received file limit:** the largest file a node accepts from another node (node setting
+  `AUTOBYTEUS_RECEIVED_FILE_MAX_MB`, default 2048 MiB); one message or delegation carries at most 4 GiB of files.
+
 ## Project Tasks
 
 - **Title:** a Project Task's one-line name, given by its writer (an agent's

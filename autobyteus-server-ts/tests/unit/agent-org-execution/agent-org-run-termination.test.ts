@@ -12,7 +12,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 describe("AgentOrgRun termination stabilization", () => {
   it("freezes and fences every direct/mounted Agent scope before the persistence drain", async () => {
@@ -56,7 +56,7 @@ describe("AgentOrgRun termination stabilization", () => {
       drain: vi.fn(async () => { order.push("persistence-drain"); }),
     };
     const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
-    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({
         orgRunId,
@@ -103,7 +103,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       terminate: vi.fn(input.handleTerminate),
     };
     const persistence = { drain: vi.fn(async () => undefined), enterRootFailStop: vi.fn() };
-    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({ orgRunId, members: [testOrgAgentNode("/lead", "lead-run")] }),
       messages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: Object.freeze([]) }),

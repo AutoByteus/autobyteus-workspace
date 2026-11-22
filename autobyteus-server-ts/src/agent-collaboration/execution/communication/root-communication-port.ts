@@ -9,6 +9,7 @@ import type { CollaborationCommunicationMessage } from "./collaboration-communic
 import type { MessagePublication } from "./message-publication.js";
 import type { RootMessageAppend, RootMessageAppendResult } from "./root-message-append.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../task/task-delegation-command.js";
+import type { ReceivedFilesPlan, TransferredFile } from "../remote/transferred-files.js";
 
 export type RootCommunicationDeliveryInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
@@ -61,6 +62,11 @@ export interface RootCommunicationPort {
     message: CollaborationCommunicationMessage;
   }>): AgentInputUserMessage;
   reserveRecipientInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult>;
+  /**
+   * autobyteus-587 (RF-7): where the files of a message from another node land for this receiving agent, in its own
+   * folder, by the sending agent's run ID. Names only; the engine places them in its own order.
+   */
+  receivedFilesFor(receiver: CollaborationMemberExecutionIdentity, senderAgentRunId: string, files: readonly TransferredFile[]): Promise<ReceivedFilesPlan>;
   /** The logs the message belongs to (receiver's first; D-4), resolved against the current tree. */
   logOwnersOf(message: CollaborationCommunicationMessage): readonly StoredMessageLogOwner[];
   /** The root persistence coordinator's `commitMessageAppend` (lock, log write, post-durability step). */

@@ -135,9 +135,10 @@ export const runClosedDelegationCases = async (probe) => {
     const afterReopen = { recorded: await recorded(), listed: await alphaListed(), phone: await onPhone(), desktop: await onDesktop() };
     assert(afterReopen.recorded && !afterReopen.listed && !afterReopen.phone && !afterReopen.desktop, 'a reopen alone changes nothing on alpha', afterReopen);
 
-    // The assigner's message continues it after the reopen (REQ-006, SR-010): the row returns on both.
+    // The assigner's message continues it after the reopen (REQ-006, SR-010): the row returns on both. The run is on
+    // another node, so the message names it (autobyteus-587 RF-14).
     const givenAt = Date.now();
-    const again = await callTool('send_message_to', { target_agent_run_id: runId, content: `Continue the night work. Marker MSP93-CONTINUE-${tag}.` });
+    const again = await callTool('send_message_to', { node: 'alpha-node', target_agent_run_id: runId, content: `Continue the night work. Marker MSP93-CONTINUE-${tag}.` });
     assert(/"accepted\\*"\s*:\s*true/.test(again), 'the assigner continues the run', { again: redact(again).slice(0, 600) });
     await waitFor('alpha lists the run again', alphaListed, 30_000);
     await waitFor('the phone shows the row again', onPhone, LIST_REFRESH_BOUND_MS + 2_000);

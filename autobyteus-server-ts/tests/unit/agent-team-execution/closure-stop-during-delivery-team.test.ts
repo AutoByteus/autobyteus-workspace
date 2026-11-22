@@ -14,7 +14,7 @@ import { DelegationIndex } from "../../../src/agent-collaboration/delegation/del
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createCollaborationRootResolver } from "../../../src/compositions/collaboration-root-resolver.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, NO_PEER_RUN_PORTS } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_OUTGOING_FILES, NO_PEER_CHANNEL, NO_PEER_RUN_PORTS, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-461 CR-461-001 (residual), team run: DONE(A) closes the team run's last Task and its stop begins; the
@@ -33,7 +33,7 @@ vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-buil
 }));
 vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", () => ({
   materializeTeamRoot: vi.fn(async () => {
-    const root = { teamRunId: "eng", isActive: () => true, hasAgentExecution: vi.fn(() => true), ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+    const root = { teamRunId: "eng", isActive: () => true, hasAgentExecution: vi.fn(() => true), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       terminate: vi.fn(async () => ({ accepted: true })), acceptFromRun: vi.fn(async () => ({ accepted: true })) };
     restored.push(root);
     return root;
@@ -53,7 +53,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager-run" }, execution: run });
     await tasks.markStarted(run);
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
@@ -62,13 +62,13 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     });
     // The running team root: `terminate` closes its gate at once (inactive), and its end is held.
     let active = true, release!: () => void, termination: Promise<{ accepted: boolean }> | null = null;
-    const ending = { teamRunId: "eng", isActive: () => active, hasAgentExecution: vi.fn(() => true), ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+    const ending = { teamRunId: "eng", isActive: () => active, hasAgentExecution: vi.fn(() => true), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       acceptFromRun: vi.fn(async () => ({ accepted: false, code: "ROOT_OPERATION_GATE_CLOSED" })),
       // As the real root: the gate closes at the call, and every call gets the same termination.
       terminate: vi.fn(() => { active = false; return termination ??= new Promise((resolve) => { release = () => resolve({ accepted: true }); }); }) };
     (manager as unknown as { register(root: RootTeamRun): void }).register(ending as unknown as RootTeamRun);
     const resolver = createCollaborationRootResolver({ standaloneRoots: {} as never, teamRuns: manager, orgRuns: {} as never });
-    const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
+    const delegation = new TaskDelegation({ outgoing: NO_OUTGOING_FILES, tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
       channel: () => null, ...NO_PEER_RUN_PORTS, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createTeamRootExecutionIdentity("eng"));

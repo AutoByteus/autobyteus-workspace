@@ -1,0 +1,20 @@
+# Merged state 3be417f8df (origin/personal ecd6d4556c merged into codex/cross-node-file-transfer-587; base 60 commits)
+# pnpm install --frozen-lockfile (the base changed only autobyteus-web/package.json scripts and version; no lockfile change)
+Done in 1.3s using pnpm v10.28.2
+exit=0
+
+# pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.3s
+[typecheck] server tests (tsconfig.tests.json): 1005 errors, exit 2, 28.6s
+[typecheck] production errors: 0; test-file errors: 1005 in 315 files (baseline 1005 in 315 files)
+[typecheck] PASS
+exit=0
+
+# pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 39.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.2s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit=0

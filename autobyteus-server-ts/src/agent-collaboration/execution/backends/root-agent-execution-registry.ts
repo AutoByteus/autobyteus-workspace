@@ -6,7 +6,7 @@ import type { AgentConversationActivityInspector } from "../../../agent-memory/s
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
 import type { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
-import type { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
+import { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
 import { createCollaborationMemberExecutionIdentity, createRootExecutionPhysicalScope, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { runPartPlacement } from "../../../agent-memory/domain/agent-run-memory-placement.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -43,6 +43,10 @@ export class RootAgentExecutionRegistry {
     return Object.freeze([...new Set([...this.active.values(), ...this.prepared.values()])]);
   }
   get(agentRunId: string): ConfiguredAgentExecutionHandle | null { return this.active.get(agentRunId) ?? null; }
+  /** A root agent's own folder (its memory; autobyteus-587: where files from another node land), live or not. */
+  ownFolderOf(agentRunId: string): string {
+    return (this.options.memoryLocator ?? new AgentRunMemoryLocator()).getMemoryDir(runPartPlacement(this.rootScope()), agentRunId);
+  }
   hasOpenExecutionWork(): boolean { return [...this.active.values()].some((handle) => handle.hasOpenExecutionWork()); }
   getInputStateSnapshots() { return [...this.active.values()].flatMap((handle) => handle.getInputStateSnapshots()); }
   getStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] { return [...this.active.values()].map((handle) => handle.getStatusSnapshot()); }

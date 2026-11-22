@@ -1,5 +1,6 @@
 import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { receivingAgentFolder, type ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -95,6 +96,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     delegatedFrom?: DelegatedFrom | null;
     /** The host's channel to peer nodes (autobyteus-500 FU-011). */
     remoteChannel: RemoteRunChannelAccess;
+    /** The host's file transfer between nodes (autobyteus-587). */
+    /** The node's received files, placed into this run's folder (autobyteus-587). */
+    receivedFiles: ReceivedFilesPlacement;
     agentRunManager?: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     onTerminated?(): void;
   }>) {
@@ -122,7 +126,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       agentRunId: this.agentRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
       collaborators: this.collaborators, getCommunication: () => this.communication, agent: options.agentHandle,
-      remoteLinks: this.remoteLinks, remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
+      remoteLinks: this.remoteLinks,
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
+      receivedFiles: options.receivedFiles,
       onAgentReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.agentReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
@@ -134,6 +140,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       // The run's own log; every other agent (another run, or a peer's) keeps its own.
       messageLogOwnerOf: (agentRunId) => this.index.isRunAgent(agentRunId) ? OWN_RUN_LOG : OTHER_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
+      // autobyteus-587: files from another node land in the run's own folder.
+      receivedFilesFor: async (receiver, senderAgentRunId, files) => options.receivedFiles.planFor({
+        agentFolder: receivingAgentFolder(options.agentHandle.getActiveRun(), receiver.agentRunId), senderAgentRunId, files }),
       messageFeed: options.messageFeed,
       presentCommittedMessage: (message) => this.delivery.presentCommittedCommunication(message),
     }));
@@ -157,6 +166,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** Run-ID routing: the run's own agent never leaves it. */
   ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId); }
+  /** autobyteus-587 RF-14: the peer node this root links the run on (`PeerRunNodes`). */
+  remoteNodeOf(agentRunId: string): string | null { return this.remoteLinks.endpointFor(agentRunId.trim())?.reference.nodeId ?? null; }
 
   /** The run's agent's real live state (the view's `isActive`). */
   isAgentLive(): boolean { return this.options.agentHandle.readiness === "live"; }

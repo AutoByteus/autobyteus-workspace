@@ -822,7 +822,8 @@ The result names the copy for what it is (DEC-008, no alias):
 
 Linked dispatch resolves the unique current node-local Task and copies its saved
 description and the paths of its saved context files into the ordinary work
-packet (the files themselves are not copied), with the Task's comments after the
+packet (on one node the files themselves are not copied; to a copy on another node
+they are, [CM-14](../design/collaboration_model.md)), with the Task's comments after the
 description as a "Comments:" block of their texts, oldest first, as `- ` bullets
 (no block when there are none; the same for an existing copy). Later Task
 edits do not rewrite work that was already delivered. Each call allocates a
@@ -1028,8 +1029,9 @@ by its team run ID, an agent run by its agent run ID.
 1. A sender that works on a Task is refused (`TASK_AGENT_RESOURCE_OWNED_SENDER`).
    Task B is resolved first, so its refusals come before the run's.
 2. The run is found from its Task entries; its entry agent is its latest entry's.
-   A run on a peer node (autobyteus-591) takes no Task with files, and its
-   conversation is checked on its node, not here.
+   A run on a peer node (autobyteus-591) is named with `node` (autobyteus-587 RF-14) and
+   gets the Task's context files copied first (DEC-009); its conversation is checked on
+   its node, not here.
 3. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
    this order of concern: all Task resource data readable; Task B exists, is
    unique and is not DONE or CANCELLED; the run's current entry is an `assigned`

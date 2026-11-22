@@ -2,6 +2,9 @@ import type { OnDemandModels, StoredModelOffer, StoredModelOfferCheck } from "..
 import type { StoredModelStartChecks } from "../../src/llm-management/services/run-model-selection-refusal.js";
 import { ConfiguredAgentExecutionFactory } from "../../src/agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
+import type { OutgoingFiles } from "../../src/agent-collaboration/execution/remote/outgoing-files.js";
+import type { ReceivedFiles } from "../../src/remote-collaboration/inbound/received-files.js";
+import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../src/agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { runIdentityOf, type PeerRunStateNotice, type TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
@@ -21,8 +24,40 @@ import type { TaskDisplayNameResolver, TaskTopRunResolver, TaskWorkerStatusResol
  */
 export const NO_PEER_CHANNEL: RemoteRunChannelAccess = () => null;
 export const OFF_DISCOVERY: PeerDiscoveryAccess = () => REMOTE_COLLABORATION_OFF_DISCOVERY;
-/** A `TaskDelegation`'s peer-run ports on a node without peers (autobyteus-591): nothing is sent to a peer run. */
+/**
+ * autobyteus-587: the outgoing files of a host without peer nodes, as its composition builds them (its channel answers
+ * null): any file to send is refused, a call without files sends nothing.
+ */
+export const NO_OUTGOING_FILES: Pick<OutgoingFiles, "send"> = Object.freeze({
+  send: async (input: Readonly<{ referenceFiles: readonly string[] | null | undefined }>) => input.referenceFiles?.some((file) => file.trim())
+    ? Object.freeze({ ok: false as const, refusal: Object.freeze({ accepted: false as const, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off }) })
+    : Object.freeze({ ok: true as const, files: Object.freeze([]) }),
+});
+
+/**
+ * autobyteus-587: a node's received files in a test that sends it none: a peer's status or piece is not expected, a
+ * message that names a file is refused as not received (as a node that holds none of it would), and a sweep (after a
+ * history delete, or at startup) has nothing to remove.
+ */
+export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "verify" | "sweep" | "planFor"> = Object.freeze({
+  sweep: async () => undefined,
+  // A delivery without files names and places none; one with files never reaches a node that received none.
+  planFor: ((input: Readonly<{ files: readonly unknown[] }>) => {
+    if (input.files.length) throw new Error("A host without peer nodes receives no file.");
+    return Object.freeze({ paths: Object.freeze([]), place: async () => Object.freeze({ ok: true as const }) });
+  }) as ReceivedFiles["planFor"],
+  status: async () => { throw new Error("This test sends this node no files."); },
+  appendPiece: async () => { throw new Error("This test sends this node no files."); },
+  verify: async (files: readonly Readonly<{ name: string }>[]) => files.length
+    ? Object.freeze({ ok: false as const, name: files[0]!.name }) : Object.freeze({ ok: true as const }),
+});
+
+/**
+ * A `TaskDelegation`'s peer-run ports on a node without peers (autobyteus-591): nothing is sent to a peer run, and no run
+ * is known on another node (autobyteus-587 `PeerRunNodes`).
+ */
 export const NO_PEER_RUN_PORTS = Object.freeze({
+  nodes: { check: async () => null },
   deliverToPeerRun: async () => ({ accepted: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }),
   peerNotices: { changed: async () => ({ confirmed: false as const, code: "REMOTE_COLLABORATION_OFF", message: "This test has no peer nodes." }) },
 });

@@ -24,6 +24,8 @@ describe("codex-agent-tools-mcp-materializer", () => {
           url: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
           enabled_tools: ["send_message_to", "generate_image", "db_query"],
           startup_timeout_sec: 5,
+          // autobyteus-587 RF-6: a call that sends files waits for them (up to about 27 minutes for 4 GiB).
+          tool_timeout_sec: 3600,
         },
       },
     });

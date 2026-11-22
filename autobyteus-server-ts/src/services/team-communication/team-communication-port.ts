@@ -21,6 +21,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
   requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
+  receivedFilesFor: RootCommunicationPort["receivedFilesFor"];
   commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
   publish(event: TeamRunEvent): void;
   /** The node's message feed (SR-072): each committed message into the views of its runs and the runs above them. */
@@ -62,6 +63,7 @@ export const createTeamCommunicationPort = (input: Readonly<{
       parentCommunicationMessageId: message.messageId,
     }),
     reserveRecipientInput: async (agentRunId, message) => (await input.requireContainingTeamRun(agentRunId)).reserveDirectAgentInput(agentRunId, message),
+    receivedFilesFor: (receiver, senderAgentRunId, files) => input.receivedFilesFor(receiver, senderAgentRunId, files),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.commitMessageAppend(append),
     publishMessage: (publication) => input.messageFeed.publish(publication),

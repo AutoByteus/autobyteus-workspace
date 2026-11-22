@@ -39,7 +39,8 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-23", "delegate_task", "'<address>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent; if you have list_available_agents, it shows the addresses you can delegate to."],
   ["M-24", "delegate_task", "delegate_task needs recipient_address (an address beginning with '/') to create a new task agent, or target_agent_run_id / target_team_run_id with task_id to give a saved Task to one of your task agents."],
   ["M-25", "delegate_task", "Invalid delegate_task input: supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent)."],
-  ["M-26", "delegate_task", "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not <arguments>)."],
+  // autobyteus-587 SR-011: a task agent on another node takes node too (RF-14).
+  ["M-26", "delegate_task", "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, for a task agent on another node, node (not <arguments>)."],
   ["M-27", "delegate_task", "Invalid delegate_task input: <what is wrong>."],
   ["M-28", "delegate_task", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task."],
   ["M-29", "delegate_task", "Your Task is DONE or CANCELLED, so you can't start new work."],

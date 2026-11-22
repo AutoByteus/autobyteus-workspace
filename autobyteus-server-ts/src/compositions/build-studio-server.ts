@@ -1,4 +1,6 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
+import { composeRemoteFiles } from "./remote-files-composition.js";
+import type { ReceivedFilesPlacement } from "../agent-collaboration/execution/remote/transferred-files.js";
 import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
 import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
@@ -118,6 +120,7 @@ const createStudioApplicationServices = (input: {
   runPasses: RunPassRevocation;
   taskSide: TaskSide;
   remote: LateRemoteCollaborationBinding;
+  receivedFiles: ReceivedFilesPlacement;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig, delegationIndex: input.taskSide.tree, viewStreams: input.taskSide.viewStreams, taskRecords: input.taskSide.taskRecords,
@@ -134,7 +137,7 @@ const createStudioApplicationServices = (input: {
     // The studio's application launches get its provider relays and end their passes through the same host.
     providerRelayAccess: input.providerRelayAccess,
     runPasses: input.runPasses,
-    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery,
+    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery, receivedFiles: input.receivedFiles,
     modelAvailabilityService: getModelAvailabilityService(),
     llmProviderService: getLlmProviderService(),
     codexClientManager: getCodexAppServerClientManager(),
@@ -233,6 +236,9 @@ export const buildStudioServer = async (input: {
       baseUrl: input.appConfig.getBaseUrl(),
     });
     const remote = createLateRemoteCollaborationBinding(); // FU-011: composed below, after the run services; read on use
+    // autobyteus-587: the node's received files and the outgoing files of cross-node messages and delegations.
+    const files = composeRemoteFiles({ appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(),
+      channel: remote.channel, workspaces: workspaceManager });
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
       peerDiscovery: remote.discovery,
@@ -299,6 +305,7 @@ export const buildStudioServer = async (input: {
       definitionChanges: hostDefinitionServices.agentDefinitionChanges, teamChangeNotices: platformNotices.teamChangeNotices,
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
       remoteChannel: remote.channel, peerDiscovery: remote.discovery,
+      receivedFiles: files.receivedFiles,
     });
     generalProcessAuthority = null;
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
@@ -315,6 +322,7 @@ export const buildStudioServer = async (input: {
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
       rootResolver,
       running,
+      receivedFiles: files.receivedFiles,
       closedDelegations,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
@@ -322,7 +330,10 @@ export const buildStudioServer = async (input: {
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
       runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: deletedRuns,
-      running, closedDelegations });
+      outgoingFiles: files.outgoingFiles, running, closedDelegations });
+    // autobyteus-587 RF-10: the startup sweep of received files no run uses and of uploads abandoned for 24 hours.
+    void files.receivedFiles.sweep().catch((error: unknown) =>
+      console.warn(`Received files were not swept at startup: ${error instanceof Error ? error.message : String(error)}`));
     currentEpisodicCatalog.start({ taskTitles: currentCollaboration.tasks });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
@@ -341,6 +352,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       remote,
+      receivedFiles: files.receivedFiles,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;

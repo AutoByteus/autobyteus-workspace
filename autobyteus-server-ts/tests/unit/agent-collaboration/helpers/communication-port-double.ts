@@ -38,5 +38,7 @@ export const communicationPortDouble = (root: RootCommunicationPort["root"], ove
   commitMessageAppend: vi.fn(runAppendDurably),
   publishMessage: vi.fn(),
   presentRecipientInput: vi.fn(),
+  // autobyteus-587: a delivery with files needs its own plan (see root-communication-engine-received-files.test.ts).
+  receivedFilesFor: vi.fn(async () => { throw new Error("This port double receives no files."); }),
   ...overrides,
 });

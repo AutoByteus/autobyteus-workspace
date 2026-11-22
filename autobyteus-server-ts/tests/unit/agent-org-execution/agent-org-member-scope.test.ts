@@ -8,7 +8,7 @@ import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-executi
 import type { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const ORG = "org-member-scope";
 const orgHandoffs = [
@@ -39,7 +39,7 @@ const buildCallbacks = async () => {
     "product-team": "Ship the product UI.",
   };
   const lookup = { getDefinitionById: async (id: string) => ({ instructions: instructions[id] ?? null }) };
-  await new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+  await new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
     flatTeamExecutionFactory: { beginMaterialization: (input) => ({ prepare: () => materialize(input), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) }) } as never,
     agentRunManager: testActivationManager({ newPreparation: vi.fn() }) as never,
     orgDefinitions: lookup as never,

@@ -1,0 +1,369 @@
+# Code Review Revision Record — cross-node-file-transfer-587 (autobyteus-587)
+
+The latest `code-review-report.md` is authoritative for its current result.
+
+## Revision Index
+
+| Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
+| --- | --- | --- | --- | --- | --- |
+| CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001, `e327ba2467`) | N/A | Pass | None |
+| CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001, `eaf53c5c7b`) | N/A (first test review) | Fail (Local Fix, API/E2E) | T-001 |
+| CRR-003 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-002, `71be9e9e8e`) | Fail (Local Fix, API/E2E) | Pass | T-001 (resolved) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 2 (IR-002, delivery DEL-03, `e295b74b81`) | Pass (CRR-001) | Pass | None |
+| CRR-005 | `api-e2e-test-review-report.md` | Test-code review round 3 (API-REV-003, IR-002 test files) | Pass (CRR-003) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 3 (IR-003, merge with autobyteus-22, `575c4ec9ed`) | Pass (CRR-004) | Pass | None |
+| CRR-007 | `api-e2e-test-review-report.md` | Test-code review round 4 (API-REV-004, IR-003 tests, RC renumbering `d112f58c9a`) | Pass (CRR-005) | Pass | None |
+| CRR-008 | `code-review-report.md` | Implementation Review round 4, Full Re-Audit (IR-004, merge with autobyteus-591, `bcd05494cb`) | Pass (CRR-006) | Fail (Design Impact + Local Fixes) | CR-587-01 … CR-587-05 |
+| CRR-009 | `code-review-report.md` | Implementation Review round 5, Full Re-Audit (IR-005, SR-010/SR-011, `07b4b83cef`) | Fail (CRR-008) | Fail (Requirement Gap + Local Fixes) | CR-587-01…04 resolved; CR-587-05 open; CR-587-06 … 08 new |
+| CRR-010 | `code-review-report.md` | Implementation Review round 6, Full Re-Audit (IR-006, SR-012, `a0c233492b`) | Fail (CRR-009) | Fail (Local Fix) | CR-587-06, -07 resolved; -08 closed by DEC-010; -05 open; CR-587-09 new |
+| CRR-011 | `code-review-report.md` | Implementation Review round 7, Full Re-Audit (IR-007, `11b7ed5444`) | Fail (CRR-010) | Pass | CR-587-09 resolved; CR-587-05 open (API/E2E) |
+| CRR-012 | `api-e2e-test-review-report.md` | Test-code review round 5 (API-REV-005, `033e5dc227`) | Pass (CRR-007) | Pass | CR-587-05 resolved |
+
+## Revision Entries
+
+### CRR-001 — Initial source review of IR-001
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 1
+- Review scope: `Full Review`
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-001)
+- Relevant solution revision IDs: SR-005 … SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A
+- Current authoritative result: Pass
+- What changed in the review result and why: first result. RFC-001 RF-1 … RF-14 are traced through both nodes. The security boundary holds on both sides:
+  - sender: workspace containment after resolving links, regular files only, one handle;
+  - receiver: the gate's raw-stream hash, the 8 MiB bound, size and SHA-256 at completion, and placement confined to cleaned names inside the agent's folder.
+
+  The receive order is plan → reserve → place → commit. Deviations D-1 … D-6 and the Principle 16 note hold. Eleven candidates were judged; none promoted.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A (9.4/10; every category ≥ 9.3)
+- Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
+- Remaining risks or uncertainty:
+  - real HTTP signing of raw pieces, to prove in the two-server E2E;
+  - AC-007 timing under the 24 h sweep rule;
+  - the realpath-then-open window;
+  - a hostile paired peer (outside the threat model);
+  - the 1 h tool limit on every Agent Tools call;
+  - AC-002 wording.
+
+### CRR-002 — Proportional review of the API/E2E test changes
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); RC-51 … RC-54, RC-06/08/09/19/20/22, the contract stories S18/S19, the integration updates, MSP-08
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-001 Pass)
+- Current authoritative result: Fail (`Local Fix`, API/E2E)
+- What changed in the review result and why: the file-transfer cases are strong and real-trigger. T-001: the contract stories' authority (the 461 model and its S18/S19 stories) still admits and describes a cross-node message without `node`, while the driver now passes `node`. RF-14 replaced that rule, and per the autobyteus-492 CR-001 ruling the contract's executable model must state the approved rule. OBS-1 and OBS-2 are recorded as FU-003 and FU-004. My own miss in autobyteus-565 (the gated contract stories not run, now FU-002) is stated in the report.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: T-001; follow-ups FU-003, FU-004
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: the gated suite stays red for FU-002 (565) until that is fixed; the AGY/Grok/ACP limits (FU-001); the narrow placement race.
+
+### CRR-003 — Test-code review round 2: T-001 resolved
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review); the delta is `ed6c8b4c01..71be9e9e8e` (the model, the stories, the fixture, evidence)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-002; T-001
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (Local Fix, API/E2E), CRR-002
+- Current authoritative result: Pass
+- What changed in the review result and why: the contract model states RF-14 in the server's order, with the server's texts, and S18/S19 pass `node`. The fixture changes only those call texts.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| T-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-002, `71be9e9e8e` | `model.py` `_node_rule`; `stories.py` S18/S19 with `node`. My `--check` rerun reports "matches the model". The probe (`evidence/API-11/API-11-model-rf14.log`) rows match the server paths traced in CRR-001. The §5.1 rerun differs only by FU-002 |
+
+- New or remaining finding IDs: None; follow-ups FU-001 … FU-004
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: the gated contract stories stay red for FU-002 (565, urgent); FU-001 (AGY/Grok/ACP limits); FU-003, FU-004 wording; the narrow placement race; the AC-007 timing under the 24 h rule; AC-002's wording.
+
+### CRR-004 — Source review round 2: IR-002 (delivery DEL-03 stale test constructions)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. `ef53fadd52..e295b74b81` changes six test files only; delivery's merge brought `src` files that do not intersect this ticket's.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-002; delivery's `release-deployment-report.md` § Escalation / Reroute (DEL-03 items 1–3)
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: none recorded yet (DEL-03 in the release report)
+- Prior authoritative result: Pass (CRR-001; test review CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: stale constructions now get the explicit no-peer collaborators. The standalone-host test gained stronger assertions (one shared `remoteFiles`; `receivedFiles` is its `received` part). The whole server unit suite passes (IMP-06). My CRR-001 gap is recorded in the report: I accepted an affected-set unit run for a change that made constructor inputs required.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no finding was open; DEL-03 was raised by delivery).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer; then the test-code review; then delivery, which asked for the package back
+- Remaining risks or uncertainty: as CRR-001 and CRR-003; delivery's proposed `TESTING.md` check is for the guide's owner.
+
+### CRR-005 — Test-code review round 3: IR-002's test files on the merged base
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 3
+- Review scope: `N/A` (test review); IR-002's six test files (`e295b74b81`); round 3 itself changed only documents and one `TESTING.md` row
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-003
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: none recorded yet (DEL-03 in the release report)
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: the stale constructions now pass the explicit no-peer collaborators. The host test is stronger (shared `remoteFiles` identity). Whole suites pass on the merged base. A wording nit in the new `TESTING.md` row was noted for its owner.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-002 (urgent, 565) keeps the gated contract stories red; FU-001, FU-003, FU-004 open.
+
+### CRR-006 — Source review round 3: IR-003, merge with autobyteus-22
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review` of merge `575c4ec9ed`: the production conflict resolutions (`--cc`) and each point where the two tickets meet
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-003; `release-deployment-report.md` § Delivery Round 2
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why: both tickets' behavior is kept:
+  - RF-14 still answered by the root (`ownsAgentRun` ⊇ `hasAgentExecution` ⊇ remote links);
+  - the receiver checked current before any files are planned;
+  - the D-6 locator still passed;
+  - `root-team-run.ts` 477 lines.
+
+  IMP-10 … IMP-13 pass on the merge.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer; then the test-code review; then delivery
+- Remaining risks or uncertainty: as CRR-001; FU-001 … FU-004 open.
+
+### CRR-007 — Test-code review round 4: IR-003's tests and the RC renumbering
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 4
+- Review scope: `N/A` (test review); the merge's conflict-resolved tests (`575c4ec9ed`) and `d112f58c9a`
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-004
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Pass
+- What changed in the review result and why: the merged tests union both tickets' inputs without loosening any assertion. Renumbering this ticket's cases to RC-55 … RC-58 fixes a real receipt collision with autobyteus-22's RC-51. Whole suites pass on the merge.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-002, FU-005, FU-006 (urgent, base issues, outside this ticket); FU-001, FU-003, FU-004.
+
+### CRR-008 — Source review round 4: full re-audit at IR-004
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit`. The user asked for a complete review. The branch merges autobyteus-22 and autobyteus-591 into this ticket's message path, and the follow-ups were re-judged under the user's direction to fix in this ticket what belongs to it.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-004; `release-deployment-report.md` § Delivery Round 3
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001 … IR-004
+- Relevant API/E2E revision IDs: API-REV-001 … API-REV-004
+- Relevant delivery revision IDs: none recorded yet (delivery rounds 1–3 in the release report)
+- Prior authoritative result: Pass (CRR-006; test review CRR-007)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - The merge itself is sound (M-1 … M-4).
+  - New: CR-587-01. The router reopens a closed peer Task (591's `admitPeerRun`) before this ticket's file checks and upload, so a refused file leaves the Task reopened and the peer told "open", unannounced.
+  - Moved into this ticket: CR-587-02 (was FU-003) and CR-587-03 (was FU-004).
+  - Recorded now: CR-587-04, the design's single opening not met. CRR-001 accepted it as a residual; that was wrong, because it is a mismatch with the design in this ticket's own code.
+  - Proposed into this ticket: CR-587-05, the contract model this ticket edits (was FU-002, FU-006).
+  - Earlier rulings changed, with the evidence: the user's direction on ticket scope, and the 591 merge.
+- Supported product scenario / material-premise basis changes: None (CR-587-01 rests on SEC-1, a supported edge: an assigner's continuation with a file from outside its workspace).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| FU-003 (follow-up) | Follow-up | Promoted to CR-587-02 | CRR-002 | REQ-006 applies to this ticket's transfer path |
+| FU-004 (follow-up) | Follow-up | Promoted to CR-587-03 | CRR-002 | Introduced by RF-14 |
+| FU-002, FU-006 (follow-ups) | Follow-up | Proposed as CR-587-05 | API-REV-001, API-REV-004 | This ticket edits the model (T-001) |
+
+- New or remaining finding IDs: CR-587-01 … CR-587-05
+- Material score or classification changes: overall 9.4 → 9.2. Runtime Correctness 8.8; API/Interface and API/E2E Readiness 9.0. Classification: `Design Impact` with `Local Fix` items.
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: FU-001, FU-005 (follow-ups); the RF-14 consolidation recommendation; FU-007 and the AC wording questions.
+
+### CRR-009 — Source review round 5: full re-audit at IR-005
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Full Re-Audit`. The shared boundaries changed: the router order, the new RF-14 owner, the roots' boundary and the saved-Task paths.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-005; CR-587-01 … 04
+- Relevant solution revision IDs: SR-010, SR-011
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-008)
+- Current authoritative result: Fail
+- What changed in the review result and why: CR-587-01 … 04 and the RF-14 consolidation are resolved. New findings:
+  - CR-587-06: an optional `remoteNodeOf` with a silent fallback, on which the removal of the roots' remote branches relies;
+  - CR-587-07: the roots take the whole `RemoteFiles` bundle but use only `received`;
+  - CR-587-08: DEC-009's RF-3 exception plus `create_task`/`update_task` copying any allowed-type file from anywhere lets an agent send off the node in two calls what `reference_files` refuses. That needs a security decision.
+- Supported product scenario / material-premise basis changes: CR-587-08 rests on DEC-001's own threat (a misled agent), a supported explicit edge (SEC-1).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-01 | Open (Design Impact) | Resolved | SR-010 R1, IR-005 | Router `deliverToPeer` order; `"reopened"` + `notDeliveredAfterReopen` |
+| CR-587-02 | Open (Local Fix) | Resolved | IR-005 | `OutgoingFiles` `inTransit` after a successful status |
+| CR-587-03 | Open (Local Fix) | Resolved | IR-005 | `PeerRunNodes` `NODE_NOT_PAIRED` via `registeredPeerName` |
+| CR-587-04 | Open (Local Fix) | Resolved | IR-005 | One `open`, `fstat` vs `realpath`+`stat` `dev`/`ino`, then containment |
+| CR-587-05 | Open (scope pending) | Open (API/E2E, scope confirmed SR-010 R4) | SR-010 | Model still lacks `counterpart`/`copiedFrom` |
+
+- New or remaining finding IDs: CR-587-05 … CR-587-08
+- Material score or classification changes: overall 9.2 → 9.3. Runtime Correctness 8.8 → 9.1. Classification: `Requirement Gap` (security) with `Local Fix` items.
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: the hard-link residual; upload before the closed check for non-assigners (recommendation); `task-delegation.ts` at 498 lines.
+
+### CRR-010 — Source review round 6: full re-audit at IR-006
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 6
+- Review scope: `Full Re-Audit`, per the user's direction for this ticket. The only production change since CRR-009 is `a0c233492b`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-006; CR-587-06, -07
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-009)
+- Current authoritative result: Fail (`Local Fix`)
+- What changed in the review result and why: CR-587-06 and -07 are resolved, and CR-587-08 is closed by DEC-010. New: CR-587-09, left by CR-587-07's fix. `RemoteFiles.received` now has no production reader (DESIGN.md rule 11), so the bundle only wraps `outgoing`.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-06 | Open (Local Fix) | Resolved | IR-006 `a0c233492b` | Required method; `reserve` check; no `?.`/`??` in `PeerRunNodes` |
+| CR-587-07 | Open (Local Fix) | Resolved | IR-006 `a0c233492b` | Roots, materializer, manager, Org scope builder, platform runtime/kernel take `ReceivedFilesPlacement`; supervisor's guard kept |
+| CR-587-08 | Open (Requirement Gap) | Closed by decision | SR-012 DEC-010 (c), founder confirmed (`ced5541c43`) | `requirements-doc.md` DEC-010 |
+| CR-587-05 | Open (API/E2E) | Open | SR-010 R4 | Unchanged |
+
+- New or remaining finding IDs: CR-587-05, CR-587-09
+- Material score or classification changes: overall 9.3 → 9.4. Runtime Correctness 9.4. Classification: `Local Fix` (implementation).
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: the DEC-010 accepted risk; the hard-link residual; `task-delegation.ts` at 498 lines.
+
+### CRR-011 — Source review round 7: full re-audit at IR-007
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Full Re-Audit`. The only production change since CRR-010 is `11b7ed5444`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-007; CR-587-09
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-010)
+- Current authoritative result: Pass
+- What changed in the review result and why: CR-587-09 is resolved. The `RemoteFiles` bundle is retired; `receivedFiles` and `outgoingFiles` are passed separately to the owners that use them. No code finding remains.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-09 | Open (Local Fix) | Resolved | IR-007 `11b7ed5444` | `composeRemoteFiles` → `{receivedFiles, outgoingFiles}`; `RemoteFiles` removed (grep: no name left) |
+| CR-587-05 | Open (API/E2E) | Open (API/E2E) | SR-010 R4 | For API/E2E's next round |
+
+- New or remaining finding IDs: CR-587-05 (API/E2E)
+- Material score or classification changes: 9.4/10; Shared-Structure and Cleanup up to 9.4
+- Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
+- Remaining risks or uncertainty: DEC-010 accepted risk; hard-link residual; `task-delegation.ts` at 498 lines.
+
+### CRR-012 — Test-code review round 5: API-REV-005 on IR-007
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 5
+- Review scope: `N/A` (test review); `033e5dc227`
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-005; CR-587-05; AC-012; SR-010 R1
+- Relevant solution revision IDs: SR-010 … SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Pass (CRR-007)
+- Current authoritative result: Pass
+- What changed in the review result and why: CR-587-05 is resolved. The model states 565's `counterpart`, 22's `copiedFrom`, IR-005's node rule, 591's continuation across nodes and DEC-009's S25, and the gated stories pass with S18/S19/S25 run. RC-60 (AC-012) and RC-61 (SR-010 R1) prove the new behavior on real servers, and RC-57 now pins the exact in-transit code. RC-61's generic 401 reason for a damaged message body is recorded as FU-009 (fails the scope questions).
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-05 | Open (API/E2E) | Resolved | API-REV-005 `033e5dc227` | Model and stories updated; `--check` matches (my rerun); gated stories §5.1 (run 2), §5.2, §5.3 pass with no differences |
+
+- New or remaining finding IDs: None; follow-up FU-009 added
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-001, FU-005, FU-008 (autobyteus-601), FU-009; DEC-010 accepted risk; the hard-link residual; `task-delegation.ts` at 498 lines.

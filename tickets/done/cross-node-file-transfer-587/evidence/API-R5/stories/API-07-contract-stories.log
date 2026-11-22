@@ -1,0 +1,17 @@
+# API-07 round 5: gated contract stories against the regenerated fixture (the 461 model with counterpart, copiedFrom, IR-005's no-node rule, DEC-009's S25)
+# env -i PATH HOME=<fresh temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs agy-failure-cli.mjs> CONTRACT_STORIES_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch
+# Code HEAD 05ffe64554 (server rebuilt); 2026-11-22
+## Run 1 (all sections; load  6:34  up 16:51, 9 users, load averages: 8.95 11.88 15.39)
+     × §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node 803919ms
+     ✓ §5.2 U0 … U11: a team the user starts delegates  372523ms
+     ✓ §5.3 O0 … O9: an org the user starts delegates  311271ms
+AssertionError: S25 (DL-9, DL-11) M gives a saved Task to a new team on the peer node (T8); node B's user stops that team: expected [ Array(1) ] to deeply equal []
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+EXIT 1
+S25's one difference: B's row for research_team_5c5c has node B's temporary workspace, the documented peer-start note the suite already keeps for S17's research_team_77aa; the known-difference entry now names both teams.
+## Run 2 (§5.1 only, -t "§5.1"; load  7:21  up 17:39, 9 users, load averages: 18.60 18.57 19.77)
+     ✓ §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node  869231ms
+      Tests  1 passed | 2 skipped (3)
+EXIT 0
+every step: 0 differences (S18, S19, S25, S26, S27 included)

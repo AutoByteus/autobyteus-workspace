@@ -20,6 +20,7 @@ describe("buildClaudeSessionMcpServers", () => {
         type: "http",
         url: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
         alwaysLoad: true,
+        timeout: 3_600_000,
       },
     });
     expect(Object.keys(result ?? {})).toEqual(["autobyteus_agent_tools"]);
@@ -38,6 +39,7 @@ describe("buildClaudeSessionMcpServers", () => {
         type: "http",
         url: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
         alwaysLoad: true,
+        timeout: 3_600_000,
       },
     });
   });

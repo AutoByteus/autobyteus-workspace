@@ -14,7 +14,7 @@ const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", added
 const request = (overrides: Partial<DeliverRemoteMessageRequest> = {}): DeliverRemoteMessageRequest => ({
   fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", kind: "message", messageId: "collabmsg_1",
   sender: { agentRunId: "assistant_a1", address: "/assistant" }, targetRoot: { kind: "agent_team", runId: "team_b" }, target: { agentRunId: "writer_b" },
-  content: "hello", messageType: "agent_message", createdAt: "2026-10-21T10:00:00.000Z", ...overrides,
+  content: "hello", messageType: "agent_message", createdAt: "2026-10-21T10:00:00.000Z", files: [], ...overrides,
 } as DeliverRemoteMessageRequest);
 
 const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
@@ -38,7 +38,10 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
   };
   // autobyteus-591 S-5: the record of runs their delegating node closed, cleared by that node's accepted message or work.
   const closed = { openedBy: vi.fn(async () => undefined) };
-  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions(), running, closed), directory, roots, titles, running, liveRoot, closed };
+  // autobyteus-587: every file a request names is complete here (`verify`), unless a test says otherwise.
+  const receivedFiles = { verify: vi.fn(async () => ({ ok: true as const })) as ReturnType<typeof vi.fn> };
+  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions(), running, closed, receivedFiles as never),
+    directory, roots, titles, running, liveRoot, closed, receivedFiles };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
@@ -49,7 +52,7 @@ describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
     expect(f.directory.team).toHaveBeenCalledExactlyOnceWith("team_b");
     expect(f.roots.team.acceptRemoteMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", senderAddress: "/assistant", message: {
       messageId: "collabmsg_1", senderAgentRunId: "assistant_a1", receiverAgentRunId: "writer_b", content: "hello",
-      messageType: "agent_message", referenceFiles: [], createdAt: "2026-10-21T10:00:00.000Z" } });
+      messageType: "agent_message", referenceFiles: [], createdAt: "2026-10-21T10:00:00.000Z" }, files: [] });
   });
 
   it("each root kind, both directions: a run on this node for a peer (agent, agent_team) or a coordinating run (any kind)", async () => {
@@ -67,7 +70,7 @@ describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
     const packet = { kind: "work_packet" as const, messageId: undefined, content: "Draft the episode." };
     await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true, receiverAddress: null });
     expect(f.roots.team.acceptRemoteWorkPacket).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop",
-      senderAgentRunId: "assistant_a1", targetAgentRunId: "lead_b", description: "Draft the episode." });
+      senderAgentRunId: "assistant_a1", targetAgentRunId: "lead_b", description: "Draft the episode.", files: [] });
     await f.receiver.accept(request({ ...packet, targetRoot: { kind: "agent", runId: "host_b" }, target: { agentRunId: "host_b" } }), PEER);
     expect(f.roots.standalone.acceptRemoteWorkPacket).toHaveBeenCalledOnce();
     await expect(f.receiver.accept(request({ ...packet, targetRoot: { kind: "agent_org", runId: "org_b" } }), PEER))
@@ -163,7 +166,7 @@ describe("an accepted work packet's content is the run's title (autobyteus-269)"
 
 describe("autobyteus-492 DS-004: a message by run ID only (acceptRunMessage)", () => {
   const runMessage = (target: string) => ({ fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", messageId: "collabmsg_9", sender: { agentRunId: "pm_a", address: "/project_task_manager" },
-    target: { agentRunId: target }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z" });
+    target: { agentRunId: target }, content: "hello B", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", files: [] });
 
   it("a running agent: its active root (never restored) accepts it with the sender's node; no stored-link check, no restore", async () => {
     const f = setup();
@@ -171,7 +174,7 @@ describe("autobyteus-492 DS-004: a message by run ID only (acceptRunMessage)", (
     expect(f.directory.liveRoot).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "pm_b" });
     expect(f.liveRoot.acceptPeerRunMessage).toHaveBeenCalledExactlyOnceWith({ fromNodeId: PEER.nodeId, fromNodeName: "desktop", senderAddress: "/project_task_manager", message: {
       messageId: "collabmsg_9", senderAgentRunId: "pm_a", receiverAgentRunId: "pm_b", content: "hello B", messageType: "agent_message",
-      referenceFiles: [], createdAt: "2026-11-18T10:00:00.000Z" } });
+      referenceFiles: [], createdAt: "2026-11-18T10:00:00.000Z" }, files: [] });
     expect(f.directory.storedLinkCheck).not.toHaveBeenCalled();
     expect(f.directory.standalone).not.toHaveBeenCalled();
   });
@@ -188,5 +191,36 @@ describe("autobyteus-492 DS-004: a message by run ID only (acceptRunMessage)", (
     const f = setup();
     await expect(f.receiver.acceptRunMessage(runMessage("team_b"), PEER)).resolves.toEqual({ accepted: false, code: "TARGET_IS_TEAM_RUN",
       message: "team_b is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: lead_b." });
+  });
+});
+
+describe("autobyteus-587 (RF-5): a request's files are complete here before any root sees it", () => {
+  const files = [{ sha256: "a".repeat(64), size: 4, name: "brief.pdf" }];
+
+  it("a message or work packet naming a file this node does not hold complete is refused, after the link check, and reaches no root", async () => {
+    const f = setup();
+    f.receivedFiles.verify.mockResolvedValue({ ok: false, name: "brief.pdf" });
+    const refused = { accepted: false, code: "REFERENCE_FILE_CHECK_FAILED",
+      message: "The file brief.pdf has not been received complete on this node, so the message was not delivered." };
+    await expect(f.receiver.accept(request({ files }), PEER)).resolves.toEqual(refused);
+    await expect(f.receiver.accept(request({ kind: "work_packet", targetRoot: { kind: "agent", runId: "pm_b" }, files }), PEER)).resolves.toEqual(refused);
+    await expect(f.receiver.acceptRunMessage({ fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", messageId: "m", sender: { agentRunId: "pm_a", address: null },
+      target: { agentRunId: "pm_b" }, content: "hi", messageType: "agent_message", createdAt: "2026-11-18T10:00:00.000Z", files }, PEER)).resolves.toEqual(refused);
+    expect(f.roots.team.acceptRemoteMessage).not.toHaveBeenCalled();
+    expect(f.roots.standalone.acceptRemoteWorkPacket).not.toHaveBeenCalled();
+    expect(f.liveRoot.acceptPeerRunMessage).not.toHaveBeenCalled();
+    expect(f.receivedFiles.verify).toHaveBeenCalledWith(files);
+    // A sender the stored links refuse is refused as not linked, before its files are asked about.
+    const unlinked = setup("not_linked");
+    await expect(unlinked.receiver.accept(request({ files }), PEER)).resolves.toMatchObject({ code: "REMOTE_TARGET_NOT_PERMITTED" });
+    expect(unlinked.receivedFiles.verify).not.toHaveBeenCalled();
+  });
+
+  it("complete files go with the message and the work packet to the root, which places them", async () => {
+    const f = setup();
+    await f.receiver.accept(request({ files }), PEER);
+    expect(f.roots.team.acceptRemoteMessage).toHaveBeenCalledWith(expect.objectContaining({ files }));
+    await f.receiver.accept(request({ kind: "work_packet", targetRoot: { kind: "agent", runId: "pm_b" }, files }), PEER);
+    expect(f.roots.standalone.acceptRemoteWorkPacket).toHaveBeenCalledWith(expect.objectContaining({ files }));
   });
 });

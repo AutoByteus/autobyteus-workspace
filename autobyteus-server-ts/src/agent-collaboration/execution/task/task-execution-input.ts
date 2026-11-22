@@ -68,8 +68,9 @@ export const buildTaskWorkText = (input: {
 }): string => {
   const runId = input.delegator.agentRunId;
   const [from, reply] = input.delegatorNode
+    // autobyteus-587 RF-14: an agent on another node is always named with its node.
     ? [`You have a new task from the agent with sender run id "${runId}" on node "${input.delegatorNode}".`,
-      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."]
+      `When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id and node set to "${input.delegatorNode}".`]
     : input.delegatorAddress
     ? [`You have a new task from the agent with sender address "${input.delegatorAddress}" and sender run id "${runId}".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]

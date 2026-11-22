@@ -23,6 +23,11 @@ export interface ActiveRootMessageBoundary {
    * member that left the team, which the root refuses by name. Org and standalone roots answer `hasAgentExecution`.
    */
   ownsAgentRun(agentRunId: string): boolean;
+  /**
+   * autobyteus-587 RF-14 (`PeerRunNodes`): the peer node this root links the run on (a run it delegated there, or a
+   * peer-started root's delegator), or null.
+   */
+  remoteNodeOf(agentRunId: string): string | null;
   /** DS-2: this root as the sender of a message to another run (its own log only). */
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage,
@@ -44,7 +49,10 @@ export type PeerRunMessageInput = Readonly<{
   targetAgentRunId: string;
   content: string;
   messageType?: string | null;
+  /** The sender's own paths (its log keeps them, RF-9). */
   referenceFiles?: readonly string[] | null;
+  /** autobyteus-587: those files as the other node already holds them (uploaded first, SR-010 R1). */
+  files: readonly import("../remote/transferred-files.js").TransferredFile[];
 }>
 
 /** Where a live agent run sits in its own root: a standalone run's agent, or a Team or Org member (autobyteus-461 DS-9). */
@@ -96,7 +104,8 @@ export class ActiveCollaborationRootDirectory {
       throw new Error(`Collaboration root '${root.rootSubjectKind}:${root.rootRunId}' is already active or reserved.`);
     }
     if (!boundary || typeof boundary.deliverExactAgentMessage !== "function" || typeof boundary.hasAgentExecution !== "function"
-      || typeof boundary.ownsAgentRun !== "function") {
+      || typeof boundary.ownsAgentRun !== "function"
+      || typeof boundary.remoteNodeOf !== "function") {
       throw new Error("Active root message boundary is required.");
     }
     this.reserved.add(key);

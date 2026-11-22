@@ -8,7 +8,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const materialized = vi.hoisted(() => [] as unknown[]);
 vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => ({
@@ -32,7 +32,7 @@ vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-buil
 vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", () => ({
   materializeTeamRoot: vi.fn(async () => {
     const root = {
-      teamRunId: "team-stuck", isActive: () => true, hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+      teamRunId: "team-stuck", isActive: () => true, hasAgentExecution: vi.fn(() => false), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       terminate: vi.fn(async () => ({ accepted: true })),
     };
     materialized.push(root);
@@ -40,7 +40,7 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
@@ -57,7 +57,7 @@ const stuckRoot = (terminate: () => Promise<{ accepted: boolean; code?: string; 
   const root = {
     teamRunId: "team-stuck",
     isActive: () => active,
-    hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+    hasAgentExecution: vi.fn(() => false), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
     terminate: vi.fn(terminate),
   };
   return { root: root as unknown as RootTeamRun, raw: root, stick: () => { active = false; } };

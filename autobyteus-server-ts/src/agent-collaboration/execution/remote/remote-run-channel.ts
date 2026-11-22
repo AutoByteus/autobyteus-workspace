@@ -3,6 +3,7 @@ import type { RunAgentStatusEntry } from "./run-agent-access.js";
 import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
+import type { TransferredFile } from "./transferred-files.js";
 
 /** A registered peer as roots see it: its pinned server ID and this owner's label for it. */
 export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
@@ -32,6 +33,12 @@ export type RemoteDeliveryReceipt = Readonly<{ accepted: true }> | RemoteChannel
  * node answers it (null for a work packet, or when it has none).
  */
 export type RemoteMessageReceipt = Readonly<{ accepted: true; receiverAddress: string | null }> | RemoteChannelRefusal;
+/** autobyteus-587: what the peer holds of each file (by SHA-256), and the largest file it accepts. */
+export type ReceivedFilesStatusReceipt = Readonly<{
+  accepted: true; maxFileBytes: number; files: readonly Readonly<{ sha256: string; receivedBytes: number; complete: boolean }>[];
+}> | RemoteChannelRefusal;
+/** autobyteus-587: the bytes the peer holds of the file after a piece, and whether it is complete (checked) there. */
+export type ReceivedFilePieceReceipt = Readonly<{ accepted: true; receivedBytes: number; complete: boolean }> | RemoteChannelRefusal;
 
 export type RemoteMessageTransmission = Readonly<{
   nodeId: string;
@@ -46,6 +53,8 @@ export type RemoteMessageTransmission = Readonly<{
   content: string;
   messageType: string;
   createdAt: string;
+  /** autobyteus-587: the reference files, each already complete on that node. */
+  files: readonly TransferredFile[];
 }> | Readonly<{
   nodeId: string;
   /**
@@ -60,6 +69,7 @@ export type RemoteMessageTransmission = Readonly<{
   content: string;
   messageType: string;
   createdAt: string;
+  files: readonly TransferredFile[];
 }>;
 
 /** A run this node's delegation started on a peer (autobyteus-278): an Agent run, or a Team run. */
@@ -126,6 +136,8 @@ export interface RemoteRunChannel {
   findPeer(name: string): Promise<PeerNodeRef | RemoteChannelRefusal>;
   /** This owner's label for a peer, for headers and texts; the node ID itself when it is no longer registered. */
   peerName(nodeId: string): Promise<string>;
+  /** autobyteus-587 CR-587-03: this owner's label for a peer that is still registered; null when it is no longer one. */
+  registeredPeerName(nodeId: string): Promise<string | null>;
   startDelegatedRun(input: Readonly<{
     nodeId: string;
     /** The target's catalog address on that node. */
@@ -136,6 +148,10 @@ export interface RemoteRunChannel {
     work: DelegationWork;
   }>): Promise<RemoteStartedRun>;
   deliverMessage(input: RemoteMessageTransmission): Promise<RemoteMessageReceipt>;
+  /** autobyteus-587 (RF-11): what that node holds of these files, and its per-file limit (RF-4). */
+  receivedFilesStatus(nodeId: string, files: readonly Readonly<{ sha256: string; size: number }>[]): Promise<ReceivedFilesStatusReceipt>;
+  /** autobyteus-587: one piece (at most 8 MiB) of a file, at `offset` of its `size` bytes. */
+  putReceivedFilePiece(input: Readonly<{ nodeId: string; sha256: string; offset: number; size: number; bytes: Buffer }>): Promise<ReceivedFilePieceReceipt>;
   /** autobyteus-278: the titles and statuses of these runs on that node (one request per node). */
   runSummaries(nodeId: string, runs: readonly RemoteStartedRunRef[]): Promise<RemoteRunSummaries>;
   /** autobyteus-278: one agent's stored conversation in a run this node's delegation started. */

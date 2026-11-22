@@ -12,6 +12,7 @@ import type { RunViewStream } from "../../agent-collaboration/delegation/run-vie
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -32,6 +33,9 @@ export type AgentOrgRunOptions = Readonly<{
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf">;
     /** The host's channel to peer nodes (autobyteus-500 FU-011). */
     remoteChannel: RemoteRunChannelAccess;
+    /** The host's file transfer between nodes (autobyteus-587). */
+    /** autobyteus-587: the node's received files, placed into an Org agent's folder. */
+    receivedFiles: ReceivedFilesPlacement;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;

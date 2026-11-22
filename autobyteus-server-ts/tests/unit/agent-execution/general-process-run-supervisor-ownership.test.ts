@@ -29,7 +29,7 @@ import {
   getRunFileChangeService,
   releaseProcessRunFileChangeService,
 } from "../../../src/services/run-file-changes/run-file-change-service.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /** The RunFileChangeService instance the supervisor wired into run activation (it records FILE_CHANGE events). */
 const wiredRunFileChangeService = (supervisor: GeneralProcessRunSupervisor): unknown => (
@@ -55,7 +55,7 @@ const createSupervisorInput = () => {
   const agentTeamDefinitionService = new AgentTeamDefinitionService({ agentDefinitionService });
   const agentOrgDefinitionService = new AgentOrgDefinitionService(undefined, agentDefinitionService, agentTeamDefinitionService);
   return {
-    remoteChannel: NO_PEER_CHANNEL,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     peerDiscovery: OFF_DISCOVERY,
     memoryDir: "/tmp/general-process-run-supervisor",
     contextFilePathEnvironment: {
@@ -149,7 +149,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases AgentRunManager when exclusive Team manager initialization fails", async () => {
     const input = createSupervisorInput();
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),

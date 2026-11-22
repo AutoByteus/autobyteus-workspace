@@ -55,20 +55,6 @@ export class AgentOrgRunMessageDelivery {
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
 
-  /**
-   * `send_message_to(run ID)` from an agent of this Org: the routing decision only. A remote endpoint goes to
-   * the shared remote send (never reactivated, S3); any other run ID through
-   * today's exact delivery.
-   */
-  deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    const sender = input.sender.identity;
-    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
-    if (!endpoint) return this.deliverToRunId(input);
-    this.options.authorizeIdentity(sender);
-    return this.options.remoteSend.send({ sender, endpoint,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
-  }
-
   /** DS-2: a message from another run of this node, for an agent of this org run; it is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
@@ -83,7 +69,7 @@ export class AgentOrgRunMessageDelivery {
     const sender = input.sender.identity;
     this.options.authorizeIdentity(sender);
     return this.options.remoteSend.sendToPeerRun({ sender, nodeId: input.nodeId, targetAgentRunId: input.targetAgentRunId,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles, files: input.files });
   }
 
   /** DS-004 on the receiving node: a peer agent's message by run ID only, for an agent of this org while it runs (never woken). */
@@ -95,7 +81,7 @@ export class AgentOrgRunMessageDelivery {
       endpoint: unlinkedRunEndpoint({ nodeId: input.fromNodeId, agentRunId: input.message.senderAgentRunId, pairedAgentRunId: receiver.agentRunId }),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress, files: input.files,
     });
   }
 
@@ -112,7 +98,7 @@ export class AgentOrgRunMessageDelivery {
       endpoint,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress,
+      senderNodeName: input.fromNodeName, senderAddress: input.senderAddress, files: input.files,
     });
   }
 

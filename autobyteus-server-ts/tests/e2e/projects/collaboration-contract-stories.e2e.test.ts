@@ -246,8 +246,8 @@ const KNOWN_DIFFERENCES: Array<{ pattern: RegExp; reason: string; states?: strin
     states: ["S23", "S24", "S25"],
   },
   {
-    pattern: /^B:memory\/team_run_history_index\.json\[research_team_77aa\]\.workspaceRootPath: expected "[^"]*\/story-5\.1-A\/workspace", got "[^"]*\/story-5\.1-B\/temp_workspace"$/,
-    reason: "A run a peer starts runs in a folder of its own node (node B's temporary workspace); the delegator's folder is a path on node A. Unchanged by autobyteus-461 (the peer start path). The model gives B's row A's folder. A contract-model note.",
+    pattern: /^B:memory\/team_run_history_index\.json\[research_team_(77aa|5c5c)\]\.workspaceRootPath: expected "[^"]*\/story-5\.1-A\/workspace", got "[^"]*\/story-5\.1-B\/temp_workspace"$/,
+    reason: "A run a peer starts runs in a folder of its own node (node B's temporary workspace); the delegator's folder is a path on node A. Unchanged by autobyteus-461 (the peer start path). The model gives B's row A's folder. A contract-model note. (research_team_5c5c: S25's team, a saved Task's copy since autobyteus-587 DEC-009.)",
   },
   {
     pattern: /^refusal: expected code [A-Z_]+, got \{"delegated":false,"message":/,
@@ -727,10 +727,11 @@ suite("The collaboration contract's stories, run against the built server (autob
         expect(((peerOwn.agents ?? []) as Rec[]).map((agent) => agent.agentRunId).sort(), "the peer run's own answer lists its agents").toEqual([...peerAgents].sort());
         statusSocket.close();
       },
-      S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
+      // autobyteus-587 RF-14: a message to a run on another node always names the node (here B's name for A, "node-a").
+      S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { node: "node-a", target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {
         await ctx.call(M, "update_task", { task_id: ctx.real("adhoc_task_7c7c"), status: "DONE" });
-        await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "More findings …" });
+        await ctx.call("lead_0c11", "send_message_to", { node: "node-a", target_agent_run_id: ctx.real(M), content: "More findings …" });
       },
       S20: async (ctx) => {
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") });
@@ -742,7 +743,13 @@ suite("The collaboration contract's stories, run against the built server (autob
       // S23, S24: E's Tasks are all closed after S16, so DS-15 fences user input to E; the agent's own call is made directly.
       S23: async (ctx) => { await ctx.call(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
       S24: async (ctx) => { await ctx.call(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
-      S25: async (ctx) => { await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") }); },
+      // autobyteus-587 DEC-009: a saved Task goes to a new copy on another node; node B's user then stops that team there.
+      S25: async (ctx) => {
+        const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") });
+        await ctx.bindRun("research_team_5c5c", r.target_team_run_id as string, "B");
+        const stopped = (await ctx.nodes.B!.gql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: r.target_team_run_id })).terminateAgentTeamRun;
+        expect(stopped.success, stopped.message).toBe(true);
+      },
       // SR-067 (DS-13): the user deletes M while a run it delegated to works: refused, naming it; nothing is written.
       S26: async (ctx) => {
         // The user stops M first (a running run's history is not deleted: "Run is active. Terminate it before deleting history.").

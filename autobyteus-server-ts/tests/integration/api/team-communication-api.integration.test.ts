@@ -11,7 +11,7 @@ import { createHash } from "node:crypto";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const timestamp = "2026-04-12T10:00:00.000Z";
 
@@ -146,7 +146,7 @@ describe("Team communication API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

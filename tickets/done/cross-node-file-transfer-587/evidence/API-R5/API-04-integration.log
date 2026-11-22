@@ -1,0 +1,7 @@
+# API-04 round 5: env -i PATH HOME=<fresh temp> TMPDIR pnpm -C autobyteus-server-ts test:integration
+# Code HEAD 05ffe64554 (server rebuilt); Node 22.23.1; macOS 26; 2026-11-22
+# load at start:  6:59  up 17:16, 9 users, load averages: 16.69 19.59 20.94
+ Test Files  90 passed | 20 skipped (110)
+      Tests  517 passed | 69 skipped (586)
+   Duration  173.93s (transform 9.66s, setup 2.41s, import 77.42s, tests 84.18s, environment 6ms)
+EXIT 0

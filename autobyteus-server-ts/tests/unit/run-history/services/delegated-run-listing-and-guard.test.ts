@@ -37,11 +37,12 @@ describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067
     const peerStatus = vi.fn(async () => peerAnswer === "unreachable"
       ? { nodeId: "node-b", runId: "far", reachable: false, title: null, statuses: [], launches: [] }
       : { nodeId: "node-b", runId: "far", reachable: true, title: null, statuses: [{ agentRunId: "far", status: peerAnswer }], launches: [] });
+    const sweep = vi.fn(async () => undefined);
     const guard = new DelegatedWorkGuard({ tree: { openChildrenOf: () => children, runDeleted },
       statusOf: (run) => statuses["agentRunId" in run ? run.agentRunId : run.teamRunId] ?? null,
-      peerRunOf: (id) => id === "far" ? { status: peerStatus } as never : null });
+      peerRunOf: (id) => id === "far" ? { status: peerStatus } as never : null, receivedFiles: { sweep } });
     const perform = vi.fn(async () => ({ success: true, message: "Deleted." }));
-    return { guard, statuses, runDeleted, perform, peerStatus };
+    return { guard, statuses, runDeleted, perform, peerStatus, sweep };
   };
 
   it("is refused, naming the working runs (running, initializing or idle: not stopped, SR-072 F-30), local and peer; nothing is performed and the tree is not told", async () => {
@@ -50,6 +51,7 @@ describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067
       message: "This run can't be deleted while a run it delegated to is working (/writer, /eng, /far). Try again when it has finished, or stop it first." });
     expect(f.perform).not.toHaveBeenCalled();
     expect(f.runDeleted).not.toHaveBeenCalled();
+    expect(f.sweep).not.toHaveBeenCalled();
   });
 
   it("a stopped child does not block; a delete tells the tree before the files go; an archive keeps the tree", async () => {
@@ -57,9 +59,12 @@ describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067
     f.statuses.writer = null; f.statuses.eng = "offline";
     f.perform.mockImplementation(async () => { expect(f.runDeleted).toHaveBeenCalledWith(MANAGER); return { success: true, message: "Deleted." }; });
     await expect(f.guard.guard(MANAGER, "deleted", f.perform)).resolves.toEqual({ success: true, message: "Deleted." });
+    // autobyteus-587 RF-10: after the committed delete, the node's received files are swept; an archive sweeps nothing.
+    expect(f.sweep).toHaveBeenCalledOnce();
     f.runDeleted.mockClear();
     await f.guard.guard(MANAGER, "archived", async () => ({ success: true, message: "Archived." }));
     expect(f.runDeleted).not.toHaveBeenCalled();
+    expect(f.sweep).toHaveBeenCalledOnce();
   });
 
   it("a peer run whose node does not answer does not block; the result names it as not asked", async () => {

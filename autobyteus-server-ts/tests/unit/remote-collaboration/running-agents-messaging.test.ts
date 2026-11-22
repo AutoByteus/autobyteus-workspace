@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
 import { testTaskSide } from "../../helpers/task-side-binding.js";
+import { inProcessPeerFiles, peerFilesRequest } from "../../helpers/in-process-peer-files.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -27,6 +28,7 @@ import { buildAgentRunMessageSenderContext } from "../../../src/agent-communicat
 import { RunningAgents } from "../../../src/agent-collaboration/running/running-agents.js";
 import { RunningAgentsListing } from "../../../src/agent-collaboration/running/running-agents-listing.js";
 import { listRunningAgentsFor } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
+import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 
 /**
  * autobyteus-492 in one process, two nodes (only HTTP and the runtimes replaced): real standalone roots and their logs,
@@ -80,7 +82,8 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   directories.push(memoryDir);
   const metadata = new Map<string, AgentRunMetadata>();
   const runs = new Map<string, FakeRun>();
-  const runOf = (runId: string) => { let run = runs.get(runId); if (!run) { run = fakeRun(runId); runs.set(runId, run); } return run; };
+  // autobyteus-587: a run's own folder, where its received files land (its configured memory folder).
+  const runOf = (runId: string) => { let run = runs.get(runId); if (!run) { run = Object.assign(fakeRun(runId), { config: { get memoryDir() { return metadata.get(runId)?.memoryDir ?? null; } } }); runs.set(runId, run); } return run; };
   const resources = new InMemoryTaskExecutionResources();
   const peerDirectory = {
     findByName: async (name: string) => input.peers.find((peer) => peer.name === name) ?? null,
@@ -96,15 +99,18 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
       if (!gateway) throw new TypeError("fetch failed");
       const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
       requests.push(route);
-      const body = JSON.parse(String(init.body));
       const caller = peerCallerOf(init.headers);
+      const files = await peerFilesRequest(gateway, url, init, caller);
+      if (files) return { ok: files.status === 200, status: files.status, json: async () => structuredClone(files.answer) };
+      const body = JSON.parse(String(init.body));
       const response = route === "run-messages" ? await gateway.deliverRunMessage(body, caller)
         : route === "running-agents" ? await gateway.listRunningAgents(body, caller)
           : route === "messages" ? await gateway.deliverMessage(body, caller) : await gateway.checkAvailability(body, caller);
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
   });
-  const taskSide = testTaskSide(resources, () => client);
+  const peerFiles = inProcessPeerFiles({ dataDir: memoryDir, memoryDir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
+  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.outgoingFiles });
   const views = testViewStreams();
   const viewPublications = vi.spyOn(views.messages, "publish");
   const directory = new ActiveCollaborationRootDirectory();
@@ -119,7 +125,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
       terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
-    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client },
+    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client, receivedFiles: peerFiles.receivedFiles },
   });
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => definitions, listTeamDefinitions: async () => [], isAgentHidden: () => false,
@@ -144,15 +150,16 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     runningAgents, activeReceiverRoot: (run) => activeRoot(run),
   });
   const router = new GlobalAgentRunMessageRouter({ crossRun, coordinators: taskSide.tree, channel: () => client, activeRootDirectory: directory,
+    nodes: new PeerRunNodes({ activeRoots: directory, tree: () => taskSide.tree, channel: () => client }), outgoing: peerFiles.outgoingFiles,
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
-    ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory,
+    ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
     delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, runAgents: () => manager.runAgents,
       liveRoot: (run) => activeRoot(run),
-    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, { openedBy: async () => undefined }),
+    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, { openedBy: async () => undefined }, peerFiles.receivedFiles),
     runningAgents: { list: async () => ({ accepted: true as const, agents: await listing.list({ caller: null }) }) },
   }));
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => input.peers }, client });
@@ -166,15 +173,15 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   };
   const identity = (runId: string) => createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(runId), memberAddress: PM_ADDRESS as never, agentRunId: runId });
   /** `send_message_to(target_agent_run_id, node?)` from the PM run `from`, as the dispatcher hands it to the router. */
-  const send = (from: string, target: string, content: string, node?: string) => router.deliver({
+  const send = (from: string, target: string, content: string, node?: string, referenceFiles?: string[]) => router.deliver({
     sender: buildAgentRunMessageSenderContext({ senderRunId: from, senderName: "project_task_manager", runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberExecutionContext: { identity: identity(from) } as never }),
-    targetAgentRunId: target, content, ...(node ? { node } : {}) });
+    targetAgentRunId: target, content, ...(node ? { node } : {}), ...(referenceFiles ? { referenceFiles } : {}) });
   const list = (from: string, args: Record<string, unknown> = {}) => listRunningAgentsFor({ identity: identity(from), collaboration: { listAvailableAgents: vi.fn() } } as never,
     args, discovery, { listing: () => listing });
   const log = (runId: string) => manager.getActive(runId)!.getCommunicationSnapshot().messages.map((message) =>
     `${message.senderAgentRunId}->${message.receiverAgentRunId}:${message.content}`);
-  return { runOf, startPm, send, list, log, activateHost, viewPublications, requests, manager };
+  return { runOf, startPm, send, list, log, activateHost, viewPublications, requests, manager, memoryDir };
 };
 
 const twoNodes = async () => {
@@ -247,6 +254,26 @@ describe("the run ID is the address (autobyteus-492), in process", () => {
       [publication.relation, publication.message.senderAgentRunId, publication.parties.sender.nodeName, publication.parties.receiver.nodeName]);
     expect(remotePublications(a)).toEqual([["remote", "pm_a1", null, "docker"], ["remote", "pm_b", "docker", null]]);
     expect(remotePublications(b)).toEqual([["remote", "pm_a1", "desktop", null], ["remote", "pm_b", null, "desktop"]]);
+  });
+
+  it("autobyteus-587 AC-001 (RF-1, RF-7): two PMs no Task links send each other files with node; each lands in the receiver's own folder under the sender's run ID", async () => {
+    const { a, b } = await twoNodes();
+    const workA = path.join(a.memoryDir, "work_a1");
+    await fs.mkdir(workA, { recursive: true });
+    await a.startPm("pm_a1", workA);
+    await b.startPm("pm_b", "/srv/work");
+    const plan = path.join(workA, "release-plan.md");
+    await fs.writeFile(plan, "# Release plan");
+    await expect(a.send("pm_a1", "pm_b", "The plan is attached.", "docker", [plan])).resolves.toMatchObject({ accepted: true, filesSent: 1,
+      message: 'Delivered message to pm_b on node "docker".' });
+    expect(a.requests).toEqual(["received-files/status", expect.stringMatching(/^received-files\/[0-9a-f]{64}\?/), "run-messages"]);
+    const onB = path.join(b.memoryDir, "agents", "pm_b", "received_files", "pm_a1", "release-plan.md");
+    await expect(fs.readFile(onB, "utf8")).resolves.toBe("# Release plan");
+    expect(b.runOf("pm_b").received.join("\n")).toContain(onB);
+    // The same content again: the node holds it, so only the status is asked (RF-11).
+    a.requests.length = 0;
+    await expect(a.send("pm_a1", "pm_b", "Same plan, once more.", "docker", [plan])).resolves.toMatchObject({ accepted: true, filesSent: 1 });
+    expect(a.requests).toEqual(["received-files/status", "run-messages"]);
   });
 
   it("entry-form row 8: a run ID that does not run on the peer is refused with this node's name for it; the peer wakes nothing; nothing is logged", async () => {

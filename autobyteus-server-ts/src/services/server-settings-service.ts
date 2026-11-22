@@ -42,6 +42,10 @@ import {
   normalizeContextFileOtherMaxMbForPersistence,
 } from "../config/context-file-size-limit-settings.js";
 import {
+  normalizeReceivedFileMaxMbForPersistence,
+  RECEIVED_FILE_MAX_MB_SETTING_KEY,
+} from "../config/received-file-size-limit-setting.js";
+import {
   normalizeShowInternalAgentsForPersistence,
   SHOW_INTERNAL_AGENTS_SETTING_KEY,
 } from "../config/show-internal-agents-setting.js";
@@ -226,6 +230,13 @@ export class ServerSettingsService {
       "Largest image, document or other non-audio/video file a user can attach, in MiB. Applies to the next upload. Default: 25; allowed range 1 to 1024.",
       true,
       { normalizeForPersistence: normalizeContextFileOtherMaxMbForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      RECEIVED_FILE_MAX_MB_SETTING_KEY,
+      "Largest file this node accepts from another node with a message or delegation, in MiB. Applies to the next file. Default: 2048 (2 GiB); allowed range 1 to 4096.",
+      true,
+      { normalizeForPersistence: normalizeReceivedFileMaxMbForPersistence },
     );
 
     this.registerPredefinedSetting(

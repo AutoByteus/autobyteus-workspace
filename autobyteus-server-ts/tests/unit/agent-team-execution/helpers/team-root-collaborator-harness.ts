@@ -26,7 +26,8 @@ import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { testTaskSide } from "../../../helpers/task-side-binding.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
+import { AgentRunMemoryLocator } from "../../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -87,7 +88,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
       ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
     ],
   });
-  const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL,
+  const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
     config,
     tree: { ...buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }), ...(options.delegatedFrom ? { delegatedFrom: options.delegatedFrom } : {}) },
     messages: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: ROOT, messages: Object.freeze([]) }),
@@ -96,7 +97,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
     const messages = (await dependencies.communicationStore.readLog(teamMemoryDir, ROOT))!;
-    return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL,
+    return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,
     });

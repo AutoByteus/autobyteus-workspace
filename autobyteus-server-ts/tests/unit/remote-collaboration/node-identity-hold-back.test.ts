@@ -19,6 +19,7 @@ import {
   resetNodeIdentityServiceForTests,
 } from "../../../src/remote-access/services/node-identity-service.js";
 import { registerRemoteAccessRoutes } from "../../../src/api/rest/remote-access.js";
+import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-290 § Hold-back chains, `node_identity` (SM-1), N-910: while this node's identity waits for its data
@@ -56,7 +57,7 @@ describe("this node's identity held back", () => {
 
   it("the gateway answers inbound requests 503 with the code and dispatches nothing", async () => {
     const delegatedRuns = { start: vi.fn() };
-    const gate = new PeerGateway({
+    const gate = new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
       ownNodeId: pending, capability: { isEnabled: () => true }, peers,
       delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runningAgents: { list: vi.fn() } as never, runViews: {} as never, delegatedRunStates: {} as never,
     });
@@ -84,6 +85,7 @@ describe("this node's identity held back", () => {
       ownNodeId: pending,
       tempWorkspaceDir: dir,
       runsInContainer: () => false,
+      receivedFiles: NO_FILES_RECEIVED,
       handlers: () => ({ delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never }),
     });
     vi.spyOn(services.client, "fetchNodeId").mockResolvedValue(PEER.nodeId);

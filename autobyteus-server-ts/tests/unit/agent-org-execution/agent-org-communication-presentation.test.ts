@@ -18,7 +18,7 @@ import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/commun
 import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: true }>;
 
@@ -74,7 +74,7 @@ const createSubject = (options: Readonly<{
     return value;
   }
   const reserveRootAgentInput = vi.fn(async (agentRunId: string): Promise<AgentRunInputReservationResult> => reservation(agentRunId));
-  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     root,
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

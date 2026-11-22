@@ -5,7 +5,7 @@ import type { RootExecutionIdentity } from "../../../src/agent-collaboration/exe
 
 const boundary = (members: readonly string[]) => ({
   hasAgentExecution: (id: string) => members.includes(id),
-  ownsAgentRun: (id: string) => members.includes(id),
+  remoteNodeOf: () => null, ownsAgentRun: (id: string) => members.includes(id),
   deliverExactAgentMessage: vi.fn(),
   deliverToPeerRun: vi.fn(),
 });

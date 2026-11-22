@@ -1,5 +1,6 @@
 import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
@@ -45,7 +46,7 @@ import { teamRunRemoteLinks } from "./team-run-remote-links.js";
 import { DelegatedTeamIdleShutdown } from "../services/delegated-team-idle-shutdown.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
-import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
@@ -118,6 +119,9 @@ export class RootTeamRun {
     changeNotices: Pick<TeamChangeNoticeSource, "recordChange">;
     /** The host's channel to peer nodes (autobyteus-500 FU-011). */
     remoteChannel: RemoteRunChannelAccess;
+    /** The host's file transfer between nodes (autobyteus-587). */
+    /** The node's received files, placed into a member's folder (autobyteus-587). */
+    receivedFiles: ReceivedFilesPlacement;
     /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
     closedTasks: Pick<ClosedTaskFence, "refusal">;
     memoryLocator?: AgentRunMemoryLocator;
@@ -150,6 +154,9 @@ export class RootTeamRun {
       messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || (!this.index.getAgent(agentRunId)
         && !this.index.formerMemberByRunId(agentRunId)) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
+      // autobyteus-587: files from another node land in the receiving member's own folder.
+      receivedFilesFor: async (receiver, senderAgentRunId, files) => options.receivedFiles.planFor({
+        agentFolder: await this.memberFolderOf(receiver.agentRunId), senderAgentRunId, files }),
       commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
       messageFeed: options.messageFeed,
@@ -170,6 +177,8 @@ export class RootTeamRun {
       isLiveAgent: (agentRunId) => this.members.isLiveAgent(agentRunId),
       remoteLinks: this.remoteLinks,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
+      receivedFiles: options.receivedFiles,
+      memberFolderOf: (agentRunId) => this.memberFolderOf(agentRunId),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -228,6 +237,8 @@ export class RootTeamRun {
   }
   /** Run-ID routing (CR-001): also a member that left (leaving or former), so this root answers it by name. */
   ownsAgentRun(agentRunId: string): boolean { return this.hasAgentExecution(agentRunId) || this.index.formerMemberByRunId(agentRunId.trim()) !== null; }
+  /** autobyteus-587 RF-14: the peer node this root links the run on (`PeerRunNodes`). */
+  remoteNodeOf(agentRunId: string): string | null { return this.remoteLinks.endpointFor(agentRunId.trim())?.reference.nodeId ?? null; }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
   }
@@ -309,7 +320,7 @@ export class RootTeamRun {
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.delivery.deliverToRunId(input)));
+    return this.materializationGate.run(() => this.delivery.deliverToRunId(input));
   }
 
   /** autobyteus-492 DS-004: to an agent of a peer node by its run ID. */
@@ -468,6 +479,12 @@ export class RootTeamRun {
 
   private assertAdmitting(): void {
     if (!this.isAdmitting()) throw new Error(`RootTeamRun '${this.teamRunId}' is not accepting operations.`);
+  }
+
+  /** A member's own folder (its memory; autobyteus-587: where files from another node land), by its team's placement. */
+  private async memberFolderOf(agentRunId: string): Promise<string> {
+    const teamRun = await this.requireContainingTeamRun(agentRunId);
+    return (this.options.memoryLocator ?? new AgentRunMemoryLocator()).getMemoryDir(teamRun.context.memberMemoryPlacement, agentRunId);
   }
 
   private async requireTeamRun(teamRunId: string): Promise<TeamRun> {

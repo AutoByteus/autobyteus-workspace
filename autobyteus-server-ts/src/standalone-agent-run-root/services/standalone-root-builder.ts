@@ -1,4 +1,5 @@
 import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
@@ -27,6 +28,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   /** This node's channel to peer nodes; the process channel when not given. */
   /** The host's channel to peer nodes (autobyteus-500 FU-011). */
   remoteChannel: RemoteRunChannelAccess;
+  /** autobyteus-587: the node's received files, placed for the run's agent. */
+  receivedFiles: ReceivedFilesPlacement;
 }>;
 
 /** Builds one standalone root (its agent's handle, its own log's persistence, its event publisher) around its stored log. */
@@ -72,6 +75,7 @@ export class StandaloneRootBuilder {
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       delegatedFrom: input.delegatedFrom,
       remoteChannel: this.dependencies.remoteChannel,
+      receivedFiles: this.dependencies.receivedFiles,
       agentRunManager: this.dependencies.agentRunManager,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });

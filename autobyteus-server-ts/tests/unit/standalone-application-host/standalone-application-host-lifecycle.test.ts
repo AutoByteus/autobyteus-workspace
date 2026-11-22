@@ -1,5 +1,6 @@
 const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { OutgoingFiles } from "../../../src/agent-collaboration/execution/remote/outgoing-files.js";
 
 const TOKEN_MIGRATION_ID = "token-usage-v1";
 const TEAM_MIGRATION_ID = "team-run-v1";
@@ -333,6 +334,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       runPasses: null,
       remoteChannel: expect.any(Function),
       peerDiscovery: expect.any(Function),
+      // autobyteus-587 (CR-587-07): the node's received files, placed by the roots and swept after a history delete.
+      receivedFiles: expect.objectContaining({ planFor: expect.any(Function), sweep: expect.any(Function) }),
       modelSelectionValidator: expect.anything(),
       taskRecords: expect.objectContaining({ isOpen: expect.any(Function), statusChanged: expect.any(Function) }),
       delegationIndex: expect.objectContaining({ openChildrenOf: expect.any(Function), parentOf: expect.any(Function) }),
@@ -350,6 +353,12 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory",
       runs: mocks.createGeneralProcessRunSupervisor.mock.results[0]!.value }));
     expect((composeCollaboration.mock.calls[0] as unknown as [{ remoteChannel: () => unknown }])[0].remoteChannel()).toBeNull();
+    // autobyteus-587 (CR-587-07, CR-587-09): one received-files owner for the host, the supervisor's (its roots place files,
+    // its history delete sweeps them) and the platform runtime's; the collaboration gets the outgoing files (the router's
+    // node path and the delegation upload them).
+    const supervisorFiles = (mocks.createGeneralProcessRunSupervisor.mock.calls[0] as unknown as [{ receivedFiles: unknown }])[0].receivedFiles;
+    expect((mocks.buildApplicationPlatformRuntime.mock.calls[0] as unknown as [{ receivedFiles: unknown }])[0].receivedFiles).toBe(supervisorFiles);
+    expect((composeCollaboration.mock.calls[0] as unknown as [{ outgoingFiles: unknown }])[0].outgoingFiles).toBeInstanceOf(OutgoingFiles);
     // autobyteus-493: created for the host's memory folder before step 3, given to steps 3–8, started after step 8.
     expect(createEpisodicCatalog).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory" }));
     expect(createEpisodicCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0]!);

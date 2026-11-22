@@ -17,4 +17,6 @@ export interface AgentOperationResult {
   displayName?: string | null;
   /** The receiving agent's address in its own run, when a run accepts a message from another run or node (autobyteus-565). */
   agentAddress?: string | null;
+  /** How many reference files a message to another node carried, copied there (autobyteus-587 RF-6); absent for none. */
+  filesSent?: number;
 }

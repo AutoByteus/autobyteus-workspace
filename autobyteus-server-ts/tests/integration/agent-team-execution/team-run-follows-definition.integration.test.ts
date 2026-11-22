@@ -21,7 +21,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { testAgentNode, testMemberExecutionContext, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_OUTGOING_FILES, NO_PEER_CHANNEL, NO_PEER_RUN_PORTS } from "../../helpers/explicit-host-collaborators.js";
 import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 
@@ -93,7 +93,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
       membershipPlanner: planner, changeNotices: new TeamChangeNoticeSource(),
       delegationIndex, viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir,
       flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory, modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL,
+      activeRootDirectory, modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     });
     const config = testTeamRunConfig({
       rootTeamRunId: "team_1", rootTeamDefinitionId: "team-root", coordinatorAddress: "/lead",
@@ -131,7 +131,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     expect(root.getExecutionTreeSnapshot().rootTeam.formerMembers).toEqual([expect.objectContaining({ agentRunId: "writer_1", leaving: true })]);
     expect(membership().stateOf("writer_1")).toBe("leaving");
     const leadContext = testMemberExecutionContext({ rootTeamRunId: "team_1", memberAddress: "/lead", agentRunId: "lead_1" });
-    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, channel: () => null,
+    const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, nodes: NO_PEER_RUN_PORTS.nodes, outgoing: NO_OUTGOING_FILES, channel: () => null,
       coordinators: { teamCoordinatorOf: async () => null }, agentRunManager: { getActiveRun: () => null } as never, activeRootDirectory });
     const sender = buildAgentRunMessageSenderContext({ senderRunId: "lead_1", senderName: "lead", runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext: leadContext });
     const refusal = { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND",
@@ -170,7 +170,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     const managerWith = (flat: FlatTeamExecutionFactory, changeNotices: TeamChangeNoticeSource) => new AgentTeamRunManager({
       membershipPlanner: planner, changeNotices, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir,
       flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     });
     const first = factory();
     const config = testTeamRunConfig({
@@ -213,7 +213,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     const managerWith = (flat: FlatTeamExecutionFactory) => new AgentTeamRunManager({
       membershipPlanner: planner, changeNotices: new TeamChangeNoticeSource(), delegationIndex: noDelegations(), viewStreams: testViewStreams(),
       taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     });
     const first = factory();
     const firstManager = managerWith(first.factory);

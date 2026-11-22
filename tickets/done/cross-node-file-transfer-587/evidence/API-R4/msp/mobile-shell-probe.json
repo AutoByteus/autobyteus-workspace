@@ -1,0 +1,148 @@
+{
+  "startedAt": "2026-11-21T18:32:04.278Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 56349,
+      "nodeId": "srv_x7jtk4547IvCnMNH5jYu77abLhXyDvp0",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 56348,
+      "nodeId": "srv_ZpPG_TFv1XrtsrfYvjVUVqjerwnwuHvN",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_a4bd268a19ea49ee959e89f2d5e2eabb",
+    "writerRun": "release_notes_writer_71e75a4d73f84c2e85148341836d4173",
+    "squadRun": "docs_review_team_e63fe7cf310e4000859e8d477eb1ab49",
+    "reviewer": "release_notes_writer_53a3a23d59244ff59342a6c71a905d1c",
+    "memberDelegated": "fact_checker_6f9927ef493b4e99bb70d2fafdc52769",
+    "remoteAgentRun": "publisher_163c6b7fb11948798d2615a09d5931d6",
+    "remoteTeamRun": "studio_team_e190d109c89843799cd84d1128bc6592",
+    "plain": [
+      "fact_checker_9830c7b455044d4bb827cce6e4f7d31a",
+      "fact_checker_46830783b25247d5a18ffb56eb568419",
+      "fact_checker_3e16418a14a24206b66cb5d4cb5b2609"
+    ],
+    "org": "delivery_org_d0e944aab6d94c42a280a226b88466f8",
+    "orgPlanner": "release_notes_writer_8648da5f6d714798a8ae6d2d6b20689d",
+    "reviewOrg": "review_org_2c659200117847f9b4e7982f55aa7fb7",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_14fc933befa844cd8a2e93911a95e4fc",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_b7912682abaa458b944069b8bac90780",
+    "deliveryLead": "fact_checker_10fd626cdd4d4ae5a93823e185b55bd0",
+    "deliveryMate": "release_notes_writer_a42324f53c8f4c80adf912dba30f0389",
+    "leadDelegated": "changelog_helper_887c34f621fe452a938a5ed99aca7295",
+    "approver": "approver_e458099ff209417eb6546e1cbe800d74",
+    "taskA": "launch-3e9349-1",
+    "taskB": "launch-3e9349-2"
+  },
+  "cases": {
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 13.7,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ],
+        [
+          "mobile-run-menu-settings",
+          "Settings"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 21, 06:32 PM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Messages",
+        "Activity",
+        "Settings"
+      ],
+      "plainFirst": 50,
+      "plainMoreShown": true,
+      "plainRows": [
+        {
+          "text": "To publisherbeta-nodeNov 21, 06:32 PMPEER-NOTE-565 to beta.",
+          "chip": "beta-node"
+        },
+        {
+          "text": "From fact checkerNov 21, 06:32 PMPLAIN-NOTE-565 from a local run.",
+          "chip": null
+        }
+      ],
+      "rowCount": 57,
+      "toPeer": "{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"accepted\\\\\\\":true,\\\\\\\"code\\\\\\\":\\\\\\\"DELIVERED\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"Delivered message to publisher_163c6b7fb11948798d2615a09d5931d6 on node \\\\\\\\\\\\\\\"beta-node\\\\\\\\\\\\\\\".\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"publisher_163c6b7fb11948798d2615a09d5931d6\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Delivered message to publisher_163c6b7fb11948798d2615a09d5931d6 on node \\\\\\\"beta-node\\\\\\\".\\\",\\\"target_agent_run_id\\\":\\\"publisher_163c6b7fb11948798d2615a09d5931d6\\\"}}\",\"media\":null,\"ts\":1795285964.961}]",
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-08": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-21T18:32:54.178Z"
+}

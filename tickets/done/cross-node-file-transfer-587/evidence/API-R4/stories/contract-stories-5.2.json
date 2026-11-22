@@ -1,0 +1,266 @@
+{
+ "report": [
+  {
+   "state": "U0",
+   "cases": [
+    "RUN-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing"
+   ]
+  },
+  {
+   "state": "U1",
+   "cases": [
+    "IN-1",
+    "IN-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing"
+   ]
+  },
+  {
+   "state": "U2",
+   "cases": [
+    "IN-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing"
+   ]
+  },
+  {
+   "state": "U3",
+   "cases": [
+    "DL-2"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "U4",
+   "cases": [
+    "B-3"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "U5",
+   "cases": [
+    "DL-6"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "U6",
+   "cases": [
+    "DL-11"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "U7",
+   "cases": [
+    "DL-11"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "refusal: expected code COLLABORATION_TARGET_NOT_FOUND, got {\"delegated\":false,\"message\":\"'/software_engineering_team' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\",\"isError\":false}"
+   ]
+  },
+  {
+   "state": "U8",
+   "cases": [
+    "DL-8"
+   ],
+   "diffs": [],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.projectId: missing",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.title: missing",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.status: expected \"IN_PROGRESS\", got \"TODO\"",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.referenceFiles: not in the contract ([])",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:56:52.522Z\")",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:56:52.522Z\")",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  },
+  {
+   "state": "U9",
+   "cases": [
+    "R-7"
+   ],
+   "diffs": [
+    "A:memory/agents/image_maker_44a1/communication_messages_active.jsonl[1].counterpart: not in the contract ({\"address\":\"/research_agent\",\"nodeId\":null})",
+    "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl[0].counterpart: not in the contract ({\"address\":\"/image_maker\",\"nodeId\":null})"
+   ],
+   "known": [
+    "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json.schemaVersion: missing",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:54:17.942Z\")",
+    "A:memory/agents/image_maker_44a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:55:19.941Z\")",
+    "A:memory/agents/upscaler_55b2/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.projectId: missing",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.title: missing",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.status: expected \"IN_PROGRESS\", got \"TODO\"",
+    "A:ad-hoc-tasks/adhoc_task_91a1/task.json.referenceFiles: not in the contract ([])",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.llmConfig: expected an object, got null",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.preparedAt: not in the contract (\"2026-11-21T18:56:52.522Z\")",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-22T18:56:52.522Z\")",
+    "A:memory/agents/research_agent_8f80/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+   ]
+  }
+ ],
+ "knownDifferences": [
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.schemaVersion: missing$/",
+   "reason": "The team run file has had no schemaVersion since before autobyteus-461 (base 827f1e68dc reads it tolerantly and writes the current shape without it); the contract's §6 example carries it. The shape is unchanged by this ticket."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.(preparedAt|preparedExpiresAt|applicationExecutionContext): not in the contract/",
+   "reason": "Contract §3.2: a delegated run's own file is 'the ordinary file of its kind, plus delegatedFrom'. These ordinary run_metadata fields exist since before autobyteus-461 (base 827f1e68dc writes them on every run); the §3.2 example lists the collaboration fields only."
+  },
+  {
+   "pattern": "/ad-hoc-tasks\\/[^/]+\\/task\\.json\\.(projectId: missing|title: missing|referenceFiles: not in the contract|status: expected \"IN_PROGRESS\", got \"TODO\")/",
+   "reason": "REQ-005 keeps the Task rules unchanged and the contract text does not define the ad-hoc task.json; the product keeps base 827f1e68dc's shape ({taskId, description, referenceFiles, status TODO, createdAt, updatedAt}). The model (model.py line 358) writes its own approximation."
+  },
+  {
+   "pattern": "/run_metadata\\.json\\.llmConfig: expected an object, got null$/",
+   "reason": "A launch keeps only the settings its model declares (launch-usability-check.ts canonicalLaunch, before autobyteus-461); the scripted AGY model declares none, so a default launch's llmConfig is stored as null. The model writes an open object."
+  },
+  {
+   "pattern": "/agent_org_run_execution_tree\\.json\\.rootOrg(\\.members\\[\\d+\\])+\\.(role|description|platformAgentRunId|defaultLaunchConfiguration): not in the contract/",
+   "reason": "An org file's members carry the ordinary configured-member fields (role, description, platformAgentRunId; a mounted team's defaultLaunchConfiguration) since before autobyteus-461 (base run-execution-tree-shared-record-schemas.ts); the model's org file lists the collaboration fields only (its team file has them as open values)."
+  },
+  {
+   "pattern": "/^refusal: expected the text \"No agent or agent team you can talk with has the address \\/dev_team\\/[a-z_]+\\. .*got \\{\"accepted\":false,\"code\":\"COLLABORATION_TARGET_NOT_FOUND\",\"message\":\"Collaboration target '\\/dev_team\\/[a-z_]+' is not a member of your team instance '\\/dev_team'\\.\"/",
+   "reason": "Contract §2.3 / C-4: a miss returns COLLABORATION_TARGET_NOT_FOUND 'with today's guidance'. A miss under a mounted team's prefix keeps base 827f1e68dc's text (message-recipient-resolution.ts:74); the model writes one text for every miss."
+  },
+  {
+   "pattern": "/team_run_execution_tree\\.json\\.rootTeam\\.(members\\[\\d+\\]\\.launchSource|defaultLaunchSource): not in the contract/",
+   "reason": "A delegated team run's own file records where each launch came from: design-spec DS-10 (E6 row) and the DelegatedRunStarter ('its resolved launch, address and launchSource') name rootTeam.defaultLaunchSource and the members' launchSource; the contract's §3.2 team example omits them."
+  },
+  {
+   "pattern": "/^result\\[0\\]\\.message: expected \"Message delivered\\.\", got \"Message delivered\\. (\\S+) continues with its conversation\\.\"$/",
+   "reason": "Today's text when a message by run ID continues the run of a reopened Task is the run-ID text followed by 'X continues with its conversation.': base 827f1e68dc root-task-execution-lifecycle.ts:301 appends it to the delivery's message, which by run ID on this node is 'Message delivered.' (contract §2, SR-054); kept in cross-run-message-delivery.ts:105; the update_task description names it. The product keeps it (REQ-009); the model writes the plain run-ID text. A contract-model note, not a product difference. (Round 2 quoted 'Delivered message to X. …', the text F-6 had changed.)"
+  },
+  {
+   "pattern": "/team_run_history_index\\.json\\[software_engineering_team_0218\\]\\.terminatedAt: expected a string like/",
+   "reason": "The model lets an agent of a stopped run make a call (S23, S24: solution_designer_65a9 while E is stopped). A real agent acts only on input: the test drives the call by the user's message to it on E's view, which restores E (REQ-003, SR-048), so E's row is active (terminatedAt null)."
+  },
+  {
+   "pattern": "/^B:memory\\/team_run_history_index\\.json\\[research_team_77aa\\]\\.workspaceRootPath: expected \"[^\"]*\\/story-5\\.1-A\\/workspace\", got \"[^\"]*\\/story-5\\.1-B\\/temp_workspace\"$/",
+   "reason": "A run a peer starts runs in a folder of its own node (node B's temporary workspace); the delegator's folder is a path on node A. Unchanged by autobyteus-461 (the peer start path). The model gives B's row A's folder. A contract-model note."
+  },
+  {
+   "pattern": "/^refusal: expected code [A-Z_]+, got \\{\"delegated\":false,\"message\":/",
+   "reason": "A refused delegate_task returns {delegated:false, message} with no code since before autobyteus-461 (task-delegation-result-contract.ts); the agent sees the message, which is compared in full. The model names the code of the rule that refuses."
+  }
+ ],
+ "bindings": {
+  "student": "student",
+  "tutor": "tutor",
+  "Teacher": "Teacher",
+  "project-task-manager": "project-task-manager",
+  "image-maker": "image-maker",
+  "research-agent": "research-agent",
+  "upscaler": "upscaler",
+  "release-agent": "release-agent",
+  "solution-designer": "solution-designer",
+  "architecture-reviewer": "architecture-reviewer",
+  "implementation-engineer": "implementation-engineer",
+  "code-reviewer": "code-reviewer",
+  "product-designer": "product-designer",
+  "prototyper": "prototyper",
+  "lead": "lead",
+  "analyst": "analyst",
+  "ceo-agent": "ceo-agent",
+  "cto": "cto",
+  "dev-lead": "dev-lead",
+  "qa": "qa",
+  "software-engineering-team": "software-engineering-team",
+  "product-team": "product-team",
+  "research-team": "research-team",
+  "dev-team": "dev-team",
+  "company-org": "company-org",
+  "/Users/me/projects/x": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-8efDCM/story-5.2-A/workspace",
+  "project_8f21": "project_7b380573-070a-4a31-8c09-259191d8621c",
+  "project_task_3c3c": "project_task_43c30caa-2466-4aa5-950e-1561871e9f84",
+  "demo-3": "demo-1",
+  "project_task_8d8d": "project_task_ce7f6fbd-b968-4dcb-ba5e-eee4e1498f7d",
+  "demo-8": "demo-2",
+  "software_engineering_team_73d7": "software_engineering_team_f5143aa3cc474270bc175d6705c7afbd",
+  "solution_designer_7a33": "solution_designer_2cde1387bca24400985acf8a5dda91b3",
+  "architecture_reviewer_cd34": "architecture_reviewer_beb6efd3557744a9abfbc43b29501d10",
+  "implementation_engineer_864a": "implementation_engineer_3f962edf457145e29e99109a9eb9bd69",
+  "code_reviewer_2e4f": "code_reviewer_c85b2a1407d7420c9246718c19f2b801",
+  "collabmsg_U1": "collabmsg_2WH2x73XaDWAFmPxcl8zFp92ZQ74uz3D",
+  "collabmsg_U2": "collabmsg_o8SS4UGpZJIbTYlSPB3CciFCUXAefm5B",
+  "image_maker_44a1": "image_maker_88e82a47d1dc44a4b8a3b0f46c5a53f7",
+  "collabmsg_U3": "collabmsg_dDbnXuWPszhID6qMoNQnv4M-X1ItFOne",
+  "upscaler_55b2": "upscaler_5d0f21558954452e8616f9ae73cc49df",
+  "research_agent_8f80": "research_agent_6eb0d4c1d5c142bc945e50a214329e4b",
+  "adhoc_task_91a1": "ad_hoc_task_bb9a8dcc-8d88-47c3-8028-e2670ae2c1e7",
+  "collabmsg_U9": "collabmsg_ofOFkXFaEpGcXm9vCnCvUZAVEUZz5W69"
+ },
+ "failureLogs": {}
+}
