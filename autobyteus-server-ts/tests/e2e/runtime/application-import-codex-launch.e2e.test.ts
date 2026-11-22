@@ -102,9 +102,8 @@ describe("Codex-default application imported while the server runs (real studio 
     // The Application's drafting run is still live: closing the server stops it.
     await fastify?.close();
     sources?.restore();
-    // Let clients that were still starting finish before their commands are removed.
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    fake.dispose();
+    // Clients that were still starting are stopped and awaited before their commands are removed (autobyteus-579 I-5).
+    await fake.dispose();
   }, 120_000);
 
   it("IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)", async () => {

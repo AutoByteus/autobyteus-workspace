@@ -1,4 +1,5 @@
 import { testLaunchCredential } from "../../setup/test-launch-credential.js";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -40,14 +41,49 @@ export const prepareFakeRuntimes = (input: Readonly<{ label: string; grokInstall
   process.env.CLAUDE_CONFIG_DIR = path.join(stateDir, "claude-config");
   return {
     root, binDir, stateDir, dataDir,
-    /** Restores the overrides and removes the temp root. */
-    dispose: () => {
+    /**
+     * Restores the overrides and removes the temp root, once no fake that the server started still writes into it
+     * (autobyteus-579 I-5): a sign-in or a hung call can outlive the server, and removing a folder it writes into fails
+     * with ENOTEMPTY. Such fakes are stopped (SIGKILL: `grok login` ignores SIGTERM) and their exit awaited first.
+     */
+    dispose: async () => {
       for (const [key, value] of Object.entries(previous)) {
         if (value === undefined) delete process.env[key]; else process.env[key] = value;
       }
+      await stopFakeRuntimeProcesses(stateDir, binDir);
       fs.rmSync(root, { recursive: true, force: true });
     },
   };
+};
+
+const FAKE_EXIT_WAIT_MS = 10_000;
+
+/**
+ * Every fake runtime process still running: the pids of `cli-calls.log` (every call records its own) whose command line
+ * still names this test's `bin` folder, so a pid the OS has since given to another process is never touched.
+ */
+const runningFakeRuntimeProcesses = (stateDir: string, binDir: string): number[] => {
+  let calls = "";
+  try { calls = fs.readFileSync(path.join(stateDir, "cli-calls.log"), "utf8"); } catch { return []; }
+  const pids = [...new Set(calls.split("\n").map((line) => Number(line.split(" ")[1])).filter((pid) => Number.isInteger(pid) && pid > 0))];
+  return pids.filter((pid) => {
+    const command = spawnSync("ps", ["-o", "command=", "-p", String(pid)], { encoding: "utf8" }).stdout ?? "";
+    return command.includes(`${binDir}${path.sep}`);
+  });
+};
+
+/** Stops the fakes that still run and waits until every one has exited; a fake that will not exit fails the cleanup. */
+export const stopFakeRuntimeProcesses = async (stateDir: string, binDir: string): Promise<void> => {
+  for (const pid of runningFakeRuntimeProcesses(stateDir, binDir)) {
+    try { process.kill(pid, "SIGKILL"); } catch { /* it exited meanwhile */ }
+  }
+  const deadline = Date.now() + FAKE_EXIT_WAIT_MS;
+  for (;;) {
+    const running = runningFakeRuntimeProcesses(stateDir, binDir);
+    if (!running.length) return;
+    if (Date.now() > deadline) throw new Error(`Fake runtime processes still running after ${FAKE_EXIT_WAIT_MS} ms: ${running.join(", ")}`);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
 };
 
 export const fakeRuntimeState = (stateDir: string) => ({
