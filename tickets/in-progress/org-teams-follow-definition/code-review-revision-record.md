@@ -13,6 +13,7 @@
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-005 complete | Fail | Pass | F-5 |
 | CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 passed | N/A | Pass | None |
 | CRR-009 | `code-review-report.md` | Implementation Review / IR-006 complete | Pass (CRR-007) | Fail | CR-008, CR-009 |
+| CRR-010 | `code-review-report.md` | Implementation Review / IR-007 complete | Fail | Fail | CR-008, CR-009 |
 
 ## Revision Entries
 
@@ -305,3 +306,34 @@ None (first test review).
 - Material score or classification changes: average 9.2; Runtime Correctness 8.6, API/E2E Readiness 8.8; Large/High preserved
 - Recommended recipient: Implementation engineer
 - Remaining risks or uncertainty: cost measured with assumed node sizes; FU-001.
+
+### CRR-010: Targeted delta review of IR-007
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md` (§ IR-007 Delta)
+- Review entry point and round: Implementation Review, round 10
+- Review scope: `Targeted Delta Review` (`bf1fd2d56d..d2fb8782bd`: `org-path-rewrite.ts`, the migration header, two test files)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-007; CR-008, CR-009
+- Relevant solution revision IDs: SR-017, SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-009)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - CR-009 is resolved.
+  - CR-008 is fixed for backslash-stored Windows paths, but not for the forward-slash form the app itself stores for agent-named reference files (`normalizeAgentRunFilePathDisplay`). Measured with IR-007's needles: no match, while `movedPath` would map it.
+  - Gate: typecheck PASS; 1030 tests pass.
+- Supported product scenario / material-premise basis changes: none (S-14 / MP-CR-03 narrowed to the forward-slash form)
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-008 | Local Fix | Partly resolved; still open | Backslash raw and JSON forms covered with a `path.win32` pass test; forward-slash form missed |
+| CR-009 | Local Fix | Resolved | Agent-unit 587 case at `org-units-remote-files-and-renewal.test.ts:86` |
+
+- New or remaining finding IDs: CR-008 (remaining)
+- Material score or classification changes: average 9.3; Runtime Correctness 9.0, API/E2E Readiness 9.0; Large/High preserved
+- Recommended recipient: Implementation engineer
+- Remaining risks or uncertainty: lower-case drive letters written by agents stay unmatched (consistent with the app's case-sensitive path comparison elsewhere).

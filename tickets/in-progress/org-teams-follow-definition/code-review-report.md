@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-005, IR-006
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-009`
-- Current Review Round: `9`
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: `10`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round >1):
   - The base's own changes (autobyteus-587, -599, -579) were reviewed in their own tickets. This round covers:
@@ -25,12 +25,12 @@
     - all new code of `dd310a30eb`, read in full: `org-path-rewrite.ts` (new); the migration's step order; `org-conversion.ts`, `org-log-split.ts` and the follow-ups;
     - the new tests.
   - I re-traced the conversion order from the migration runner and ran the gate.
-- Trigger: IR-006 ready for source review (implementation engineer), after delivery's DR-001 and ARCH-REV-013
-- Prior Review Round Reviewed: CRR-008 (test-code review, Pass); last implementation review CRR-007 (Pass)
-- Latest Authoritative Round: 9
+- Trigger: IR-007 (`d2fb8782bd`) ready for a targeted delta review of CRR-009's CR-008 and CR-009 (this report keeps CRR-009's IR-006 audit and adds the IR-007 delta below)
+- Prior Review Round Reviewed: CRR-009 (Fail)
+- Latest Authoritative Round: 10
 - API/E2E and delivery records: API-REV-003 (Pass, before IR-006); delivery DR-001 (integration blocked, the cause of SR-016)
 
-Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `e66c099f1a` (IR-006 code `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
+Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `d2fb8782bd` (IR-007 on IR-006 `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
 
 ## Routing Classification Review
 
@@ -62,6 +62,19 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
     - The one failure, `web-generated-graphql-current`, needs `pnpm`, which the platform restart removed from `/tmp`.
     - Rerun with corepack `pnpm`: passes. 0 product failures.
 - Explicit exclusions: built-server, two-node and real-runtime reruns belong to API/E2E after this round (the implementation engineer reports two-server 62/62, OF 6/6, AOML 2/2, OC + stopped-org 14/14).
+
+## IR-007 Delta (CRR-010)
+
+- **CR-009: resolved.** `org-units-remote-files-and-renewal.test.ts:86`: an agent unit's own standalone root (its run file has `containedIn`) places a peer file by run ID in `agents/<runId>/received_files/<sender>/<name>`, and the log line and the agent's input name it.
+- **CR-008: partly resolved.**
+  - `moveNeedles(moves)` now gives, per Org, each move's resolved old folder in two forms: raw and JSON-encoded. `movedPath` takes injectable `PathSemantics`, and the tests run a real pass with `path.win32`.
+  - That covers a Windows path stored with **backslashes**, which is the shape 587's received-file paths have (built with `path.join`).
+  - It does not cover the other stored shape SR-017 names. A member's own file it names in `send_message_to(reference_files)` is normalized before storage by `normalizeExplicitAbsoluteLocalReferenceFiles` → `normalizeAbsoluteLocalReferenceFilePath` → `normalizeAgentRunFilePathDisplay` (`agent-run-file-path-identity.ts:20-21`: `value.replace(/\\/g, "/")`), on every platform. On Windows that line stores `C:/Users/…/agent_orgs/<org>/<unit>/notes.md`.
+  - **Measured** with the implementation's own needles: `JSON.stringify({referenceFiles:["C:/Users/u/.autobyteus/memory/agent_orgs/org1/team1/notes.md"]})` contains neither `C:\Users\u\.autobyteus\memory\agent_orgs\org1\team1` (raw) nor its JSON-encoded form. Yet `path.win32.resolve(stored).startsWith(from + "\\")` is `true`, so `movedPath` would map it if the file were parsed.
+  - So a file whose only old path is an agent-named one (SR-017's "member line forwarding its own folder file to a delegated run", in that run's log) is skipped on Windows, and the container file is still written. That is MP-CR-03 again for this shape.
+- Gate on `d2fb8782bd`:
+  - typecheck PASS (973);
+  - `tests/app-data-migrations tests/unit/agent-org-execution tests/unit/remote-collaboration tests/architecture`: 132 files, 1030 tests pass.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -164,7 +177,7 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.2/10` (simple average; not the decision rule). Pass bar: at least 9.4 in every category (user's standing instruction).
+- Overall score: `9.3/10` (simple average; not the decision rule). Pass bar: at least 9.4 in every category (user's standing instruction).
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -174,8 +187,8 @@ None.
 | `4` | `Separation of Concerns and File Placement` | 9.4 | — | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Frozen visitor reused | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.4 | Clear headers with the predecessor evidence | — | — |
-| `7` | `API/E2E Readiness` | 8.8 | Strong conversion tests (interrupts, late writer, cost) | No Windows-path case; agent-unit 587 case missing | CR-008, CR-009 |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.6 | Correct on POSIX | On Windows the conversion marks Orgs done with every path broken | CR-008 |
+| `7` | `API/E2E Readiness` | 9.0 | Conversion tests incl. a real `path.win32` pass (backslash form); agent-unit 587 case added | No case for the forward-slash Windows form | CR-008 |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.0 | Correct on POSIX and for Windows backslash paths | On Windows an agent-named (forward-slash) path is skipped while the Org is marked done | CR-008 |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | — | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | Org-hosting code from the base not ported; stale test dropped | — | — |
 
@@ -183,8 +196,8 @@ None.
 
 | ID | Finding | Evidence | Required Action | Classification | Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-008 | On Windows, a shipped platform, the node pass never rewrites a path. The byte pre-check looks for `agent_orgs/<orgRunId>/`, but every candidate is JSON, where a Windows path is `…\\agent_orgs\\<orgRunId>\\…`. No file is parsed, the pass reports success, and the container file is written: the Org is marked converted with every typed path into a moved folder still pointing at the old one. | C-34, MP-CR-03; `org-path-rewrite.ts` `rewriteMovedFolderPaths` (needles); measured needle | Derive the pre-check from the moves themselves, platform-correct: for each move, the bytes of its resolved `from` prefix both raw and JSON-encoded (`JSON.stringify(from).slice(1, -1)`), each followed by the separator. That is exact on every platform and narrower than the Org ID. `movedPath` already uses `path.resolve`/`path.sep`. Add a test that runs the pre-check and rewrite with `path.win32` semantics (inject the path implementation or test the needle builder with Windows-shaped moves) on a JSON line holding a Windows path. Note the platform point in the migration header; the design's `agent_orgs/<orgRunId>/` is POSIX shorthand for the same intent. | `Local Fix` | Implementation engineer |
-| CR-009 | SR-016's tests ask for a file from another node to reach an agent unit's own folder as well; only a Team unit's member is tested. An agent unit goes through the standalone root's 587 wiring, not the Team root's. | C-35; `org-units-remote-files-and-renewal.test.ts:53-82` | Add the agent-unit case: a peer file by run ID lands in `agents/<runId>/received_files/<sender>/<name>`, and the log line names it | `Local Fix` | Implementation engineer |
+| CR-008 (remaining) | On Windows the node pass still skips a file whose old path is stored with forward slashes, and still writes the container file. Agent-named reference files are stored that way on every platform (`normalizeAgentRunFilePathDisplay` replaces `\` with `/`). IR-007's needles cover the backslash forms only. | IR-007 Delta above; measured needle | Add the forward-slash form of each move's resolved old folder to `moveNeedles` (`from.split(path.sep).join("/")`; its JSON encoding is the same text). Add a `path.win32` pass case with a log line holding `C:/…/agent_orgs/<org>/<unit>/x` (an agent-named reference), moved and not re-moved by a second pass. `movedPath` already maps it. A lower-case drive letter written by an agent stays unmatched by both the needle and `movedPath`. That is consistent with how the app compares paths elsewhere (`isAgentRunFilePathWithinRoot`, case-sensitive) and is not required here. | `Local Fix` | Implementation engineer |
+| CR-009 | — | `org-units-remote-files-and-renewal.test.ts:86` | — | Resolved | — |
 
 ## Follow-ups
 
@@ -192,7 +205,7 @@ None.
 
 ## Classification
 
-- CR-008, CR-009: `Local Fix`, implementation-owned. Large/High preserved.
+- CR-008 (remaining): `Local Fix`, implementation-owned. CR-009 resolved. Large/High preserved.
 
 ## Recommended Recipient
 
@@ -208,9 +221,9 @@ Implementation engineer (`get_handoff_rules`: implementation-owned Local Fix bef
 
 - Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Fail` (S-14)
-- Material-Premise Gate: `Fail` (MP-CR-03)
-- Score Summary: 9.2/10 average; below the 9.4 bar: API/E2E Readiness 8.8, Runtime Correctness 8.6
+- Supported Product Scenario Gate: `Fail` (S-14, forward-slash form)
+- Material-Premise Gate: `Fail` (MP-CR-03, for agent-named paths on Windows)
+- Score Summary: 9.3/10 average; below the 9.4 bar: API/E2E Readiness 9.0, Runtime Correctness 9.0
 - Failure Origin: N/A (implementation review)
 - Recommended Recipient: Implementation engineer
-- Notes: SR-016's merge is clean on this ticket's side; SR-018's order and retry are right; the defect is the platform-specific pre-check.
+- Notes: one needle form left: the forward-slash old folder. Everything else in IR-006/IR-007 holds.
