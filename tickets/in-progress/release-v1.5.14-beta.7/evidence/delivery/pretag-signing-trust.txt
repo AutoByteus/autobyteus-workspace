@@ -1,0 +1,8 @@
+# check-release-trust.mjs with the process-only HTTPS rewrite, 2026-11-22: exit 0
+Desktop signing witness: {
+  fingerprint: 'e26a2e7404817c8277f6d64d2bd77e40852c172f576f18ebd673a4070ad9debe',
+  tag: 'v1.5.14-beta.6',
+  sha: '9c5f85f92f448d964401f936a950d7503d556786',
+  runId: 44901757001,
+  attempt: 1
+}

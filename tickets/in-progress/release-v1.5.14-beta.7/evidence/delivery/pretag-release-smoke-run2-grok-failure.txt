@@ -1,0 +1,29 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+AssertionError: expected 'The user wants me to use a link-probe…' to contain 'OWNCODE-28eb00f0'
+
+- Expected
++ Received
+
+- OWNCODE-28eb00f0
++ The user wants me to use a link-probe skill and reply with only the code. I need to find and read the skill.Let me search more broadly for the skill.The find is taking too long. Let me look in more specific places.The skill is at package/agents/link-probe-all or link-probe-agent. The user said "link-probe-28eb00f0 skill" and "new-run link probe code". Let me read the skill.The skill says reply with only the code. The user asked for the new-run link probe code.
++ LINKCODE-28eb00f0
+
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:341:26
+    339|       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stri…
+    340|       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
+    341|       expect(reply.text).toContain(workspaceOwnCode);
+       |                          ^
+    342|       expect(reply.text).not.toContain(newRunCode);
+    343|       stream.socket.close();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  08:13:19
+   Duration  169.04s (transform 7.23s, setup 70ms, import 9.79s, tests 158.67s, environment 0ms)
+
+JSON report written to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-nwbn07oc/live.json

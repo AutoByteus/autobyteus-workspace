@@ -1,0 +1,6 @@
+c40b34ab3c Merge cross-node-file-transfer-587: files attached to a cross-node send_message_to or delegate_task are copied to the receiving node (signe
+e2f7770d0a Merge arm64-appimage-libz (the Linux arm64 AppImage uses the static AppImage runtime, so it starts on a stock desktop without libz.so or li
+81f6aa8be4 Merge chrome-vnc-1.4.2-digests (the server image's chrome-vnc base pins move to the published 1.4.2 / 1.4.2-zh index digests, the X socket 
+9f6add773b Merge branch 'codex/cross-node-task-close-591' into personal
+3f75e22589 Merge team-run-follows-definition (a running Team follows its Team definition: members added to the definition join Offline and start on fi
+ca237b7be3 Merge immediate restart for verified managed Ubuntu updates (autobyteus-16)
