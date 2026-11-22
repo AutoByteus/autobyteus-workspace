@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-016 | Design | Delivery DR-001 Blocked (integration conflicts with autobyteus-587 and -599) | DR-001 | Approved; design Ready (implemented, validated at 46d7da4d35) | Approved; design Ready (revised) | REQ-001, REQ-005, REQ-007 (realization only) | 587 file transfer and 599 session renewal live in the units' own roots; container `remoteNodeOf` null; Org-hosting extensions not ported |
 | SR-015 | Mixed | Failure-origin review CRR-004 A-1 (minor Requirement Gap) | A-1 | Approved | Approved (DEC-007 by the Solution Designer within the direction, user informed) | REQ-002, DEC-007 | Same former-member refusal for other units at `P/x` |
 | SR-014 | Design | Architecture review ARCH-REV-008 Fail | AR-010 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-006 | Delegation-chain case is `related` (no counterpart, view rule 1); `same_container` only unit↔unit |
 | SR-013 | Design | Source review CRR-001 (Fail) | CR-001 (Design Impact) | Approved; design Ready (implemented, review Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-003 | Step 2 of runs delegated by a unit: container placements at Org addresses; same_container through the delegation chain |
@@ -145,3 +146,12 @@
 #### Review note on SR-015 (no new revision)
 
 - 2026-11-22: architecture review `ARCH-REV-010` — Pass on SR-015 (commit be7e3110c0), no findings; forwarded to `/implementation_engineer`. Notes: a refusal must not wake a unit (a non-live Team unit answers from its stored tree); the reused text says "your team", which a sender from another unit may read loosely. Wording kept as decided in DEC-007 for now (agent-facing, one text for all senders); the alternative ("… is no longer a member of the team /software_engineering_team …") was offered to the user.
+
+### SR-016 — The base's file transfer and session renewal in the container model
+
+- Trigger: delivery `DR-001` (2026-11-22), `Blocked`: merging `origin/personal` `f2c0d2a902` (166 commits) conflicts in 35 files; autobyteus-587 (cross-node file transfer) and autobyteus-599 (lost runtime session renewal) extended the Org-hosting files this ticket deletes. Delivery proposed `Design Impact`, or `Local Fix` if the design already settles it.
+- Classification: `Design Impact`, small. The design settles where both go (an Org unit is an ordinary Team or agent run; the container hosts no agent), and the base reaches Team and standalone roots already (checked on `f2c0d2a902`: `root-team-run.ts`, `team-run-message-delivery.ts`, standalone root/builder, `general-process-run-supervisor-input.ts`, `runtime-handover-notices/*`). SR-016 records that mapping, one new container obligation (`remoteNodeOf(): null`, required by the base's `ActiveRootMessageBoundary`), the re-integration rules for the conflicts, and three tests. Routed through architecture review because the package is Large/High and the integrated code changes collaboration and remote paths.
+- Requirements: unchanged (no intended behavior changes; files and renewal work for Org units as for any Team or agent run).
+- Contract: §10 gains two rows (received files; renewal from the unit agent's journal).
+- Next action: architecture review of SR-016; then implementation re-integrates and ports; code review and API/E2E on the integrated state; delivery DR-002.
+

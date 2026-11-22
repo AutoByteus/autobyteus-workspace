@@ -1,7 +1,7 @@
 # Handoff — Architecture Design Complete (org-teams-follow-definition)
 
 - Package: `org-teams-follow-definition`; Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22), requested by `/project_task_manager` on the user's "work on the follow-up immediately".
-- Result: `Architecture Design Complete`, revision `SR-015` (SR-015 CRR-004 A-1 / DEC-007; SR-014 after ARCH-REV-008; SR-013 after CRR-001 CR-001; SR-012 contract aligned after ARCH-REV-006; SR-011 storage contract and validation; SR-010 after ARCH-REV-004; SR-009 after ARCH-REV-003; SR-006 after ARCH-REV-001; SR-007 the user's DEC-006; SR-008 after ARCH-REV-002); task_size `Large`, architectural_risk `High` (migration of every stored Org run; collaboration-contract change; runtime ownership moves; cross-run wake inside a container; peer protocol addition).
+- Result: `Architecture Design Complete`, revision `SR-016` (SR-016 delivery DR-001: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model; SR-015 CRR-004 A-1 / DEC-007; SR-014 after ARCH-REV-008; SR-013 after CRR-001 CR-001; SR-012 contract aligned after ARCH-REV-006; SR-011 storage contract and validation; SR-010 after ARCH-REV-004; SR-009 after ARCH-REV-003; SR-006 after ARCH-REV-001; SR-007 the user's DEC-006; SR-008 after ARCH-REV-002); task_size `Large`, architectural_risk `High` (migration of every stored Org run; collaboration-contract change; runtime ownership moves; cross-run wake inside a container; peer protocol addition).
 - Route: independent architecture review.
 
 ## Request and approval
@@ -15,10 +15,12 @@ The user chose (SR-002) to restructure Org runs as containers: each mounted Team
 - /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-spec.md
 - /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/solution-revision-record.md
 - /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/follow-ups.md
+- /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/org-container-storage-contract.md
+- /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/release-deployment-report.md (delivery's DR-001 conflict table)
 
 ## Workspace
 
-- Worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, base `origin/personal` `9f6add773b`; finalization target `origin/personal`.
+- Worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, base `origin/personal` `9f6add773b`, to be re-integrated with `f2c0d2a902` (SR-016); finalization target `origin/personal`.
 
 ## Open risks
 
@@ -37,3 +39,4 @@ The user chose (SR-002) to restructure Org runs as containers: each mounted Team
 - 2026-11-22: SR-013 (after CRR-001 CR-001) sent to `/architecture_reviewer`; CR-002..CR-004 and N-1 are implementation local fixes for the same round.
 - 2026-11-22: SR-014 sent to `/architecture_reviewer`.
 - 2026-11-22: SR-015 (CRR-004 A-1, DEC-007) sent to `/architecture_reviewer`.
+- 2026-11-22: SR-016 (delivery DR-001: 587/599 in the container model) sent to `/architecture_reviewer`.

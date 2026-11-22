@@ -2,13 +2,13 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-015` (SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-016` (SR-016: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model, after delivery DR-001; SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
 - Design status: `Ready`
 - Investigation: `investigation-notes.md` (IF-01..IF-14, AF-01..AF-09).
-- Base: `origin/personal` `9f6add773b`; branch `codex/org-teams-follow-definition`.
+- Base: `origin/personal` `9f6add773b` (SR-016: to be re-integrated with `f2c0d2a902`); branch `codex/org-teams-follow-definition`.
 - Authorities read (2026-11-21): `references/architecture-design.md` (with the mandatory migration-conventions check), `references/design-principles.md`, `templates/design-spec-template.md`, `DESIGN.md`, `data_migration_guideline.md` (all sections), `collaboration_model.md`, `agent_orgs.md`, autobyteus-22's design (SR-010).
 - Conflicts or discrepancies: the collaboration model's storage shape (§3: "an Org's units live inside that run's folder") changes by user decision; this change updates the contract (CM-3, §3, §5).
 
@@ -384,3 +384,29 @@ rule. A converted delegation (fixture) reaches the Org the same way.
 
 - `CollaborationTree.resolve` (`collaboration-tree.ts:227-229`) refuses by name, with autobyteus-22's former-member refusal, both a removed Org unit (`formerUnitAt`, as now) and a Team unit's former or leaving member addressed at its Org address `P/x`: the container asks that Team unit for `formerMemberAt('/x')` (its team-space answer), and the refusal names the member at `P/x` through `ContainedTeamAddressSpace`. Same code `COLLABORATION_TARGET_NOT_FOUND`, same text as a teammate gets.
 - Test: an agent unit, and a member of another Team unit, message `P/x` after `x` was removed from Team unit `P` (idle, and leaving): exact former-member text with `P/x`.
+
+
+## SR-016 Revision (delivery DR-001: the base gained autobyteus-587 and autobyteus-599; no change to the approved requirements)
+
+Since base `9f6add773b`, `origin/personal` (`f2c0d2a902`) added two behaviors to every root, including the Org-hosting code this ticket deletes. The container design already decides where each goes: **an Org unit is an ordinary Team run or standalone agent run** (DS-001, `AgentOrgUnitRuns` creates them through `TeamRunService.createTeamRun` / `AgentRunService.prepareAgentRun`), and **the container hosts no agent** (`LiveAgentOrgContainer`: `hasAgentExecution`/`ownsAgentRun` false, peer entry points `NOT_HOSTED`). So:
+
+| Base behavior | On `personal` it lives in | In the container model |
+| --- | --- | --- |
+| 587: files sent by another node land in the receiving agent's folder (`ReceivedFilesPlacement`, `receivedFilesFor`; hosts pass `receivedFiles`/`outgoingFiles`; saved Task files travel) | `RootTeamRun`, `TeamRunMessageDelivery`, the standalone root and builder, `GeneralProcessRunSupervisor` inputs; and in `AgentOrgRun`/`AgentOrgRunMessageDelivery`/`AgentOrgExecutionScopeBuilder` | The unit's own root, unchanged: a Team unit member's memory folder, an agent unit's own folder (contract §10). The Org-hosting additions are **not ported**: their files are deleted by this ticket |
+| 587 RF-14: `ActiveRootMessageBoundary.remoteNodeOf` is required | every root | Team and agent units answer as their roots do; **`LiveAgentOrgContainer.remoteNodeOf()` returns `null`** (it links no run on a peer: remote links belong to the units' runs) |
+| 587: `PeerRunMessageInput.files`, `files` on peer sends | every root's peer path | Units' roots, unchanged. The container's peer entry points stay `NOT_HOSTED`. Messages between two units of one container are same-node cross-run deliveries: no transfer, paths as today |
+| 599: a member's lost runtime session is renewed from its `work_journal/`; every composition gives the renewal its hand-over notice; binding replacement with conversation (`replace…PlatformBinding`) | Team and standalone roots/compositions (`flat-team-agent-execution-handle.ts`, `standalone-agent-run-lifecycle-service.ts`, `runtime-handover-notices/*`); and in `AgentOrgRun` + its tree mutator | The unit's own run, unchanged. The Org mutator's rename is not ported (deleted). The notice names journal paths only, no addresses, so `ContainedTeamAddressSpace` (R-1'') is not involved. Converted Org runs keep their journals: the conversion moves each member's memory folder into its unit run (contract §9), where renewal finds it |
+
+Implementation (a local re-integration, no new structure):
+1. Re-integrate `origin/personal` `f2c0d2a902` (or newer) into the branch.
+2. The 20 files deleted here and extended on `personal` stay deleted. The Org-only test helper `tests/helpers/org-migration-continuation-fixtures.ts` stays deleted. The migration's frozen layer is not touched by the base.
+3. The 14 line conflicts take both sides: the base's `receivedFiles`/`outgoingFiles`/`remoteNodeOf`/renewal wiring, minus the Org-hosting code this ticket removed or replaced (e.g. the `AgentOrgExecutionScopeBuilder` wiring in `general-process-run-supervisor.ts`, which becomes the container composition; the `org` resolver in `remote-collaboration-composition.ts`; the Org sections of `collaboration_model.md`, written for the container). This ticket's FU-003 additions (`PeerRunMembersReceiver`, the peer members notice) are kept and carried onto the base's reworked node path in `peer-gateway.ts` / `remote-collaboration-composition.ts` (587's "one order on the node path").
+4. `remote-message-routing.test.ts` (deleted on `personal` by 07b4b83cef, edited here): drop it; carry this ticket's edit, if it still applies, into the base's replacement tests.
+5. Add `remoteNodeOf(): null` to `LiveAgentOrgContainer`.
+6. Wire the base's `receivedFiles` into every place this ticket added that builds a Team or agent run for a unit, if any bypasses the shared services.
+
+Tests (in addition to the reruns of the suites the base and this ticket touched):
+- Cross-node, a file sent to an Org Team unit member and to an agent unit by run ID lands in that agent's own memory folder (as for a standalone Team member and agent).
+- A Team unit member and an agent unit whose saved runtime session is gone get the renewal and the hand-over notice first in their next input.
+- The container is registered in `ActiveCollaborationRootDirectory` with `remoteNodeOf` answering `null`.
+

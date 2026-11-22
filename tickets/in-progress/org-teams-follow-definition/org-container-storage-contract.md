@@ -266,6 +266,8 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Context file from the Org view | container `units` + unit Team file members | `{orgRunId, agentRunId}` → unit folder (§7) |
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
 | A run delegated by an Org member reaches the Org's agents by Org address (design R-8, SR-014) | child `delegatedFrom` → unit run → its `containedIn` → container `units` + unit files | the container's placements at Org addresses; the message is **related** (the Task rule extended through the delegation chain): stored as a related line (no `counterpart`), shown in every view whose tree holds both runs |
+| Files from another node for an Org unit's agent (autobyteus-587; design SR-016) | the receiving agent's own memory folder: a Team unit member's (§3) or an agent unit's (§4) | the unit's root plans them as any Team or standalone root; nothing in the container |
+| A unit agent's lost runtime session is renewed (autobyteus-599; design SR-016) | the unit agent's `work_journal/` in its own memory folder (moved with the folder by the conversion, §9) | the unit's root and its run's composition, as for any Team or agent run; nothing in the container |
 
 ## 12. Validation
 
