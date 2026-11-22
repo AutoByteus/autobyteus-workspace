@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 2 (merge with origin/personal 6533d7be04 conflicts) | Round-2 merge conflict (3 production files, 19 test files) | `Local Fix` | CRR-004, API-REV-003, CRR-005; DR: N/A | Merged and resolved (575c4ec9ed); typechecks, whole unit suite (8764 tests), Team integration (58) and two-server E2E (55) Pass; Code Review Pass (CRR-006, no findings); next: API/E2E |
 | IR-004 | Delivery Engineer, `release-deployment-report.md` § Delivery Round 3 (merge with origin/personal 9f6add773b conflicts, autobyteus-591) | Round-3 merge conflict (9 production, 3 docs, 17 test files) | `Local Fix` | CRR-006, API-REV-004, CRR-007; DR: N/A | Merged and resolved (bcd05494cb, f86a45d99f, RC-19 test fix cc6a9f2f60); typechecks, whole unit suite (8812 tests), integration (116) and two-server E2E (59) Pass; next: Code Review |
 | IR-005 | Code Reviewer `code-review-report.md` CRR-008 (Fail, full re-audit at IR-004) → Solution Designer SR-010 / SR-011, Architecture Reviewer ARCH-REV-003 / ARCH-REV-004 | CR-587-01 … 04 (CR-587-05 is API/E2E's); DEC-009; AR-007, AR-008 | `Design Impact` (CR-587-01, DEC-009) + `Local Fix` (CR-587-02 … 04) | CRR-008, SR-010, SR-011, ARCH-REV-003, ARCH-REV-004 | Implemented (07b4b83cef, e2a95cfc39); typechecks, whole unit suite (8821), integration (116), two-server E2E (59) Pass; next: Code Review |
+| IR-006 | Code Reviewer `code-review-report.md` CRR-009 (Fail, full re-audit at IR-005), decided by the Solution Designer (SR-012) | CR-587-06, CR-587-07 (CR-587-08 decided as DEC-010 (c): nothing to build) | `Local Fix` | CRR-009, SR-012 | Implemented (a0c233492b); typechecks, whole unit suite (8821), integration (116), two-server E2E (59) Pass; next: Code Review |
 
 ## Revision Entries
 
@@ -149,3 +150,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-19 both typechecks at baseline (server 1000 in 313 files, web 86 in 36); IMP-20 whole server unit suite (`Test Files  1060 passed | 5 skipped (1065)`, `Tests  8821 passed | 9 skipped (8830)`); IMP-21 integration (18 files, 116 tests); IMP-22 rebuild and two-server E2E: 3 test-side failures (RC-26 pinned the old node text; RC-52 and RC-54 gave a saved Task / a message to a remote copy without node); IMP-23 after the fix: 59/59. All on 07b4b83cef / e2a95cfc39.
 - Next recipient or routing: Code Review (Large / High).
 - Remaining limitations or risks: a non-assigner whose peer run's Tasks are all closed uploads its files before CLOSED (the review's known cost; the bytes are swept after 24 h); row 13's senders without `node` now get `NODE_REQUIRED` before CLOSED; `task-delegation.ts` is at 498 non-empty lines; the roots still take the host's `RemoteFiles` bundle though they use only its `received` part now.
+
+### IR-006 — `remoteNodeOf` required; roots take `ReceivedFilesPlacement` (CRR-009)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-009 (Fail, full re-audit at IR-005); the Solution Designer's decision of it (`solution-revision-record.md` § SR-012, commit 1d0a036bf4).
+- Triggering finding IDs: CR-587-06, CR-587-07. CR-587-08 (security, Requirement Gap) was decided as DEC-010 (c): accepted and recorded, no behavior or design change, nothing to build. The recommended read-only closed pre-check before the upload was not taken (SR-010 R1's order stays). CR-587-05 stays with API/E2E.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-005 with CRR-009 Fail.
+- Current authoritative result: CR-587-06 and CR-587-07 fixed (a0c233492b), no behavior change; both typechecks, the whole server unit suite, the integration set and the gated two-server E2E on a rebuilt server pass.
+- Related solution revision IDs: SR-012
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-009
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: two local findings on IR-005's structure.
+- Approved behavior or requirement IDs affected: none (no behavior change).
+- Implementation delta:
+  - CR-587-06: `ActiveRootMessageBoundary.remoteNodeOf` is required; `ActiveCollaborationRootDirectory.reserve` refuses a boundary without it (as it does without `ownsAgentRun`); `PeerRunNodes.nodeOf` calls it with no `?.`/`??` fallback. The three roots already implement it; the test doubles declare it (`remoteNodeOf: () => null`, no links).
+  - CR-587-07: the standalone root, its builder, `RootTeamRun`, the Team materializer and manager, `AgentOrgRun` (options), the Org scope builder, and the application platform (runtime, kernel contracts) take `receivedFiles: ReceivedFilesPlacement` instead of the `RemoteFiles` bundle. The supervisor's `receivedFiles` is now `ReceivedFilesPlacement & { sweep }` (one owner: the node's `ReceivedFiles`, placed by the roots and swept after a history delete); its `remoteFiles` input and check are gone. The hosts (studio, standalone application host) pass `files.receivedFiles`. `RemoteFiles` stays the host's bundle for the collaboration composition (its `outgoing` side: the router and `TaskDelegation`); its doc comment says so.
+  - Tests: `NO_FILES_RECEIVED` gains `planFor` (one double for a node that receives no files); fixtures pass `receivedFiles` (`NO_REMOTE_FILES.received`, `peerFiles.receivedFiles`); the host-owner test loses its `remoteFiles` case; the standalone host lifecycle test asserts the one received-files object is the supervisor's, the platform runtime's and the collaboration bundle's `received`.
+- Changed files or areas: a0c233492b.
+- Local validation and result (all Pass, on a0c233492b): IMP-24 both typechecks at baseline (server 1000 in 313 files, web 86 in 36); IMP-25 whole server unit suite (`Test Files  1060 passed | 5 skipped (1065)`, `Tests  8821 passed | 9 skipped (8830)`); IMP-26 integration (18 files, 116 tests); IMP-27 rebuild and the gated two-server E2E (59/59).
+- Next recipient or routing: Code Review (Large / High).
+- Remaining limitations or risks: unchanged from IR-005 (known upload-before-CLOSED cost; `task-delegation.ts` at 498 non-empty lines, untouched here).
