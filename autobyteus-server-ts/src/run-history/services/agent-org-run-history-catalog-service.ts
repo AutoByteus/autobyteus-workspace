@@ -10,8 +10,23 @@ import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-
 import { AgentOrgRunPackageCatalog } from "./agent-org-run-package-catalog.js";
 import { CollaborationRunHistoryCatalogCore } from "./collaboration-run-history-catalog-core.js";
 import { projectAgentOrgRunHistoryRow } from "./agent-org-run-history-row-projector.js";
+import { AgentOrgContainerStore } from "../store/agent-org-container-store.js";
+import type { AgentOrgContainerFile } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { composeOrgExecutionTree } from "../../agent-org-execution/container/org-execution-tree-composition.js";
+import { readStoredUnitFiles } from "../../agent-org-execution/container/stored-org-tree.js";
+import { RootRunPackageReadinessIndex } from "./root-run-package-readiness-index.js";
+import {
+  createAgentRootExecutionIdentity,
+  createTeamRootExecutionIdentity,
+  type RootExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
-export interface AgentOrgHistoryMutationResult { success: boolean; message: string }
+export interface AgentOrgHistoryMutationResult {
+  success: boolean;
+  message: string;
+  /** A deleted Org container's unit runs (deleted with it): the caller tells the episodic catalogs. */
+  unitRuns?: readonly RootExecutionIdentity[];
+}
 
 type InactiveHistoryManager = Pick<AgentOrgRunManager, "withInactiveHistoryMutation">;
 type AgentOrgRunIdentity = Readonly<{ orgRunId: string; orgDirPath: string }>;
@@ -24,6 +39,7 @@ export class AgentOrgRunHistoryCatalogService {
   private readonly packages: AgentOrgRunPackageCatalog;
   private readonly core: CollaborationRunHistoryCatalogCore<AgentOrgRunIndexRowRecord>;
   private readonly removePackage: (orgDirPath: string) => Promise<void>;
+  private readonly containers = new AgentOrgContainerStore();
 
   constructor(
     private readonly memoryDir: string,
@@ -77,6 +93,8 @@ export class AgentOrgRunHistoryCatalogService {
         const originalRows = new Map(this.core.rowsInQueue());
         const originalRow = originalRows.get(identity.orgRunId) ?? null;
         if (!originalRow) return { success: false, message: `AgentOrg run '${identity.orgRunId}' was not found.` };
+        const container = await this.containers.readIfContainer(identity.orgDirPath, identity.orgRunId);
+        if (container) return this.archiveContainer(identity, container, originalRows, originalRow);
         const originalTree = await this.trees.read(identity.orgDirPath, identity.orgRunId);
         if (!originalTree) {
           return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
@@ -120,6 +138,8 @@ export class AgentOrgRunHistoryCatalogService {
         const originalRows = new Map(this.core.rowsInQueue());
         const originalRow = originalRows.get(identity.orgRunId) ?? null;
         if (!originalRow) return { success: false, message: `AgentOrg run '${identity.orgRunId}' was not found.` };
+        const container = await this.containers.readIfContainer(identity.orgDirPath, identity.orgRunId);
+        if (container) return this.deleteContainer(identity, container, originalRows);
         const originalTree = await this.trees.read(identity.orgDirPath, identity.orgRunId);
         if (!originalTree) {
           return { success: false, message: `AgentOrg run execution tree not found for '${identity.orgRunId}'.` };
@@ -241,6 +261,63 @@ export class AgentOrgRunHistoryCatalogService {
       throw new Error(`AgentOrg run '${identity.orgRunId}' delete compensation is indeterminate: ${String(error)}`);
     }
   }
+  /** An Org container's archive (org-teams-follow-definition): its own file marked archived; its row from its composed tree. */
+  private async archiveContainer(identity: AgentOrgRunIdentity, original: AgentOrgContainerFile,
+    originalRows: Map<string, AgentOrgRunIndexRowRecord>, originalRow: AgentOrgRunIndexRowRecord): Promise<AgentOrgHistoryMutationResult> {
+    const archived = Object.freeze({ ...original, archivedAt: original.archivedAt ?? new Date().toISOString() });
+    const restore = async (): Promise<void> => {
+      await this.containers.write(identity.orgDirPath, original);
+      await this.flush(originalRows);
+    };
+    const written = await this.containers.write(identity.orgDirPath, archived).then((result) => result.outcome, () => "threw" as const);
+    const readback = written === "committed" ? await this.containers.readIfContainer(identity.orgDirPath, identity.orgRunId).catch(() => null) : null;
+    if (!readback || !isDeepStrictEqual(readback, archived)) {
+      await restore();
+      return { success: false, message: `AgentOrg archive change did not commit (${written}).` };
+    }
+    const candidateRows = new Map(originalRows);
+    candidateRows.set(identity.orgRunId, projectAgentOrgRunHistoryRow(
+      composeOrgExecutionTree(archived, await readStoredUnitFiles(this.memoryDir, archived)), originalRow));
+    try {
+      await this.flush(candidateRows);
+      if (!this.sameRows(await this.index.readIndex(), candidateRows)) throw new Error("AgentOrg archive index readback mismatch.");
+    } catch (error) {
+      await restore();
+      return { success: false, message: `AgentOrg archive index update failed: ${String(error)}` };
+    }
+    this.core.publishInQueue(candidateRows);
+    return { success: true, message: `AgentOrg run '${identity.orgRunId}' archived.` };
+  }
+
+  /**
+   * An Org container's permanent delete (org-teams-follow-definition): its history row, then each unit run's folder (the
+   * units are the Org's: they are listed nowhere else), then its own folder; each package retired from readiness.
+   */
+  private async deleteContainer(identity: AgentOrgRunIdentity, file: AgentOrgContainerFile,
+    originalRows: Map<string, AgentOrgRunIndexRowRecord>): Promise<AgentOrgHistoryMutationResult> {
+    const candidateRows = new Map(originalRows);
+    candidateRows.delete(identity.orgRunId);
+    try {
+      await this.flush(candidateRows);
+      if (!this.sameRows(await this.index.readIndex(), candidateRows)) throw new Error("AgentOrg delete index readback mismatch.");
+    } catch (error) {
+      await this.flush(originalRows).catch(() => undefined);
+      return { success: false, message: `AgentOrg history index removal failed: ${String(error)}` };
+    }
+    this.core.publishInQueue(candidateRows);
+    const readiness = new RootRunPackageReadinessIndex(this.memoryDir);
+    const unitRuns: RootExecutionIdentity[] = [];
+    for (const unit of [...file.rootOrg.units, ...file.rootOrg.formerUnits]) {
+      const team = unit.kind === "agent_team";
+      await this.removePackage(team ? this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }) : this.layout.getStandaloneRunDirPath(unit.runId));
+      readiness.excludeCurrent(team ? "agent_team" : "agent", unit.runId, "Its AgentOrg run history was deleted permanently.");
+      unitRuns.push(team ? createTeamRootExecutionIdentity(unit.runId) : createAgentRootExecutionIdentity(unit.runId));
+    }
+    await this.removePackage(identity.orgDirPath);
+    this.packages.exclude(identity.orgRunId, "AgentOrg run history was deleted permanently.");
+    return { success: true, message: `AgentOrg run '${identity.orgRunId}' deleted permanently.`, unitRuns };
+  }
+
   private resolveIdentity(rawOrgRunId: string): AgentOrgRunIdentity | null {
     const orgRunId = rawOrgRunId?.trim();
     if (!orgRunId || orgRunId !== rawOrgRunId || path.isAbsolute(orgRunId)

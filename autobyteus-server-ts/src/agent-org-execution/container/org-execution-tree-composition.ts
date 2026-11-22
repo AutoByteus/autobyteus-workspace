@@ -18,6 +18,7 @@ export const orgAgentNodeOf = (address: AgentTeamAddress, metadata: AgentRunMeta
   platformAgentRunId: metadata.platformAgentRunId ?? null,
   launchConfiguration: Object.freeze({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
     llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath || null }),
+  ...(metadata.pendingRuntimeSwitch ? { pendingRuntimeSwitch: metadata.pendingRuntimeSwitch } : {}),
 });
 
 /**

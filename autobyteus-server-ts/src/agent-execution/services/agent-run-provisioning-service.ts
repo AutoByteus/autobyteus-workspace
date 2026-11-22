@@ -132,12 +132,17 @@ export class AgentRunProvisioningService {
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
     };
 
-    await this.historyCatalogService.recordPreparedRun({
-      runId,
-      metadata,
-      summary: input.initialSummary ?? "",
-      createdAt: preparedAt.toISOString(),
-    });
+    // A unit of an Org container is listed under its Org, never as a top-level run (contract §8): no history row.
+    if (!input.containedIn) {
+      await this.historyCatalogService.recordPreparedRun({
+        runId,
+        metadata,
+        summary: input.initialSummary ?? "",
+        createdAt: preparedAt.toISOString(),
+      });
+    } else {
+      await this.historyCatalogService.recordPreparedUnit({ runId, metadata });
+    }
     return {
       runId,
       activationState: "PREPARED",

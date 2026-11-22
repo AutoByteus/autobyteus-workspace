@@ -20,6 +20,9 @@ export const receivedSenderAddresses = async (input: Readonly<{
   for (const agentRunId of new Set(input.senderAgentRunIds)) {
     const own = input.ownAddressOf(agentRunId);
     if (own) { resolved.set(agentRunId, own); continue; }
+    // A sender of another unit of the receiver's Org container: its Org address (org-teams-follow-definition).
+    const unit = await map.containerSenderAddressOf(agentRunId);
+    if (unit) { resolved.set(agentRunId, unit); continue; }
     const sender = await input.tree.agentOf(agentRunId);
     resolved.set(agentRunId, sender?.address
       ? await map.reachingAddressOf(createCollaborationMemberExecutionIdentity({ root: sender.run, memberAddress: sender.address, agentRunId }))

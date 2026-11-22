@@ -55,7 +55,8 @@ describe("AgentOrgRunService history ordering", () => {
   it("delegates stored archive and delete through the AgentOrg history owner without activation", async () => {
     const archiveStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `archived ${orgRunId}` }));
     const deleteStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `deleted ${orgRunId}` }));
-    const manager = { restore: vi.fn(), create: vi.fn(), terminate: vi.fn() };
+    // A released Org run (not a container): no unit runs to guard.
+    const manager = { restore: vi.fn(), create: vi.fn(), terminate: vi.fn(), unitRunsOf: vi.fn(async () => []) };
     const adHocTasks = { deleteAdHocTasksDelegatedFrom: vi.fn(async () => undefined) };
     const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       manager,

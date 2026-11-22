@@ -6,6 +6,8 @@ import type { AgentOrgExecutionTreeDto } from "@autobyteus/collaboration-stream-
 import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
+import { readStoredOrgTree } from "../../agent-org-execution/container/stored-org-tree.js";
+import { AgentOrgContainerStore } from "../store/agent-org-container-store.js";
 import type { AgentOrgRunHistoryCatalogService } from "./agent-org-run-history-catalog-service.js";
 import type { TeamRunHistoryService } from "./team-run-history-service.js";
 import { RunLastActivityReader } from "./run-last-activity-reader.js";
@@ -65,8 +67,10 @@ export class CollaborationRootHistoryService {
 
   private async projectAgentOrg(row: AgentOrgRunIndexRowRecord): Promise<Extract<CollaborationRootHistoryItem, { root_subject_kind: "agent_org" }> | null> {
     const active = this.dependencies.orgRuns.getActive(row.orgRunId);
-    const tree = active?.getExecutionTreeSnapshot()
-      ?? await this.orgTrees.read(this.layout.getOrgDirPath(row.orgRunId), row.orgRunId);
+    // A stored Org container's tree is composed from its units' files (org-teams-follow-definition).
+    const dir = this.layout.getOrgDirPath(row.orgRunId);
+    const tree = active?.getExecutionTreeSnapshot() ?? (await new AgentOrgContainerStore().readIfContainer(dir, row.orgRunId)
+      ? await readStoredOrgTree(this.dependencies.memoryDir, row.orgRunId) : await this.orgTrees.read(dir, row.orgRunId));
     if (!tree || (row.archivedAt && !active)) return null;
     if (tree.rootOrg.orgRunId !== row.orgRunId) throw new Error(`AgentOrg history root mismatch for '${row.orgRunId}'.`);
     return Object.freeze({

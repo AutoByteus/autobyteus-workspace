@@ -234,18 +234,30 @@ export class AgentOrgRunService {
 
   async archiveStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    return this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived", () => this.dependencies.history.archiveStored(normalized));
+    return this.guarded(normalized, "archived", () => this.dependencies.history.archiveStored(normalized));
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
     const root = createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized });
-    const result = await this.dependencies.workGuard.guard(root, "deleted", () => this.dependencies.history.deleteStored(normalized));
+    const result = await this.guarded(normalized, "deleted", () => this.dependencies.history.deleteStored(normalized));
     if (!result.success) return result;
     this.dependencies.episodicCatalog.runDeleted(root);
+    // An Org container's unit runs were deleted with it (org-teams-follow-definition).
+    for (const unit of ("unitRuns" in result ? result.unitRuns : undefined) ?? []) this.dependencies.episodicCatalog.runDeleted(unit);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     await (this.dependencies.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
+  }
+
+  /**
+   * Archive and delete wait for the runs it delegated to (REQ-007): an Org container's delegations are its unit runs', so
+   * each unit run is guarded too (org-teams-follow-definition, contract §6).
+   */
+  private async guarded<R extends { success: boolean; message: string }>(orgRunId: string, action: "archived" | "deleted", perform: () => Promise<R>) {
+    const runs = [createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: orgRunId }), ...await this.dependencies.manager.unitRunsOf(orgRunId)];
+    const chain = runs.reduceRight<() => Promise<R | { success: boolean; message: string }>>((next, run) => () => this.dependencies.workGuard.guard(run, action, next), perform);
+    return chain();
   }
 
   /** N-303 / N-304: the stored-link check before a peer's message restores an Org run. */

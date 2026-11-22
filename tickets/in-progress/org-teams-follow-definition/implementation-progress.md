@@ -17,7 +17,7 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
 | --- | --- | --- | --- |
 | 1 | `containedIn` on Team and agent runs; container file; `AgentOrgContainer` creates unit runs; Stop/reopen | part 1 done (building blocks; wiring with slice 3) | see git log |
 | 2 | Container address resolution (step 2 via `OrgContainerPort`), `same_container` admission in `CrossRunMessageDelivery`, `ContainedTeamAddressSpace` (R-1''/R-1'''), Org rules merged into unit rules, delegation origin = unit run | done (part 1: all surfaces with unit tests) | see git log |
-| 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | | |
+| 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | in progress: parts 1-2 done (composition, live container, creation switch, rows, stored view, readiness); left: top-level lists skip contained runs, Org member views/messages/last activity from units, stopped-Org settings edit, REST edges | see git log |
 | 4 | Remove the hosting machinery (Removal Plan, R-5 H rows) | | |
 | 5 | Migration `20261122_agent_org_units_own_runs_v1` + follow-ups + §9 fixtures + registry classification | | |
 | 6 | Org follow (DS-006) | | |
@@ -71,6 +71,20 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
   and the Org rules from its address, read at each call (they will follow the Org definition in slice 6).
 - `inOrganization()` became async: a unit run, or a run a unit (or an Org) assigned.
 - `delegation-index.ts` was 536 lines at base (over the 500 guide); it is 538 now (constructor parameter and its doc line).
+
+- Slice 3: the Org view is exact by a synchronous relay plus a snapshot that reads the live units' parts in the base's
+  synchronous step (instead of per-unit snapshot connections, R-3''): frames relayed before the base are in the parts,
+  later ones follow the base (the test publishes continuously while two views open). In-band snapshots on unit liveness or
+  parts changes (`composition_changed`).
+- The live container (`LiveAgentOrgContainer`) is registered in the active root directory (so Org views follow its
+  lifecycle as before) and hosts no agent (refuses run messages). Commands route to unit roots: a message restores the
+  unit (DEC-006), interrupt/approval reach a live unit only (N-2).
+- Org rows: `readAtBase(org)` adds the unit runs' delegated rows, anchored under their unit's part; `ChildRowsFeed` also
+  notifies a unit's container (`containerOf`, from the directory's unit index).
+- Pre-existing environment failures in this worktree (not this ticket's): file watchers (no built watcher runtime),
+  application backend workers / Brief Studio packages (no built `dist/`), `app-config` env text, Socratic app tests, the
+  studio HTTP contract's network refusal (the test client address is admitted in this container).
+- `agent-org-run-manager.ts` is 515 lines while the released root still lives beside the container; slice 4 removes it.
 
 ## Open questions
 

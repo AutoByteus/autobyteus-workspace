@@ -29,6 +29,7 @@ import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCh
 import type { AgentOrgContainers } from "../container/agent-org-containers.js";
 import type { CreateAgentOrgContainerInput } from "../container/agent-org-container-manager.js";
 import { LiveAgentOrgContainer } from "../container/live-agent-org-container.js";
+import { ContainerConfigTrees } from "../container/container-config-trees.js";
 
 /** A live Org: an Org container (its units are runs of their own), or a released Org run until its conversion. */
 export type LiveAgentOrg = AgentOrgRun | LiveAgentOrgContainer;
@@ -74,6 +75,7 @@ export class AgentOrgRunManager {
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly active = new Map<string, LiveAgentOrg>();
   private readonly containers: AgentOrgContainers | null;
+  private readonly containerConfig: ContainerConfigTrees;
   private readonly transitions = new Map<string, Promise<void>>();
   private rootAdmissionOpen = true;
   private readonly workspaces: AgentOrgRunManagerOptions["workspaces"];
@@ -105,6 +107,7 @@ export class AgentOrgRunManager {
     this.packageCatalog = new AgentOrgRunPackageCatalog(options.memoryDir);
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
     this.containers = options.containers ?? null;
+    this.containerConfig = new ContainerConfigTrees(options.memoryDir);
   }
 
   /** DS-001: a new Org as a container: each unit its own run (Offline), then the container file; registered and admitted. */
@@ -355,9 +358,11 @@ export class AgentOrgRunManager {
       if (checkOnly || isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       let outcome: "committed" | "not_committed" | "finalization_indeterminate";
-      try { outcome = (await this.executionTreeStore.write(this.layout.getOrgDirPath(orgRunId), expected)).outcome; }
+      // An Org container's settings are written to the files that own them (its units', its own default).
+      const container = this.containers ? await this.containerConfig.read(orgRunId) : null;
+      try { outcome = container ? await this.containerConfig.write(orgRunId, expected) : (await this.executionTreeStore.write(this.layout.getOrgDirPath(orgRunId), expected)).outcome; }
       catch { outcome = "finalization_indeterminate"; }
-      const readback = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId).catch(() => null);
+      const readback = await (container ? this.containerConfig.read(orgRunId) : this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId)).catch(() => null);
       if (outcome === "not_committed") return result("PERSISTENCE_FAILED", "AgentOrg settings were not saved.", readback ?? tree);
       if (outcome !== "committed" || !readback || !isDeepStrictEqual(readback, expected)) {
         return result("PERSISTENCE_INDETERMINATE",
@@ -372,7 +377,8 @@ export class AgentOrgRunManager {
       if (!this.packageCatalog.isAdmitted(orgRunId)) {
       throw new AgentOrgRunConfigNotFound("AgentOrg package is not admitted.");
     }
-    const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    const tree = (this.containers ? await this.containerConfig.read(orgRunId) : null)
+      ?? await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
     if (!tree) throw new AgentOrgRunConfigNotFound("AgentOrg configuration is unavailable.");
     if (tree.rootOrg.orgRunId !== orgRunId) throw new AgentOrgRunConfigNotFound("AgentOrg configuration identity is invalid.");
     return tree;
@@ -415,6 +421,8 @@ export class AgentOrgRunManager {
   }
 
   closeRootAdmission(): void { this.rootAdmissionOpen = false; }
+  /** A stored Org container's unit runs (its delegations are theirs); none for a released Org run. */
+  async unitRunsOf(orgRunId: string) { return this.containers ? this.containers.storedUnitRuns(orgRunId) : []; }
 
   private async materialize(
     state: ReturnType<typeof validateAgentOrgStatePackage>,

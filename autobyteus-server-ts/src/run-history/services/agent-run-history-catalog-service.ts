@@ -186,6 +186,20 @@ export class AgentRunHistoryCatalogService {
     await this.readiness.admitCurrent("agent", input.runId);
   }
 
+  /**
+   * A unit of an Org container (org-teams-follow-definition, contract §8): its own file and its package admission, and no
+   * history row (it is listed under its Org, never as a top-level run).
+   */
+  async recordPreparedUnit(input: { runId: string; metadata: AgentRunMetadata }): Promise<void> {
+    await this.enqueue(async () => {
+      if (this.state.rows.has(input.runId) || await this.metadataStore.readMetadata(input.runId)) {
+        throw new Error(`Run '${input.runId}' already exists.`);
+      }
+      await this.metadataStore.writeMetadata(input.runId, { ...input.metadata, runId: input.runId });
+    });
+    await this.readiness.admitCurrent("agent", input.runId);
+  }
+
   async recordRunStarted(input: {
     runId: string;
     platformAgentRunId?: string | null;

@@ -188,7 +188,8 @@ export class TeamRunService {
       ...(input.containedIn ? { containedIn: input.containedIn } : {}),
       ...(projectId ? { projectId } : {}) });
     try {
-      await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
+      // A unit of an Org container is listed under its Org, never as a top-level run (contract §8): no history row.
+      if (!input.containedIn) await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;
     } catch (error) {
       await this.safeTerminate(root.teamRunId);
@@ -227,7 +228,7 @@ export class TeamRunService {
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const root = await this.manager.restoreTeamRun(normalized);
     try {
-      await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });
+      if (!root.getExecutionTreeSnapshot().containedIn) await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });
       return root;
     } catch (error) {
       await this.safeTerminate(normalized);

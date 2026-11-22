@@ -9,6 +9,15 @@ import type { AgentOrgRunManager } from "./agent-org-run-manager.js";
 import { AgentOrgExecutionIndex, type AgentOrgExecutionKind } from "./agent-org-execution-index.js";
 import type { ConfiguredAgentExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
+import { AgentOrgContainerStore } from "../../run-history/store/agent-org-container-store.js";
+import { getAgentOrgRunExecutionTreePath } from "../../run-history/store/agent-org-run-execution-tree-path.js";
+import { readRawTreeFileSync } from "../../run-history/store/raw-tree-file.js";
+import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+import { isAgentOrgContainerPayload } from "../domain/agent-org-container-file.js";
+import { composeOrgExecutionTree, type OrgUnitFile } from "../container/org-execution-tree-composition.js";
+import { readStoredUnitFiles } from "../container/stored-org-tree.js";
+import { LiveAgentOrgContainer } from "../container/live-agent-org-container.js";
+import { validateAgentOrgContainerPayload } from "../../run-history/store/agent-org-container-file-schema.js";
 
 export type LocatedAgentOrgAgentExecution = Readonly<{
   rootSubjectKind: "agent_org";
@@ -39,7 +48,11 @@ export class AgentOrgExecutionTreeLocationService {
   private readonly manager: Manager;
   private readonly store: AgentOrgRunExecutionTreeStore;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
+  /** Org runs read as containers (org-teams-follow-definition): their agents' memory is in their unit runs. */
+  private readonly containers = new Set<string>();
+  private readonly memoryDir: string;
   constructor(input: { memoryDir: string; manager?: Manager; store?: AgentOrgRunExecutionTreeStore }) {
+    this.memoryDir = input.memoryDir;
     this.layout = new AgentMemoryLayout(input.memoryDir);
     this.manager = input.manager ?? STORED_ONLY;
     this.store = input.store ?? new AgentOrgRunExecutionTreeStore();
@@ -141,7 +154,12 @@ export class AgentOrgExecutionTreeLocationService {
       executionKind: agent.executionKind,
       startedAt: null,
       groupPath: Object.freeze(groupPath),
-      memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agentRunId), agentRunId),
+      memoryDir: this.isContainer(tree.rootOrg.orgRunId)
+        // A unit's agent lives in its unit run: a Team unit's member in its Team run, a direct agent in its own run.
+        ? agent.host.hostKind === "team"
+          ? this.layout.getTeamAgentRunDirPath({ rootTeamRunId: agent.host.hostRunId, ancestorTeamRunIds: [] }, agentRunId)
+          : this.layout.getStandaloneRunDirPath(agentRunId)
+        : this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agentRunId), agentRunId),
       tree,
       // A shut-down child of an active root stays addressable: input wakes it.
       isActive,
@@ -170,10 +188,28 @@ export class AgentOrgExecutionTreeLocationService {
   private listStoredRootIdsSync(): string[] {
     return this.packageCatalog.listAdmitted();
   }
-  private readStoredTree(id: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
-    return this.store.read(this.layout.getOrgDirPath(id), id);
+  /** A stored Org's tree: a container's composed from its units' files, a released Org tree as stored. */
+  private async readStoredTree(id: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
+    const container = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(id), id);
+    if (!container) return this.store.read(this.layout.getOrgDirPath(id), id);
+    this.containers.add(id);
+    return composeOrgExecutionTree(container, await readStoredUnitFiles(this.memoryDir, container));
   }
+  /** The synchronous read: a container's Team units from their trees, its direct agents from the container (their launch). */
   private readStoredTreeSync(id: string): AgentOrgRunExecutionTreeSnapshot | null {
-    return this.store.readSync(this.layout.getOrgDirPath(id), id);
+    const raw = readRawTreeFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id)));
+    if (!isAgentOrgContainerPayload(raw)) return this.store.readSync(this.layout.getOrgDirPath(id), id);
+    this.containers.add(id);
+    const container = validateAgentOrgContainerPayload(raw, id);
+    const teams = new TeamRunExecutionTreeStore();
+    const files = new Map<string, OrgUnitFile>(container.rootOrg.units.map((unit) => [unit.runId, unit.kind === "agent_team"
+      ? { kind: "agent_team", tree: teams.readSync(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId) }
+      : { kind: "agent", metadata: { runId: unit.runId, agentDefinitionId: unit.definitionId, platformAgentRunId: null,
+        ...container.rootOrg.defaultLaunchConfiguration, llmConfig: container.rootOrg.defaultLaunchConfiguration.llmConfig as Record<string, unknown> | null,
+        workspaceRootPath: container.rootOrg.defaultLaunchConfiguration.workspaceRootPath ?? "", memoryDir: this.layout.getStandaloneRunDirPath(unit.runId) } }]));
+    return composeOrgExecutionTree(container, files);
+  }
+  private isContainer(orgRunId: string): boolean {
+    return this.containers.has(orgRunId) || this.manager.getActive(orgRunId) instanceof LiveAgentOrgContainer;
   }
 }

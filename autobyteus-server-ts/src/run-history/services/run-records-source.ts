@@ -27,6 +27,16 @@ export const runRecordsOfRootOwners: RunRecordsSource = Object.freeze({
         return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
       }
       case "agent_org": {
+        // An Org container keeps no log: its messages are its units' (CM-9), each message once (a message between two
+        // units is in both logs, contract §5).
+        const units = await AgentOrgRunManager.getInstance().unitRunsOf(rootRunId);
+        if (units.length) {
+          const parts = await Promise.all(units.map((unit) => runRecordsOfRootOwners.read(unit.rootSubjectKind as "agent" | "agent_team", unit.rootRunId)
+            .catch((error: unknown) => { console.warn(`Org unit run '${unit.rootRunId}' messages are left out: ${String(error)}`); return null; })));
+          const messages = new Map(parts.flatMap((part) => part?.messages ?? []).map((message) => [message.messageId, message]));
+          return { messages: [...messages.values()].sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+            isOwnAgent: (id) => parts.some((part) => part?.isOwnAgent(id) ?? false) };
+        }
         const records = await AgentOrgRunManager.getInstance().getCollaborationRecordsSnapshot(rootRunId);
         const index = new AgentOrgExecutionIndex(records.executionTree);
         return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };

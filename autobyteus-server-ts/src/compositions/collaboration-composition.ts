@@ -1,3 +1,9 @@
+import { OrgUnitMemberViews } from "../run-history/services/org-unit-member-views.js";
+import { AgentOrgContainerStore } from "../run-history/store/agent-org-container-store.js";
+import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
+import { AgentRunViewProjectionService } from "../run-history/services/agent-run-view-projection-service.js";
+import { TokenUsageRunStore } from "../token-usage/providers/token-usage-run-store.js";
+import { getRunFileChangeProjectionService } from "../run-history/services/run-file-change-projection-service.js";
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
@@ -308,8 +314,14 @@ export const composeCollaboration = async (input: Readonly<{
     // autobyteus-492: `list_running_agents` without `node`, on every runtime (bound before any run starts).
     releases.push(bindProcessRunningAgentsListing(input.running.listing));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));
-    releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
-    releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
+    const teamMembers = new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf });
+    releases.push(setProcessTeamMemberRunViewProjectionService(teamMembers));
+    // An Org container's members are read from their unit runs (org-teams-follow-definition, design R-5).
+    const orgUnitMembers = new OrgUnitMemberViews({ directory: taskSide.containers, tree, teamMembers: () => teamMembers,
+      isContainer: async (orgRunId) => Boolean(await new AgentOrgContainerStore().readIfContainer(new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId), orgRunId)),
+      agentViews: new AgentRunViewProjectionService(memoryDir), metadata: new AgentRunMetadataStore(memoryDir),
+      tokenUsage: new TokenUsageRunStore(), fileChanges: () => getRunFileChangeProjectionService() });
+    releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf, units: orgUnitMembers })));
     const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard, episodicCatalog: input.episodicCatalog });
     releases.push(setProcessAgentRunHistoryService(agentRunHistory));
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));

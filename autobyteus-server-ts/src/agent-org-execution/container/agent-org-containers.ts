@@ -1,5 +1,10 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
-import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  createAgentOrgRootExecutionIdentity,
+  createAgentRootExecutionIdentity,
+  createTeamRootExecutionIdentity,
+  type RootExecutionIdentity,
+} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgContainer } from "./agent-org-container.js";
@@ -60,6 +65,13 @@ export class AgentOrgContainers {
 
   /** Whether the Org run is stored as a container (not a released Org tree waiting for its conversion). */
   isStored(orgRunId: string): Promise<boolean> { return this.dependencies.manager.isStored(orgRunId); }
+
+  /** A stored container's unit runs (current and former); none when it is not a container. */
+  async storedUnitRuns(orgRunId: string): Promise<readonly RootExecutionIdentity[]> {
+    const file = await this.dependencies.manager.readStored(orgRunId);
+    return (file ? [...file.rootOrg.units, ...file.rootOrg.formerUnits] : []).map((unit) =>
+      unit.kind === "agent" ? createAgentRootExecutionIdentity(unit.runId) : createTeamRootExecutionIdentity(unit.runId));
+  }
 
   /** A stopped container's view parts: its stored file composed with its units' files (and any unit that is live). */
   async storedSnapshot(orgRunId: string): Promise<AgentOrgRunPackageSnapshot | null> {

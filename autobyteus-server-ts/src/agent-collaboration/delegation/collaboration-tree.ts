@@ -228,6 +228,16 @@ export class CollaborationTree {
   }
 
   /**
+   * A sender of another unit of this unit run's container, by its Org address (the stored views' sender names, as the
+   * received header named it); `null` when this run is no unit or the sender is no agent of another unit.
+   */
+  async containerSenderAddressOf(agentRunId: string): Promise<string | null> {
+    const containedIn = await this.containedIn(this.run);
+    const unit = containedIn ? await this.containers!.unitOfAgent(containedIn.orgRunId, agentRunId) : null;
+    return unit && rootExecutionIdentityKey(unit.run) !== rootExecutionIdentityKey(this.run) ? unit.orgAddress : null;
+  }
+
+  /**
    * `delegate_task`'s placement at a configured placement step 2 reaches: a copy that starts from that placement's
    * snapshot, as base answered a hosted copy; `null` for any other address (an agent run's own agent is none).
    */
