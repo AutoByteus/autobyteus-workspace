@@ -172,8 +172,13 @@ directory, and a fresh MCP descriptor, then checks MCP readiness again. It
 does not inject the rules again, because they persist in the Grok session.
 Grok replays history before the load response. Those `session/update` and
 usage frames are **dropped**, because UI history comes only from local raw
-traces. An unknown session, a load error, or an id mismatch is terminal;
-there is no silent new session. On create and restore, provider JSON-RPC
+traces. A load error or an id mismatch is terminal; there is no silent new
+session. A session Grok no longer has (the restore request for the saved session
+fails with the JSON-RPC data code `FS_NOT_FOUND`; a present session whose folder
+was removed still loads) is a lost session: the activation
+owner renews it in a fresh session with the work journal's hand-over notice and a
+chat line, never silently (autobyteus-599; see
+[Agent Execution](./agent_execution.md)). On create and restore, provider JSON-RPC
 errors from `initialize`, `session/new`, or `session/load` become
 `AgentCreationError` with the provider message and data. On restore, the
 manager's generic `PlatformAgentRunRestoreError` message is shown, and the

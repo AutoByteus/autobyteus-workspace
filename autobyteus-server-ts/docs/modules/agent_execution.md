@@ -593,8 +593,9 @@ feature knowledge. The compositions pass one implementation of both,
 `AgentRunPlatformNotices` (`domain/agent-run-platform-notices.ts`), composed of
 the notice sources in order: [Tool List Updates](./tool_list_updates.md), then
 [Skill Update Notices](./skill_update_notices.md), then the
-[background task notices](#native-background-task-notices) (the studio host puts
-the agent runtime hand-over first).
+[background task notices](#native-background-task-notices) (the studio host and the
+standalone application host put the agent runtime hand-over first; the application
+execution scope has it as its only notice, autobyteus-599).
 
 - **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
   - `runPublished(run, kind)` is reported from the single activation point,
@@ -907,8 +908,10 @@ Claude Agent SDK `0.3.280` is used with the exact direct peer
 `@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
 used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
 whole life: `ClaudeSdkClient.beginStreamingSession({ resolveOptions }).open()` opens one
-`query({ prompt: AsyncIterable, options })` lazily on the first input (new or
-restored run), and `ClaudeSessionProcess` owns that process, its single frame
+`query({ prompt: AsyncIterable, options })` lazily on the first input of a new
+run (a restored run opens it at activation instead, to learn whether the CLI
+still has the saved session: `ClaudeSession.verifyResumable`, autobyteus-599),
+and `ClaudeSessionProcess` owns that process, its single frame
 pump, and exit detection. There is no idle timer in the session itself. Run
 terminate/close (standalone or team) and server shutdown close the process,
 which stops its background tasks. A delegated copy is not idle-shut-down while
