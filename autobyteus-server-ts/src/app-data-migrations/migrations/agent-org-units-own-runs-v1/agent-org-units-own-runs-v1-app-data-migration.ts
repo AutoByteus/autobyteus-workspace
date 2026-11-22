@@ -54,11 +54,13 @@ export const PATH_WRITER_PREDECESSORS: readonly string[] = [
 ];
 
 /**
- * A run of this conversion: its ID and prerequisites (ours, or a follow-up's), shown to the user. `passOverConverted`: a
- * follow-up's node pass also moves the paths of Orgs already converted (their moves from their container files), for files
- * its predecessor wrote late (SR-018).
+ * A run of this conversion: its ID and prerequisites (ours, or a follow-up's), shown to the user. `lateWriterOf`: a path
+ * writer predecessor's follow-up (SR-018) names it; its node pass also moves the paths of Orgs already converted (their
+ * moves from their container files), and only when that predecessor completed after our conversion started (it wrote
+ * late). Every other follow-up, and a path writer's on an ordinary upgrade (it completed first), runs no pass over
+ * converted Orgs (CRR-012 T-1: there is still one node pass).
  */
-export type OrgUnitsPlan = Readonly<{ id: string; displayName: string; description: string; prerequisiteMigrationIds: readonly string[]; passOverConverted?: boolean }>;
+export type OrgUnitsPlan = Readonly<{ id: string; displayName: string; description: string; prerequisiteMigrationIds: readonly string[]; lateWriterOf?: string }>;
 
 const DEFAULT_PLAN: OrgUnitsPlan = {
   id: AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID,
@@ -125,10 +127,11 @@ export class AgentOrgUnitsOwnRunsV1AppDataMigration implements AppDataMigrationD
     const contained: UnitRunRef[] = [];
     const moves: FolderMove[] = [];
     const converted: Array<Readonly<{ orgRunId: string; file: string; raw: unknown; notes: string[] }>> = [];
+    const overConverted = await this.predecessorWroteLate();
     for (const orgRunId of orgs) {
       const file = path.join(memoryLayout(this.memoryDir).orgDir(orgRunId), ORG_TREE_FILE);
       try {
-        const step = await this.convertOne(orgRunId, file, files, contained, moves);
+        const step = await this.convertOne(orgRunId, file, files, contained, moves, overConverted);
         if ("detail" in step) details.push(step.detail);
         else converted.push({ orgRunId, file, raw: step.raw, notes: step.notes });
       } catch (error) {
@@ -163,14 +166,14 @@ export class AgentOrgUnitsOwnRunsV1AppDataMigration implements AppDataMigrationD
    * tree's units converted and its delegations rewritten, its committed moves joined (also when a step failed: the folders
    * it moved are real), its container file left for step 4.
    */
-  private async convertOne(orgRunId: string, file: string, files: readonly string[], contained: UnitRunRef[], moves: FolderMove[]):
+  private async convertOne(orgRunId: string, file: string, files: readonly string[], contained: UnitRunRef[], moves: FolderMove[], overConverted: boolean):
     Promise<Readonly<{ detail: AppDataMigrationItemDetail }> | Readonly<{ raw: unknown; notes: string[] }>> {
     const raw = await readJson(file);
     if (raw === null) return { detail: { itemId: orgRunId, filePath: file, status: "SKIPPED", message: "Preserved: the Org run has no tree (left as it is)." } };
     const kind = classifyOrgFile(raw);
     if (kind === "unknown") throw new Error("its file is neither a released Org tree nor a container");
     if (kind === "container") {
-      if (this.passOverConverted) moves.push(...containerMovesOf(this.memoryDir, raw as Json));
+      if (overConverted) moves.push(...containerMovesOf(this.memoryDir, raw as Json));
       const units = await containerUnits(this.memoryDir, raw as Json);
       contained.push(...units.unitRuns);
       const delegations = await rewriteOrgDelegations(files, orgRunId, units.unitOf);
@@ -189,7 +192,19 @@ export class AgentOrgUnitsOwnRunsV1AppDataMigration implements AppDataMigrationD
     return { raw, notes: notesOf(delegations, units) };
   }
 
-  private get passOverConverted(): boolean { return this.options.plan?.passOverConverted === true; }
+  /**
+   * Whether this follow-up's path writer predecessor completed after our conversion started (its files may name moved
+   * folders then): by the ledger. When either time is unknown, the pass runs (its pre-check keeps a run that finds
+   * nothing cheap); the main migration and every other follow-up never runs it over converted Orgs.
+   */
+  private async predecessorWroteLate(): Promise<boolean> {
+    const predecessor = this.options.plan?.lateWriterOf;
+    if (!predecessor) return false;
+    const [writer, ours] = await Promise.all([this.options.ledger.getRecord(predecessor), this.options.ledger.getRecord(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID)]);
+    const completed = writer?.completedAt ? new Date(writer.completedAt).getTime() : Number.NaN;
+    const started = ours?.startedAt ? new Date(ours.startedAt).getTime() : Number.NaN;
+    return Number.isNaN(completed) || Number.isNaN(started) || completed > started;
+  }
 
   /** The first reader or path writer predecessor that is not terminal; `null` when none is waited for. */
   private async waitingFor(): Promise<string | null> {

@@ -14,6 +14,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-006 | Architecture Reviewer, `design-review-report.md` ARCH-REV-013 (pass on SR-016..SR-018, after delivery DR-001) | DR-001, AR-011, AR-012 | `Design Impact` realization | SR-016, SR-017, SR-018, ARCH-REV-011..013, DR-001 | Implemented; handed to Code Review |
 | IR-007 | Code Reviewer, `code-review-report.md` CRR-009 (review of IR-006) | CR-008, CR-009 | `Local Fix` | CRR-009 | Implemented; handed to Code Review |
 | IR-008 | Code Reviewer, `code-review-report.md` CRR-010 (delta review of IR-007) | CR-008 (remaining) | `Local Fix` | CRR-010 | Implemented; handed to Code Review |
+| IR-009 | Code Reviewer, `api-e2e-test-review-report.md` CRR-012 (after API-REV-004) | T-1 (API/E2E C-1) | `Local Fix` | CRR-012, API-REV-004 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -155,3 +156,14 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Prior authoritative result: IR-007 (`d2fb8782bd`). Current authoritative result: the IR-008 commit.
 - Implementation delta: the pre-check also looks for each moved folder with forward slashes, and the rewrite keeps a forward-slash value's form; a `path.win32` pass test is added.
 - Validation: see `implementation-handoff.md` § IR-008.
+
+### IR-009 — CRR-012 T-1: one node pass on an ordinary upgrade
+
+- Triggering role, report path, and round: Code Reviewer, `api-e2e-test-review-report.md` CRR-012, on API/E2E's COST-01 (API-REV-004, C-1).
+- Triggering finding IDs: T-1.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-008 (`26c6240f33`). Current authoritative result: the IR-009 commit.
+- Implementation delta:
+  - only path writer predecessors' follow-ups run the pass over converted Orgs, and only when their predecessor completed after the conversion started (ledger times);
+  - the other follow-ups are back to their pre-IR-006 behavior.
+- Validation: see `implementation-handoff.md` § IR-009.

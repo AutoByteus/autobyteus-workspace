@@ -28,17 +28,36 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-008` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001, IR-007 CRR-009, IR-008 CRR-010)
+- Current implementation revision ID: `IR-009` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001, IR-007 CRR-009, IR-008 CRR-010, IR-009 CRR-012)
 - Related solution revision IDs: `SR-010` … `SR-018`
 - Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`, `ARCH-REV-011` … `ARCH-REV-013`
-- Related code-review revision IDs: `CRR-001` … `CRR-010`
+- Related code-review revision IDs: `CRR-001` … `CRR-012`
 - Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
 - Related delivery revision IDs: `DR-001` (integration refresh blocked; resolved here)
-- Triggering finding IDs: IR-008: `CR-008` (remaining, CRR-010 Local Fix). IR-007: `CR-008`, `CR-009` (CRR-009 Local Fix). IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-009: `T-1` (CRR-012, from API/E2E's C-1 in API-REV-004). IR-008: `CR-008` (remaining, CRR-010 Local Fix). IR-007: `CR-008`, `CR-009` (CRR-009 Local Fix). IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9` and `a07d6fbac8` in `b933110420`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-009 (CRR-012 T-1: one node pass on an ordinary upgrade)
+
+- **The defect:** IR-006 set `passOverConverted` on all 23 follow-ups, so every upgrade start re-ran the node pass 23 times. COST-01 measured 36.8 s on a 1,347 MiB node.
+- **Now:**
+  - The plan field is `lateWriterOf`. Only the follow-ups of `PATH_WRITER_PREDECESSORS` carry it.
+  - Such a follow-up runs the pass over converted Orgs only when its predecessor completed after our conversion started (ledger: the predecessor's `completedAt` is later than our `startedAt`). A predecessor that was `FAILED` or `NOT_RUN` and finishes later still gets its pass. When either time is unknown, the pass runs; its pre-check keeps an empty run cheap.
+  - Reader and delegation-writer follow-ups are back to their pre-IR-006 behavior.
+  - Pending Orgs that any run converts still get their own committed moves: one pass per attempt.
+- **Tests** (`agent-org-units-path-rewrite.test.ts`, "CRR-012 T-1"):
+  - every predecessor completed before the conversion: none of the 23 follow-ups reads a candidate file (traces, logs, ad-hoc `task.json`), and a planted late file is untouched;
+  - a path writer that completed after the conversion started: its follow-up moves the file, while a reader's follow-up does not.
+
+  Both fail with the IR-008 follow-ups.
+- **Validation:**
+  - typecheck: production 0 errors, tests at the 973 baseline;
+  - `tests/architecture`, `tests/app-data-migrations`, `tests/unit/agent-org-execution`: all pass. Four architecture tests timed out at 5 s in the combined run and pass alone (33/33);
+  - built server: OC plus stopped-org 15/15, AOML 2/2.
+  - COST-01 is API/E2E's rerun.
 
 ## IR-008 (CRR-010: CR-008 remaining, the forward-slash Windows form)
 

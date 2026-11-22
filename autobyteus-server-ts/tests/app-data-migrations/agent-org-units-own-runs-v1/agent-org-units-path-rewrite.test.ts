@@ -272,6 +272,49 @@ describe("SR-018: the container file is written last, after the node pass", () =
   });
 });
 
+describe("CRR-012 T-1: one node pass on an ordinary upgrade; a late path writer still gets its own", () => {
+  /** The ledger after a start: every predecessor completed at `predecessorsDone`, our conversion started at `oursStarted`. */
+  const ledger = (predecessorsDone: string, oursStarted: string) => ({ getRecord: async (id: string) => id === "20261122_agent_org_units_own_runs_v1"
+    ? { status: "SUCCEEDED", startedAt: new Date(oursStarted), completedAt: new Date(oursStarted) }
+    : { status: "SUCCEEDED", startedAt: new Date(predecessorsDone), completedAt: new Date(predecessorsDone) } }) as never;
+  /** A converted node with a trace naming a moved folder's old path (as a predecessor writing late would leave it). */
+  const convertedWithLateFile = async () => {
+    const w = await world();
+    await writeBeta7CrossNodeOrg(w.appData, w.memory);
+    await expect(migration(w).execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
+    const late = path.join(moved(w).concierge, "raw_traces_000002.jsonl");
+    await fs.writeFile(late, `${JSON.stringify({ id: "c0", trace_type: "user", content: "Late.",
+      media: { images: [path.join(w.memory, "agent_orgs", ORG, "concierge_1", "received_files", "peer_lead_2", "picture.png")] } })}\n`);
+    return { w, late };
+  };
+
+  it("every predecessor completed before the conversion: no follow-up reads a candidate file (all 23, readers, delegation and path writers)", async () => {
+    const { w, late } = await convertedWithLateFile();
+    const before = await fs.readFile(late, "utf8");
+    const reads = vi.spyOn(fs, "readFile");
+    const followUps = createAgentOrgUnitsMigrations(w.appData, w.memory, names, null, ledger("2026-11-22T08:00:00.000Z", "2026-11-22T09:00:00.000Z")).slice(1);
+    expect(followUps).toHaveLength(23);
+    for (const followUp of followUps) await expect(followUp.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
+    // The node pass's candidates (traces, logs, ad-hoc task.json); the delegation rewrite's agent_run_resources.json reads are
+    // the follow-ups' own work since before SR-018.
+    const candidateReads = reads.mock.calls.map(([file]) => String(file)).filter((file) => /raw_traces_|communication_messages_|[\\/]task\.json$/.test(file));
+    expect(candidateReads).toEqual([]);
+    expect(await fs.readFile(late, "utf8")).toBe(before);
+  });
+
+  it("a path writer predecessor that completed after the conversion started: its follow-up moves the file it wrote late; a reader's does not", async () => {
+    const { w, late } = await convertedWithLateFile();
+    const lateLedger = ledger("2026-11-22T10:00:00.000Z", "2026-11-22T09:00:00.000Z");
+    const all = createAgentOrgUnitsMigrations(w.appData, w.memory, names, null, lateLedger);
+    const reader = all.find((candidate) => candidate.id === "20261122_agent_org_units_after_collaborators_to_delegated_runs_v1")!;
+    await expect(reader.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
+    expect((await lines(late))[0]!.media.images[0]).toContain(path.join("agent_orgs", ORG));
+    const writer = all.find((candidate) => candidate.id === "20261122_agent_org_units_after_raw_trace_rotation_layout")!;
+    await expect(writer.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
+    expect((await lines(late))[0]!.media.images).toEqual([moved(w).picture]);
+  });
+});
+
 describe("CRR-009 CR-008: stored Windows paths (the desktop .exe) are found and moved", () => {
   const WIN = "C:\\Users\\u\\.autobyteus\\memory";
   const moves = [{ orgRunId: "org1", from: `${WIN}\\agent_orgs\\org1\\team1`, to: `${WIN}\\agent_teams\\team1` },

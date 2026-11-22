@@ -43,8 +43,9 @@ export const ORG_UNITS_FOLLOW_UPS: readonly OrgUnitsFollowUpSpec[] = [
 
 /**
  * `OrgUnitsFollowUp(predecessor)`: the one definition of every follow-up: our conversion again, after its predecessor and
- * ours (each step recognizes finished work by its structure: idempotent), whose node pass also moves the paths of Orgs
- * already converted, from their container files (SR-018: a file the predecessor wrote late). `requiredOnStartup`, no hold,
+ * ours (each step recognizes finished work by its structure: idempotent). A path writer's follow-up's node pass also moves
+ * the paths of Orgs already converted, from their container files, when its predecessor completed after our conversion
+ * started (SR-018: a file it wrote late; CRR-012 T-1). `requiredOnStartup`, no hold,
  * registered after our migration; a predecessor stuck `FAILED` or `NOT_RUN` holds back only its own follow-up.
  */
 export class OrgUnitsFollowUp extends AgentOrgUnitsOwnRunsV1AppDataMigration {
@@ -55,7 +56,7 @@ export class OrgUnitsFollowUp extends AgentOrgUnitsOwnRunsV1AppDataMigration {
       displayName: `Org units: what ${spec.predecessor} left`,
       description: `Converts ${spec.late}, which ${spec.predecessor} ${spec.predecessorClass === "writer" ? "wrote" : "held back"} after Org units became runs of their own.`,
       prerequisiteMigrationIds: [AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, spec.predecessor],
-      passOverConverted: true,
+      ...(PATH_WRITER_PREDECESSORS.includes(spec.predecessor) ? { lateWriterOf: spec.predecessor } : {}),
     } });
   }
 }
