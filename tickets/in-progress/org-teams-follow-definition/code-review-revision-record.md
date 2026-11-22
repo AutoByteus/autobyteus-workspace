@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Fail | CR-001, CR-002, CR-003, CR-004 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 complete | Fail | Fail | CR-001, CR-002, CR-003, CR-004, CR-005, CR-006, CR-007 |
+| CRR-003 | `code-review-report.md` | Implementation Review / IR-003 complete | Fail | Pass | CR-002, CR-005, CR-006, CR-007 |
 
 ## Revision Entries
 
@@ -77,3 +78,38 @@ None.
 - Material score or classification changes: average 8.9 → 9.1; Large/High preserved; all open findings are `Local Fix`
 - Recommended recipient: Implementation engineer
 - Remaining risks or uncertainty: real-runtime and two-node proof pending in API/E2E; FU-001 holds as a follow-up (challenged, C-19).
+
+### CRR-003: Targeted delta review of IR-003
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. All CRR-002 findings were Local Fix, and IR-003 (`1bcbcd21fd..1f0aad498b`) stays within them.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-003; commit `1f0aad498b`
+- Relevant solution revision IDs: SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-009
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - All four open findings are resolved.
+  - I re-traced the closed and open delegation paths from `send_message_to`.
+  - Gate run by me with `pnpm` on PATH: typecheck PASS (974 in 300, equal to the baseline); 485 files and 4091 tests pass, 0 failures, `tests/architecture` included.
+  - Control: the CR-005 case fails without the open-entry condition and passes with it.
+  - Every category is at least 9.4.
+- Supported product scenario / material-premise basis changes: S-09 confirmed; MP-CR-02 resolved.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-002 (remaining) | Local Fix | Resolved | `agent-org-run-execution-tree-store.ts` deleted; no reference outside the frozen copy (`grep`); stale imports removed from seven test files; tolerance claims moved onto `validateAgentOrgRunExecutionTreePayload` |
+| CR-005 | Local Fix | Resolved | `container-chain-relation.ts` `chainContainerOf` requires an open entry of the delegated run; both directions use it. Case (a)/(b) reopened and delivered, (c) refused as closed; fails without the condition |
+| CR-006 | Local Fix | Resolved | `delegation-index.ts` 492 effective lines; the relation lives in `container-chain-relation.ts` (30) |
+| CR-007 | Local Fix | Resolved | `PeerRunMembersTaskSide` port in the receiver; no `projects/` import in the composition or the receiver; `projects-boundaries` passes |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: average 9.1 → 9.45, every category at least 9.4; Large/High preserved
+- Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
+- Remaining risks or uncertainty: real-runtime, two-node and rendered-view proof pending in API/E2E; built-server e2e not rerun after IR-003; FU-001 holds as a follow-up.
