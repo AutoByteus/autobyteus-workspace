@@ -19,10 +19,10 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
 | 2 | Container address resolution (step 2 via `OrgContainerPort`), `same_container` admission in `CrossRunMessageDelivery`, `ContainedTeamAddressSpace` (R-1''/R-1'''), Org rules merged into unit rules, delegation origin = unit run | done (part 1: all surfaces with unit tests) | see git log |
 | 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | done (parts 1-4): composition, live container, creation switch, rows, stored view, readiness, history (no unit rows, archive/delete with units), member views/messages/last activity from units, stopped-Org settings, REST edges, memory attribution and sync exclusion | see git log |
 | 4 | Remove the hosting machinery (Removal Plan, R-5 H rows) | done: old root, scope builder, persistence, Org log, loader/validator, recipient resolver removed; manager containers-only; readers containers-only; tests converted (stored-container helper) or removed with the hosting they covered | see git log |
-| 5 | Migration `20261122_agent_org_units_own_runs_v1` + follow-ups + §9 fixtures + registry classification | | |
-| 6 | Org follow (DS-006) | | |
-| 7 | FU-003 peer members notice + reconcile (DS-007) | | |
-| 8 | Docs (collaboration model CM-3/§3/§5, agent_orgs, agent_memory, glossary), release notes | | |
+| 5 | Migration `20261122_agent_org_units_own_runs_v1` + follow-ups + §9 fixtures + registry classification | done: conversion, 18 follow-ups, classification test, fixtures of every released shape, retry/repeat/reader-wait, cost; stored-Org rows/participants read through units; agent unit activation state | see git log |
+| 6 | Org follow (DS-006) | done: pure planner, definition view, committed follow (units first, then file), leaving units, Org rules filtered by member presence (REQ-004), net notices (R-6), listener + follow on reopen, rows/view, web Leaving tag | see git log |
+| 7 | FU-003 peer members notice + reconcile (DS-007) | done: signed `/rest/remote/peer-run-members`, receiver on the delegating node, Task entry update, notice from a peer-started Team root, reconcile from run summaries | see git log |
+| 8 | Docs (collaboration model CM-3/§3/§5, agent_orgs, agent_memory, glossary), release notes | done (also agent_team_execution) | see git log |
 
 ## Slice 3 plan (working)
 
@@ -97,6 +97,32 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
   catalog keeps its released-tree path for that residue).
 - Environment-dependent e2e failures seen here (not this ticket's): memory explorer GraphQL e2e counts the definitions
   this worktree's data dir ships (26 Teams, 3 Orgs) where the test expects none.
+
+- Slice 5: the conversion is written in owned files (`released-org-tree-v1.ts` parse/classify, `org-unit-targets.ts` target
+  files, `org-log-split.ts`, `org-delegations.ts`, `org-conversion.ts`); each step is atomic per file and recognized when
+  done (no journal); the container file is written last. Unit logs are written in today's rotated layout (sealed at 4 MiB,
+  frozen constant), so a large Org log stays within the limit after the split (AOML e2e's 9.6 MB Org log).
+- An agent unit's run file gets today's activation state (contract §4 says "the current standalone agent metadata"): started
+  (Org `createdAt`) when it can be restored as it ran (an external runtime with its provider conversation; the server
+  runtime with its own trace), else prepared. Without it a converted agent unit could not be activated (found by the AOML
+  e2e: "not in a supported activation state").
+- Registry classification: `team_run_history_index_v2` is `none`, not a rebuilder (it builds rows only from
+  `team_run_metadata.json`, which no unit has; its repair re-reads listed rows only), checked by running it late.
+- A stored Org's rows and participants (fresh process, Org not live): `RunTreeView.prepare` and
+  `DelegatedRunAgentsReader.prepare` read the container once before the synchronous step (`unitRunsOf` knows only containers
+  read or live); found by the AOML e2e (an Org's delegated runs missing from its tree).
+- Existing tests that run the production registry or its later chain now end with converted Orgs: their expectations were
+  moved to the container end state (team-run-v1, TAU, AOML e2e; skip-version, definition non-mutation, locator transition,
+  append-only); tests that build the ledger from a fresh start remove our migration's rows too (as for 461's).
+- Slice 6: a removed unit that is running is a former unit marked `leaving` (as 22's former member), its rows tagged, its
+  agents still take the Org view's commands; it stops once its view reports no open work, then a release write clears the
+  marker; Stop and reopen clear markers. Org-level `Joined:`/`Left:` lines use 22's notice text unchanged (its header
+  "Your team changed: its definition was updated." also for an agent unit; design § Exact Texts).
+- Org rules are filtered by the target member's presence at each read (`orgRulesFrom`); the directory knows Team unit
+  members synchronously (live tree, else last read, loaded with the container). A Team unit's change reaches its Org's
+  rules through `TeamChangeNoticeSource.bindOrgRules` (one net notice with the Team's own change, R-6).
+- Slice 7: the notice is best effort and sequential per run (members read at send time); a missed one is reconciled at
+  the next contact from the run summary's `team` (an older peer answers without it).
 
 ## Open questions
 

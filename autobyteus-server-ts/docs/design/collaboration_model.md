@@ -19,7 +19,11 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
 - **Team**: a unit made of member agents. Its members are *parts* of one Team
   run, not runs of their own.
 - **Org**: a container of independent units (direct agents and mounted Teams).
-  An Org is not a unit: nothing delegates to an Org.
+  An Org is not a unit: nothing delegates to an Org. Since
+  org-teams-follow-definition each of its units is a run of its own (an agent
+  run or a Team run) bound to the Org by `containedIn { orgRunId, address }`;
+  the Org run (the **container**) hosts no agent and keeps only its units, its
+  former units and the Org-level handoff rules.
 - **Standing instance**: the single instance at an address inside a run: a
   Team's member, an Org's direct agent or mounted Team, or a standalone run's
   own agent.
@@ -79,19 +83,26 @@ Agents relate to each other in exactly two ways.
 
 ### 2.1 Membership: being part of a run
 
-The members of one Team, the units of one Org and a standalone run's own agent
-are parts of one run. They work together only by **messages**
-(`send_message_to`, guided by the run's handoff rules).
+The members of one Team and a standalone run's own agent are parts of one run.
+The units of one Org are runs of their own inside one container (CM-3). They
+work together only by **messages** (`send_message_to`, guided by the run's
+handoff rules, and in an Org also by the Org's rules).
 
 A Team run's membership follows its Team definition while the run exists
 (since team-run-follows-definition): a member the definition adds joins the
 run, a member it removes leaves it and becomes a **former member** (kept with its
 run ID and history, not addressable; it finishes a turn it is in, then stops),
 and the run's coordinator and handoff rules are the definition's current ones.
-This holds for a standalone Team run and for a copy of a Team definition; an
-application's Team run, a copy of a configured placement and a Team mounted in
-an Org run keep their members. See
-[Agent Team Execution](../modules/agent_team_execution.md#membership-follows-the-definition).
+This holds for a standalone Team run, a Team mounted in an Org (a Team run of
+its own since org-teams-follow-definition) and a copy of a Team definition; an
+application's Team run and a copy of a configured placement keep their members.
+An Org follows its Org definition the same way: a Team it mounts or an agent it
+adds becomes a run in the container (Offline), a unit it removes leaves (a
+working one finishes, shown leaving, then stops) and is kept as a **former
+unit**, and its Org rules are the definition's. An Org rule from or to a member
+that is not currently in its Team is left out until it returns. See
+[Agent Team Execution](../modules/agent_team_execution.md#membership-follows-the-definition)
+and [AgentOrg](../modules/agent_orgs.md).
 
 ### 2.2 Delegation: handing work to an independent run
 
@@ -109,7 +120,7 @@ message the delegated run by its run ID.**
 | --- | --- | --- |
 | CM-1 | You never delegate inside your own Team: `delegate_task` to yourself, a teammate, or your own Team is refused and points to `send_message_to`. "Inside your own Team" means any address inside a Team instance that contains you, at any depth (exactly what `send_message_to` resolves within it), and, for a configured member of a Team run's root Team, every configured placement of that Team. | The Team run already exists with one instance of every member; a delegated run would only duplicate what you can already message. |
 | CM-2 | Every other delegation target is an independent unit: a sibling Agent or Team in the same Org, an Agent or Team placed elsewhere in the run, or any catalog Agent or Team. Delegation always starts (or reuses, by run ID) an independent delegated run. | Independent units do their own work in their own run. |
-| CM-3 | An Org is a container, not a Team. Its direct agents and mounted Teams are independent units: they message each other's standing instances and may delegate to each other (for example a Project Task Manager in an Org delegates to the Org's software engineering Team). Inside one mounted Team, CM-1 applies. | Orgs exist to put independent units under one roof. |
+| CM-3 | An Org is a container, not a Team. Its direct agents and mounted Teams are independent units, each a run of its own in the container (`containedIn`): they message each other's standing instances by their Org addresses (a message to a unit that is not running restores it) and may delegate to each other (for example a Project Task Manager in an Org delegates to the Org's software engineering Team); a delegation's delegating run is the unit run. A unit's rules are its own run's plus the Org rules from its Org address. Inside one mounted Team, CM-1 applies. | Orgs exist to put independent units under one roof. |
 | CM-4 | `send_message_to(recipient_address)` reaches the **standing instance** at that address, inside your own Team instance first. It **never creates a run**: an address that is not a standing instance of your run is not found, with guidance to use `delegate_task`. | One way to create runs (delegation), one way to talk (messages). |
 | CM-5 | A delegated run has no address in its delegator's space: it is reached only by its run ID (`target_agent_run_id`; a Team's entry agent), in both directions. The address it was delegated to is kept as its Task entry's `recipientAddress`, a name in the delegator's space. Two runs are related when both work on one open Task, or one is the assigner of an open Task the other works on: a message between them may wake a stopped receiver; any other run's running agent is reached by its run ID too (CM-13); a run whose Tasks are all closed takes input only from its assigner after a reopen. By address, an agent reaches its own team first (a miss there is not found), then, in a delegated run, the standing agents of the run that assigned its Task, then, in a run the user started, its own run's standing agents. A delegated Team is rooted at `/`, like any Team run. The work packet is delivered once, by `delegate_task`. | An address names a place in a run; a delegated run is a run of its own, so only its ID names it unambiguously. The Task decides who works together. |
 | CM-6 | Every delegated run belongs to one or more open Tasks: Project Tasks (delegated by key or ID; its delegator can give a task agent another Project Task with `delegate_task` while its earlier ones are open), the delegator's own Task (sub-work, which joins the newest open Task), or a Task with no Project created by a description-only delegation (a temp Task). A new local delegated run of a Task whose Project has a linked folder works in that Project's first linked folder; otherwise in its top-level run's folder (since autobyteus-97; an existing run keeps its folder). Closing a Task (DONE or CANCELLED, with `update_task`) ends its work for its delegated runs and stops those that have no other open Task; closing a Project Task that has parts also closes its open parts the same way, and so their delegated runs. Closing is optional: an agent without `update_task` never has to close anything, and a quiet delegated run is shut down after the idle grace period anyway. A delegated run is a child of its delegating run while it has an open Task entry: once its last open Task closes and it is stopped, it is no longer shown as a child, and it is again when its assigner continues it or gives it another Task (since autobyteus-469). Sub-work joins the delegating run's current Task: its newest open entry; a run that works on a Task cannot assign another by `task_id`. | Work is tracked and can be ended by its Task, without making every agent manage Tasks. |
@@ -137,13 +148,17 @@ run is a run like any other, plus its own `delegatedFrom`.
 memory/
   agents/<agentRunId>/              # a standalone Agent run, or a delegated Agent run
   agent_teams/<teamRunId>/          # a Team run, or a delegated Team run; members inside
-  agent_orgs/<orgRunId>/            # an Org run; its direct agents and mounted Teams inside
+  agent_orgs/<orgRunId>/            # an Org container: its units (runs in agents/ and agent_teams/), no member folder, no log
   semantic/<agentDefinitionId>/     # not a run: an agent's semantic memory, shared by all its runs
   semantic-global/                  # not a run: the node's global semantic memory, shared by every agent
 ```
 
-- A Team's members and an Org's units live inside that run's folder (they are
-  parts of it).
+- A Team's members live inside that run's folder (they are parts of it). An
+  Org's units are runs of their own, each at the standard place for its kind
+  (`agents/<id>/`, `agent_teams/<id>/`) with `containedIn { orgRunId, address }`;
+  the container file (`agent_org_run_execution_tree.json`) lists them
+  (`rootOrg.units`, `rootOrg.formerUnits`) with the Org-level rules. Units are
+  not listed as top-level runs.
 - A delegated run lives in its own folder at the standard place for its kind,
   wherever its delegator sits. Its own run file (`run_metadata.json` with its
   `address` and `launchSource`, or a Team tree rooted at `/`) carries
@@ -276,6 +291,7 @@ Status as of the change that published this document (Task 259ddae7,
 | CM-8 tree built from the Task records | Holds | Since autobyteus-469 no run stores a list of its local delegated runs. Since autobyteus-461 (`delegated-copies-outlive-delegator-461`) none stores its remote ones either: every delegation is a Task entry with `delegatedFrom` and `recipientAddress`, the run's own file holds its origin, and the `DelegationIndex` is built in memory from the Task entries. Startup migration `20261111_delegated_runs_own_runs_v1` converted existing data (`taskAgent`, `hostRoot`, `assignedBy`, `collaboration_tree.json`, tree `taskExecutions` and `remoteTaskExecutions`, delegated Teams rebased to `/`, busy-run entries). |
 | CM-7 a run's life bound to its Task, not its delegator | Holds | Since autobyteus-461: every delegated run, local or remote, is a root of its own; no run hosts, idles, wakes or stops another. A delegating run's view shows its children by their Task entries, and a child row's commands, Stop and Settings go to the child's own run. After a restart, runs resume bottom-up along `delegatedFrom`, each with its own notice. |
 | CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Peers pair and sign their requests since autobyteus-437. Messages to unlinked running agents on a peer hold since autobyteus-492 (CM-13). Since autobyteus-591, a remote run stops on its node when its last Task closes on the delegating node, and is continued by its assigner's message after the Task's reopen, or given another saved Task, as locally (reactivation). Attachments and a remote run's files come in later slices. |
+| CM-3 Org units are runs of their own | Holds | Since org-teams-follow-definition: an Org run is a container of unit runs (`containedIn`); units message each other by Org address across runs (both logs, CM-9), follow their definitions (Team units through team-run-follows-definition; the Org through its Org definition, with former units), and delegate as the unit run. The view, rows and history compose the units into today's Org. Stored Org runs are converted at startup (`20261122_agent_org_units_own_runs_v1`; rollback to an older build is not possible). A peer Team copy's members are kept current on the delegating node by a signed notice after each change, reconciled at the next contact (`/rest/remote/peer-run-members`; an older peer refuses it). |
 | CM-13 The run ID is the address | Holds | Since autobyteus-492: `send_message_to` reaches any running agent by run ID, with `node` on a paired peer (`/rest/remote/run-messages`); unrelated runs are never woken; since autobyteus-565 their messages, like those with another node, are in the view of an Agent run that is one of the two runs (its Messages lists every message its agent sent or received) and in no Team, Org or ancestor view; `list_running_agents` lists running runs a person started, here or on a peer (`/rest/remote/running-agents`). |
 
 ## 6. Where The Mechanics Live

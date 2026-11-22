@@ -726,7 +726,13 @@ Team run, and a Team run copied from a Team definition (`copiedFrom:
 "team_definition"`, local or started by a peer; a copy recorded before this field
 existed follows too). An application-bound run (`applicationBinding`) and a copy
 of a configured placement (`copiedFrom: "configured_placement"`) keep their
-members. A Team mounted in an Org run keeps its Org's stored members.
+members. A Team mounted in an Org is a Team run of its own (`containedIn`, since
+org-teams-follow-definition) and follows its Team definition like a standalone
+Team run; its members' notices name addresses in the Org's space (`P/x`), and an
+Org rule to a member that left is left out of its sender's rules until it returns.
+A Team run a peer started reports each committed change to its delegating node
+(`PeerRunMembersNotice`, `/rest/remote/peer-run-members`; reconciled from its run
+summary at the next contact; an older peer refuses the request).
 
 - **Trigger.** `TeamDefinitionChangeListener` subscribes to the host's
   `AgentDefinitionChangeSignal` (package reload, app save, personal setting) and
