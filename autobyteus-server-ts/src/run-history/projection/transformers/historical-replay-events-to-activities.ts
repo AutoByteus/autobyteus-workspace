@@ -23,7 +23,6 @@ export const buildRunProjectionActivities = (
         toolName: event.toolName,
         type: event.activityType,
         status: event.status,
-        contextText: event.contextText,
         arguments: event.toolArgs,
         logs: event.logs,
         result: event.toolResult,

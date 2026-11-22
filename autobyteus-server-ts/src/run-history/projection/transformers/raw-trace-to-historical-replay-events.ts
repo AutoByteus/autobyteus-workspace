@@ -65,13 +65,6 @@ const inferActivityType = (
   return "tool_call";
 };
 
-const resolveContextText = (toolName: string | null, toolArgs: Record<string, unknown> | null): string => {
-  const path = typeof toolArgs?.path === "string" ? toolArgs.path.trim() : "";
-  if (path) return path;
-  const command = typeof toolArgs?.command === "string" ? toolArgs.command.trim() : "";
-  return command || toolName?.trim() || "tool";
-};
-
 const createToolEvent = (
   interaction: ToolInteraction,
   anchor: MemoryTurnTraceEvent,
@@ -98,7 +91,6 @@ const createToolEvent = (
       : interaction.status === ToolInteractionStatus.ERROR
       ? "error"
       : interaction.status === ToolInteractionStatus.SUCCESS ? "success" : "parsed",
-    contextText: resolveContextText(toolName, toolArgs),
     logs: [],
     detailLevel: "source_limited",
   };

@@ -143,21 +143,6 @@ const inferActivityType = (
   return "tool_call";
 };
 
-const resolveContextText = (
-  toolName: string,
-  toolArgs: Record<string, unknown> | null,
-): string => {
-  const pathCandidate = typeof toolArgs?.path === "string" ? toolArgs.path.trim() : "";
-  if (pathCandidate) {
-    return pathCandidate;
-  }
-  const commandCandidate = typeof toolArgs?.command === "string" ? toolArgs.command.trim() : "";
-  if (commandCandidate) {
-    return commandCandidate;
-  }
-  return toolName;
-};
-
 const resolveToolEvent = (
   item: Record<string, unknown>,
   turnTs: number | null,
@@ -187,7 +172,6 @@ const resolveToolEvent = (
     ts: resolveEntryTimestamp(item) ?? turnTs,
     activityType: inferActivityType(normalized.toolName, normalized.toolArgs),
     status: resolveToolStatus(normalized.status),
-    contextText: resolveContextText(normalized.toolName, normalized.toolArgs),
     logs: [],
     detailLevel: "source_limited",
   };

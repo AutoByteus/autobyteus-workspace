@@ -23,7 +23,6 @@ const tool = (toolResult: unknown): HistoricalReplayToolEvent => ({
   ts: 12,
   activityType: "tool_call",
   status: "success",
-  contextText: "search_web",
   logs: ["hidden log"],
   detailLevel: "source_limited",
 });

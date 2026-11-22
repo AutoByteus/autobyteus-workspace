@@ -58,7 +58,6 @@ export interface RunProjectionToolActivityEntry {
   toolName: string;
   type: RunProjectionActivityType;
   status: RunProjectionActivityStatus;
-  contextText: string;
   arguments?: Record<string, unknown> | null;
   logs?: string[] | null;
   result?: unknown | null;
