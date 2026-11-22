@@ -1,0 +1,23 @@
+# IMP-01 (D-B, AC-B) the contract packages' tracked dist/ matches a build of their source: base fails, branch passes
+# command: pnpm check:contract-dist   (new: scripts/check-contract-dist.mjs, root package.json)
+# commit: base f2c0d2a902 with the check script applied (first section); branch at 6ed56306aa..faa2013d51 (second);
+#         final HEAD d4af72998f (third)
+# env: macOS arm64, Node v22.23.1, pnpm workspace in the ticket worktree
+# date: 2026-11-22
+# result: Pass. On the base the check fails and names the two stale team-stream declaration files; with the rebuilt
+#         dist/ committed it passes, and it passes on the final HEAD.
+
+## base f2c0d2a902 (the stale team-stream dist/ that 590 left, FU-002 there)
+[check:contract-dist] building autobyteus-agent-presentation-contracts, autobyteus-collaboration-stream-contracts, autobyteus-team-stream-contracts
+[check:contract-dist] FAIL: the tracked dist/ differs from a build of the source (2 files):
+   M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+   M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+[check:contract-dist] commit these dist/ changes (every package named, dependents included), then run it again.
+
+## branch, after 6ed56306aa (the rebuilt dist/)
+[check:contract-dist] building autobyteus-agent-presentation-contracts, autobyteus-collaboration-stream-contracts, autobyteus-team-stream-contracts
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.
+
+## final HEAD d4af72998f
+[check:contract-dist] building autobyteus-agent-presentation-contracts, autobyteus-collaboration-stream-contracts, autobyteus-team-stream-contracts
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.

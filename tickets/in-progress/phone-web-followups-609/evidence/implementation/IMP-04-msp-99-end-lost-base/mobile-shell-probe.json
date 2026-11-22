@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-11-22T21:10:31.291Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58789,
+      "nodeId": "srv_K63nTAHxDD0pzv_ptCzBSVR7556GyyPm",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58790,
+      "nodeId": "srv_6aHVNhsY_d7XIdGOu1ztjDdyRCea6v-2",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_0de2a85f1f4743dbb07a34e8240e78af",
+    "writerRun": "release_notes_writer_41d4415f93f6458cace4a55624aa8adf",
+    "squadRun": "docs_review_team_ed3185b178794d38a9aec744abea93cf",
+    "reviewer": "release_notes_writer_354e4708841549f38153ff680a94067d",
+    "memberDelegated": "fact_checker_d1d3706d481a4c8ab5e31666591858bc",
+    "remoteAgentRun": "publisher_03b11c8bee7b48998b5cf302889c4d8c",
+    "remoteTeamRun": "studio_team_89ccaf8eb43446b793dde32681c644ee",
+    "plain": [
+      "fact_checker_a73baa491af648dd9e5ad4271a8e85c6",
+      "fact_checker_4509445e3d784ed186db1842b663a0ae",
+      "fact_checker_acc45cfa8e88497a9e8f00f75ae9f687"
+    ],
+    "org": "delivery_org_eef9ceb621bd4036af0aeaa381a7ce47",
+    "orgPlanner": "release_notes_writer_11034ca8f1d644b98867c2e274debb77",
+    "reviewOrg": "review_org_0846e8666cf5432c8271a1c82a1560e4",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_f508ab605a484c9ebddf64896f0fe3b9",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_494cca9e1ab1465fb49d9446487be063",
+    "deliveryLead": "fact_checker_15cc35d0800c4c9786d190d8bbe18f2f",
+    "deliveryMate": "release_notes_writer_64922f57e01148a5a8418e0adf544d2c",
+    "leadDelegated": "changelog_helper_5d1b0c2148e2400a9bd7af8aa64157f3",
+    "approver": "approver_28bab53a500b47228561d44be5609c82",
+    "taskA": "launch-0be0f7-1",
+    "taskB": "launch-0be0f7-2"
+  },
+  "cases": {
+    "MSP-99": {
+      "result": "Fail",
+      "seconds": 15.8,
+      "error": "AC-I within 10 s of the stop the task shows Stopped, though its end update was lost",
+      "details": {
+        "lostRun": "fact_checker_832224b25f2640ba858049bb35324824",
+        "task": {
+          "taskId": "df277b66-f0f9-44a3-8f7b-d5d72f5e1d93/task-11",
+          "status": "running",
+          "command": "sleep 120 # background step 11",
+          "summary": null,
+          "startedAt": "2026-11-22T21:11:03.966Z"
+        },
+        "terminated": {
+          "success": true
+        },
+        "listed": [
+          {
+            "status": "running",
+            "text": "sleep 120 # background step 11RunningStarted 09:11 PM",
+            "end": null
+          }
+        ],
+        "ended": [
+          {
+            "status": "running",
+            "text": "sleep 120 # background step 11RunningStarted 09:11 PM",
+            "end": null
+          }
+        ],
+        "shownStoppedAfterMs": null,
+        "droppedUpdates": 1,
+        "droppedBeforeStop": 0,
+        "nodeAfterStop": []
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-99": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T21:11:21.677Z"
+}
