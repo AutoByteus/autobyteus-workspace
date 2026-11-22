@@ -9,6 +9,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { reactive } from 'vue';
 import MobileActivity from '../MobileActivity.vue';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
+import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const io = vi.hoisted(() => ({ query: vi.fn() }));
 const node = reactive({ bindingRevision: 1, waitForBoundBackendReady: async () => true });
@@ -28,7 +29,9 @@ beforeEach(() => {
 });
 
 const open = async () => {
-  const wrapper = mount(MobileActivity, { props: { target }, global: { stubs: { MobileRunActivityItem: true } } });
+  // Activity opens a row's details through the phone's route (autobyteus-590 D-6).
+  const router = await createMobileTestRouter({ screen: 'activity' });
+  const wrapper = mount(MobileActivity, { props: { target }, global: { plugins: [router], stubs: { MobileRunActivityItem: true } } });
   await flushPromises();
   return wrapper;
 };
@@ -100,4 +103,42 @@ describe('the phone Activity: background tasks (autobyteus-473)', () => {
     expect(row.text()).toContain('node');
     expect(row.get('[data-testid="mobile-background-task-end"]').text()).toBe('exit code 2');
   });
+
+  // autobyteus-590 D-7: a tap shows the full command and end summary, as the desktop panel's expand does.
+  it('a tap on a task shows its full command and end summary; another tap folds it again', async () => {
+    const command = `pnpm --filter autobyteus-web exec vitest run ${'components/mobile/views/__tests__/Long.spec.ts '.repeat(6)}--reporter=verbose`;
+    const summary = `${'The suite ran 812 tests across 96 files; '.repeat(4)}all passed.`;
+    io.query.mockResolvedValue(eventStream([{ ...running, description: 'Run the suite', command, status: 'completed', summary, exitCode: null }]));
+    const wrapper = await open();
+    const toggle = wrapper.get('[data-testid="mobile-background-task-toggle"]');
+    const commandLine = () => wrapper.get('[data-testid="mobile-background-task-command"]');
+    const endLine = () => wrapper.get('[data-testid="mobile-background-task-end"]');
+    expect(toggle.attributes('aria-expanded')).toBe('false');
+    expect(commandLine().classes()).toContain('line-clamp-2');
+    expect(endLine().classes()).toContain('line-clamp-3');
+    expect(toggle.classes()).toContain('min-h-[2.75rem]');
+
+    await toggle.trigger('click');
+    expect(wrapper.get('[data-testid="mobile-background-task-toggle"]').attributes('aria-expanded')).toBe('true');
+    expect(commandLine().classes()).not.toContain('line-clamp-2');
+    expect(commandLine().text()).toBe(command);
+    expect(endLine().classes()).not.toContain('line-clamp-3');
+    expect(endLine().text()).toBe(summary);
+
+    await wrapper.get('[data-testid="mobile-background-task-toggle"]').trigger('click');
+    expect(commandLine().classes()).toContain('line-clamp-2');
+  });
+
+  it('a task whose title is its command (Antigravity, native) unfolds its title on tap', async () => {
+    const command = `sleep 4 # background step 51 ${'pnpm --filter autobyteus-web exec vitest run --reporter=verbose '.repeat(3)}`.trim();
+    io.query.mockResolvedValue(eventStream([{ ...running, description: '', command }]));
+    const wrapper = await open();
+    const title = () => wrapper.get('[data-testid="mobile-background-task-title"]');
+    expect(title().text()).toBe(command);
+    expect(wrapper.find('[data-testid="mobile-background-task-command"]').exists()).toBe(false);
+    expect(title().classes()).toContain('line-clamp-2');
+    await wrapper.get('[data-testid="mobile-background-task-toggle"]').trigger('click');
+    expect(title().classes()).not.toContain('line-clamp-2');
+  });
 });
+

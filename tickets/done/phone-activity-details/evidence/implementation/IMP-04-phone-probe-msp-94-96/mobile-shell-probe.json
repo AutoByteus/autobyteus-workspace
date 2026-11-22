@@ -1,0 +1,428 @@
+{
+  "startedAt": "2026-11-22T10:59:06.596Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57310,
+      "nodeId": "srv_4o6YDOqTwKjyFamf3_R3noRJaEL5Erh8",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 57311,
+      "nodeId": "srv_Edw0zIk25i2IrG24NvfaUpsdwRV2ZreR",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "iota": {
+      "port": 57487,
+      "nodeId": "srv_glJNJQtO5xkv0NHbsXcOl46WlLqdcM3x",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "theta": {
+      "port": 57539,
+      "nodeId": "srv_LStQ7SDOknVqpSGOTHVo-O214a6z14Yt",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_f784d941111f4f3885ad53aaf46bcc9d",
+    "writerRun": "release_notes_writer_7c9b42b4dc9048808cfd0f2a15dd1467",
+    "squadRun": "docs_review_team_1591126179e04f2d89adb29a23d50588",
+    "reviewer": "release_notes_writer_7951cb76623f470580521c91f260d316",
+    "memberDelegated": "fact_checker_1aa667b57a664045b273529b26fe0648",
+    "remoteAgentRun": "publisher_6420bf2224c741929cd397442f2856ed",
+    "remoteTeamRun": "studio_team_2e7b0072b176449f920d6c89270f3778",
+    "plain": [
+      "fact_checker_0fe2bde6609b42e49c159638a11168d8",
+      "fact_checker_5a3037e280b24b8c84df549c5ee20589",
+      "fact_checker_1c5fb2d51d764df5b758196a6164367b"
+    ],
+    "org": "delivery_org_6ba7a64e5b3149a39979dbab48188f3f",
+    "orgPlanner": "release_notes_writer_64c9a3ed368a4f018589be9a3278b8b3",
+    "reviewOrg": "review_org_9919749a60f7409784ff8871a1144bbf",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_cef47087ef5b4a65a6094e6ffab3a09a",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_0f034c896b1f431d84929e5ae7297dff",
+    "deliveryLead": "fact_checker_f270d99c38554278b9e8d06a73bc3fba",
+    "deliveryMate": "release_notes_writer_fbc9e4e282ca4ca08f9a9cdf6c271059",
+    "leadDelegated": "changelog_helper_3a69611cd0924e999259373e9d2596ce",
+    "approver": "approver_61072c200bcb4c47bc15f3b6eb31234d",
+    "taskA": "launch-80d1a9-1",
+    "taskB": "launch-80d1a9-2"
+  },
+  "cases": {
+    "MSP-94": {
+      "result": "Pass",
+      "seconds": 9.9,
+      "run": "activity_probe_e4ebc05770bf4c92b81561ba54d77ab2",
+      "rows": [
+        {
+          "text": "view_fileautobyteus_agent_tools/delegate_task.json",
+          "name": "view_file",
+          "summary": "autobyteus_agent_tools/delegate_task.json",
+          "summaryTitle": "/agy/mcp/autobyteus_agent_tools/delegate_task.json",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "delegate_task→ /researcher",
+          "name": "delegate_task",
+          "summary": "→ /researcher",
+          "summaryTitle": "→ /researcher",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "mcp__shape-test__echo_args",
+          "name": "mcp__shape-test__echo_args",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "mcp__shape-test__json_result",
+          "name": "mcp__shape-test__json_result",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "mcp__shape-test__always_failsFailedPROBE-FAILURE-9920: deliberate failure",
+          "name": "mcp__shape-test__always_fails",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "error",
+          "statusWord": "Failed",
+          "statusLabel": null,
+          "error": "PROBE-FAILURE-9920: deliberate failure",
+          "height": 76
+        },
+        {
+          "text": "call_mcp_tool",
+          "name": "call_mcp_tool",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "mcp__shape-test__open_tababout:blank",
+          "name": "mcp__shape-test__open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        },
+        {
+          "text": "list_tabs",
+          "name": "list_tabs",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 48
+        },
+        {
+          "text": "open_tababout:blankFailedBROWSER-PROBE: navigation failed",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "error",
+          "statusWord": "Failed",
+          "statusLabel": null,
+          "error": "BROWSER-PROBE: navigation failed",
+          "height": 100
+        },
+        {
+          "text": "open_tababout:blank",
+          "name": "open_tab",
+          "summary": "about:blank",
+          "summaryTitle": "about:blank",
+          "status": "success",
+          "statusWord": "",
+          "statusLabel": "Success",
+          "error": null,
+          "height": 72
+        }
+      ],
+      "scrollBefore": {
+        "top": 70,
+        "height": 866,
+        "client": 796
+      },
+      "scrollAfter": 70,
+      "failedDetails": {
+        "title": "mcp__shape-test__always_fails",
+        "status": "Failed",
+        "summary": null,
+        "sections": [
+          {
+            "key": "arguments",
+            "title": "Arguments",
+            "open": true,
+            "text": "{\n  \"reason\": \"probe\"\n}"
+          },
+          {
+            "key": "result",
+            "title": "Result",
+            "open": true,
+            "text": "{\n  \"provider_state\": \"ERROR\",\n  \"output\": \"PROBE-FAILURE-9920: deliberate failure\"\n}"
+          },
+          {
+            "key": "error",
+            "title": "Error",
+            "open": true,
+            "text": "PROBE-FAILURE-9920: deliberate failure"
+          }
+        ],
+        "rows": null,
+        "overflowX": 0
+      },
+      "jsonDetails": {
+        "title": "mcp__shape-test__json_result",
+        "status": "Success",
+        "summary": null,
+        "sections": [
+          {
+            "key": "result",
+            "title": "Result",
+            "open": true,
+            "text": "{\n  \"provider_state\": \"DONE\",\n  \"output\": {\n    \"marker\": \"JSON-MARKER-4471\",\n    \"nested\": {\n      \"ok\": true\n    }\n  }\n}"
+          }
+        ],
+        "rows": null,
+        "overflowX": 0
+      },
+      "zh": {
+        "failed": {
+          "title": "mcp__shape-test__always_fails",
+          "status": "Failed",
+          "summary": null,
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "参数",
+              "open": true,
+              "text": "{\n  \"reason\": \"probe\"\n}"
+            },
+            {
+              "key": "result",
+              "title": "结果",
+              "open": true,
+              "text": "{\n  \"provider_state\": \"ERROR\",\n  \"output\": \"PROBE-FAILURE-9920: deliberate failure\"\n}"
+            },
+            {
+              "key": "error",
+              "title": "错误",
+              "open": true,
+              "text": "PROBE-FAILURE-9920: deliberate failure"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        },
+        "json": {
+          "title": "mcp__shape-test__json_result",
+          "status": "Success",
+          "summary": null,
+          "sections": [
+            {
+              "key": "result",
+              "title": "结果",
+              "open": true,
+              "text": "{\n  \"provider_state\": \"DONE\",\n  \"output\": {\n    \"marker\": \"JSON-MARKER-4471\",\n    \"nested\": {\n      \"ok\": true\n    }\n  }\n}"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        }
+      }
+    },
+    "MSP-95": {
+      "result": "Pass",
+      "seconds": 7.7,
+      "run": "activity_probe_7bff7256d34340afb5a2d555e5ae7141",
+      "rows": [
+        {
+          "text": "Memory compactionProvider context compaction boundary recorded · antigravity · turn 9e1a5695-302c-438f-bfff-eb292a2876b3completed",
+          "name": "Memory compaction",
+          "summary": null,
+          "summaryTitle": null,
+          "status": "completed",
+          "statusWord": "",
+          "statusLabel": null,
+          "error": null
+        }
+      ],
+      "shown": {
+        "title": "Memory compaction",
+        "status": "Completed",
+        "summary": null,
+        "sections": [],
+        "rows": "Turn9e1a5695-302c-438f-bfff-eb292a2876b3ProviderantigravityBoundaryagy:82c90b71-e0a8-4259-b507-9b6eeb32a5d3:checkpoint:4Sourceantigravity.checkpoint",
+        "overflowX": 0
+      }
+    },
+    "MSP-96": {
+      "result": "Pass",
+      "seconds": 6.5,
+      "run": "fact_checker_6905a5c2eff54330bc068491f087a808",
+      "label": "pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+      "commandRow": {
+        "text": "run_commandsleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "name": "run_command",
+        "summary": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "summaryTitle": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "status": "success",
+        "statusWord": "",
+        "statusLabel": "Success",
+        "error": null,
+        "height": 91.5
+      },
+      "titleBefore": {
+        "clamped": true,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 45
+      },
+      "expanded": "true",
+      "titleAfter": {
+        "clamped": false,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 113
+      },
+      "running": {
+        "runningShown": {
+          "title": "run_command",
+          "status": "Running",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        },
+        "stopped": {
+          "success": true
+        },
+        "liveShown": {
+          "title": "run_command",
+          "status": "Unknown",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            },
+            {
+              "key": "error",
+              "title": "Error",
+              "open": true,
+              "text": "interrupted"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        }
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-94": "Pass",
+      "MSP-95": "Pass",
+      "MSP-96": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T11:00:24.880Z"
+}

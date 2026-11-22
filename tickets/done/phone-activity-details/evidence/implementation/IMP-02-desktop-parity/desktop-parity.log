@@ -1,0 +1,13 @@
+# IMP-02 the desktop Activity panel renders the same HTML before and after the extraction (D-3, D-4; AC-006)
+# command: a temporary spec (tmpDesktopParity.spec.ts, kept here; removed from the tree) mounts the committed
+#          ToolActivityItem.vue / CompactionActivityItem.vue (git show d4f32abdd9:…) and the new ones side by side;
+#          Iconify mocked (its SVGs load asynchronously); scoped-style data-v attributes stripped
+# commit: working tree = 60ee161388 (D-3, D-4) against the base components of d4f32abdd9
+# env: macOS, Node v22.23.1
+# date: 2026-11-22
+# result: Pass. ToolActivityItem: 9 statuses x highlighted or not x with and without every section = 36
+#   combinations, equal before and after opening every section; CompactionActivityItem: 5 phases x highlighted.
+
+ ✓ components/progress/__tests__/tmpDesktopParity.spec.ts > temporary: desktop output before and after the extraction > ToolActivityItem renders the same HTML for every status, highlighted or not, with and without sections
+ ✓ components/progress/__tests__/tmpDesktopParity.spec.ts > temporary: desktop output before and after the extraction > CompactionActivityItem renders the same HTML
+      Tests  2 passed (2)

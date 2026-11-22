@@ -70,3 +70,41 @@ export const getCompactionMessage = (input: {
       return 'Compaction update';
   }
 };
+
+export interface CompactionActivityDetailRow {
+  label: string;
+  value: string;
+}
+
+const formatCount = (value: number | null | undefined): string | null =>
+  typeof value === 'number' && Number.isFinite(value) ? String(value) : null;
+
+/**
+ * The rows of a compaction's details, in order, each only when it has a value: one owner for the desktop Activity panel
+ * and the phone's detail screen (autobyteus-590 D-4).
+ */
+export const compactionActivityDetailRows = (activity: CompactionActivity): CompactionActivityDetailRow[] => {
+  const rows: CompactionActivityDetailRow[] = [];
+  const add = (label: string, value: string | null | undefined) => {
+    if (value) rows.push({ label, value });
+  };
+
+  add('Turn', activity.turnId ?? null);
+  add('Task', activity.compactionTaskId ?? null);
+  add('Provider', activity.provider ?? null);
+  add('Boundary', activity.boundaryKey ?? null);
+  add('Source', activity.sourceSurface ?? null);
+  add('Run', activity.compactionRunId ?? null);
+  add('Agent', activity.compactionAgentName ?? null);
+  add('Model', activity.compactionModelIdentifier);
+  add('Summarizer provider', activity.summarizerProvider);
+  add('Completion', activity.completionStatus);
+  add('Summary characters', formatCount(activity.summaryCharCount));
+  add('Summary tokens (estimated)', formatCount(activity.summaryTokenCount));
+  add('Raw traces', formatCount(activity.rawTraceCount));
+  add('Compacted blocks', formatCount(activity.compactedBlockCount));
+  add('Facts', formatCount(activity.semanticFactCount));
+  add('Error', activity.errorMessage ?? null);
+
+  return rows;
+};

@@ -156,13 +156,14 @@ if (arg === "--version") {
     try { return (await client.listTools()).tools.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })); }
     finally { await client.close(); }
   };
-  // linked_skills: `BACKGROUND_STEP:{"seconds":N,"exitCode":C}` leaves one daemon run_command step open at turn end
+  // linked_skills: `BACKGROUND_STEP:{"seconds":N,"exitCode":C,"label"?:L}` leaves one daemon run_command step open at turn end
   // (a background task), then after N seconds writes the exit message AGY writes when such a command exits
   // (`<HOME>/.gemini/antigravity-cli/brain/<conversation>/.system_generated/messages/<uuid>.json`). The exit is
-  // never written if this process stops first, as a real daemon dies with AGY.
+  // never written if this process stops first, as a real daemon dies with AGY. `label` is appended to the command line
+  // (a long command, as a real one can be).
   const backgroundStepTurn = (spec) => {
     const step_index = turns * 10 + 1;
-    const CommandLine = `sleep ${spec.seconds} # background step ${step_index}`;
+    const CommandLine = `sleep ${spec.seconds} # background step ${step_index}${spec.label ? ` ${spec.label}` : ""}`;
     emit({ event: "step_update", step_update: { conversation_id, step_index, step_type: "tool", state: "ACTIVE",
       tool_name: "run_command", tool_info: { parameters: { CommandLine, IsDaemon: true } } } });
     setTimeout(() => {

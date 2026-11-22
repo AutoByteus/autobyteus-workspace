@@ -8,7 +8,8 @@ export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desk
 
 const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'settings', 'new'];
 /** `full=1`: the VNC Viewer's in-page full screen, its own entry, so Back leaves full screen first. */
-const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'contextFile', 'contextFileName', 'reference', 'message', 'full'] as const;
+/** `activityItem`: an Activity row's details (autobyteus-590 D-6), its activity id. */
+const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'contextFile', 'contextFileName', 'reference', 'message', 'full', 'activityItem'] as const;
 /** The Org route keys, built only by `agentOrgRouteQuery`; `activeWorkspaceTarget` resolves the open Org from them. */
 const ORG_KEYS = ['rootSubjectKind', 'definitionId', 'orgRunId', 'mode', 'memberAddress', 'agentRunId'] as const;
 /**
@@ -59,6 +60,9 @@ export function useMobileNavigation() {
     return messageId && referenceId ? { messageId, referenceId } : null;
   });
 
+  /** The Activity row whose details are open (autobyteus-590 D-6), or null. */
+  const openActivityItemId = computed(() => (screen.value === 'activity' ? one(route.query.activityItem) || null : null));
+
   /** The run list row the route names (an agent run or a Team subject), or null. */
   const openRowKey = computed(() => one(route.query.row) || null);
 
@@ -77,6 +81,7 @@ export function useMobileNavigation() {
       ? { ...subjectKeys(), screen: 'files' }
       : desktopFullScreen.value ? { ...subjectKeys(), screen: 'desktop' }
       : openReference.value ? { ...subjectKeys(), screen: 'messages' }
+      : openActivityItemId.value ? { ...subjectKeys(), screen: 'activity' }
         : screen.value === 'run' || screen.value === 'new' ? { ...subjectKeys() }
           : screen.value === 'list' ? route.query : { ...subjectKeys(), screen: 'run' };
     await router.replace({ path: route.path, query: parent });
@@ -130,11 +135,15 @@ export function useMobileNavigation() {
     push({ ...subjectKeys(), screen: 'files', contextFile: input.locator, contextFileName: input.name });
   const openMessageReference = (input: { messageId: string; referenceId: string }) =>
     push({ ...subjectKeys(), screen: 'messages', message: input.messageId, reference: input.referenceId });
+  /** Opens an Activity row's details over the Activity list (a history entry; Back returns to the list). */
+  const openActivityItem = (input: { activityId: string }) =>
+    push({ ...subjectKeys(), screen: 'activity', activityItem: input.activityId });
 
   return {
     screen, openRowKey, openFilePath, openFileWorkspaceId, openNodeFilePath, openContextFileEntry, openReference, desktopFullScreen,
+    openActivityItemId,
     back, toList, replaceRowKey, openRun, openView, openNewRun, openFile, openNodeFile, openContextFile, openMessageReference,
-    openDesktopFullScreen,
+    openDesktopFullScreen, openActivityItem,
   };
 }
 
