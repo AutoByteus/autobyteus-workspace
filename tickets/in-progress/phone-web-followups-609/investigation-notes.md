@@ -105,7 +105,8 @@ The items, as referred to in these notes:
 ### F. MSP-44/45 stale (Read; failure Reproduced by autobyteus-590 API/E2E)
 
 - `autobyteus-web/tests/e2e/mobile-heading-links-cases.mjs:41-42`: `NO_FOLLOW = ['#no-such-heading-480', 'other.md', 'other.md#x', '/x.md', './x.md']`. MSP-44 (desktop Files panel and phone viewer) and MSP-45 (Skills page) assert that clicking each does nothing (`followNothing`, `:162`).
-- Since `8c3810df95` (autobyteus-576), a relative link in a workspace file's Markdown preview opens the linked file. `/x.md` and links out of the root still open nothing, and the phone viewer is a workspace file too.
+- Since `8c3810df95` (autobyteus-576), a relative link in a workspace file's Markdown preview opens the linked file on the desktop Files panel and the Skills page. `/x.md` and links out of the root still open nothing.
+- Correction (SR-003, from implementation 2026-11-22): on the phone, 576's link opens nothing visible. `MarkdownPreviewer.openRelativeLink` calls `fileExplorerStore.openFilePreview`, but the phone viewer (`MobileFiles`) shows the file its route names; MSP-44's phone results are `opened:false` ×3. SR-001's statement that the phone viewer opens it was a claim taken on trust. → FU-004.
 - Evidence: autobyteus-590's `evidence/api-e2e/MSP-44-45-alone/` (both fail alone).
 
 ### G. MSP-55's allowlist (Read)

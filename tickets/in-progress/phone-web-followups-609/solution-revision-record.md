@@ -35,3 +35,12 @@
 - Remaining gaps: FU-001, FU-002.
 
 Review note: ARCH-REV-002 passed SR-002 (2026-11-22, `design-review-report.md`). The reviewer routed it to `/implementation_engineer`. N-2 is recorded as FU-003.
+
+## SR-003 (2026-11-22)
+
+- Trigger: implementation question on REQ-F. On the phone, 576's relative link in a Markdown file opens nothing visible (MSP-44 phone `opened:false` ×3).
+- Kind: evidence clarification. No intended behavior of this ticket changes, and the design is unchanged.
+- Affected IDs: REQ-F (phone part recorded, not asserted), DEC-009 (new), investigation notes F (corrected).
+- Approval: Solution Designer within the direction; user informed. No renewed review: the design and its scope are unchanged.
+- Remaining gaps: FU-004 (new), plus FU-001…FU-003.
+- Accepted from implementation: the MSP-44 fixture uses `../../out.md` (leaves the root; `../out.md` from `headings-480/` is inside it), and MSP-46 now follows only the missing heading (`other.md` in a conversation is a run-relative file link under D-H, covered by its own case).
