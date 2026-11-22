@@ -4,24 +4,22 @@
 
 - Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/requirements-doc.md` (Approved, unchanged)
 - Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/investigation-notes.md`
-- Upstream Solution Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/solution-revision-record.md` (SR-001..SR-017)
-- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-spec.md` (SR-017, commit `bc43dbc88b`; § SR-016 and § SR-017 Revisions, reviewed together)
-- Supplemental Task Artifacts Reviewed: `org-container-storage-contract.md` (§1, §7, §9 path row, §10 row), `contract-validation.md` (SR-017 note), `release-deployment-report.md` (DR-001)
-- Relevant Solution Revision IDs: SR-016, SR-017
+- Upstream Solution Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/solution-revision-record.md` (SR-001..SR-018)
+- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-spec.md` (SR-018, commit `f076e0e0a7`; § SR-016, § SR-017 and § SR-018 Revisions)
+- Supplemental Task Artifacts Reviewed: `org-container-storage-contract.md` (§10 UC-004 row), `contract-validation.md`, `release-deployment-report.md` (DR-001)
+- Relevant Solution Revision IDs: SR-016, SR-017, SR-018
 - Architecture Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-012`
-- Current Review Round: `12`
-- Trigger: SR-017 after ARCH-REV-011 Fail (AR-011)
-- Prior Review Round Reviewed: 11 (`ARCH-REV-011`, Fail)
-- Latest Authoritative Round: 12
-- Current-State Evidence Basis: the ARCH-REV-011 reads on `f2c0d2a902`:
-  - 587 released in `v1.5.14-beta.7`;
-  - `ReceivedFilesPlan.paths` absolute;
-  - `referenceFiles` stored at `root-communication-engine.ts:250-251`;
-  - the Org reference route serves the stored path;
-  - the base changes no stored schema.
+- Current Architecture Review Revision ID: `ARCH-REV-013`
+- Current Review Round: `13`
+- Trigger: SR-018 after ARCH-REV-012 Fail (AR-012)
+- Prior Review Round Reviewed: 12 (`ARCH-REV-012`, Fail)
+- Latest Authoritative Round: 13
+- Current-State Evidence Basis: the ticket's implemented migration at HEAD. Read:
+  - `app-data-migrations/migrations/agent-org-units-own-runs-v1/org-conversion.ts:50-100`: plan the split from the released log; renames; unit files; `writeUnitLogs`, then `removeOrgLog`; the container file written last;
+  - `org-log-split.ts:95-127`: each unit log is written whole and deterministically with `writeFileAtomic`, replacing an interrupted attempt's output;
+  - `org-unit-targets.ts:137-138`: temporary sibling, then a rename.
   
-  The design's Migration Plan is opened for its interruption and completion rules: step 1, "current container (has `units`) → already done"; the per-unit retry recognition "a unit whose target folder exists with a valid target file and `containedIn` is recognized as done"; step 6, the container file written last.
+  ARCH-REV-011/012 evidence on `f2c0d2a902` still holds.
 
 ## Routing Classification Review
 
@@ -30,53 +28,39 @@
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`. The requirements are unchanged.
-- SR-016 (runtime mapping) is accepted as in ARCH-REV-011.
-- SR-017 resolves AR-011's substance with option (a):
-  - one exact prefix map built from the conversion's own renames, compared after `path.resolve`;
-  - rewriting only app-owned typed path fields node-wide: log `referenceFiles` (written and other runs' logs, active and sealed), Task records and `updates[]`, ad-hoc Tasks and comments, trace `media.*` and `file_attachments[].uri`;
-  - reuse of the released frozen visitor and its rule ("typed fields only, never prose or provider history");
-  - prose, journals and provider sessions left as verbatim records, with the reason stated;
-  - readers unchanged, so no lasting mapping;
-  - a byte pre-check; reference IDs confirmed unstored; a predecessor writer check;
-  - 599 confirmed unreleased.
-- One rule is missing: how the node-wide rewrite is completion-gated across a retry (AR-012).
+- SR-018 gates the node-wide path rewrite. It is completion-gated by the container file, the single marker, written last per Org:
+  - every attempt classifies (tree v1 = pending, container = done) and runs steps 2–5 for pending Orgs, where per-unit recognition skips only the rename and the unit file;
+  - it then runs **one** node pass with the union of all pending Orgs' prefix maps. The maps are derived from tree v1 and include every committed rename (target present, source gone), and they also cover step 4's unit logs;
+  - step 6 writes the container file only after that Org's part of the pass succeeded.
+  
+  A crash anywhere before step 6 leaves tree v1, and the next attempt repeats steps 2–5 and the whole pass (pre-check, idempotent).
+- The writers of files the pass touches join R-4 (c), with the `waiting_for_<id>` wait and a parameterized follow-up that re-runs the pass with maps from container files. The registry test enforces the list.
+- The implemented split is compatible. Unit logs are written whole and deterministically (`org-log-split.ts:113-120`), so a repeated step 4 writes the same bytes and the following pass re-maps them. When the Org log was already removed in an earlier attempt, the retry skips the split (`hadLog` false) and keeps the unit logs that attempt wrote, and the pass still visits them.
 
 | Behavior ID | Status | Notes |
 | --- | --- | --- |
-| BEH-001..BEH-005, REQ-006, REQ-009, DEC-006, DEC-007 | Confirmed | As ARCH-REV-011 |
-| BEH-006 conversion: received-file references (REQ-007, AC-006) | Confirmed in substance; Needs Correction on interruption | AR-012 |
+| BEH-001..BEH-005, REQ-006, REQ-009, DEC-006, DEC-007 | Confirmed | As ARCH-REV-010/011 (SR-016 runtime mapping) |
+| BEH-006 conversion including 587 received-file references (REQ-007, AC-006) | Confirmed | SR-017 rewrite plus SR-018 gating |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Verdict | Notes |
 | --- | --- | --- |
-| `org-container-storage-contract.md` | Pass | §1, §7, the §9 path row and the §10 row are consistent with SR-017 |
-| `contract-validation.md` | Pass | The SR-017 note is right: values change, not shapes, so V-1..V-6 stand. The behavior is proven by the fixture test |
+| `org-container-storage-contract.md` | Pass | §10 UC-004 row states the marker and the re-run rule |
+| `contract-validation.md` | Pass | SR-017 note stands (values, not shapes) |
 
 ## Structural Verdicts
 
-All structural sections of ARCH-REV-010/011 stand. SR-017's rows:
+All structural sections of ARCH-REV-010..012 stand. The row ARCH-REV-012 failed now passes:
 
 | Section | Row | Verdict | Notes |
 | --- | --- | --- | --- |
-| Persisted-Data Transition | Released received-file paths (587) | Pass | Exact prefix map, typed fields only, frozen visitor reused, idempotent rewrite, readers unchanged (Principle 8/15) |
-| Persisted-Data Transition | Interruption and completion gating of the node-wide rewrite | Fail | AR-012 |
-| Legacy / Backward-Compatibility | No lasting mapping in readers | Pass | — |
+| Persisted-Data Transition | Interruption and completion gating of the node-wide rewrite | Pass | Container file as the single marker, written last. The pass re-runs every attempt with maps covering every committed rename. Tests: interrupt before and after the pass, a third start changes nothing, a late writer predecessor |
+| Persisted-Data Transition | Predecessors of the newly touched files | Pass | R-4 (c) extended with `waiting_for_<id>` and follow-ups from container-file maps |
 
 ## Material Premise Validation
 
-### `MP-12` — The conversion is interrupted after a unit's rename and before its path rewrite completes
-
-- Related contract: data migration guideline §7 (atomic per file; retry; completion; no journal), the design's Migration Plan "Interruption", Principle 5
-- Initiating basis kind: `Contract`. The guideline makes an interrupted attempt and its retry a governed case for a startup migration (§7 retry example; the design's own Interruption rule).
-- Forward path: the attempt renames unit `U`'s folder (rename committed). It stops before the node-wide rewrite has visited every file naming `agent_orgs/<org>/U/`. The next start retries:
-  - the per-unit recognition ("target folder exists with a valid target file and `containedIn` → done") skips `U`;
-  - if the container file (step 6) was already written, step 1 classifies the whole Org "already done".
-  
-  SR-017 places the rewrite "in the same per-Org step as the renames, after a unit's folder rename is committed". It does not say the rewrite is re-run for units recognized as done, or that the container file (the Org's completion marker) is written only after the node-wide rewrite has completed.
-- Consequence: some typed paths keep the old prefix permanently. Their references never open again, and nothing later revisits them.
-- Reachability: `Reachable` under the governing contract (the guideline's retry case)
-- Review consequence: AR-012.
+- `MP-12`: resolved by SR-018's gating.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -84,38 +68,35 @@ None.
 
 ## Review Decision
 
-`Fail`
+`Pass`
 
 ## Findings
 
-### AR-012 — The node-wide path rewrite has no completion gating across a retry
-
-- Type: `Design Impact`; severity Medium
-- Protects: REQ-007, AC-006 (references open after conversion); the Migration Plan's interruption and completion rules (guideline §7); Principle 5
-- Problem: the rewrite is idempotent, but nothing guarantees a retry runs it. The per-unit "done" check and step 1's "container has `units` → already done" can both skip it after a crash between a unit's rename and the end of the rewrite (MP-12).
-- Required update: state the gating.
-  - The node-wide rewrite for an Org is re-run (byte pre-check, idempotent) on every attempt until that Org's conversion is complete, including for units recognized as already renamed.
-  - The container file is written only after the rewrite has visited every candidate file for that Org's prefixes, so it stays the single completion marker (step 6 last).
-  - Add a test: interrupt after a rename and before the rewrite finishes, retry, and check that every typed path names the new folder.
-- Proportionate: one ordering rule and one test, in an irreversible migration.
-- Recipient: Solution Designer
+None. AR-011 and AR-012 are resolved, and AR-001..AR-010 stay resolved.
 
 ## Classification
 
-`Design Impact` (AR-012).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer.
+Implementation, per the handoff rules: the SR-016 re-integration with `origin/personal` `f2c0d2a902` or newer, plus SR-017 and SR-018.
 
 ## Residual Risks
 
-- **One node pass:** with several Orgs, do the rewrite as one node pass with all Orgs' prefix maps, not one pass per Org. Measure it on the synthetic large Org (earlier note).
-- **Predecessors of the newly touched files:** the rewrite now writes files outside the Org folder: other runs' logs (active and sealed), Task records, ad-hoc Tasks, traces of every agent. Classify the earlier migrations that write or rename those files under the registry rule, and apply R-4(c)'s wait (`waiting_for_<id>`) to them. Examples: `append-only-message-logs-v1`, the `raw-trace-*` layout migrations, `project-task-*`, `team-communication-projection-address`, `delegated-run-own-attachment-links`. The registry test enforces the classification.
-- Earlier notes still apply.
+Notes for implementation:
+
+- **Doc comment:** `org-log-split.ts` `removeOrgLog` says it runs once "the container file is in place", but `org-conversion.ts` calls it before the container file is written. The order is harmless under SR-018. Align the comment with the code.
+- **Step order:** the node pass runs between steps 2–5 and step 6 for every pending Org in each attempt, so it must come after `writeUnitLogs`. Do not place it inside the per-unit rename loop.
+- **Cost:** measure one node pass on the synthetic large Org plus a node with the user's layout sizes as synthetic data, never a copy.
+- Earlier notes (ARCH-REV-005/007/009/010) still apply.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-12 reachable under the guideline's retry contract)
-- Notes: SR-016 and SR-017 are right in substance: the runtime mapping, and a typed, exact, idempotent rewrite of released received-file paths with readers unchanged. Only the rewrite's completion gating across a retry needs stating. Classification is Large / High.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass`
+- Notes:
+  - SR-016's runtime mapping holds: units are ordinary runs, and the container hosts no agent and answers `remoteNodeOf: null`.
+  - SR-017's typed rewrite of released received-file paths holds: exact prefix map, frozen visitor, readers unchanged.
+  - SR-018 gates the rewrite with the container file as the single completion marker.
+  - Classification is Large / High.

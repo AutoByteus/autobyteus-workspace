@@ -16,6 +16,7 @@
 | ARCH-REV-010 | Round 10 / SR-015 after CRR-004 A-1 | SR-015 | Pass | Pass | None |
 | ARCH-REV-011 | Round 11 / SR-016 after delivery DR-001 | SR-016 | Pass | Fail (Design Impact) | AR-011 (new) |
 | ARCH-REV-012 | Round 12 / SR-016 + SR-017 | SR-016, SR-017 | Fail | Fail (Design Impact) | AR-011 (resolved in substance); AR-012 (new) |
+| ARCH-REV-013 | Round 13 / SR-018 resubmission | SR-016, SR-017, SR-018 | Fail | Pass | AR-011, AR-012 (resolved) |
 
 ## Revision Entries
 
@@ -303,3 +304,29 @@ None open.
 - Material classification changes: None (Large / High)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: one node pass for all Orgs; classify predecessors of the newly touched files (logs, traces, Task records, ad-hoc Tasks)
+
+### ARCH-REV-013 — Re-review of SR-018 (with SR-016 and SR-017)
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 13; SR-018 (commit `f076e0e0a7`) after ARCH-REV-012
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-design.md`; AR-012
+- Relevant solution revision IDs: SR-016, SR-017, SR-018
+- Prior authoritative decision: Fail
+- Current authoritative decision: Pass
+- What changed:
+  - The container file is the single completion marker, written last.
+  - Steps 2–5, then one node pass with the union of pending Orgs' maps (derived from tree v1, covering every committed rename), run every attempt.
+  - Predecessor writers of the touched files join R-4 (c), with follow-ups.
+  - Confirmed against the implemented migration: unit logs are written whole and deterministically (`org-log-split.ts:113-120`), and the container file is written last (`org-conversion.ts`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-011 | Resolved in substance | Resolved | § SR-017 | Typed rewrite, frozen visitor, readers unchanged |
+| AR-012 | Open (Medium) | Resolved | § SR-018; contract §10 UC-004 | Marker, re-run rule, tests (interrupt before and after the pass, third start, late predecessor) |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (Large / High)
+- Recommended recipient: implementation, per the handoff rules
+- Remaining risks or uncertainty: `removeOrgLog` doc comment vs call order; place the pass after `writeUnitLogs`; cost measurement
