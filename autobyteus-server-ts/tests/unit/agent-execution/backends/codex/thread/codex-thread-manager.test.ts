@@ -434,7 +434,7 @@ describe("CodexThreadManager", () => {
       );
       return { manager, request };
     };
-    const rpc = (code: number, message: string) => new CodexAppServerRpcError(`Codex app server RPC error ${code}: ${message}`, { rpcCode: code, rpcMessage: message });
+    const rpc = (code: number, message: string) => new CodexAppServerRpcError(`Codex app server RPC error ${code}: ${message}`, message);
 
     it("is a lost runtime session: the typed error with the thread, and no replacement thread", async () => {
       const { manager, request } = managerAnswering(rpc(-32600, "no rollout found for thread id thread-gone"));

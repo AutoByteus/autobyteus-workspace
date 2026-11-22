@@ -7,19 +7,12 @@ import type { AgentRunMetadata, PendingRuntimeSwitch } from "../../run-history/s
 export type RuntimeSwitchSide = Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: string }>;
 
 /**
- * Why the run continues in a fresh runtime session: the user switched its agent runtime or model (`runtime_change`), or its
- * runtime reported that the saved session no longer exists (`lost_session`, a session renewal; autobyteus-599). Both use the
- * same steps and stored records (boundary `runtime_switch`); the cause sets the key and the marker sentence.
- */
-export type RuntimeSwitchCause = "runtime_change" | "lost_session";
-
-/**
  * An agent runtime switch as the memory port and the notice port need it: the key that makes it idempotent, the
- * sides, and the marker sentence the chat and the journal show. Built once, by `buildRuntimeSwitchBetween` (a runtime
- * change) or `buildSessionRenewal` (a lost session).
+ * sides, and the marker sentence the chat and the journal show. Built once, by `buildRuntimeSwitchBetween` (the user changed
+ * the agent runtime or model) or `buildSessionRenewal` (the runtime lost the saved session, autobyteus-599). Both take the
+ * same steps and stored records (boundary `runtime_switch`); the builder sets the key prefix and the marker sentence.
  */
 export type RuntimeSwitch = Readonly<{
-  cause: RuntimeSwitchCause;
   key: string;
   /** The ID of the marker record: derived from the key, so every attempt writes and finds the same one. */
   markerTraceId: string;
@@ -49,7 +42,6 @@ export const buildRuntimeSwitchBetween = (input: {
   const to: RuntimeSwitchSide = { runtimeKind: input.to.runtimeKind, llmModelIdentifier: input.to.llmModelIdentifier };
   const key = `runtime_switch:${input.runId}:${input.pending.switchId}`;
   return Object.freeze({
-    cause: "runtime_change",
     key,
     markerTraceId: runtimeSwitchMarkerTraceId(key),
     runId: input.runId,
@@ -72,7 +64,6 @@ export const buildSessionRenewal = (input: {
   const side: RuntimeSwitchSide = { runtimeKind: input.side.runtimeKind, llmModelIdentifier: input.side.llmModelIdentifier };
   const key = `session_renewal:${input.runId}:${input.lostPlatformAgentRunId}`;
   return Object.freeze({
-    cause: "lost_session",
     key,
     markerTraceId: runtimeSwitchMarkerTraceId(key),
     runId: input.runId,

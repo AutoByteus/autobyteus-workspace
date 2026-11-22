@@ -14,7 +14,7 @@ import { turnRecords } from "../../../agent-work-journal/raw-trace-folder-fixtur
 
 /**
  * The session renewal of a lost runtime session (autobyteus-599, REQ-004, REQ-005; DEC-003, DEC-004): the same switch value
- * the switch steps take, with `cause: "lost_session"`, `from` = `to`, the lost session's ID in the key and the REQ-004 line.
+ * the switch steps take, with `from` = `to`, the lost session's ID in the key and the REQ-004 line.
  */
 describe("buildSessionRenewal", () => {
   const renewal = () => buildSessionRenewal({
@@ -24,7 +24,6 @@ describe("buildSessionRenewal", () => {
   it("is a lost-session switch with the same runtime and model on both sides and the REQ-004 line", () => {
     const value = renewal();
     expect(value).toEqual({
-      cause: "lost_session",
       key: "session_renewal:run-1:lost-session-1",
       markerTraceId: runtimeSwitchMarkerTraceId("session_renewal:run-1:lost-session-1"),
       runId: "run-1",
@@ -57,7 +56,6 @@ describe("buildSessionRenewal", () => {
       pendingRuntimeSwitch: { switchId: "switch-1",
         from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null, platformAgentRunId: "session-1" } },
     })!;
-    expect(change.cause).toBe("runtime_change");
     expect(change.key).toBe("runtime_switch:run-1:switch-1");
     expect(change.markerText).toBe("Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).");
   });
