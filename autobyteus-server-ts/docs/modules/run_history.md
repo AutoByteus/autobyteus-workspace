@@ -219,7 +219,8 @@ General lifecycle owners:
   aborts the candidate, and only when its release is confirmed `discard` removes the records written after the watermark, so a
   failed attempt leaves the previous agent's file as it was. A failure after the marker leaves the metadata pending; sending
   again finds the marker and the segment (the watermark is then ignored) and completes with one marker and one segment.
-  A lifecycle built without the port (application runs) fails closed on a pending switch.
+  A lifecycle built without the port fails closed on a pending switch. Application-scope lifecycles have the port for session
+  renewals only: an application run never has a pending switch.
 - A session renewal (autobyteus-599; GLOSSARY "Lost runtime session", "Session renewal") takes the same steps without a
   pending field. When the restore of the saved session fails with that runtime's own not-found answer
   (`SavedRuntimeSessionMissingError` for exactly the saved session) and the failed restore's release is confirmed,

@@ -310,6 +310,15 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     kernel.abortConstruction();
   });
 
+  it("gives the scope's standalone lifecycle the switch memory, so a lost runtime session renews (autobyteus-599, N-4)", async () => {
+    const { getDefaultRuntimeSwitchMemory } = await import("../../../src/agent-memory/services/runtime-switch-recorder.js");
+    const harness = createHarness();
+    const kernel = buildApplicationExecutionScopeKernel(harness.buildInput);
+    const lifecycle = (kernel.agentRunService as unknown as { lifecycleService: { switching: { memory: unknown } | null } }).lifecycleService;
+    expect(lifecycle.switching?.memory).toBe(getDefaultRuntimeSwitchMemory());
+    kernel.abortConstruction();
+  });
+
   it("refuses provider relays without the same host's pass revocation", () => {
     const harness = createHarness();
     for (const input of [

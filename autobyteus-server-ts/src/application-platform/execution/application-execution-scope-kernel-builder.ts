@@ -5,6 +5,7 @@ import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execu
 import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getDefaultRuntimeSwitchMemory } from "../../agent-memory/services/runtime-switch-recorder.js";
 import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
@@ -280,6 +281,9 @@ const buildRunServices = (
       workspaceManager: input.workspaceManager,
       tokenUsageReadiness,
       modelSelectionValidator: input.modelSelectionValidator,
+      // A lost runtime session renews by the switch steps (autobyteus-599, DS-001, N-4); an application run never has a
+      // pending runtime switch (`canSwitchRuntime`), so this port serves only renewals here.
+      switching: { memory: getDefaultRuntimeSwitchMemory() },
     },
   );
   const agentRunService = new AgentRunService(input.memoryDir, {
