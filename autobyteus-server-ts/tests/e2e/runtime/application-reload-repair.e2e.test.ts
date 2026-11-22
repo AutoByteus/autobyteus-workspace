@@ -125,9 +125,8 @@ describe("Application reload and repair (real studio server, Brief Studio, scrip
   afterAll(async () => {
     await fastify?.close();
     sources?.restore();
-    // Let workers that were still starting finish before their commands are removed.
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    fake.dispose();
+    // Workers that were still starting are stopped and awaited before their commands are removed (autobyteus-579 I-5).
+    await fake.dispose();
   }, 120_000);
 
   it("RE-01 an ACTIVE application stays usable after a package reload (AC-001)", async () => {

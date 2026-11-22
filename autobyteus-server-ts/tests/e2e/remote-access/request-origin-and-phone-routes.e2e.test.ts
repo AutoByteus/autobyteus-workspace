@@ -38,6 +38,11 @@ const REBINDING_HOST = "evil.example";
 const HOST_HINT = "(add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)";
 /** This computer: the node admits it (NA-3); a credential is still required (NA-1). */
 const THIS_COMPUTER = "127.0.0.1";
+/**
+ * How long an opened socket must stay open to count as accepted (a route that refuses after the upgrade closes it at once).
+ * A fixed wait per socket, so a test opens its accepted sockets together (autobyteus-579 I-2: seven in a row took 2.8 s of
+ * the 5 s test limit on a quiet machine, and failed on a busy one).
+ */
 const SETTLE_MS = 400;
 
 type UpgradeOutcome =
@@ -172,10 +177,8 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
       ["listed loopback development origin", { Origin: LISTED_LOOPBACK_ORIGIN }],
       ["configured origin", { Origin: CONFIGURED_ORIGIN }],
     ];
-    for (const [label, headers] of accepted) {
-      expect({ label, outcome: await upgrade("/ws/projects", headers) })
-        .toEqual({ label, outcome: { kind: "opened", close: null } });
-    }
+    const outcomes = await Promise.all(accepted.map(async ([label, headers]) => ({ label, outcome: await upgrade("/ws/projects", headers) })));
+    expect(outcomes).toEqual(accepted.map(([label]) => ({ label, outcome: { kind: "opened", close: null } })));
     for (const origin of ["https://desktop.tail.ts.net.evil.example", "file:///x", "https://desktop.tail.ts.net:8443", ...UNLISTED_LOOPBACK_ORIGINS]) {
       expect({ origin, outcome: await upgrade("/ws/projects", { Origin: origin, Host: "desktop.tail.ts.net" }) })
         .toEqual({ origin, outcome: { kind: "refused", status: 403 } });
@@ -265,12 +268,16 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     for (const routePattern of PHONE_WEBSOCKET_ROUTES) {
       expect({ routePattern, registered: started.fastify.hasRoute({ method: "GET", url: routePattern }) })
         .toEqual({ routePattern, registered: true });
-      const pathname = routePattern.replace(/:[A-Za-z]+/g, "phone-probe");
-      const outcome = await upgrade(`${pathname}?${query}`);
+    }
+    const routes = [...PHONE_WEBSOCKET_ROUTES];
+    const outcomes = await Promise.all(routes.map((routePattern) =>
+      upgrade(`${routePattern.replace(/:[A-Za-z]+/g, "phone-probe")}?${query}`)));
+    routes.forEach((routePattern, index) => {
+      const outcome = outcomes[index]!;
       expect(outcome.kind, routePattern).toBe("opened");
       const reason = outcome.kind === "opened" ? outcome.close?.reason ?? "" : "";
       expect(reason, routePattern).not.toMatch(/^(REMOTE_ACCESS_|PHONE_ACCESS_)/);
-    }
+    });
     expect(refusalLines()).toEqual([]);
   });
 
@@ -378,11 +385,13 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
       const response = await inject({ method: "POST", url: "/graphql", headers: { host, "content-type": "application/json" }, payload: typenameQuery });
       expect({ host, status: response.statusCode }).toEqual({ host, status: 200 });
     }
-    expect(await upgrade("/ws/projects", { Host: "mymac.local" })).toEqual({ kind: "opened", close: null });
-    expect(await upgrade(`/ws/projects?access_token=${encodeURIComponent(companyPhone.credential)}`, {
-      Host: "phone-entry.example.org",
-      Origin: "https://phone-entry.example.org",
-    })).toEqual({ kind: "opened", close: null });
+    expect(await Promise.all([
+      upgrade("/ws/projects", { Host: "mymac.local" }),
+      upgrade(`/ws/projects?access_token=${encodeURIComponent(companyPhone.credential)}`, {
+        Host: "phone-entry.example.org",
+        Origin: "https://phone-entry.example.org",
+      }),
+    ])).toEqual([{ kind: "opened", close: null }, { kind: "opened", close: null }]);
 
     for (const host of ["other.example.com", "evilcorp.example", "node.example.com.evil.example", "localhost.evil.example"]) {
       const response = await inject({ method: "POST", url: "/graphql", headers: { host, "content-type": "application/json" }, payload: typenameQuery });

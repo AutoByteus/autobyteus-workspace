@@ -22,7 +22,7 @@
           </div>
           <div v-else-if="activeFileData?.error && !hasEditorDraft" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
             <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
-            <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
+            <span class="block sm:inline sm:ml-1">{{ activeFileErrorMessage }}</span>
           </div>
           <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
             <FileViewer
@@ -168,7 +168,7 @@
         </div>
         <div v-else-if="activeFileData?.error && !hasEditorDraft" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
           <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
-          <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
+          <span class="block sm:inline sm:ml-1">{{ activeFileErrorMessage }}</span>
         </div>
         <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
           <FileViewer

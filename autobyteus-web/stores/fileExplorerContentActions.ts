@@ -253,7 +253,8 @@ export const fileExplorerContentActions = {
     fileState.relativeResourceContext = { kind: 'workspace', workspaceId }
     if (fileState.type === 'Text') {
       console.log(`[FileExplorer] Fetching text content for "${filePath}" via GraphQL.`)
-      void this.fetchFileContent(filePath, workspaceId)
+      // A refusal is already the file's error state and logged (autobyteus-579): nothing else handles it here.
+      this.fetchFileContent(filePath, workspaceId).catch(() => undefined)
       return
     }
 
@@ -398,7 +399,7 @@ export const fileExplorerContentActions = {
     const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
     if (file?.type === 'Text') {
       file.content = null
-      void this.fetchFileContent(filePath, workspaceId)
+      this.fetchFileContent(filePath, workspaceId).catch(() => undefined)
     }
   },
 

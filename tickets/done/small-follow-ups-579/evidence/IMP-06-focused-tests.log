@@ -1,0 +1,404 @@
+# IMP-06 the new and changed tests of I-1, I-3, I-4, I-5 (verbose)
+# Command: server: pnpm exec vitest run <semantic-memory-workspace-access, file-operations-graphql, file-explorer-path-boundary, os-file-event-probe, chokidar-watcher-runtime-links, claude-provider-turn-race, agent-runtimes-fake-dispose> --reporter=verbose; web: NUXT_TEST=true pnpm exec vitest run stores/__tests__/fileExplorerUnreadableFile.spec.ts demo --reporter=verbose
+# Commit: 4c77e3e78a
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+
+== server ==
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+ ✓ tests/unit/file-explorer/watcher/chokidar-watcher-runtime-links.test.ts > ChokidarWatcherRuntime with followSymbolicLinks: false > reports a change in the folder and never one inside a linked folder's target 1319ms
+ ✓ tests/unit/e2e-helpers/os-file-event-probe.test.ts > labelFileEventTimeout > labels ENVIRONMENT when the OS delivers no event to a fresh raw watch, then gives the wait's message 209ms
+ ✓ tests/unit/e2e-helpers/os-file-event-probe.test.ts > labelFileEventTimeout > labels INCONCLUSIVE when a fresh raw watch gets its event 12ms
+ ✓ tests/unit/e2e-helpers/os-file-event-probe.test.ts > labelFileEventTimeout > probes in the watched folder when it exists, and leaves no sentinel there 15ms
+ ✓ tests/unit/e2e-helpers/os-file-event-probe.test.ts > labelFileEventTimeout > probes in a new temp folder when the watched folder is gone (a moved package) 207ms
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts
+Platform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > refuses every write on semantic_ws_operator with WORKSPACE_READ_ONLY and leaves the folders byte-identical
+Created metadata-only FileSystemWorkspace at <tmp>/semantic-memory-access-zf6TfL/memory/semantic/operator.
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > refuses every write on semantic_global_ws with WORKSPACE_READ_ONLY and leaves the folders byte-identical
+Created metadata-only FileSystemWorkspace at <tmp>/semantic-memory-access-zf6TfL/memory/semantic-global.
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > lists links as link rows and refuses their content; reads regular files (AC-006)
+Created WorkspaceFileExplorer for semantic_ws_operator (graphql-folder-children).
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > lists links as link rows and refuses their content; reads regular files (AC-006)
+Created WorkspaceFileExplorer for semantic_global_ws (graphql-file-content).
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > never lists the opened semantic workspaces in the workspaces query (AC-011)
+Creating temp workspace at: <tmp>/semantic-memory-access-zf6TfL/temp
+Created metadata-only FileSystemWorkspace at <tmp>/semantic-memory-access-zf6TfL/temp.
+Initialized TempWorkspace at <tmp>/semantic-memory-access-zf6TfL/temp with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stderr | tests/unit/api/semantic-memory-workspace-access.test.ts > workspace content route on a semantic memory workspace > serves a regular file and refuses a link or a path through one (403 WORKSPACE_LINK_NOT_OPENED)
+Refused secret-link.md in workspace semantic_ws_operator: WORKSPACE_LINK_NOT_OPENED: 'secret-link.md' is a symbolic link; links in this workspace are listed but never opened.
+stderr | tests/unit/api/semantic-memory-workspace-access.test.ts > workspace content route on a semantic memory workspace > serves a regular file and refuses a link or a path through one (403 WORKSPACE_LINK_NOT_OPENED)
+Refused shared/secret.md in workspace semantic_ws_operator: WORKSPACE_LINK_NOT_OPENED: 'shared' is a symbolic link; links in this workspace are listed but never opened.
+stderr | tests/unit/api/semantic-memory-workspace-access.test.ts > workspace content route on a semantic memory workspace > serves a regular file and refuses a link or a path through one (403 WORKSPACE_LINK_NOT_OPENED)
+Refused secret-link.md in workspace semantic_ws_operator: WORKSPACE_LINK_NOT_OPENED: 'secret-link.md' is a symbolic link; links in this workspace are listed but never opened.
+stderr | tests/unit/api/semantic-memory-workspace-access.test.ts > workspace content route on a semantic memory workspace > serves a regular file and refuses a link or a path through one (403 WORKSPACE_LINK_NOT_OPENED)
+Refused shared/secret.md in workspace semantic_ws_operator: WORKSPACE_LINK_NOT_OPENED: 'shared' is a symbolic link; links in this workspace are listed but never opened.
+ ✓ tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > refuses every write on semantic_ws_operator with WORKSPACE_READ_ONLY and leaves the folders byte-identical 6ms
+ ✓ tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > refuses every write on semantic_global_ws with WORKSPACE_READ_ONLY and leaves the folders byte-identical 4ms
+ ✓ tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > lists links as link rows and refuses their content; reads regular files (AC-006) 14ms
+ ✓ tests/unit/api/semantic-memory-workspace-access.test.ts > GraphQL file explorer on a semantic memory workspace > never lists the opened semantic workspaces in the workspaces query (AC-011) 6ms
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts
+Closing FileSystemWorkspace semantic_ws_operator
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts
+Closing FileSystemWorkspace semantic_global_ws
+stdout | tests/unit/api/semantic-memory-workspace-access.test.ts
+Closing FileSystemWorkspace temp_ws_default
+ ✓ tests/unit/api/semantic-memory-workspace-access.test.ts > workspace content route on a semantic memory workspace > serves a regular file and refuses a link or a path through one (403 WORKSPACE_LINK_NOT_OPENED) 76ms
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e
+Platform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+Custom app data directory set to: <tmp>/file-ops-graphql-appdata-627fed
+Config file not found in new data directory: Error: Configuration file not found: <tmp>/file-ops-graphql-appdata-627fed/.env
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: <tmp>/autobyteus-file-ops-XEtYad/file_ops_ws
+Created metadata-only FileSystemWorkspace at <tmp>/autobyteus-file-ops-XEtYad/file_ops_ws.
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created and registered workspace ID: agent_ws_9962ef9b25b1f1ab9d2276cbc6c645b7d64750e6f10104a1f77676adbe60acbd
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created WorkspaceFileExplorer for agent_ws_9962ef9b25b1f1ab9d2276cbc6c645b7d64750e6f10104a1f77676adbe60acbd (graphql-write-file).
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Starting directory traversal for: '<tmp>/autobyteus-file-ops-XEtYad/file_ops_ws' with max_depth=null
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Directory traversal for '<tmp>/autobyteus-file-ops-XEtYad/file_ops_ws' completed in 0.0000 seconds.
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Closing FileSystemWorkspace agent_ws_9962ef9b25b1f1ab9d2276cbc6c645b7d64750e6f10104a1f77676adbe60acbd
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: <tmp>/autobyteus-file-ops-fg3QCh/rename_ws
+Created metadata-only FileSystemWorkspace at <tmp>/autobyteus-file-ops-fg3QCh/rename_ws.
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created and registered workspace ID: agent_ws_87cb99ecfdd9c569561c6049cc97611458ed4d917eca5c5cc3984ed7b4f2cbb1
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created WorkspaceFileExplorer for agent_ws_87cb99ecfdd9c569561c6049cc97611458ed4d917eca5c5cc3984ed7b4f2cbb1 (graphql-create-file).
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Starting directory traversal for: '<tmp>/autobyteus-file-ops-fg3QCh/rename_ws' with max_depth=null
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Directory traversal for '<tmp>/autobyteus-file-ops-fg3QCh/rename_ws' completed in 0.0010 seconds.
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Closing FileSystemWorkspace agent_ws_87cb99ecfdd9c569561c6049cc97611458ed4d917eca5c5cc3984ed7b4f2cbb1
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL 19ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file 7ms
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+Platform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+prisma:info Starting a sqlite pool with 21 connections.
+ ✓ tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003) 577ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > keeps the first provider turn's queued text when the runtime has already moved on (AC-002) 31ms
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e
+Platform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+Custom app data directory set to: <tmp>/path-boundary-e2e-appdata-SEnv12
+Config file not found in new data directory: Error: Configuration file not found: <tmp>/path-boundary-e2e-appdata-SEnv12/.env
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: <tmp>/autobyteus-path-boundary-e2e-1KC6kA/ignored_ws
+Created metadata-only FileSystemWorkspace at <tmp>/autobyteus-path-boundary-e2e-1KC6kA/ignored_ws.
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created and registered workspace ID: agent_ws_2dd9a20bd7e1ebbf723d99c18ed29526548b86a1bfaa997ae7427d4373d46125
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created WorkspaceFileExplorer for agent_ws_2dd9a20bd7e1ebbf723d99c18ed29526548b86a1bfaa997ae7427d4373d46125 (graphql-folder-children).
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Closing FileSystemWorkspace agent_ws_2dd9a20bd7e1ebbf723d99c18ed29526548b86a1bfaa997ae7427d4373d46125
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: <tmp>/autobyteus-path-boundary-e2e-YZM8v2/ws
+Created metadata-only FileSystemWorkspace at <tmp>/autobyteus-path-boundary-e2e-YZM8v2/ws.
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created and registered workspace ID: agent_ws_f7f89262c9f6c9b50e3787f39b9e1e08494e53fbd7ac2d883b78e81733cc00ea
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created WorkspaceFileExplorer for agent_ws_f7f89262c9f6c9b50e3787f39b9e1e08494e53fbd7ac2d883b78e81733cc00ea (graphql-folder-children).
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Starting directory traversal for: '<tmp>/autobyteus-path-boundary-e2e-YZM8v2/ws' with max_depth=null
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Directory traversal for '<tmp>/autobyteus-path-boundary-e2e-YZM8v2/ws' completed in 0.0010 seconds.
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Closing FileSystemWorkspace agent_ws_f7f89262c9f6c9b50e3787f39b9e1e08494e53fbd7ac2d883b78e81733cc00ea
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation 24ms
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs 12ms
+ ✓ tests/unit/e2e-helpers/agent-runtimes-fake-dispose.test.ts > prepareFakeRuntimes().dispose > stops a fake that still runs, waits for its exit, then removes the root 64ms
+ ✓ tests/unit/e2e-helpers/agent-runtimes-fake-dispose.test.ts > prepareFakeRuntimes().dispose > never touches a process that is not one of this root's fakes 11ms
+ Test Files  7 passed (7)
+      Tests  18 passed (18)
+   Start at  19:54:43
+   Duration  14.38s (transform 5.19s, setup 205ms, import 10.41s, tests 2.74s, environment 0ms)
+exit 0
+== web ==
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "<worktree>/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "<worktree>/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "<worktree>/autobyteus-web/stores/agentRunStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ RUN  v3.2.7 <worktree>/autobyteus-web
+Duplicated imports "getters", the one from "<worktree>/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "<worktree>/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "<worktree>/autobyteus-web/stores/agentRunStore.ts" has been ignored and "<worktree>/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts > the demo boundary > has no product file importing demo/ 380ms
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts > the demo boundary > enters the demo only from nuxt.config.ts, for AUTOBYTEUS_DEMO_BUILD=1 1ms
+stderr | demo/__tests__/demoInventory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | demo/__tests__/demoStreams.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | demo/__tests__/demoWorld.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | stores/__tests__/fileExplorerUnreadableFile.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | demo/__tests__/demoWorld.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | demo/__tests__/demoInventory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | demo/__tests__/demoStreams.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a missing file opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Opening file: notes.md
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a missing file opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Determined file type for "notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  contentRevision: 0,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "notes.md" via GraphQL.
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file outside the workspace opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Opening file: notes.md
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file outside the workspace opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Determined file type for "notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  contentRevision: 0,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "notes.md" via GraphQL.
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a semantic-memory link that is not opened opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Opening file: notes.md
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a semantic-memory link that is not opened opens in the error state with the node's message, never as text (AC-001)
+[FileExplorer] Determined file type for "notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  contentRevision: 0,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "notes.md" via GraphQL.
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file whose text is an error-shaped JSON shows as that text (AC-002)
+[FileExplorer] Opening file: error.json
+stdout | stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file whose text is an error-shaped JSON shows as that text (AC-002)
+[FileExplorer] Determined file type for "error.json": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'error.json',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  contentRevision: 0,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "error.json" via GraphQL.
+ ✓ stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a missing file opens in the error state with the node's message, never as text (AC-001) 5ms
+ ✓ stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file outside the workspace opens in the error state with the node's message, never as text (AC-001) 3ms
+ ✓ stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a semantic-memory link that is not opened opens in the error state with the node's message, never as text (AC-001) 2ms
+ ✓ stores/__tests__/fileExplorerUnreadableFile.spec.ts > fileExplorerStore: a file the node does not give > a file whose text is an error-shaped JSON shows as that text (AC-002) 2ms
+ ✓ demo/__tests__/demoWorld.spec.ts > the demo world > lists each tool call once: an agent's Activity holds its conversation's calls, by their ids 3ms
+ ✓ demo/__tests__/demoWorld.spec.ts > the demo world > gives every sample agent Activity, a stopped run's too (REQ-004) 0ms
+ ✓ demo/__tests__/demoWorld.spec.ts > the demo world > names only files and folders the demo folder has 0ms
+ ✓ demo/__tests__/demoWorld.spec.ts > the demo world > answers what the phone reads when it opens each run 17ms
+ ✓ demo/__tests__/demoWorld.spec.ts > the demo world > keeps a stopped run's Settings in memory, and refuses a live run's as the node does 0ms
+ ✓ demo/__tests__/demoInventory.spec.ts > the demo node answers the measured inventory > has a handler for every GraphQL operation the phone sends 1ms
+ ✓ demo/__tests__/demoInventory.spec.ts > the demo node answers the measured inventory > has a route for every REST request the phone sends to its node 0ms
+ ✓ demo/__tests__/demoInventory.spec.ts > the demo node answers the measured inventory > opens every stream the phone opens, with its CONNECTED or first frame (run-status: its snapshot once subscribed) 12ms
+ ✓ demo/__tests__/demoStreams.spec.ts > the demo streams > /ws/agent: every agent run, opened, sent to and played out, parses as the client parses it 53ms
+ ✓ demo/__tests__/demoStreams.spec.ts > the demo streams > /ws/agent-team: every Team, a message to each member, parses with the Team stream contract 63ms
+ ✓ demo/__tests__/demoStreams.spec.ts > the demo streams > /ws/agent-org and /ws/agent-collaboration parse with the collaboration contract, and commands are acknowledged 26ms
+ ✓ demo/__tests__/demoStreams.spec.ts > the demo streams > /ws/run-status: a snapshot of every run, then each change, parses with the run-status contract 3ms
+ ✓ demo/__tests__/demoStreams.spec.ts > the demo streams > terminate stops a run and its delegated runs, and a later message starts it again 3ms
+ Test Files  5 passed (5)
+      Tests  19 passed (19)
+   Start at  19:55:00
+   Duration  7.82s (transform 4.08s, setup 26.92s, collect 1.02s, tests 578ms, environment 1.01s, prepare 747ms)
+exit 0
+== agent-semantic-memory E2E (SM-11, the fileContent refusal over HTTP) ==
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Platform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+Custom app data directory set to: <tmp>/sm-e2e-8lNEdc
+Updated config file path to <tmp>/sm-e2e-8lNEdc/.env
+Loading environment from: <tmp>/sm-e2e-8lNEdc/.env
+◇ injected env (2) from ../../../../../..<tmp>/sm-e2e-8lNEdc/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: <worktree>/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: <worktree>/autobyteus-server-ts
+APP DATA DIRECTORY: <tmp>/sm-e2e-8lNEdc
+DB DIRECTORY: <tmp>/sm-e2e-8lNEdc/db
+LOGS DIRECTORY: <tmp>/sm-e2e-8lNEdc/logs
+DOWNLOAD DIRECTORY: <tmp>/sm-e2e-8lNEdc/download
+MEMORY DIRECTORY: <tmp>/sm-e2e-8lNEdc/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+AgentRunManager initialized.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+AgentRunManager initialized.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Loading workspace packages to trigger registration...
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully loaded workspace packages.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Creating temp workspace at: <tmp>/sm-e2e-8lNEdc/temp_workspace
+Created metadata-only FileSystemWorkspace at <tmp>/sm-e2e-8lNEdc/temp_workspace.
+Initialized TempWorkspace at <tmp>/sm-e2e-8lNEdc/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Core Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Published Artifact Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Agent Communication Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'search_memory'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Memory Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Browser Tools
+stderr | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Successfully registered tool definition: 'search_web'
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Registered required tool unit: Search Tools
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder
+Agent Definition created successfully with ID: sm-scout-5bc254
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder
+Agent Definition with ID sm-scout-5bc254 updated successfully.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropped at the next save; reads create no folder
+Agent Definition with ID sm-scout-5bc254 updated successfully.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-02 (AC-002, AC-003): a package agent's file holding the key reads like any agent's; no personal setting holds it
+Agent Definition with ID sm-declared-off-5bc254 updated successfully.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed
+Created metadata-only FileSystemWorkspace at <tmp>/sm-e2e-8lNEdc/memory/semantic/sm-scout-5bc254.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed
+Created WorkspaceFileExplorer for semantic_ws_sm-scout-5bc254 (graphql-folder-children).
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed
+Created metadata-only FileSystemWorkspace at <tmp>/sm-e2e-8lNEdc/memory/semantic-global.
+stdout | tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read only, links never opened, never listed
+Created WorkspaceFileExplorer for semantic_global_ws (graphql-file-content).
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts (10 tests | 7 skipped) 535ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 7 skipped (10)
+   Start at  18:19:19
+   Duration  9.64s (transform 6.34s, setup 52ms, import 8.33s, tests 535ms, environment 0ms)

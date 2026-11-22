@@ -80,8 +80,11 @@ describe("GraphQL file explorer on a semantic memory workspace", () => {
     expect(top.children.map((child: { name: string; is_symbolic_link: boolean }) => [child.name, child.is_symbolic_link])).toEqual([
       ["notes", false], ["secret-link.md", true], ["shared", true],
     ]);
-    expect(JSON.parse(await resolver.fileContent("semantic_ws_operator", "secret-link.md")).error).toMatch(/^WORKSPACE_LINK_NOT_OPENED/);
-    expect(JSON.parse(await resolver.fileContent("semantic_ws_operator", "shared/secret.md")).error).toMatch(/^WORKSPACE_LINK_NOT_OPENED/);
+    for (const file of ["secret-link.md", "shared/secret.md"]) {
+      await expect(resolver.fileContent("semantic_ws_operator", file)).rejects.toMatchObject({
+        message: expect.stringMatching(/^WORKSPACE_LINK_NOT_OPENED/), extensions: { code: "WORKSPACE_LINK_NOT_OPENED" },
+      });
+    }
     expect(JSON.parse(await resolver.folderChildren("semantic_ws_operator", "shared")).error).toMatch(/^WORKSPACE_LINK_NOT_OPENED/);
     expect(await resolver.fileContent("semantic_ws_operator", "notes/linkedin.md")).toBe("# LinkedIn\n");
     expect(await resolver.fileContent("semantic_global_ws", "product.md")).toBe("# Product\n");

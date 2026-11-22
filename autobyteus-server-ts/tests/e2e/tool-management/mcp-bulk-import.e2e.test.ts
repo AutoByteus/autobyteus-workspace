@@ -24,6 +24,8 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+// autobyteus-579 I-2: a test that waits only for this server's answers, which a busy FSEvents stalls (TESTING.md).
+import { SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS } from "../../helpers/os-latency-under-load.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type ImportResult = {
@@ -96,7 +98,7 @@ describe("MCP bulk import through GraphQL", () => {
     expect(stored.mcpServers.ok.env).toEqual({ API_KEY: { vaultSecretId: expect.stringMatching(/^mcp\.[0-9a-f-]{36}$/) }, LOG_LEVEL: "debug" });
     expect(await storedText()).not.toMatch(DUMMY_SECRET);
     await deleteServer("ok");
-  });
+  }, SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS);
 
   it("imports the content of the app's own mcps.json, keeping its own references and marking foreign ones as needing a secret", async () => {
     for (const input of [
