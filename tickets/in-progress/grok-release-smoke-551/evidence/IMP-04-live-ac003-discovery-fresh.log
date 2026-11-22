@@ -1,0 +1,14 @@
+# IMP-04 live AC-003, fresh sign-in case: real Grok discovery, timed (no session, no prompt, no quota)
+# command: a temporary vitest file (tests/unit/tmp-diag/grok-discovery-live.test.ts, removed after) on commit 5054f97a17,
+#   three rounds of: runAcpDiscoveryHandshake(grok, withinMs 0) [initialize only]; runAcpDiscoveryHandshake(grok,
+#   withinMs 3000); discoverGrokBuildModels() [probes + handshake + normalizer]. Grok Build 1.0.92; load ~32-34; 2026-11-22 08:16 UTC
+GROK_LIVE_DISCOVERY {"i":1,"initializeOnlyMs":789,"initializeList":["grok-4.7"],"handshakeWithWaitMs":3787,"followUp":null,"discoverGrokBuildModelsMs":3855,"models":["grok-4.7"]}
+GROK_LIVE_DISCOVERY {"i":2,"initializeOnlyMs":789,"initializeList":["grok-4.7"],"handshakeWithWaitMs":3829,"followUp":null,"discoverGrokBuildModelsMs":3949,"models":["grok-4.7"]}
+GROK_LIVE_DISCOVERY {"i":3,"initializeOnlyMs":806,"initializeList":["grok-4.7"],"handshakeWithWaitMs":3775,"followUp":null,"discoverGrokBuildModelsMs":3861,"models":["grok-4.7"]}
+# Reading: fresh sign-in, so Grok announces nothing; discovery returns grok-4.7 from the answer after the whole wait:
+#   about initialize + 3.0-3.1 s (target: initialize + 3.3 s), total 3.86-3.95 s (QR-001: at most ~5 s added).
+# Grok log (~/.grok/logs/unified.jsonl; fields ts, pid, msg, phase, elapsed_ms, had_real_catalog, model_count only),
+#   08:16:26-08:16:48 UTC, nine Grok processes (85295 ... 92550): bootstrap 161-179 ms, then
+#   "model catalog: auth refresh watcher started {had_real_catalog: true, model_count: 1}" each.
+# The stale case (built-in list, then _x.ai/models/update) needs Grok's first start after >= 6 h unused (P15); Grok had
+#   been used minutes before, so it is left to AC-006's first smoke run as the requirements plan (DEC-004 otherwise).
