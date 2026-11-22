@@ -33,3 +33,5 @@
 - Routing impact: architecture review of SR-002.
 - Design case: added to `docs/design-cases.md` Case 5 (ASM-1 validated against `list()`, not the read used).
 - Remaining gaps: FU-001, FU-002.
+
+Review note: ARCH-REV-002 passed SR-002 (2026-11-22, `design-review-report.md`). The reviewer routed it to `/implementation_engineer`. N-2 is recorded as FU-003.
