@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-008 | Design | Architecture re-review ARCH-REV-002 Fail | AR-001 (narrowed), AR-002 (narrowed), AR-007, N-1, N-2 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-002, REQ-003, REQ-006, REQ-007; DEC-004 kept | Team space + one translator; per-unit snapshot connections; Org routes as container edges; no trace rewrite |
 | SR-007 | Requirements | The user's DEC-006, 2026-11-22 | AR-004 | Ready for Approval | Approved | DEC-006, REQ-005; design R-2, R-3 | A message wakes a unit the user stopped |
 | SR-006 | Mixed | Architecture review ARCH-REV-001 Fail | AR-001..AR-006 (AR-004 Requirement Gap) | Approved; design Ready (reviewed Fail) | Ready for Approval (DEC-006); design revised | REQ-003, REQ-005, REQ-006, REQ-007; DEC-006 new | Address rule, delivery reuse, Org view spine, migration input map, Org inventory; DEC-006 to the user |
 | SR-005 | Design | Architecture design | AF-01..AF-09 | Approved; design N/A | Approved; design Ready | REQ-001..REQ-009 (realized) | design-spec.md; Large / High |
@@ -66,3 +67,12 @@
 - Trigger: the user, 2026-11-22: "To be honest I think since it's a team right and there are also independent in general what do you mean by any handoff if I stop a team but I think a message you can wick it up right".
 - Decision: a message from another unit (or the user) wakes a unit the user stopped on its own; units are independent. REQ-005 extended; design R-2 (admission restores any not-live `same_container` receiver) and R-3 (command routing) updated.
 - Status: requirements `Approved` (SR-007). Next action: architecture re-review of SR-006/SR-007.
+
+### SR-008 — Design revision after ARCH-REV-002
+
+- Trigger: `/architecture_reviewer` ARCH-REV-002 (Fail): AR-003..AR-006 resolved; AR-001 narrowed (prefixed Team-tree premise false), AR-002 narrowed (async snapshot under a paused relay), AR-007 new (three web Org routes); N-1, N-2.
+- R-1': option (i): contained Team trees stay in team space; `ContainedTeamAddressSpace` translates at four named points (step-1 resolution, presentation of rules/notices/refusals, cross-run sender/receiver address, Org view and rows); autobyteus-22 untouched; migration writes team-space trees and current-writer-shaped log lines. IF-06 premise withdrawn.
+- R-3'': per-unit snapshot connections; relay only post-base events per unit; queue during composition; test for exactly-once.
+- R-7: all three Org routes kept as container edges; web unchanged (DEC-004 holds); saved references keep the Org owner form; no trace rewriting (frozen visitor dropped).
+- N-1 one fact (`sameContainer` from the container directory); N-2 Stop fan-out separate from interrupts.
+- Intended behavior changed: No. Classification: Large / High. Next action: architecture re-review.

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007` (SR-006 revised SR-005 after `ARCH-REV-001`, § SR-006 Revision supersedes conflicting lines; SR-007 applies the user's DEC-006)
+- Current solution revision ID: `SR-008` (SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged.
 - User approval of the design: `Not required`.
@@ -234,3 +234,42 @@ Rule: H = the Org hosted its units' execution, log, attachments or delegations �
 
 - One net notice when Team and Org rules change for one agent from one event: the container's Org-rule changes queue into the same `TeamChangeNoticeSource` net-merge.
 - FU-003's new peer request type: an older peer refuses it (DESIGN.md rule 9); the release notes say so.
+
+## SR-008 Revision (after ARCH-REV-002: AR-001 narrowed, AR-002 narrowed, AR-007 new, N-1, N-2; supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+
+### R-1' Address rule, realized at one boundary (AR-001, option (i))
+
+- A contained Team run's tree stays in **team space**, the current Team tree contract (`team-run-execution-tree-schema.ts:47,54-55`: members are direct children of `/`). IF-06's "prefixed member addresses are a supported shape" is stale (corrected by autobyteus-22 SR-008 N-7) and is withdrawn here.
+- The contained Team root owns one translator, `ContainedTeamAddressSpace` (`agent-team-execution/container/contained-team-address-space.ts`), built from `containedIn.address` (prefix `P`, e.g. `/software_engineering_team`): `toOrg('/x') = P + '/x'`, `fromOrg(P + '/x') = '/x'`, `fromOrg(other) = null`. It is applied at exactly these points of a contained Team root, and nowhere else:
+  1. Recipient resolution (`message-recipient-resolution.ts`): for a contained Team, step 1 matches only addresses under `P/`, strips `P` and resolves in team space; every other address goes to step 2 (the container's `placementAt`). A bare `/x` from a member is therefore not a teammate (as in an Org today) and step 2 answers not found unless the Org has a unit at `/x`.
+  2. Presentation to the agent: `get_handoff_rules` and the Handoffs prompt section present the Team's own rules with `toOrg` (Org rules from the container are already Org space); autobyteus-22 notice texts present `Joined`/`Left` addresses with `toOrg`; refusals name `toOrg` addresses.
+  3. The Team's outgoing cross-run messages: the sender address given to `CrossRunMessageDelivery` is `toOrg(member)`; incoming ones address the member by `fromOrg`.
+  4. The Org view composition (R-3'') projects the contained Team's members, statuses and messages with `toOrg`; the Org rows (`run-tree-view.ts` Org path) name them with `toOrg`.
+- Untouched: the Team tree schema and config builder, `TeamExecutionIndex` (instance `/`), autobyteus-22's planner, committer and stored texts (they work in team space; only presentation translates), the Team's own view, web selectors.
+- Example (unchanged behavior): Org agent `/solution_designer`, Team `/software_engineering_team`. From `/software_engineering_team/code_reviewer` (stored `/code_reviewer`): `send_message_to('/software_engineering_team/solution_designer')` → step 1 (prefix) → `/solution_designer` in team space → teammate; `send_message_to('/solution_designer')` → not under `P/` → step 2 → the Org agent's run.
+- Migration step 2 (replaces the SR-006 wording): the Team tree is written in team space: members, coordinator and the Team's own rules have `P` stripped (the Org compiler's mounted-Team endpoints, `collaboration-handoff-compiler.ts:57-64`, are the inverse). Log lines are written in the shape the current code writes for the same message: a line between two members of the Team in team space in the Team log; a cross-unit line in each run's log with that run's own member in its own space and the other party as the current cross-run writer records it (Org address, `counterpart`); lines with an outside party per R-4 (b).
+
+### R-3'' Snapshot without loss or doubling (AR-002)
+
+- The composition takes, for each live unit, a **per-unit `openViewSnapshotConnection`** (the unit's snapshot and its events after that unit's base, delivered by the connection itself, atomically), and composes the Org snapshot from those unit snapshots; stored or not-restored units contribute their stored snapshots.
+- It relays, per unit, only the events its connection delivers after that unit's base, in arrival order, into the container's stream after the Org snapshot is published (events arriving while the Org snapshot is composed are queued per connection, not dropped and not re-read). The Org base is the container stream's sequence when the Org snapshot is published.
+- An in-band Org snapshot closes and re-opens the per-unit connections.
+- Test: a unit publishing continuously while the Org view opens and re-snapshots: every unit event appears exactly once, after the base.
+
+### R-7 The web's Org routes stay, as thin edges through the container (AR-007; R-4 (a) revised)
+
+Decision (a) for all three routes; the web stays unchanged (DEC-004 holds):
+
+| Route (web builder) | Server today | After |
+| --- | --- | --- |
+| `/drafts/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/…`, `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/…` (`contextAttachmentModel.ts:12-13`) | Owner `{orgRunId, agentRunId}` proved by the Org tree, files in the member's folder | Same routes and owner form; `context-file-owner-resolver.ts` proves ownership through the container (`agentRunId` is a member of one of the Org's units) and resolves the unit run's folder |
+| `/agent-org-runs/:orgRunId/communication/messages/:messageId/references/:referenceId/content` (`agentOrgExecutionContext.ts:324` → `api/rest/agent-org-references.ts:37`) | Read from the Org log | Same route; the container asks its units' reference content (each unit's existing log reader) for the message ID, bounded by the unit count |
+| `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content` (`runFileChangeContentPath.ts:18` → `api/rest/run-file-changes.ts:99`) | Org membership resolves the member | Same route; the container resolves `agentRunId` to its unit run and delegates to that run's file-change entry (Team member or agent) |
+
+- R-4 (a) becomes: draft and final context files **move with their folders**; saved references keep the Org owner form `{orgRunId, agentRunId}`, which stays the Org view's current owner contract, resolved through the container. **No trace rewriting**: the frozen visitor is dropped. New attachments made from the Org view use the same Org owner form (the web builds it), stored in the unit run's folder.
+- R-5 rows updated: `context-files/*`, `api/rest/context-files.ts` (Org routes), `api/rest/agent-org-references.ts`, `agent-org-execution/services/agent-org-reference-content-service.ts`, `api/rest/run-file-changes.ts` (Org route), `run-history/services/agent-org-member-run-view-projection-service.ts` — kind C (container edge), not H-removed.
+
+### N-1, N-2
+
+- N-1: "same container" is one fact, answered by the container directory (`sameContainer(runA, runB)` from `containedIn`); the `same_container` admission calls it; nothing else derives it.
+- N-2: the Org Stop fan-out (DS-003, stop every unit root) stays separate from a unit's interrupt (`RUN_NOT_ACTIVE` when not live).
