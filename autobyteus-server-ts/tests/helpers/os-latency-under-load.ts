@@ -22,3 +22,12 @@ export const IN_PROCESS_SERVER_HOOK_TIMEOUT_MS = 60_000;
 
 /** vitest test timeout for a test that waits for one or more OS file events. */
 export const FILE_EVENT_TEST_TIMEOUT_MS = OS_FILE_EVENT_WAIT_MS + 15_000;
+
+/**
+ * vitest test timeout for a test that waits only for the answers of a running server (in-process or built) that runs folder
+ * watchers. With `fseventsd` at 99–170% CPU, those servers' requests that answer in 5–120 ms took over 5 s, so vitest's 5 s
+ * default failed while the feature worked (autobyteus-576 API-08b at load 8–12, autobyteus-583 API-07b at load 45–55;
+ * autobyteus-579 I-2). CPU load alone does not do it: at load 127 with `fseventsd` at 60% the same tests took at most 0.7 s.
+ * A passing test still ends as soon as its last answer arrives.
+ */
+export const SERVER_UNDER_FSEVENTS_LOAD_TEST_TIMEOUT_MS = 30_000;
