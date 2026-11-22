@@ -95,3 +95,4 @@
 - Recommendation not taken: keep SR-010 R1's order (one owner of the closed rule, `admitPeerRun`); a non-assigner's message with files to a closed peer run uploads, then is refused, and its bytes are swept after 24 h (rare; costs only bandwidth).
 - Note for implementation: `task-delegation.ts` is at 498 non-empty lines; any addition there splits the file (DESIGN.md size rule).
 - Next: implementation applies CR-587-06/07; API/E2E CR-587-05; then code review.
+- 2026-11-22 (SR-012): the founder discussed (1) one rule with no exception for a Task's files and (2) no workspace rule at all (security from pairing and signing), then confirmed the decisions as made (DEC-001 workspace rule, DEC-009 exception, DEC-010 (c)). No change.
