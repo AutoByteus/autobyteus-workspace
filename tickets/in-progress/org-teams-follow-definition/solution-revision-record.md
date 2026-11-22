@@ -141,3 +141,7 @@
 - Trigger: `/code_reviewer` CRR-004 (failure-origin review): A-1, a minor Requirement Gap — another unit messaging a Team unit's removed member by `P/x` gets the generic not-found text while a teammate gets the exact former-member refusal. F-1..F-4 are implementation-owned (not affected).
 - Decision DEC-007 (Solution Designer, within the direction: REQ-002 covers every autobyteus-22 behavior including the clear refusal; consistency across surfaces; user informed): the same former-member refusal naming the member at its Org address. Design SR-015: `CollaborationTree.resolve` asks the Team unit for `formerMemberAt` and presents `P/x`; test named.
 - Route: architecture reviewer (revised package), to forward to the implementation round under way.
+
+#### Review note on SR-015 (no new revision)
+
+- 2026-11-22: architecture review `ARCH-REV-010` — Pass on SR-015 (commit be7e3110c0), no findings; forwarded to `/implementation_engineer`. Notes: a refusal must not wake a unit (a non-live Team unit answers from its stored tree); the reused text says "your team", which a sender from another unit may read loosely. Wording kept as decided in DEC-007 for now (agent-facing, one text for all senders); the alternative ("… is no longer a member of the team /software_engineering_team …") was offered to the user.
