@@ -321,8 +321,12 @@ each offers, then delegates with `delegate_task` without being told an address.
   into the view of an Agent run that is one of its runs (its Messages; a Team or Org view never shows it), named with
   the address and this node's name for the peer (`RemoteRunChannel.peerName`). Older lines carry no record: a linked
   run's other agent is named from its Task entry, an unlinked one by its run ID.
-- **Saved Task.** `delegate_task` with `task_id` naming a remote run or a remote Team (its team run ID) is
-  refused once, by `TaskDelegation` before any Task change (the Task entry has `nodeId`). A message to a remote team run ID gets the
+- **Saved Task (autobyteus-587 DEC-009).** `delegate_task` with `task_id` and `node` starts a new remote Agent or
+  Team copy from a saved Task (`TaskDelegation.toPeerRun`); `delegate_task` with a remote run or Team run ID and
+  `task_id` gives a saved Task to the existing copy, and then `node` is required (`toPeerRunAgain`; without it, or with
+  the wrong node, the refusal names the node to pass). In both forms the Task's own context files are copied to the peer
+  first, to the Agent or a Team's coordinator (the one exception to the workspace rule, RF-3; every other rule of
+  [Reference files between nodes](#reference-files-between-nodes) applies). A message to a remote team run ID gets the
   usual guidance to use the coordinator's run ID (`teamCoordinatorOf`, answered from `teamLinkFor`).
 - **Remote links in memory.** `RemoteRunLinks` reads a root's peer children from the Task entries of its
   delegating run (`peerRuns`), never from a stored list. Run-ID membership and the stored message view include
@@ -376,7 +380,7 @@ Task entry names the run, closed otherwise. The node that runs it (B) records it
   with "send it again". Any other sender is refused `TASK_AGENT_RESOURCE_CLOSED`. `delegate_task` with the same
   closed Task gets the local refusal, which says to message the run instead.
 - **A follow-up Task** (a different saved Task) for a remote run (`delegate_task` with its run ID and `task_id`) skips the local
-  conversation check (the conversation is on B), refuses a Task with files, waits for B's "open" confirmation, then
+  conversation check (the conversation is on B), copies the Task's context files first (a refused file or a failed upload reopens nothing), waits for B's "open" confirmation, then
   sends the Task's work over the run's link (`deliverMessageToPeerRun`, the delivery `send_message_to(node)` uses).
   Not confirmed: the work is not delivered, the entry is `failed`, and the notice stays owed.
 
