@@ -91,7 +91,7 @@ import InterAgentMessageSegment from '~/components/conversation/segments/InterAg
 import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ErrorSegment from '~/components/conversation/segments/ErrorSegment.vue';
 import EditFileCommandSegment from '~/components/conversation/segments/EditFileCommandSegment.vue';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = defineProps<{
   message: AIMessage;
@@ -104,7 +104,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 
 const avatarLoadError = ref(false);

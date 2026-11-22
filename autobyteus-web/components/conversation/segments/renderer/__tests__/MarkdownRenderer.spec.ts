@@ -487,4 +487,33 @@ describe('MarkdownRenderer', () => {
     expect(long.get('.markdown-body').classes()).toContain('long-unbroken-text');
     expect(prose.get('.markdown-body').classes()).not.toContain('long-unbroken-text');
   });
+
+  // autobyteus-609 D-H: in a run's conversation (file actions on) a link to a path relative to the run's folder is a file
+  // link the opener resolves; an absolute path stays the absolute file action it was; outside a conversation a relative
+  // link stays a relative link (576).
+  it('in a run\'s conversation a relative link is a run-relative file link; elsewhere it stays a relative link', async () => {
+    const content = '[clip](media/clip.mp4) [notes](docs/a.md#x) [up](../outside.md) [root](/x.md) [site](https://example.com/a)';
+    const conversation = mount(MarkdownRenderer, { props: { content, enableEventMonitorFileActions: true }, global: { plugins: [pinia] } });
+    await flushPromises();
+    const tap = async (wrapper: ReturnType<typeof mount>, text: string) => {
+      const anchor = wrapper.findAll('a').find((a) => a.text() === text);
+      if (!anchor) throw new Error(`no link ${text}`);
+      await anchor.trigger('click');
+    };
+    for (const text of ['clip', 'notes', 'up', 'root']) await tap(conversation, text);
+    expect(conversation.emitted('file-path-action')).toEqual([
+      [{ kind: 'run-relative', href: 'media/clip.mp4' }],
+      [{ kind: 'run-relative', href: 'docs/a.md#x' }],
+      [{ kind: 'run-relative', href: '../outside.md' }],
+      [expect.objectContaining({ kind: 'absolute', normalizedCandidate: '/x.md' })],
+    ]);
+    expect(conversation.emitted('relative-link')).toBeUndefined();
+
+    const preview = mount(MarkdownRenderer, { props: { content }, global: { plugins: [pinia] } });
+    await flushPromises();
+    await tap(preview, 'clip');
+    expect(preview.emitted('file-path-action')).toBeUndefined();
+    expect(preview.emitted('relative-link')).toEqual([['media/clip.mp4']]);
+  });
 });
+

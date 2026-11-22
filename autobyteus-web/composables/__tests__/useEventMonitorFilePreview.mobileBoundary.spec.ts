@@ -15,7 +15,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 
 const previousBridge = window.electronAPI;
 const bridge = vi.fn();
-const action = (path: string) => ({ id: path, rawCandidate: path, normalizedCandidate: path,
+const action = (path: string) => ({ kind: 'absolute' as const, id: path, rawCandidate: path, normalizedCandidate: path,
   sourceKind: 'prose' as const, displayLabel: path, previewType: 'Text' as const });
 const metadataB = { data: { workspaceMetadata: { workspaceId: 'B', workspaceRootPath: '/owned/B', displayName: 'B', kind: 'filesystem' } } };
 const opener = (isOriginCurrent: () => boolean = () => true) =>

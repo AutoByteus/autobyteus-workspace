@@ -97,6 +97,7 @@ describe('useEventMonitorFilePreview', () => {
 
     const { openPath } = useEventMonitorFilePreview(options());
     const result = await openPath({
+      kind: 'absolute',
       id: 'svg-action',
       rawCandidate: '/Users/normy/project/assets/diagram.svg',
       normalizedCandidate: '/Users/normy/project/assets/diagram.svg',
@@ -120,6 +121,7 @@ describe('useEventMonitorFilePreview', () => {
 });
 
 const action = {
+  kind: 'absolute' as const,
   id: 'markdown', rawCandidate: '/owned/B/brief.md', normalizedCandidate: '/owned/B/brief.md',
   sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const,
 };

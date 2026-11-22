@@ -24,7 +24,7 @@
 import { computed } from 'vue';
 import type { SystemTaskNotificationSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { useLocalization } from '~/composables/useLocalization';
 import {
   RESTART_REMINDER_NOTICE_HEADER,
@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<{
 }>(), { enableEventMonitorFileActions: false });
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 
 const { t, resolvedLocale } = useLocalization();

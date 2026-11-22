@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 withDefaults(defineProps<{
   content: string;
@@ -18,6 +18,6 @@ withDefaults(defineProps<{
 }>(), { enableEventMonitorFileActions: false });
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 </script>
