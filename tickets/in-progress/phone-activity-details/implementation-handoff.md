@@ -9,24 +9,39 @@
 - Design spec (required on every route): `design-spec.md` (SR-002, Ready)
 - Supplemental task artifacts: `handoff-architecture-design-complete.md`, `handoff-design-revised-sr-002.md`; `follow-ups.md` (FU-001 from design; FU-002…FU-005 from this round)
 - Design review report: N/A (direct route)
-- Triggering rework report, revision record, or evidence: N/A (initial round; SR-002 arrived while 586 was under way and is built in)
+- Triggering rework report, revision record, or evidence: IR-002: `code-review-report.md` CRR-001 (failure-origin review of API-REV-001: Local Fix F-1, F-2), `evidence/api-e2e/CR-1-agy-argument-names.md`, `evidence/api-e2e/MSP-94-97-round1/`. IR-001: N/A (SR-002 arrived while 586 was under way and is built in).
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/tickets/in-progress/phone-activity-details`
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details`, `codex/phone-activity-details`. Base `origin/personal` `0da6bfbfc1`. Code commits:
-  - `767cb3b61a` (586, D-1);
-  - `2a71fcb003` (D-2a summary);
-  - `60ee161388` (D-2…D-7);
-  - `d45d74fa91` (AGY argument names, task title);
-  - `597f2dc6d6` (phone probe cases and the AGY fixture's label).
-  - Documents: `93ee050bdc`, and the commit after the last code commit.
+  - `7a2a62dcee` (586, D-1, nuxt.config.ts) and `37ed9cdf00` (`docs(testing):`, the TESTING.md sentence; CRR-001 F-2);
+  - `e278ea6485` (D-2a summary);
+  - `9d92553977` (D-2…D-7);
+  - `05b8be6eb8` (AGY argument names, task title);
+  - `3ae103d727` (phone probe cases and the AGY fixture's label);
+  - `70f7040ee1` (IR-002: AGY TargetFile, DirectoryPath, Query, Pattern; CRR-001 F-1).
+  - Documents: `7bb5a0e89d`, `b39c109265`, and the commit after `70f7040ee1`.
+- **History rewritten for CRR-001 F-2 (not pushed; RELEASE.md allows rebasing unpushed commits).** `767cb3b61a` mixed `TESTING.md` with `nuxt.config.ts`; it is split into `7a2a62dcee` and `37ed9cdf00`, and the later commits were cherry-picked unchanged (same authors and messages; `git diff 22434418c5 da16a2b221` is empty). Documents written before IR-002 cite the old hashes:
+
+  | Old | New | Commit |
+  | --- | --- | --- |
+  | `767cb3b61a` | `7a2a62dcee` + `37ed9cdf00` | 586 fix / docs(testing) |
+  | `93ee050bdc` | `7bb5a0e89d` | 586 evidence, FU-002, FU-003 |
+  | `2a71fcb003` | `e278ea6485` | D-2a summary |
+  | `60ee161388` | `9d92553977` | D-2…D-7 |
+  | `d45d74fa91` | `05b8be6eb8` | AGY argument names, task title |
+  | `597f2dc6d6` | `3ae103d727` | MSP-94…96 |
+  | `f411294735` | `b39c109265` | IR-001 handoff and evidence |
+  | `5b209aeaab` | `464d484e17` | API/E2E: MSP-97, MSP-98 |
+  | `5b9979ba05` | `c48316e28b` | API/E2E round 1 report |
+  | `22434418c5` | `da16a2b221` | CRR-001 failure-origin review |
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Local Fix` (IR-002, CRR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 baseline)
 - Related solution revision IDs: `SR-001`, `SR-002`
-- Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related revision IDs: code review `CRR-001` (failure origin: implementation, Local Fix); API/E2E `API-REV-001` (Fail: MSP-97); architecture and delivery `N/A`
+- Triggering finding IDs: CRR-001 F-1 (AGY file writes show no file), F-2 (TESTING.md in a mixed commit)
 
 **586 (D-1), `767cb3b61a`.**
 - `nuxt.config.ts` excludes `../dist-mobile-demo/**` and also `../.server-packaging-stage/**`. That is the staging folder `prepare-server.mjs` (Windows only) leaves with the staged server's JS. It is not git-ignored and nothing removes it: FU-003.
@@ -38,7 +53,11 @@
 **D-2a (SR-002), `2a71fcb003` and `d45d74fa91`**, in `utils/toolDisplaySummary.ts`:
 - `recipient_address` gives "→ <address>" and `task_id` gives the Task key. Both come after the command and file keys and before the generic text keys.
 - A command's `text` drops one leading `cd <folder> &&` or `cd <folder>;`; `title` keeps the whole command. Nothing is dropped when only the `cd` is left.
-- **Implementation decision (beyond the design text, within REQ-001):** Antigravity's tools pass their PascalCase arguments through unchanged. Without these keys an AGY `run_command` or `read_file` row showed no command or file, the founder's symptom. So `CommandLine` is now a command key, and `Path` and `AbsolutePath` are file keys. These are the only AGY argument names the node's code and recordings show (`mcp_calls` and `journal_reads` fixtures; the AGY converter passes `parameters` through, `agy-stream-event-converter.ts:207`).
+- **Implementation decision (beyond the design text, within REQ-001):** Antigravity's tools pass their PascalCase arguments through unchanged. Without these keys an AGY `run_command` or `read_file` row showed no command or file, the founder's symptom. So `CommandLine` is now a command key, and `Path` and `AbsolutePath` are file keys.
+  - **Correction (IR-002, CRR-001 F-1).** IR-001 said these were the only AGY argument names the node's code and recordings show. That was wrong: my search looked for quoted names and missed unquoted object keys. The node's `antigravity-translation.ts` and the `native_arguments` fixture (`agy-native-arguments-turn.mjs`) show `write_to_file` and `replace_file_content` with `TargetFile`, `list_dir` with `DirectoryPath`, `grep_search` with `Query` and `SearchPath`, and `find_by_name` with `Pattern` and `SearchDirectory`.
+  - **IR-002 decision (REQ-001):** `TargetFile` and `DirectoryPath` are file keys (what the call writes, edits or lists); `Query` and `Pattern` are text keys (what a search looks for).
+  - `SearchPath` and `SearchDirectory` are left out on purpose. File keys come before text keys, so a search's folder would replace its query on the row. The folder stays in the details' Arguments, and a search with only a folder shows its name only (R-1).
+  - MSP-97 (API/E2E) passes with every native AGY row summarized (IMP-07). It records, but does not assert, the search and listing rows; asserting them is API/E2E's choice.
 - The live conversation tool cards read the same summary and improve the same way (specs added).
 - The event monitor's *page* cards get only the `cd` rule. Their arguments come from the node's `EventMonitorToolSummaryArgs`, which has no recipient, Task or AGY keys (FU-005; adding them is a node and contract change, the design's escalation trigger).
 
@@ -177,6 +196,7 @@ Evidence: `tickets/in-progress/phone-activity-details/evidence/implementation/`.
 | IMP-04 | `--cases=MSP-94,MSP-95,MSP-96` (production phone bundle) | tree = `597f2dc6d6` | Chrome 390x844, scripted AGY | rows, details, Back, live, compaction, background, zh-CN | AC-001…AC-005 | Pass | `IMP-04-phone-probe-msp-94-96/` (README, JSON, 11 PNGs) | three Pass; `unknownBrowserErrors 0` |
 | IMP-05 | `--cases=MSP-05,08,11,12,33,47,48,59,74,78` | tree = `597f2dc6d6` | as IMP-04 | existing Activity flows | regression | Pass | `IMP-05-phone-activity-regression/` | all ten Pass |
 | IMP-06 | `build:mobile-web --demo` | tree = `597f2dc6d6` | macOS, Node 22 | demo content without `contextText` | — | Pass | `IMP-06-demo-build.log` | `answers all 252 compiled operations` |
+| IMP-07 | IR-002: whole web suite; `typecheck`; `build:mobile-web`; `--cases=MSP-94,MSP-95,MSP-96,MSP-97` | tree = `70f7040ee1` | macOS, Chrome 390x844, scripted AGY | the shared summary's AGY keys | AC-001 (F-1) | Pass | `IMP-07-crr001-agy-names/` | MSP-97 Pass: write_to_file / replace_file_content `workspace/marker.txt`, grep_search `AFTER`, find_by_name `*.txt`, list_dir `kappa/workspace`; `796 passed (796)`; `86 in 36` |
 
 - Not run, and why:
   - A physical phone (DEC-005).
