@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-016` (SR-016: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model, after delivery DR-001; SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-017` (SR-017: the conversion moves stored file paths into renamed member folders with them, after ARCH-REV-011 AR-011; SR-016: the base's autobyteus-587 file transfer and autobyteus-599 session renewal in the container model, after delivery DR-001; SR-015: former-member refusal for other units, CRR-004 A-1; SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
@@ -409,4 +409,42 @@ Tests (in addition to the reruns of the suites the base and this ticket touched)
 - Cross-node, a file sent to an Org Team unit member and to an agent unit by run ID lands in that agent's own memory folder (as for a standalone Team member and agent).
 - A Team unit member and an agent unit whose saved runtime session is gone get the renewal and the hand-over notice first in their next input.
 - The container is registered in `ActiveCollaborationRootDirectory` with `remoteNodeOf` answering `null`.
+
+
+## SR-017 Revision (after ARCH-REV-011 AR-011: stored paths into a renamed member folder; extends contract §1, §7, §9)
+
+Evidence (on `f2c0d2a902`):
+- Since `v1.5.14-beta.7` (autobyteus-587, `11b7ed5444`), a message from another node to an Org member is stored only in the receiver's log, with `referenceFiles` = absolute paths `<memoryDir>/agent_orgs/<org>/<unit>[/<member>]/received_files/<sender>/<file>` (`root-communication-engine.ts:250-251`).
+- The Org reference route serves the stored absolute path (`agent-org-reference-content-service.ts:74-95`).
+- Before 587, the same field could already hold a member's own paths into its folder (a file it forwards).
+- 599 is not released (no tag contains `e564a7ebd8`). Its hand-over marker is derived from traces and its notice names journal paths at renewal time, so nothing it stores needs converting.
+
+Decision: **option (a)**, a typed rewrite by the conversion. Readers are not changed, so no lasting mapping (Principle 8/15).
+- **Path map.** The conversion builds one exact prefix map from its own renames (contract §1). Paths are compared after `path.resolve`, with the runner's `memoryDir`:
+  - `<memoryDir>/agent_orgs/<orgRunId>/<teamRunId>/` → `<memoryDir>/agent_teams/<teamRunId>/`
+  - `<memoryDir>/agent_orgs/<orgRunId>/<agentRunId>/` → `<memoryDir>/agents/<agentRunId>/`
+  
+  An entry under one of these prefixes keeps its relative remainder under the new prefix. Any other entry is unchanged: a sender's paths elsewhere, and paths written under a different data-directory location, which were already unreachable before the conversion and are not this ticket's.
+- **Fields rewritten.** Only app-owned typed path fields, as the released context-file locator migrations decided (`frozen/server/context-files/services/context-file-record-locators.ts`: "Only app-owned raw attachment and formal sidecar fields, never prose or provider history"):
+  - message log lines: `referenceFiles`, in every line the conversion writes (all kinds in contract §9);
+  - other runs' message logs (active and sealed files): `referenceFiles`. An Org member's line in a delegated or other run's log can name a file in the member's folder;
+  - Task delegation records: `referenceFiles` and `updates[].referenceFiles`;
+  - ad-hoc Tasks (`<appData>/ad-hoc-tasks/<taskId>/task.json`): `referenceFiles`, and comments' `referenceFiles`;
+  - raw traces (active and archived segments) of every agent folder: `media.images/audio/video` and `file_attachments[].uri`.
+  
+  One typed visitor does this: the frozen `transformContextFileRecordLocators` / `listContextFileRecordSources` with this ticket's prefix transform. Any released file kind or field above that the frozen visitor does not cover goes in this migration's own module, frozen with it. Unchanged bytes of unchanged lines are kept. The sealed-file exception is the one the precedent states (DEC-008 there), at most once per file.
+- **Not rewritten, and why.** Prose stays as it was: trace `content` (including a received message's "Reference files:" block), work journals, and runtime provider sessions (the provider's threads are not ours to edit). These are verbatim records of what the agent saw and did. Free text cannot be rewritten soundly. The released precedent and every earlier folder rename (`team-agent-memory-layout`) left them. After the conversion the agent's current instructions name its current folder, and every file a user or the app opens comes from the rewritten typed fields.
+- **Cost and idempotency.** Before parsing, a byte pre-check skips any file without the string `agent_orgs/<orgRunId>/` (autobyteus-500 lesson). A retry finds no old prefix left in rewritten files, so it changes nothing (idempotent by structure). The rewrite runs in the same per-Org step as the renames, after a unit's folder rename is committed, so a path is never pointed at a folder that does not exist yet.
+- **Reference IDs.** The Org route's reference ID is a hash of owner and path, computed when read. Implementation confirms that no stored record keeps a reference ID or path hash. If one does, it is added to the field list.
+- **Predecessor classification (guideline "An earlier migration can run after yours").** No earlier migration writes absolute paths into Org member folders. The context-file locator migrations write owner-form locators. Implementation records this check in the migration's header.
+
+Tests:
+- **Fixture beta.7-cross-node.** A released Org with a Team member and a direct agent that each received a file from another node (log line with `counterpart.nodeId`, `referenceFiles` under `received_files/`, bytes on disk), plus a member line forwarding its own folder file to a delegated run (in that run's log) and an ad-hoc Task naming a member file. After conversion:
+  - every such entry names the new folder, and the file exists there;
+  - the Org view's message reference opens (through the Org route) for both units;
+  - the unit's own reference reader opens it;
+  - all other bytes are unchanged;
+  - trace prose is unchanged.
+- Re-running the conversion on the converted fixture changes no byte.
+- An entry under a different data-directory prefix is unchanged.
 

@@ -14,6 +14,7 @@
 | ARCH-REV-008 | Round 8 / SR-013 after CRR-001 CR-001 | SR-013 | Pass | Fail (Design Impact) | AR-010 (new) |
 | ARCH-REV-009 | Round 9 / SR-014 resubmission | SR-014 | Fail | Pass | AR-010 (resolved) |
 | ARCH-REV-010 | Round 10 / SR-015 after CRR-004 A-1 | SR-015 | Pass | Pass | None |
+| ARCH-REV-011 | Round 11 / SR-016 after delivery DR-001 | SR-016 | Pass | Fail (Design Impact) | AR-011 (new) |
 
 ## Revision Entries
 
@@ -255,3 +256,26 @@ None open.
 - Material classification changes: None (Large / High)
 - Recommended recipient: implementation, per the handoff rules
 - Remaining risks or uncertainty: answer `formerMemberAt` from the stored tree for a non-live unit (no wake to refuse); wording suggestion only
+
+### ARCH-REV-011 — Review of SR-016 (re-integration with autobyteus-587 and -599)
+
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/design-review-report.md`
+- Review round and trigger: round 11; SR-016 (commit `7361b6627e`) after delivery DR-001 (Blocked: conflicts with `origin/personal` `f2c0d2a902`)
+- Triggering role, report path, and finding IDs: delivery engineer, `release-deployment-report.md`, DR-001; Solution Designer, SR-016
+- Relevant solution revision IDs: SR-016
+- Prior authoritative decision: Pass (ARCH-REV-010)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - SR-016's runtime mapping is accepted: units are ordinary runs; the container's `remoteNodeOf: null`; deleted files stay deleted; FU-003 moves onto the base's node path.
+  - New AR-011: 587 is released (`11b7ed5444` in tag `v1.5.14-beta.7`) and stores absolute received-file paths into the member's folder in `referenceFiles` (`transferred-files.ts`, `root-communication-engine.ts:250-251`, `agent-org-run.ts:113`). The conversion moves those folders and keeps lines unchanged, and the Org reference route serves the stored path (`agent-org-reference-content-service.ts:71-92`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-010 | Resolved | Resolved | — | Unaffected by SR-016 |
+
+- New or remaining finding IDs: AR-011 (Medium)
+- Material classification changes: None (Large / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: check 599 for stored paths under Org member folders outside `work_journal/`

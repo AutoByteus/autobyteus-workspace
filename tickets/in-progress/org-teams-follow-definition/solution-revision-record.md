@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-017 | Design | Architecture review ARCH-REV-011 Fail | AR-011 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | REQ-007, AC-006, DEC-001 (realization only) | Conversion rewrites typed paths under renamed member folders (587's received files included); prose and provider history kept |
 | SR-016 | Design | Delivery DR-001 Blocked (integration conflicts with autobyteus-587 and -599) | DR-001 | Approved; design Ready (implemented, validated at 46d7da4d35) | Approved; design Ready (revised) | REQ-001, REQ-005, REQ-007 (realization only) | 587 file transfer and 599 session renewal live in the units' own roots; container `remoteNodeOf` null; Org-hosting extensions not ported |
 | SR-015 | Mixed | Failure-origin review CRR-004 A-1 (minor Requirement Gap) | A-1 | Approved | Approved (DEC-007 by the Solution Designer within the direction, user informed) | REQ-002, DEC-007 | Same former-member refusal for other units at `P/x` |
 | SR-014 | Design | Architecture review ARCH-REV-008 Fail | AR-010 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-006 | Delegation-chain case is `related` (no counterpart, view rule 1); `same_container` only unit↔unit |
@@ -154,4 +155,14 @@
 - Requirements: unchanged (no intended behavior changes; files and renewal work for Org units as for any Team or agent run).
 - Contract: §10 gains two rows (received files; renewal from the unit agent's journal).
 - Next action: architecture review of SR-016; then implementation re-integrates and ports; code review and API/E2E on the integrated state; delivery DR-002.
+
+### SR-017 — Stored paths move with the member folders
+
+- Trigger: `ARCH-REV-011` Fail, AR-011 (Medium). 587, released in `v1.5.14-beta.7`, stores received files as absolute paths into the Org member's folder (`referenceFiles` of the receiver's log line); the conversion renamed the folder but kept the line, so the reference would not open.
+- Decision: option (a). The conversion rewrites every app-owned typed path field under a renamed member folder to the same relative path in the new folder, across the node's logs, Task records, ad-hoc Tasks and trace attachment fields. This reuses the released context-file locator visitor and its rule: typed fields only, never prose or provider history. Readers stay unchanged (no lasting mapping).
+- Also checked: 599 is unreleased and stores no path. No earlier migration writes absolute member-folder paths.
+- Requirements: unchanged (REQ-007 is now realized for this released shape).
+- Contract: §1 rule, §7, §9 path row, §10 row. contract-validation.md has an SR-017 note (values only, no shape change).
+- Tests: a beta.7 cross-node fixture whose references open after conversion; a re-run changes no byte; a foreign prefix is unchanged.
+- Next action: architecture re-review of SR-016 and SR-017 together.
 

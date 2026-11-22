@@ -49,7 +49,7 @@ Rules:
 - A unit keeps its run ID (the Team's `teamRunId`, the agent's `agentRunId` from the released tree). No ID is allocated
   by the conversion.
 - Member folders are renamed, never copied (lesson `team-agent-memory-layout`). Their contents (traces, journals,
-  context files) are untouched.
+  context files) are untouched, except the typed path fields of §9's path row (SR-017).
 
 ## 2. Container file `agent_orgs/<orgRunId>/agent_org_run_execution_tree.json`
 
@@ -212,7 +212,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 - Physically in the member's folder (they move with it, §1).
 - Owner forms: from the Org view, `{ orgRunId, agentRunId }` (routes `/drafts/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/…`
   and `/agent-org-runs/…`), resolved through the container (`agentRunId` is a member of one of its units) to the unit
-  run's folder. Saved references keep this form; nothing is rewritten.
+  run's folder. Saved owner-form references keep this form; nothing is rewritten. Absolute paths into a member folder held in typed fields (`referenceFiles`, trace attachments) are rewritten by the conversion (§9 path row).
 
 ## 8. Run history indexes
 
@@ -236,6 +236,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Task entries / `delegatedFrom` naming the Org | §6 |
 | `agent_org_task_delegation_records.json` | left in place as inert residue: no current reader (only migrations read it), and nothing deletes history (design Removal Plan aligned, SR-012) |
 | Member folders | renamed (§1) |
+| Absolute paths under a renamed member folder, in typed path fields anywhere on the node: message log `referenceFiles` (the lines written here and other runs' logs, active and sealed), Task delegation records `referenceFiles` / `updates[].referenceFiles`, ad-hoc Task `referenceFiles` (and comments'), raw trace `media.*` / `file_attachments[].uri`. Includes beta.7's received files `…/agent_orgs/<org>/<unit>[/<member>]/received_files/<sender>/<file>` (autobyteus-587) | same relative remainder under the unit's new folder: `<memoryDir>/agent_orgs/<org>/<teamRunId>/…` → `<memoryDir>/agent_teams/<teamRunId>/…`, `<memoryDir>/agent_orgs/<org>/<agentRunId>/…` → `<memoryDir>/agents/<agentRunId>/…` (exact prefix after `path.resolve`). Other entries unchanged. Prose (trace `content`, journals) and provider sessions unchanged (released precedent: typed fields only). Design SR-017 |
 
 ## 11. Application-owned Orgs (one rule for both unit kinds, SR-012)
 
@@ -267,6 +268,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
 | A run delegated by an Org member reaches the Org's agents by Org address (design R-8, SR-014) | child `delegatedFrom` → unit run → its `containedIn` → container `units` + unit files | the container's placements at Org addresses; the message is **related** (the Task rule extended through the delegation chain): stored as a related line (no `counterpart`), shown in every view whose tree holds both runs |
 | Files from another node for an Org unit's agent (autobyteus-587; design SR-016) | the receiving agent's own memory folder: a Team unit member's (§3) or an agent unit's (§4) | the unit's root plans them as any Team or standalone root; nothing in the container |
+| A converted Org's message with files received on beta.7 opens (design SR-017) | the unit log line's `referenceFiles` (rewritten, §9 path row) + the moved file | the Org route and the unit's reader serve the rewritten path |
 | A unit agent's lost runtime session is renewed (autobyteus-599; design SR-016) | the unit agent's `work_journal/` in its own memory folder (moved with the folder by the conversion, §9) | the unit's root and its run's composition, as for any Team or agent run; nothing in the container |
 
 ## 12. Validation

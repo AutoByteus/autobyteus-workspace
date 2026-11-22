@@ -46,3 +46,9 @@ delegation (unit run as delegating run). No use case needs a fact the files do n
 - F-2 (fixed in the contract): Team display name read through the definition-names port (V-5).
 - F-3 (for the implementation engineer): the in-progress `agent-org-container-file-schema.ts` already matches §2; the
   Team and agent schemas accept `containedIn` as §3/§4 require.
+
+## SR-017 note (no new validation run)
+
+- §9's path row changes values only (absolute path strings in fields that are already `string[]` / `uri`), not any
+  file shape, so V-1..V-6 stand. The behavior (a beta.7 received-file reference opens after conversion; re-run changes
+  no byte) is proven by the fixture test in design SR-017, not by schema validation.
