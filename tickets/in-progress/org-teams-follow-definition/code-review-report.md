@@ -4,27 +4,28 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-007; REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-006)
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (IF-01..IF-14, AF-01..AF-09), through the design's citations
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (through SR-012)
-- Design Spec Reviewed As Context: `design-spec.md` (SR-010 with R-1''', R-2, R-3'', R-4, R-5, R-6, R-7, N-1, N-2)
-- Supplemental Task Artifacts Reviewed As Context: `org-container-storage-contract.md` (normative, §1..§12), `contract-validation.md`, `follow-ups.md`, `release-notes.md`; autobyteus-22's approved behavior (reused unchanged)
-- Relevant Solution Revision IDs: SR-002 (direction), SR-004/SR-007 (approval, DEC-006), SR-010, SR-011, SR-012
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-005 Pass with residual notes; ARCH-REV-007 Pass)
+- Investigation Notes Reviewed As Context: `investigation-notes.md`, through the design's citations
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (through SR-014)
+- Design Spec Reviewed As Context: `design-spec.md` (SR-010 base; § SR-013 Revision R-8 reach; § SR-014 Revision, the relation of the delegation-chain case)
+- Supplemental Task Artifacts Reviewed As Context: `org-container-storage-contract.md` (§2.3, §5, §6, §11 row for R-8/SR-014), `follow-ups.md` (FU-001), `release-notes.md`; autobyteus-22's approved behavior
+- Relevant Solution Revision IDs: SR-007, SR-010, SR-012, SR-013, SR-014
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-005, ARCH-REV-007, ARCH-REV-009 Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-005, ARCH-REV-007
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Relevant Architecture Review Revision IDs: ARCH-REV-005, ARCH-REV-007, ARCH-REV-008, ARCH-REV-009
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (§ IR-002, § Recorded Deviations)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Trigger: implementation complete (IR-001), from the implementation engineer
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): CR-001 was `Design Impact`, and its fix (R-8, SR-014) changes step-2 reach, cross-run admission and the delegation index. Those are shared messaging paths, so a delta review would not be enough. I re-read the IR-002 diff in full (`46e53e9ed0..5545e20f3a`, 24 source/doc/test files). I re-traced the messaging, admission and history paths it touches from their entry points, and re-ran the gate over every affected suite.
+- Trigger: IR-002 ready for source review (implementation engineer), covering CRR-001 and ARCH-REV-009
+- Prior Review Round Reviewed: CRR-001 (round 1, Fail)
+- Latest Authoritative Round: 2
 - API/E2E and delivery records: N/A (implementation review)
 
-Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, `git diff 755cea4711..46e53e9ed0` (base `origin/personal` `9f6add773b`; slices 1–8: `1c77d18f56` … `46e53e9ed0`). Source: 118 files, +4451/−1920; 214 files in total.
+Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, commit `5545e20f3a` (IR-002 delta `46e53e9ed0..5545e20f3a`; cumulative base `9f6add773b`).
 
 ## Routing Classification Review
 
@@ -32,144 +33,134 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
 - Architectural risk: `High`
 - Selected route: `Implementation Review`
 - Independent source review required by the classification: `Yes`
-- Classification evidence or correction required: None. The change restructures Org execution into a container, adds a sealed migration of every stored Org run, a new signed peer request, and touches messaging, rows, history, memory and the view composition, as the design states.
+- Classification evidence or correction required: None (unchanged from CRR-001).
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed:
-  - DS-001 start, DS-002 unit messaging, DS-003 Stop/reopen, DS-004 view/rows/history, DS-005 migration, DS-006 Org follow, DS-007 FU-003;
-  - REQ-004 Org-rule merge and notices; R-1''' Team-unit address boundary; R-7 Org routes;
-  - the removal plan (slice 4);
-  - the web Leaving tag;
-  - the four implementation decisions in the handoff.
-- Files read in full: `agent-org-execution/container/{agent-org-container-plan, agent-org-unit-runs, agent-org-container-manager, agent-org-container, agent-org-containers, compose-agent-org-containers, org-container-directory, org-view-composition, org-unit-views}.ts`; `agent-collaboration/domain/org-container-port.ts`; `agent-team-execution/container/contained-team-address-space.ts`; `membership/team-change-notice-source.ts` (diff); `services/member-team-context-builder.ts` (diff); `team-run-message-delivery.ts`, `team-run-collaborators.ts` (diff); `agent-collaboration/communication/cross-run-message-delivery.ts`, `delegation/collaboration-tree.ts` (diff); the migration folder (`agent-org-units-own-runs-v1-app-data-migration.ts`, `org-conversion.ts`, `org-log-split.ts`, `org-unit-targets.ts`); FU-003 (`peer-run-members-notice.ts`, `peer-run-members-receiver.ts`, `peer-gateway.ts`/`remote.ts` diffs); `run-history/services/{agent-org-run-history-catalog-service, collaboration-root-history-service, org-unit-member-views}.ts`; `agent-org-execution-tree-location-service.ts` (diff); `run-own-agents-reader.ts`; web `AgentOrgRunMemberTree.vue` (diff).
+- Changed implementation reviewed:
+  - R-8 reach: `collaboration-tree.ts` (`stepTwo`, `containerReach`, `delegationPlacementAt`, `reachingAddressOf`).
+  - SR-014 admission: `delegation-index.ts` (`chainContainerOf`, `relatedThroughContainer`) and `cross-run-message-delivery.ts` (`route`, `chainedUnitOf`, `deliverToUnit`, `admit`).
+  - CR-002 removals: `agent-org-run-history-catalog-service.ts`, `collaboration-root-history-service.ts`, the two deleted hosting modules, `team-run-membership.ts`.
+  - CR-003 split: `agent-run-history-catalog-state.ts` and the registry import.
+  - CR-004: `peer-gateway.ts`.
+  - Docs: `agent_orgs.md` § Addresses And Handoffs, `collaboration_model.md` CM-5.
+  - Tests: the new `org-delegated-run-messaging.test.ts`, `collaboration-tree-reach.test.ts` B-4, e2e OF-06, the catalogue M-15 withdrawal, the rewritten history tests, `peer-run-members.test.ts`.
+  - The handoff's Recorded Deviations.
 - Paths traced from their real triggers:
-  - `send_message_to('/x')` from a unit: own root miss, then `SendMessageToDispatcher.beyondOwnRun` → `CollaborationTree.resolve`, then the container step 2 → `GlobalAgentRunMessageRouter.deliver`, then `CrossRunMessageDelivery.route`, then `same_container` → `deliverInContainer`;
-  - a Leaving unit row → `OrgUnitMemberViews.unitOf` → `OrgContainerDirectory.unitOfAgent` (leaving former units included);
-  - a converted never-started agent unit vs. the prepared-run sweeper (`agent-run-provisioning-service.ts:194` skips `containedIn`);
-  - archive/delete and the history projection of an Org vs. readiness admission (`root-run-package-current-validator.ts:213-215`, `collaboration-run-history-catalog-core.ts:73`).
-- Explicit exclusions: real-runtime and two-node behavior, which belong to API/E2E. I did not rerun the recorded checks (typechecks, suites, migration tests, built-server e2e): no finding depends on a check nobody ran. The findings below are established by reading and are cited at file:line.
+  - A delegated run's `send_message_to(<Org address>)`: own-root miss, then `SendMessageToDispatcher.beyondOwnRun`, then `CollaborationTree.resolve` and `stepTwo` (contained assigner contributes `containerReach`), then `GlobalAgentRunMessageRouter.deliver`, then `CrossRunMessageDelivery.route`, then `chainedUnitOf` and `deliverToUnit(…, "related")`.
+  - A unit's `send_message_to(target_agent_run_id=<a run a unit delegated>)`: router, then `route`, then `admit` (`canMessage ‖ relatedThroughContainer`), then `exchange`, then the gate head `assertStillOpen`. The open case and the **closed-Task case** are both traced (CR-005).
+  - Org archive, delete and history projection against readiness admission.
+- Gate run by me (not only the recorded evidence):
+  - `node scripts/typecheck.mjs`: production 0 errors; tests 974 in 300 files, equal to the baseline. PASS.
+  - `vitest run tests/unit/agent-org-execution tests/unit/agent-collaboration tests/unit/run-history tests/unit/remote-collaboration tests/unit/agent-communication tests/app-data-migrations tests/architecture`: 256/258 files, 1867/1869 tests.
+    - `web-generated-graphql-current` failed only because `pnpm` is missing from my shell. With `pnpm` from corepack it passes.
+    - `projects-boundaries` fails because of this change (CR-007).
+  - A scratch test through `send_message_to` (not committed; deleted after the run) shows CR-005. It fails as IR-002 stands, and passes when only the new `relatedThroughContainer` clause in `admit` is removed.
+- Explicit exclusions: I did not rerun the built-server e2e (OF-01..OF-06, AOML). No finding depends on it.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: the Org becomes a container of runs and looks and works as today (DEC-004). Org Teams follow their Team definition (autobyteus-22). Units message each other by Org address with both logs. Org rules merge into unit rules, filtered by presence, with net notices. Stop and reopen work as today, and a message wakes a stopped unit (DEC-006). Stored Orgs are converted (DEC-001). The peer copy's members follow (DEC-003). The Org follows its Org definition (DEC-002). Preserved boundary: launch page, Org view, focus rules, Stop/reopen, **delegation from Org units**, Tasks, Memory page, history.
-- Design-spec behavior map verified against the implementation: Yes, with one contradiction (BEH-001 delegation from Org units, below).
-- Design review report and round confirmed: ARCH-REV-005, ARCH-REV-007.
-- Behavior-basis status: `Contradicted` (one preserved behavior).
-- Changed or newly discovered behavior: none new; one preserved behavior the design does not map (CR-001).
-- Remaining material ambiguity: how step 2 composes for runs delegated by a unit (CR-001), which is the Solution Designer's decision.
+- Approved requirements basis understood: as in CRR-001. The preserved boundary includes "delegation from Org units … Tasks … look and work as today". CM-5 also states: "a run whose Tasks are all closed takes input only from its assigner after a reopen".
+- Design-spec behavior map verified against the implementation: Yes for R-8. SR-014 is partly contradicted. It says "a unit's message to such a delegated run by run ID is related **as today through the Task**". The implementation relates the pair without the Task's state, and this pre-empts the assigner's continuation (CR-005).
+- Design review report and round confirmed: ARCH-REV-009 (SR-013, SR-014).
+- Behavior-basis status: `Contradicted` (one preserved behavior, by the implementation, not the design).
+- Remaining material ambiguity: None. The design text already gives the correct behavior.
 
 | Behavior ID | Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| REQ-001 / DS-001 start | Confirmed | `AgentOrgContainers.create` → `AgentOrgContainerManager.create`. Units are created first through their own services (`createTeamRun` with `containedIn`; `prepareAgentRun`, Offline), then the container file. A failure discards the units already made. | — |
-| REQ-003 / DS-002 unit ↔ unit | Confirmed | Traced above. Container step 2 (`containerStepTwo`, `placementsOf`), then the `same_container` admission (`sameContainer` from `containedIn`, one fact, N-1), then the receiver restored if not live (DEC-006), then both logs: the receiver line names the sender's Org address (`orgAddressOf`) and the sender line names the receiver's (`receiverOrgAddress`), contract §5 | — |
-| REQ-004 / DEC-005 / R-6 | Confirmed | `MemberExecutionContextBuilder.withOrgRules`: Team rules `toOrg` plus `orgRulesFrom(P/x)`, none once left. `OrgContainerDirectory.orgRulesFrom`/`presentIn` filter by current members. `orgRuleChangesFor` → `TeamChangeNoticeSource.recordChange`: one net pending notice with Team and Org rule parts | — |
-| REQ-005 / DS-003 | Confirmed | `AgentOrgContainer.stop` stops every unit and every leaving former unit. `restore` reads the file, releases stale markers and restores no unit. `AgentOrgContainers.restore` follows the definition after reopening | — |
-| REQ-006 / DS-004 / R-7 | Confirmed | `OrgViewComposition` (relay from live units, snapshot at base, `composition_changed`), `LiveAgentOrgContainer` commands, `OrgUnitMemberViews`, the composed tree in the location service, rows from the container | Mechanism differs from R-3'' (N-1 below) |
-| REQ-007 / DS-005 / DEC-001 | Confirmed | Migration: classify → rename folders → write the Team tree (team space) and the agent run file (`containedIn`) → split the log (deterministic; whole-file writes; sources kept until targets validate) → container file last (retry recognizes finished units). Reader-predecessor wait and 18 follow-ups (registry classification test) | — |
-| REQ-009 / DS-006 / DEC-002 | Confirmed | `followDefinition` → `manager.follow` (plan under the transition, units created first, one write) → `retire` (leaving until no open work, then stop and a release write) → `tell` (net notices) → view and rows | — |
-| REQ-008 / DS-007 / DEC-003 | Confirmed | `withPeerRunMembers` → `PeerRunMembersNotice` (serialized, best effort) → signed `/remote/peer-run-members` → `PeerGateway.admit` → `PeerRunMembersReceiver` (the link must name that run on the calling node) → `updatePeerRunMembers`. Reconciled from run summaries | — |
-| BEH-001 preserved: delegation from Org units | **Contradicted** | A unit run is now the delegating run (contract §6), so a run an Org member delegates has that unit run as its step-2 assigner. `CollaborationTree.stepTwo` (`collaboration-tree.ts:175-194`) reaches only `standingOf(assigner)`. For a unit run that comes from its own file (`run-own-agents-reader.ts:74-79`): an agent unit's own agent, or a Team unit's members **in team space**. | Before, the assigner was the Org and its standing was every Org member and mounted Team at its Org address. The base test `collaboration-tree-reach.test.ts` B-4 ("a run delegated by an org reaches the org's agent … and the org's mounted team's member") and `docs/modules/agent_orgs.md:222-225` ("a member reaches the org's standing agents … by their org addresses (contract §2.3 step 2)", unchanged by this diff) state it. See CR-001. |
+| S-08 / R-8 reach (CR-001) | Confirmed | `stepTwo`: a contained assigner, or the container itself, contributes `containerReach(orgRunId, null)` at rank `configured`, first wins and in assigner order. A Team unit's team-space standing is never exposed (a contained assigner with no placements contributes nothing, `continue`). `delegationPlacementAt` answers through `delegationSourceAt`. `reachingAddressOf` names a unit sender by its Org address only when step 2 maps that address to the sender (`:242-244`) | — |
+| SR-014 delegated run → unit | Confirmed | `route`: `same_container` first, then `chainedUnitOf` (`chainContainerOf(sender)` → `unitOfAgent`), then `deliverToUnit(…, "related")`. The receiver is restored. `counterpart` is null on both lines (`exchange :266`). Tested through `send_message_to` for all three senders and all three address forms, stopped and live; e2e OF-06 | — |
+| SR-014 unit → delegated run, open Task | Confirmed | `admit :293` → `related` (restore, no counterpart). Tested | — |
+| Preserved: the assigner's continuation for a run an Org unit delegated (autobyteus-461; CM-5 "takes input only from its assigner after a reopen") | **Contradicted** | `admit :293` returns `related` from `relatedThroughContainer` **before** the reopen branch (`:297-307`). `relatedThroughContainer` follows `chainOf`, which uses `parentOf` (the newest entry, **open or closed**, `delegation-index.ts:224-226`). So for a closed delegation the pair is `related`, `exchange`'s gate head `assertStillOpen` refuses it, and the reopen is never tried | Scratch test through `send_message_to`: the Team unit member that delegated `pdp_copy`, and the agent unit that delegated `writer_copy`, each set the Task back to TODO and message the run by ID. Result: `TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned the Task can continue it…" (and that sender is the assigner). Without the clause, both are reopened and delivered. At base (the Org member was the delegator in the Org run) and at IR-001 the reopen worked. CR-005 |
+| CR-002 history paths | Confirmed | Archive and delete of a non-container answer "not found"; the history projection gives `null` for a non-container. Readiness never admits one (`root-run-package-current-validator.ts:212-215`) | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
 | Scenario ID | Related IDs | Kind | Actor / Initiator | Goal / Event | Entry Surface | Shape | Forward Path | Outcome | Evidence | Validity | Use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| S-01 start | REQ-001, AC-001 | User | User | Start an Org | Org launch page | Normal | DS-001 | Container + Offline units | requirements | Supported Normal Scenario | Use |
-| S-02 unit messaging | REQ-003, AC-003 | System | Unit agent | Hand off to another unit | `send_message_to` | Normal | DS-002 | Delivered, both logs | requirements | Supported Normal Scenario | Use |
-| S-03 Org rules | REQ-004, AC-004 | System | Team change | Rules follow presence | Definition change | Normal | DS-006 / R-6 | Rule absent/back, notified | requirements | Supported Normal Scenario | Use |
-| S-04 Stop/reopen | REQ-005, AC-005 | User | User | Stop and reopen | Org Stop/open | Normal | DS-003 | Units stopped / followed on reopen | requirements | Supported Normal Scenario | Use |
-| S-05 conversion | REQ-007, AC-006 | Operational | Upgrade | Keep existing Orgs | Startup | Normal | DS-005 | Converted, nothing lost | DEC-001 | Supported Normal Scenario | Use |
-| S-06 Org follow | REQ-009, AC-008 | User/System | Author | Mount/unmount | Definition change | Normal | DS-006 | Join Offline / leave | DEC-002 | Supported Normal Scenario | Use |
-| S-07 peer members | REQ-008, AC-007 | System | Peer Team copy | Delegating node follows | Peer notice / contact | Normal | DS-007 | Entry updated | DEC-003 | Supported Normal Scenario | Use |
-| S-08 delegation from an Org unit | Preserved boundary (requirements § Preserved Behavior Boundary: "delegation from Org units … look and work as today"); contract §2.3 step 2; `agent_orgs.md:222-225` | System | An Org agent or Team member delegates with `delegate_task` (a catalog run, or a copy of another unit, R-1''') | The delegated run works and hands off to the Org's units by their Org addresses, as its handoff rules say (`delegationSourceAt` gives a copy the Org rules from its members) | `delegate_task`, then the task agent's `send_message_to` | Normal | `delegate_task` → copy started with `delegatedFrom` = unit run (contract §6) → task agent `send_message_to('/software_engineering_team/solution_designer')` → own root miss → `CollaborationTree.resolve` → `stepTwo` → assigner = unit run → `standingOf(unit run)` | Reach the Org's agents by Org address, as before | B-4 test at base; docs; `delegationSourceAt` (`org-container-directory.ts:118-143`) writes Org rules into the copy | Supported Normal Scenario | Use |
+| S-01..S-07 | As CRR-001 | — | — | — | — | Normal | Unchanged by IR-002 apart from the paths below | As CRR-001 | CRR-001; gate suites pass | Supported Normal Scenario | Use |
+| S-08 delegation from an Org unit (reach and messages) | Preserved boundary; R-8; SR-014 | System | Task agent of a run a unit delegated | Hand off to the Org's units by Org address | `send_message_to` | Normal | Traced above | Delivered as related, receiver restored | New test (7 cases), B-4, OF-06 | Supported Normal Scenario | Use |
+| S-09 continue a closed delegation from an Org unit | Preserved boundary ("delegation from Org units … Tasks … as today"); autobyteus-461 assigner's continuation; CM-5; `ASSIGNER_ONLY_REACTIVATION_MESSAGE` | User/System | The unit agent that delegated (agent unit, or a Team unit member) | After the Task was closed, set it to TODO/IN_PROGRESS and message the task agent's run ID to continue it | `update_task`, then `send_message_to(target_agent_run_id)` | Normal | Router → `route` (no unit target, no chain container for a unit sender) → `admit` → `relatedThroughContainer` true (closed links count) → `related` → `exchange` → `assertStillOpen` throws | Refused as closed. Expected: reopened and delivered | Scratch test + control (above); the refusal text names exactly this action | Supported Normal Scenario | Use |
 
 ### Candidate Finding And Mechanism Gate
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope, if promoted | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | A run delegated by an Org unit no longer reaches the Org's agents by Org address (step 2) | S-08 | `delegate_task` by an Org member | Step 2's assigner is the unit run, and its standing is its own agents (team space for a Team unit). A copy's Org-rule handoff, or any address of another unit, is `COLLABORATION_TARGET_NOT_FOUND`. Converted delegations (migration §6 rewrites `delegatedFrom` to the unit run) lose it too. | `collaboration-tree.ts:175-194`; `run-own-agents-reader.ts:74-83`; base B-4 test; `agent_orgs.md:222-225` | **Promote** | This ticket (preserved boundary) | CR-001: the design must say how step 2 composes for a run whose assigner is a unit (for example the unit's container placements at Org addresses, and how a Team unit's team-space standing relates to them) |
-| C-02 | Current runtime keeps released-Org-tree (pre-conversion) read/write branches beside the container path | Principle 5/8 (current-schema runtime; holds in every context); design § Persisted Data ("a failed Org run is isolated: excluded from lists and restore") | — (structural) | `agent-org-run-history-catalog-service.ts` archive/delete fall back to `AgentOrgRunExecutionTreeStore` for a non-container; `collaboration-root-history-service.ts:71-72` reads it with that store. Readiness never admits an unconverted Org (`root-run-package-current-validator.ts:213-215`); `getCatalogRow` returns null for unadmitted rows (`collaboration-run-history-catalog-core.ts:73`); lists are admitted-only. So the branches are unreachable through supported paths: dead legacy code in touched files | Code read | **Promote** | This ticket | CR-002 |
-| C-03 | Slice 4 left two Org-only hosting modules with no importers: `agent-collaboration/execution/backends/root-agent-execution-registry.ts` (146 lines) and `root-team-execution-directory.ts` (91 lines, the "Org-mounted, fixed" `TeamRunMembership` branch); `team-run-membership.ts:15` still documents it | Principle 7; design Removal Plan ("member hosting inside `AgentOrgRun` … removed"; "`TeamRunMembership`'s 'Org-mounted, fixed' branch … Removed") | — | No importer in `src` or `tests` at HEAD (`git grep`); at base only the removed Org files imported them | `git grep` at `755cea4711` and `46e53e9ed0` | **Promote** | This ticket | Part of CR-002 |
-| C-04 | `run-history/services/agent-run-history-catalog-service.ts` goes from 491 to 504 effective lines (532 → 546 raw) with `recordPreparedUnit` (+14) | Size rule (> 500, the change takes it over) | — | — | Size audit below | **Promote** | This ticket | CR-003: put the new method in an owned file (or move an existing cohesive block), as earlier tickets did |
-| C-05 | The insertion separated `DelegatedRunStatesHandler`'s doc comment ("autobyteus-591 DN-2 …") from its type: it now sits above `PeerRunMembersHandler` (`peer-gateway.ts:98-105`) | Principle 15 (readability) | — | Misleading doc | Diff | **Promote** (minor) | This ticket | CR-004: move the comment back |
-| C-06 | `OrgContainerPort` has 9 read-only methods; design R-2 named three (`placementAt`, `sameContainer`, `orgRulesFrom`) | Principle 10/13; design R-2 | — | Each added method has one subject (one container) and serves a named need (refusal, delegation source, view commands, Org address presentation). It delivers nothing. No problem caused, but the handoff does not record the deviation | `org-container-port.ts` | Reject as a defect; record | — | N-1: record it with its reason in the handoff (reason holds) |
-| C-07 | View composition uses a synchronous relay with live parts read at the base; design R-3'' asked for per-unit `openViewSnapshotConnection` with queued events | design R-3'' (AR-002) | — | The exactly-once guarantee holds because unit roots publish synchronously to their subscribers (`org-unit-views.ts` `subscribe` on `root.subscribeToEvents` / `run.subscribeToEvents`) and the live parts are read before the first await (`org-view-composition.ts` `snapshot`). Tested (`org-view-composition.test.ts`). Not recorded as a deviation | Code read | Reject as a defect; record | — | N-1: record it with its reason (holds) |
-| C-08 | Decision 1: converted never-started agent units are `prepared` with an expiry already past | Contract §4 | — | The sweeper skips contained runs (`agent-run-provisioning-service.ts:194`) and activation does not check expiry. No loss | Code read | Reject | — | Reason holds |
-| C-09 | `encode` rewrites log lines with a fixed key set | Contract §5/§9 ("unchanged") | — | The stored line shape is exactly those seven keys plus `counterpart` (`collaboration-communication-message.ts`); the bytes change, the content does not | Code read | Reject | — | — |
-| C-10 | The synchronous composed Org read fills agent units' launch from the Org default | Data tightness | — | Its only consumer, the context-file owner resolver, uses ownership and `memoryDir` only | `context-file-owner-resolver.ts:71` | Reject | — | No consequence |
-| C-11 | Orphan unit runs if the process dies mid-create (units made before the container file) | Infrastructure failure | Crash | Out of scope by default (Principle 6) | — | Reject | — | — |
-| C-12 | Decision 4: the Org-level notice keeps the header "Your team changed…" for a direct Org agent | design § Exact Texts | — | The design reuses autobyteus-22's texts unchanged | — | Reject | — | Follows the design; wording is the Solution Designer's |
+| C-13 | `admit` treats the container relation as `related` whatever the Task's state, ahead of the assigner's-continuation branch | S-09; SR-014 "related as today through the Task"; CM-5 | The delegating unit agent messages its closed delegation by run ID after setting the Task to TODO | `TASK_AGENT_RESOURCE_CLOSED`; the Task cannot be continued from an Org unit at all. Today's `canMessage` counts open entries only (`delegation-index.ts:347-355`), and that is why the reopen branch is reachable for every other run | Scratch test, with control | **Promote** | This ticket (IR-002 introduced it) | CR-005 |
+| C-14 | `delegation-index.ts` goes from 492 to 515 effective lines (538 → 563 raw) with `chainContainerOf` and `relatedThroughContainer` | Size rule (> 500, this change takes it over) | — | — | Size audit | **Promote** | This ticket | CR-006 |
+| C-15 | `compositions/remote-collaboration-composition.ts` imports `projects/services/task-execution-resource-service.js` (FU-003 wiring, IR-001 `f69004e722`). The project architecture test allows only `collaboration-composition.ts` and `project-run-links-composition.ts` to know both sides | `tests/architecture/projects-boundaries.test.ts:69-72` (REQ-012, SR-021/SR-023) | — | The test fails (3 files found, 2 allowed). Neither handoff ran `tests/architecture` (part of `test:unit`). I missed it in CRR-001 because I did not run the suites then | `vitest run tests/architecture` | **Promote** | This ticket (this change caused it) | CR-007 |
+| C-16 | The live `run-history/store/agent-org-run-execution-tree-store.ts` remains with no production importer (the migrations use the frozen copy). Four test files this ticket rewrote still import it unused: `root-run-package-readiness-index.test.ts:10`, `agent-org-memory-explorer-service.test.ts:15`, `memory-view-member-resolver.test.ts:7`, `collaboration-root-history-readiness.test.ts:11`. Two older test cases exercise only that store: `agent-org-run-execution-tree-tolerance.test.ts` "writes the exact current shape…", and the Org cases of `removed-skill-access-mode-record-tolerance.test.ts` | Principle 7; CRR-001 Dead/Obsolete row "Remove with them, unless another current reader remains" | — | Dead runtime file kept alive only by tests; stale imports in touched tests | `grep` over `src` and `tests` | **Promote** | This ticket | CR-002 (remaining part) |
+| C-17 | The catalog test's package-removal-failure case was dropped, and container delete has no compensation when a folder removal throws | Infrastructure failure | Disk error | Out of scope by default (Principle 6). The released branch's compensation went with that branch. Container delete is unchanged from IR-001, which CRR-001 accepted | Code read | Reject | — | — |
+| C-18 | At depth ≥ 2 the chain relation makes a delegated run's message to a unit `related` | SR-014 ("`chainOf`, assigners upward") | — | As designed. It also matches base: sub-work joins the delegating run's open Task (CM-6), whose assigner was the Org, so base `canMessage` related it too | Design; CM-6 | Reject | — | No difference from base |
+| C-19 | FU-001 (memory sync excludes unit runs), challenged under the follow-up rule | `follow-ups.md` FU-001; `local-memory-export-scanner.ts:36-49` | — | Deferring it does not weaken this design. Syncing unit runs without their container (`agent_orgs/` is no sync root) would put orphan units on the other node. Syncing Org memory means also syncing containers: a new feature the requirements do not ask for. The exclusion keeps the Org whole and unsynced, as today | Code read | Reject (follow-up holds) | Follow-up | — |
+| C-20 | M-15 withdrawn from the result catalogue | `result-catalogue.test.ts` | — | Only the deleted registry produced it (`grep`: no other source) | `grep` | Reject | — | Correct withdrawal |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Pass — deviation recorded, reason holds`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Boundary issue resolved: units are runs, the container hosts nothing, Team logic runs once (Team roots) | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Storage contract §2–§6, §9, §11 match the writers and the conversion; autobyteus-22 texts reused | — |
-| Data-flow spine inventory clarity and preservation | Pass | DS-001..DS-007 each have one driver in code | — |
-| Ownership boundary preservation and clarity | Pass | Container lifecycle (manager), live view/commands (`LiveAgentOrgContainer`, `OrgViewComposition`), the one container-fact answerer (`OrgContainerDirectory`), the Team-unit address boundary (`ContainedTeamAddressSpace`) | — |
-| Off-spine concern clarity | Pass | Unit run services behind `AgentOrgUnitRuns`; stores; notices through the existing source | — |
-| Existing capability/subsystem reuse check | Pass | Cross-run delivery, Team roots, standalone roots, autobyteus-22 membership and notices, peer gateway, sealed migration runner | — |
-| Reusable owned structures check | Pass | `composeOrgExecutionTree` serves view, history and location; `ContainedTeamAddressSpace` is the one translator | — |
-| Shared-structure/data-model tightness check | Pass | Container file holds references only; `formerUnits[i].leaving` mirrors autobyteus-22 | — |
-| Repeated coordination ownership check | Pass | `same_container` is decided once (N-1); Org-rule presence is derived once (`rulesFromIn`) | — |
-| Empty indirection check | Pass | `AgentOrgUnitRuns` translates the plan into the run services' inputs and owns discard; not pass-through | — |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | `container/`, `membership/`, migration folder | — |
-| Ownership-driven dependency check | Pass | Units hold only `containedIn` and ask the directory (passed by the composition root); the container drives the unit lifecycle | — |
-| Authoritative Boundary Rule check | Pass | Readers ask `OrgContainerPort`; none read the container file and a unit's tree side by side | — |
-| File placement check | Pass | As the design's mapping | — |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | R-8 and SR-014 implemented in the owners the design names | — |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | SR-014 says a unit's message to a delegated run is related "as today through the Task". The implementation ignores the Task's state (C-13) | CR-005 |
+| Data-flow spine inventory clarity and preservation | Pass | The relation is decided once in `route`/`admit`, in the order the design gives | — |
+| Ownership boundary preservation and clarity | Pass | Reach in `CollaborationTree`; the chain fact in `DelegationIndex` over `OrgContainerPort`; delivery in `CrossRunMessageDelivery` | — |
+| Off-spine concern clarity | Pass | — | — |
+| Existing capability/subsystem reuse check | Pass | `containerReach` shared by units and delegated runs; `deliverToUnit` shared by both relations | — |
+| Reusable owned structures check | Pass | — | — |
+| Shared-structure/data-model tightness check | Pass | No new persisted shape | — |
+| Repeated coordination ownership check | Pass | One chain-container fact (`chainContainerOf`) used by `route` and `admit` | — |
+| Empty indirection check | Pass | — | — |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | `delegation-index.ts` over 500 (C-14) | CR-006 |
+| Ownership-driven dependency check | Fail | A composition outside the allowed pair depends on a Projects service (C-15) | CR-007 |
+| Authoritative Boundary Rule check | Pass | Readers ask `OrgContainerPort`; no caller reads the container file and a unit file side by side | — |
+| File placement check | Pass | `agent-run-history-catalog-state.ts` beside its service | — |
 | Flat-vs-over-split layout judgment | Pass | — | — |
-| Interface/API/query/command/service-method boundary clarity | Pass — deviation recorded, reason holds | `OrgContainerPort` grew to nine read-only methods, each with one subject (C-06). The reason holds, but it is recorded only here, not in the handoff | N-1: record in the handoff |
-| Naming quality and naming-to-responsibility alignment (Principle 15) | Fail (minor) | C-05: misplaced doc comment in `peer-gateway.ts`; `team-run-membership.ts:15` documents a removed branch (part of CR-002) | CR-004, CR-002 |
+| Interface/API/query/command/service-method boundary clarity | Pass — deviation recorded, reason holds | `OrgContainerPort`'s nine read-only methods, now recorded in the handoff with their reason (N-1 a) | — |
+| Naming quality and naming-to-responsibility alignment (Principle 15) | Pass | CR-004 fixed; the `team-run-membership.ts` doc corrected | — |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | — | — |
-| Patch-on-patch complexity control | Pass | Initial round | — |
-| Dead code removed in the touched files and modules (Core Principle 7) | **Fail** | C-02 (released-tree branches and `AgentOrgRunExecutionTreeStore` use in two touched services), C-03 (two orphaned hosting modules, 237 lines) | CR-002 |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Container lifecycle, messaging, storage contract, composition exactly-once, migration fixtures for every shape, OF-01..05 e2e. Gap: no test for step 2 from a run delegated by a unit (CR-001) | With CR-001 |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `released-org-tree-v1-fixtures.ts`, `stored-org-container.ts` | — |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Org-root tests removed with the root | — |
-| API/E2E readiness for the next workflow stage | Fail | CR-001 contradicts a preserved behavior that API/E2E would test (delegation from Org units) | After CR-001 |
+| Patch-on-patch complexity control | Pass | The `stepTwo` branch is compact (`containedIn ‖ container` → placements, else standing) | — |
+| Dead code removed in the touched files and modules (Core Principle 7) | Fail | C-16 | CR-002 |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The new file enters through `send_message_to` and covers the design's list. It has no closed-Task case, so CR-005 passed unnoticed | With CR-005 |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The contract fixtures (`org-container-contract/`) are reused | — |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | Unused store imports in four rewritten tests; store-only cases (C-16) | CR-002 |
+| API/E2E readiness for the next workflow stage | Fail | CR-005 (a preserved behavior broken), CR-007 (a project architecture test red) | CR-005, CR-007 |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Effective non-empty lines [raw `wc -l`], base `755cea4711` → `46e53e9ed0`:
+Effective non-empty lines [raw `wc -l`], base `9f6add773b` → IR-001 `46e53e9ed0` → IR-002 `5545e20f3a`:
 
 | Source File | Before | After | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `run-history/services/agent-run-history-catalog-service.ts` | 491 [532] | **504 [546]** | **Fail — this change takes it over** | Pass | Pass | Pass | Local Fix | CR-003 |
-| `agent-collaboration/delegation/delegation-index.ts` | 490 [536] | 492 [538] | Pass | Pass | Pass | Pass | — | — |
-| `agent-execution/runtime/general-process-run-supervisor.ts` | 465 | 475 | Pass | Pass | Pass (wiring) | Pass | — | — |
-| `agent-team-execution/domain/root-team-run.ts` | 464 [499] | 465 [500] | Pass | Pass | Pass | Pass | — | — |
-| `agent-team-execution/services/agent-team-run-manager.ts` | 461 [499] | 462 [500] | Pass | Pass | Pass | Pass | — | — |
-| `agent-collaboration/delegation/collaboration-tree.ts` | 260 | 360 | Pass | Pass (+125) | Pass | Pass | — | — |
-| `agent-org-execution/services/agent-org-run-manager.ts` | 446 | 362 | Pass | Pass | Pass | Pass | — | — |
-| New files (`container/*`, `membership/*`, migration) | 0 | ≤ 319 each | Pass | Pass | Pass | Pass | — | — |
+| `agent-collaboration/delegation/delegation-index.ts` | 490 [536] → 492 [538] | **515 [563]** | **Fail — this change takes it over** | Pass | Pass | Pass | Local Fix | CR-006 |
+| `run-history/services/agent-run-history-catalog-service.ts` | 491 [532] → 504 [546] | 470 [507] | Pass (CR-003 resolved) | Pass | Pass | Pass | — | — |
+| `run-history/services/agent-run-history-catalog-state.ts` (new) | 0 | 41 [47] | Pass | Pass | Pass | Pass | — | — |
+| `agent-collaboration/delegation/collaboration-tree.ts` | 260 → 360 | 378 [412] | Pass | Pass | Pass | Pass | — | — |
+| `agent-collaboration/communication/cross-run-message-delivery.ts` | 256 → 292 | 307 [322] | Pass | Pass | Pass | Pass | — | — |
+| `run-history/services/agent-org-run-history-catalog-service.ts` | 245 → 320 | 204 [215] | Pass | Pass | Pass | Pass | — | — |
+| `remote-collaboration/channel/peer-gateway.ts` | 323 → 348 | 348 [386] | Pass | Pass | Pass | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Fail | C-02: archive/delete and the history projection read the released Org tree with `AgentOrgRunExecutionTreeStore` beside the container path |
-| No legacy old-behavior retention in changed scope | Fail | C-03: the Org root's hosting modules remain (unreferenced) |
-| Dead code removed in the touched files and modules (Core Principle 7) | Fail | CR-002 |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Migration Required`, as designed, with follow-ups and isolation |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Fail | C-02 |
-| Approved transition mechanics match the reviewed design | Pass | Ordering, retry recognition, residue, reader wait, failed-Org isolation (readiness) |
+| No backward-compatibility mechanisms in changed scope | Pass | The released-tree branches are gone from both services |
+| No legacy old-behavior retention in changed scope | Fail | The released Org tree store stays in `src`, used only by tests (C-16) |
+| Dead code removed in the touched files and modules (Core Principle 7) | Fail | CR-002 (remaining part) |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Unchanged; the migrations read the frozen store |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | — |
+| Approved transition mechanics match the reviewed design | Pass | The converted chain line equals the live line (tested through `planLogSplit`) |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| `agent-collaboration/execution/backends/root-agent-execution-registry.ts` | ObsoleteFile | No importer at HEAD (`git grep`); at base only the removed Org root files imported it | Removal Plan: member hosting inside the Org root is removed | Delete |
-| `agent-collaboration/execution/backends/root-team-execution-directory.ts` | ObsoleteFile | Same | Removal Plan: the "Org-mounted, fixed" `TeamRunMembership` branch is removed | Delete; fix `team-run-membership.ts:15` |
-| Released-tree branches in `run-history/services/agent-org-run-history-catalog-service.ts` (archive `:98-…`, delete `:143-…`, and their compensation/readback through `this.trees`) | LegacyBranch | Unadmitted Orgs never reach archive/delete through supported paths (readiness `root-run-package-current-validator.ts:213-215`; admitted-only rows) | Current runtime is current-schema-only (Principle 5/8); design isolates failed Orgs | Remove; the container path stays |
-| Released-tree read in `run-history/services/collaboration-root-history-service.ts:71-72` (`this.orgTrees.read`) | LegacyBranch | `getCatalogRow` returns null for an unadmitted Org (`collaboration-run-history-catalog-core.ts:73`) | Same | Remove; a non-container Org is not projected (warn, as for an unreadable run) |
-| `run-history/store/agent-org-run-execution-tree-store.ts` (and its writer use) | DormantPath | Its only current users are the two branches above (`grep`) | Same | Remove with them, unless another current reader remains after the change |
+| `src/run-history/store/agent-org-run-execution-tree-store.ts` | DormantPath | No importer in `src` outside itself; `task-agent-own-run-v1` imports the frozen copy (`frozen/server/run-history/store/…`) | Current runtime is current-schema-only (Principle 5/8); CRR-001 asked for its removal once no current reader remained, and none does | Delete. `agent-org-run-execution-tree-path.ts`, `-schema.ts` and `agent-org-run-file-commit-writer.ts` stay: the container store and the planner use them |
+| Unused imports of that store in `tests/unit/run-history/services/root-run-package-readiness-index.test.ts:10`, `tests/unit/agent-memory/agent-org-memory-explorer-service.test.ts:15`, `tests/unit/api/graphql/types/memory-view-member-resolver.test.ts:7`, `tests/unit/run-history/services/collaboration-root-history-readiness.test.ts:11` | StaleImport | No use in each file (`grep`) | Dead code in files this ticket touched | Remove |
+| `tests/unit/run-history/agent-org-run-execution-tree-tolerance.test.ts` "writes the exact current shape and reads back the same tree"; `tests/unit/run-history/removed-skill-access-mode-record-tolerance.test.ts`, the Org-tree cases (`:130-153`) | StaleTest | They test only the dead store | They would keep a dead file alive | Remove these cases, or keep what they prove about the live schema through `validateAgentOrgRunExecutionTreePayload`, which the planner still uses |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`. Done for the container. `docs/modules/agent_orgs.md:222-225` still describes step 2 from the Org's standing agents, which no longer applies (CR-001); it follows the Solution Designer's decision.
-- Files: `collaboration_model.md`, `agent_orgs.md`, `agent_memory.md`, `agent_team_execution.md`, `GLOSSARY.md`, `release-notes.md`. Delivery verifies.
+- Docs impact: `Yes`, done. `agent_orgs.md` § Addresses And Handoffs and `collaboration_model.md` CM-5 describe R-8 and SR-014.
+- After CR-005, CM-5's "a run whose Tasks are all closed takes input only from its assigner after a reopen" holds again, so no docs change is needed for it. The `agent_orgs.md` sentence "A unit's message to such a run, by run ID, is related the same way" should say "while its Task is open", as CM-5 says of the Task rule.
 
 ## Additional Material Premise Validation (When Required)
 
@@ -177,81 +168,78 @@ Effective non-empty lines [raw `wc -l`], base `755cea4711` → `46e53e9ed0`:
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| ARCH-REV-005 residual notes, ARCH-REV-007 items | Confirmed | As listed in the handoff (self-target refusal, migration classification test, §9 fixtures, exactly-once test, release notes, §5 counterpart both lines, §11 ownership) |
+| MP-CR-01 (step 2 for a run delegated by an Org unit) | Confirmed resolved | R-8 implemented; tests through `send_message_to` (three senders × three address forms × stopped/live); B-4; OF-06 |
+| ARCH-REV-009 notes (view rule: the delegating unit's view only when it is a party) | Confirmed | `MessageViewScope` cases in the new test |
 
-### `MP-CR-01` — step 2 for a run delegated by an Org unit
+### `MP-CR-02` — the container relation and closed Tasks
 
 - Origin: `New`
-- Related approved requirement or established contract: requirements § Preserved Behavior Boundary ("delegation from Org units … look and work as today"); contract §2.3 step 2 (`agent_communication.md:428`, `agent_orgs.md:222-225`)
-- Relevant behavior ID(s): BEH-001, REQ-003 (addresses), S-08
-- Coherent product goal or governing event: an Org member delegates work; the delegated run follows its handoff rules to the Org's units
+- Related approved requirement or established contract: preserved boundary ("delegation from Org units … Tasks … as today"); SR-014 ("related as today through the Task"); CM-5; autobyteus-461 assigner's continuation (`admit :296-307`; `ASSIGNER_ONLY_REACTIVATION_MESSAGE`)
+- Relevant behavior ID(s): S-09
+- Coherent product goal or governing event: the agent that delegated a Task continues it after it was closed
 - Scenario validity: `Supported Normal Scenario`
 - Initiating basis kind: `User` / `System`
-- Independent product-supported initiating trigger: `delegate_task` by an Org member (the R-1''' table allows a copy of another unit); the task agent's `send_message_to(<Org address>)`, which its rules name (`delegationSourceAt` includes the Org rules)
-- Support evidence: base B-4 test; docs above
-- Forward path: `delegate_task` → `delegatedFrom = { kind: agent | agent_team, runId: unit }` (contract §6) → task agent's `send_message_to` → own root miss → `CollaborationTree.resolve` → `stepTwo()` → `standingOf(unit run)`
-- Lifecycle preconditions and material consequence: the Org address is not in the unit's standing, so `COLLABORATION_TARGET_NOT_FOUND`. A Team unit's standing exposes team-space addresses (`/solution_designer`) that collide with Org-space meanings. Converted delegations are affected too.
-- Reachability: `Reachable`
-- Review consequence: CR-001 (`Design Impact`)
+- Independent product-supported initiating trigger: `update_task` (TODO/IN_PROGRESS) by the delegating unit agent, then `send_message_to(target_agent_run_id)`
+- Support evidence: the refusal text tells agents to do exactly this; CM-5; base and IR-001 behavior
+- Forward path: router → `route` → `admit` → `relatedThroughContainer` (chain through `parentOf`, open or closed) → `related` → `exchange` → `assertStillOpen` → `TASK_AGENT_RESOURCE_CLOSED`
+- Lifecycle preconditions and material consequence: the Task's last entry is `assigned` and closed, and the sender is its delegator. The delegated work cannot be continued from inside an Org, and the refusal names the sender as the one who may.
+- Reachability: `Reachable` (shown through `send_message_to`, with control)
+- Review consequence: CR-005 (`Local Fix`)
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `8.9/10` (simple average; not the decision rule)
+- Overall score: `9.1/10` (simple average; not the decision rule). Pass bar for this review: at least 9.4 in every category (user's standing instruction, above the template's 9.2).
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | DS-001..DS-007 visible, each with one driver | — | — |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Container hosts nothing; one directory answers container facts; one Team-unit address boundary | — | — |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Single-subject, read-only port; signed peer request with link check | Port widened beyond the design without a recorded deviation (C-06) | N-1 |
-| `4` | `Separation of Concerns and File Placement` | 8.9 | Owned folders for container, membership, migration | One file taken over 500 lines (CR-003) | CR-003 |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Container file references only; composition reused | — | — |
-| `6` | `Naming Quality and Local Readability` | 9.0 | Consistent unit, container and former-unit vocabulary | Misplaced doc comment; a doc describing a removed branch | CR-004, CR-002 |
-| `7` | `API/E2E Readiness` | 8.6 | Strong unit, migration and built-server coverage | A preserved behavior contradicted (CR-001), with no test for it | CR-001 |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.5 | DS-001..DS-007 traced and correct; migration retry-safe; FU-003 linked | Runs delegated by Org units lose step-2 reach (CR-001) | CR-001 |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 8.6 | Clean container runtime | Released-tree branches kept in two touched services (C-02) | CR-002 |
-| `10` | `Cleanup Completeness` | 8.4 | Large removal done | 237 lines of orphaned hosting modules; dead legacy store use | CR-002 |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | R-8 and SR-014 sit on the existing spine: one step-2 contribution, one relation decision in the order the design gives | — | — |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | The chain fact is in the index over the container port; delivery in one owner; the Team-unit standing never exposed | — | — |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Port deviation recorded with a reason that holds | — | — |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | CR-003 resolved cleanly | `delegation-index.ts` taken over 500 (CR-006) | CR-006 |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | `containerReach` and `deliverToUnit` shared; no new persisted shape | — | — |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Doc comments corrected; clear comments on the relation order | — | — |
+| `7` | `API/E2E Readiness` | 8.8 | Strong new coverage through `send_message_to`, and OF-06 | A project architecture test is red (CR-007); no closed-Task case, so CR-005 passed unnoticed | CR-007; the CR-005 tests |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.6 | R-8 reach and SR-014 delivery correct and restored-on-message | Continuing a closed delegation from an Org unit is refused (CR-005) | CR-005 |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | Released-tree branches removed | The released Org tree store remains in the runtime tree (C-16) | CR-002 |
+| `10` | `Cleanup Completeness` | 9.0 | Hosting modules, branches and M-15 gone | Dead store, four stale imports, store-only test cases | CR-002 |
 
 ## Findings
 
 | ID | Finding | Evidence | Required Action | Classification | Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-001 | Runs delegated by an Org unit lose step-2 reach to the Org's agents by Org address: the delegating run is now the unit run, whose standing is only its own agents (team space for a Team unit). This contradicts the preserved boundary "delegation from Org units … as today", contract §2.3 step 2 as documented (`agent_orgs.md:222-225`) and tested at base (B-4). A copy's own Org-rule handoffs (which `delegationSourceAt` gives it) point to addresses it cannot reach. Converted delegations are affected too. | C-01, MP-CR-01; `collaboration-tree.ts:175-194`; `run-own-agents-reader.ts:74-83` | Decide how step 2 composes when an assigner is a unit run (for example the container's placements at Org addresses, plus how the unit's own team-space standing relates to them). Add it to the design and implement it, with a test entering through `send_message_to` from a run delegated by an agent unit and by a Team unit member. Update `agent_orgs.md`. | `Design Impact` | Solution Designer |
-| CR-002 | Dead legacy code left in touched code: released-Org-tree branches (archive, delete, history projection) and the `AgentOrgRunExecutionTreeStore` they use; the Org root's hosting modules `root-agent-execution-registry.ts` and `root-team-execution-directory.ts` (no importers), named in the Removal Plan; the stale doc at `team-run-membership.ts:15` | C-02, C-03; Dead / Obsolete table | Remove them as listed; a non-container Org is left out with a warning where it is met (it is never admitted) | `Local Fix` | Implementation engineer |
-| CR-003 | `agent-run-history-catalog-service.ts` taken over 500 effective lines (491 → 504) | C-04 | Move `recordPreparedUnit` (or an existing cohesive block) into an owned file | `Local Fix` | Implementation engineer |
-| CR-004 | Misplaced doc comment in `peer-gateway.ts:98-105` | C-05 | Move `DelegatedRunStatesHandler`'s comment back above its type | `Local Fix` | Implementation engineer |
+| CR-002 (remaining) | The live released-Org-tree store `run-history/store/agent-org-run-execution-tree-store.ts` remains with no production importer. Four tests this ticket rewrote import it unused, and two test cases exercise only it. | C-16; Dead / Obsolete table | Delete the store; remove the four imports; remove the store-only cases, or move what they prove about the live schema onto `validateAgentOrgRunExecutionTreePayload` | `Local Fix` | Implementation engineer |
+| CR-005 | A unit agent cannot continue a closed Task it delegated. `admit` relates the pair through `relatedThroughContainer`, which follows `chainOf` over closed entries too, before the assigner's-continuation branch. The gate head then refuses with `TASK_AGENT_RESOURCE_CLOSED` ("Only the agent that assigned the Task can continue it…") although the sender is that agent. This breaks the preserved boundary and CM-5, and departs from SR-014's "related as today through the Task". IR-002 introduced it: IR-001 and base reopen. | C-13, MP-CR-02; `cross-run-message-delivery.ts:293`, `:297-307`; `delegation-index.ts:224-226`, `:361-380`; scratch test with control | Apply the container relation under the Task rule's own condition: the delegated run's Task entry is open, as `canMessage` counts. A closed delegation then follows today's rule: its delegator's message reopens and delivers it, and any other unit gets the closed refusal. Mind the other direction too (`chainedUnitOf`), so one rule decides both. Add tests through `send_message_to`: (a) the agent unit and (b) a Team unit member each continue their closed delegation after setting the Task to TODO (reopened, delivered, restored); (c) a non-delegating unit gets `TASK_AGENT_RESOURCE_CLOSED`. Adjust the `agent_orgs.md` sentence (Docs-Impact) | `Local Fix` | Implementation engineer |
+| CR-006 | `delegation-index.ts` taken over 500 effective lines (492 → 515) by `chainContainerOf` and `relatedThroughContainer` | C-14 | Put the container-chain relation in an owned file (for example beside the index, taking `chainOf` and the container port), or move another cohesive block out, so the index is back under 500. The CR-005 fix will touch this code anyway | `Local Fix` | Implementation engineer |
+| CR-007 | `compositions/remote-collaboration-composition.ts` imports `projects/services/task-execution-resource-service.js` (FU-003 wiring, IR-001), and `tests/architecture/projects-boundaries.test.ts` fails | C-15 | Type the dependency by the receiver's own port: declare it in `remote-collaboration` (for example a `PeerRunMembersTasks` type that `PeerRunMembersReceiver` exports), and have the composition use that. Or build the receiver in `collaboration-composition.ts`, which may know both sides. Do not widen the test without a design reason. Include `tests/architecture` in the implementation's suite runs | `Local Fix` | Implementation engineer |
 
-Note N-1 (documentation, for the next implementation round): record in the handoff, as deviations with their reasons, (a) the widened `OrgContainerPort` (C-06) and (b) the synchronous relay in place of R-3''s per-unit snapshot connections (C-07). I judged both reasons to hold.
+CR-007 was already present at IR-001. I missed it in CRR-001 because I did not run the suites in that round. From this round on I run the gate, including `tests/architecture`.
 
 ## Follow-ups
 
-Findings outside this ticket go in the ticket's `follow-ups.md`.
-
 - Follow-ups this review added: None.
+- FU-001 challenged (C-19): it holds as a follow-up. Deferring it does not weaken the delivered design; doing it needs Org container sync, a new feature.
 
 ## Classification
 
-- CR-001: `Design Impact` (Solution Designer).
-- CR-002, CR-003, CR-004: `Local Fix` (implementation), with N-1 documentation.
-- Combined route: the ticket goes to the Solution Designer, because CR-001 needs a design decision. The local fixes do not depend on it and can go in the same implementation round.
+- CR-002 (remaining), CR-005, CR-006, CR-007: `Local Fix`. The design already states the behavior; no upstream change is needed.
 
 ## Recommended Recipient
 
-Solution Designer (`get_handoff_rules`: Design Impact), with CR-002..CR-004 and N-1 included for the next implementation round. After it: source review again (a delta or a re-audit, depending on what the CR-001 change touches), then API/E2E.
+Implementation engineer (`get_handoff_rules`: implementation-owned Local Fix before executable coverage). After the fix: implementation review again. A targeted delta review is enough if the fix stays within `admit`/the relation, the store removal, the composition typing and the file split. Then API/E2E.
 
 ## Residual Risks
 
 - Real-runtime, two-node and rendered-view proof is pending (API/E2E per the Verification Intent).
-- AC-006 conversion has been proven only on hand-built fixtures (correct by the guideline: never on real data).
-- Decision 1 (`started`/`prepared` from traces or the provider conversation) depends on the released member folders being complete. An agent with history but no trace file would convert as `prepared` and start fresh. Unlikely, since released members wrote traces.
+- AC-006 is proven on hand-built fixtures only (correct by the guideline).
 - FU-001 remains (memory sync of contained runs).
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Fail` (S-08 contradicted)
-- Material-Premise Gate: `Fail` (MP-CR-01)
-- Score Summary: 8.9/10 average; below 9.2 in Separation of Concerns (8.9), Naming (9.0), API/E2E Readiness (8.6), Runtime Correctness (8.5), Legacy (8.6) and Cleanup (8.4)
+- Supported Product Scenario Gate: `Fail` (S-09 contradicted)
+- Material-Premise Gate: `Fail` (MP-CR-02); MP-CR-01 resolved
+- Score Summary: 9.1/10 average. Below the 9.4 bar: Separation of Concerns 9.0, API/E2E Readiness 8.8, Runtime Correctness 8.6, Legacy 9.2, Cleanup 9.0
 - Failure Origin: N/A (implementation review)
-- Recommended Recipient: Solution Designer
-- Notes: Classification Large/High is preserved. The container, messaging, Org follow, migration and FU-003 paths are otherwise sound and well tested.
+- Recommended Recipient: Implementation engineer
+- Notes: CR-001, CR-003, CR-004 and N-1 are resolved. R-8 reach and SR-014 delivery are correct and well tested. The remaining work is bounded: one admission-order fix with its tests, one file split, one store removal and one composition typing.

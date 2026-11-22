@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 complete | N/A | Fail | CR-001, CR-002, CR-003, CR-004 |
+| CRR-002 | `code-review-report.md` | Implementation Review / IR-002 complete | Fail | Fail | CR-001, CR-002, CR-003, CR-004, CR-005, CR-006, CR-007 |
 
 ## Revision Entries
 
@@ -38,3 +39,41 @@ None.
 - Material score or classification changes: N/A (initial); Large/High preserved
 - Recommended recipient: Solution Designer (CR-002..CR-004 and N-1 for the next implementation round)
 - Remaining risks or uncertainty: real-runtime and two-node proof pending in API/E2E.
+
+### CRR-002: Re-audit of IR-002
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Full Re-Audit`. CR-001 was Design Impact; its fix touches step 2, cross-run admission and the delegation index, which are shared messaging paths.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-002; commit `5545e20f3a` (delta `46e53e9ed0..5545e20f3a`)
+- Relevant solution revision IDs: SR-013, SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-008, ARCH-REV-009
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - CR-001, CR-003, CR-004 and N-1 are resolved.
+  - CR-002 is only partly resolved: the released Org tree store remains, unused by production code.
+  - New CR-005: IR-002's `admit` relates a unit and its closed delegation before the assigner's-continuation branch, so the delegating unit agent cannot continue the Task. Shown through `send_message_to`, with a control.
+  - New CR-006: `delegation-index.ts` is now over 500 lines.
+  - New CR-007: the projects boundary architecture test fails. The cause dates from IR-001; I missed it in CRR-001 because I had not run the suites.
+  - I ran the gate myself: typecheck PASS; affected suites 1867/1869 tests, one environment failure (no `pnpm` in my shell; passes with corepack `pnpm`) and CR-007.
+  - The bar is now at least 9.4 in every category (user's standing instruction). Five categories are below it.
+- Supported product scenario / material-premise basis changes: S-08 confirmed; S-09 (continuing a closed delegation from an Org unit) added from the preserved boundary and CM-5; MP-CR-01 resolved; MP-CR-02 new.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| CR-001 | Design Impact | Resolved | R-8 `stepTwo`/`containerReach`; SR-014 delivery; `org-delegated-run-messaging.test.ts` through `send_message_to` (three senders × three address forms × stopped/live), B-4, OF-06 |
+| CR-002 | Local Fix | Partly resolved; still open | Branches, hosting modules and the stale doc removed. The live `agent-org-run-execution-tree-store.ts` remains with no production importer, plus four stale test imports and store-only test cases |
+| CR-003 | Local Fix | Resolved | `agent-run-history-catalog-service.ts` 470 effective lines; state in `agent-run-history-catalog-state.ts` |
+| CR-004 | Local Fix | Resolved | `peer-gateway.ts` comment back above `DelegatedRunStatesHandler` |
+| N-1 | Documentation | Resolved | Handoff § Recorded Deviations; both reasons hold |
+
+- New or remaining finding IDs: CR-002 (remaining), CR-005, CR-006, CR-007
+- Material score or classification changes: average 8.9 → 9.1; Large/High preserved; all open findings are `Local Fix`
+- Recommended recipient: Implementation engineer
+- Remaining risks or uncertainty: real-runtime and two-node proof pending in API/E2E; FU-001 holds as a follow-up (challenged, C-19).
