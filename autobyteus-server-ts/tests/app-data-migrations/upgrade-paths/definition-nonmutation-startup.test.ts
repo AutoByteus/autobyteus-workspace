@@ -153,10 +153,11 @@ it("runs the complete production registry on a fresh pre-ticket data root, prese
   const results = await runner.runPending();
   expect(results.map((result) => result.migrationId)).toEqual(registry.listDefinitions().map((definition) => definition.id));
   for (const id of [PREREQUISITE, FAMILY]) { const result = results.find((result) => result.migrationId === id)!; expect(result, result.logPath ? await fs.readFile(result.logPath, "utf8") : result.errorMessage ?? "").toMatchObject({ status: "SUCCEEDED" }); }
-  const runtimeTarget = path.join(env.memory, "agent_orgs", "runtime-org");
-  expect(JSON.parse(await fs.readFile(path.join(runtimeTarget, "director", "raw_traces_active.jsonl"), "utf8"))).toEqual({ ...savedTrace,
+  // The registry ends with 20261122_agent_org_units_own_runs_v1 (org-teams-follow-definition): the Org is a container, its
+  // direct agent an agent run of its own and its mounted Team a Team run of its own, each folder renamed with its bytes.
+  expect(JSON.parse(await fs.readFile(path.join(env.memory, "agents", "director", "raw_traces_active.jsonl"), "utf8"))).toEqual({ ...savedTrace,
     media: { images: ["/rest/agent-org-runs/runtime-org/agent-runs/worker/context-files/ctx_saved__image.png"] } });
-  expect(await fs.readFile(path.join(runtimeTarget, "mounted", "worker", "context_files", "ctx_saved__image.png"))).toEqual(imageBytes);
+  expect(await fs.readFile(path.join(env.memory, "agent_teams", "mounted", "worker", "context_files", "ctx_saved__image.png"))).toEqual(imageBytes);
   // No family rewrite: the released tree keeps every field but its empty `taskExecutions` list, which
   // `20261111_delegated_runs_own_runs_v1` removes from every tree (autobyteus-461, E9); the records file keeps its bytes.
   const { taskExecutions: _hosted, ...nativeRoot } = JSON.parse(nativeTree).rootTeam;

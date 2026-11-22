@@ -1,4 +1,5 @@
 import type { CatalogDefinitionRef } from "../collaborators/catalog-address-map.js";
+import { formerMemberRefusal } from "../collaborators/message-recipient-resolution.js";
 import { sourcedPlacement, type DelegationPlacement } from "../collaborators/catalog-delegation.js";
 import { configuredPlacementSource } from "../collaborators/collaborator-source-projector.js";
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
@@ -211,7 +212,12 @@ export class CollaborationTree {
     const reached = await this.stepTwo();
     if (!reached) return null;
     if (this.run.rootSubjectKind === "agent_team") await this.correct(address);
-    return reached.get(address)?.agentRunId ?? null;
+    const receiver = reached.get(address)?.agentRunId ?? null;
+    if (receiver || this.entries().length) return receiver;
+    // A unit removed from the Org (REQ-009) is refused by name, as a Team's former member is (autobyteus-22 § Exact Texts).
+    const containedIn = await this.containedIn(this.run);
+    if (containedIn && this.containers!.formerUnitAt(containedIn.orgRunId, address)) throw formerMemberRefusal(address as AgentTeamAddress);
+    return null;
   }
 
   /**

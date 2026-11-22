@@ -54,6 +54,7 @@ import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 import type { TeamRunMembership } from "./team-run-membership.js";
 import { TeamMembershipCommitter } from "../membership/team-membership-committer.js";
+import { withPeerRunMembers } from "../../agent-collaboration/execution/remote/peer-run-members-notice.js";
 import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
 import type { TeamDefinitionView, TeamMembershipChange } from "../membership/team-membership-change.js";
 import { TeamRunMemberAuthority } from "./team-run-member-authority.js";
@@ -178,12 +179,11 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
-    this.membershipChanges = new TeamMembershipCommitter({
-      rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
+    this.membershipChanges = new TeamMembershipCommitter({ rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
       assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
-      followers: { teamRun: options.rootRun, notices: options.changeNotices, runParts: options.delegationIndex,
-        publish: (event) => options.publisher.publish(event) },
+      followers: { teamRun: options.rootRun, notices: withPeerRunMembers(options.changeNotices, () => this.tree, options.remoteChannel),
+        runParts: options.delegationIndex, publish: (event) => options.publisher.publish(event) },
     });
     this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;

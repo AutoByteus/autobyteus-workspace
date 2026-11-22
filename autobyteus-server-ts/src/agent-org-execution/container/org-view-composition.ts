@@ -69,7 +69,7 @@ const agentsOf = (tree: AgentOrgRunExecutionTreeSnapshot): Map<string, Readonly<
  */
 export class OrgViewComposition {
   private readonly attached = new Map<string, () => void>();
-  private readonly offLiveness: (() => void)[] = [];
+  private readonly offLiveness = new Map<string, () => void>();
   private agents = new Map<string, Readonly<{ address: AgentTeamAddress; unitRunId: string }>>();
   private started = false;
 
@@ -87,15 +87,26 @@ export class OrgViewComposition {
     this.started = true;
     await this.snapshot();
     if (!this.started) return;
-    for (const unit of this.input.file().rootOrg.units) {
-      this.attach(unit);
-      this.offLiveness.push(this.input.units.onLivenessChanged(unit, () => this.livenessChanged(unit)));
-    }
+    for (const unit of this.viewUnits()) this.follow(unit);
+  }
+
+  /**
+   * The container's units changed (it followed its definition, REQ-009): new units are followed, units gone are not (a
+   * unit leaving the Org stays until it stopped); each Org view takes an in-band snapshot.
+   */
+  unitsChanged(): void {
+    if (!this.started) return;
+    const wanted = new Map(this.viewUnits().map((unit) => [unit.runId, unit]));
+    for (const [runId, off] of [...this.attached]) if (!wanted.has(runId)) { off(); this.attached.delete(runId); }
+    for (const [runId, off] of [...this.offLiveness]) if (!wanted.has(runId)) { off(); this.offLiveness.delete(runId); }
+    for (const unit of wanted.values()) this.follow(unit);
+    this.input.stream.publish({ kind: "composition_changed" });
   }
 
   stop(): void {
     this.started = false;
-    this.offLiveness.splice(0).forEach((off) => off());
+    for (const off of this.offLiveness.values()) off();
+    this.offLiveness.clear();
     for (const unsubscribe of this.attached.values()) unsubscribe();
     this.attached.clear();
   }
@@ -119,12 +130,12 @@ export class OrgViewComposition {
 
   /** Whether any live unit has work running now (the Org's execution checkpoint). */
   hasOpenWork(): boolean {
-    return this.input.file().rootOrg.units.some((unit) => this.input.units.live(unit)?.hasOpenWork() ?? false);
+    return this.viewUnits().some((unit) => this.input.units.live(unit)?.hasOpenWork() ?? false);
   }
 
   /** The live agents' statuses now, at their Org addresses (an agent whose unit is not live is offline: not listed). */
   liveStatuses(): readonly CollaborationAgentStatusSnapshot[] {
-    return this.input.file().rootOrg.units.flatMap((unit) => this.input.units.live(unit)?.statuses() ?? []).flatMap((status) => {
+    return this.viewUnits().flatMap((unit) => this.input.units.live(unit)?.statuses() ?? []).flatMap((status) => {
       const agent = this.agents.get(status.agentRunId);
       return agent ? [createCollaborationAgentStatusSnapshot({ execution: this.identity(status.agentRunId, agent.address), status: status.status,
         backgroundTasksRunning: status.backgroundTasksRunning, trigger: status.trigger ?? null, errorMessage: status.errorMessage ?? null })] : [];
@@ -133,8 +144,9 @@ export class OrgViewComposition {
 
   /** The Org's own parts now; the live units' are read before the first await (at the caller's base). */
   snapshot(): Promise<AgentOrgRunPackageSnapshot> {
-    const file = this.input.file();
-    const live = file.rootOrg.units.map((unit) => {
+    const units = this.viewUnits();
+    const file = { ...this.input.file(), rootOrg: { ...this.input.file().rootOrg, units } };
+    const live = units.map((unit) => {
       const view = this.input.units.live(unit);
       return { unit, read: view ? { file: view.file(), statuses: view.statuses(), inputStates: view.inputStates() } : null };
     });
@@ -151,6 +163,22 @@ export class OrgViewComposition {
       });
       return Object.freeze({ tree, statuses: Object.freeze(statuses), inputStates: Object.freeze(live.flatMap(({ read }) => read?.inputStates ?? [])) });
     })();
+  }
+
+  /**
+   * The units the view shows: the current ones, then each unit leaving the Org while it finishes (REQ-009), unless a
+   * current unit took its address (its rows are tagged leaving; it is shown until it stopped).
+   */
+  private viewUnits(): AgentOrgUnit[] {
+    const root = this.input.file().rootOrg;
+    const current = new Set(root.units.map((unit) => unit.address as string));
+    return [...root.units, ...root.formerUnits.filter((unit) => unit.leaving && !current.has(unit.address))
+      .map(({ leaving: _leaving, ...unit }) => Object.freeze(unit))];
+  }
+
+  private follow(unit: AgentOrgUnit): void {
+    this.attach(unit);
+    if (!this.offLiveness.has(unit.runId)) this.offLiveness.set(unit.runId, this.input.units.onLivenessChanged(unit, () => this.livenessChanged(unit)));
   }
 
   private attach(unit: AgentOrgUnit): void {

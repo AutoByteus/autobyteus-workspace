@@ -3,6 +3,9 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { RunTreeView } from "../../../src/agent-collaboration/delegation/run-tree-view.js";
+import { createOrgContainerDirectory } from "../../../src/agent-org-execution/container/org-container-directory.js";
+import { DelegatedRunAgentsReader } from "../../../src/run-history/services/delegated-run-agents-reader.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { ContainerConfigTrees } from "../../../src/agent-org-execution/container/container-config-trees.js";
 import { readStoredOrgTree } from "../../../src/agent-org-execution/container/stored-org-tree.js";
@@ -72,6 +75,30 @@ describe("A stored Org container (contract §1–§4, §8; design R-5)", () => {
     expect(await reader.orgPlacementsOf("sdd_org_1")).toMatchObject({ orgDefinitionId: "software-development-department", agentAddresses: ["/concierge"] });
     // A container hosts no agent of its own.
     expect(await reader.partsOf({ rootSubjectKind: "agent_org", rootRunId: "sdd_org_1" })).toMatchObject({ agents: [], mountedTeams: [] });
+  });
+
+  it("a fresh process reads a stored Org's delegated runs through its units: the container is read once first (rows, participants' subtree)", async () => {
+    const { memoryDir } = await storedOrg();
+    const org = { rootSubjectKind: "agent_org" as const, rootRunId: "sdd_org_1" };
+    const writer = { kind: "agent", agentRunId: "writer_copy_1" };
+    // The concierge unit delegated a run; the container itself delegates nothing.
+    const runs = {
+      collaborationTreeOf: (holder: { rootRunId: string }) => ({ rows: () => holder.rootRunId === "concierge_1"
+        ? [{ run: writer, parent: { rootSubjectKind: "agent", rootRunId: "concierge_1" }, delegatorAgentRunId: "concierge_1" }] : [] }),
+      subtreeOf: (holder: { rootRunId: string }) => holder.rootRunId === "concierge_1" ? [writer] : [],
+      agentsOf: async () => [],
+    } as never;
+    const directory = createOrgContainerDirectory(memoryDir);
+    // Before its file is read the directory does not know the container (a synchronous answer cannot read it).
+    expect(directory.unitRunsOf("sdd_org_1")).toBeNull();
+    const view = new RunTreeView({ tree: runs, ownTreeOf: async () => null, projection: {} as never, isLiveTeamRun: () => false,
+      unitRunsOf: (orgRunId) => directory.unitRunsOf(orgRunId), loadContainer: (orgRunId) => directory.loadContainer(orgRunId) });
+    expect(view.readAtBase(org).subtree).toEqual([]);
+    await view.prepare(org);
+    expect(view.readAtBase(org).subtree.map((row) => row.run)).toEqual([writer]);
+    const reader = new DelegatedRunAgentsReader(runs, createOrgContainerDirectory(memoryDir));
+    await reader.prepare(org);
+    expect(reader.openRunsBelow(org)).toEqual([writer]);
   });
 
   it("its members' memory is in their unit runs (context files and member reads find it there)", async () => {

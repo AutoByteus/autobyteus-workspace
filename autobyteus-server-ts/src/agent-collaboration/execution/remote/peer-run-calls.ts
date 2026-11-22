@@ -7,6 +7,7 @@ import type {
   RemoteAgentProjection,
   RemoteOwnerCommand,
   RemoteRunChannel,
+  RemoteRunMembers,
   RemoteRunObservationStream,
   RemoteRunObserver,
   RemoteTargetRoot,
@@ -57,6 +58,8 @@ export type PeerRunStatus = Readonly<{
   title: string | null;
   statuses: readonly RunAgentStatusEntry[];
   launches: readonly RemoteAgentLaunch[];
+  /** A Team run's members as its node answered them now (FU-003); `null` when not answered (an Agent run, an older node). */
+  team: RemoteRunMembers | null;
 }>;
 
 /** The statuses of these peer runs, one request per node (`runSummaries`); an unanswered node gives `reachable: false`. */
@@ -72,8 +75,8 @@ export const peerStatuses = async (links: readonly PeerRunLink[], channel: PeerC
       const runId = peerRunIdOf(link);
       const run = answer?.accepted ? answer.runs.find((entry) => entry.kind === link.kind && entry.runId === runId) : undefined;
       return Object.freeze(answer?.accepted
-        ? { nodeId, runId, reachable: true, title: run?.title ?? null, statuses: run?.statuses ?? [], launches: run?.launches ?? [] }
-        : { nodeId, runId, reachable: false, title: null, statuses: [], launches: [] });
+        ? { nodeId, runId, reachable: true, title: run?.title ?? null, statuses: run?.statuses ?? [], launches: run?.launches ?? [], team: run?.team ?? null }
+        : { nodeId, runId, reachable: false, title: null, statuses: [], launches: [], team: null });
     });
   }));
   return answers.flat();

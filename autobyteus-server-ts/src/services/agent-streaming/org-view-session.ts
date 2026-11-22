@@ -157,6 +157,8 @@ export class OrgViewSession {
     // the one place the reason can reach the user); never its stored file's parse error.
     const refused = await this.sources.restoreRefusal(this.orgRunId);
     if (refused) throw new OrgRunNotRestorableError(refused);
+    // A stored container is read once before the synchronous step: its units hold its delegated rows.
+    await this.sources.rows.runTree.prepare(this.identity);
     const stream = this.sources.streams.streamOf<AgentOrgRunEvent>(this.identity);
     const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
       const atBase = this.atBase();

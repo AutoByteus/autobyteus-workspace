@@ -42,6 +42,8 @@ export interface OrgContainerPort {
   delegationSourceAt(orgRunId: string, orgAddress: AgentTeamAddress): Promise<TaskExecutionSource | null>;
   /** The container's Org rules (Org addresses) from one Org address, as they are now (read after `loadContainer`). */
   orgRulesFrom(orgRunId: string, orgAddress: string): readonly CollaborationHandoff[];
+  /** A unit removed from the Org (REQ-009) at or above an Org address, while no current unit has it; read after `loadContainer`. */
+  formerUnitAt(orgRunId: string, orgAddress: string): Readonly<{ address: string }> | null;
   /**
    * Reads the container file so `orgRulesFrom` answers (a unit's agent context is built after this): the Org's definition,
    * whose instruction its direct agents read; `null` when the container file is absent.

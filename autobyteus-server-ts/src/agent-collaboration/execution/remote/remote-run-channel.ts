@@ -65,8 +65,16 @@ export type RemoteMessageTransmission = Readonly<{
 /** A run this node's delegation started on a peer (autobyteus-278): an Agent run, or a Team run. */
 export type RemoteStartedRunRef = Readonly<{ kind: "agent" | "agent_team"; runId: string }>;
 
+/**
+ * A Team run's current membership on its node (org-teams-follow-definition FU-003, DS-007): its coordinator's address and
+ * every member (address and run ID, as the Team tree has them now). Its node sends it after a committed change.
+ */
+export type RemoteRunMembers = Readonly<{ coordinatorAddress: string; members: readonly Readonly<{ address: string; agentRunId: string }>[] }>;
+
 /** What the peer answered about one such run: its stored title and the live statuses of its own agents. */
 export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
+  /** A Team run's current members (FU-003: the delegating node reconciles its record on this contact); absent for an Agent run, or from an older peer. */
+  team?: RemoteRunMembers;
   title: string | null;
   /** Only the run's live agents (an Agent run's own agent, a Team's members); an agent without one is offline. */
   statuses: readonly RunAgentStatusEntry[];
@@ -145,6 +153,12 @@ export interface RemoteRunChannel {
    * open: one opened again). Accepted once applied there: a closed run is stopped before the answer.
    */
   deliveredRunState(nodeId: string, run: RemoteStartedRunRef, open: boolean): Promise<RemoteDeliveryReceipt>;
+  /**
+   * FU-003 (DS-007): tells the delegating node a Team run its delegation started here changed its members (a committed
+   * change of the Team following its definition). An older node refuses the request (DESIGN.md rule 9); its record is
+   * reconciled at the next contact with this node then.
+   */
+  deliveredRunMembers(nodeId: string, run: RemoteStartedRunRef, team: RemoteRunMembers): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: a command of this node's owner for one agent of such a run. */
   ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: the run's live output while the stream is open; it never reconnects (DEC-807). */

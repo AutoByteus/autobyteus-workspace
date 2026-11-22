@@ -317,6 +317,7 @@ export const buildStudioServer = async (input: {
       rootResolver,
       running,
       closedDelegations,
+      taskResources: taskSide.resources,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
     remote.bind(remoteCollaboration.services);

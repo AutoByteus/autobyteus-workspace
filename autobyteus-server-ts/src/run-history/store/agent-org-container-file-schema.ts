@@ -19,7 +19,9 @@ const parseUnit = (value: unknown, label: string): AgentOrgUnit => {
   if (unit.kind !== "agent" && unit.kind !== "agent_team") throw new Error(`${label}.kind must be 'agent' or 'agent_team'.`);
   const address = canonicalNonRootAddress(unit.address, `${label}.address`);
   if (getParentAgentTeamAddress(address) !== "/") throw new Error(`${label}.address '${address}' is not a direct Org address.`);
-  return { address, kind: unit.kind, runId: requiredString(unit.runId, `${label}.runId`), definitionId: requiredString(unit.definitionId, `${label}.definitionId`) };
+  if (unit.leaving !== undefined && unit.leaving !== true) throw new Error(`${label}.leaving must be true when present.`);
+  return { address, kind: unit.kind, runId: requiredString(unit.runId, `${label}.runId`), definitionId: requiredString(unit.definitionId, `${label}.definitionId`),
+    ...(unit.leaving === true ? { leaving: true as const } : {}) };
 };
 
 const parseRoot = (value: unknown): AgentOrgContainerRoot => {
@@ -32,7 +34,11 @@ const parseRoot = (value: unknown): AgentOrgContainerRoot => {
     orgDefinitionName: requiredString(root.orgDefinitionName, "rootOrg.orgDefinitionName"),
     orgRunId: requiredString(root.orgRunId, "rootOrg.orgRunId"),
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
-    units: requiredArray(root.units, "rootOrg.units").map((unit, index) => parseUnit(unit, `rootOrg.units[${index}]`)),
+    units: requiredArray(root.units, "rootOrg.units").map((unit, index) => {
+      const parsed = parseUnit(unit, `rootOrg.units[${index}]`);
+      if (parsed.leaving) throw new Error(`rootOrg.units[${index}] is a current unit; only a former unit is leaving.`);
+      return parsed;
+    }),
     formerUnits: requiredArray(root.formerUnits, "rootOrg.formerUnits").map((unit, index) => parseUnit(unit, `rootOrg.formerUnits[${index}]`)),
   };
 };

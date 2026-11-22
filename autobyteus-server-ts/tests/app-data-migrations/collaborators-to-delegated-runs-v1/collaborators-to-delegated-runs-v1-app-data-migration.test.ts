@@ -1,3 +1,5 @@
+import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
+import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import { createHash } from "node:crypto";
 import {
   ReleasedAgentOrgRunExecutionTreeReader,
@@ -140,7 +142,9 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
       // autobyteus-491's (released in v1.5.14-beta.1), then autobyteus-500 FU-020's attachment-link migration and its
       // follow-up, appended after it (SR-017 D-15).
       "20261118_remove_retired_built_in_agents",
-      "20261119_delegated_run_own_attachment_links", "20261119_delegated_run_own_attachment_links_after_task_agent_own_run"]);
+      "20261119_delegated_run_own_attachment_links", "20261119_delegated_run_own_attachment_links_after_task_agent_own_run",
+      // org-teams-follow-definition: Org units become runs of their own (after every released migration), then its follow-ups.
+      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]);
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });

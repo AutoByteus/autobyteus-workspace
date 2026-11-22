@@ -1,3 +1,5 @@
+import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
+import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -193,7 +195,9 @@ describe("the follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)", () =>
     const at = ids.indexOf(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID);
     // v1.5.14-beta.1 released autobyteus-491's migration last; ours are appended after it, main migration first.
     expect(ids.slice(at - 1)).toEqual(["20261118_remove_retired_built_in_agents",
-      DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID]);
+      DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID,
+      // org-teams-follow-definition, appended after these: Org units become runs of their own, then its follow-ups.
+      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]);
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID)).toMatchObject({
       requiredOnStartup: true, prerequisiteMigrationIds: ["20261017_task_agent_own_run_v1", DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID] });
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)?.holdsBackCapabilities).toBeUndefined();

@@ -10,6 +10,12 @@ export type DelegatedRunAgent = Readonly<{ agentRunId: string; address: AgentTea
 /** The runs delegated from a run on this node, open or closed, and each run's agents: the `DelegationIndex` (contract §4). */
 type DelegatedRuns = Pick<DelegationIndex, "subtreeOf" | "agentsOf" | "collaborationTreeOf">;
 
+/** An Org container's unit runs (org-teams-follow-definition): the runs that delegate on its behalf. */
+type ContainerUnits = Readonly<{
+  unitRunsOf(orgRunId: string): readonly RootExecutionIdentity[] | null;
+  loadContainer(orgRunId: string): Promise<unknown>;
+}>;
+
 /**
  * The agents of the runs delegated from a run, open and closed (REQ-009's token roll-up of every run kind; the Team tab's
  * past participants): the runs come from the Task entries; each run's agents from the tree, their one owner (read once
@@ -17,7 +23,22 @@ type DelegatedRuns = Pick<DelegationIndex, "subtreeOf" | "agentsOf" | "collabora
  */
 export class DelegatedRunAgentsReader {
   /** `delegatedRuns`: the tree, created by the composition root (SR-047). */
-  constructor(private readonly delegatedRuns: DelegatedRuns) {}
+  constructor(private readonly delegatedRuns: DelegatedRuns, private readonly containers: ContainerUnits | null = null) {}
+
+  /** Reads a stored Org container once, so its units answer synchronously (`openRunsBelow`). */
+  async prepare(root: RootExecutionIdentity): Promise<void> {
+    if (root.rootSubjectKind === "agent_org") await this.containers?.loadContainer(root.rootRunId);
+  }
+
+  /** The runs whose delegations are this run's: the run, and an Org container's unit runs (a container delegates nothing itself). */
+  private holders(root: RootExecutionIdentity): readonly RootExecutionIdentity[] {
+    return root.rootSubjectKind === "agent_org" ? [root, ...(this.containers?.unitRunsOf(root.rootRunId) ?? [])] : [root];
+  }
+
+  private async subtreeOf(root: RootExecutionIdentity): Promise<readonly TaskExecutionReference[]> {
+    await this.prepare(root);
+    return this.holders(root).flatMap((holder) => this.delegatedRuns.subtreeOf(holder));
+  }
 
   /**
    * The given agent run IDs that are agents of a run below this run, at every depth, open or closed, with their own
@@ -27,7 +48,7 @@ export class DelegatedRunAgentsReader {
     const wanted = new Set(agentRunIds);
     if (!wanted.size) return [];
     const found: DelegatedRunAgent[] = [];
-    for (const run of this.delegatedRuns.subtreeOf(root)) {
+    for (const run of await this.subtreeOf(root)) {
       for (const agent of await this.agentsOf(run)) if (wanted.has(agent.agentRunId)) found.push(agent);
     }
     return found;
@@ -38,12 +59,12 @@ export class DelegatedRunAgentsReader {
    * composes and whose agents are its tree. A peer's run is left out: its messages stay on its node.
    */
   openRunsBelow(root: RootExecutionIdentity): readonly TaskExecutionReference[] {
-    return this.delegatedRuns.collaborationTreeOf(root).rows().flatMap((row) => row.nodeId === undefined ? [row.run] : []);
+    return this.holders(root).flatMap((holder) => this.delegatedRuns.collaborationTreeOf(holder).rows().flatMap((row) => row.nodeId === undefined ? [row.run] : []));
   }
 
   /** Every agent run ID of every run delegated from this run, one hop at a time and recursively (token totals). */
   async agentRunIds(root: RootExecutionIdentity): Promise<string[]> {
-    const runs = this.delegatedRuns.subtreeOf(root);
+    const runs = await this.subtreeOf(root);
     return (await Promise.all(runs.map((run) => this.agentsOf(run)))).flat().map((agent) => agent.agentRunId);
   }
 

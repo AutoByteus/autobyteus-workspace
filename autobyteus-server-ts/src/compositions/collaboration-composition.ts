@@ -295,7 +295,17 @@ export const composeCollaboration = async (input: Readonly<{
     const runStatus = new RunStatusService({ agents: (kind) => kind === "agent_org" ? orgAgents : liveAgents(kind), registrations: input.activeRoots,
       agentsOf: (run) => tree.agentsOf(run), peerRunOf,
       peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
-      peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
+      peerSummary: async (peer) => {
+        const summary = (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null;
+        // FU-003 (DS-007): each contact reconciles this node's record of a peer Team run with the members its node answered.
+        const link = peer.link;
+        if (summary?.team && link.kind === "agent_team") {
+          const coordinator = summary.team.members.find((member) => member.address === summary.team!.coordinatorAddress);
+          if (coordinator) await resources.updatePeerRunMembers({ teamRunId: link.teamRunId }, link.nodeId, summary.team.members, coordinator.agentRunId)
+            .catch((error: unknown) => console.warn("PEER_RUN_MEMBERS_NOT_RECONCILED", { teamRunId: link.teamRunId, error: String(error) }));
+        }
+        return summary;
+      },
       summaryChanged: (run) => feed.rowChanged(run) });
     // A unit run's rows are its Org container's too (org-teams-follow-definition, design DS-004).
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run),
@@ -304,7 +314,7 @@ export const composeCollaboration = async (input: Readonly<{
     // SR-010: a member leaving shows only while its team run is live (registered).
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection,
       isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null,
-      unitRunsOf: (orgRunId) => taskSide.containers.unitRunsOf(orgRunId) });
+      unitRunsOf: (orgRunId) => taskSide.containers.unitRunsOf(orgRunId), loadContainer: (orgRunId) => taskSide.containers.loadContainer(orgRunId) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
@@ -329,7 +339,7 @@ export const composeCollaboration = async (input: Readonly<{
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
-    const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
+    const delegatedRunAgents = new DelegatedRunAgentsReader(tree, taskSide.containers);
     // autobyteus-565: one participant's messages a page at a time, by the views' one rule, every other agent named.
     releases.push(setProcessParticipantMessagesReader(new ParticipantMessagesReader({
       records: runRecordsOfRootOwners, scope: taskSide.messageScope, delegatedRunAgents,

@@ -45,11 +45,21 @@ export class OrgContainerDirectory implements OrgContainerPort {
   private readonly containerOfUnit = new Map<string, string>();
   /** A live container's current file, without reading (`null`: not live); bound once the container manager exists. */
   private liveContainer: (orgRunId: string) => AgentOrgContainerFile | null = () => null;
+  /** A live Team run's tree, without reading (`null`: not live); bound once the Team run manager exists. */
+  private liveTeamTree: (teamRunId: string) => TeamRunExecutionTreeFile | null = () => null;
+  /** Each Team unit's current members (team-space address → agent run ID), as last read or changed (REQ-004 reads them synchronously). */
+  private readonly teamMembers = new Map<string, ReadonlyMap<string, string>>();
 
   constructor(private readonly files: OrgContainerDirectoryFiles) {}
 
   /** The composition root binds the live containers (the container manager is created after the Task side). */
   bindLiveContainers(liveContainer: (orgRunId: string) => AgentOrgContainerFile | null): void { this.liveContainer = liveContainer; }
+
+  /** The composition root binds the live Team runs (their trees change as they follow their definitions). */
+  bindLiveTeams(liveTeamTree: (teamRunId: string) => TeamRunExecutionTreeFile | null): void { this.liveTeamTree = liveTeamTree; }
+
+  /** A Team unit's tree changed (it followed its definition): later answers read its members from it. */
+  teamUnitChanged(tree: TeamRunExecutionTreeFile): void { this.learnTeam(tree); }
 
   async containedInOf(run: RootExecutionIdentity): Promise<ContainedIn | null> {
     if (run.rootSubjectKind === "agent_org") return null;
@@ -70,7 +80,9 @@ export class OrgContainerDirectory implements OrgContainerPort {
 
   async unitOfAgent(orgRunId: string, agentRunIdInput: string): Promise<Readonly<{ run: RootExecutionIdentity; orgAddress: AgentTeamAddress }> | null> {
     const agentRunId = agentRunIdInput.trim();
-    for (const unit of (await this.container(orgRunId))?.rootOrg.units ?? []) {
+    const file = await this.container(orgRunId);
+    // A unit leaving the Org still finishes its work: its agents take the Org view's commands until it stopped (REQ-009).
+    for (const unit of file ? [...file.rootOrg.units, ...file.rootOrg.formerUnits.filter((former) => former.leaving)] : []) {
       if (unit.kind === "agent" && unit.runId === agentRunId) return Object.freeze({ run: createAgentRootExecutionIdentity(unit.runId), orgAddress: unit.address });
       if (unit.kind !== "agent_team") continue;
       const tree = await this.teamTreeOf(unit);
@@ -137,13 +149,66 @@ export class OrgContainerDirectory implements OrgContainerPort {
     [...space.rulesToOrg(tree.handoffs), ...file.handoffs]);
   }
 
+  /**
+   * REQ-004: the Org rules from an Org address that apply now: a rule to a member that is not currently in its Team (it
+   * left) is left out until it returns, derived at each read, never stored twice (contract §2).
+   */
   orgRulesFrom(orgRunId: string, orgAddress: string): readonly CollaborationHandoff[] {
     const file = this.liveContainer(orgRunId) ?? this.loaded.get(orgRunId) ?? null;
-    return Object.freeze((file?.handoffs ?? []).filter((handoff) => handoff.from === orgAddress));
+    return Object.freeze(file ? rulesFromIn(file, orgAddress, (teamRunId) => this.membersOf(teamRunId)) : []);
+  }
+
+  /** A former unit at or above an Org address (its messages are refused by name, as a Team's former member's); `null` otherwise. */
+  formerUnitAt(orgRunId: string, orgAddress: string): AgentOrgUnit | null {
+    const file = this.liveContainer(orgRunId) ?? this.loaded.get(orgRunId) ?? null;
+    if (!file || file.rootOrg.units.some((unit) => within(unit, orgAddress))) return null;
+    return file.rootOrg.formerUnits.find((unit) => within(unit, orgAddress)) ?? null;
+  }
+
+  /**
+   * REQ-004, design R-6: the agents of a Team unit's container whose Org rules changed with that Team's membership change
+   * (a rule to a member that left is left out; to one that joined, or came back, is in again), each with its rules before
+   * and after; none for a Team outside an Org. Synchronous: the Team's notices are merged in the same step.
+   */
+  orgRuleChangesFor(change: Readonly<{ tree: TeamRunExecutionTreeFile; joined: readonly { address: string }[]; left: readonly { address: string }[] }>):
+    readonly Readonly<{ agentRunId: string; before: readonly CollaborationHandoff[]; after: readonly CollaborationHandoff[] }>[] {
+    const containedIn = change.tree.containedIn;
+    const file = containedIn ? this.liveContainer(containedIn.orgRunId) ?? this.loaded.get(containedIn.orgRunId) ?? null : null;
+    const teamRunId = change.tree.rootTeam.teamRunId;
+    const before = new Map(this.membersOf(teamRunId) ?? []);
+    for (const member of change.joined) before.delete(member.address);
+    for (const member of change.left) before.set(member.address, "");
+    this.learnTeam(change.tree);
+    if (!file || !containedIn) return [];
+    const membersBefore = (id: string) => id === teamRunId ? before : this.membersOf(id);
+    const membersAfter = (id: string) => this.membersOf(id);
+    const changes: Array<Readonly<{ agentRunId: string; before: readonly CollaborationHandoff[]; after: readonly CollaborationHandoff[] }>> = [];
+    for (const from of new Set(file.handoffs.map((handoff) => handoff.from))) {
+      const rulesBefore = rulesFromIn(file, from, membersBefore);
+      const rulesAfter = rulesFromIn(file, from, membersAfter);
+      if (rulesBefore.length === rulesAfter.length && rulesBefore.every((rule, index) => rule === rulesAfter[index])) continue;
+      const agentRunId = agentAt(file, from, membersAfter);
+      if (agentRunId) changes.push(Object.freeze({ agentRunId, before: Object.freeze(rulesBefore), after: Object.freeze(rulesAfter) }));
+    }
+    return Object.freeze(changes);
+  }
+
+  /** Every agent of a container's current units, by its Org address (the Org-level notices' recipients). */
+  agentsOfContainer(file: AgentOrgContainerFile): readonly Readonly<{ agentRunId: string; orgAddress: string }>[] {
+    return file.rootOrg.units.flatMap((unit) => unit.kind === "agent" ? [Object.freeze({ agentRunId: unit.runId, orgAddress: unit.address as string })]
+      : [...(this.membersOf(unit.runId) ?? new Map<string, string>())].map(([address, agentRunId]) =>
+        Object.freeze({ agentRunId, orgAddress: `${unit.address}${address}` })));
+  }
+
+  /** The Org rules from an Org address in a given container file, as `orgRulesFrom` derives them now. */
+  rulesFromIn(file: AgentOrgContainerFile, orgAddress: string): readonly CollaborationHandoff[] {
+    return Object.freeze(rulesFromIn(file, orgAddress, (teamRunId) => this.membersOf(teamRunId)));
   }
 
   async loadContainer(orgRunId: string): Promise<Readonly<{ orgDefinitionId: string }> | null> {
     const file = await this.container(orgRunId);
+    // Its Team units' members are read once too: an Org rule's target is checked against them synchronously (REQ-004).
+    for (const unit of file?.rootOrg.units ?? []) if (unit.kind === "agent_team" && !this.membersOf(unit.runId)) await this.teamTreeOf(unit);
     return file ? Object.freeze({ orgDefinitionId: file.rootOrg.orgDefinitionId }) : null;
   }
 
@@ -184,10 +249,22 @@ export class OrgContainerDirectory implements OrgContainerPort {
     return stored ?? this.loaded.get(orgRunId) ?? null;
   }
 
+  /** A Team unit's current members: a live run's tree now, else as last read; `null` when never read. */
+  private membersOf(teamRunId: string): ReadonlyMap<string, string> | null {
+    const live = this.liveTeamTree(teamRunId);
+    if (live) this.learnTeam(live);
+    return this.teamMembers.get(teamRunId) ?? null;
+  }
+
+  private learnTeam(tree: TeamRunExecutionTreeFile): void {
+    this.teamMembers.set(tree.rootTeam.teamRunId, new Map(tree.rootTeam.members.map((member) => [member.address as string, member.agentRunId])));
+  }
+
   private async teamTreeOf(unit: AgentOrgUnit): Promise<TeamRunExecutionTreeFile | null> {
     try {
-      const tree = await this.files.teamTree(unit.runId);
+      const tree = this.liveTeamTree(unit.runId) ?? await this.files.teamTree(unit.runId);
       if (!tree) console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') is left out: its file is absent.`);
+      else this.learnTeam(tree);
       return tree;
     } catch (error) {
       console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') is left out: its file cannot be read: ${errorText(error)}`);
@@ -204,6 +281,29 @@ export class OrgContainerDirectory implements OrgContainerPort {
     }
   }
 }
+
+const within = (unit: AgentOrgUnit, address: string): boolean =>
+  unit.address === address || (unit.kind === "agent_team" && address.startsWith(`${unit.address}/`));
+
+/** Whether an Org address names something present now: a current unit, or a current member of a Team unit (unknown: present). */
+const presentIn = (file: AgentOrgContainerFile, address: string, membersOf: (teamRunId: string) => ReadonlyMap<string, string> | null): boolean => {
+  const unit = file.rootOrg.units.find((candidate) => within(candidate, address));
+  if (!unit) return false;
+  if (unit.kind === "agent" || unit.address === address) return true;
+  const members = membersOf(unit.runId);
+  return !members || members.has(address.slice(unit.address.length));
+};
+
+const rulesFromIn = (file: AgentOrgContainerFile, from: string, membersOf: (teamRunId: string) => ReadonlyMap<string, string> | null): CollaborationHandoff[] =>
+  file.handoffs.filter((handoff) => handoff.from === from && presentIn(file, handoff.to, membersOf));
+
+/** The agent run at an Org address: an agent unit's run, or a Team unit's member (its coordinator for the Team's own address). */
+const agentAt = (file: AgentOrgContainerFile, address: string, membersOf: (teamRunId: string) => ReadonlyMap<string, string> | null): string | null => {
+  const unit = file.rootOrg.units.find((candidate) => within(candidate, address));
+  if (!unit) return null;
+  if (unit.kind === "agent") return unit.runId;
+  return membersOf(unit.runId)?.get(address.slice(unit.address.length)) || null;
+};
 
 /** The directory over a memory folder's stored files (the composition root's). */
 export const createOrgContainerDirectory = (memoryDir: string): OrgContainerDirectory => {

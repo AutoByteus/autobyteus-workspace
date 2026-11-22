@@ -118,6 +118,13 @@ export class LiveAgentOrgContainer implements ActiveRootMessageBoundary {
     return root.resolveCollaboratorMentions(input);
   }
 
+  /** The container's units changed (REQ-009): its view follows them and its tree is composed again. */
+  async unitsChanged(): Promise<void> {
+    this.input.composition.unitsChanged();
+    await this.refreshExecutionTree().catch((error: unknown) =>
+      console.warn(`AgentOrg '${this.orgRunId}': its tree was not composed again: ${error instanceof Error ? error.message : String(error)}`));
+  }
+
   /** The container stopped (every unit run stopped): its view stops relaying (its stream stays, as every run's). */
   compositionStopped(): void { this.input.composition.stop(); }
 

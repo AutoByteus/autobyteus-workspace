@@ -80,6 +80,8 @@ import { getInternalAgentVisibility } from "../../agent-definition/services/inte
 import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
 import { TeamMembershipPlanner } from "../../agent-team-execution/membership/team-membership-planner.js";
 import { TeamDefinitionChangeListener } from "../../agent-team-execution/membership/team-definition-change-listener.js";
+import { OrgDefinitionChangeListener } from "../../agent-org-execution/membership/org-definition-change-listener.js";
+import { OrgMembershipPlanner } from "../../agent-org-execution/membership/org-membership-planner.js";
 import { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
 
 export class GeneralProcessRunSupervisor {
@@ -242,14 +244,30 @@ export class GeneralProcessRunSupervisor {
       // D-TRIGGER: every definition change, every live Team run follows its definition.
       this.stopFollowingDefinitions = new TeamDefinitionChangeListener({ liveRuns: () => teamRuns.listActiveTeamRuns(),
         planner: membershipPlanner }).listen(input.definitionChanges);
+      const orgDirectory = input.orgContainers ?? createOrgContainerDirectory(memoryDir);
+      // REQ-004: a Team unit's members as its live run has them; its membership change reaches its Org's rules and notices.
+      orgDirectory.bindLiveTeams((teamRunId) => teamRuns.getActiveTeamRun(teamRunId)?.getExecutionTreeSnapshot() ?? null);
+      input.teamChangeNotices?.bindOrgRules(orgDirectory);
+      // New Orgs are containers of runs (org-teams-follow-definition); the run services are bound below.
+      const orgContainers = composeAgentOrgContainers({ memoryDir, streams: input.viewStreams,
+        directory: orgDirectory, registrations: getActiveCollaborationRootDirectory(),
+        teamRuns: () => teamRunService!, agentRuns: () => agentRunService!, standaloneRoots: () => standaloneRootManager!,
+        teamHistory: () => this.teamRunHistoryService });
+      // REQ-009 (DS-006): every live Org follows its Org definition on every definition change, and when it reopens.
+      orgContainers.bindFollowing({
+        planner: new OrgMembershipPlanner({ orgDefinitions: input.agentOrgDefinitionService, teamDefinitions: input.agentTeamDefinitionService,
+          agentDefinitions: input.agentDefinitionService }),
+        notices: input.teamChangeNotices ?? null,
+        runPartsChanged: (run) => input.delegationIndex.runPartsChanged(run),
+      });
+      const stopFollowingTeams = this.stopFollowingDefinitions;
+      const stopFollowingOrgs = new OrgDefinitionChangeListener({ liveOrgRunIds: () => orgContainers.listLive().map((live) => live.orgRunId),
+        follow: (orgRunId) => orgContainers.followDefinition(orgRunId) }).listen(input.definitionChanges);
+      this.stopFollowingDefinitions = () => { stopFollowingTeams(); stopFollowingOrgs(); };
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
-        // New Orgs are containers of runs (org-teams-follow-definition); the run services are bound below.
-        containers: composeAgentOrgContainers({ memoryDir, streams: input.viewStreams,
-          directory: input.orgContainers ?? createOrgContainerDirectory(memoryDir), registrations: getActiveCollaborationRootDirectory(),
-          teamRuns: () => teamRunService!, agentRuns: () => agentRunService!, standaloneRoots: () => standaloneRootManager!,
-          teamHistory: () => this.teamRunHistoryService }),
+        containers: orgContainers,
         delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,
       });

@@ -8,6 +8,8 @@ import { DatabaseSync } from "node:sqlite";
 import WebSocket from "ws";
 import { afterEach, describe, expect, it } from "vitest";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
+import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import {
   validateAgentOrgCommunicationMessages,
@@ -284,22 +286,32 @@ describe("append-only message logs: the built server converts a faithful release
     expect(jsonLeft.sort()).toEqual(["agent_teams/old-address/team_communication_messages.json", "agent_teams/team-unreadable/team_communication_messages.json"]);
     for (const file of jsonLeft) expect(after[file], file).toBe(before[file]);
     expect(after["agent_teams/old-address/team_communication_messages.json.backup-20260701"]).toBe(before["agent_teams/old-address/team_communication_messages.json.backup-20260701"]);
-    // Every line of every append-only file is exactly one message with the seven fields.
+    // Every line of every append-only file is exactly one message with the seven fields; a line between two Org units also
+    // names the other side (`counterpart`, org-teams-follow-definition contract §5).
+    const SEVEN = ["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"];
     for (const [file, text] of Object.entries(after).filter(([file]) => file.endsWith(".jsonl"))) {
       expect(text === "" || text.endsWith("\n"), `${file} ends with a complete line`).toBe(true);
       for (const line of text.split("\n").filter(Boolean)) {
-        expect(Object.keys(JSON.parse(line)).sort(), file).toEqual(["content", "createdAt", "messageId", "messageType", "receiverAgentRunId", "referenceFiles", "senderAgentRunId"]);
+        const keys = Object.keys(JSON.parse(line)).sort();
+        expect(keys, file).toEqual(keys.includes("counterpart") ? [...SEVEN, "counterpart"].sort() : SEVEN);
       }
     }
-    // The large log is rotated: sealed files in index order, each within the limit plus one message, then the active file.
-    const bigFiles = Object.keys(after).filter((file) => file.startsWith("agent_orgs/org-big/")).map((file) => path.basename(file)).sort();
-    expect(bigFiles).toEqual(["agent_org_communication_messages_000001.jsonl", "agent_org_communication_messages_000002.jsonl", "agent_org_communication_messages_active.jsonl"]);
-    const largestLine = Math.max(...Object.entries(after).filter(([file]) => file.startsWith("agent_orgs/org-big/"))
-      .flatMap(([, text]) => text.split("\n").filter(Boolean).map((line) => Buffer.byteLength(line) + 1)));
-    for (const file of bigFiles) {
-      const size = Buffer.byteLength(after[`agent_orgs/org-big/${file}`]!);
-      expect(size, file).toBeLessThanOrEqual(MESSAGE_LOG_ROTATION_LIMIT_BYTES + largestLine);
-      if (file !== "agent_org_communication_messages_active.jsonl") expect(size, file).toBeGreaterThanOrEqual(MESSAGE_LOG_ROTATION_LIMIT_BYTES);
+    // The Orgs end the start as containers (20261122_agent_org_units_own_runs_v1, registered after this conversion): the Org
+    // keeps no log; each direct agent is an agent run of its own whose log holds its lines.
+    expect(Object.keys(after).filter((file) => file.startsWith("agent_orgs/"))).toEqual([]);
+    // The large log, rotated by this conversion, is split into its two agents' logs, each rotated the same way: sealed files in
+    // index order, each within the limit plus one message, then the active file.
+    for (const agent of ["director-org-big", "analyst-org-big"]) {
+      const prefix = `agents/${agent}/`;
+      const bigFiles = Object.keys(after).filter((file) => file.startsWith(prefix)).map((file) => path.basename(file)).sort();
+      expect(bigFiles, agent).toEqual(["communication_messages_000001.jsonl", "communication_messages_000002.jsonl", "communication_messages_active.jsonl"]);
+      const largestLine = Math.max(...Object.entries(after).filter(([file]) => file.startsWith(prefix))
+        .flatMap(([, text]) => text.split("\n").filter(Boolean).map((line) => Buffer.byteLength(line) + 1)));
+      for (const file of bigFiles) {
+        const size = Buffer.byteLength(after[`${prefix}${file}`]!);
+        expect(size, file).toBeLessThanOrEqual(MESSAGE_LOG_ROTATION_LIMIT_BYTES + largestLine);
+        if (file !== "communication_messages_active.jsonl") expect(size, file).toBeGreaterThanOrEqual(MESSAGE_LOG_ROTATION_LIMIT_BYTES);
+      }
     }
     // A run that never exchanged a message has an empty append-only log.
     expect(after["agent_teams/team-empty/team_communication_messages_active.jsonl"]).toBe("");
@@ -427,16 +439,33 @@ describe("append-only message logs: the built server converts a faithful release
     await start0.stop();
 
     // autobyteus-461 TC-13: every agent run logs in its own folder (the current code wrote the hub's log there).
-    const dirs = { hub: path.join(memory, "agents", hubId), helper: path.join(memory, "agents", helperId),
-      team: path.join(memory, "agent_teams", teamRunId), org: path.join(memory, "agent_orgs", orgRunId) };
     const [director, analyst] = [orgMembers["/director"]!, orgMembers["/analyst"]!];
+    // The Org is a container (org-teams-follow-definition): each direct agent is an agent run of its own with its own log.
+    const dirs = { hub: path.join(memory, "agents", hubId), helper: path.join(memory, "agents", helperId),
+      team: path.join(memory, "agent_teams", teamRunId), org: path.join(memory, "agent_orgs", orgRunId),
+      director: path.join(memory, "agents", director), analyst: path.join(memory, "agents", analyst) };
     const older = Array.from({ length: BIG_MESSAGE_COUNT }, (_, index): Message => ({ messageId: `older-${String(index).padStart(2, "0")}`,
       senderAgentRunId: index % 2 ? analyst : director, receiverAgentRunId: index % 2 ? director : analyst,
       content: `older ${index} ${"y".repeat(BIG_MESSAGE_BYTES)}`, messageType: "agent_message", referenceFiles: [], createdAt: at(index) }));
     const released = {
       hub: await logLines(dirs.hub, "communication_messages"), helper: await logLines(dirs.helper, "communication_messages"),
-      team: await logLines(dirs.team, "team_communication_messages"), org: [...older, ...await logLines(dirs.org, "agent_org_communication_messages")],
+      team: await logLines(dirs.team, "team_communication_messages"), org: [...older, ...(await logLines(dirs.director, "communication_messages")).map(fields)],
     };
+    // The released Org as the release stored it: one tree with its members, their folders inside the Org's, one Org log
+    // (hand-built from what this build wrote; the release had no unit runs, so no run file and no log of their own).
+    const container = JSON.parse(await fs.readFile(path.join(dirs.org, "agent_org_run_execution_tree.json"), "utf8")) as Json;
+    const releasedMembers: Json[] = [];
+    for (const unit of container.rootOrg.units as Json[]) {
+      const unitDir = path.join(memory, "agents", unit.runId as string);
+      const own = JSON.parse(await fs.readFile(path.join(unitDir, "run_metadata.json"), "utf8")) as Json;
+      releasedMembers.push({ address: unit.address, agentDefinitionId: own.agentDefinitionId, role: null, description: null, agentRunId: unit.runId,
+        platformAgentRunId: own.platformAgentRunId ?? null, launchConfiguration: { runtimeKind: own.runtimeKind, llmModelIdentifier: own.llmModelIdentifier,
+          llmConfig: own.llmConfig ?? null, autoExecuteTools: own.autoExecuteTools, workspaceRootPath: own.workspaceRootPath } });
+      for (const name of (await fs.readdir(unitDir)).filter((file) => file === "run_metadata.json" || file.startsWith("communication_messages"))) await fs.rm(path.join(unitDir, name));
+      await fs.rename(unitDir, path.join(dirs.org, unit.runId as string));
+    }
+    const { units: _units, formerUnits: _formerUnits, ...releasedRoot } = container.rootOrg as Json;
+    await put(path.join(dirs.org, "agent_org_run_execution_tree.json"), { ...container, rootOrg: { ...releasedRoot, members: releasedMembers } });
     expect(released.hub.map((entry) => entry.content)).toContain("Old hub message.");
     expect(released.helper.map((entry) => entry.content)).toContain("Old hub message.");
     expect(released.team.map((entry) => entry.content)).toContain("Old team message.");
@@ -454,7 +483,10 @@ describe("append-only message logs: the built server converts a faithful release
     }
     expect(Object.keys(await messageLogFiles(memory)).filter((file) => file.endsWith(".jsonl")), "only released JSON logs remain").toEqual([]);
     const db = new DatabaseSync(path.join(root, "db", "production.db"));
-    db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(OURS);
+    // Registered after this conversion, so an install before it never ran them either: the Org units conversion and its follow-ups.
+    for (const id of [OURS, AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]) {
+      db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
+    }
     db.close();
 
     // Start 1: the conversion runs (every earlier migration has succeeded); the runs open with exactly their released history.
@@ -462,8 +494,14 @@ describe("append-only message logs: the built server converts a faithful release
     expect(await first.migration(OURS), "every log converted").toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     const converted = await messageLogFiles(memory);
     expect(Object.keys(converted).filter((file) => file.endsWith(".json"))).toEqual([]);
-    const orgFiles = Object.keys(converted).filter((file) => file.startsWith(`agent_orgs/${orgRunId}/`)).map((file) => path.basename(file)).sort();
-    expect(orgFiles).toEqual(["agent_org_communication_messages_000001.jsonl", "agent_org_communication_messages_000002.jsonl", "agent_org_communication_messages_active.jsonl"]);
+    // The same start converts the Org into a container: its log, rotated by this conversion, is split into its two agents'
+    // logs, each rotated the same way; the Org keeps no log.
+    expect(await first.migration(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID), "the Org converted").toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+    expect(Object.keys(converted).filter((file) => file.startsWith(`agent_orgs/${orgRunId}/`))).toEqual([]);
+    const unitFiles = (agent: string) => Object.keys(converted).filter((file) => file.startsWith(`agents/${agent}/`)).map((file) => path.basename(file)).sort();
+    for (const agent of [director, analyst]) {
+      expect(unitFiles(agent), agent).toEqual(["communication_messages_000001.jsonl", "communication_messages_000002.jsonl", "communication_messages_active.jsonl"]);
+    }
     const view = views(first);
     expect(await view.hub(hubId)).toEqual(byCreatedAt(released.hub));
     expect((await view.team(teamRunId)).map(({ referenceIds: _ids, ...entry }) => entry)).toEqual(byCreatedAt(released.team));
@@ -525,22 +563,31 @@ describe("append-only message logs: the built server converts a faithful release
       .toEqual({ status: 200, text: "reference new-team\n" });
     team1.close();
 
-    // Org family, resumed, on the rotated converted log: one new line at the end of the active file; the sealed files keep their bytes.
-    // The stopped run's view serves it from its stored file; the member's message on it restores the run (autobyteus-461 CR-461-008).
+    // Org family, resumed, on the converted units' rotated logs: the director's message to the analyst (two units of one
+    // container) is one new line at the end of each one's active file; the sealed files keep their bytes.
+    // The stopped run's view serves it from its stored files; the member's message on it restores the run (autobyteus-461 CR-461-008).
     const org1 = await driver(first, "org", orgRunId);
-    const activeFile = path.join(dirs.org, "agent_org_communication_messages_active.jsonl");
-    const activeBefore = await fs.readFile(activeFile, "utf8");
+    const activeOf = (dir: string) => path.join(dir, "communication_messages_active.jsonl");
+    const activeBefore = { director: await fs.readFile(activeOf(dirs.director), "utf8"), analyst: await fs.readFile(activeOf(dirs.analyst), "utf8") };
     const orgReference = await reference("new-org");
     expect(await org1.call(director, "/director", callTool("send_message_to", { recipient_address: "/analyst", content: "New org message.", reference_files: [orgReference] })))
       .toMatchObject({ accepted: true });
-    const activeAfter = await fs.readFile(activeFile, "utf8");
-    expect(activeAfter.startsWith(activeBefore)).toBe(true);
-    const appended = activeAfter.slice(activeBefore.length);
-    expect(appended.split("\n").filter(Boolean)).toHaveLength(1);
-    const orgNew = JSON.parse(appended) as Message;
-    expect(orgNew).toMatchObject({ senderAgentRunId: director, receiverAgentRunId: analyst, content: "New org message.", referenceFiles: [orgReference] });
-    for (const file of orgFiles.filter((name) => !name.endsWith("_active.jsonl"))) {
-      expect(sha(await fs.readFile(path.join(dirs.org, file), "utf8")), `${file} unchanged`).toBe(sha(converted[`agent_orgs/${orgRunId}/${file}`]!));
+    const appendedTo = async (who: "director" | "analyst") => {
+      const after = await fs.readFile(activeOf(dirs[who]), "utf8");
+      expect(after.startsWith(activeBefore[who]), who).toBe(true);
+      const appended = after.slice(activeBefore[who].length);
+      expect(appended.split("\n").filter(Boolean), who).toHaveLength(1);
+      return JSON.parse(appended) as Message & { counterpart: Json };
+    };
+    const orgNewLine = await appendedTo("director");
+    expect(orgNewLine).toMatchObject({ senderAgentRunId: director, receiverAgentRunId: analyst, content: "New org message.", referenceFiles: [orgReference],
+      counterpart: { address: "/analyst", nodeId: null } });
+    expect(await appendedTo("analyst")).toMatchObject({ messageId: orgNewLine.messageId, counterpart: { address: "/director", nodeId: null } });
+    const orgNew = fields(orgNewLine);
+    for (const agent of [director, analyst]) {
+      for (const file of unitFiles(agent).filter((name) => !name.endsWith("_active.jsonl"))) {
+        expect(sha(await fs.readFile(path.join(memory, "agents", agent, file), "utf8")), `${agent} ${file} unchanged`).toBe(sha(converted[`agents/${agent}/${file}`]!));
+      }
     }
     expect(await fetchText(first, `agent-org-runs/${orgRunId}/communication/messages/${orgNew.messageId}/references/${rootReferenceId(orgNew.messageId, orgReference)}/content`))
       .toEqual({ status: 200, text: "reference new-org\n" });

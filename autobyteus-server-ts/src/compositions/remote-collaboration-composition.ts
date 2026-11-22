@@ -1,4 +1,6 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { PeerRunMembersReceiver } from "../remote-collaboration/inbound/peer-run-members-receiver.js";
+import type { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
 import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
 import { LiveAgentOrgContainer } from "../agent-org-execution/container/live-agent-org-container.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
@@ -67,6 +69,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   running: RunningAgentsComposition;
   /** autobyteus-591: the peer-started runs their delegating node closed, loaded (the state handler and S-5 write it). */
   closedDelegations: ClosedDelegations;
+  /** FU-003: this node's Task entries, which keep the members of a Team run a peer started for this node's delegation. */
+  taskResources: Pick<TaskExecutionResourceService, "updatePeerRunMembers">;
 }>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
@@ -104,13 +108,16 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
       // autobyteus-591 DN-2: a delegating node's state of a run it started here (closed: recorded and stopped).
       delegatedRunStates: new DelegatedRunStateHandler({ roots, closed: input.closedDelegations,
         agentRuns: input.agentRuns, teamRuns: input.teamRuns }),
+      // FU-003 (DS-007): a Team run a peer started for this node's delegation changed its members there.
+      peerRunMembers: new PeerRunMembersReceiver({ tasks: input.taskResources }),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
       // autobyteus-492: this node's running runs a person started, for a peer (no caller here).
       runningAgents: { list: async () => Object.freeze({ accepted: true as const, agents: await input.running.listing.list({ caller: null }) }) },
       // autobyteus-278: what the peer's owner reads and drives here, for runs its delegation started.
       runViews: new RemoteRunViewProvider(roots, {
         runTitle: (run) => run.kind === "agent" ? input.agentRuns.readRunTitle(run.runId) : input.teamRuns.readRunTitle(run.runId),
-        runLaunches: ((launches) => (run) => launches.of(run))(new PeerStartedRunLaunches(input.memoryDir)),
+        ...((launches) => ({ runLaunches: (run: Parameters<typeof launches.of>[0]) => launches.of(run),
+          runTeam: (run: Parameters<typeof launches.team>[0]) => launches.team(run) }))(new PeerStartedRunLaunches(input.memoryDir)),
         agentProjection: async (run, agentRunId) => {
           const projection = run.kind === "agent"
             ? await getAgentRunViewProjectionService().getProjection(agentRunId)

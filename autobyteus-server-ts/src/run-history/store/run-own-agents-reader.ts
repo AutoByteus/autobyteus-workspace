@@ -89,17 +89,23 @@ export class RunOwnAgentsReader implements RunFilesReader {
     return new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(orgRunId), orgRunId);
   }
 
-  /** An Org container's parts as its tree shows them: each unit at its Org address, a Team unit's members at `P/x`. */
+  /**
+   * An Org container's parts as its tree shows them: each unit at its Org address, a Team unit's members at `P/x`; then
+   * each unit leaving the Org (removed while working, REQ-009), tagged leaving, unless a current unit took its address.
+   */
   private async containerTreeOf(file: AgentOrgContainerFile): Promise<RunOwnTree> {
     type Part = Extract<RunOwnTree, { kind: "agent_org" }>["parts"][number];
     const parts: Part[] = [];
-    for (const unit of file.rootOrg.units) {
-      if (unit.kind === "agent") { parts.push({ kind: "agent", address: unit.address, agentRunId: unit.runId }); continue; }
+    const current = new Set(file.rootOrg.units.map((unit) => unit.address as string));
+    const leaving = file.rootOrg.formerUnits.filter((unit) => unit.leaving && !current.has(unit.address));
+    for (const unit of [...file.rootOrg.units, ...leaving]) {
+      const tag = unit.leaving ? { leaving: true as const } : {};
+      if (unit.kind === "agent") { parts.push({ kind: "agent", address: unit.address, agentRunId: unit.runId, ...tag }); continue; }
       const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId).catch(() => null);
       if (!tree) { console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') has no row: its file cannot be read.`); continue; }
       const space = ContainedTeamAddressSpace.of({ orgRunId: file.rootOrg.orgRunId, address: unit.address })!;
       parts.push({ kind: "team", address: unit.address, teamRunId: unit.runId, coordinatorAddress: space.toOrg(tree.rootTeam.coordinatorAddress),
-        members: membersOf(tree.rootTeam.members as readonly MemberNode[]).map((member) => ({ ...member, address: space.toOrg(member.address) })) });
+        members: membersOf(tree.rootTeam.members as readonly MemberNode[]).map((member) => ({ ...member, address: space.toOrg(member.address) })), ...tag });
     }
     return { kind: "agent_org", orgRunId: file.rootOrg.orgRunId, parts, container: true };
   }

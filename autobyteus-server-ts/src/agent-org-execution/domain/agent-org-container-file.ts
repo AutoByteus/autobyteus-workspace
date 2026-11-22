@@ -15,6 +15,11 @@ export type AgentOrgUnit = Readonly<{
   kind: AgentOrgUnitKind;
   runId: string;
   definitionId: string;
+  /**
+   * A former unit removed while it was working (REQ-009, as autobyteus-22's leaving member): it finishes, then stops; the
+   * marker is cleared once it stopped, and reads as former outside a live Org (nothing runs there).
+   */
+  leaving?: true;
 }>;
 
 export type AgentOrgContainerRoot = Readonly<{

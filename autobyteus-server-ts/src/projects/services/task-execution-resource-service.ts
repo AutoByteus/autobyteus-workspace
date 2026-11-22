@@ -8,7 +8,7 @@ import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-cont
 import { ProjectError } from "../domain/project-errors.js";
 import {
   assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,
-  openAssignments, reopenTaskExecution, setPeerNoticeOwed, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
+  openAssignments, reopenTaskExecution, setPeerNoticeOwed, setPeerRunMembers, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
   type TaskExecutionResourceFile,
 } from "../domain/task-execution-resources.js";
 import type { TaskLocation } from "../domain/models.js";
@@ -290,6 +290,32 @@ export class TaskExecutionResourceService {
       });
     }
   }
+  /**
+   * FU-003 (DS-007): a Team run on peer node `nodeId` has these members now (its notice, or its summary at a contact):
+   * every Task entry naming that run on that node takes them, each Task in its own order; the tree and rows follow
+   * through the entries listener. `not_linked` when no entry names that run on that node (only its delegating node's own
+   * record changes).
+   */
+  async updatePeerRunMembers(execution: TaskExecutionReference, nodeId: string, members: readonly Readonly<{ address: string; agentRunId: string }>[],
+    coordinatorAgentRunId: string): Promise<"updated" | "unchanged" | "not_linked"> {
+    await this.load();
+    const taskIds = [...this.entriesByExecution.get(taskExecutionReferenceKey(execution))?.keys() ?? []];
+    let linked = false;
+    let updated = false;
+    for (const taskId of taskIds) {
+      await this.serialize(taskId, async () => {
+        const loaded = this.files.get(taskId);
+        if (!loaded || this.damaged.has(taskId)) return;
+        if (!loaded.file.executionResources.some((entry) => entry.nodeId === nodeId && taskExecutionReferenceKey(entry.execution) === taskExecutionReferenceKey(execution))) return;
+        linked = true;
+        if (setPeerRunMembers(loaded.file, execution, nodeId, members, coordinatorAgentRunId) === loaded.file) return;
+        await this.update(loaded.location, file => setPeerRunMembers(file, execution, nodeId, members, coordinatorAgentRunId), next => this.commit(loaded.location, next));
+        updated = true;
+      });
+    }
+    return !linked ? "not_linked" : updated ? "updated" : "unchanged";
+  }
+
   /** autobyteus-591 DN-4: the peer runs whose delegation state is owed, one per run, from the view (start-up's retry list). */
   owedPeerNotices(): PeerTaskRun[] {
     this.assertLoaded();

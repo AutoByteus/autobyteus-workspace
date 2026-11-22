@@ -415,7 +415,8 @@ const writeSupportedPredecessor = (runtimeRoot: string, rootTeamRunId: string) =
   return {
     rootDir,
     orgDir,
-    orgMemorySentinelPath: path.join(orgDir, `${rootTeamRunId}-lead-run`, "synthetic-memory.bin"),
+    // The Org's direct agent is an agent unit of its own after 20261122_agent_org_units_own_runs_v1: its folder is renamed there.
+    orgMemorySentinelPath: path.join(runtimeRoot, "memory", "agents", `${rootTeamRunId}-lead-run`, "synthetic-memory.bin"),
     metadataPath,
     metadataBytes: fs.readFileSync(metadataPath),
     taskRecordsPath,
@@ -812,54 +813,50 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
   expect(fs.existsSync(supported.metadataPath)).toBe(false);
   // The Team family copy is retired once the Org package is admitted.
   expect(fs.existsSync(supported.rootDir)).toBe(false);
+  // The chain ends with 20261122_agent_org_units_own_runs_v1 (org-teams-follow-definition, storage contract §2–§5): the Org
+  // is a container; its direct agent `/lead` and its Team `/research` are runs of their own, each with `containedIn`.
+  const memoryRoot = path.dirname(path.dirname(supported.orgDir));
+  // The conversion keeps today's launch keys only (contract §9): the released `skillAccessMode` is dropped.
+  const currentLaunch = ({ skillAccessMode: _removed, ...launch }: Record<string, unknown>) => launch;
   const tree = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_run_execution_tree.json"), "utf8"));
-  expect(tree).toMatchObject({
-    schemaVersion: 1,
+  const leadRun = `${rootTeamRunId}-lead-run`;
+  const researchRun = `${rootTeamRunId}-explicit-child-team-run`;
+  expect(tree).toEqual({
     subjectKind: "agent_org",
     createdAt: "2026-08-16T12:00:00.000Z",
     archivedAt: null,
     applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
-    handoffs: [{
-      from: "/lead",
-      to: "/research/reviewer",
-      rules: ["Review the migration evidence."],
-    }],
+    // An Org rule across units stays with the container, in Org addresses.
+    handoffs: [{ from: "/lead", to: "/research/reviewer", rules: ["Review the migration evidence."] }],
     rootOrg: {
       address: "/",
       orgRunId: rootTeamRunId,
       orgDefinitionId: "synthetic-released-root-definition",
       orgDefinitionName: "Synthetic Released Team",
-      defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
-      members: [
-        expect.objectContaining({
-          address: "/lead",
-          agentDefinitionId: "autobyteus-memory-compactor",
-          agentRunId: `${rootTeamRunId}-lead-run`,
-          role: "Synthetic migration member",
-          description: "Synthetic released-shape member",
-          launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
-        }),
-        expect.objectContaining({
-          address: "/research",
-          teamDefinitionId: "synthetic-released-child-definition",
-          teamRunId: `${rootTeamRunId}-explicit-child-team-run`,
-          coordinatorAddress: "/research/reviewer",
-          role: "Research",
-          description: "Nested released-shape team",
-          defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
-          members: [expect.objectContaining({
-            address: "/research/reviewer",
-            agentDefinitionId: "autobyteus-memory-compactor",
-            agentRunId: `${rootTeamRunId}-reviewer-run`,
-            launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
-          })],
-          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1); since autobyteus-461 (its migration
-          // runs last) the tree keeps no list of delegated runs (contract §6): the run names its delegator in its own file.
-        }),
+      defaultLaunchConfiguration: currentLaunch(ROOT_COORDINATOR_CONFIGURATION),
+      units: [
+        { address: "/lead", kind: "agent", runId: leadRun, definitionId: "autobyteus-memory-compactor" },
+        { address: "/research", kind: "agent_team", runId: researchRun, definitionId: "synthetic-released-child-definition" },
       ],
+      formerUnits: [],
     },
   });
-  const memoryRoot = path.dirname(path.dirname(supported.orgDir));
+  expect(JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", leadRun, "run_metadata.json"), "utf8"))).toMatchObject({
+    runId: leadRun, agentDefinitionId: "autobyteus-memory-compactor", address: "/lead", containedIn: { orgRunId: rootTeamRunId, address: "/lead" },
+    runtimeKind: ROOT_COORDINATOR_CONFIGURATION.runtimeKind, llmModelIdentifier: ROOT_COORDINATOR_CONFIGURATION.llmModelIdentifier,
+  });
+  const research = path.join(memoryRoot, "agent_teams", researchRun);
+  expect(JSON.parse(fs.readFileSync(path.join(research, "team_run_execution_tree.json"), "utf8"))).toMatchObject({
+    containedIn: { orgRunId: rootTeamRunId, address: "/research" },
+    applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
+    handoffs: [],
+    rootTeam: {
+      address: "/", teamRunId: researchRun, teamDefinitionId: "synthetic-released-child-definition", coordinatorAddress: "/reviewer",
+      defaultLaunchConfiguration: currentLaunch(NESTED_COORDINATOR_CONFIGURATION),
+      members: [expect.objectContaining({ address: "/reviewer", agentDefinitionId: "autobyteus-memory-compactor",
+        agentRunId: `${rootTeamRunId}-reviewer-run`, launchConfiguration: currentLaunch(NESTED_COORDINATOR_CONFIGURATION) })],
+    },
+  });
   const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
   expect(JSON.stringify(tree), `no stored list of delegated runs (461 contract §6); the task agent's own file: ${JSON.stringify(own).slice(0, 900)}`).not.toContain("taskExecutions");
   // A copy of the configured place `/research/reviewer`: 20261019_delegated_copy_own_file_complete_v1 records the
@@ -879,27 +876,21 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
   });
   expect(own).not.toHaveProperty("taskAgent");
   expect(own).not.toHaveProperty("skillAccessMode");
-  // Startup ends with the append-only message log conversion: the org's log is JSON Lines.
-  const messages = { messages: readMessageLog(supported.orgDir, "agent_org_communication_messages") };
-  expect(fs.existsSync(path.join(supported.orgDir, "agent_org_communication_messages.json"))).toBe(false);
-  expect(messages).toMatchObject({
-    messages: [
-      expect.objectContaining({
-        messageId: `${rootTeamRunId}-address-message`,
-        senderAgentRunId: `${rootTeamRunId}-lead-run`,
-        receiverAgentRunId: `${rootTeamRunId}-reviewer-run`,
-        content: "address projection",
-        referenceFiles: ["/synthetic/address-evidence.md"],
-      }),
-      expect.objectContaining({
-        messageId: `${rootTeamRunId}-run-id-message`,
-        senderAgentRunId: `${rootTeamRunId}-reviewer-run`,
-        receiverAgentRunId: `${rootTeamRunId}-lead-run`,
-        content: "run ID projection",
-        referenceFiles: ["/synthetic/run-id-evidence.md"],
-      }),
-    ],
-  });
+  // The Org's log is split into its units' logs (contract §5): both lines cross units, so each is in both logs, with the
+  // other side's Org address; the Org log is gone (the container has no log).
+  expect(fs.readdirSync(supported.orgDir).filter((name) => name.startsWith("agent_org_communication_messages"))).toEqual([]);
+  const line = (id: string, sender: string, receiver: string, content: string, file: string, counterpart: string) => expect.objectContaining({
+    messageId: `${rootTeamRunId}-${id}`, senderAgentRunId: `${rootTeamRunId}-${sender}`, receiverAgentRunId: `${rootTeamRunId}-${receiver}`,
+    content, referenceFiles: [file], counterpart: { address: counterpart, nodeId: null } });
+  expect(readMessageLog(path.join(memoryRoot, "agents", leadRun), "communication_messages")).toEqual([
+    line("address-message", "lead-run", "reviewer-run", "address projection", "/synthetic/address-evidence.md", "/research/reviewer"),
+    line("run-id-message", "reviewer-run", "lead-run", "run ID projection", "/synthetic/run-id-evidence.md", "/research/reviewer"),
+  ]);
+  expect(readMessageLog(research, "team_communication_messages")).toEqual([
+    line("address-message", "lead-run", "reviewer-run", "address projection", "/synthetic/address-evidence.md", "/lead"),
+    line("run-id-message", "reviewer-run", "lead-run", "run ID projection", "/synthetic/run-id-evidence.md", "/lead"),
+  ]);
+  // The released Task records file stays as inert residue (contract §9).
   const tasks = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_task_delegation_records.json"), "utf8"));
   expect(tasks).toEqual({
     schemaVersion: 1,

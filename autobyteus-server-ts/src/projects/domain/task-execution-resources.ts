@@ -121,6 +121,21 @@ export const linkExistingTaskExecution = (file: TaskExecutionResourceFile, link:
 };
 
 /**
+ * FU-003 (DS-007): a Team run on peer node `nodeId` changed its members there: every entry of this file naming that run on
+ * that node takes them, and its coordinator. The same file back when no entry names it or nothing changes.
+ */
+export const setPeerRunMembers = (file: TaskExecutionResourceFile, execution: TaskExecutionReference, nodeId: string,
+  members: readonly PeerRunMember[], coordinatorAgentRunId: string): TaskExecutionResourceFile => {
+  const key = taskExecutionReferenceKey(execution);
+  const same = (entry: TaskExecutionResource) => entry.teamCoordinatorAgentRunId === coordinatorAgentRunId && entry.members?.length === members.length
+    && entry.members.every((member, index) => member.address === members[index]!.address && member.agentRunId === members[index]!.agentRunId);
+  const named = (entry: TaskExecutionResource) => entry.nodeId === nodeId && taskExecutionReferenceKey(entry.execution) === key;
+  if (!file.executionResources.some((entry) => named(entry) && !same(entry))) return file;
+  return { taskId: file.taskId, executionResources: file.executionResources.map((entry) => !named(entry) || same(entry) ? entry
+    : { ...entry, teamCoordinatorAgentRunId: coordinatorAgentRunId, members: members.map((member) => ({ address: member.address, agentRunId: member.agentRunId })) }) };
+};
+
+/**
  * autobyteus-591 DN-3: the run's delegation state is owed to its peer node (`owed`: on its last entry in this file), or
  * no longer (cleared from every entry of the run in this file). The same file back when nothing changes.
  */
