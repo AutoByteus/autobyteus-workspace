@@ -1,0 +1,78 @@
+{
+  "teamTree": {
+    "createdAt": "2026-11-22T17:38:58.317Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "of-team-caba13",
+      "teamDefinitionName": "of-team-caba13",
+      "teamRunId": "of_team_caba13_3c2b052dc5374003afb45ae8e00316e6",
+      "coordinatorAddress": "/lead",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/of-e2e-pWRw7w/workspace"
+      },
+      "members": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "of-lead-caba13",
+          "role": null,
+          "description": null,
+          "agentRunId": "of_lead_caba13_f7134016fed94bc7a72402960c6e4733",
+          "platformAgentRunId": "e209c851-3aba-40fa-ba52-c48d35f70041",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/of-e2e-pWRw7w/workspace"
+          }
+        },
+        {
+          "address": "/writer",
+          "agentDefinitionId": "of-writer-caba13",
+          "role": null,
+          "description": null,
+          "agentRunId": "of_writer_caba13_7fe316b6f8894b1a9cba97acc6e347bd",
+          "platformAgentRunId": "3ab76fa2-1747-4080-8c46-b05c485893c2",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/of-e2e-pWRw7w/workspace"
+          }
+        },
+        {
+          "address": "/reviewer",
+          "agentDefinitionId": "of-reviewer-caba13",
+          "role": null,
+          "description": null,
+          "agentRunId": "of_reviewer_caba13_50564df69e004452aba847f0d2323628",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/of-e2e-pWRw7w/workspace"
+          },
+          "launchSource": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      ]
+    },
+    "containedIn": {
+      "orgRunId": "of_org_caba13_234ca2252a6245408209ad8edc813ca8",
+      "address": "/team"
+    }
+  },
+  "leadInput": "Your team changed: its definition was updated.\nJoined: reviewer at /team/reviewer.\nYour handoff rules are unchanged.\n\nECHO_INPUT"
+}

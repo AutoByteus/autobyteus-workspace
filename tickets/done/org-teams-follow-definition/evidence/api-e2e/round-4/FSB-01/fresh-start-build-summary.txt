@@ -1,0 +1,35 @@
+# Case FSB-01 | build-linux-arm64 job parsed from .github/workflows/release-desktop.yml by gen-arm64-job.py; fresh git clone --no-local of 29a1bf23a8; build-only choices
+# Env: Linux aarch64 container (root), go1.27.4 on PATH, GOTOOLCHAIN=local, libz.so on LD_LIBRARY_PATH; no docker
+# Date: 2026-11-22 (UTC)
+
+4:== SKIP (action, emulated): Checkout workspace + submodules
+5:== SKIP (action, emulated): Setup pnpm
+6:== SKIP (action, emulated): Setup Node
+7:== SKIP (host package install): Install Linux build deps
+8:== STEP: Install workspace dependencies
+32:== SKIP (action, emulated): Setup pinned native toolchain
+33:== STEP: Prepare desktop public trust or disposable build-only identity
+34:== STEP: Check native and signed-record units
+1205:# tests 77
+1207:# pass 50
+1208:# fail 27
+1226:== STEP: Build Electron Linux ARM64
+1295:[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 62.3s
+1296:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.1s
+1297:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+1298:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 36.8s
+1299:[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+1300:[typecheck] PASS
+2141:== STEP: Sign build-only final bytes with disposable trust
+2143:== STEP: Verify Linux ARM64 AppImage and updater metadata
+2145:autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.7.AppImage: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), static-pie linked, BuildID[sha1]=2cb1b8138bf851234c2ae571903cf7f089fe5ee5, stripped
+2147:== STEP: Verify Linux ARM64 AppImage runs in a clean Ubuntu image
+2149:if (result.error) throw Error(`Clean-image runtime check needs docker: ${result.error.message}`);
+2152:Error: Clean-image runtime check needs docker: spawnSync docker ENOENT
+2159:STEP FAILED (tolerated: needs docker (not installed here)): Verify Linux ARM64 AppImage runs in a clean Ubuntu image
+2160:== STEP: Verify Linux ARM64 Prisma engines
+2163:== STEP: Verify Linux ARM64 packaged server startup
+2366:Packaged server startup validation passed for /root/.autobyteus-e2e/oc-fs-job4/clone/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+2367:== SKIP (action, emulated): Upload Linux ARM64 artifacts
+2368:FRESH_START_JOB_DONE
+2369:exit 0

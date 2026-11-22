@@ -5,7 +5,9 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
 export type AgentOrgRunEvent =
   | Readonly<{ kind: "agent_presentation"; execution: CollaborationMemberExecutionIdentity; message: AgentPresentationMessage }>
   | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessage }>
-  | Readonly<{ kind: "lifecycle"; isActive: boolean }>;
+  | Readonly<{ kind: "lifecycle"; isActive: boolean }>
+  /** A container's units changed (a unit root registered or unregistered, a unit's parts): its views take a new snapshot. */
+  | Readonly<{ kind: "composition_changed" }>;
 
 /** The Org's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isAgentOrgMessageEvent = (event: AgentOrgRunEvent): boolean => event.kind === "communication";

@@ -1,0 +1,128 @@
+{
+  "container": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-11-22T19:36:09.823Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/team",
+        "rules": [
+          "Send software requests to the team."
+        ]
+      },
+      {
+        "from": "/concierge",
+        "to": "/team/writer",
+        "rules": [
+          "Hand every draft to the writer."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "of-org-fc9b3c",
+      "orgDefinitionName": "of-org-fc9b3c",
+      "orgRunId": "of_org_fc9b3c_9d6cf01e66824b79b579b591b5c5d136",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/of-e2e-NqfpTH/workspace"
+      },
+      "units": [
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "of_concierge_fc9b3c_b354ffdf05944c77bfa680b7fb25735f",
+          "definitionId": "of-concierge-fc9b3c"
+        },
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "of_team_fc9b3c_03ec16aac4764bce8e15a130a89dea7b",
+          "definitionId": "of-team-fc9b3c"
+        }
+      ],
+      "formerUnits": []
+    }
+  },
+  "concierge": {
+    "runId": "of_concierge_fc9b3c_b354ffdf05944c77bfa680b7fb25735f",
+    "agentDefinitionId": "of-concierge-fc9b3c",
+    "workspaceRootPath": "/tmp/of-e2e-NqfpTH/workspace",
+    "memoryDir": "/tmp/of-e2e-NqfpTH/memory/agents/of_concierge_fc9b3c_b354ffdf05944c77bfa680b7fb25735f",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": null,
+    "preparedAt": "2026-11-22T19:36:09.807Z",
+    "preparedExpiresAt": "2026-11-23T19:36:09.807Z",
+    "startedAt": null,
+    "applicationExecutionContext": null,
+    "address": "/concierge",
+    "containedIn": {
+      "orgRunId": "of_org_fc9b3c_9d6cf01e66824b79b579b591b5c5d136",
+      "address": "/concierge"
+    }
+  },
+  "teamTree": {
+    "createdAt": "2026-11-22T19:36:09.815Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "of-team-fc9b3c",
+      "teamDefinitionName": "of-team-fc9b3c",
+      "teamRunId": "of_team_fc9b3c_03ec16aac4764bce8e15a130a89dea7b",
+      "coordinatorAddress": "/lead",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/of-e2e-NqfpTH/workspace"
+      },
+      "members": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "of-lead-fc9b3c",
+          "role": null,
+          "description": null,
+          "agentRunId": "of_lead_fc9b3c_64ded95a94d84da9a127b5f85bbba53b",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/of-e2e-NqfpTH/workspace"
+          }
+        },
+        {
+          "address": "/writer",
+          "agentDefinitionId": "of-writer-fc9b3c",
+          "role": null,
+          "description": null,
+          "agentRunId": "of_writer_fc9b3c_ec7a852f3dab4c039dca536b00d0aaf7",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/of-e2e-NqfpTH/workspace"
+          }
+        }
+      ]
+    },
+    "containedIn": {
+      "orgRunId": "of_org_fc9b3c_9d6cf01e66824b79b579b591b5c5d136",
+      "address": "/team"
+    }
+  }
+}

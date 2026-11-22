@@ -52,7 +52,7 @@ const startNodeB = async () => {
   services.current = { gateway: new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => (nodeId === ALPHA.nodeId ? ALPHA : null) },
-    delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never,
+    delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never, peerRunMembers: {} as never,
   }) };
   app = fastify();
   await app.register(websocket);

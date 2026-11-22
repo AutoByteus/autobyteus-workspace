@@ -4,6 +4,7 @@ import { runAgentStatusFrame, type RunAgentObservation } from "../../agent-colla
 import type {
   RemoteAgentLaunch,
   RemoteAgentProjection,
+  RemoteRunMembers,
   RemoteRunSummary,
   RemoteStartedRunRef,
   RemoteTargetRoot,
@@ -28,6 +29,8 @@ export type PeerStartedRunViews = Readonly<{
   runTitle(run: RemoteStartedRunRef): Promise<string | null>;
   /** Each agent's launch, from the run's own file (SR-038): the run's own facts, read when the peer asks. */
   runLaunches(run: RemoteStartedRunRef): Promise<readonly RemoteAgentLaunch[]>;
+  /** A Team run's members now, from its own file (FU-003: the delegating node reconciles its record at each contact); `null` when unreadable. */
+  runTeam?(run: RemoteStartedRunRef): Promise<RemoteRunMembers | null>;
   /** One agent's stored conversation projection (the run-view projection this node's window reads). */
   agentProjection(run: RemoteStartedRunRef, agentRunId: string): Promise<RemoteAgentProjection>;
 }>;
@@ -68,9 +71,11 @@ export class RemoteRunViewProvider {
     const runs: RemoteRunSummary[] = [];
     for (const run of request.runs) {
       if (await this.check(run, from, null)) continue;
+      const team = run.kind === "agent_team" ? await this.views.runTeam?.(run).catch(() => null) ?? null : null;
       runs.push(Object.freeze({
         kind: run.kind,
         runId: run.runId,
+        ...(team ? { team } : {}),
         title: await this.views.runTitle(run).catch(() => null),
         statuses: this.roots.runAgents(run.kind).runAgentStatuses(run.runId),
         // A run whose launches cannot be read answers none, with a warning naming it (`DESIGN.md` rule 7).

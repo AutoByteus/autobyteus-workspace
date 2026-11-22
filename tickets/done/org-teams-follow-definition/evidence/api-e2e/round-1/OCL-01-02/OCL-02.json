@@ -1,0 +1,110 @@
+{
+  "rowsWhileLeaving": [],
+  "approved": [
+    "exec-010e4302-68ca-4554-8d11-a464f187cc6a"
+  ],
+  "acks": [
+    {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "ocl_org_68de8cfb_e588ff3ee4034ec18159ee522ed392f3",
+      "command_id": "96848710-25ff-4548-815a-81025c7dbef1",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "ocl_org_68de8cfb_e588ff3ee4034ec18159ee522ed392f3",
+      "command_id": "fb4df51c-3b0d-4527-8ffe-38810d79bd77",
+      "command_type": "APPROVE_TOOL",
+      "target_agent_run_id": "ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    }
+  ],
+  "ran": true,
+  "delivered": false,
+  "released": false,
+  "former": [
+    {
+      "address": "/writer",
+      "agentDefinitionId": "ocl-writer-68de8cfb",
+      "role": null,
+      "description": null,
+      "agentRunId": "ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123",
+      "platformAgentRunId": "01a203f3-5578-7da1-b5ff-9cc7b29b4d7e",
+      "launchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-terra",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": false,
+        "workspaceRootPath": "/root/.autobyteus-e2e/org-container-live-3y8To6/workspace"
+      },
+      "leaving": true
+    }
+  ],
+  "orgWriterEvents": [
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":\"member_command\",\"tool_name\":null,\"error_message\":null,\"error_details\":n",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"b3a9d28c-1824-45ba-a3b2-83c012a0ad50\",\"dedupe_key\"",
+    "MEMBER_INPUT_MESSAGE {\"message_id\":\"b3a9d28c-1824-45ba-a3b2-83c012a0ad50\",\"dedupe_key\":\"50685756-ddeb-45f1-a269-53a0956bd198\",\"content\":\"Run exactly this shell command once: echo le",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED {\"trace_id\":\"rt_1795362608500_93e0323b-6489-4052-baa5-bc67b7224022\",\"content\":\"## Agent Identity\\n\\n- Name: ocl-writer-68de8cfb\\n- Description: Org container li",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"b3a9d28c-1824-45ba-a3b2-83c012a0ad50\",\"dedupe_key\"",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "TURN_STARTED {\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\"}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "SEGMENT_START {\"segment_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"ru",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "TOOL_EXECUTION_STARTED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{\"command\":\"/bi",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}",
+    "TOOL_APPROVAL_REQUESTED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{\"command\":\"/bi"
+  ],
+  "teamWriterFrames": [
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":\"member_command\",\"tool_name\":null,\"error_message\":null,\"error_details\":n",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null,\"change_sequence\":2,\"agent_run_id\":\"ocl_writer_68de8",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"b3a9d28c-1824-45ba-a3b2-83c012a0ad50\",\"dedupe_key\"",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"initializing\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED {\"trace_id\":\"rt_1795362608500_93e0323b-6489-4052-baa5-bc67b7224022\",\"content\":\"## Agent Identity\\n\\n- Name: ocl-writer-68de8cfb\\n- Description: Org container li",
+    "AGENT_INPUT_STATE {\"run_instance_id\":\"96b0964e-ea6f-4502-a7f3-96f208d461ce\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"b3a9d28c-1824-45ba-a3b2-83c012a0ad50\",\"dedupe_key\"",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TURN_STARTED {\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"change_sequence\":12,\"agent_run_id\":\"ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123\"}",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "SEGMENT_START {\"segment_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"ru",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_EXECUTION_STARTED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{\"command\":\"/bi",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_APPROVAL_REQUESTED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{\"command\":\"/bi",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_APPROVED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":null,\"reason\":null,\"change_sequence\":23,\"agent_run_id\":\"ocl_writer",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_EXECUTION_SUCCEEDED {\"invocation_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{\"command\":\"/bi",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "SEGMENT_END {\"segment_id\":\"exec-010e4302-68ca-4554-8d11-a464f187cc6a\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/ba",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOKEN_USAGE_UPDATED {\"usage_event_id\":\"e9a380bb-bfe8-4c93-83fb-a0614e202186\",\"idempotency_key\":\"codex_token_usage:ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123:01a203f3-5578",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOKEN_USAGE_UPDATED {\"usage_event_id\":\"794c648e-0159-459a-9fc1-53079ce67218\",\"idempotency_key\":\"codex_token_usage:ocl_writer_68de8cfb_dc00759c010042fa87a596c3feede123:01a203f3-5578",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "SEGMENT_START {\"segment_id\":\"exec-4ce8d2b6-9b13-4e6d-b06e-ed2e77cc6be4\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"g",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_EXECUTION_STARTED {\"invocation_id\":\"exec-4ce8d2b6-9b13-4e6d-b06e-ed2e77cc6be4\",\"tool_name\":\"get_handoff_rules\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{},\"ch",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "AGENT_STATUS {\"recoverableBlock\":null,\"status\":\"running\",\"background_tasks_running\":0,\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_seque",
+    "TOOL_APPROVAL_REQUESTED {\"invocation_id\":\"exec-4ce8d2b6-9b13-4e6d-b06e-ed2e77cc6be4\",\"tool_name\":\"get_handoff_rules\",\"turn_id\":\"01a203f3-55b2-7912-a842-9068fe4814bd\",\"arguments\":{},\"ch"
+  ]
+}

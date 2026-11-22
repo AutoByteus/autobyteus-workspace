@@ -5,7 +5,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../store/agent-org-run-history-index-store.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
+import { readStoredOrgTree } from "../../agent-org-execution/container/stored-org-tree.js";
 import { RootRunPackageReadinessIndex } from "../services/root-run-package-readiness-index.js";
 import { projectTeamRunHistoryIndexRow } from "../services/team-run-history-index-row-projector.js";
 import { projectAgentOrgRunHistoryRow } from "../services/agent-org-run-history-row-projector.js";
@@ -48,18 +48,19 @@ export async function repairCollaborationRunHistoryIndexes(input: Readonly<{
   const orgMissing = readiness.listAdmitted("agent_org")
     .filter((id) => !orgRows.some((row) => row.orgRunId === id)).sort();
   const teamTrees = new TeamRunExecutionTreeStore();
-  const orgTrees = new AgentOrgRunExecutionTreeStore();
   const projectedTeams: TeamRunIndexRowRecord[] = [];
   for (const id of teamMissing) {
     const dir = layout.getTeamDirPath({ rootTeamRunId: id, ancestorTeamRunIds: [] });
     // A row is projected from the run's own parts (D-11): this script runs without the Task records.
     const tree = await teamTrees.read(dir, id);
     if (!tree) throw new Error(`Admitted Team '${id}' has no readable execution tree.`);
+    // A Team unit of an Org container is listed under its Org, never as a top-level run (contract §8).
+    if (tree.containedIn) continue;
     projectedTeams.push(projectTeamRunHistoryIndexRow({ tree }));
   }
   const projectedOrgs: AgentOrgRunIndexRowRecord[] = [];
   for (const id of orgMissing) {
-    const tree = await orgTrees.read(layout.getOrgDirPath(id), id);
+    const tree = await readStoredOrgTree(memoryDir, id);
     if (!tree) throw new Error(`Admitted AgentOrg '${id}' has no readable execution tree.`);
     projectedOrgs.push(projectAgentOrgRunHistoryRow(tree));
   }

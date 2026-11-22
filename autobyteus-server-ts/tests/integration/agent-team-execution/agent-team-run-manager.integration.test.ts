@@ -224,6 +224,21 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
   });
 
+  it("org-teams-follow-definition: a Team unit of an Org keeps its containedIn on its stored tree (team space, contract §3)", async () => {
+    const memoryDir = await createMemoryDir();
+    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
+    const factory = createFactory();
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator: modelSelectionValidator as never, remoteChannel: NO_PEER_CHANNEL });
+    const containedIn = { orgRunId: "org_1", address: "/software_engineering_team" } as const;
+    const run = await manager.createTeamRun({ config, teamDefinitionName: "Software Engineering Team", containedIn: containedIn as never });
+    expect(run.getExecutionTreeSnapshot().containedIn).toEqual(containedIn);
+    const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: run.teamRunId, ancestorTeamRunIds: [] });
+    const stored = JSON.parse(await fs.readFile(path.join(rootDir, "team_run_execution_tree.json"), "utf8"));
+    expect(stored.containedIn).toEqual(containedIn);
+    expect(stored.rootTeam.members.map((member: { address: string }) => member.address)).toEqual(["/Coordinator"]);
+    expect(stored).not.toHaveProperty("delegatedFrom");
+  });
+
   it("supplies only root-neutral local Team callbacks during materialization", async () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);

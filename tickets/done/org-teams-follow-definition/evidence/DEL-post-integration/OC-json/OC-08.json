@@ -1,0 +1,169 @@
+{
+  "container": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-11-22T22:12:29.751Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/team",
+        "rules": [
+          "Send software requests to the team."
+        ]
+      },
+      {
+        "from": "/concierge",
+        "to": "/team/reviewer",
+        "rules": [
+          "Ask the reviewer for reviews."
+        ]
+      },
+      {
+        "from": "/team/writer",
+        "to": "/concierge",
+        "rules": [
+          "Report every draft to the concierge."
+        ]
+      },
+      {
+        "from": "/concierge",
+        "to": "/scribe",
+        "rules": [
+          "Ask the scribe to take notes."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "oc-org-e7c841",
+      "orgDefinitionName": "oc-org-e7c841",
+      "orgRunId": "oc_org_e7c841_12436ce258b2455ea66819f589064377",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-0BGfZm/workspace"
+      },
+      "units": [
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "oc_concierge_e7c841_da952e92924d45d9b5cdeca1a364dbfe",
+          "definitionId": "oc-concierge-e7c841"
+        },
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "oc_team_e7c841_f0b634f7bd4f497ebed18bd30e73bb06",
+          "definitionId": "oc-team-e7c841"
+        },
+        {
+          "address": "/team2",
+          "kind": "agent_team",
+          "runId": "oc_team2_e7c841_2df135e2a19c4e6c92a2529e4c64aff1",
+          "definitionId": "oc-team2-e7c841"
+        },
+        {
+          "address": "/scribe",
+          "kind": "agent",
+          "runId": "oc_scribe_e7c841_f5accdedcdf74ef38008c98074bf83ba",
+          "definitionId": "oc-scribe-e7c841"
+        }
+      ],
+      "formerUnits": []
+    }
+  },
+  "scribe": {
+    "runId": "oc_scribe_e7c841_f5accdedcdf74ef38008c98074bf83ba",
+    "agentDefinitionId": "oc-scribe-e7c841",
+    "workspaceRootPath": "/tmp/oc-e2e-0BGfZm/workspace",
+    "memoryDir": "/tmp/oc-e2e-0BGfZm/memory/agents/oc_scribe_e7c841_f5accdedcdf74ef38008c98074bf83ba",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": null,
+    "preparedAt": "2026-11-22T22:12:48.452Z",
+    "preparedExpiresAt": "2026-11-23T22:12:48.452Z",
+    "startedAt": null,
+    "applicationExecutionContext": null,
+    "address": "/scribe",
+    "containedIn": {
+      "orgRunId": "oc_org_e7c841_12436ce258b2455ea66819f589064377",
+      "address": "/scribe"
+    }
+  },
+  "team2": {
+    "createdAt": "2026-11-22T22:12:48.443Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "oc-team2-e7c841",
+      "teamDefinitionName": "oc-team2-e7c841",
+      "teamRunId": "oc_team2_e7c841_2df135e2a19c4e6c92a2529e4c64aff1",
+      "coordinatorAddress": "/lead2",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-0BGfZm/workspace"
+      },
+      "members": [
+        {
+          "address": "/lead2",
+          "agentDefinitionId": "oc-lead2-e7c841",
+          "role": null,
+          "description": null,
+          "agentRunId": "oc_lead2_e7c841_8d5108799ae641aeb79bb2506c041e41",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-e2e-0BGfZm/workspace"
+          }
+        }
+      ]
+    },
+    "containedIn": {
+      "orgRunId": "oc_org_e7c841_12436ce258b2455ea66819f589064377",
+      "address": "/team2"
+    }
+  },
+  "inView": [
+    {
+      "address": "/team2/lead2",
+      "agentRunId": "oc_lead2_e7c841_8d5108799ae641aeb79bb2506c041e41",
+      "status": "offline"
+    },
+    {
+      "address": "/scribe",
+      "agentRunId": "oc_scribe_e7c841_f5accdedcdf74ef38008c98074bf83ba",
+      "status": "offline"
+    }
+  ],
+  "told": "Your team changed: its definition was updated.\nJoined: team2 at /team2.\nJoined: scribe at /scribe.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Ask the reviewer for reviews.",
+        "recipient_address": "/team/reviewer"
+      },
+      {
+        "when": "Ask the scribe to take notes.",
+        "recipient_address": "/scribe"
+      }
+    ],
+    "isError": false
+  }
+}

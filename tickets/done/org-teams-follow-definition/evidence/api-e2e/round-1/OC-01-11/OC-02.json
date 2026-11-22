@@ -1,0 +1,161 @@
+{
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /team/writer.",
+    "target_agent_run_id": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+    "isError": false
+  },
+  "outbound": {
+    "messageId": "collabmsg_ivSAtypY8pa_PuxT6lKJ6ZWNxl8VE5W-",
+    "senderAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+    "receiverAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+    "content": "HANDOFF-THERE-425572 CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/concierge\",\"content\":\"HANDOFF-BACK-425572\"}}",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T15:41:10.516Z",
+    "counterpart": {
+      "address": "/team/writer",
+      "nodeId": null
+    }
+  },
+  "inbound": {
+    "messageId": "collabmsg_viQb527RJO51oePxoY9EBnGnaNy7fSMB",
+    "senderAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+    "receiverAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+    "content": "HANDOFF-BACK-425572",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T15:41:10.826Z",
+    "counterpart": {
+      "address": "/team/writer",
+      "nodeId": null
+    }
+  },
+  "teamLines": [
+    {
+      "messageId": "collabmsg_ivSAtypY8pa_PuxT6lKJ6ZWNxl8VE5W-",
+      "senderAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+      "receiverAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+      "content": "HANDOFF-THERE-425572 CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/concierge\",\"content\":\"HANDOFF-BACK-425572\"}}",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-11-22T15:41:10.516Z",
+      "counterpart": {
+        "address": "/concierge",
+        "nodeId": null
+      }
+    },
+    {
+      "messageId": "collabmsg_viQb527RJO51oePxoY9EBnGnaNy7fSMB",
+      "senderAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+      "receiverAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+      "content": "HANDOFF-BACK-425572",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-11-22T15:41:10.826Z",
+      "counterpart": {
+        "address": "/concierge",
+        "nodeId": null
+      }
+    }
+  ],
+  "viewFrames": [
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "communication",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": true,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "communication",
+      "there": false,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": false,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": false,
+      "back": true
+    },
+    {
+      "type": "ROOT_EXECUTION_EVENT",
+      "kind": "agent_presentation",
+      "there": false,
+      "back": true
+    }
+  ],
+  "shown": {
+    "there": [
+      {
+        "messageId": "collabmsg_ivSAtypY8pa_PuxT6lKJ6ZWNxl8VE5W-",
+        "senderAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+        "receiverAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+        "content": "HANDOFF-THERE-425572 CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/concierge\",\"content\":\"HANDOFF-BACK-425572\"}}",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-22T15:41:10.516Z"
+      }
+    ],
+    "back": [
+      {
+        "messageId": "collabmsg_viQb527RJO51oePxoY9EBnGnaNy7fSMB",
+        "senderAgentRunId": "oc_writer_425572_fb1c1b8ae0ce46f0ae795699ed6914cc",
+        "receiverAgentRunId": "oc_concierge_425572_9cb94e6216224ef6b1a31b747653f8c4",
+        "content": "HANDOFF-BACK-425572",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-22T15:41:10.826Z"
+      }
+    ]
+  }
+}

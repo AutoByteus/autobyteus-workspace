@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CollaborationCommunicationMessage } from "../../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { MessageLog } from "../../../../src/run-history/store/message-log.js";
 import { OWN_RUN_LOG } from "../../../../src/run-history/store/message-log-owners.js";
 
@@ -61,28 +61,29 @@ const measure = async (action: () => Promise<unknown>) => {
 describe("append cost on a large log (AC-001)", () => {
   it("writes only the new message's line on the 22 MB profile, the same as on an empty log, and reads none of the existing content", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "message-log-cost-")); roots.push(root);
-    const largeDir = path.join(root, "agent_orgs", "org-large");
-    const emptyDir = path.join(root, "agent_orgs", "org-empty");
+    // A Team run's log (an Org keeps no log of its own since org-teams-follow-definition; its units' logs are these).
+    const largeDir = path.join(root, "agent_teams", "team-large");
+    const emptyDir = path.join(root, "agent_teams", "team-empty");
     const history = profileSizes().map((bytes, index) => message(index, bytes));
-    await new MessageLog(largeDir, "agent_org_communication_messages").appendBatch(history);
-    await new MessageLog(emptyDir, "agent_org_communication_messages").appendBatch([]);
+    await new MessageLog(largeDir, "team_communication_messages").appendBatch(history);
+    await new MessageLog(emptyDir, "team_communication_messages").appendBatch([]);
     const logBytes = (await Promise.all((await fs.readdir(largeDir)).map(async (name) => (await fs.stat(path.join(largeDir, name))).size))).reduce((sum, size) => sum + size, 0);
     expect(history).toHaveLength(82);
     expect(logBytes).toBeGreaterThan(21 * 1024 * 1024);
     expect(logBytes).toBeLessThan(24 * 1024 * 1024);
 
-    const store = new AgentOrgCommunicationMessagesStore();
+    const store = new TeamCommunicationStore();
     const next = message(82, 120 * KB);
     const lineBytes = Buffer.byteLength(`${JSON.stringify(next)}\n`);
-    const large = await measure(() => store.appendMessage(largeDir, "org-large", next, [OWN_RUN_LOG]));
-    const empty = await measure(() => store.appendMessage(emptyDir, "org-empty", next, [OWN_RUN_LOG]));
+    const large = await measure(() => store.appendMessage(largeDir, "team-large", next, [OWN_RUN_LOG]));
+    const empty = await measure(() => store.appendMessage(emptyDir, "team-empty", next, [OWN_RUN_LOG]));
 
     expect(large.written).toBe(lineBytes);
     expect(empty.written).toBe(lineBytes);
     // Only the last byte of the active file is read (the unfinished-last-line check); no whole-file read.
     expect(large.read).toBe(1);
     expect(large.wholeFileReads).toBe(0);
-    expect((await new MessageLog(largeDir, "agent_org_communication_messages").read())?.at(-1)).toEqual(next);
+    expect((await new MessageLog(largeDir, "team_communication_messages").read())?.at(-1)).toEqual(next);
     console.log(`[AC-001] log ${(logBytes / 1024 / 1024).toFixed(1)} MiB in ${(await fs.readdir(largeDir)).length} files; `
       + `append of ${lineBytes} bytes: written ${large.written} bytes, read ${large.read} byte(s), ${large.milliseconds.toFixed(1)} ms `
       + `(empty log: written ${empty.written} bytes, ${empty.milliseconds.toFixed(1)} ms)`);

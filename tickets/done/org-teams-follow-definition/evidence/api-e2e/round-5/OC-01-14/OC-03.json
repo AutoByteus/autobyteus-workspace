@@ -1,0 +1,26 @@
+{
+  "members": [
+    {
+      "address": "/lead",
+      "agentRunId": "oc_lead_6ba555_65ca218f8bac4fba9c8c7a8b96134c88"
+    },
+    {
+      "address": "/writer",
+      "agentRunId": "oc_writer_6ba555_5d839d7ec4ce4e28a43fdc13b9e9c35f"
+    },
+    {
+      "address": "/reviewer",
+      "agentRunId": "oc_reviewer_6ba555_5b541c42e1554b7d8f745b6ae6f81803"
+    },
+    {
+      "address": "/editor",
+      "agentRunId": "oc_editor_6ba555_37819fc48eb04d1e938acec3aa557044"
+    }
+  ],
+  "editorInView": {
+    "address": "/team/editor",
+    "agentRunId": "oc_editor_6ba555_37819fc48eb04d1e938acec3aa557044",
+    "status": "offline"
+  },
+  "leadInput": "Your team changed: its definition was updated.\nJoined: editor at /team/editor.\nYour handoff rules are unchanged.\n\nECHO_INPUT"
+}

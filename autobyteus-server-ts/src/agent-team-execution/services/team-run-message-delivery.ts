@@ -2,7 +2,15 @@ import { CollaborationContractError } from "../../agent-collaboration/domain/col
 import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
-import { formerMemberRefusalMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
+import {
+  delegationTargetUnavailableMessage,
+  formerMemberRefusalMessage,
+  messageTargetNotFoundMessage,
+  ownTeamDelegationRefusedMessage,
+  selfDelegationRefusedMessage,
+} from "../../agent-collaboration/collaborators/collaborator-errors.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { ContainedTeamAddressSpace } from "../container/contained-team-address-space.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -64,6 +72,11 @@ export class TeamRunMessageDelivery {
     receivedFiles: ReceivedFilesPlacement;
     memberFolderOf(agentRunId: string): Promise<string>;
   }>) {}
+
+  /** A Team unit's one tool-facing address boundary (design R-1'', R-1'''), from its tree; `null` outside any Org. */
+  private addressSpace(): ContainedTeamAddressSpace | null {
+    return ContainedTeamAddressSpace.of(this.options.getIndex().tree.containedIn);
+  }
 
   /** DS-2: a message from another run of this node, for a member of this team run; the member is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
@@ -142,17 +155,43 @@ export class TeamRunMessageDelivery {
     }
     const sender = intent.sender.participant.identity;
     this.options.authorizeIdentity(sender);
+    const given = this.recipients.requireNonRootAddress(intent.recipientAddress);
+    const space = this.addressSpace();
     const target = resolveMessageRecipient({
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
-      address: this.recipients.requireNonRootAddress(intent.recipientAddress),
+      address: space ? this.teamSpaceRecipient(space, given) : given,
     }).receiver;
-    return this.deliverIntent({
+    const result = await this.deliverIntent({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
-      senderAddress: reachingAddressOf(this.options.getIndex(), target.agentRunId, sender),
+      senderAddress: this.shown(reachingAddressOf(this.options.getIndex(), target.agentRunId, sender)),
     });
+    // Out (R-1''): a Team unit's member is shown the address it used (`P` for its coordinator, as in the Org before).
+    return space && result.accepted ? { ...result, agentAddress: given } : result;
+  }
+
+  /**
+   * In (R-1'', R-1'''): a Team unit's member's `send_message_to` address in team space: `P/x` → its teammate `/x`; `P` →
+   * its coordinator (as in the Org before). Any other address is Org space: not this run's (the container answers it,
+   * step 2). A teammate that left, or none, is refused naming the address the agent gave.
+   */
+  private teamSpaceRecipient(space: ContainedTeamAddressSpace, given: AgentTeamAddress): AgentTeamAddress {
+    const read = space.input(given);
+    const index = this.options.getIndex();
+    if (read.kind === "own_team") return index.tree.rootTeam.coordinatorAddress;
+    if (read.kind === "member" && index.getMessagePlacement(read.teamAddress)) return read.teamAddress;
+    if (read.kind === "member" && index.formerMemberAt(read.teamAddress)) {
+      throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", formerMemberRefusalMessage(given));
+    }
+    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", messageTargetNotFoundMessage(given));
+  }
+
+  /** Out (R-1''): a team-space address as a Team unit's agents are shown it; unchanged outside any Org. */
+  private shown<T extends string | null>(address: T): T {
+    const space = this.addressSpace();
+    return (space && address !== null ? space.toOrg(address) : address) as T;
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
@@ -161,12 +200,12 @@ export class TeamRunMessageDelivery {
     const execution = this.options.getIndex().getAgent(input.targetAgentRunId.trim());
     const former = execution ? null : this.options.getIndex().formerMemberByRunId(input.targetAgentRunId.trim());
     // REQ-009: a member that left the team is not reached by its run ID either.
-    if (former) return { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: formerMemberRefusalMessage(former.address) };
+    if (former) return { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: formerMemberRefusalMessage(this.shown(former.address)) };
     if (!execution) {
       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
     }
     const receiver = this.identityFor(execution.address, execution.agentRunId);
-    return this.deliverIntent({
+    const result = await this.deliverIntent({
       intent: {
         rootTeamRunId: this.options.rootTeamRunId,
         sender: buildDeliveryEndpointForParticipant(input.sender),
@@ -177,13 +216,16 @@ export class TeamRunMessageDelivery {
       },
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
-      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
+      senderAddress: this.shown(reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity)),
     });
+    return result.accepted && result.agentAddress ? { ...result, agentAddress: this.shown(result.agentAddress) } : result;
   }
 
   /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent (the team's, else one step 2 reaches), then the catalog. */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, recipientAddress: string, work: DelegationWork, newDelegatedRunFolder: string | null): Promise<TeamDelegationPlacement> {
     const address = this.recipients.requireNonRootAddress(recipientAddress);
+    const space = this.addressSpace();
+    if (space) return this.resolveContainedDelegationPlacement(space, sender, address, work, newDelegatedRunFolder);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
@@ -199,6 +241,32 @@ export class TeamRunMessageDelivery {
           if (reached) return reached;
           throw error;
         }
+      },
+      catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
+    });
+  }
+
+  /**
+   * A Team unit's member's `delegate_task(address)` (R-1'', R-1''', MP-05): `P` and every `P/x` are its own Team (its own
+   * address `P/self` is itself), refused with CM-1's texts naming the address it gave; any other address is Org space: a
+   * unit of its Org that step 2 reaches (a copy of it, as the Org's configured placement answered before), else the catalog.
+   */
+  private async resolveContainedDelegationPlacement(space: ContainedTeamAddressSpace, sender: CollaborationMemberExecutionIdentity, address: AgentTeamAddress,
+    work: DelegationWork, newDelegatedRunFolder: string | null): Promise<TeamDelegationPlacement> {
+    const read = space.input(address);
+    if (read.kind === "member" && read.teamAddress === this.options.getIndex().agentAddressOf(sender.agentRunId)) {
+      throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", selfDelegationRefusedMessage(address));
+    }
+    if (read.kind !== "org") throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(address));
+    return resolveDelegationPlacement({
+      port: { agentAddressOf: () => null, isOwnTeamAddress: () => false },
+      senderAgentRunId: sender.agentRunId,
+      address,
+      newDelegatedRunFolder,
+      resolveInRun: async () => {
+        const reached = await this.options.collaborators.reachedPlacementAt(address);
+        if (reached) return reached;
+        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
       },
       catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });

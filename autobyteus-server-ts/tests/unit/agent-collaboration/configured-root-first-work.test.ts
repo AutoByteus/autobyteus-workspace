@@ -78,7 +78,7 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.order).toEqual(["durable", `publish:${f.ids[1]}`]);
     expect(f.acceptInput).toHaveBeenCalledTimes(2);
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-1");
-    if (placement !== "direct_org") expect(cacheUpdate).toHaveBeenCalledWith("old-thread", "new-thread-1");
+    expect(cacheUpdate).toHaveBeenCalledWith("old-thread", "new-thread-1");
   });
 
   it("serializes different-member commits against the current tree, not the pre-await snapshot", async () => {
@@ -138,7 +138,7 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.write).not.toHaveBeenCalled();
   });
 
-  if (placement !== "direct_org") it("latches a post-root Flat cache failure as nonretryable without rolling back the tree", async () => {
+  it("latches a post-root Flat cache failure as nonretryable without rolling back the tree", async () => {
     const f = await build(placement);
     vi.spyOn(FlatAgentExecutionContext.prototype, "replaceCommittedPlatformAgentRunId").mockImplementation(() => { throw new Error("cache failed"); });
     const cacheFailure = { accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: expect.stringContaining("COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED") };

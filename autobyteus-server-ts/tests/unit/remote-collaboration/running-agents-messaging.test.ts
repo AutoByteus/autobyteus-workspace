@@ -154,7 +154,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
-    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
+    delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, peerRunMembers: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null, runAgents: () => manager.runAgents,
@@ -165,9 +165,10 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => input.peers }, client });
 
   /** A person starts a Project Task Manager run here: its root is live and its agent runs. */
-  const startPm = async (runId: string, workspace: string) => {
+  const startPm = async (runId: string, workspace: string, containedIn?: Readonly<{ orgRunId: string; address: string }>) => {
     metadata.set(runId, { runId, agentDefinitionId: "pm", workspaceRootPath: workspace, memoryDir: path.join(memoryDir, "agents", runId),
-      llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
+      llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0,
+      ...(containedIn ? { containedIn, address: containedIn.address } : {}) } as AgentRunMetadata);
     runOf(runId).active = true;
     await manager.resolveRoot(runId);
   };
@@ -274,6 +275,20 @@ describe("the run ID is the address (autobyteus-492), in process", () => {
     a.requests.length = 0;
     await expect(a.send("pm_a1", "pm_b", "Same plan, once more.", "docker", [plan])).resolves.toMatchObject({ accepted: true, filesSent: 1 });
     expect(a.requests).toEqual(["received-files/status", "run-messages"]);
+  });
+
+  it("org-teams-follow-definition SR-016: an Org's agent unit (a run of its own with containedIn) gets a file by run ID with node in its own folder", async () => {
+    const { a, b } = await twoNodes();
+    const workA = path.join(a.memoryDir, "work_a1");
+    await fs.mkdir(workA, { recursive: true });
+    await a.startPm("pm_a1", workA);
+    await b.startPm("concierge_b", "/srv/work", { orgRunId: "org_b", address: "/concierge" });
+    const brief = path.join(workA, "brief.md");
+    await fs.writeFile(brief, "# Brief");
+    await expect(a.send("pm_a1", "concierge_b", "The brief is attached.", "docker", [brief])).resolves.toMatchObject({ accepted: true, filesSent: 1 });
+    const onB = path.join(b.memoryDir, "agents", "concierge_b", "received_files", "pm_a1", "brief.md");
+    await expect(fs.readFile(onB, "utf8")).resolves.toBe("# Brief");
+    expect(b.runOf("concierge_b").received.join("\n")).toContain(onB);
   });
 
   it("entry-form row 8: a run ID that does not run on the peer is refused with this node's name for it; the peer wakes nothing; nothing is logged", async () => {

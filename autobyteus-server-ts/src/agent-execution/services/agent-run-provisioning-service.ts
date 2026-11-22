@@ -128,15 +128,21 @@ export class AgentRunProvisioningService {
       ...(input.address ? { address: input.address } : {}),
       ...(input.launchSource ? { launchSource: input.launchSource } : {}),
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
+      ...(input.containedIn ? { containedIn: input.containedIn } : {}),
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
     };
 
-    await this.historyCatalogService.recordPreparedRun({
-      runId,
-      metadata,
-      summary: input.initialSummary ?? "",
-      createdAt: preparedAt.toISOString(),
-    });
+    // A unit of an Org container is listed under its Org, never as a top-level run (contract §8): no history row.
+    if (!input.containedIn) {
+      await this.historyCatalogService.recordPreparedRun({
+        runId,
+        metadata,
+        summary: input.initialSummary ?? "",
+        createdAt: preparedAt.toISOString(),
+      });
+    } else {
+      await this.historyCatalogService.recordPreparedUnit({ runId, metadata });
+    }
     return {
       runId,
       activationState: "PREPARED",
@@ -184,7 +190,8 @@ export class AgentRunProvisioningService {
           continue;
         }
         const { metadata } = record;
-        if (!metadata.preparedAt || metadata.startedAt) continue;
+        // An Org's agent unit stays prepared until its first work: its container keeps it (org-teams-follow-definition).
+        if (!metadata.preparedAt || metadata.startedAt || metadata.containedIn) continue;
         try {
           if (!(await holdsOnlyItsRecord(this.memoryLayout.getStandaloneRunDirPath(runId)))) continue;
         } catch (error) {

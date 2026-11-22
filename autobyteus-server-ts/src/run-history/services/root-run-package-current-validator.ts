@@ -1,16 +1,16 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesStore } from "../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { validateAgentOrgExecutionTree } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
 import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../store/agent-org-run-execution-tree-path.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../store/team-run-execution-tree-path.js";
 import { validateTeamRunExecutionTree } from "./team-run-state-package-validator.js";
 
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
+import { isAgentOrgContainerPayload } from "../../agent-org-execution/domain/agent-org-container-file.js";
+import { validateAgentOrgContainerPayload } from "../store/agent-org-container-file-schema.js";
+import { readRawTreeFile } from "../store/raw-tree-file.js";
 
 export type RootRunPackageFamily = "agent_team" | "agent_org" | "agent";
 export type RootRunPackageReadinessDiagnostic = Readonly<{
@@ -41,12 +41,9 @@ const retiredTeamFiles = Object.freeze([
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
   ...RETIRED_JSON_MESSAGE_LOGS,
 ]);
-const requiredOrgFiles = Object.freeze([AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME]);
-const retiredOrgFiles = Object.freeze([
-  "team_run_metadata.json",
-  TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  ...RETIRED_JSON_MESSAGE_LOGS,
-]);
+
+/** What an Org container's folder must not hold: another root's authority, or a JSON message log (unconverted residue). */
+const RETIRED_ORG_FILES = Object.freeze(["team_run_metadata.json", TEAM_RUN_EXECUTION_TREE_FILE_NAME, ...RETIRED_JSON_MESSAGE_LOGS]);
 
 type RequiredMessageLog = Readonly<{ name: string; exists(): Promise<boolean> }>;
 type FamilyEntry = Readonly<{ name: string; packagePath: string; isDirectory: boolean }>;
@@ -65,13 +62,9 @@ export class RootRunPackageCurrentValidator {
     private readonly stores: Readonly<{
       teamTree: TeamRunExecutionTreeStore;
       teamMessages: TeamCommunicationStore;
-      orgTree: AgentOrgRunExecutionTreeStore;
-      orgMessages: AgentOrgCommunicationMessagesStore;
     }> = {
       teamTree: new TeamRunExecutionTreeStore(),
       teamMessages: new TeamCommunicationStore(),
-      orgTree: new AgentOrgRunExecutionTreeStore(),
-      orgMessages: new AgentOrgCommunicationMessagesStore(),
     },
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);
@@ -199,22 +192,43 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MISSING_TREE", "Execution tree is missing; package preserved.");
       return;
     }
-    const manifestError = await this.validateManifest(entry.packagePath, requiredOrgFiles, retiredOrgFiles,
-      { name: "agent_org_communication_messages", exists: () => this.stores.orgMessages.hasLog(entry.packagePath) });
-    if (manifestError) {
-      this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MANIFEST_INVALID", manifestError);
+    const raw = await readRawTreeFile(path.join(entry.packagePath, AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME)).catch(() => null);
+    if (isAgentOrgContainerPayload(raw)) {
+      // A container has no log of its own; another root's authority, or a JSON log, in its folder is residue it refuses.
+      const manifestError = await this.validateManifest(entry.packagePath, [AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME], RETIRED_ORG_FILES,
+        { name: "", exists: async () => true });
+      if (manifestError) {
+        this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MANIFEST_INVALID", manifestError);
+        return;
+      }
+      try {
+        await this.validateContainer(rootRunId, raw);
+        target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
+      } catch (error) {
+        this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
+      }
       return;
     }
-    try {
-      // Structure only (autobyteus-358): the log is validated where it is read, not here. The run's own parts only
-      // (D-11): it reads no delegated run and asks no Task record, which are loaded after this scan.
-      const executionTree = await this.stores.orgTree.read(entry.packagePath, rootRunId);
-      if (!executionTree) throw new Error("AgentOrg Run V2 tree is required.");
-      if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg package '${rootRunId}' has contradictory root IDs.`);
-      validateAgentOrgExecutionTree(executionTree);
-      target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
-    } catch (error) {
-      this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
+    // A released Org tree that its conversion has not converted (a preserved skip or a failed conversion): not a current
+    // package (the migration's diagnostics name why), never loaded by today's Org (org-teams-follow-definition).
+    this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
+      "AgentOrg package is not a container: a released Org tree that was not converted.");
+  }
+
+  /**
+   * An Org container (org-teams-follow-definition, contract §2, design R-5): its file, and both ends of each unit
+   * reference: the unit's run file exists and its `containedIn` names this container at the unit's address. It has no log.
+   */
+  private async validateContainer(rootRunId: string, raw: unknown): Promise<void> {
+    const file = validateAgentOrgContainerPayload(raw, rootRunId);
+    const metadata = new AgentRunMetadataStore(this.memoryDir);
+    for (const unit of file.rootOrg.units) {
+      const containedIn = unit.kind === "agent"
+        ? (await metadata.readMetadata(unit.runId))?.containedIn
+        : (await this.stores.teamTree.read(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId))?.containedIn;
+      if (containedIn?.orgRunId !== rootRunId || containedIn.address !== unit.address) {
+        throw new Error(`AgentOrg '${rootRunId}' unit ${unit.address} (run '${unit.runId}') does not name this Org at that address.`);
+      }
     }
   }
 

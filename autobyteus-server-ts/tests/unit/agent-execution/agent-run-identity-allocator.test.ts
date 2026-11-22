@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 
 const definitions = () => ({ getAgentDefinitionById: vi.fn(async (id: string) => ({ id, name: "Worker" }) as never) });
 describe("fresh AgentRunIdentityAllocator", () => {
@@ -23,14 +22,13 @@ describe("fresh AgentRunIdentityAllocator", () => {
     await expect(invalid.allocateForAgentDefinition("worker")).rejects.toThrow();
   });
   it("produces independent default UUIDs concurrently without any stored-tree or filesystem reads", async () => {
-    const reads = vi.spyOn(AgentOrgRunExecutionTreeStore.prototype, "read");
     const fileReads = vi.spyOn(fs, "readFile");
     try {
       const allocator = new AgentRunIdentityAllocator({ agentDefinitionService: definitions() });
       const ids = await Promise.all(Array.from({ length: 10 }, () => allocator.allocateForAgentDefinition("worker")));
       expect(new Set(ids).size).toBe(10);
       ids.forEach(id => expect(id).toMatch(/^worker_[0-9a-f]{32}$/));
-      expect(reads).not.toHaveBeenCalled(); expect(fileReads).not.toHaveBeenCalled();
-    } finally { reads.mockRestore(); fileReads.mockRestore(); }
+      expect(fileReads).not.toHaveBeenCalled();
+    } finally { fileReads.mockRestore(); }
   });
 });

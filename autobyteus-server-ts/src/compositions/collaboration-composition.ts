@@ -1,3 +1,9 @@
+import { OrgUnitMemberViews } from "../run-history/services/org-unit-member-views.js";
+import { AgentOrgContainerStore } from "../run-history/store/agent-org-container-store.js";
+import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
+import { AgentRunViewProjectionService } from "../run-history/services/agent-run-view-projection-service.js";
+import { TokenUsageRunStore } from "../token-usage/providers/token-usage-run-store.js";
+import { getRunFileChangeProjectionService } from "../run-history/services/run-file-change-projection-service.js";
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
 import type { OutgoingFiles } from "../agent-collaboration/execution/remote/outgoing-files.js";
 import { PeerRunNodes } from "../agent-collaboration/execution/remote/peer-run-nodes.js";
@@ -61,6 +67,7 @@ import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjecti
 import { setProcessTeamRunHistoryService } from "../run-history/services/team-run-history-service.js";
 import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from "../run-history/services/workspace-run-history-service.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
+import { createOrgContainerDirectory, type OrgContainerDirectory } from "../agent-org-execution/container/org-container-directory.js";
 import { createChildRowProjection } from "../agent-collaboration/delegation/run-tree-records.js";
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
@@ -104,6 +111,8 @@ export type TaskSide = Readonly<{
   closedTasks: ClosedTaskEntryFence;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
+  /** The Org container directory (org-teams-follow-definition, design R-2, N-1): what a unit run asks its container. */
+  containers: OrgContainerDirectory;
 }>;
 
 /**
@@ -121,7 +130,9 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
   // The tree reads each run's own files (its parts, once; an org's and a configured placement, at use), and derives
   // each run's collaboration tree from them (SR-060).
-  const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
+  // A unit run of an Org container reaches its container's other units by step 2 (design R-1, R-2).
+  const containers = createOrgContainerDirectory(input.memoryDir);
+  const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir), containers);
   tree.build();
   // A run the Task records name whose own files are gone was deleted: the tree skips it (SR-067 G-2).
   await tree.skipUnstored();
@@ -133,7 +144,7 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
     viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
       { tree, scope: messageScope, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
     closedTasks: new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree, tasks: taskRecords }), tasks: taskRecords, files: new RunOwnAgentsReader(input.memoryDir) }),
-    projectsLayout, adHocTasksLayout });
+    projectsLayout, adHocTasksLayout, containers });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */
@@ -250,6 +261,8 @@ export const composeCollaboration = async (input: Readonly<{
       // autobyteus-492 DS-003: a message by run ID alone reaches only a running agent, in its live root, never restored.
       runningAgents: input.running.runningAgents,
       activeReceiverRoot: (run) => input.rootResolver.resolveActive(run)?.root ?? null,
+      // Two units of one Org container (design R-2): admitted before the Task rule; a receiver not live is restored.
+      containers: input.taskSide.containers,
     });
     // autobyteus-587 RF-14 (SR-010 R2, SR-011): which node a run is on, and the refusals; read by the router and the delegation.
     const nodes = new PeerRunNodes({ activeRoots: input.activeRoots, tree: () => tree, channel: input.remoteChannel });
@@ -293,13 +306,26 @@ export const composeCollaboration = async (input: Readonly<{
     const runStatus = new RunStatusService({ agents: (kind) => kind === "agent_org" ? orgAgents : liveAgents(kind), registrations: input.activeRoots,
       agentsOf: (run) => tree.agentsOf(run), peerRunOf,
       peerNodeName: async (nodeId) => (await peerNodeNames([nodeId], input.remoteChannel())).get(nodeId) ?? nodeId,
-      peerSummary: async (peer) => (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null,
+      peerSummary: async (peer) => {
+        const summary = (await peerStatuses([peer.link], input.remoteChannel))[0] ?? null;
+        // FU-003 (DS-007): each contact reconciles this node's record of a peer Team run with the members its node answered.
+        const link = peer.link;
+        if (summary?.team && link.kind === "agent_team") {
+          const coordinator = summary.team.members.find((member) => member.address === summary.team!.coordinatorAddress);
+          if (coordinator) await resources.updatePeerRunMembers({ teamRunId: link.teamRunId }, link.nodeId, summary.team.members, coordinator.agentRunId)
+            .catch((error: unknown) => console.warn("PEER_RUN_MEMBERS_NOT_RECONCILED", { teamRunId: link.teamRunId, error: String(error) }));
+        }
+        return summary;
+      },
       summaryChanged: (run) => feed.rowChanged(run) });
-    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run) });
+    // A unit run's rows are its Org container's too (org-teams-follow-definition, design DS-004).
+    const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, rowsChanged: (run) => runStatus.treeChanged(run),
+      containerOf: (run) => taskSide.containers.containerOfSync(run) });
     releases.push(feed.follow(tree));
     // SR-010: a member leaving shows only while its team run is live (registered).
     const runTree = new RunTreeView({ tree, ownTreeOf: (run) => ownFiles.ownTreeOf(run), projection,
-      isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null });
+      isLiveTeamRun: (teamRunId) => input.activeRoots.resolve(createTeamRootExecutionIdentity(teamRunId)) !== null,
+      unitRunsOf: (orgRunId) => taskSide.containers.unitRunsOf(orgRunId), loadContainer: (orgRunId) => taskSide.containers.loadContainer(orgRunId) });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
@@ -309,8 +335,14 @@ export const composeCollaboration = async (input: Readonly<{
     // autobyteus-492: `list_running_agents` without `node`, on every runtime (bound before any run starts).
     releases.push(bindProcessRunningAgentsListing(input.running.listing));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));
-    releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
-    releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
+    const teamMembers = new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf });
+    releases.push(setProcessTeamMemberRunViewProjectionService(teamMembers));
+    // An Org container's members are read from their unit runs (org-teams-follow-definition, design R-5).
+    const orgUnitMembers = new OrgUnitMemberViews({ directory: taskSide.containers, tree, teamMembers: () => teamMembers,
+      isContainer: async (orgRunId) => Boolean(await new AgentOrgContainerStore().readIfContainer(new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId), orgRunId)),
+      agentViews: new AgentRunViewProjectionService(memoryDir), metadata: new AgentRunMetadataStore(memoryDir),
+      tokenUsage: new TokenUsageRunStore(), fileChanges: () => getRunFileChangeProjectionService() });
+    releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf, units: orgUnitMembers })));
     const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard, episodicCatalog: input.episodicCatalog });
     releases.push(setProcessAgentRunHistoryService(agentRunHistory));
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
@@ -318,7 +350,7 @@ export const composeCollaboration = async (input: Readonly<{
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
-    const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
+    const delegatedRunAgents = new DelegatedRunAgentsReader(tree, taskSide.containers);
     // autobyteus-565: one participant's messages a page at a time, by the views' one rule, every other agent named.
     releases.push(setProcessParticipantMessagesReader(new ParticipantMessagesReader({
       records: runRecordsOfRootOwners, scope: taskSide.messageScope, delegatedRunAgents,

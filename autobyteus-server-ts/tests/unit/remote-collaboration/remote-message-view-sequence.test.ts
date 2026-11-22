@@ -5,20 +5,16 @@ import type { CollaborationCommunicationMessage } from "../../../src/agent-colla
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
 import { delegatedRunEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
 import {
-  createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
   createTeamRootExecutionIdentity,
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RunViewStream, type SequencedRootEvent } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
-import { agentOrgMessageEvent, type AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { createAgentOrgCommunicationPort } from "../../../src/agent-org-execution/services/agent-org-communication-port.js";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { OWN_RUN_LOG } from "../../../src/run-history/store/message-log-owners.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
-import { projectAgentOrgExecutionEvent } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectSequencedTeamRunEvent } from "../../../src/services/agent-streaming/team-execution-view-projector.js";
 import { createTeamCommunicationPort } from "../../../src/services/team-communication/team-communication-port.js";
 import { standaloneRootMessageEvent, type StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
@@ -124,18 +120,6 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
       // autobyteus-565: an Agent root's own view shows every message its agent sent or received, a remote one too.
       shown: ["first local", "to remote", "reply from remote", "second local"],
-    },
-    {
-      kind: "Org root",
-      root: createAgentOrgRootExecutionIdentity("org-root"),
-      build: (root: RootExecutionIdentity, publisher: RunViewStream<AgentOrgRunEvent>) => createAgentOrgCommunicationPort({
-        root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
-        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
-        reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root), presentCommittedMessage: vi.fn(), receivedFilesFor: vi.fn(async () => { throw new Error("No files in this test."); }),
-      }),
-      project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent("org-root", event),
-      shown: ["first local", "second local"],
     },
   ] as const)("$kind: the messages its view shows are published, with consecutive sequences", async ({ root, build, project, shown }) => {
     const publisher = new RunViewStream<never>({ isMessageEvent: () => false });

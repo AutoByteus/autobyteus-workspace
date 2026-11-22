@@ -22,6 +22,8 @@ import type {
   DelegatedRunStateRequest,
   OwnerCommandAnswer,
   OwnerCommandRequest,
+  PeerRunMembersAnswer,
+  PeerRunMembersRequest,
   ReceivedFilePieceAnswer,
   ReceivedFilePieceRequest,
   ReceivedFilesStatusAnswer,
@@ -104,6 +106,11 @@ export type RemoteRunViewHandler = Readonly<{
   /** autobyteus-461 SR-088: one agent's own stream snapshot, and its numbered frames. */
   agentStreamSnapshot(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; snapshot: unknown; status: unknown }> | PeerHandlerRefusal>;
   observeAgentStream(opening: RunObservationOpening & Readonly<{ agentRunId: string }>, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: RunAgentObservation }> | PeerHandlerRefusal>;
+}>;
+
+/** FU-003: a Team run the caller started for this node's delegation changed its members (`PeerRunMembersReceiver`). */
+export type PeerRunMembersHandler = Readonly<{
+  apply(request: PeerRunMembersRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
 }>;
 
 /**
@@ -274,6 +281,21 @@ const parseOwnerCommandRequest = (value: unknown): OwnerCommandRequest => {
   };
 };
 
+/** FU-003: a Team run's members (each address and run ID) and its coordinator's address. */
+const parsePeerRunMembersRequest = (value: unknown): PeerRunMembersRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  if (!Array.isArray(body.members)) throw new MalformedRequestError("members must be an array.");
+  return {
+    ...parseEnvelope(body),
+    run: startedRunRef(body.run, "run"),
+    coordinatorAddress: field(() => requiredString(body.coordinatorAddress, "coordinatorAddress")),
+    members: body.members.map((member: unknown, index: number) => {
+      const entry = field(() => objectRecord(member, `members[${index}]`));
+      return { address: field(() => requiredString(entry.address, `members[${index}].address`)), agentRunId: field(() => requiredString(entry.agentRunId, `members[${index}].agentRunId`)) };
+    }),
+  };
+};
+
 const parseDelegatedRunStateRequest = (value: unknown): DelegatedRunStateRequest => {
   const body = field(() => objectRecord(value, "request"));
   if (typeof body.open !== "boolean") throw new MalformedRequestError("open must be a boolean.");
@@ -310,6 +332,7 @@ export class PeerGateway {
     runViews: RemoteRunViewHandler;
     receivedFiles: ReceivedFilesHandler;
     delegatedRunStates: DelegatedRunStatesHandler;
+    peerRunMembers: PeerRunMembersHandler;
   }>) {}
 
   /**
@@ -375,6 +398,11 @@ export class PeerGateway {
   /** autobyteus-591 DN-2: the delegating node's Task state of a run its delegation started; answered once applied. */
   deliveredRunState(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DelegatedRunStateAnswer>> {
     return this.admit(body, caller, parseDelegatedRunStateRequest, (request, peer) => this.dependencies.delegatedRunStates.apply(request, peer));
+  }
+
+  /** FU-003 (DS-007): a Team run the caller started for this node's delegation changed its members there. */
+  peerRunMembers(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<PeerRunMembersAnswer>> {
+    return this.admit(body, caller, parsePeerRunMembersRequest, (request, peer) => this.dependencies.peerRunMembers.apply(request, peer));
   }
 
   /**

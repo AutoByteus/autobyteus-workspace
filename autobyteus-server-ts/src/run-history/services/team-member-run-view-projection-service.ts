@@ -21,6 +21,7 @@ import {
 } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
+import { ContainedTeamAddressSpace } from "../../agent-team-execution/container/contained-team-address-space.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -105,8 +106,11 @@ export class TeamMemberRunViewProjectionService {
   /** The senders' addresses as the member got them (contract §2.5, SR-060). */
   private senderAddresses(tree: TeamExecutionIndex["tree"], senders: readonly string[]) {
     const index = new TeamExecutionIndex(tree);
+    // A Team unit's teammates as its members are shown them: at `P/x` (its address boundary, design R-1'', MP-06).
+    const space = ContainedTeamAddressSpace.of(tree.containedIn);
+    const ownAddressOf = (runId: string) => { const own = index.getAgent(runId)?.address ?? null; return own && space ? space.toOrg(own) : own; };
     return receivedSenderAddresses({ receiverRun: { rootSubjectKind: "agent_team", rootRunId: tree.rootTeam.teamRunId }, tree: this.tree,
-      ownAddressOf: (runId) => index.getAgent(runId)?.address ?? null, senderAgentRunIds: senders });
+      ownAddressOf, senderAgentRunIds: senders });
   }
 
   /** The member's artifacts: live while the team runs, else its stored file changes. */

@@ -299,6 +299,7 @@ export const buildStudioServer = async (input: {
       runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
       taskRecords: taskSide.taskRecords, delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams, episodicCatalog: deletedRuns,
+      orgContainers: taskSide.containers,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
@@ -324,6 +325,7 @@ export const buildStudioServer = async (input: {
       running,
       receivedFiles: files.receivedFiles,
       closedDelegations,
+      taskResources: taskSide.resources,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
     remote.bind(remoteCollaboration.services);

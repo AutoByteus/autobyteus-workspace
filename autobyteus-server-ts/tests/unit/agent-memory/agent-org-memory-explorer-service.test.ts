@@ -8,10 +8,10 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
+import { AgentOrgContainerStore } from "../../../src/run-history/store/agent-org-container-store.js";
 import { resetCollaborationRunHistoryCatalogState } from "../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -28,32 +28,25 @@ const touch = async (filePath: string, mtime: number) => {
   await fs.utimes(filePath, at, at);
 };
 
-/** `/ceo`; configured team `/engineering` with `/engineering/solution_designer`. A run they delegated to is its own run. */
-const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutionTreeSnapshot => {
-  const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
-  return testAgentOrgExecutionTree({
-    orgRunId,
-    orgDefinitionId,
-    orgDefinitionName: "Tree Org Name",
-    members: [
-      testOrgAgentNode("/ceo", `${orgRunId}-ceo`),
-      testOrgTeamNode({ address: "/engineering", teamRunId: `${orgRunId}-engineering`, coordinatorAddress: designer.address, members: [designer] }),
-    ],
-  });
-};
-
 describe("AgentOrgMemoryExplorerService", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
 
-  const writeOrg = async (orgRunId: string, orgDefinitionId: string) => {
-    const tree = orgTree(orgRunId, orgDefinitionId);
-    const packageDir = layout.getOrgDirPath(orgRunId);
-    await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-    await new AgentOrgCommunicationMessagesStore().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
-  };
+  /**
+   * An Org container (org-teams-follow-definition): `/ceo` (an agent unit) and the Team unit `/engineering` with
+   * `/engineering/solution_designer` (stored at `/solution_designer` in its Team run). A run they delegated to is its own run.
+   */
+  const writeOrg = (orgRunId: string, orgDefinitionId: string) => writeStoredOrgContainer(memoryDir, {
+    orgRunId, orgDefinitionId, orgDefinitionName: "Tree Org Name", createdAt: "2026-09-01T00:00:00.000Z",
+    units: [{ kind: "agent", address: "/ceo", runId: `${orgRunId}-ceo`, agentDefinitionId: `definition-${orgRunId}-ceo` },
+      { kind: "agent_team", address: "/engineering", runId: `${orgRunId}-engineering`, coordinatorAddress: "/solution_designer",
+        members: [{ address: "/solution_designer", agentRunId: `${orgRunId}-designer`, agentDefinitionId: `definition-${orgRunId}-designer` }] }],
+  });
 
   const orgDir = (...parts: string[]) => path.join(memoryDir, "agent_orgs", ...parts);
+  /** A unit agent's memory folder: a direct agent's own run, a Team unit member's in its Team run. */
+  const agentDir = (runId: string, ...parts: string[]) => path.join(memoryDir, "agents", runId, ...parts);
+  const memberDir = (teamRunId: string, agentRunId: string, ...parts: string[]) => path.join(memoryDir, "agent_teams", teamRunId, agentRunId, ...parts);
 
   const resetState = () => {
     resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
@@ -66,12 +59,12 @@ describe("AgentOrgMemoryExplorerService", () => {
 
     // Org A, run 1: its direct agent and its mounted team's member.
     await writeOrg("org-a-1", "org-a");
-    await touch(orgDir("org-a-1", "org-a-1-ceo", "working_context_snapshot.json"), Date.parse("2026-09-01T01:00:00.000Z"));
-    await touch(orgDir("org-a-1", "org-a-1-engineering", "org-a-1-designer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T02:00:00.000Z"));
+    await touch(agentDir("org-a-1-ceo", "working_context_snapshot.json"), Date.parse("2026-09-01T01:00:00.000Z"));
+    await touch(memberDir("org-a-1-engineering", "org-a-1-designer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T02:00:00.000Z"));
 
     // Org A, run 2: only the root agent has memory; newer.
     await writeOrg("org-a-2", "org-a");
-    await touch(orgDir("org-a-2", "org-a-2-ceo", "raw_traces_active.jsonl"), Date.parse("2026-09-02T01:00:00.000Z"));
+    await touch(agentDir("org-a-2-ceo", "raw_traces_active.jsonl"), Date.parse("2026-09-02T01:00:00.000Z"));
 
     // Org B: no member memory at all -> not listed.
     await writeOrg("org-b-1", "org-b");
@@ -152,7 +145,7 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("omits a member that has no memory", async () => {
-    await fs.rm(orgDir("org-a-1", "org-a-1-engineering"), { recursive: true, force: true });
+    await fs.rm(memberDir("org-a-1-engineering", "org-a-1-designer"), { recursive: true, force: true });
     const page = await new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions }).listAgentOrgRunsWithMemory("org-a", "org-a-1");
     expect((page.entries[0]?.memberTargets ?? []).map((member) => member.agentRunId)).toEqual(["org-a-1-ceo"]);
   });
@@ -172,16 +165,15 @@ describe("AgentOrgMemoryExplorerService", () => {
   it("reads each admitted org tree once per request and skips a tree corrupted after admission with a warning", async () => {
     await fs.writeFile(orgDir("org-b-1", "agent_org_run_execution_tree.json"), "{ not json", "utf8");
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const store = new AgentOrgRunExecutionTreeStore();
-    const read = vi.spyOn(store, "read");
+    const read = vi.spyOn(AgentOrgContainerStore.prototype, "readIfContainer");
     const service = new AgentOrgMemoryExplorerService(memoryDir, { definitions: noDefinitions,
-      source: new AgentOrgRootMemorySource(memoryDir, { locations: new AgentOrgExecutionTreeLocationService({ memoryDir, store }) }),
+      source: new AgentOrgRootMemorySource(memoryDir, { locations: new AgentOrgExecutionTreeLocationService({ memoryDir }) }),
     });
 
     const page = await service.listAgentOrgsWithMemory();
 
     expect(page.entries.map((entry) => entry.orgDefinitionId)).toEqual(["org-a"]);
-    expect(read.mock.calls.map(([, orgRunId]) => orgRunId).sort()).toEqual(["org-a-1", "org-a-2", "org-b-1"]);
+    expect(new Set(read.mock.calls.map(([, orgRunId]) => orgRunId))).toEqual(new Set(["org-a-1", "org-a-2", "org-b-1"]));
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("Skipping agent org run 'org-b-1' in memory explorer"));
   });
 

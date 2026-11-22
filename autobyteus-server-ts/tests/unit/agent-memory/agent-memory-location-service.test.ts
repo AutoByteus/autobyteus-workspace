@@ -7,10 +7,8 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -102,21 +100,12 @@ describe("AgentMemoryLocationService current V1 tree", () => {
       .resolves.toBeNull();
   });
 
-  it("resolves an AgentOrg member's own run inside the requested org root", async () => {
-    const lead = testOrgAgentNode("/delivery/lead", "org-lead-run");
-    await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org-root"), testAgentOrgExecutionTree({
-      orgRunId: "org-root",
-      members: [
-        testOrgAgentNode("/ceo", "org-ceo-run"),
-        testOrgTeamNode({ address: "/delivery", teamRunId: "org-delivery-team", coordinatorAddress: lead.address, members: [lead] }),
-      ],
-    }));
-    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath("org-root"), {
-      schemaVersion: 1,
-      subjectKind: "agent_org",
-      orgRunId: "org-root",
-      messages: [],
-    });
+  it("resolves an AgentOrg member's own run: an Org container's member in its unit run (org-teams-follow-definition)", async () => {
+    await writeStoredOrgContainer(memoryDir, { orgRunId: "org-root", units: [
+      { kind: "agent", address: "/ceo", runId: "org-ceo-run" },
+      { kind: "agent_team", address: "/delivery", runId: "org-delivery-team", coordinatorAddress: "/lead", members: [{ address: "/lead", agentRunId: "org-lead-run" }] },
+    ] });
+    await new RootRunPackageReadinessIndex(memoryDir).rebuild();
     const service = new AgentMemoryLocationService({ memoryDir });
 
     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "org-root", agentRunId: "org-lead-run" }))
@@ -127,7 +116,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         memberAddress: "/delivery/lead",
         agentRunId: "org-lead-run",
         configuredPlacement: expect.objectContaining({ agentRunId: "org-lead-run" }),
-        memoryDir: path.join(memoryDir, "agent_orgs", "org-root", "org-delivery-team", "org-lead-run"),
+        memoryDir: path.join(memoryDir, "agent_teams", "org-delivery-team", "org-lead-run"),
       });
     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "org-root", agentRunId: "missing" })).resolves.toBeNull();
     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "missing-org", agentRunId: "org-ceo-run" })).resolves.toBeNull();

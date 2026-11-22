@@ -46,7 +46,8 @@ export class StandaloneRunAgentContextBuilder {
       memberAddress: await this.resolveAgentAddress(metadata),
       agentRunId: metadata.runId,
     });
-    // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction.
+    // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction;
+    // a direct Org agent (an agent unit) has the Org's rules from its address and the Org's instruction.
     const collaboration = await this.options.tree.collaborationTreeOf(root).agentCollaboration();
     const instruction = collaboration.placement ? await this.options.orgInstruction(collaboration.placement.orgDefinitionId) : null;
     return new MemberExecutionContext({
@@ -54,10 +55,10 @@ export class StandaloneRunAgentContextBuilder {
       // Team-scoped where base's hosted copy was (CR-461-114): its tree starts at a Team or an Org run.
       teamScoped: collaboration.teamScoped,
       collaborationRole: collaboration.role,
-      inOrganization: false,
+      inOrganization: collaboration.inOrganization,
       authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
-        outgoingHandoffs: () => collaboration.placement?.handoffs ?? [],
+        outgoingHandoffs: () => collaboration.placement?.handoffs() ?? [],
         deliverLogicalMessage: async (message) => {
           const active = this.options.getActiveRoot(metadata.runId);
           return active

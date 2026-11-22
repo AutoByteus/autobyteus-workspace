@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, expect, it, vi } from "vitest";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
 import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
 import { ContextFileReadService } from "../../../src/context-files/services/context-file-read-service.js";
 import { ContextFileLocalPathResolver } from "../../../src/context-files/services/context-file-local-path-resolver.js";
@@ -42,11 +42,9 @@ const fixture = async (family: "team" | "org" | "standalone") => {
     directory = path.join(team, "worker");
     owner = {kind: "team_member_final", teamRunId: "team", agentRunId: "worker"};
   } else if (family === "org") {
-    const org = path.join(memoryDir, "agent_orgs", "org");
-    await put(path.join(org, "agent_org_run_execution_tree.json"), testAgentOrgExecutionTree({orgRunId: "org", members: [testOrgAgentNode("/worker", "worker")]}));
-    await put(path.join(org, "agent_org_task_delegation_records.json"), {schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org", records: []});
-    await fs.writeFile(path.join(org, "agent_org_communication_messages_active.jsonl"), "");
-    directory = path.join(org, "worker");
+    // An Org container (org-teams-follow-definition): its direct agent's files are in its own agent run.
+    await writeStoredOrgContainer(memoryDir, { orgRunId: "org", units: [{ kind: "agent", address: "/worker", runId: "worker" }] });
+    directory = path.join(memoryDir, "agents", "worker");
     owner = {kind: "org_member_final", orgRunId: "org", agentRunId: "worker"};
   } else {
     directory = path.join(memoryDir, "agents", "worker");

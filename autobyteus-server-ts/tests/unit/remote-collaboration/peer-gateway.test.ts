@@ -33,6 +33,7 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
       complete: piece.offset + piece.bytes.byteLength === piece.size })),
   };
   const delegatedRunStates = { apply: vi.fn(async (request: { open: boolean }) => ({ accepted: true as const, open: request.open })) };
+  const peerRunMembers = { apply: vi.fn(async () => ({ accepted: true as const })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
     capability: { isEnabled: () => input.enabled ?? true },
@@ -44,8 +45,9 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
     runViews: {} as never,
     receivedFiles,
     delegatedRunStates,
+    peerRunMembers,
   });
-  return { gate, delegatedRuns, messages, availableAgents, runningAgents, receivedFiles, delegatedRunStates };
+  return { gate, delegatedRuns, messages, availableAgents, runningAgents, receivedFiles, delegatedRunStates, peerRunMembers };
 };
 
 describe("PeerGateway", () => {
@@ -62,6 +64,19 @@ describe("PeerGateway", () => {
     const unregistered = gateway({ registered: false });
     await expect(unregistered.gate.deliveredRunState(body, PEER_CALLER)).resolves.toMatchObject({ answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
     expect(unregistered.delegatedRunStates.apply).not.toHaveBeenCalled();
+  });
+
+  it("FU-003 (org-teams-follow-definition DS-007): a Team run's members go to their handler with the calling peer; a malformed one is refused before it", async () => {
+    const f = gateway();
+    const body = { fromNodeId: PEER.nodeId, toNodeId: SELF, run: { kind: "agent_team", runId: "studio_team_b" }, coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "lead_b" }, { address: "/writer", agentRunId: "writer_b" }] };
+    await expect(f.gate.peerRunMembers(body, PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
+    expect(f.peerRunMembers.apply).toHaveBeenCalledWith(expect.objectContaining({ run: { kind: "agent_team", runId: "studio_team_b" }, coordinatorAddress: "/lead",
+      members: body.members }), PEER);
+    for (const bad of [{ ...body, members: "x" }, { ...body, coordinatorAddress: "" }, { ...body, members: [{ address: "/lead" }] }, { ...body, run: undefined }]) {
+      await expect(f.gate.peerRunMembers(bad, PEER_CALLER)).resolves.toMatchObject({ answer: { accepted: false, nodeId: SELF } });
+    }
+    expect(f.peerRunMembers.apply).toHaveBeenCalledOnce();
   });
 
   it("dispatches an admitted request to the one handler of its kind, with the calling peer; every answer names this node", async () => {

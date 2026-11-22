@@ -11,14 +11,13 @@ vi.mock('../../../../src/config/app-config-provider.js', () => ({ appConfigProvi
   getBaseUrl: () => "http://app.test", get: () => undefined, getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
 } } }));
 import { registerContextFileRoutes } from '../../../../src/api/rest/context-files.js';
-import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
+import { writeStoredOrgContainer } from '../../../helpers/stored-org-container.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { ContextFileOwnerResolver } from '../../../../src/context-files/services/context-file-owner-resolver.js';
 import { ContextFileLayout } from '../../../../src/context-files/store/context-file-layout.js';
 import { ContextFileLocalPathResolver } from '../../../../src/context-files/services/context-file-local-path-resolver.js';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { validateAgentOrgRunExecutionTreePayload } from '../../../../src/run-history/store/agent-org-run-execution-tree-schema.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { AgentRunProviderInputNormalizer } from '../../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
@@ -43,14 +42,11 @@ const finalize = (agentRunId: string, attachments: unknown[], finalOwner = final
 beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-file-rest-'));
   memoryDir = path.join(config.root, 'memory');
-  const direct = testOrgAgentNode('/shared', 'configured-direct');
-  const lead = testOrgAgentNode('/delivery/lead', 'configured-lead');
-  const team = testOrgTeamNode({ address: '/delivery', teamRunId: 'configured-team', coordinatorAddress: lead.address, members: [lead] });
-  // The org's own parts only: a run the org delegated to is a run of its own (autobyteus-461).
-  const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [direct, team] })) as any;
+  // An Org container (org-teams-follow-definition, design R-7): the owner form stays `{ orgRunId, agentRunId }`, resolved
+  // through the container to the unit run's folder. A run the org delegated to is a run of its own (autobyteus-461).
+  await writeStoredOrgContainer(memoryDir, { orgRunId: 'org', units: [{ kind: 'agent', address: '/shared', runId: 'configured-direct' },
+    { kind: 'agent_team', address: '/delivery', runId: 'configured-team', coordinatorAddress: '/lead', members: [{ address: '/lead', agentRunId: 'configured-lead' }] }] });
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
-  await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, 'org'));
-  writeAttachmentSidecars(dir, 'org');
   treeFile = path.join(dir, 'agent_org_run_execution_tree.json'); treeBytes = await fs.readFile(treeFile);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   local = new ContextFileLocalPathResolver({ layout, baseUrl: 'http://app.test', ownerResolver: new ContextFileOwnerResolver({

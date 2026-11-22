@@ -1,0 +1,40 @@
+{
+  "told": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "back": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Ask the reviewer for reviews.",
+        "recipient_address": "/team/reviewer"
+      }
+    ],
+    "isError": false
+  },
+  "conversation": [
+    "message",
+    "user",
+    "c60e124f-3286-47d0-9340-6c44b94a5560",
+    "bd4675c2-09ca-4036-a6a5-e7f946051aae",
+    "CALL_TOOLS:[{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/concierge\",\"content\":\"LATE-REVIEW-e7c841\"},\"untilFile\":\"/tmp/oc-e2e-0BGfZm/gates/oc04-e7c841\"}]",
+    "system_task_notification",
+    "system.team_change_notifier",
+    "Your team changed: its definition was updated.\nJoined: editor at /team/editor.\nYour handoff rules are unchanged.",
+    "598980b1-bae7-41a3-885b-706472ea81a6",
+    "message",
+    "assistant",
+    "dd14b794-f0b1-4aad-83b3-b67eb64181a8",
+    "CALLED_ALL:[{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Delivered message to /concierge.\\\",\\\"target_agent_run_id\\\":\\\"oc_concierge_e7c841_da952e92924d45d9b5cdeca1a364dbfe\\\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /concierge.\",\"target_agent_run_id\":\"oc_concierge_e7c841_da952e92924d45d9b5cdeca1a364dbfe\"}}]",
+    "message",
+    "user",
+    "0291a54a-782b-4179-ba5c-8d28f815e719",
+    "cf4e0e60-1fa1-4819-9de9-739fe89011fd",
+    "Reply OK.",
+    "message",
+    "assistant",
+    "b4f350cf-19bd-47fd-bc1a-cf28df647ab6",
+    "OK"
+  ]
+}

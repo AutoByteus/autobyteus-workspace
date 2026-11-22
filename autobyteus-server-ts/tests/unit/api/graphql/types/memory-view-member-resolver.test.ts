@@ -4,9 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../../src/run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { writeStoredOrgContainer } from "../../../../helpers/stored-org-container.js";
 import { TeamCommunicationStore } from "../../../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../../fixtures/current-team-run-fixtures.js";
@@ -38,16 +37,10 @@ describe("MemoryViewResolver member run views", () => {
     source.rootDir = memoryDir;
     layout = new AgentMemoryLayout(memoryDir);
 
-    const lead = testOrgAgentNode("/delivery/lead", "org-lead-run");
-    await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org-root"), testAgentOrgExecutionTree({
-      orgRunId: "org-root",
-      members: [testOrgTeamNode({ address: "/delivery", teamRunId: "org-delivery-team", coordinatorAddress: lead.address, members: [lead] })],
-    }));
-    // A current root package also carries its communication authority.
-    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath("org-root"), {
-      schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [],
-    });
-    await writeSemantic(path.join(memoryDir, "agent_orgs", "org-root", "org-delivery-team", "org-lead-run"), "org fact");
+    // An Org container (org-teams-follow-definition): its Team unit's member lives in its Team run.
+    await writeStoredOrgContainer(memoryDir, { orgRunId: "org-root", units: [
+      { kind: "agent_team", address: "/delivery", runId: "org-delivery-team", coordinatorAddress: "/lead", members: [{ address: "/lead", agentRunId: "org-lead-run" }] }] });
+    await writeSemantic(path.join(memoryDir, "agent_teams", "org-delivery-team", "org-lead-run"), "org fact");
 
     const teamDir = layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
     await new TeamCommunicationStore().write(teamDir, { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] });

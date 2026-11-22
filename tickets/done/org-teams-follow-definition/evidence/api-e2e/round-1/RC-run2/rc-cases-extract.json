@@ -1,0 +1,789 @@
+{
+  "note": "extracted from remote-two-server-receipt.json (full receipt and server logs not kept: peer secrets, size)",
+  "cases": {
+    "RC-56": {
+      "before": {
+        "/lead": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+        "/checker": "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+      },
+      "linkAfterAdd": {
+        "address": "/studio_team",
+        "teamRunId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+        "coordinatorAgentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+        "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+        "members": [
+          {
+            "address": "/lead",
+            "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+          },
+          {
+            "address": "/checker",
+            "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+          },
+          {
+            "address": "/auditor",
+            "agentRunId": "checker_107307899dda4b3dbf15fa916832d7ed"
+          }
+        ],
+        "delegatorAgentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+        "startedAt": "2026-11-22T14:10:20.585Z"
+      },
+      "rowsAfterAdd": {
+        "kind": "agent_team",
+        "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+        "rows": [
+          {
+            "key": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "parentKey": null,
+            "kind": "team",
+            "name": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "address": null,
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec"
+            ],
+            "depth": 0
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            ],
+            "depth": 1
+          },
+          {
+            "key": "peer_agent:publisher_7f681de38de2441bbd55c384cf083c4a",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_agent",
+            "name": "publisher",
+            "address": "/publisher",
+            "openTarget": {
+              "runKind": "agent",
+              "runId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "agentRunId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_7f681de38de2441bbd55c384cf083c4a"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_team",
+            "name": "studio team",
+            "address": "/studio_team",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "studio_team_38b672e2ceef43c4a9e8049f89c97fd6"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 3
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_4289882d08fc4f06a44f9c0c51b5ff67",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "checker",
+            "address": "/checker",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 3
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_107307899dda4b3dbf15fa916832d7ed",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "auditor",
+            "address": "/auditor",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "checker_107307899dda4b3dbf15fa916832d7ed",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "checker_107307899dda4b3dbf15fa916832d7ed"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 3
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_f7be6dbd97ad47f4a76a09063d6ddd1a",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "mate",
+            "address": "/mate",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            },
+            "statusIds": [
+              "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            ],
+            "depth": 1
+          }
+        ]
+      },
+      "toAuditor": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to checker_107307899dda4b3dbf15fa916832d7ed on node \"beta-node\".",
+        "target_agent_run_id": "checker_107307899dda4b3dbf15fa916832d7ed",
+        "isError": false,
+        "elapsedMs": 427
+      },
+      "linkAfterRemove": {
+        "address": "/studio_team",
+        "teamRunId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+        "coordinatorAgentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+        "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+        "members": [
+          {
+            "address": "/lead",
+            "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+          },
+          {
+            "address": "/checker",
+            "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+          }
+        ],
+        "delegatorAgentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+        "startedAt": "2026-11-22T14:10:20.585Z"
+      },
+      "rowsAfterRemove": {
+        "kind": "agent_team",
+        "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+        "rows": [
+          {
+            "key": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "parentKey": null,
+            "kind": "team",
+            "name": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "address": null,
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec"
+            ],
+            "depth": 0
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            ],
+            "depth": 1
+          },
+          {
+            "key": "peer_agent:publisher_7f681de38de2441bbd55c384cf083c4a",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_agent",
+            "name": "publisher",
+            "address": "/publisher",
+            "openTarget": {
+              "runKind": "agent",
+              "runId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "agentRunId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_7f681de38de2441bbd55c384cf083c4a"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_team",
+            "name": "studio team",
+            "address": "/studio_team",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "studio_team_38b672e2ceef43c4a9e8049f89c97fd6"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 3
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_4289882d08fc4f06a44f9c0c51b5ff67",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "checker",
+            "address": "/checker",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 3
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_f7be6dbd97ad47f4a76a09063d6ddd1a",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "mate",
+            "address": "/mate",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            },
+            "statusIds": [
+              "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            ],
+            "depth": 1
+          }
+        ]
+      },
+      "linkAtRestart": {
+        "/lead": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+        "/checker": "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+      },
+      "linkAfterContact": {
+        "address": "/studio_team",
+        "teamRunId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+        "coordinatorAgentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+        "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+        "members": [
+          {
+            "address": "/lead",
+            "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+          },
+          {
+            "address": "/checker",
+            "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+          },
+          {
+            "address": "/scout",
+            "agentRunId": "checker_fbbb0e2b49fe471b8a2d61128629827d"
+          }
+        ],
+        "delegatorAgentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+        "startedAt": "2026-11-22T14:10:20.585Z"
+      },
+      "rowsAtContact": {
+        "kind": "agent_team",
+        "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+        "rows": [
+          {
+            "key": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "parentKey": null,
+            "kind": "team",
+            "name": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "address": null,
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec"
+            ],
+            "depth": 0
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            },
+            "statusIds": [
+              "delegator_44fa2db30a8f4e5684198b9502cb1c4b"
+            ],
+            "depth": 1
+          },
+          {
+            "key": "peer_agent:publisher_7f681de38de2441bbd55c384cf083c4a",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_agent",
+            "name": "publisher",
+            "address": "/publisher",
+            "openTarget": {
+              "runKind": "agent",
+              "runId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "agentRunId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_7f681de38de2441bbd55c384cf083c4a"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": null,
+              "reachable": null
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+            "kind": "peer_team",
+            "name": "studio team",
+            "address": "/studio_team",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "studio_team_38b672e2ceef43c4a9e8049f89c97fd6"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": "Studio work. Marker STUDIO-PACKET.",
+              "reachable": true
+            },
+            "depth": 2
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "lead",
+            "address": "/lead",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": "Studio work. Marker STUDIO-PACKET.",
+              "reachable": true
+            },
+            "launch": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": null,
+              "workspaceRootPath": null,
+              "source": {
+                "origin": "agent_default",
+                "fallbacks": []
+              },
+              "ownSource": true
+            },
+            "depth": 3
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_4289882d08fc4f06a44f9c0c51b5ff67",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "checker",
+            "address": "/checker",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": "Studio work. Marker STUDIO-PACKET.",
+              "reachable": true
+            },
+            "launch": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": null,
+              "workspaceRootPath": null,
+              "source": {
+                "origin": "team_default",
+                "fallbacks": []
+              },
+              "ownSource": true
+            },
+            "depth": 3
+          },
+          {
+            "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_fbbb0e2b49fe471b8a2d61128629827d",
+            "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "kind": "peer_member",
+            "name": "scout",
+            "address": "/scout",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+              "agentRunId": "checker_fbbb0e2b49fe471b8a2d61128629827d",
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+            },
+            "statusIds": [
+              "checker_fbbb0e2b49fe471b8a2d61128629827d"
+            ],
+            "peer": {
+              "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+              "nodeName": "beta-node",
+              "title": "Studio work. Marker STUDIO-PACKET.",
+              "reachable": true
+            },
+            "launch": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": null,
+              "workspaceRootPath": null,
+              "source": {
+                "origin": "team_default",
+                "fallbacks": []
+              },
+              "ownSource": true
+            },
+            "depth": 3
+          },
+          {
+            "key": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_f7be6dbd97ad47f4a76a09063d6ddd1a",
+            "parentKey": "team:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+            "kind": "team_member",
+            "name": "mate",
+            "address": "/mate",
+            "openTarget": {
+              "runKind": "agent_team",
+              "runId": "remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec",
+              "agentRunId": "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            },
+            "statusIds": [
+              "delegator_f7be6dbd97ad47f4a76a09063d6ddd1a"
+            ],
+            "depth": 1
+          }
+        ]
+      },
+      "peerMembersLog": [
+        "PEER_RUN_MEMBERS_NOT_TOLD {"
+      ]
+    },
+    "RC-33": {
+      "agentRow": {
+        "key": "peer_agent:publisher_7f681de38de2441bbd55c384cf083c4a",
+        "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+        "kind": "peer_agent",
+        "name": "publisher",
+        "address": "/publisher",
+        "openTarget": {
+          "runKind": "agent",
+          "runId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+          "agentRunId": "publisher_7f681de38de2441bbd55c384cf083c4a",
+          "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+        },
+        "statusIds": [
+          "publisher_7f681de38de2441bbd55c384cf083c4a"
+        ],
+        "peer": {
+          "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+          "nodeName": "beta-node",
+          "title": "Team work. Marker TEAM-PACKET.",
+          "reachable": true
+        },
+        "launch": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": null,
+          "workspaceRootPath": null,
+          "source": {
+            "origin": "agent_default",
+            "fallbacks": []
+          },
+          "ownSource": true
+        },
+        "depth": 2
+      },
+      "teamRow": {
+        "key": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+        "parentKey": "team_member:remote_squad_ce9352df7a9b4214ad1ac4b011dd3fec:delegator_44fa2db30a8f4e5684198b9502cb1c4b",
+        "kind": "peer_team",
+        "name": "studio team",
+        "address": "/studio_team",
+        "openTarget": {
+          "runKind": "agent_team",
+          "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+          "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+          "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+        },
+        "statusIds": [
+          "studio_team_38b672e2ceef43c4a9e8049f89c97fd6"
+        ],
+        "peer": {
+          "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+          "nodeName": "beta-node",
+          "title": "Studio work. Marker STUDIO-PACKET.",
+          "reachable": true
+        },
+        "depth": 2
+      },
+      "memberRows": [
+        {
+          "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+          "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+          "kind": "peer_member",
+          "name": "lead",
+          "address": "/lead",
+          "openTarget": {
+            "runKind": "agent_team",
+            "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "agentRunId": "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13",
+            "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+          },
+          "statusIds": [
+            "publisher_ec6f43ccd5c3498c80a7ffb8ebcc6b13"
+          ],
+          "peer": {
+            "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+            "nodeName": "beta-node",
+            "title": "Studio work. Marker STUDIO-PACKET.",
+            "reachable": true
+          },
+          "launch": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": null,
+            "workspaceRootPath": null,
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "depth": 3
+        },
+        {
+          "key": "peer_member:studio_team_38b672e2ceef43c4a9e8049f89c97fd6:checker_4289882d08fc4f06a44f9c0c51b5ff67",
+          "parentKey": "peer_team:studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+          "kind": "peer_member",
+          "name": "checker",
+          "address": "/checker",
+          "openTarget": {
+            "runKind": "agent_team",
+            "runId": "studio_team_38b672e2ceef43c4a9e8049f89c97fd6",
+            "agentRunId": "checker_4289882d08fc4f06a44f9c0c51b5ff67",
+            "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_"
+          },
+          "statusIds": [
+            "checker_4289882d08fc4f06a44f9c0c51b5ff67"
+          ],
+          "peer": {
+            "nodeId": "srv_S7OveDt0B4BLj-tMD07qPsW1ZDS-dKX_",
+            "nodeName": "beta-node",
+            "title": "Studio work. Marker STUDIO-PACKET.",
+            "reachable": true
+          },
+          "launch": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": null,
+            "workspaceRootPath": null,
+            "source": {
+              "origin": "team_default",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "depth": 3
+        }
+      ],
+      "liveSeen": true,
+      "atChecker": "From the owner of node \"alpha-node\":\n\nOwner of alpha here. Marker OWNER-TO-CHECKER."
+    },
+    "RC-20": {
+      "total": 344,
+      "counts": {
+        "status": 6,
+        "/rest/remote/delegated-runs": 72,
+        "work_packet": 41,
+        "receiverAddress": 34,
+        "toAlpha": 12,
+        "toBeta": 27,
+        "/rest/remote/run-messages": 10,
+        "runStatesConfirmed": 18,
+        "/rest/remote/delegated-run-states": 34,
+        "/rest/remote/run-summaries": 39,
+        "observation": 33,
+        "runningAgentsEntries": 6,
+        "/rest/remote/running-agents": 3,
+        "/rest/remote/peer-run-members": 6,
+        "/rest/remote/agent-stream-snapshot": 13,
+        "/rest/remote/agent-projection": 9,
+        "/rest/remote/owner-commands": 24,
+        "/rest/remote/available-agents": 12,
+        "/rest/remote/availability": 3
+      },
+      "headerNames": [
+        "accept",
+        "accept-encoding",
+        "accept-language",
+        "cache-control",
+        "connection",
+        "content-length",
+        "content-type",
+        "host",
+        "pragma",
+        "sec-fetch-mode",
+        "sec-websocket-extensions",
+        "sec-websocket-key",
+        "sec-websocket-version",
+        "upgrade",
+        "user-agent",
+        "x-autobyteus-peer-body-sha256",
+        "x-autobyteus-peer-from",
+        "x-autobyteus-peer-nonce",
+        "x-autobyteus-peer-signature",
+        "x-autobyteus-peer-timestamp",
+        "x-autobyteus-peer-to"
+      ]
+    }
+  }
+}

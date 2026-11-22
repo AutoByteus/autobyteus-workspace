@@ -1,5 +1,5 @@
 import type { RunAgentAccess, RunAgentObservation, RunAgentPresentationListener, RunAgentStatusEntry } from "../../agent-collaboration/execution/remote/run-agent-access.js";
-import type { AgentOrgRun } from "../domain/agent-org-run.js";
+import type { LiveAgentOrg } from "./agent-org-run-manager.js";
 
 /**
  * An Org run's own agents' statuses, from its live root (autobyteus-461 SR-086 G-A4): what `RunStatusService` follows for
@@ -7,7 +7,7 @@ import type { AgentOrgRun } from "../domain/agent-org-run.js";
  * runs, and their current statuses; its registration's end makes them offline.
  */
 export class AgentOrgAgentStatuses implements Pick<RunAgentAccess, "observeRunAgents" | "runAgentStatuses"> {
-  constructor(private readonly orgs: Readonly<{ getActive(orgRunId: string): AgentOrgRun | null }>) {}
+  constructor(private readonly orgs: Readonly<{ getActive(orgRunId: string): LiveAgentOrg | null }>) {}
 
   async observeRunAgents(orgRunId: string, onPresentation: RunAgentPresentationListener): Promise<RunAgentObservation | null> {
     const run = this.orgs.getActive(orgRunId);

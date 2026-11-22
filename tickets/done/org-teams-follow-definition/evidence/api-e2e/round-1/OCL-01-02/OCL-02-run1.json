@@ -1,0 +1,51 @@
+{
+  "rowsWhileLeaving": [],
+  "approved": [
+    "exec-c4f623c4-52e6-46c3-a3d9-3c18867d8633"
+  ],
+  "acks": [
+    {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "ocl_org_4064a3c2_1d6e4c0ea54b46d5bb85ca200abea8d1",
+      "command_id": "b575734b-40b7-4b9d-a826-3a4657a754b1",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "ocl_writer_4064a3c2_93cea674745d45c2a7e909cad80dd0c2",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "ocl_org_4064a3c2_1d6e4c0ea54b46d5bb85ca200abea8d1",
+      "command_id": "48d9794b-ecfd-432b-931f-80838035194a",
+      "command_type": "APPROVE_TOOL",
+      "target_agent_run_id": "ocl_writer_4064a3c2_93cea674745d45c2a7e909cad80dd0c2",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    }
+  ],
+  "ran": true,
+  "delivered": false,
+  "released": false,
+  "former": [
+    {
+      "address": "/writer",
+      "agentDefinitionId": "ocl-writer-4064a3c2",
+      "role": null,
+      "description": null,
+      "agentRunId": "ocl_writer_4064a3c2_93cea674745d45c2a7e909cad80dd0c2",
+      "platformAgentRunId": "01a203ec-f4e9-7d02-b213-99b22f59b5f1",
+      "launchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-6.1-terra",
+        "llmConfig": {
+          "reasoning_effort": "low"
+        },
+        "autoExecuteTools": false,
+        "workspaceRootPath": "/root/.autobyteus-e2e/org-container-live-67kBGm/workspace"
+      },
+      "leaving": true
+    }
+  ]
+}

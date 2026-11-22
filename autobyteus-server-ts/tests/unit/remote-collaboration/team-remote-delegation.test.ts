@@ -154,7 +154,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
       runAgents: () => manager.runAgents, liveRoot: () => null,
     }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), { rootOf: () => null, teamCoordinatorOf: () => null },
     { openedBy: async () => undefined }, peerFiles.receivedFiles),
-    runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
+    runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, peerRunMembers: {} as never,
   }));
   hostActive = true;
   const identity = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR });
@@ -301,6 +301,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     { rootOf: () => null, teamCoordinatorOf: () => null }, closed, peerFiles.receivedFiles),
     runningAgents: {} as never, runViews: {} as never,
     // autobyteus-591 DN-2: A's state of the Team it started here: recorded, then the Team's closure Stop.
+    peerRunMembers: {} as never,
     delegatedRunStates: new DelegatedRunStateHandler({ closed, teamRuns, agentRuns: { stopForTaskClosure: async () => "not_stopped" as const },
       roots: { storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found" } }),
   }));

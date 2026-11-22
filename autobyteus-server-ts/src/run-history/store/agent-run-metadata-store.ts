@@ -1,3 +1,4 @@
+import { parseContainedIn } from "./contained-in-schema.js";
 import path from "node:path";
 import fs from "node:fs/promises";
 import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
@@ -35,10 +36,20 @@ const normalizeApplicationExecutionContext = (
   return ApplicationExecutionProducerProjector.projectContext(value);
 };
 
+/** An Org's agent unit (contract §4): its `address` is its Org address, the same as `containedIn.address`; no `delegatedFrom`. */
+const assertContainedUnit = (metadata: AgentRunMetadata): AgentRunMetadata => {
+  if (!metadata.containedIn) return metadata;
+  if (metadata.address !== metadata.containedIn.address) {
+    throw new Error(`containedIn.address '${metadata.containedIn.address}' must equal the run's address '${metadata.address ?? ""}'.`);
+  }
+  if (metadata.delegatedFrom) throw new Error("A run contained in an Org is not a delegated run (delegatedFrom).");
+  return metadata;
+};
+
 const normalizeMetadata = (
   metadata: AgentRunMetadata,
   fallbackMemoryDir: string,
-): AgentRunMetadata => ({
+): AgentRunMetadata => assertContainedUnit({
   runId: metadata.runId.trim(),
   agentDefinitionId: metadata.agentDefinitionId.trim(),
   workspaceRootPath: canonicalizeWorkspaceRootPath(metadata.workspaceRootPath),
@@ -60,6 +71,7 @@ const normalizeMetadata = (
   ...(metadata.address === undefined || metadata.address === null ? {} : { address: canonicalNonRootAddress(metadata.address, "address") }),
   ...(metadata.launchSource === undefined || metadata.launchSource === null ? {} : { launchSource: parseLaunchConfigurationSource(metadata.launchSource, "launchSource") }),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
+  ...(metadata.containedIn === undefined ? {} : { containedIn: parseContainedIn(metadata.containedIn) }),
   ...(metadata.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: parsePendingRuntimeSwitch(metadata.pendingRuntimeSwitch) }),
   ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),
 });

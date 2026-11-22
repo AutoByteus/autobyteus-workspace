@@ -30,7 +30,7 @@ Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
+- Agent org members (since org-teams-follow-definition): an organization's direct agent is an agent run of its own (`memory/agents/<agentRunId>/...`) and each mounted team a team run of its own (`memory/agent_teams/<teamRunId>/<memberRunId>/...`), each with `containedIn { orgRunId, address }`; `memory/agent_orgs/<orgRunId>/` holds only the container file. The startup migration `20261122_agent_org_units_own_runs_v1` renames each released member folder (`memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/`) there, bytes unchanged. An org member's memory is located through its unit run (`AgentOrgExecutionTreeLocationService`); the Memory page lists units under their organization, not as top-level runs.
 - Task agents and task agent teams are standalone runs and team runs like the above, with `delegatedFrom` in their own `run_metadata.json` or `team_run_execution_tree.json`.
 - An agent run's message log, user-started or delegated, is in its own folder: `memory/agents/<runId>/communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files (see [Run History](./run_history.md), Message logs); a team run's is `team_communication_messages_*.jsonl` in its folder.
 - Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
@@ -435,7 +435,8 @@ Team and org explorers share one catalog policy owner,
   V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
   metadata comes from the Team catalog owner.
 - `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
-  execution tree through `AgentOrgExecutionTreeLocationService`; display
+  execution tree through `AgentOrgExecutionTreeLocationService` (composed from
+  the container and its unit runs' files since org-teams-follow-definition); display
   metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,
   the org history owner's pure, admission-filtered read. The explorer uses a
   stored-only history manager and never manages live runs.

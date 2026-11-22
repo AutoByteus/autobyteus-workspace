@@ -190,8 +190,14 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     return root.kind === "agent_org" ? this.roots.org(root.runId) : this.delegationRoot(root);
   }
 
-  /** A root that cannot be found, checked or restored is `null` (the sender reads "not found"). */
+  /**
+   * A root that cannot be found, checked or restored is `null` (the sender reads "not found"); why it failed is logged here,
+   * on the node that owns it (CRR-004: a restore refusal was otherwise invisible).
+   */
   private async resolve<T>(find: () => Promise<T | null>): Promise<T | null> {
-    try { return await find(); } catch { return null; }
+    try { return await find(); } catch (error) {
+      console.warn("REMOTE_TARGET_ROOT_UNAVAILABLE", { error: error instanceof Error ? error.message : String(error) });
+      return null;
+    }
   }
 }

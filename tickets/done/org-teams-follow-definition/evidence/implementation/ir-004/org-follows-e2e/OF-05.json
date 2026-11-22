@@ -1,0 +1,89 @@
+{
+  "container": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-11-22T16:56:20.685Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/scribe",
+        "rules": [
+          "Ask the scribe to take notes."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "of-org-ba7d2b",
+      "orgDefinitionName": "of-org-ba7d2b",
+      "orgRunId": "of_org_ba7d2b_52c155bc5d424aebbcf1edd3525b8613",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/of-e2e-NnR789/workspace"
+      },
+      "units": [
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "of_concierge_ba7d2b_5bba24b212d641179b3ce62e0208318f",
+          "definitionId": "of-concierge-ba7d2b"
+        },
+        {
+          "address": "/scribe",
+          "kind": "agent",
+          "runId": "of_scribe_ba7d2b_afdcc717c5a74dad83703fc38402e66f",
+          "definitionId": "of-scribe-ba7d2b"
+        }
+      ],
+      "formerUnits": [
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "of_team_ba7d2b_13379dfc7e44453f93704195721dcc2a",
+          "definitionId": "of-team-ba7d2b",
+          "leaving": true
+        }
+      ]
+    }
+  },
+  "scribe": {
+    "runId": "of_scribe_ba7d2b_afdcc717c5a74dad83703fc38402e66f",
+    "agentDefinitionId": "of-scribe-ba7d2b",
+    "workspaceRootPath": "/tmp/of-e2e-NnR789/workspace",
+    "memoryDir": "/tmp/of-e2e-NnR789/memory/agents/of_scribe_ba7d2b_afdcc717c5a74dad83703fc38402e66f",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": null,
+    "preparedAt": "2026-11-22T16:56:22.800Z",
+    "preparedExpiresAt": "2026-11-23T16:56:22.800Z",
+    "startedAt": null,
+    "applicationExecutionContext": null,
+    "address": "/scribe",
+    "containedIn": {
+      "orgRunId": "of_org_ba7d2b_52c155bc5d424aebbcf1edd3525b8613",
+      "address": "/scribe"
+    }
+  },
+  "told": "Your team changed: its definition was updated.\nJoined: scribe at /scribe.\nLeft: team (/team); messages to it are no longer delivered.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "refused": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "lead (/team/lead) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Ask the scribe to take notes.",
+        "recipient_address": "/scribe"
+      }
+    ],
+    "isError": false
+  }
+}

@@ -1,5 +1,5 @@
 import { liveRunHistoryCatalogs } from "../../../src/app-data-migrations/app-data-migration-registry.js";
-import { convertMessageLogsAsOnStartup } from '../../helpers/append-only-message-log-startup.js';
+import { convertMessageLogsAsOnStartup, runOrgStartupChain } from '../../helpers/append-only-message-log-startup.js';
 import { InMemoryMigrationLedger, runStart } from '../../helpers/migration-start-harness.js';
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, AppendOnlyMessageLogsV1AppDataMigration } from '../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js';
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from '../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js';
@@ -105,16 +105,21 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(await fs.readFile(path.join(e.target, 'mounted', 'lead', 'context_files', 'ctx_x__image.png'))).toEqual(payload);
     expect(new RunMemoryFileStore(path.join(e.target, 'direct')).readCompleteRawTraceArchiveSegmentDictsByFileName('raw_traces_000001.jsonl'))
       .toEqual([{ ...JSON.parse(archived), media: { images: [current('task', 'ctx_task__a.txt')] } }]);
-    // A real start converts the message logs (registered last) before the runtime resolves owners.
-    await convertMessageLogsAsOnStartup(e.memory);
-    const resolver = new ContextFileOwnerResolver({ memoryDir: e.memory, locations: new AgentOrgExecutionTreeLocationService({ memoryDir: e.memory }) });
-    const owner = await resolver.resolveFinalOwner({ kind: 'org_member_final', orgRunId: 'org', agentRunId: 'lead' });
-    expect('memoryDir' in owner && owner.memoryDir).toBe(path.join(e.target, 'mounted', 'lead'));
     write.mockClear(); expect((await e.migrate(writer)).status).toBe('SUCCEEDED');
     expect(write.mock.calls.filter(([input]) => input.file === 'context_file_locators')).toHaveLength(0);
+    // A real start runs the later migrations before the runtime resolves owners; the Org ends as a container (20261122):
+    // its mounted Team is a Team run of its own, where its member's memory now is (org-teams-follow-definition contract §1).
+    await runOrgStartupChain(e.root, e.memory);
+    const resolver = new ContextFileOwnerResolver({ memoryDir: e.memory, locations: new AgentOrgExecutionTreeLocationService({ memoryDir: e.memory }) });
+    const owner = await resolver.resolveFinalOwner({ kind: 'org_member_final', orgRunId: 'org', agentRunId: 'lead' });
+    expect('memoryDir' in owner && owner.memoryDir).toBe(path.join(e.memory, 'agent_teams', 'mounted', 'lead'));
+    expect(await fs.readFile(path.join(e.memory, 'agent_teams', 'mounted', 'lead', 'context_files', 'ctx_x__image.png'))).toEqual(payload);
     await put(standalone, trace('/not-an-attachment')); await put(flatTrace, trace('/not-an-attachment'));
-    await convertMessageLogsAsOnStartup(e.memory); const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
-    expect(readiness.listDiagnostics()).toMatchObject([{rootSubjectKind: "agent", rootRunId: "viewer", code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED"}]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']); expect(readiness.listAdmitted('agent_team')).toEqual(['flat']);
+    const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
+    // The fixture's task agent has no workspace: 20261111 keeps its file as it is (PRESERVED_UNSUPPORTED), not admitted.
+    expect(readiness.listDiagnostics()).toMatchObject([{ rootSubjectKind: "agent", rootRunId: "task" },
+      { rootSubjectKind: "agent", rootRunId: "viewer", code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED" }]);
+    expect(readiness.listAdmitted('agent_org')).toEqual(['org']); expect(readiness.listAdmitted('agent_team')).toEqual(['flat', 'mounted']);
   });
 
 
@@ -144,11 +149,12 @@ describe('initial family locator transition: actual files, no user data', () => 
     write.mockClear(); expect((await e.migrate(writer)).status).toBe('SUCCEEDED');
     expect(write.mock.calls.filter(([input]) => input.file === 'context_file_locators')).toEqual([]);
     expect(await fs.readFile(targetFile, 'utf8')).toBe(bytes);
-    await convertMessageLogsAsOnStartup(e.memory); const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
+    await runOrgStartupChain(e.root, e.memory); const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
-    // Structural admission remains independent of attachment availability and ledger status.
-    await fs.unlink(path.join(e.target, 'task', 'context_files', filename));
-    await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
+    // Structural admission remains independent of attachment availability and ledger status (the task agent is its own run).
+    await fs.unlink(path.join(e.memory, 'agents', 'task', 'context_files', filename));
+    // (The fixture's task agent has no workspace: 20261111 keeps its file as it is, PRESERVED_UNSUPPORTED; the Org is admitted.)
+    await readiness.rebuild(); expect(readiness.listDiagnostics().map((diagnostic) => diagnostic.rootRunId)).toEqual(['task']); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 
   it.each(['image', 'retired'])('rejects invalid present file-only %s facts before writing/moving the initial package', async type => {
@@ -219,10 +225,13 @@ describe('initial family locator transition: actual files, no user data', () => 
     const rows = (await fs.readFile(file, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
     expect(rows[0].media.images).toEqual([current('lead')]); expect(rows[0].content).toBe(uri); expect(rows[1].media.images).toEqual(['https://foreign.test' + uri]);
     await expect(fs.stat(path.join(e.target, treeName))).rejects.toMatchObject({ code: 'ENOENT' });
-    await convertMessageLogsAsOnStartup(e.memory); const readiness = new RootRunPackageReadinessIndex(e.memory);
-    // Missing attachments are checked on use, not by auditing history during admission.
-    await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
-    await put(file, trace(current('lead'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
+    await runOrgStartupChain(e.root, e.memory); const readiness = new RootRunPackageReadinessIndex(e.memory);
+    // Missing attachments are checked on use, not by auditing history during admission (the direct agent is its own run now).
+    const unitTrace = path.join(e.memory, 'agents', 'direct', 'raw_traces_active.jsonl');
+    // (The fixture's task agent has no workspace: 20261111 keeps its file as it is, PRESERVED_UNSUPPORTED; the Org is admitted.)
+    const diagnosed = () => readiness.listDiagnostics().map((diagnostic) => diagnostic.rootRunId);
+    await put(unitTrace, trace(current('missing'))); await readiness.rebuild(); expect(diagnosed()).toEqual(['task']); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
+    await put(unitTrace, trace(current('lead'))); await readiness.rebuild(); expect(diagnosed()).toEqual(['task']); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 });
 
@@ -253,6 +262,8 @@ describe('flat-families pending or interrupted, then the append-only log convers
     expect(second[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe('SUCCEEDED');
     await expect(fs.stat(e.source)).rejects.toMatchObject({ code: 'ENOENT' });
     expect(await orgLogFiles(e.target)).toEqual(['agent_org_communication_messages_active.jsonl']);
+    // Today's readiness admits the Org once the rest of the start made it a container (20261122).
+    await runOrgStartupChain(e.root, e.memory);
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
@@ -280,6 +291,7 @@ describe('flat-families pending or interrupted, then the append-only log convers
     expect(second[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe('SUCCEEDED');
     expect(await orgLogFiles(e.target)).toEqual(['agent_org_communication_messages_active.jsonl']);
     await expect(fs.stat(path.join(e.target, treeName))).rejects.toMatchObject({ code: 'ENOENT' });
+    await runOrgStartupChain(e.root, e.memory);
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });

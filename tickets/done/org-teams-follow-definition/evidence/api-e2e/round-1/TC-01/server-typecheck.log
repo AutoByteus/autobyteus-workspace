@@ -1,0 +1,9 @@
+# Case TC-01 | node autobyteus-server-ts/scripts/typecheck.mjs
+# Commit: 818e950d53 (implementation 1f0aad498b) + API/E2E round-1 test files, uncommitted at run time
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 24.5s
+[typecheck] server tests (tsconfig.tests.json): 974 errors, exit 2, 51.6s
+[typecheck] production errors: 0; test-file errors: 974 in 300 files (baseline 974 in 300 files)
+[typecheck] PASS

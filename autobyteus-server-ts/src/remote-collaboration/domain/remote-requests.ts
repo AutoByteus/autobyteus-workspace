@@ -46,6 +46,11 @@ export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
  * Task entry naming it closed there (this node records it, then stops the run), `open: true` once one opened again.
  */
 export const REMOTE_DELEGATED_RUN_STATES_PATH = "/rest/remote/delegated-run-states";
+/**
+ * FU-003 (org-teams-follow-definition DS-007): the called node's delegation started a Team run on the caller, which changed
+ * its members there (a committed change of the Team following its definition); the called node updates its record.
+ */
+export const REMOTE_PEER_RUN_MEMBERS_PATH = "/rest/remote/peer-run-members";
 /** autobyteus-461 SR-088: one agent's own stream snapshot. */
 export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snapshot";
 /**
@@ -173,6 +178,14 @@ export type OwnerCommandRequest = RemoteEnvelope & Readonly<{
   command: RemoteOwnerCommand;
 }>;
 export type OwnerCommandAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
+
+/** FU-003: `run` is a Team run on the caller that the called node's delegation started; its members and coordinator now. */
+export type PeerRunMembersRequest = RemoteEnvelope & Readonly<{
+  run: RemoteStartedRunRef;
+  coordinatorAddress: string;
+  members: readonly Readonly<{ address: string; agentRunId: string }>[];
+}>;
+export type PeerRunMembersAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
 
 /** autobyteus-591 DN-2: `run` is a run the caller's delegation started; answered once its state applied (closed: stopped). */
 export type DelegatedRunStateRequest = RemoteEnvelope & Readonly<{ run: RemoteStartedRunRef; open: boolean }>;

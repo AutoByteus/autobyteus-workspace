@@ -18,8 +18,8 @@ import { runtimeKindFromString, type RuntimeKind } from "../../runtime-managemen
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
-import type { AgentOrgRun } from "../domain/agent-org-run.js";
-import { AgentOrgRunManager } from "./agent-org-run-manager.js";
+import { AgentOrgRunManager, type LiveAgentOrg } from "./agent-org-run-manager.js";
+import { planAgentOrgContainer } from "../container/agent-org-container-plan.js";
 import { AgentOrgRunPlanner, type ResolvedAgentOrgLaunchPlan } from "./agent-org-run-planner.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
@@ -97,7 +97,7 @@ export class AgentOrgRunService {
     return Object.freeze({ ...result, canonical: result.canonical ? projectAgentOrgExecutionTree(result.canonical) : null });
   }
 
-  async create(command: CreateAgentOrgRunCommand): Promise<AgentOrgRun> {
+  async create(command: CreateAgentOrgRunCommand): Promise<LiveAgentOrg> {
     const definitionId = required(command.agentOrgDefinitionId, "agentOrgDefinitionId");
     const admission = await this.dependencies.admission.requireAvailable("agent_org", definitionId);
     const definition = admission.definition;
@@ -105,6 +105,7 @@ export class AgentOrgRunService {
     const rootConfiguration = await this.activateWorkspace(normalizeConfiguration(command.rootConfiguration, "rootConfiguration"));
     const teamOverrides = await this.normalizeOverrides(command.teamOverrides ?? [], "teamOverrides");
     const agentOverrides = await this.normalizeOverrides(command.agentOverrides ?? [], "agentOverrides");
+    // Unit run IDs are allocated by their run services when the units are created (DS-001).
     const planner = new AgentOrgRunPlanner({
       getAgentById: (id) => this.dependencies.agentDefinitions.getAgentDefinitionById(id),
       getTeamById: (id) => this.dependencies.teamDefinitions.getDefinitionById(id),
@@ -120,12 +121,12 @@ export class AgentOrgRunService {
       agentOverrides,
     });
     const launch = await this.validateCompleteConfiguration(resolved.launch);
-    const tree = await planner.build({
-      definition,
-      plan: { topology: resolved.topology, launch },
-      applicationBinding: command.applicationBinding ?? null,
+    // DS-001 (org-teams-follow-definition): the Org is a container; each mounted Team and each direct agent its own run.
+    const run = await this.dependencies.manager.createContainer({
+      orgRunId: AgentOrgRunPlanner.defaultOrgIdentity(definition.name), orgDefinitionId: definitionId, orgDefinitionName: definition.name,
+      defaultLaunchConfiguration: launch.root, applicationBinding: command.applicationBinding ?? null,
+      plan: planAgentOrgContainer({ topology: resolved.topology, launch }),
     });
-    const run = await this.dependencies.manager.create(tree);
     try {
       await this.dependencies.history.recordCreated(run.getExecutionTreeSnapshot());
       return run;
@@ -198,7 +199,7 @@ export class AgentOrgRunService {
    * A stopped Org restored for its first input (SR-046, SR-078): the active run, else base's admission answers with its own
    * reason; a restore that fails after admission is answered as a run that cannot be restored (the detail logged).
    */
-  async restoreForInput(agentOrgRunId: string): Promise<AgentOrgRun | RootRestoreRefusal> {
+  async restoreForInput(agentOrgRunId: string): Promise<LiveAgentOrg | RootRestoreRefusal> {
     const orgRunId = required(agentOrgRunId, "agentOrgRunId");
     const active = this.getActive(orgRunId);
     if (active) return active;
@@ -212,7 +213,7 @@ export class AgentOrgRunService {
     }
   }
 
-  async restore(agentOrgRunId: string): Promise<AgentOrgRun> {
+  async restore(agentOrgRunId: string): Promise<LiveAgentOrg> {
     const run = await this.dependencies.manager.restore(required(agentOrgRunId, "agentOrgRunId"));
     try {
       await this.dependencies.history.recordRestored(run.getExecutionTreeSnapshot());
@@ -232,18 +233,30 @@ export class AgentOrgRunService {
 
   async archiveStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    return this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived", () => this.dependencies.history.archiveStored(normalized));
+    return this.guarded(normalized, "archived", () => this.dependencies.history.archiveStored(normalized));
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
     const root = createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized });
-    const result = await this.dependencies.workGuard.guard(root, "deleted", () => this.dependencies.history.deleteStored(normalized));
+    const result = await this.guarded(normalized, "deleted", () => this.dependencies.history.deleteStored(normalized));
     if (!result.success) return result;
     this.dependencies.episodicCatalog.runDeleted(root);
+    // An Org container's unit runs were deleted with it (org-teams-follow-definition).
+    for (const unit of ("unitRuns" in result ? result.unitRuns : undefined) ?? []) this.dependencies.episodicCatalog.runDeleted(unit);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     await (this.dependencies.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
+  }
+
+  /**
+   * Archive and delete wait for the runs it delegated to (REQ-007): an Org container's delegations are its unit runs', so
+   * each unit run is guarded too (org-teams-follow-definition, contract §6).
+   */
+  private async guarded<R extends { success: boolean; message: string }>(orgRunId: string, action: "archived" | "deleted", perform: () => Promise<R>) {
+    const runs = [createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: orgRunId }), ...await this.dependencies.manager.unitRunsOf(orgRunId)];
+    const chain = runs.reduceRight<() => Promise<R | { success: boolean; message: string }>>((next, run) => () => this.dependencies.workGuard.guard(run, action, next), perform);
+    return chain();
   }
 
   /** N-303 / N-304: the stored-link check before a peer's message restores an Org run. */
@@ -251,7 +264,7 @@ export class AgentOrgRunService {
     return this.dependencies.manager.storedRemoteLinkCheck(required(agentOrgRunId, "agentOrgRunId"), query);
   }
 
-  getActive(agentOrgRunId: string): AgentOrgRun | null {
+  getActive(agentOrgRunId: string): LiveAgentOrg | null {
     return this.dependencies.manager.getActive(required(agentOrgRunId, "agentOrgRunId"));
   }
 
@@ -260,7 +273,7 @@ export class AgentOrgRunService {
     return projectAgentOrgExecutionSnapshot(await this.dependencies.manager.getInspection(orgRunId));
   }
 
-  recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {
+  recordRunActivity(run: Pick<LiveAgentOrg, "orgRunId">, input: { summary?: string | null } = {}): Promise<void> {
     return this.dependencies.history.recordRunSummary({ orgRunId: run.orgRunId, summary: input.summary });
   }
 

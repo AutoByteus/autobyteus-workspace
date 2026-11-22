@@ -1,0 +1,323 @@
+# Case OF-01-06 | vitest run tests/e2e/agent-org-runs/org-follows-definition.e2e.test.ts
+# Commit: d3c87be5c5 (implementation IR-005 cfc4bc67f2)
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist
+# Date: 2026-11-22 (UTC)
+
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+App data directory: /tmp/of-e2e-DPnhU1
+Config file path: /tmp/of-e2e-DPnhU1/.env
+Loading environment from: /tmp/of-e2e-DPnhU1/.env
+◇ injected env (2) from ../../../../../../../tmp/of-e2e-DPnhU1/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/of-e2e-DPnhU1
+DB DIRECTORY: /tmp/of-e2e-DPnhU1/db
+LOGS DIRECTORY: /tmp/of-e2e-DPnhU1/logs
+DOWNLOAD DIRECTORY: /tmp/of-e2e-DPnhU1/download
+MEMORY DIRECTORY: /tmp/of-e2e-DPnhU1/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/of-e2e-DPnhU1/db/production.db"
+
+SQLite database production.db created at file:/tmp/of-e2e-DPnhU1/db/production.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:89487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-22T18:25:09.971Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 34 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/of-e2e-DPnhU1/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/temp_workspace.
+Initialized TempWorkspace at /tmp/of-e2e-DPnhU1/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1795371910702,"pid":89487,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:36781"}
+{"level":30,"time":1795371910740,"pid":89487,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:45745"}
+[2026-11-22T18:25:10.740Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Hub Staging Sweep' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1795371910784,"pid":89487,"hostname":"8abfa09513cd","reqId":"req-1","method":"POST","url":"/graphql","statusCode":404,"elapsedMs":2.879416000000674,"msg":"http request completed"}
+Agent Definition created successfully with ID: of-concierge-940280
+Agent Definition created successfully with ID: of-scribe-940280
+Agent Definition created successfully with ID: of-lead-940280
+Agent Definition created successfully with ID: of-writer-940280
+Agent Definition created successfully with ID: of-reviewer-940280
+Agent Team Definition created successfully with ID: of-team-940280
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Created and registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+AGY compaction detection off for run of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+AGY compaction detection off for run of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f/raw_traces_manifest.json
+Agent Team Definition with ID of-team-940280 updated successfully.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+AGY compaction detection off for run of_lead_940280_b98e51ec3a034975ae33bc88d4715580: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Agent Team Definition with ID of-team-940280 updated successfully.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Agent Team Definition with ID of-team-940280 updated successfully.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+AGY compaction detection off for run of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_lead_940280_b98e51ec3a034975ae33bc88d4715580/raw_traces_manifest.json
+Agent websocket attached for run of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9
+Created agent session 99592128-f9fb-4b8f-9028-66834672e734 for run of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9
+Agent WebSocket connected: session=99592128-f9fb-4b8f-9028-66834672e734, run=of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+AGY compaction detection off for run of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agent_teams/of_team_940280_fbc3c773e59e4036986199c29f83f316/of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9/raw_traces_manifest.json
+Closed agent session 99592128-f9fb-4b8f-9028-66834672e734
+Agent WebSocket disconnected: 99592128-f9fb-4b8f-9028-66834672e734
+Creating new workspace for rootPath: /tmp/of-e2e-DPnhU1/workspace
+Created metadata-only FileSystemWorkspace at /tmp/of-e2e-DPnhU1/workspace.
+Reusing registered workspace ID: agent_ws_fdcc662dc83c0b8361ad63ca52ef02a3904d0ca345dae3045566353802ad498a
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json
+Memory file missing: /tmp/of-e2e-DPnhU1/memory/agents/of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f/raw_traces_manifest.json

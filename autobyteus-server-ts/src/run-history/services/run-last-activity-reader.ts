@@ -4,6 +4,8 @@ import { MemoryRunSummaryBuilder, mergeMemoryAvailability } from "../../agent-me
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import type { MemoryAvailabilityBuildResult } from "../../agent-memory/domain/models.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
+import { AgentOrgContainerStore } from "../store/agent-org-container-store.js";
+import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 
@@ -65,8 +67,14 @@ export class RunLastActivityReader {
       ...await this.delegated({ rootSubjectKind: "agent_team", rootRunId: run.teamRunId })], run.createdAt);
   }
 
-  /** An Org run: every agent of its execution tree. */
+  /** An Org run: every agent of its execution tree; an Org container's, every unit run's (org-teams-follow-definition). */
   async forOrgRun(run: Readonly<{ orgRunId: string; createdAt: string }>): Promise<string> {
+    const container = await new AgentOrgContainerStore().readIfContainer(new AgentMemoryLayout(this.dependencies.memoryDir).getOrgDirPath(run.orgRunId), run.orgRunId);
+    if (container) {
+      const units = await Promise.all(container.rootOrg.units.map((unit) => unit.kind === "agent"
+        ? this.forAgentRun({ runId: unit.runId, createdAt: run.createdAt }) : this.forTeamRun({ teamRunId: unit.runId, createdAt: run.createdAt })));
+      return units.reduce((latest, at) => at > latest ? at : latest, run.createdAt);
+    }
     const agents = await this.locate("agent_org", run.orgRunId, () => this.orgLocations.listAgents({ rootRunId: run.orgRunId }));
     return toLastActivity([...agents.map((located) => this.read(located.memoryDir, () => folderMemory(located))),
       ...await this.delegated({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId })], run.createdAt);

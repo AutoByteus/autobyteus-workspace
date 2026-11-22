@@ -5,7 +5,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { DelegatedRunAgentsReader } from "../../../../src/run-history/services/delegated-run-agents-reader.js";
@@ -107,20 +106,21 @@ describe("collaborationParticipantMessages", () => {
     await expect(readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: " ", agentRunId: "manager" })).rejects.toThrow("required");
   });
 
-  it("reads an Org participant's messages through the Org records owner", async () => {
-    const executionTree = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"),
-      testOrgTeamNode({ address: "/configured", teamRunId: "configured-team", coordinatorAddress: "/configured/lead",
-        members: [testOrgAgentNode("/configured/lead", "configured-lead")] })] });
-    const records = vi.spyOn(AgentOrgRunManager.prototype, "getCollaborationRecordsSnapshot").mockResolvedValue({
-      executionTree, messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [
-        message("o1", "manager", "configured-lead"), message("o2", "configured-lead", REMOTE_RUN_ID), message("o3", "solo", "manager"),
-      ] },
-    } as never);
-    vi.spyOn(AgentOrgRunManager, "getInstance").mockReturnValue(Object.create(AgentOrgRunManager.prototype));
-    const result = await withReader(noDelegations() as never,
-      () => readCollaborationParticipantMessages({ rootKind: "agent_org", rootRunId: "org-root", agentRunId: "configured-lead" }));
+  it("reads an Org container participant's messages from its unit runs, each message once (contract §5)", async () => {
+    // An agent unit (`manager`) and a Team unit (`configured-team`); a message between them is in both logs.
+    vi.spyOn(AgentOrgRunManager, "getInstance").mockReturnValue({ unitRunsOf: async () => [
+      { rootSubjectKind: "agent", rootRunId: "manager" }, { rootSubjectKind: "agent_team", rootRunId: "configured-team" }] } as never);
+    const teamTree = testExecutionTree({ rootTeamRunId: "configured-team", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "configured-lead" })] });
+    vi.spyOn(TeamCommunicationProjectionService.prototype, "getCollaborationRecordsSnapshot").mockResolvedValue({ executionTree: teamTree,
+      messages: { schemaVersion: 1, rootTeamRunId: "configured-team", messages: [message("o1", "manager", "configured-lead"), message("o2", "configured-lead", REMOTE_RUN_ID)] } } as never);
+    vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({} as never);
+    const result = await withHubRecords(async () => ({ agent: { agentRunId: "manager" },
+      messages: { schemaVersion: 1, subjectKind: "agent", agentRunId: "manager", messages: [message("o1", "manager", "configured-lead"), message("o3", "solo", "manager")] } }),
+    () => withReader(noDelegations() as never,
+      () => readCollaborationParticipantMessages({ rootKind: "agent_org", rootRunId: "org-root", agentRunId: "configured-lead" })));
+    // The Team unit member's list: its message with the agent unit once; its message with a remote run stays out.
     expect(result.messages.map((entry) => entry.messageId)).toEqual(["o1"]);
-    expect(records).toHaveBeenCalledWith("org-root");
   });
 
   it("reads a Team participant's messages through the Team records owner, empty content included", async () => {

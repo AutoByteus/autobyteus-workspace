@@ -15,11 +15,10 @@ import { buildAgentOrgOwnedDefinitionId, isAgentOrgOwnedTeamDefinitionId } from 
 import { buildTeamLocalAgentDefinitionId } from '../../../src/agent-team-definition/utils/team-local-definition-id.js';
 import { findTeamSourcePaths } from '../../../src/agent-team-definition/providers/team-definition-source-paths.js';
 import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
-import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
-import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
 import type { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import type { FlatTeamExecutionCallbacks } from '../../../src/agent-team-execution/local/flat-team-execution-callbacks.js';
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
+import { planAgentOrgContainer } from '../../../src/agent-org-execution/container/agent-org-container-plan.js';
 import { AgentOrgRunPlanner } from '../../../src/agent-org-execution/services/agent-org-run-planner.js';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { AgentOrgDefinitionResolver } from '../../../src/agent-org-definition/services/agent-org-definition-resolver.js';
@@ -152,61 +151,18 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     // Omitted Org-root capability is also used by unchanged independent mutation lookups.
     expect(await findTeamSourcePaths(f.ids('alpha').team, [f.appConfig.getAgentTeamsDir()], f.apps)).toBeNull();
   });
-  it('plans exact configured identities through real providers and normal cached Team service without activation', async () => {
+  it("plans the Org container's units through real providers and normal cached Team service without activation", async () => {
     const f = await fixture(), before = await treeHash(f.root);
-    let sequence = 0;
-    const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
-    // As AgentOrgRunService does: resolve the launch plan, then build the tree from it.
+    const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) },
+      { allocateAgent: async () => 'unused', allocateTeam: () => 'unused', allocateOrg: () => 'org-run' });
+    // As AgentOrgRunService does (org-teams-follow-definition DS-001): resolve the launch plan, then plan the container's units.
     const definition = (await f.orgs.getById('alpha'))!;
-    const plan = await planner.resolveConfiguration({ definition, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
-    const tree = await planner.build({ definition, plan });
-    expect(tree.rootOrg.members).toMatchObject([{ address: '/guide', agentDefinitionId: f.ids('alpha').direct, platformAgentRunId: null }, { address: '/group', teamDefinitionId: f.ids('alpha').team, members: [{ address: '/group/lead', agentDefinitionId: f.ids('alpha').agent, platformAgentRunId: null }] }]);
-    expect(tree.handoffs).toHaveLength(2);
+    const resolved = await planner.resolveConfiguration({ definition, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
+    const plan = planAgentOrgContainer({ topology: resolved.topology, launch: resolved.launch });
+    // The Org-owned Team is a Team unit whose members are in its own space; its Team-local agent is resolved from its Org unit.
+    expect(plan.units).toMatchObject([{ kind: 'agent', address: '/guide', agentDefinitionId: f.ids('alpha').direct },
+      { kind: 'agent_team', address: '/group', teamDefinitionId: f.ids('alpha').team, members: [{ address: '/lead', agentDefinitionId: f.ids('alpha').agent }] }]);
     expect(await treeHash(f.root)).toEqual(before);
-  });
-  it('supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service', async () => {
-    const f = await fixture();
-    let sequence = 0;
-    const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
-    const definition = (await f.orgs.getById('alpha'))!;
-    const plan = await planner.resolveConfiguration({ definition, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
-    const tree = await planner.build({ definition, plan });
-    const state = validateAgentOrgStatePackage({
-      executionTree: tree,
-      taskRecords: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', records: [] },
-      communicationMessages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-    });
-    let callbacks: FlatTeamExecutionCallbacks | undefined;
-    // Only the execution plane is substituted; all definition reads remain real.
-    const beginMaterialization = vi.fn((input: Parameters<FlatTeamExecutionFactory['beginMaterialization']>[0]) => {
-      callbacks = input.callbacks;
-      return {
-        prepare: async () => ({ teamRun: { teamRunId: input.membership.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } }),
-        cancel() { }, release: async () => ({ accepted: true }),
-      };
-    });
-    const prepareNewAgentRun = vi.fn();
-    const read = vi.spyOn(f.service, 'getDefinitionById');
-    const builder = new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
-      flatTeamExecutionFactory: { beginMaterialization } as never,
-      agentRunManager: { prepareNewAgentRun } as never,
-      orgDefinitions: { getDefinitionById: id => f.orgs.getById(id) },
-      teamDefinitions: f.service,
-    });
-    await builder.build({ state, persistence: {} as never, activationMode: 'fresh', persistInitialPackage: false });
-    expect(beginMaterialization).toHaveBeenCalledOnce();
-    expect(prepareNewAgentRun).not.toHaveBeenCalled();
-    const member = state.index.listAgents().find(agent => agent.address === '/group/lead')!;
-    const identity = createCollaborationMemberExecutionIdentity({
-      root: createAgentOrgRootExecutionIdentity('org-run'), memberAddress: member.address, agentRunId: member.agentRunId,
-    });
-    // The mounted Team's TeamRun hosts the member (its handle passes the hosting Team).
-    const context = await callbacks!.buildMemberExecutionContext({
-      identity, hostTeam: { address: '/group', teamDefinitionId: f.ids('alpha').team, handoffs: [] },
-    } as unknown as Parameters<FlatTeamExecutionCallbacks['buildMemberExecutionContext']>[0]);
-    expect(context.authoredEnclosingScopeInstruction).toBe('alpha Team instructions');
-    expect(read).toHaveBeenCalledWith(f.ids('alpha').team);
-    expect(prepareNewAgentRun).not.toHaveBeenCalled();
   });
   it('requires current parent membership even when the owned Team folder remains on disk', async () => {
     const f = await fixture(), id = f.ids('alpha').team, file = path.join(f.base, 'agent-orgs/alpha/org-config.json');

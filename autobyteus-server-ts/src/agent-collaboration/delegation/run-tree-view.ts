@@ -58,8 +58,10 @@ export type RunOwnTree =
   | Readonly<{ kind: "agent"; agentRunId: string; address: string | null }>
   | Readonly<{ kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[] }>
   | Readonly<{ kind: "agent_org"; orgRunId: string; parts: readonly (
-    | Readonly<{ kind: "agent"; address: string; agentRunId: string }>
-    | Readonly<{ kind: "team"; address: string; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[] }>)[] }>;
+    | Readonly<{ kind: "agent"; address: string; agentRunId: string; leaving?: true }>
+    | Readonly<{ kind: "team"; address: string; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[]; leaving?: true }>)[];
+    /** An Org container (org-teams-follow-definition): each part is a unit run of its own, the delegating run of its agents' delegations. */
+    container?: true }>;
 
 /** A run's delegated rows as read at a view's base (`RunTreeView.readAtBase`); their records are read after. */
 export type RunTreeBase = Readonly<{ subtree: readonly SubtreeRow[] }>;
@@ -80,6 +82,10 @@ export type RunTreeSources = Readonly<{
   projection: ChildRowProjection;
   /** Whether a team run is live now (registered in the active root directory): only then is a member leaving (SR-010). */
   isLiveTeamRun(teamRunId: string): boolean;
+  /** An Org container's unit runs, read synchronously (its delegated rows are its units'); `null` for any other run. */
+  unitRunsOf?(orgRunId: string): readonly RootExecutionIdentity[] | null;
+  /** Reads a stored Org container once, so `unitRunsOf` answers for it (a live container is always known). */
+  loadContainer?(orgRunId: string): Promise<unknown>;
 }>;
 
 /**
@@ -122,13 +128,26 @@ const peerLaunchOf = (launches: readonly RemoteAgentLaunch[] | null, address: st
 export class RunTreeView {
   constructor(private readonly sources: RunTreeSources) {}
 
+  /**
+   * What `readAtBase` needs read first: an Org container's file (its units hold its delegated rows), read once; a stored
+   * Org's view and every read without a given base call it before the synchronous step.
+   */
+  async prepare(run: RootExecutionIdentity): Promise<void> {
+    if (run.rootSubjectKind === "agent_org") await this.sources.loadContainer?.(run.rootRunId);
+  }
+
   /** The run's delegated rows now, read synchronously: a view's snapshot reads them in the step that takes its base (SR-063). */
   readAtBase(run: RootExecutionIdentity): RunTreeBase {
-    return Object.freeze({ subtree: this.sources.tree.collaborationTreeOf(run).rows() });
+    // An Org container delegates nothing itself: its rows under its parts are its unit runs' delegations.
+    const units = run.rootSubjectKind === "agent_org" ? this.sources.unitRunsOf?.(run.rootRunId) ?? [] : [];
+    return Object.freeze({ subtree: Object.freeze([run, ...units].flatMap((holder) => this.sources.tree.collaborationTreeOf(holder).rows())) });
   }
 
   /** The run's rows: its own parts, then its delegated rows as read at `atBase` (now, when not given), their records read after. */
-  async rowsOf(run: RootExecutionIdentity, atBase: RunTreeBase = this.readAtBase(run)): Promise<readonly RunTreeRow[]> {
+  async rowsOf(run: RootExecutionIdentity, base?: RunTreeBase): Promise<readonly RunTreeRow[]> {
+    let atBase: RunTreeBase;
+    if (base) atBase = base;
+    else { await this.prepare(run); atBase = this.readAtBase(run); }
     const own = await this.sources.ownTreeOf(run);
     if (!own) return [];
     const drafts: Draft[] = [];
@@ -173,24 +192,29 @@ export class RunTreeView {
       return key;
     }
     const inOrg = (agentRunId: string): RunTreeOpenTarget => Object.freeze({ runKind: "agent_org", runId: own.orgRunId, agentRunId });
+    // A container's parts are unit runs: each holds its own agents' delegations (contract §6).
+    const holderOf = (part: (typeof own.parts)[number]): RootExecutionIdentity => !own.container ? run
+      : part.kind === "agent" ? { rootSubjectKind: "agent", rootRunId: part.agentRunId } : { rootSubjectKind: "agent_team", rootRunId: part.teamRunId };
     for (const part of own.parts) {
       if (part.kind === "agent") {
         const key = runTreeRowKey("org_agent", own.orgRunId, part.agentRunId);
         drafts.push(Object.freeze({ key, parentKey: null, kind: "org_agent", name: rowNameOf(part.address, part.agentRunId), address: part.address,
-          openTarget: inOrg(part.agentRunId), statusIds: Object.freeze([part.agentRunId]) }));
-        anchor(run, part.agentRunId, key);
+          openTarget: inOrg(part.agentRunId), statusIds: Object.freeze([part.agentRunId]), ...(part.leaving ? { leaving: true as const } : {}) }));
+        anchor(holderOf(part), part.agentRunId, key);
         continue;
       }
       const teamKey = runTreeRowKey("org_team", part.teamRunId);
       const coordinator = part.members.find((member) => member.address === part.coordinatorAddress);
       if (!coordinator) console.warn(`Row error: the org's mounted team at '${part.address}' has no coordinator among its members; its row has no open target.`);
       drafts.push(Object.freeze({ key: teamKey, parentKey: null, kind: "org_team", name: rowNameOf(part.address, part.teamRunId), address: part.address,
-        openTarget: coordinator ? inOrg(coordinator.agentRunId) : null, statusIds: Object.freeze(part.members.map((member) => member.agentRunId)) }));
-      for (const member of part.members) {
+        openTarget: coordinator ? inOrg(coordinator.agentRunId) : null, statusIds: Object.freeze(part.members.map((member) => member.agentRunId)),
+        ...(part.leaving ? { leaving: true as const } : {}) }));
+      // A member leaving its Team unit is a row tagged leaving only while that Team unit runs (SR-010, as a Team's own rows).
+      for (const member of teamMemberRowsOf(part.members, this.sources.isLiveTeamRun(part.teamRunId))) {
         const memberKey = runTreeRowKey("team_member", part.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: teamKey, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
-          openTarget: inOrg(member.agentRunId), statusIds: Object.freeze([member.agentRunId]) }));
-        anchor(run, member.agentRunId, memberKey);
+          openTarget: inOrg(member.agentRunId), statusIds: Object.freeze([member.agentRunId]), ...(part.leaving || member.leaving ? { leaving: true as const } : {}) }));
+        anchor(holderOf(part), member.agentRunId, memberKey);
       }
     }
     return null;

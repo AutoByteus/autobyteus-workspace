@@ -14,6 +14,8 @@ export class ChildRowsFeed {
     tree: Pick<DelegationIndex, "chainOf">;
     /** A run's rows changed (`/ws/run-status`'s `RUN_TREE_CHANGED`, SR-083): told for the run and every run above it. */
     rowsChanged(run: RootExecutionIdentity): void;
+    /** A unit run's Org container (its rows are the container's too, org-teams-follow-definition); `null` for any other run. */
+    containerOf?(run: RootExecutionIdentity): RootExecutionIdentity | null;
   }>) {}
 
   /** Follows a tree's row reports until the returned function is called. */
@@ -34,5 +36,7 @@ export class ChildRowsFeed {
   private changed(run: RootExecutionIdentity): void {
     this.dependencies.streams.streamOf<RunTreeChangedEvent>(run).publish(RUN_TREE_CHANGED_EVENT);
     this.dependencies.rowsChanged(run);
+    const container = this.dependencies.containerOf?.(run) ?? null;
+    if (container) this.changed(container);
   }
 }

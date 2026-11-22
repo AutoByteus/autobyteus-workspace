@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { lookup as lookupMime } from "mime-types";
-import { AgentOrgRunManager } from "./agent-org-run-manager.js";
+import { runRecordsOfRootOwners } from "../../run-history/services/run-records-source.js";
 
 export type AgentOrgReferenceContentErrorCode =
   | "REFERENCE_NOT_FOUND"
@@ -57,7 +57,10 @@ export type CollaborationMessageRecords = Readonly<{
 
 /** Resolves root-owned sidecar references without reinterpreting them as Team records. */
 export class AgentOrgReferenceContentService {
-  constructor(private readonly records: CollaborationMessageRecords = AgentOrgRunManager.getInstance()) {}
+  /** The Org's messages: a container's are its units' (each message once), a released Org run's its own log (R-7). */
+  constructor(private readonly records: CollaborationMessageRecords = {
+    getCollaborationRecordsSnapshot: async (orgRunId) => ({ messages: { messages: (await runRecordsOfRootOwners.read("agent_org", orgRunId)).messages } }),
+  }) {}
 
   async resolveCommunication(input: Readonly<{
     orgRunId: string;

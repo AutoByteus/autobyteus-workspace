@@ -164,8 +164,8 @@ beforeEach(async () => {
     teams: AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: path.join(mocks.dirs.root, "memory"), flatTeamExecutionFactory: {} as never, memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never }),
-    orgs: AgentOrgRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
-      memoryDir: path.join(mocks.dirs.root, "memory"), scopeBuilder: {} as never }),
+    orgs: AgentOrgRunManager.initializeProcessInstance({ delegationIndex: noDelegations(),
+      memoryDir: path.join(mocks.dirs.root, "memory"), containers: {} as never }),
   };
 });
 afterEach(async () => {

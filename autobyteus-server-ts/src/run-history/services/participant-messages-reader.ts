@@ -35,7 +35,7 @@ export class ParticipantMessagesReader {
     records: RunRecordsSource;
     scope: Pick<MessageViewScope, "participantFilter">;
     /** The view's open subtree (its rows on this node), taken once at the read's start (ARCH-REV-048). */
-    delegatedRunAgents: Pick<DelegatedRunAgentsReader, "openRunsBelow">;
+    delegatedRunAgents: Pick<DelegatedRunAgentsReader, "prepare" | "openRunsBelow">;
     identities: Pick<CounterpartIdentities, "pastParticipants" | "of">;
   }>) {}
 
@@ -87,6 +87,7 @@ export class ParticipantMessagesReader {
         .catch((error: unknown) => error instanceof Error ? error : new Error(String(error)));
       return { run: run.rootRunId, records };
     };
+    await this.dependencies.delegatedRunAgents.prepare(view);
     const [own, runs] = await Promise.all([this.dependencies.records.read(view.rootSubjectKind, view.rootRunId),
       Promise.all(this.dependencies.delegatedRunAgents.openRunsBelow(view).map(readBelow))]);
     return composeRunViewMessages({ own, below: runs });

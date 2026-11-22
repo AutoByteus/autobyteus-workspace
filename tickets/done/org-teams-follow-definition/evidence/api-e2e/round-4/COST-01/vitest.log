@@ -1,0 +1,113 @@
+# Case COST-01 | vitest run tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts (RUN_ORG_CONVERSION_COST_E2E=1, root /root/.autobyteus-e2e/cost)
+# Commit: 29a1bf23a8 (implementation IR-008 26c6240f33) + API/E2E round-4 test edits, uncommitted at run time
+# Env: Linux aarch64 container (root), Node 22.23.3, built server dist; clean env (env -i PATH HOME TMPDIR)
+# Date: 2026-11-22 (UTC)
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:53640) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[org-conversion-cost] {"layout":{"largeOrgTeams":4,"largeOrgTeamSize":5,"largeOrgAgents":2,"orgLogLines":30000,"orgActiveTraceBytes":2097152,"orgSealedSegments":2,"orgSealedBytes":4194304,"nodeAgentRuns":300,"nodeTeamRuns":60,"nodeTeamSize":4,"nodeTraceBytes":1048576,"nodeSealedBytes":1048576,"nodeLogBytes":65536,"namingEvery":25,"adHocTasks":200},"syntheticBytes":1411994328,"syntheticMiB":1347,"writtenMs":7940,"conversion":{"migrationId":"20261122_agent_org_units_own_runs_v1","status":"SUCCEEDED","summary":"Scanned 2; migrated 2; skipped 0; failed 0.","startedAt":"2026-11-22T21:34:10.645Z","completedAt":"2026-11-22T21:34:12.865Z","durationMs":2220},"followUps":[{"id":"20261122_agent_org_units_after_org_flat_team_families_v1","status":"SUCCEEDED","durationMs":1621},{"id":"20261122_agent_org_units_after_run_history_index_v2","status":"SUCCEEDED","durationMs":1799},{"id":"20261122_agent_org_units_after_append_only_message_logs_v1","status":"SUCCEEDED","durationMs":1660},{"id":"20261122_agent_org_units_after_delegated_runs_own_runs_v1","status":"SUCCEEDED","durationMs":1706},{"id":"20261122_agent_org_units_after_preserved_items_after_task_agent_own_run_v1","status":"SUCCEEDED","durationMs":1659},{"id":"20261122_agent_org_units_after_preserved_items_after_own_file_complete_v1","status":"SUCCEEDED","durationMs":1768},{"id":"20261122_agent_org_units_after_preserved_items_after_append_only_logs_v1","status":"SUCCEEDED","durationMs":1674},{"id":"20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v1","status":"SUCCEEDED","durationMs":1545},{"id":"20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v2","status":"SUCCEEDED","durationMs":1631},{"id":"20261122_agent_org_units_after_preserved_items_after_org_flat_team_families_v1","status":"SUCCEEDED","durationMs":2203},{"id":"20261122_agent_org_units_after_preserved_items_after_collaborators_to_delegated_runs_v1","status":"SUCCEEDED","durationMs":1485},{"id":"20261122_agent_org_units_after_preserved_items_after_team_run_history_index_v2","status":"SUCCEEDED","durationMs":1583},{"id":"20261122_agent_org_units_after_preserved_items_after_remove_skill_improvement_data","status":"SUCCEEDED","durationMs":1515},{"id":"20261122_agent_org_units_after_raw_trace_rotation_layout","status":"SUCCEEDED","durationMs":1450},{"id":"20261122_agent_org_units_after_team_communication_projection_addresses","status":"SUCCEEDED","durationMs":1478},{"id":"20261122_agent_org_units_after_raw_trace_active_file_name","status":"SUCCEEDED","durationMs":1508},{"id":"20261122_agent_org_units_after_delegated_run_own_attachment_links","status":"SUCCEEDED","durationMs":1637},{"id":"20261122_agent_org_units_after_delegated_run_own_attachment_links_after_task_agent_own_run","status":"SUCCEEDED","durationMs":1598},{"id":"20261122_agent_org_units_after_agent_org_history_first_message_summary_v1","status":"SUCCEEDED","durationMs":1535},{"id":"20261122_agent_org_units_after_team_context_file_execution_locators_v1","status":"SUCCEEDED","durationMs":1577},{"id":"20261122_agent_org_units_after_collaborators_to_delegated_runs_v1","status":"SUCCEEDED","durationMs":1349},{"id":"20261122_agent_org_units_after_task_agent_own_run_v1","status":"SUCCEEDED","durationMs":1393},{"id":"20261122_agent_org_units_after_delegated_copy_own_file_complete_v1","status":"SUCCEEDED","durationMs":1427}],"firstStartReadyMs":44069,"secondStartReadyMs":4643,"firstMovedAttachment":"/root/.autobyteus-e2e/cost/org-conversion-cost-hig8Qn/memory/agent_teams/large_org_team_0/large_org_agent_0_0/received_files/peer/f.md"}
+ [32m✓[39m tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 64753[2mms[22m[39m
+     [33m[2m✓[22m[39m COST-01: the conversion and its node pass on a heavy synthetic node; a second start as the control [33m 64569[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 21:33:31
+[2m   Duration [22m 84.28s[2m (transform 13.12s, setup 99ms, import 18.61s, tests 64.75s, environment 0ms)[22m
+
