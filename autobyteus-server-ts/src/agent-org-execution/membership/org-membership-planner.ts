@@ -48,7 +48,9 @@ export class OrgMembershipPlanner {
         getTeamById: (id) => this.dependencies.teamDefinitions.getDefinitionById(id),
       }, NO_IDENTITIES);
       const resolved = await planner.resolveConfiguration({ definition, rootConfiguration: file.rootOrg.defaultLaunchConfiguration });
-      const view = Object.freeze({ orgDefinitionId, plan: planAgentOrgContainer({ topology: resolved.topology, launch: resolved.launch }) });
+      const view = Object.freeze({ orgDefinitionId, plan: planAgentOrgContainer({ topology: resolved.topology, launch: resolved.launch,
+        // REQ-004/DEC-005 (F-5): a rule naming a member that left its Team is kept, and left out at each read until it returns.
+        compilation: { kind: "running_org" } }) });
       this.warned.delete(orgRunId);
       return view;
     } catch (error) {

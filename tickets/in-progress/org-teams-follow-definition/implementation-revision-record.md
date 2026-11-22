@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-002 | Architecture Reviewer, `design-review-report.md` ARCH-REV-009 (pass on SR-013/SR-014, after CRR-001) | CR-001 (Design Impact via SR-013 R-8, SR-014), CR-002, CR-003, CR-004 (Local Fix), N-1 | `Design Impact` realization + `Local Fix` | SR-013, SR-014, ARCH-REV-009, CRR-001 | Implemented; handed to Code Review |
 | IR-003 | Code Reviewer, `code-review-report.md` CRR-002 (review of IR-002) | CR-005, CR-006, CR-007, CR-002 (remaining) | `Local Fix` | CRR-002 | Implemented; handed to Code Review |
 | IR-004 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-001); Architecture Reviewer ARCH-REV-010 (pass on SR-015) | F-1, F-2, F-3, F-4 (Local Fix); A-1 (via SR-015) | `Local Fix` + `Design Impact` realization | CRR-004, API-REV-001, SR-015, ARCH-REV-010 | Implemented; handed to Code Review |
+| IR-005 | Code Reviewer, `code-review-report.md` CRR-006 (failure-origin review of API-REV-002) | F-5 | `Local Fix` | CRR-006, API-REV-002 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -99,3 +100,17 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - a Team package with a former member's cross-unit lines validates, and its records source keeps them; the remote receiver logs why a root was unavailable;
   - `OrgContainerPort.formerMemberAt` lets `CollaborationTree.resolve` refuse `P/x` by name, answered from the Team's live or stored tree without a restore.
 - Validation: see `implementation-handoff.md` § IR-004 and `evidence/implementation/ir-004/`.
+
+### IR-005 — CRR-006 Local Fix F-5
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-006 (failure-origin review of API/E2E's API-REV-002, OC-13).
+- Triggering finding IDs: F-5.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-004 (`cd6a777b24`). Current authoritative result: the IR-005 commit (see `implementation-handoff.md` § IR-005).
+- Related code-review revision IDs: CRR-006. Related API/E2E revision IDs: API-REV-002.
+- Approved behavior or requirement IDs affected: REQ-004 / DEC-005 (a rule to a member that left is kept and left out until it returns), REQ-009 (the Org follows its Org definition), DS-006.
+- Implementation delta:
+  - `compileOrg` takes an opt-in `running_org` compilation that keeps an endpoint `P/x` whose member is not in mounted Team `P`'s current definition;
+  - only the Org-follow planner (`viewFor`, and so the follow on reopen) uses it;
+  - launches and every other caller stay strict.
+- Validation: see `implementation-handoff.md` § IR-005 and `evidence/implementation/ir-005/`.

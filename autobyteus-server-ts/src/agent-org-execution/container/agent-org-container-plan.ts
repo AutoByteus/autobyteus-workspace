@@ -3,7 +3,7 @@ import {
   isAgentTeamAddressAncestor,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
+import { CollaborationHandoffCompiler, type OrgHandoffCompilation } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { ResolvedAgentOrgDefinition } from "../../agent-collaboration/definition/resolved-collaboration-topology.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
@@ -54,9 +54,11 @@ export const orgLevelRules = (handoffs: readonly CollaborationHandoff[], teamAdd
 /**
  * What creating an Org container makes (DS-001), pure: each mounted Team becomes a Team unit (its members in team space,
  * each with the launch the launch page resolved), each direct agent an agent unit, and the container keeps the Org-level
- * rules. Unit run IDs are allocated when the units are created, by their run services.
+ * rules. Unit run IDs are allocated when the units are created, by their run services. A launch compiles the Org rules
+ * strictly; a running Org following its definition keeps a rule naming a member that left its Team (`running_org`, F-5).
  */
-export const planAgentOrgContainer = (input: Readonly<{ topology: ResolvedAgentOrgDefinition; launch: ResolvedAgentOrgLaunchPlan["launch"] }>): AgentOrgContainerPlan => {
+export const planAgentOrgContainer = (input: Readonly<{ topology: ResolvedAgentOrgDefinition; launch: ResolvedAgentOrgLaunchPlan["launch"];
+  compilation?: OrgHandoffCompilation }>): AgentOrgContainerPlan => {
   const units: PlannedOrgUnit[] = input.topology.members.map((member): PlannedOrgUnit => {
     const address = createAgentTeamAddress(member.absolutePath);
     if (member.kind === "agent") {
@@ -76,7 +78,7 @@ export const planAgentOrgContainer = (input: Readonly<{ topology: ResolvedAgentO
   const teamAddresses = units.filter((unit) => unit.kind === "agent_team").map((unit) => unit.address);
   return Object.freeze({
     units: Object.freeze(units),
-    orgRules: Object.freeze(orgLevelRules(new CollaborationHandoffCompiler().compileOrg(input.topology), teamAddresses)),
+    orgRules: Object.freeze(orgLevelRules(new CollaborationHandoffCompiler().compileOrg(input.topology, input.compilation), teamAddresses)),
   });
 };
 

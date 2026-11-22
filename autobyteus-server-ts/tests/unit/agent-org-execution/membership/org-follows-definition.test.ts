@@ -17,6 +17,10 @@ import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domai
 import { OrgDefinitionChangeListener } from "../../../../src/agent-org-execution/membership/org-definition-change-listener.js";
 import { planOrgMembershipChange, releaseStoppedUnits, type OrgDefinitionView } from "../../../../src/agent-org-execution/membership/org-membership-change.js";
 import { OrgMembershipPlanner } from "../../../../src/agent-org-execution/membership/org-membership-planner.js";
+import { planAgentOrgContainer } from "../../../../src/agent-org-execution/container/agent-org-container-plan.js";
+import { AgentOrgRunPlanner } from "../../../../src/agent-org-execution/services/agent-org-run-planner.js";
+import { AgentOrgDefinition, AgentOrgMember } from "../../../../src/agent-org-definition/domain/agent-org-definition.js";
+import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 import type { TeamRunExecutionTreeFile } from "../../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamChangeNoticeSource } from "../../../../src/agent-team-execution/membership/team-change-notice-source.js";
 import { AgentOrgContainerStore } from "../../../../src/run-history/store/agent-org-container-store.js";
@@ -72,6 +76,33 @@ const conciergeUnit = { kind: "agent" as const, address: "/concierge" as never, 
 const setUnit = { kind: "agent_team" as const, address: P as never, teamDefinitionId: "software-engineering-team", defaultLaunchConfiguration: launch, members: [] };
 const view = (units: OrgDefinitionView["plan"]["units"], orgRules: OrgDefinitionView["plan"]["orgRules"]): OrgDefinitionView =>
   ({ orgDefinitionId: "software-development-department", plan: { units, orgRules } });
+/** The Team definitions now: the SET Team's definition dropped `architecture_reviewer` (its run still has it as a former member). */
+const TEAMS: Record<string, AgentTeamDefinition> = {
+  "software-engineering-team": new AgentTeamDefinition({ id: "software-engineering-team", name: "Software Engineering Team", description: "", instructions: "",
+    coordinatorMemberName: "solution_designer", nodes: [new TeamMember({ memberName: "solution_designer", ref: "solution-designer", refScope: "shared" })], handoffs: [] }),
+  "product-design-prototyping-team": new AgentTeamDefinition({ id: "product-design-prototyping-team", name: "Product Design Prototyping Team", description: "",
+    instructions: "", coordinatorMemberName: "product_prototyper", nodes: [new TeamMember({ memberName: "product_prototyper", ref: "product-prototyper", refScope: "shared" })], handoffs: [] }),
+};
+/** The contract's Org definition, now with a `/writer` agent, its two Org rules and the given ones. */
+const sddOf = (extra: { from: string; to: string; rules: string[] }[]) => new AgentOrgDefinition({
+  id: "software-development-department", name: "Software Development Department", description: "", instructions: "",
+  members: [
+    new AgentOrgMember({ memberName: "software_engineering_team", ref: "software-engineering-team", refType: "agent_team", refScope: "shared" }),
+    new AgentOrgMember({ memberName: "product_design_prototyping_team", ref: "product-design-prototyping-team", refType: "agent_team", refScope: "shared" }),
+    new AgentOrgMember({ memberName: "concierge", ref: "concierge", refType: "agent", refScope: "shared" }),
+    new AgentOrgMember({ memberName: "writer", ref: "writer", refType: "agent", refScope: "shared" }),
+  ],
+  handoffs: [...fixture("container-file.json").handoffs, ...extra],
+});
+const sddWith = (reportRule?: string[], askRule?: string[]) => sddOf([
+  ...(reportRule ? [{ from: reportRule[0]!, to: reportRule[1]!, rules: ["Report to the concierge."] }] : []),
+  ...(askRule ? [{ from: askRule[0]!, to: askRule[1]!, rules: ["Ask the reviewer."] }] : []),
+]);
+const plannerOf = (definition: AgentOrgDefinition) => new OrgMembershipPlanner({
+  orgDefinitions: { getDefinitionById: async (id: string) => id === definition.id ? definition : null, listLoadIssues: async () => [] } as never,
+  teamDefinitions: { getDefinitionById: async (id: string) => TEAMS[id] ?? null } as never,
+  agentDefinitions: { getAgentDefinitionById: async (id: string) => ({ id }) as never } as never,
+});
 
 describe("planOrgMembershipChange (DS-006, pure)", () => {
   it("a new unit is created, a unit no longer mounted leaves, the Org rules are the definition's (a rule from a unit not created waits for it)", () => {
@@ -229,6 +260,54 @@ describe("REQ-009: the Org follows its Org definition (AC-008)", () => {
     expect(await planner.viewFor(containerFile())).toBeNull();
     expect(await planner.viewFor(containerFile())).toBeNull();
     expect(warn.mock.calls.filter(([text]) => String(text).startsWith("AGENT_ORG_DEFINITION_NOT_FOLLOWED"))).toHaveLength(1);
+  });
+
+  it("CRR-006 F-5 (REQ-004/DEC-005, REQ-009): an Org rule naming a member that left its Team is kept, and the Org still follows its definition", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const definition = sddWith([`${P}/architecture_reviewer`, "/concierge"], ["/concierge", `${P}/architecture_reviewer`]);
+    const result = await plannerOf(definition).viewFor(containerFile());
+    expect(result).not.toBeNull();
+    // Both rules naming the member that left are kept as written (left out at each read until it returns).
+    expect(result!.plan.orgRules).toEqual(expect.arrayContaining([
+      { from: `${P}/architecture_reviewer`, to: "/concierge", rules: ["Report to the concierge."] },
+      { from: "/concierge", to: `${P}/architecture_reviewer`, rules: ["Ask the reviewer."] }]));
+    // The rest of the definition is followed: the new agent is planned.
+    expect(planOrgMembershipChange(containerFile(), result!)!.toCreate.map((unit) => unit.address)).toEqual(["/writer"]);
+    expect(warn.mock.calls.filter(([text]) => String(text).startsWith("AGENT_ORG_DEFINITION_NOT_FOLLOWED"))).toEqual([]);
+    // A launch still compiles strictly (today's rule, outside REQ-004).
+    const resolved = await new AgentOrgRunPlanner({ getAgentById: async (id) => ({ id }) as never, getTeamById: async (id) => TEAMS[id] ?? null },
+      { allocateAgent: async () => "x", allocateTeam: () => "x", allocateOrg: () => "x" }).resolveConfiguration({ definition, rootConfiguration: launch });
+    expect(() => planAgentOrgContainer(resolved)).toThrow(`AgentOrg endpoint '${P}/architecture_reviewer' was not found.`);
+  });
+
+  it.each([
+    ["an unknown placement", ["/nobody/reviewer", "/concierge"], "AgentOrg endpoint '/nobody/reviewer' was not found."],
+    ["an Agent as an intermediate segment", ["/concierge/reviewer", "/writer"], "uses Agent 'concierge' as an intermediate segment"],
+    ["more than two segments", [`${P}/architecture_reviewer/x`, "/concierge"], "must select an Agent or direct Team placement"],
+  ])("CRR-006 F-5: an Org rule with %s is still not followed", async (_case, [from, to], reason) => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(await plannerOf(sddWith([from!, to!])).viewFor(containerFile())).toBeNull();
+    expect(warn.mock.calls.map(([text]) => String(text)).find((text) => text.startsWith("AGENT_ORG_DEFINITION_NOT_FOLLOWED"))).toContain(reason);
+  });
+
+  it("CRR-006 F-5: empty rules are still not followed", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(await plannerOf(sddOf([{ from: `${P}/architecture_reviewer`, to: "/concierge", rules: [] }])).viewFor(containerFile())).toBeNull();
+    expect(warn.mock.calls.map(([text]) => String(text)).find((text) => text.startsWith("AGENT_ORG_DEFINITION_NOT_FOLLOWED"))).toContain("rules must be non-empty");
+  });
+
+  it("CRR-006 F-5: a reopened Org follows the same definition: the new agent joins and the kept rule stays in the container", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const org = await liveOrg();
+    org.pdp.busy = false;
+    expect(await org.containers.stop("sdd_org_1")).toBe(true);
+    org.containers.bindFollowing({ planner: plannerOf(sddWith([`${P}/architecture_reviewer`, "/concierge"])), notices: org.notices, runPartsChanged: org.runPartsChanged });
+    await org.containers.restore("sdd_org_1");
+    expect(org.units.createAgentUnit).toHaveBeenCalledWith(expect.objectContaining({ address: "/writer" }), expect.anything());
+    const stored = (await org.stored())!;
+    expect(stored.rootOrg.units.map((unit) => unit.address)).toContain("/writer");
+    expect(stored.handoffs).toContainEqual({ from: `${P}/architecture_reviewer`, to: "/concierge", rules: ["Report to the concierge."] });
+    expect(warn.mock.calls.filter(([text]) => String(text).startsWith("AGENT_ORG_DEFINITION_NOT_FOLLOWED"))).toEqual([]);
   });
 
   it("every definition change, each live Org follows, one after another; a change during a pass asks for one more pass", async () => {

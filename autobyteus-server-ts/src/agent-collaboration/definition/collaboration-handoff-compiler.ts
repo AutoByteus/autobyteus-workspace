@@ -23,7 +23,9 @@ type Endpoint =
       coordinator: ResolvedCollaborationAgent;
     }>
   /** A delegated team's `to` outside the team, kept as written (an address in its delegator's space). */
-  | Readonly<{ kind: "external"; address: string }>;
+  | Readonly<{ kind: "external"; address: string }>
+  /** A running Org's rule endpoint `P/x` whose member is not in Team `P`'s current definition, kept as written (REQ-004). */
+  | Readonly<{ kind: "absent_member"; address: string }>;
 
 /**
  * How a team's handoffs are compiled. A team the user starts, and a saved definition, resolve every `to` in the team
@@ -32,6 +34,14 @@ type Endpoint =
  * delegating run (`handoffs`, team-local addresses) instead of its definition's.
  */
 export type TeamHandoffCompilation = Readonly<{ kind: "own_team" } | { kind: "delegated_team"; handoffs?: readonly CollaborationHandoff[] }>;
+
+/**
+ * How an Org's handoffs are compiled. A launch, and a saved definition, resolve every endpoint (today's check). A running
+ * Org following its definition (org-teams-follow-definition REQ-004/DEC-005, REQ-009, CRR-006 F-5) keeps an Org rule
+ * whose endpoint `P/x` names a member that is not in mounted Team `P`'s current definition: the member left its Team, the
+ * rule is left out at each read until it returns. Every other invalid endpoint is refused as at launch.
+ */
+export type OrgHandoffCompilation = Readonly<{ kind: "launch" } | { kind: "running_org" }>;
 
 export class CollaborationHandoffCompiler {
   compileTeam(team: ResolvedFlatTeamDefinition, compilation: TeamHandoffCompilation = { kind: "own_team" }): CollaborationHandoff[] {
@@ -46,12 +56,12 @@ export class CollaborationHandoffCompiler {
     });
   }
 
-  compileOrg(org: ResolvedAgentOrgDefinition): CollaborationHandoff[] {
+  compileOrg(org: ResolvedAgentOrgDefinition, compilation: OrgHandoffCompilation = { kind: "launch" }): CollaborationHandoff[] {
     const seenPairs = new Set<string>();
     const output = this.compileList({
       handoffs: org.definition.handoffs,
       ownerLabel: `AgentOrg '${org.definition.name}'`,
-      resolve: (address) => this.resolveOrgEndpoint(org, address),
+      resolve: (address) => this.resolveOrgEndpoint(org, address, compilation.kind === "running_org"),
       seenPairs,
     });
     for (const member of org.members) {
@@ -78,19 +88,19 @@ export class CollaborationHandoffCompiler {
     return input.handoffs.map((handoff, index) => {
       const rules = this.validateRules(handoff, input.ownerLabel, index);
       const fromEndpoint = input.resolve(handoff.from);
-      if (fromEndpoint.kind !== "agent") {
+      if (fromEndpoint.kind !== "agent" && fromEndpoint.kind !== "absent_member") {
         throw new CollaborationContractError(
           "COLLABORATION_HANDOFF_SOURCE_INVALID",
           `${input.ownerLabel} handoffs[${index}].from must resolve to an Agent.`,
         );
       }
       const toEndpoint = (input.resolveTarget ?? input.resolve)(handoff.to);
-      const from = createAgentTeamAddress(fromEndpoint.agent.absolutePath);
+      const from = fromEndpoint.kind === "agent" ? createAgentTeamAddress(fromEndpoint.agent.absolutePath) : fromEndpoint.address;
       const to = toEndpoint.kind === "agent"
         ? createAgentTeamAddress(toEndpoint.agent.absolutePath)
         : toEndpoint.address;
       const targetAgent = toEndpoint.kind === "agent" ? toEndpoint.agent : toEndpoint.kind === "agent_team" ? toEndpoint.coordinator : null;
-      if (targetAgent && from === createAgentTeamAddress(targetAgent.absolutePath)) {
+      if (targetAgent ? from === createAgentTeamAddress(targetAgent.absolutePath) : toEndpoint.kind === "absent_member" && from === to) {
         throw new CollaborationContractError(
           "COLLABORATION_SELF_TARGET_REJECTED",
           `Handoff '${from}' -> '${to}' resolves back to the source Agent.`,
@@ -150,7 +160,7 @@ export class CollaborationHandoffCompiler {
     return { kind: "agent", agent };
   }
 
-  private resolveOrgEndpoint(org: ResolvedAgentOrgDefinition, address: string): Endpoint {
+  private resolveOrgEndpoint(org: ResolvedAgentOrgDefinition, address: string, keepAbsentMember = false): Endpoint {
     const segments = getAgentTeamAddressSegments(assertAgentTeamAddress(address));
     if (segments.length === 0 || segments.length > 2) {
       throw new CollaborationContractError(
@@ -176,8 +186,10 @@ export class CollaborationHandoffCompiler {
       );
     }
     const agent = direct.team.members.find((candidate) => candidate.memberName === segments[1]);
-    if (!agent) throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `AgentOrg endpoint '${address}' was not found.`);
-    return { kind: "agent", agent };
+    if (agent) return { kind: "agent", agent };
+    // A running Org keeps a rule to (or from) a member that left its Team: left out at each read until it returns.
+    if (keepAbsentMember) return { kind: "absent_member", address: createAgentTeamAddress([...direct.absolutePath, segments[1]!]) };
+    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `AgentOrg endpoint '${address}' was not found.`);
   }
 
   private validateRules(handoff: CollaborationHandoff, ownerLabel: string, index: number): string[] {

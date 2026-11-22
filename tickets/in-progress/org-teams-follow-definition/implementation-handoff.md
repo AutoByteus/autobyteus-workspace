@@ -28,17 +28,38 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015)
+- Current implementation revision ID: `IR-005` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006)
 - Related solution revision IDs: `SR-010`, `SR-011`, `SR-012`, `SR-013`, `SR-014`, `SR-015`
 - Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`
-- Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed)
+- Related code-review revision IDs: `CRR-001` … `CRR-006`
+- Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-005 (CRR-006 Local Fix F-5)
+
+- **F-5 (OC-13; REQ-004/DEC-005, REQ-009): a running Org follows its Org definition while an Org rule names a member that left its Team.**
+  - Before: the follow planner compiled the Org rules as a launch does. `planAgentOrgContainer`, via `compileOrg`, threw `AgentOrg endpoint 'P/x' was not found.`, so the Org ignored every change.
+  - Now: one rule, in the one place Org rule endpoints resolve. `CollaborationHandoffCompiler.compileOrg(org, compilation)` takes an opt-in `OrgHandoffCompilation`, following the pattern of `TeamHandoffCompilation`:
+    - `launch` is the default, strict as before, and every other caller uses it: launch, definition save, admission, `AgentOrgRunPlanner.build`;
+    - `running_org` keeps an endpoint `P/x` as written, as `from` or `to`, when `P` is a mounted Team and `x` is not in its current definition.
+  - Every other invalid rule is refused as before: an unknown placement, an Agent as an intermediate segment, more than two segments, empty or untrimmed rules, a self-target, duplicates.
+  - `planAgentOrgContainer` passes an optional `compilation` through. Only `OrgMembershipPlanner.viewFor` passes `running_org`; the follow on reopen goes through `viewFor` too.
+  - The container keeps the rule as written, so `orgRulesFrom` leaves it out until `x` returns (unchanged), with the notices as today.
+  - The launch path is untouched.
+- Tests, in `org-follows-definition.test.ts`:
+  - `viewFor` with a definition naming the absent `P/architecture_reviewer` in both directions:
+    - a view is returned and both rules are kept;
+    - the new `/writer` agent is planned, with no not-followed warning;
+    - `planAgentOrgContainer` without the opt-in still throws (launch strict).
+  - Three invalid endpoints are still not followed, each with its reason: unknown placement, Agent intermediate, three segments. Empty rules are still not followed.
+  - Reopen: the Org is stopped, then restored with the same definition. `/writer` is created and the kept rule is in the stored container.
+  - The two positive cases fail without the planner's opt-in.
+- Validation: see `evidence/implementation/ir-005/test-summary.md`.
 
 ## IR-004 (CRR-004 Local Fixes F-1 … F-4; SR-015)
 
