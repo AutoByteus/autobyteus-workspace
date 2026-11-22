@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002
 - Package identifier: `phone-web-followups-609`
 - Request / ticket: autobyteus-609 (absorbs autobyteus-575), Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-11-22
 - Approved by and reference: Solution Designer within the direction (user informed in conversation, 2026-11-22). No `Needs user` decision.
-- Exact approved requirements baseline / solution revision: this document at SR-001
+- Exact approved requirements baseline / solution revision: this document at SR-002. SR-002 corrects ASM-1 (false at the read DS-I used, ARCH-REV-001 AR-001), DEC-007, QR-1 and REQ-I's runtime scope; the intended outcome is unchanged. Approved by the Solution Designer within the direction, user informed 2026-11-22.
 - Behavior-defining supplements: none
 
 ## Problem And Desired Outcome
@@ -69,6 +69,7 @@
 ### Out Of Scope
 
 - Making relative paths in plain prose or inline code into file links (DEC-002).
+- The background task list of a Codex run (snapshot runtime) after its run stops (DEC-007).
 - Changing the summary rules themselves (which keys, their order, the `cd` rule).
 - Changing the node access model, the path rules or the workspace registry's format.
 - The other status words; making the status words localized.
@@ -108,7 +109,7 @@ As the template states. A finding must cite a REQ, AC or BEH ID.
 | REQ-G | MSP-55 accepts `net::ERR_SOCKET_NOT_CONNECTED` as well as `net::ERR_CONNECTION_RESET` from its own deliberate link cut, and no other new error | BEH-G | Must | The same cut can log either code (`mobile-live-reconnect-cases.mjs:197-200`) | N/A | 590 FU-007 |
 | REQ-H1 | In a run's conversation, on desktop and phone, tapping a Markdown link whose destination is a relative path opens that path in the run's own folder (for a team member or a delegated run, that run's own folder). It opens as an absolute path inside the folder opens today. | BEH-H | Must | DEC-002 | N/A | 572 FU-003 |
 | REQ-H2 | A relative link that leaves the run's folder, or a run with no folder, opens nothing and shows the existing "could not open" message. A run on another node shows the existing "on node X" message. A missing file opens the viewer's existing not-found state. | BEH-H | Must | No tap is silent or unsafe; DEC-002 | N/A | 572 FU-003 |
-| REQ-I | When a run stops while its background tasks are listed (the phone's Activity or the desktop Background Tasks section), the list shows each task's end within 10 s of the run's stop, even when a live task update was not received | BEH-I | Must | Notes I: one live update is the only path today; DEC-007 | Robust by construction, proven by dropping the live update in the probe | 572 FU-004 |
+| REQ-I | When a run whose runtime streams its background tasks (native AutoByteus, Claude, Antigravity) stops while its tasks are listed (the phone's Activity or the desktop Background Tasks section), the list shows each task's end ("Stopped: the run ended") within 10 s of the run's stop, even when a live task update was not received. A stopped run's list is not re-read every 2 s. | BEH-I | Must | Notes I: one live update is the only path today; DEC-007 | Robust by construction, proven by dropping the live update in the probe | 572 FU-004 |
 | REQ-J | Right after a node restart, a read of a file in a registered folder (`GET /workspaces/<id>/content` and `/static/*`) succeeds as soon as the node serves requests. An unknown ID still answers 404, and every path and access rule is unchanged. | BEH-J | Must | DEC-008 | N/A | 572 FU-005 |
 
 ## Acceptance Criteria
@@ -154,7 +155,7 @@ As the template states. A finding must cite a REQ, AC or BEH ID.
 
 | Quality ID | REQ / AC | Area | Requirement | Verification |
 | --- | --- | --- | --- | --- |
-| QR-1 | REQ-I | Performance | No extra read while the run runs. After a stop, re-reads only while a listed task still shows running: at most 5, 2 s apart, per open list | Probe network log; unit test |
+| QR-1 | REQ-I | Performance | No new read for REQ-I. A stopped run's open list stops the existing 2 s re-read (it only ever answered "inactive"); it reads again when the run is live again | Probe network log; unit test |
 | QR-2 | REQ-H2, REQ-J | Security | No read outside the run's folder by a relative link; unknown IDs and path rules unchanged | Unit and integration tests |
 
 ## Data Continuity And Acceptable Loss
@@ -176,7 +177,7 @@ None.
 
 | ID | Assumption | Why | Validation | Status |
 | --- | --- | --- | --- | --- |
-| ASM-1 | The node's task view lists ended tasks after a run stops (`currentTasks` with `stopped`/`run_ended`) | REQ-I re-reads it | Read: the Antigravity monitor's `list()` and the native reporter's `list()` keep ended tasks; MSP-78 proves it for Antigravity | Validated (Read) |
+| ASM-1 | Every runtime that streams its tasks ends each still-running task with `stopped`/`run_ended` when its run stops, so a stopped run has no running task | REQ-I applies that end on the web when it sees the run stop | Read: Claude `claude-background-task-registry.ts:249`; native `autobyteus-background-task-reporter.ts:21` (run ending → `run_ended`), stopped through `BackgroundProcessManager.stopAllForRunEnd`; Antigravity `agy-background-task-monitor.ts:82-88` `stopAll`, called from every stop path of `agy-agent-run-backend.ts` (`:119,139,186,230,244`). The web already applies the same fact to the count: an Offline status sets `backgroundTasksRunning = 0` (`agentRuntimeStatusState.ts:66,74`). SR-001's ASM-1 ("the node's task view lists ended tasks after a stop") was false at the GraphQL read: it answers `unavailable/inactive` for a run that is not active (`agent-background-task-view.ts:94-101`, AR-001). | Validated (Read) |
 
 ## Decisions
 
@@ -188,7 +189,7 @@ None.
 | DEC-004 | Remove the stage or ignore it? | — | The stage is rebuilt from scratch every run (its node_modules are removed first) | Both: remove it at the end, also on failure, and ignore it in case a run is killed | Solution Designer | Decided |
 | DEC-005 | Word and icon for interrupted | A visible word | "Interrupted", "Stopped", "Cancelled". The product says "Stopped" for a run's stop (`runSettings.status.stopped`, "Stopped: the run ended"). | "Stopped" with a stop icon, neutral grey, on every surface that shows a tool call's status | Solution Designer (the Task asks for "its own word and icon") | Decided; user informed |
 | DEC-006 | How the page card gets the same summary | A second hand-kept key list drifted | Add keys by hand again, or one shared key list | One list of summary argument keys that both the web's summary and the node's page projection read, so they cannot drift (design decides where) | Solution Designer | Decided |
-| DEC-007 | MSP-59: fix a cause or make the list correct by construction? | The cause was not established | 3/3 runs passed at load ~30; native-runtime delays are irrelevant (the probe uses Antigravity); the server's stop order and the gap between the list's first read and the live stream are candidates (notes). Loading the shared machine to 60–70 would harm other agents' work. | The list re-reads the node's task view once when its run stops, so any lost update is corrected. That meets the user-visible outcome whatever hop lost it. The probe proves it by dropping the live update. | Solution Designer (within FU-004's "make it arrive") | Decided |
+| DEC-007 | MSP-59: fix a cause or make the list correct by construction? | The cause was not established | 3/3 runs passed at load ~30; native-runtime delays are irrelevant (the probe uses Antigravity); the server's stop order and the gap between the list's first read and the live stream are candidates (notes). Loading the shared machine to 60–70 would harm other agents' work. A re-read cannot work: the node answers `inactive` for a stopped run (AR-001). Keeping a stopped run's final list on the node would add node state for a fact the web already knows (ASM-1). | SR-002: when the web sees the run go from live to stopped (Offline), every task still shown running ends as `stopped`/`run_ended` in the run's task list. No read. A stopped run's list no longer re-reads every 2 s. That meets the user-visible outcome whatever hop lost the update; the probe proves it by dropping the live update. Codex (snapshot runtime) is out of scope: the reported failure is an event-stream runtime, and Codex's run-end task behavior is not established. | Solution Designer (within FU-004's "make it arrive") | Decided; user informed |
 | DEC-008 | Which lookup the content routes use | — | `getOrCreateWorkspace` already restores from the registry | Use the restoring lookup, without creating anything for an unknown ID | Solution Designer | Decided |
 
 ## Traceability

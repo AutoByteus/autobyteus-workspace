@@ -14,3 +14,22 @@
   - build inputs
 - Routing impact: independent architecture review.
 - Remaining gaps: FU-001 (the unknown hop for MSP-59), FU-002 (two status icon owners).
+
+## SR-002 (2026-11-22)
+
+- Trigger: ARCH-REV-001, Fail, Design Impact (`design-review-report.md`).
+  - AR-001 (blocking): D-I's re-read cannot work, because the task view answers `inactive` for a stopped run. The existing 2 s retry is unbounded for a stopped run.
+  - N-1 (non-blocking): resolve the root through the workspace metadata when `workspaceRootPath` is empty.
+  - Non-blocking: two E consumers were missing.
+- Prior status: requirements Approved (SR-001); design Ready, then failed review. Current status: requirements Approved (SR-002); design Ready.
+- Affected IDs: REQ-I (runtime scope: streaming runtimes; no 2 s polling of a stopped run), QR-1, ASM-1 (corrected), DEC-007, AC-I (unchanged outcome), Out of scope (Codex snapshot list).
+- Canonical sections changed:
+  - requirements: REQ-I, QR-1, ASM-1, DEC-007, Out of scope
+  - design: evidence table, behavior map row, DS-I in the inventory, spine, narrative and local spine, ownership, off-spine concerns, dependency rules, interface table, reuse, file mapping, example, tradeoffs, risks, implementation guidance; E derived consumers; H root fallback
+  - investigation notes: the SR-002 evidence section
+- Approval: Solution Designer within the direction (the outcome of REQ-I is unchanged; scope narrowed to the runtimes the report and the fix concern). User informed 2026-11-22.
+- Design: D-I now ends running rows as `run_ended` in the task store when the panel view observes the run go from live to Offline. No read, and no polling while stopped. A re-read happens when the run is live again.
+- Classification: unchanged, `Large` / `High`.
+- Routing impact: architecture review of SR-002.
+- Design case: added to `docs/design-cases.md` Case 5 (ASM-1 validated against `list()`, not the read used).
+- Remaining gaps: FU-001, FU-002.

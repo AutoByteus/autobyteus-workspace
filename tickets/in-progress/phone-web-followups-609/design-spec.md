@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (D-I revised after ARCH-REV-001 AR-001; N-1 and the E consumers added)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction; user informed in conversation 2026-11-22.
 - Behavior-defining supplements: none
 - User approval of the design: Not required (the Task does not ask for it)
@@ -65,6 +65,7 @@ Evidence for every item is in the investigation notes, sections A–J.
 | Read | `MarkdownRenderer.vue:118-126,154-162`; `composables/useEventMonitorFilePreview.ts:62-140`; `composables/mobile/mobileFileOpening.ts:21-44`; `utils/fileExplorer/workspaceResourceUrl.ts:39-46,66-110` | A relative link emits `relative-link` with no conversation listener. Both openers use `activeWorkspaceTarget.workspaceRootPath`. 576's resolver resolves against a document path; `''` gives the root. | D-H | — |
 | Read + Reproduced | `composables/useBackgroundTaskPanelView.ts:36-90`; `stores/agentRunStore.ts:68`; MSP-59 ×3 Pass at load ~30; native-reporter delay of 1.5 s and 8 s: Pass (irrelevant, the probe uses Antigravity, `mobile-shell-probe.mjs:436`) | In `event-stream` mode the list never re-reads; only live events update it | D-I | Which hop lost the update in 572's run (FU-001) |
 | Read | Antigravity `agy-agent-run-backend.ts:180-188`, monitor `stopAll`/`list()` (`agy-background-task-monitor.ts:78-88`); `standalone-agent-run-root.ts:291-312` (root lifecycle published before the agent's terminate); `agent-stream-handler.ts:234-246` (the session sends AGENT_STATUS after the run's sequence ends) | The node's task view is correct once the agent has stopped; the phone's status turns Offline after that | D-I re-reads on the status transition and re-reads while a task still shows running | — |
+| Read (ARCH-REV-001 AR-001) | `api/graphql/types/agent-background-task-view.ts:94-101`; `useBackgroundTaskPanelView.ts:27-32,78`; `agentBackgroundTaskStore.ts:36-46`; Claude `claude-background-task-registry.ts:249`, native `autobyteus-background-task-reporter.ts:21`, Antigravity `agy-background-task-monitor.ts:82-88`; `agentRuntimeStatusState.ts:66,74` | The task view answers `unavailable/inactive` for a stopped run, so SR-001's re-read could never show the end, and the existing `finally` re-reads a stopped run every 2 s without bound. Every streaming runtime ends running tasks with `run_ended` at run end, and the web already zeroes the running count on Offline. | D-I (SR-002): end the rows on the observed stop; no polling while stopped | — |
 | Read | `api/rest/workspaces.ts:25,79`; `workspace-manager.ts:111-150,315`; `api/graphql/types/file-explorer.ts:29`; `skill-workspace.ts:17-30` (a skill ID resolves through `SkillService.getSkill`, not a path) | The REST path lacks the restore the GraphQL path has | D-J | — |
 | Read | `playwright-core ^1.48.0` (`autobyteus-web/package.json:210`); `page.routeWebSocket` used in `agent-org-task-team-disclosure-probe.mjs:212-216` | Frames can be intercepted per page | AC-I probe | — |
 
@@ -81,7 +82,7 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
   | --- | --- |
   | `RunProjectionToolActivityEntry.contextText` / `HistoricalReplayToolEvent.contextText` (removed) | The Codex provider and the raw-trace transformer stop writing it. The activities builder stops copying it. The dedupe richness score drops the term; equal on both sides, so the decision is unchanged. The node fixture `event-monitor-active-trace-page-projection.test.ts:26` drops it. The web hydration spec `runProjectionActivityHydration.spec.ts:6-31` changes to "the node sends no `contextText`" (the assertion that the web strips it becomes moot; remove that case). |
   | Tool status keys gain `interrupted` | Web `ToolCardStatusPresentationKey` and `getToolCardStatusPresentationKey`; `ToolCallIndicator.vue` (icon chain `:14-20`, `statusClasses` `:89-100`); node `EventMonitorToolStatusKey` and `statusKey()`. Web parsing of a page card's `statusKey` string: implementation lists every `switch`/`===` on the key (Case 26) and decides each. `toolActivityStatusPresentation` gets the case. |
-  | Summary key list (new shared constant) | Web `toolDisplaySummary.ts` (its five key arrays are replaced). Node page projection `summaryArgs()` (its `SUMMARY_KEYS`, `FILE_KEYS` and `COMMAND_KEYS` are replaced). The node TS type `EventMonitorToolSummaryArgs` becomes `Partial<Record<ToolSummaryArgumentKey, string>>`. The GraphQL `summaryArgs` field becomes JSON and its object type is removed. The web query selects `summaryArgs` without subfields, `generated/graphql.ts` is regenerated, and the reader (`eventMonitorActiveTraceBrowsePresentation.ts:71`) is unchanged. |
+  | Summary key list (new shared constant) | Web `toolDisplaySummary.ts` (its five key arrays are replaced). Node page projection `summaryArgs()` (its `SUMMARY_KEYS`, `FILE_KEYS` and `COMMAND_KEYS` are replaced). The node TS type `EventMonitorToolSummaryArgs` becomes `Partial<Record<ToolSummaryArgumentKey, string>>`. The GraphQL `summaryArgs` field becomes JSON and its object type is removed. The web query selects `summaryArgs` without subfields, `generated/graphql.ts` is regenerated, and the reader (`eventMonitorActiveTraceBrowsePresentation.ts:71`) is unchanged. The server e2e `tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:77,915` selects `summaryArgs { path command query }` and asserts its shape: rewritten to the JSON field. The web e2e fixture `tests/e2e/fixtures/codex-command-failure-detail.page.vue:179` builds `summaryArgs: { command, cwd }`: kept (an object of strings, still valid), checked against the new type. |
   | Background task panel view gains a run-liveness input | Its two callers, `BackgroundTaskPanel.vue:135` and `MobileActivity.vue:46`. |
   | Workspace REST lookup | Both routes (`content`, `static/*`). |
 
@@ -106,7 +107,7 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
 | BEH-E | User | REQ-E / AC-E | Earlier trace page | Notes E | One key list; JSON field | DS-E |
 | BEH-F/G | Operational | REQ-F/G / AC-F/G | Probe | Notes F, G | Case edits | — |
 | BEH-H | User | REQ-H1/H2 / AC-H1/H2 | Tap a relative link | Notes H | Relative file link → run-folder file | DS-H |
-| BEH-I | User | REQ-I / AC-I | Run stops | Notes I | Re-read on stop | DS-I |
+| BEH-I | User | REQ-I / AC-I | Run stops | Notes I | End running rows on the observed stop; no read | DS-I |
 | BEH-J | User/System | REQ-J / AC-J | Read after restart | Notes J | Restoring lookup | DS-J |
 
 ## Relevant Supplemental Task Artifacts
@@ -123,7 +124,7 @@ None.
   - A new kind in a union (D, Case 26): `interrupted` added to the card status key. Response: consumer list above.
   - Capability-area reuse (I): the panel view is already "the only refresh owner" (`useBackgroundTaskPanelView.ts:15`). Response: extend it, no new owner.
   - Hidden dependency: none added. The new liveness input is passed in by the callers.
-  - Behavior by absence: D-I's rule is explicit ("the run is not live and a task shows running"), not a missing event.
+  - Behavior by absence: D-I's rule is explicit ("the run went from live to Offline, and every streaming runtime ends its tasks at run end", ASM-1), applied on an observed status transition, not on a missing event.
 - Deliberate deviations: `None`.
 - Root cause classification: E is `Duplicated Policy Or Coordination`; J is `Boundary Or Ownership Issue` (parallel path); A is dead data; B is `Missing Invariant` (no check); the rest are `Local Implementation Defect`.
 - Refactor needed now: Yes for E and J (the consolidations above); No for the rest.
@@ -163,14 +164,14 @@ None.
 | DS-D | Primary | BEH-D | `interrupted` status | Word/icon on each surface | `toolActivityStatusPresentation` (Activity); `getToolCardStatusPresentationKey` (cards) | REQ-D |
 | DS-E | Primary | BEH-E | Earlier page request | Card summary | Node page projection → web `toolCardPresentation` → `getToolDisplaySummary` | REQ-E |
 | DS-H | Primary | BEH-H | Tap | File viewer | `useEventMonitorFilePreview.openPath` | REQ-H1/H2 |
-| DS-I | Return-Event | BEH-I | Run status → not live | List shows the end | `useBackgroundTaskPanelView` | REQ-I |
+| DS-I | Return-Event | BEH-I | Run status live → Offline | List shows the end | `useBackgroundTaskPanelView` (trigger) and `agentBackgroundTaskStore` (rows) | REQ-I |
 | DS-J | Primary | BEH-J | `GET /workspaces/:id/content` | File bytes | `WorkspaceManager.getOrCreateWorkspace` | REQ-J |
 
 ## Primary Execution Spine(s)
 
 - DS-E: `Event Monitor (earlier page) -> GraphQL eventMonitorActiveTracePage -> page projection summaryArgs(event) [reads TOOL_SUMMARY_ARGUMENT_KEYS] -> wire JSON -> eventMonitorActiveTraceBrowsePresentation -> buildEventMonitorPageToolCardPresentation -> getToolDisplaySummary [reads the same keys] -> ToolCallIndicator`
 - DS-H: `Tap link -> MarkdownRenderer.handleLinkClick -> emit file-path-action {kind:'run-relative', href} -> (AIMessage/… pass-through) -> AgentEventMonitor.handleFilePathAction -> useEventMonitorFilePreview.openPath -> resolve against activeWorkspaceTarget.workspaceRootPath (resolveWorkspaceRelativeReference(href, '')) -> absolute action -> existing desktop or phone open`
-- DS-I: `Node stops run -> AGENT_STATUS offline (agent-stream-handler unbindStoppedRun) -> context.state.currentStatus = Offline -> caller's runLive computed false -> useBackgroundTaskPanelView sees live→not live with a running row -> refresh() -> AgentBackgroundTaskView query -> seedTasks -> row Stopped`
+- DS-I: `Node stops run -> AGENT_STATUS offline (agent-stream-handler unbindStoppedRun) or a history/run-status snapshot -> context.state.currentStatus = Offline -> caller's runStopped computed true -> useBackgroundTaskPanelView sees false→true -> agentBackgroundTaskStore.endRunningTasksForRunEnd(runId) -> each running row becomes {status:'stopped', endReason:'run_ended'} -> row reads Stopped / "Stopped: the run ended"`
 - DS-J: `Phone GET /workspaces/:id/content -> registerWorkspaceRoutes -> WorkspaceManager.getOrCreateWorkspace(id) [memory, else registry, else error] -> workspace.resolveReadablePath -> sendUserFile`
 
 ## Spine Narratives (Mandatory)
@@ -183,7 +184,7 @@ None.
 | DS-D | The status maps to "Stopped", stop icon, neutral tone; cards map `interrupted` to their own key and render the same icon | Presentation builders | Two builders | — |
 | DS-E | Both sides read one key list; the page projection copies those keys' string values into a JSON object | Projection, card builder | Shared list | Codegen |
 | DS-H | A relative link becomes a file action carrying its href. The opener resolves it against the run's folder and continues as an absolute path. Escape or no folder → `failed()`. Remote run → "on node X". | Renderer, opener | `openPath` | 576 resolver |
-| DS-I | The panel view watches liveness. On live→not live with a running row it re-reads, then re-reads every 2 s while not live and a row still shows running, at most 5 times. | Panel view | Panel view | Apollo query |
+| DS-I | The panel view watches `runStopped`. On false→true (an observed stop; the initial value never counts) it asks the store to end the run's running rows as `run_ended`. While stopped it schedules no 2 s re-read; on true→false (the run is live again) it reads once. | Panel view, task store | Panel view (trigger); store (rows) | — |
 | DS-J | The route asks the manager's restoring lookup; a thrown "not found" maps to 404 | Route, manager | Manager | Registry store |
 
 ## Spine Actors / Main-Line Nodes
@@ -195,7 +196,7 @@ The nodes named in the Primary Execution Spines.
 - `TOOL_SUMMARY_ARGUMENT_KEYS` (agent-presentation-contracts) owns which argument keys summarize a call, by kind. The web's `getToolDisplaySummary` owns how a summary is built from them. The node's page projection owns which keys travel to the page card. It filters by activity type, as today: file keys for write/edit, command keys for terminal.
 - `toolActivityStatusPresentation` owns the Activity status words and icons. `getToolCardStatusPresentationKey` plus `ToolCallIndicator` own the card's. The card takes the stop icon name from `toolActivityStatusPresentation('interrupted').icon`, so the new icon has one source.
 - `useEventMonitorFilePreview.openPath` owns turning a run-relative link into a file of the run.
-- `useBackgroundTaskPanelView` owns when the list re-reads.
+- `useBackgroundTaskPanelView` owns when the list re-reads and when a stop is applied. `agentBackgroundTaskStore` owns the rows and the shape of a run-end (`stopped`, `run_ended`, no exit code).
 - `WorkspaceManager.getOrCreateWorkspace` owns resolving a workspace ID.
 
 ## Thin Entry Facades / Public Wrappers
@@ -220,16 +221,14 @@ DS-I above.
 
 ## Bounded Local / Internal Spines
 
-DS-I re-read loop, inside `useBackgroundTaskPanelView`:
-`not live && row running -> refresh -> answer -> (still not live && row running && tries < 5) -> wait 2 s -> refresh`.
-
-It stops when no row shows running, when the run is live again, when the selection changes, or on dispose. It reuses the existing `timer` and `generation` guards.
+DS-I inside `useBackgroundTaskPanelView`:
+`watch(runStopped): false→true -> store.endRunningTasksForRunEnd(runId)`; `true→false -> refresh()`; `finally` of `refresh()`: schedule the 2 s re-read only when `mode !== 'event-stream'` **and** the run is not stopped (today it is scheduled for any non-event-stream answer, including `unavailable/inactive` for a stopped run, without bound: `useBackgroundTaskPanelView.ts:78`).
 
 ## Off-Spine Concerns Around The Spine
 
 | Concern | Spine | Serves | Responsibility | Why | Risk |
 | --- | --- | --- | --- | --- | --- |
-| `isAgentStatusLive(status)` | DS-I | Callers' liveness computed | Offline/Error → not live (the one rule, now private in `agentRunStore.ts:68`) | One owner for "live" | A second copy in the composable |
+| Run-end shape | DS-I | Panel view | `endRunningTasksForRunEnd(runId)` in `agentBackgroundTaskStore`: each `running` row becomes `stopped`, `endReason: 'run_ended'`, `exitCode: null`; ended rows untouched | The store owns rows; the node's own run-end shape (ASM-1) | A second copy of the end shape in a component |
 | 576 `resolveWorkspaceRelativeReference` | DS-H | `openPath` | Confinement and decoding | Reuse | Re-implementing traversal checks |
 | Codegen | DS-E | Web | `generated/graphql.ts` | Field type changed | Stale types |
 
@@ -249,7 +248,7 @@ It stops when no row shows running, when the run is live again, when the selecti
 ## Dependency Rules
 
 - web → `@autobyteus/agent-presentation-contracts` (existing); node → the same (existing). No new package dependency.
-- The panel view receives `runLive: Ref<boolean>` from its callers (call argument). No lookup is added.
+- The panel view receives `runStopped: Ref<boolean>` (the run's `currentStatus === AgentStatus.Offline`) from its callers (call argument). No lookup is added. `Error` does not count as stopped: a run with a recoverable block can be Error with its agent and tasks alive.
 - No process-wide binding is added. `getWorkspaceManager()` is the existing lookup the routes already use; it is unchanged (Principle 16: it is used, not added).
 
 ## Interface Boundary Mapping
@@ -257,7 +256,7 @@ It stops when no row shows running, when the run is live again, when the selecti
 | Interface | Subject | Responsibility | Identity | Notes |
 | --- | --- | --- | --- | --- |
 | `TOOL_SUMMARY_ARGUMENT_KEYS: Readonly<{ file; command; recipient; task; text }>` and the type `ToolSummaryArgumentKey` | Summary keys | One list by kind | — | Plain data; not a port |
-| `useBackgroundTaskPanelView(runId, expanded, runLive)` | One run's task list | Plus re-read on stop | `runId` | — |
+| `useBackgroundTaskPanelView(runId, expanded, runStopped)` | One run's task list | Plus apply an observed stop; no polling while stopped | `runId` | — |
 | `file-path-action` payload: `AbsoluteFilePathAction \| RunRelativeFileLink { kind: 'run-relative'; href: string }` | A file link in a conversation | One channel for both forms | Discriminated by `kind` (`AbsoluteFilePathAction` gains `kind: 'absolute'`) | The existing pass-through emits change only in their types |
 | GraphQL `EventMonitorToolCard.summaryArgs: JSON` | One card's summary inputs | Object of key → string | — | Clean cut |
 
@@ -282,7 +281,7 @@ It stops when no row shows running, when the run is live again, when the selecti
 | Relative path confinement | 576 resolver | Reuse | Same rule |
 | Workspace restore | `getOrCreateWorkspace` | Reuse | Same lookup as GraphQL |
 | Re-read the task list | Panel view `refresh()` | Extend | It is the refresh owner |
-| Liveness rule | `agentRunStore` `NOT_LIVE_STATUSES` | Extend (export as `isAgentStatusLive`) | One rule |
+| Run-end of rows | `agentBackgroundTaskStore` | Extend (`endRunningTasksForRunEnd`) | It owns the rows |
 | Summary keys location | agent-presentation-contracts | Extend | Both sides import it already |
 
 ## Subsystem / Capability-Area Allocation
@@ -320,10 +319,10 @@ It stops when no row shows running, when the run is live again, when the selecti
 | Web `utils/eventMonitorFilePaths/absoluteFilePathAction.ts` | Modify | `kind: 'absolute'` on the action, and the `RunRelativeFileLink` type plus the union type |
 | Web `components/conversation/segments/renderer/MarkdownRenderer.vue` | Modify | With `enableEventMonitorFileActions`, a relative href emits `file-path-action` `{kind:'run-relative', href}`. Otherwise `relative-link` as today (MarkdownPreviewer) |
 | Web pass-through emit types (`AIMessage.vue`, `ThinkSegment.vue`, `SystemTaskNotificationSegment.vue`, `AgentConversationFeed.vue`, `EventMonitorBrowseAssistantRow.vue`) | Modify | Payload type only |
-| Web `composables/useEventMonitorFilePreview.ts` | Modify | `openPath`: remote check first (as today), then for `run-relative`: root = `activeContextStore.activeWorkspaceTarget?.workspaceRootPath`; none → `failed()`; `resolveWorkspaceRelativeReference(href, '')` blocked → `failed()`; else build the absolute path with the existing path utilities (`absoluteWorkspacePathMapping.ts`'s join or equivalent; Windows roots included) and continue as an absolute action |
-| Web `composables/useBackgroundTaskPanelView.ts` | Modify | `runLive` input and the DS-I loop |
-| Web `types/agent/AgentStatus.ts`, `stores/agentRunStore.ts` | Modify | Export `isAgentStatusLive`; the store uses it |
-| Web `components/progress/BackgroundTaskPanel.vue`, `components/mobile/views/MobileActivity.vue` | Modify | Pass `runLive` from their context's `currentStatus` |
+| Web `composables/useEventMonitorFilePreview.ts` | Modify | `openPath`: remote check first (as today), then for `run-relative`: root = `activeContextStore.activeWorkspaceTarget?.workspaceRootPath`, or, when it is empty, the root from `activeContextStore.resolveWorkspaceMetadataForTarget(target)` as the absolute flow does (`useEventMonitorFilePreview.ts:91-97`, with its `isCurrent()` check); still none → `failed()`; `resolveWorkspaceRelativeReference(href, '')` blocked → `failed()`; else build the absolute path with the existing path utilities (`absoluteWorkspacePathMapping.ts`'s join or equivalent; Windows roots included) and continue as an absolute action |
+| Web `composables/useBackgroundTaskPanelView.ts` | Modify | `runStopped` input; the DS-I watch; the re-read scheduled only while not stopped |
+| Web `stores/agentBackgroundTaskStore.ts` | Modify | `endRunningTasksForRunEnd(runId)` |
+| Web `components/progress/BackgroundTaskPanel.vue`, `components/mobile/views/MobileActivity.vue` | Modify | Pass `runStopped` from their context's `currentStatus === AgentStatus.Offline` |
 | Node `api/rest/workspaces.ts` | Modify | `await getWorkspaceManager().getOrCreateWorkspace(id)` in `try`; its "not found" error (and a skill/semantic open failure) → 404 `Workspace not found`, with the same log line |
 | Web `tests/e2e/mobile-heading-links-cases.mjs` | Modify | MSP-44/45: `other.md` opens `other.md`; `./x.md` opens `x.md` if present (else the viewer's not-found); `#no-such-heading-480`, `/x.md` and `../out.md` follow nothing. The fixture creates `other.md` |
 | Web `tests/e2e/mobile-context-file-size-cases.mjs:145` | Modify | Accept both codes for MSP-55 |
@@ -337,7 +336,7 @@ It stops when no row shows running, when the run is live again, when the selecti
 | --- | --- | --- | --- |
 | Shared keys | `export const TOOL_SUMMARY_ARGUMENT_KEYS = { file: ['path','file_path','filepath','filename','target_path','Path','AbsolutePath','TargetFile','DirectoryPath'], command: ['command','cmd','script','CommandLine'], recipient: ['recipient_address'], task: ['task_id'], text: ['query','Query','Pattern','prompt','url','message','text','title','name','raw'] } as const;` | Adding the five missing names to the node's and GraphQL's lists by hand | Third drift |
 | Relative link | `{kind:'run-relative', href:'media/clip.mp4'}` → root `/w/run` → `/w/run/media/clip.mp4` → existing absolute flow | The renderer resolving against a root it does not own | Owner |
-| DS-I trigger | `watch(runLive, (live, was) => { if (was && !live && hasRunningRow()) startEndReread() })` | Polling every 2 s while the run runs | QR-1 |
+| DS-I trigger | `watch(runStopped, (stopped, was) => { if (stopped && was === false) store.endRunningTasksForRunEnd(runId.value); else if (!stopped && was) void refresh() })` | Re-reading the node's view after the stop (it answers `inactive`, AR-001); polling every 2 s while stopped | REQ-I, QR-1 |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -362,12 +361,12 @@ It stops when no row shows running, when the run is live again, when the selecti
 ## Key Tradeoffs
 
 - E uses a JSON field and loses GraphQL field typing, in exchange for one list instead of three. Values stay strings, and the web reads them as `Record<string, unknown>` already.
-- I is correct by construction rather than a proven root-cause fix (DEC-007). It costs at most 5 reads per run stop, only when a row still shows running.
+- I is correct by construction rather than a proven root-cause fix (DEC-007). It derives the end on the web from the run's stop, which every streaming runtime guarantees (ASM-1), instead of keeping a stopped run's list on the node. No read is added; a stopped run's 2 s polling is removed.
 - H covers links only (DEC-002).
 
 ## Risks
 
-- I: the run's status could turn Offline before the node's task view shows the end. The bounded re-read covers that (5 × 2 s).
+- I: a wrong live→Offline transition would end a running row on the web, and the store never replaces an ended row with a running one (`agentBackgroundTaskStore.ts:36-42`). The web already trusts the same status for the running count (`agentRuntimeStatusState.ts:66,74`). The initial status (`DEFAULT_AGENT_STATUS = Offline`) never counts, because only a `false→true` change of `runStopped` applies.
 - J: an on-demand skill workspace is now created by a URL read after a restart. That is the same behavior as the GraphQL Files path (`file-explorer.ts:29`). A skill ID resolves by name through `SkillService.getSkill` (`skill-workspace.ts:24`), not by path.
 - C: Windows-specific behavior is proven only by the build-only release run's Windows job.
 
@@ -376,6 +375,6 @@ It stops when no row shows running, when the run is live again, when the selecti
 - Reproductions to start from:
   - B: `pnpm -C autobyteus-agent-presentation-contracts build && pnpm -C autobyteus-collaboration-stream-contracts build && pnpm -C autobyteus-team-stream-contracts build && git status --short` (2 files change on base `f2c0d2a902`).
   - F: `--cases=MSP-44,MSP-45` (fail on base).
-  - I: MSP-99 fails on base.
+  - I: MSP-99 fails on base. Add a unit case of `useBackgroundTaskPanelView`: live → Offline with a running row ends it as `run_ended`; initial Offline ends nothing; Offline schedules no re-read.
 - Build inputs touched (B, C, E): run the fresh-start build (TESTING.md) and the build-only Desktop Release run on the ticket branch (DESIGN.md rule 12, RELEASE.md). The Windows job proves C.
 - Run Node 22.

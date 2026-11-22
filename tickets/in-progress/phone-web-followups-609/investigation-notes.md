@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile` passed (`/tmp/sd609-install.log`)
 - Bootstrap blocker: None
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002
 - Authorities read (requirements reading gate, 2026-11-22):
   - `references/requirements-engineering.md`
   - `references/ticket-scope.md`
@@ -171,3 +171,16 @@ The items, as referred to in these notes:
 - H: which forms become file links, and what they resolve against.
 - I: the cause decides the fix.
 - J: the content routes should use the restoring lookup.
+
+## SR-002 evidence (ARCH-REV-001 AR-001), 2026-11-22 (Read)
+
+- `autobyteus-server-ts/src/api/graphql/types/agent-background-task-view.ts:94-101`: `agentBackgroundTaskView` answers `{kind:'unavailable', reason:'inactive'}` when the published run is missing or not active, and checks again after the read. A read after the run stops can never return its tasks.
+  - SR-001's ASM-1 was validated against the backends' `list()`, not against this read: a claim about the code taken on trust (docs/design-cases.md Case 5).
+- `autobyteus-web/composables/useBackgroundTaskPanelView.ts:27-32`: with no snapshot, `tasks` falls back to the stream store's rows. `:76-80`: `finally` schedules a 2 s refresh for any answer other than `event-stream`, including `unavailable` for a stopped run, with no bound.
+- Every runtime that streams its tasks ends running tasks with `stopped`/`run_ended` when its run ends:
+  - Claude: `claude-background-task-registry.ts:249`
+  - native: `autobyteus-background-task-reporter.ts:15-23` and `BackgroundProcessManager.stopAllForRunEnd`
+  - Antigravity: `agy-background-task-monitor.ts:82-88`, from every stop path in `agy-agent-run-backend.ts`
+  - Codex is a snapshot runtime (`codex-agent-run-backend.ts:50`).
+- The web already applies "an offline run has no running background task" to the count (`services/runStatus/agentRuntimeStatusState.ts:66,74`).
+- `stores/agentBackgroundTaskStore.ts:36-46`: a row that has ended is never replaced by a running one.
