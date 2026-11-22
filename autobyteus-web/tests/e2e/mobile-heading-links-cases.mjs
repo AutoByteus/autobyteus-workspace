@@ -30,6 +30,11 @@
 //                  conversation is a file link of the run's folder, autobyteus-609 MSP-100); the
 //                  external link opens one new tab at that address; the renderer leaves a `mailto:` click to the browser
 //                  (not prevented), as before.
+//   MSP-100 autobyteus-609 AC-H1, AC-H2  A run's message links paths relative to its own folder, on the desktop and the
+//                  phone: `docs-609/a.md#x` and `media-609/clip-609.txt` open that file of the run's folder (the Files
+//                  panel, the phone viewer); `../outside-609.md` (an existing file out of the folder) opens nothing and says
+//                  "The file preview could not be opened."; `docs-609/gone-609.md` (missing) opens the viewer's existing
+//                  not-found state.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -79,7 +84,7 @@ const placeInPage = (el) => {
  */
 export const runHeadingLinksCases = async (probe) => {
   const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView } = probe;
-  const ids = ['MSP-44', 'MSP-45', 'MSP-46'];
+  const ids = ['MSP-44', 'MSP-45', 'MSP-46', 'MSP-100'];
   if (selected && !ids.some(id => selected.has(id))) return;
   let currentCase = 'heading-links-setup';
   const ws = stack.workspace;
@@ -417,9 +422,87 @@ export const runHeadingLinksCases = async (probe) => {
       const scrolledOwn = s => ['twoNotes', 'oneSetup', 'twoSetup'].every(k => s[k].ownReached && s[k].otherInWindow === false && s[k].urlUnchanged);
       assert(scrolledOwn(details.desktop) && scrolledOwn(details.phone), 'each entry scrolls to the heading of its own answer; the other answer\'s same heading stays out of view; URL unchanged (AC-003)', details);
       assert(details.desktop.keyboardEnter.ownReached, 'Enter on a focused entry scrolls to its heading (REQ-002)', details);
-      assert(allStill(details.desktop.nothing) && allStill(details.phone.nothing), 'a broken anchor and a relative link in an answer change nothing (AC-004)', details);
+      assert(allStill(details.desktop.nothing) && allStill(details.phone.nothing), 'a broken anchor in an answer changes nothing (AC-004)', details);
       assert([details.desktop, details.phone].every(s => s.external.newTabs === 1 && s.external.urls[0]?.startsWith(EXTERNAL) && s.external.urlUnchanged), 'the external link opens one new tab at its address; the page stays (AC-005)', details);
       assert([details.desktop, details.phone].every(s => s.mailto.preventedByRenderer.length === 1 && s.mailto.preventedByRenderer[0] === false), 'the renderer leaves a mailto: link to the browser, as before (AC-005)', details);
+      return details;
+    });
+    // autobyteus-609 D-H (AC-H1, AC-H2): a run's message links paths relative to the run's folder.
+    await runCase('MSP-100', async () => {
+      currentCase = 'MSP-100';
+      const ws = stack.workspace;
+      await fs.mkdir(path.join(ws, 'docs-609'), { recursive: true });
+      await fs.mkdir(path.join(ws, 'media-609'), { recursive: true });
+      await fs.writeFile(path.join(ws, 'docs-609', 'a.md'), '# A 609\n\nA-609-BODY\n\n## x\n\nThe heading the link names.\n');
+      await fs.writeFile(path.join(ws, 'media-609', 'clip-609.txt'), 'CLIP-609-BODY\n');
+      await fs.writeFile(path.join(path.dirname(ws), 'outside-609.md'), '# Outside\n\nOUTSIDE-609-BODY\n');
+      const run = await newRun();
+      await stack.agentSay(run, 'ECHO_INPUT RUNREL-609 [notes](docs-609/a.md#x) [clip](media-609/clip-609.txt) [up](../outside-609.md) [gone](docs-609/gone-609.md)');
+      await waitFor('the run-relative links message', async () => { const text = await stack.projection(run); return text.includes('ECHO:') && text.includes('RUNREL-609'); }, 60_000);
+      const FAILED = 'The file preview could not be opened.';
+      const details = {};
+
+      // The desktop window: the Files panel.
+      await openDesktopRun(run);
+      const deskConversationLink = href => deskPage.locator(`a[href="${href}"]`).last();
+      await deskConversationLink('docs-609/a.md#x').waitFor({ timeout: 60_000 });
+      const deskViewer = deskPage.locator('#contentViewer:visible').first();
+      const deskStatus = deskPage.locator('[data-testid="event-monitor-file-preview-status"]');
+      const deskOpen = async (href, marker) => {
+        await deskConversationLink(href).click();
+        let opened = false;
+        try { await waitFor(`${href} in the Files panel`, async () => (await deskViewer.innerText().catch(() => '')).includes(marker), 20_000); opened = true; } catch { /* recorded */ }
+        await deskPage.screenshot({ path: path.join(outputDir, `MSP-100-desktop-${marker}.png`) });
+        return { href, opened };
+      };
+      details.desktop = { notes: await deskOpen('docs-609/a.md#x', 'A-609-BODY'), clip: await deskOpen('media-609/clip-609.txt', 'CLIP-609-BODY') };
+      await deskConversationLink('../outside-609.md').click();
+      await waitFor('the could-not-open status', async () => (await deskStatus.innerText().catch(() => '')).includes(FAILED), 15_000).catch(() => undefined);
+      details.desktop.up = { status: (await deskStatus.innerText().catch(() => '')).trim(), outsideShown: (await deskPage.locator('body').innerText()).includes('OUTSIDE-609-BODY') };
+      await deskConversationLink('docs-609/gone-609.md').click();
+      await sleep(2_000);
+      details.desktop.gone = { viewer: (await deskViewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200), status: (await deskStatus.innerText().catch(() => '')).trim() };
+      await deskPage.screenshot({ path: path.join(outputDir, 'MSP-100-desktop-gone.png') });
+
+      // The phone: its file viewer.
+      const conv = await openPhoneRun(run);
+      const phoneLink = href => conv.locator(`a[href="${href}"]`).last();
+      await phoneLink('docs-609/a.md#x').waitFor({ timeout: 60_000 });
+      const phoneViewer = phonePage.locator('[data-testid="mobile-file-viewer"]');
+      const backToConversation = async () => {
+        for (let step = 0; step < 3 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(500); }
+      };
+      const phoneOpen = async (href, marker) => {
+        await press(phone, phoneLink(href));
+        let opened = false;
+        try { await waitFor(`${href} in the phone viewer`, async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes(marker), 20_000); opened = true; } catch { /* recorded */ }
+        await phonePage.screenshot({ path: path.join(outputDir, `MSP-100-phone-${marker}.png`) });
+        await backToConversation();
+        return { href, opened };
+      };
+      details.phone = { notes: await phoneOpen('docs-609/a.md#x', 'A-609-BODY'), clip: await phoneOpen('media-609/clip-609.txt', 'CLIP-609-BODY') };
+      const phoneStatus = phonePage.locator('[data-testid="event-monitor-file-preview-status"]');
+      await press(phone, phoneLink('../outside-609.md'));
+      await waitFor('the could-not-open status on the phone', async () => (await phoneStatus.innerText().catch(() => '')).includes(FAILED), 15_000).catch(() => undefined);
+      details.phone.up = { status: (await phoneStatus.innerText().catch(() => '')).trim(), viewerOpened: (await phoneViewer.count()) > 0, outsideShown: (await phonePage.locator('body').innerText()).includes('OUTSIDE-609-BODY') };
+      await phonePage.screenshot({ path: path.join(outputDir, 'MSP-100-phone-outside.png') });
+      await press(phone, phoneLink('docs-609/gone-609.md'));
+      await waitFor('the missing file in the phone viewer', async () => (await phoneViewer.count()) > 0, 15_000).catch(() => undefined);
+      await sleep(1_500);
+      details.phone.gone = { viewerOpened: (await phoneViewer.count()) > 0, viewer: (await phoneViewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200) };
+      await phonePage.screenshot({ path: path.join(outputDir, 'MSP-100-phone-gone.png') });
+      await backToConversation();
+
+      const failures = [
+        [details.desktop.notes.opened && details.desktop.clip.opened, 'AC-H1 on the desktop a run-relative link opens that file of the run\'s folder in the Files panel'],
+        [details.phone.notes.opened && details.phone.clip.opened, 'AC-H1 on the phone a run-relative link opens that file of the run\'s folder in the viewer'],
+        [details.desktop.up.status.includes(FAILED) && !details.desktop.up.outsideShown, 'AC-H2 on the desktop a link out of the run\'s folder opens nothing and says it could not be opened'],
+        [details.phone.up.status.includes(FAILED) && !details.phone.up.viewerOpened && !details.phone.up.outsideShown, 'AC-H2 on the phone a link out of the run\'s folder opens nothing and says it could not be opened'],
+        // The viewer's existing not-found state (its raw text, with the node's path, predates this ticket: FU-005).
+        [/File not found/.test(details.desktop.gone.viewer) && details.phone.gone.viewerOpened && /File not found/.test(details.phone.gone.viewer),
+          'AC-H2 a missing file opens the viewer\'s existing not-found state, on the desktop and the phone'],
+      ].filter(([ok]) => !ok).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
       return details;
     });
   } finally {
