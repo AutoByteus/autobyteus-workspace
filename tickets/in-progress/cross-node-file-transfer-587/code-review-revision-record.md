@@ -16,6 +16,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-008 | `code-review-report.md` | Implementation Review round 4, Full Re-Audit (IR-004, merge with autobyteus-591, `bcd05494cb`) | Pass (CRR-006) | Fail (Design Impact + Local Fixes) | CR-587-01 … CR-587-05 |
 | CRR-009 | `code-review-report.md` | Implementation Review round 5, Full Re-Audit (IR-005, SR-010/SR-011, `07b4b83cef`) | Fail (CRR-008) | Fail (Requirement Gap + Local Fixes) | CR-587-01…04 resolved; CR-587-05 open; CR-587-06 … 08 new |
 | CRR-010 | `code-review-report.md` | Implementation Review round 6, Full Re-Audit (IR-006, SR-012, `a0c233492b`) | Fail (CRR-009) | Fail (Local Fix) | CR-587-06, -07 resolved; -08 closed by DEC-010; -05 open; CR-587-09 new |
+| CRR-011 | `code-review-report.md` | Implementation Review round 7, Full Re-Audit (IR-007, `11b7ed5444`) | Fail (CRR-010) | Pass | CR-587-09 resolved; CR-587-05 open (API/E2E) |
 
 ## Revision Entries
 
@@ -310,3 +311,31 @@ None.
 - Material score or classification changes: overall 9.3 → 9.4. Runtime Correctness 9.4. Classification: `Local Fix` (implementation).
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: the DEC-010 accepted risk; the hard-link residual; `task-delegation.ts` at 498 lines.
+
+### CRR-011 — Source review round 7: full re-audit at IR-007
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Full Re-Audit`. The only production change since CRR-010 is `11b7ed5444`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, IR-007; CR-587-09
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Fail (CRR-010)
+- Current authoritative result: Pass
+- What changed in the review result and why: CR-587-09 is resolved. The `RemoteFiles` bundle is retired; `receivedFiles` and `outgoingFiles` are passed separately to the owners that use them. No code finding remains.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-09 | Open (Local Fix) | Resolved | IR-007 `11b7ed5444` | `composeRemoteFiles` → `{receivedFiles, outgoingFiles}`; `RemoteFiles` removed (grep: no name left) |
+| CR-587-05 | Open (API/E2E) | Open (API/E2E) | SR-010 R4 | For API/E2E's next round |
+
+- New or remaining finding IDs: CR-587-05 (API/E2E)
+- Material score or classification changes: 9.4/10; Shared-Structure and Cleanup up to 9.4
+- Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
+- Remaining risks or uncertainty: DEC-010 accepted risk; hard-link residual; `task-delegation.ts` at 498 lines.

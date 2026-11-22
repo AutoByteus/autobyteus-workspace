@@ -14,10 +14,10 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001 … IR-006
+- Relevant Implementation Revision IDs: IR-001 … IR-007
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-010`
-- Current Review Round: `6`
+- Current Code Review Revision ID: `CRR-011`
+- Current Review Round: `7`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round 2): `ef53fadd52..e295b74b81` changes six test files only. Delivery's merge `3be417f8df` brought six `src` files from `origin/personal`; none is a file this ticket changed (the two change sets do not intersect). No production source of this ticket changed since `e327ba2467`, so round 1's structural checks and scores carry forward
 - Trigger: IR-002 (delivery's DEL-03 Local Fix, items 1–3 in `release-deployment-report.md` § Escalation / Reroute): test fix `e295b74b81`, handoff and evidence `20866c8847`, on delivery's `ef53fadd52`. Round 1: IR-001, code `e327ba2467`, base `fbe714f8bb`
@@ -409,13 +409,46 @@ Scope: `Full Re-Audit`, as the user asked for this ticket. Since CRR-009 the onl
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — |
 | 10 | Cleanup Completeness | 9.2 | CR-587-09 |
 
+## Round 7 (CRR-011): Full Re-Audit at IR-007
+
+Scope: `Full Re-Audit`, per the user's direction for this ticket. Since CRR-010, the only production change is `11b7ed5444` (5 files); `a12c6c291d`, `5b7c717a70` and `e15fa963bf` are documents (FU-008 became Task autobyteus-601). Round 6's audit of everything else stands byte for byte.
+
+| ID | Status | Verification |
+| --- | --- | --- |
+| CR-587-09 | Resolved | `composeRemoteFiles` returns `{ receivedFiles, outgoingFiles }`. `composeCollaboration` takes `outgoingFiles: Pick<OutgoingFiles, "send">`, which feeds the router and `TaskDelegation`. The hosts pass `receivedFiles` to the supervisor and the platform runtime and `outgoingFiles` to the collaboration. The `RemoteFiles` type is gone: no name in `src` or tests. Test helpers: `NO_OUTGOING_FILES`, `NO_FILES_RECEIVED` |
+| CR-587-05 | Open, API/E2E's | Unchanged |
+
+- **Re-audit.** Every owner now receives exactly what it uses (P16). No field is read only by tests (DESIGN.md rule 11). No new structure. Sizes unchanged and under 500 (`task-delegation.ts` 498).
+- **Evidence (read; reran nothing).** IMP-28: typechecks at baseline. IMP-29: the whole unit suite, 8821 tests. IMP-30: integration, 116. IMP-31: rebuilt two-server, 59/59.
+- **Findings:** None.
+
+### Scorecard (full re-audit)
+
+- Overall score: 9.4/10
+
+| Priority | Category | Score | Why / what holds it down |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | One order, one owner each |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Owners take only what they use |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | — |
+| 4 | Separation of Concerns and File Placement | 9.3 | `task-delegation.ts` at 498 lines (no headroom) |
+| 5 | Shared-Structure / Data-Model Tightness | 9.4 | The half-used bundle is gone |
+| 6 | Naming Quality and Local Readability | 9.3 | — |
+| 7 | API/E2E Readiness | 9.2 | CR-587-05 and AC-012 over real HTTP are API/E2E's next round |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | No behavior change since CRR-009's resolutions; DEC-010 recorded |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — |
+| 10 | Cleanup Completeness | 9.4 | — |
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 6, CRR-010, full re-audit)
+- Review Decision: `Pass` (round 7, CRR-011, full re-audit)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10. Shared-Structure, API/E2E Readiness and Cleanup 9.2.
-- Classification: `Local Fix` (implementation): CR-587-09. `Local Fix` (API/E2E, scoped): CR-587-05.
-- Recommended Recipient: implementation engineer
-- Notes: CR-587-06 and -07 resolved; CR-587-08 closed by DEC-010. CR-587-09 is the last code item I found.
+- Score Summary: 9.4/10; every category ≥ 9.2.
+- Recommended Recipient: API/E2E engineer. Its round should do CR-587-05 (the contract model's `counterpart`/`copiedFrom`, then the gated contract stories including S18/S19) and AC-012 over real HTTP. The changed tests then return to me for the test-code review.
+- Notes:
+  - Open findings: none in code.
+  - Accepted risk: DEC-010.
+  - Residuals: hard links into the workspace; `task-delegation.ts` at 498 lines.
+  - Follow-ups: FU-001, FU-005, FU-008 (now autobyteus-601).
