@@ -56,3 +56,4 @@ Constraints: `DESIGN.md`, `TESTING.md`; synthetic data; no release without the f
 
 - `get_handoff_rules`: the rule for Small or Medium with Low risk sends to `/implementation_engineer`.
 - Sent 2026-11-22 to `/implementation_engineer` (run `implementation_engineer_b837a62ada2a4a38923f9ee7df199366`): DELIVERED, with the handoff and the four ticket documents attached.
+- 2026-11-22: Evidence Decision DEC-004 (AC-003) sent to `/api_e2e_engineer`: other evidence plus an accepted low-risk untested scope (the busy-fseventsd regime).

@@ -21,3 +21,9 @@
 - **Classification:** `Medium` / `Low`.
 - **Handoff:** `solution-designer-handoff.md`.
 - **Remaining gaps:** UNK-001 (I-2 causes, measured in implementation).
+
+### Note to SR-001 — DEC-004 evidence decision (AC-003)
+
+- 2026-11-22: API/E2E asked for an evidence decision. The busy-fseventsd regime cannot be reproduced on the host now.
+- Decided: use the IMP-08 measurements and a calm whole-E2E run as the evidence. The untested scope is accepted as low risk: the eight I-2 files under a stalled fseventsd.
+- Requirements and design are unchanged. Routed to `/api_e2e_engineer` as an Evidence Decision.
