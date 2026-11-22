@@ -37,7 +37,7 @@ import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migration
  *  - OC-03 (AC-002, REQ-002): `team-config.json` gains a member: the Team unit follows, the Org shows it Offline at its Org
  *    address, the lead is told with the Org address.
  *  - OC-04 (AC-002, AC-004): the reviewer is removed mid-turn: Leaving (stored marker, Org row tag), refused by its Org address
- *    with the exact text (to a teammate; the Org agent is refused too), the Org rule to it left out and the concierge told; its pending send to /concierge is delivered once
+ *    with the exact text (to a teammate, and to the Org agent: DEC-007), the Org rule to it left out and the concierge told; its pending send to /concierge is delivered once
  *    the gate opens; then it is released.
  *  - OC-05 (AC-004): the reviewer is added back: same run, its conversation continues, the Org rule is back, concierge told.
  *  - OC-06 (DEC-006, REQ-005): the Team unit stopped alone (its own terminate) is woken by the concierge's message; the agent
@@ -46,6 +46,10 @@ import { ORG_UNITS_FOLLOW_UPS } from "../../../src/app-data-migrations/migration
  *    refused as closed; back to TODO: the lead's message continues the copy's conversation.
  *  - OC-10 (AC-005, REQ-005): Stop the Org; `team-config.json` gains a member while stopped (no change); reopening (a message
  *    in the Org view) gives the current members; again with a server restart between.
+ *  - OC-12 (AC-005, AC-002; F-4 of round 1 in its Org form): /team/writer takes a hand-off from the concierge and is removed
+ *    from its Team; the Org is stopped and reopened and its Team unit messaged: restored, the hand-off line kept in both logs.
+ *  - OC-13 (REQ-009, DEC-005): while an Org rule names the removed /team/writer, an `org-config.json` edit is still followed (that
+ *    rule only left out); afterwards the writer is added back to its Team.
  *  - OC-08 (AC-008, REQ-009): `org-config.json` mounts a second Team and adds an agent: new unit runs, Offline; told who joined.
  *  - OC-09 (AC-008, REQ-009): `org-config.json` unmounts /team while its lead is mid-turn and removes the added agent: /team is
  *    a leaving former unit (stored, Org row tag), refused by name; its lead's send is delivered once the gate opens, then the
@@ -392,7 +396,7 @@ suite("An Org of a package is a container whose units follow their definitions (
     const rowsWhileLeaving = await org.leavingRows();
     const allRowsWhileLeaving = (await org.rows()).map((row) => ({ kind: row.kind, address: row.address, agentRunId: row.openTarget?.agentRunId, leaving: row.leaving === true }));
     const told = await org.echo("/concierge");
-    // A teammate (REQ-002, autobyteus-22 AC-002) addresses it by its Org address; the Org agent's answer is recorded (another unit).
+    // A teammate (REQ-002, autobyteus-22 AC-002) and another unit (DEC-007, SR-015) address it by its Org address: the same refusal.
     const refused = await org.calls("/team/lead", callTool("send_message_to", { recipient_address: "/team/reviewer", content: "Stop." }));
     const refusedFromOrgAgent = await org.calls("/concierge", callTool("send_message_to", { recipient_address: "/team/reviewer", content: "Stop." }));
     const without = await org.calls("/concierge", callTool("get_handoff_rules", {}));
@@ -409,6 +413,7 @@ suite("An Org of a package is a container whose units follow their definitions (
     expect(refused.isError, JSON.stringify(refused)).toBe(true);
     expect(JSON.stringify(refused)).toContain(refusal("reviewer", "/team/reviewer"));
     expect(refusedFromOrgAgent.isError, JSON.stringify(refusedFromOrgAgent)).toBe(true);
+    expect(JSON.stringify(refusedFromOrgAgent), "another unit: the former-member refusal naming /team/reviewer (DEC-007)").toContain(refusal("reviewer", "/team/reviewer"));
     expect(told).toContain(RULES_CHANGED);
     expect(JSON.stringify(without)).not.toContain("Ask the reviewer for reviews.");
     expect(JSON.stringify(without)).toContain("Send software requests to the team.");
@@ -513,6 +518,58 @@ suite("An Org of a package is a container whose units follow their definitions (
     expect(afterRestart).not.toContain("/helper");
     expect([restarted.first, restarted.second].filter((input) => input.includes(left("helper", "/team/helper"))), "told once after the restart").toHaveLength(1);
   }, caseTimeout(2, 420_000));
+
+  it("OC-12 (AC-005, AC-002): a Team-unit member that took a hand-off from another unit is removed; the stopped Org reopens and its Team unit is restored with the hand-off kept", async () => {
+    const writerRun = await org.agentAt("/team/writer");
+    const conciergeRun = org.unitRun("/concierge")!;
+    const handoff = `HANDOFF-KEPT-${u}`;
+    const sent = await org.calls("/concierge", callTool("send_message_to", { recipient_address: "/team/writer", content: `${handoff} Reply OK.` }));
+    expect(sent.isError, JSON.stringify(sent)).toBe(false);
+    await until(() => org.teamLog(teamRun()).some((line) => String(line.content).startsWith(handoff)) && org.agentLog(conciergeRun).some((line) => String(line.content).startsWith(handoff)),
+      "the hand-off is in both units' logs", 60_000);
+    await until(async () => stringsOf(await org.conversationOf("/team/writer", writerRun)).some((text) => text.trim() === "OK"), "the writer answered", 90_000);
+    // The Team's own rule to the writer goes with it (a rule to a non-member makes the definition invalid: last good kept).
+    await writeTeam({ ...teamConfig, members: teamConfig.members.filter((entry) => entry.memberName !== "writer"),
+      handoffs: teamConfig.handoffs.filter((rule) => rule.to !== "/writer" && rule.from !== "/writer") });
+    await until(() => org.teamFormer(teamRun()).some((entry) => entry.agentRunId === writerRun && entry.leaving !== true), "the writer is a former member (released)", OS_FILE_EVENT_WAIT_MS);
+    org.close();
+    const stopped = (await server.graphql(`mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: orgRunId })).terminateAgentOrgRun;
+    expect(stopped.success, stopped.message).toBe(true);
+    await org.open();
+    const leadInput = await org.echo("/team/lead");
+    const teamLine = org.teamLog(teamRun()).find((line) => String(line.content).startsWith(handoff)) ?? null;
+    const conciergeLine = org.agentLog(conciergeRun).find((line) => String(line.content).startsWith(handoff)) ?? null;
+    const former = org.teamFormer(teamRun()).map((entry) => ({ address: entry.address, agentRunId: entry.agentRunId, leaving: entry.leaving === true }));
+    await keep("OC-12.json", { sent, leadInput, teamLine, conciergeLine, former });
+    expect(leadInput.endsWith("ECHO_INPUT"), "the Team unit was restored and its lead answered").toBe(true);
+    expect(teamLine).toMatchObject({ senderAgentRunId: conciergeRun, receiverAgentRunId: writerRun, counterpart: { address: "/concierge", nodeId: null } });
+    expect(conciergeLine).toMatchObject({ messageId: teamLine!.messageId, counterpart: { address: "/team/writer", nodeId: null } });
+    expect(former).toContainEqual({ address: "/writer", agentRunId: writerRun, leaving: false });
+  }, caseTimeout(1));
+
+  it("OC-13 (REQ-009 with DEC-005/REQ-004): an org-config.json edit is followed while an Org rule names the removed /team/writer (that rule is only left out)", async () => {
+    const added = { from: "/concierge", to: "/team/lead", rules: ["Ask the lead for status."] };
+    let followed = false;
+    let rules: Rec = {};
+    try {
+      await writeOrg({ ...orgConfig, handoffs: [...orgConfig.handoffs, added] });
+      followed = await until(() => JSON.stringify(org.container().handoffs).includes("Ask the lead for status."), "the container follows the Org edit", OS_FILE_EVENT_WAIT_MS)
+        .then(() => true, () => false);
+      await org.echo("/concierge");
+      rules = await org.calls("/concierge", callTool("get_handoff_rules", {}));
+      await keep("OC-13.json", { followed, containerHandoffs: org.container().handoffs, rules,
+        notFollowedLog: server.output().split("\n").filter((line) => line.includes("AGENT_ORG_DEFINITION_NOT_FOLLOWED")).slice(-3) });
+    } finally {
+      // The writer back in its Team (later cases start from a consistent Team and Org definition) and the Org edit undone.
+      await writeTeam({ ...teamConfig, members: [...teamConfig.members, member("writer", ids.writer)], handoffs: [...teamConfig.handoffs, { from: "/lead", to: "/writer", rules: ["Draft the text."] }] });
+      await until(() => org.teamMembers(teamRun()).some((entry) => entry.address === "/writer"), "the writer is back in its Team", OS_FILE_EVENT_WAIT_MS);
+      await writeOrg({ ...orgConfig, handoffs: orgConfig.handoffs.filter((rule) => rule !== added && !rule.rules.includes("Ask the lead for status.")) });
+      await until(() => !JSON.stringify(org.container().handoffs).includes("Ask the lead for status."), "the Org edit undone", OS_FILE_EVENT_WAIT_MS);
+      await org.echo("/concierge");
+    }
+    expect(followed, "the Org edit is followed (DEC-005: a rule naming a removed member is left out, not a reason to stop following)").toBe(true);
+    expect(JSON.stringify(rules)).toContain("Ask the lead for status.");
+  }, caseTimeout(5));
 
   it("OC-08 (AC-008, REQ-009): org-config.json mounts a second Team and adds an agent: new unit runs, Offline; the concierge is told who joined", async () => {
     const snapshotsBefore = org.snapshots().length;

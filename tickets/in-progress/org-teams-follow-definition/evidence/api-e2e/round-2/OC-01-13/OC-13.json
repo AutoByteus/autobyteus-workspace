@@ -1,0 +1,42 @@
+{
+  "followed": false,
+  "containerHandoffs": [
+    {
+      "from": "/concierge",
+      "to": "/team",
+      "rules": [
+        "Send software requests to the team."
+      ]
+    },
+    {
+      "from": "/concierge",
+      "to": "/team/reviewer",
+      "rules": [
+        "Ask the reviewer for reviews."
+      ]
+    },
+    {
+      "from": "/team/writer",
+      "to": "/concierge",
+      "rules": [
+        "Report every draft to the concierge."
+      ]
+    }
+  ],
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Ask the reviewer for reviews.",
+        "recipient_address": "/team/reviewer"
+      }
+    ],
+    "isError": false
+  },
+  "notFollowedLog": [
+    "AGENT_ORG_DEFINITION_NOT_FOLLOWED: AgentOrg 'oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2' keeps its units: Org definition 'oc-org-6dcd80' cannot be used (AgentOrg endpoint '/team/writer' was not found.)."
+  ]
+}

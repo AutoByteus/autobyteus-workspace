@@ -18,8 +18,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (round-2 additions: OC-12, OC-13; OC-04 asserts DEC-007)
 - Trigger: code reviewer, CRR-003 pass on implementation head `1f0aad498b` (review records `818e950d53`)
 - Prior Investigation Reviewed: none (first round)
 - Latest Authoritative Investigation: this file
@@ -140,6 +140,8 @@ An Org run is now a container (`agent_orgs/<orgRunId>/agent_org_run_execution_tr
 | OC-10 | AC-005, REQ-005 | Stop the Org (every unit stopped); edit the Team on disk; reopen by a message in the Org view → current members; again across a server restart | Durable | same | stop/change/reopen |
 | OC-11 | AC-006 | hand-built released Org run (Team + agent, messages) in the data root before start; converted; opens; its Team unit follows a package edit | Durable | same suite, own data root | "its Teams follow their definitions" after conversion |
 | RC-56 | AC-007, REQ-008 | beta's Team copy (delegated by alpha's Team member) gains a member: alpha's Task-entry members and rows follow, alpha messages the new member by run ID; it loses it: alpha follows; alpha down while beta's copy changes, alpha restarted: reconciled at next contact | Durable | `remote-delegation-two-server.e2e.test.ts` new case after RC-51; whole file run | real two-node proof of FU-003 |
+| OC-12 | AC-005, AC-002 | a Team-unit member that took a hand-off from another unit is removed; the Org is stopped and reopened and its Team unit messaged | Durable | same OC file | round 2: F-4 in its Org form (CRR-005 recommendation) |
+| OC-13 | REQ-009, DEC-005 | an `org-config.json` edit while an Org rule names a removed Team member | Durable | same OC file | round 2: found while building OC-12 |
 | OCL-01 | AC-003 (real runtimes) | Org with a Codex agent unit and a native AutoByteus Team; each hands off by Org address to the other; both logs | Durable (live-gated) | new `tests/e2e/runtime/org-container-live.e2e.test.ts` | real models choose the Org addresses |
 | OCL-02 | AC-002 (real runtime) | a Codex Team member waiting on a tool approval is removed by a package edit: Leaving; the approval is answered; it finishes and is released | Durable (live-gated) | same | approval while leaving |
 | OCU-01..04 | AC-001, AC-002, AC-003, AC-008, REQ-006 | the Org view in the web app: unit rows, a new member Offline, Leaving tag on a busy leaving unit and member, messages in the Org view | Temporary Probe | ticket probe `probes/org-container-ui-probe.mjs` (Nuxt dev + built backend + Chromium) | the web needs a running Nuxt + backend; the probe keeps the journey and screenshots |

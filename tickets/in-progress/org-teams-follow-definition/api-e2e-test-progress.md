@@ -30,3 +30,12 @@
 | 2026-11-22T15:56:25Z | OCU-01..05 | Started | | rendered probe |
 | 2026-11-22T16:00:54Z | OCU-01..05 | Finished | Fail | 4/5: OCU-04 the busy leaving writer has no row (team shows Offline); OCU-05 unit Leaving tag renders |
 | 2026-11-22T16:00:54Z | Round 1 | Finished | Fail | F-1 Org rows/view drop a Team unit's leaving member (OC-04, OCU-04, OCL-02); F-2 list_running_agents lists Org units (RC-47); F-3 stopped Org mixed save PERSISTENCE_INDETERMINATE (ORG-E2E); F-4 peer Team copy not restorable after members changed (RC-12/13/24 after RC-56) |
+| 0.000000T| 2026-11-22T17:13:25Z | Round 2 | Started | | IR-004 cd6a777b24 (HEAD c6db4fe7ca); BLD-01 build exit 0 |
+| 2026-11-22T17:22:23Z | OC-01..13 | Finished | Fail | 12/13: OC-04 Pass (F-1 fixed, DEC-007 text from the Org agent), OC-12 Pass (new, F-4 Org form); OC-13 Fail (new F-5: an Org rule naming a removed Team member makes the Org definition unusable, AGENT_ORG_DEFINITION_NOT_FOLLOWED). Attempt 1 had a test error in OC-12 (Team rule to /writer left in team-config) |
+| 2026-11-22T17:22:23Z | ORG-E2E | Finished | Pass | 3/3 with the round-1 gates (stopped-org-workspace Pass: F-3 fixed); without the AGY gates scoped-org-history differs on a summary (env-dependent) |
+| 2026-11-22T17:22:23Z | RC (whole file) | Started | | round 2 |
+| 2026-11-22T17:35:51Z | RC (whole file) | Finished | Pass | 56/56: RC-56, RC-12/13/24 (F-4 fixed), RC-47 (F-2 fixed) |
+| 2026-11-22T17:36:51Z | OCL-01/02 | Finished | Pass | 2/2: leaving writer's 3 approvals answered in the Org view; delivered; released (F-1 fixed) |
+| 2026-11-22T17:38:33Z | OCU-01..05 | Finished | Pass | 5/5: OCU-04 the leaving writer row tagged Leaving |
+| 2026-11-22T17:41:46Z | OF-01..06, AOML | Finished | Pass | 6/6, 2/2 on IR-004 |
+| 2026-11-22T17:41:46Z | Round 2 | Finished | Fail | F-1..F-4, A-1 resolved; F-5 open (OC-13) |
