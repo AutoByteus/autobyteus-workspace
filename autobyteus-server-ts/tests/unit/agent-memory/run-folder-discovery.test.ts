@@ -190,8 +190,9 @@ describe("RunFolderDiscovery", () => {
         "agents/no_records": { kind: "unattributed" },
         "agents/with_meta": { kind: "attributed", agentDefinitionId: "meta-def" },
       });
-      // The diagnostics are read after the sources that await the readiness index (N-7).
-      expect(order).toEqual(["teamLocations", "orgLocations", "teamPackages", "orgPackages"]);
+      // The diagnostics are read after the sources that await the readiness index (N-7); Org members first, so an Org
+      // container's unit agents are attributed to their Org (org-teams-follow-definition).
+      expect(order).toEqual(["orgLocations", "teamLocations", "teamPackages", "orgPackages"]);
       expect(warn.mock.calls).toEqual([
         ["RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE", { root: "agent_org:org_bad", record: "agent_org_run_execution_tree.json", reason: "ROOT_RUN_PACKAGE_MANIFEST_INVALID: bad json", runFolders: 1 }],
         ["RUN_FOLDER_DISCOVERY_RECORD_UNREADABLE", { root: "agent_team:team_bad", record: "team_run_execution_tree.json", reason: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: tree unreadable", runFolders: 2 }],

@@ -29,13 +29,27 @@ export class LocalMemoryExportScanner {
     const files: MemoryFileEntry[] = [];
 
     for (const root of roots) {
-      await this.walkRoot(root, root.rootDir, files);
+      await this.walkRoot(root, root.rootDir, files, true);
     }
     files.sort((a, b) => `${a.kind}/${a.relativePath}`.localeCompare(`${b.kind}/${b.relativePath}`));
     return { files };
   }
 
-  private async walkRoot(root: ScanRoot, currentDir: string, files: MemoryFileEntry[]): Promise<void> {
+  /**
+   * A unit run of an Org container (its own file names its Org): not synced, as an Org's memory was not before
+   * (org-teams-follow-definition, design R-5; syncing it is FU-001). An unreadable file is synced as before.
+   */
+  private async isContainedRun(root: ScanRoot, runDir: string): Promise<boolean> {
+    const file = path.join(runDir, root.kind === "agents" ? "run_metadata.json" : "team_run_execution_tree.json");
+    try {
+      const parsed = JSON.parse(await fs.readFile(file, "utf8")) as { containedIn?: unknown };
+      return Boolean(parsed && typeof parsed === "object" && parsed.containedIn);
+    } catch {
+      return false;
+    }
+  }
+
+  private async walkRoot(root: ScanRoot, currentDir: string, files: MemoryFileEntry[], runLevel = false): Promise<void> {
     let entries: import("node:fs").Dirent[];
     try {
       entries = await fs.readdir(currentDir, { withFileTypes: true });
@@ -55,6 +69,7 @@ export class LocalMemoryExportScanner {
         continue;
       }
       if (entry.isDirectory()) {
+        if (runLevel && await this.isContainedRun(root, absolutePath)) continue;
         await this.walkRoot(root, absolutePath, files);
         continue;
       }

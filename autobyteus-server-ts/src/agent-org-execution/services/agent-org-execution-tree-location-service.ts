@@ -190,14 +190,16 @@ export class AgentOrgExecutionTreeLocationService {
   }
   /** A stored Org's tree: a container's composed from its units' files, a released Org tree as stored. */
   private async readStoredTree(id: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
-    const container = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(id), id);
+    // A file that cannot be read as a container is read (and refused) as a released Org tree, with that reader's error.
+    const container = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(id), id).catch(() => null);
     if (!container) return this.store.read(this.layout.getOrgDirPath(id), id);
     this.containers.add(id);
     return composeOrgExecutionTree(container, await readStoredUnitFiles(this.memoryDir, container));
   }
   /** The synchronous read: a container's Team units from their trees, its direct agents from the container (their launch). */
   private readStoredTreeSync(id: string): AgentOrgRunExecutionTreeSnapshot | null {
-    const raw = readRawTreeFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id)));
+    let raw: unknown = null;
+    try { raw = readRawTreeFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id))); } catch { raw = null; }
     if (!isAgentOrgContainerPayload(raw)) return this.store.readSync(this.layout.getOrgDirPath(id), id);
     this.containers.add(id);
     const container = validateAgentOrgContainerPayload(raw, id);

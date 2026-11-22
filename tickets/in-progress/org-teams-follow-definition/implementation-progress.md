@@ -17,7 +17,7 @@ Working notes for the eight slices of design SR-010 (ARCH-REV-005). Authoritativ
 | --- | --- | --- | --- |
 | 1 | `containedIn` on Team and agent runs; container file; `AgentOrgContainer` creates unit runs; Stop/reopen | part 1 done (building blocks; wiring with slice 3) | see git log |
 | 2 | Container address resolution (step 2 via `OrgContainerPort`), `same_container` admission in `CrossRunMessageDelivery`, `ContainedTeamAddressSpace` (R-1''/R-1'''), Org rules merged into unit rules, delegation origin = unit run | done (part 1: all surfaces with unit tests) | see git log |
-| 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | in progress: parts 1-2 done (composition, live container, creation switch, rows, stored view, readiness); left: top-level lists skip contained runs, Org member views/messages/last activity from units, stopped-Org settings edit, REST edges | see git log |
+| 3 | `OrgViewComposition` (R-3''), command routing, run-tree rows, history/memory readers, the three Org REST edges (R-7); switch creation to containers | done (parts 1-4): composition, live container, creation switch, rows, stored view, readiness, history (no unit rows, archive/delete with units), member views/messages/last activity from units, stopped-Org settings, REST edges, memory attribution and sync exclusion | see git log |
 | 4 | Remove the hosting machinery (Removal Plan, R-5 H rows) | | |
 | 5 | Migration `20261122_agent_org_units_own_runs_v1` + follow-ups + §9 fixtures + registry classification | | |
 | 6 | Org follow (DS-006) | | |
