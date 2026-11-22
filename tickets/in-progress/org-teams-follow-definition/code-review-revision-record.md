@@ -15,6 +15,7 @@
 | CRR-009 | `code-review-report.md` | Implementation Review / IR-006 complete | Pass (CRR-007) | Fail | CR-008, CR-009 |
 | CRR-010 | `code-review-report.md` | Implementation Review / IR-007 complete | Fail | Fail | CR-008, CR-009 |
 | CRR-011 | `code-review-report.md` | Implementation Review / IR-008 complete | Fail | Pass | CR-008 |
+| CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 passed | Pass (CRR-008) | Fail | T-1 |
 
 ## Revision Entries
 
@@ -369,3 +370,31 @@ None (first test review).
 - Material score or classification changes: every category at least 9.4 (average 9.45); Large/High preserved
 - Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
 - Remaining risks or uncertainty: cost measured with assumed node sizes; a non-terminal path-writer predecessor holds every Org (design-owned); FU-001.
+
+### CRR-012: Proportional test-code review after API-REV-004
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: OC-14 (`org-container-package.e2e.test.ts`) and `agent-org-units-conversion-cost.e2e.test.ts` (new)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-004, commit `a3ed1a587c`); observation C-1
+- Relevant solution revision IDs: SR-017, SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-006..IR-008
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-008 test review); Pass (CRR-011 implementation review)
+- Current authoritative result: Fail
+- What changed in the review result and why:
+  - The test code passes every proportional check.
+  - COST-01 reveals T-1: all 23 follow-ups re-run the node pass on every upgrade (36.8 s of 44.1 s on a 1.35 GB synthetic node). SR-018 gives the pass only to path-writer follow-ups, for late output, and states one node pass.
+  - Local Fix, implementation.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open before this round.
+
+- New or remaining finding IDs: T-1
+- Material score or classification changes: N/A (test review); Large/High preserved
+- Recommended recipient: Implementation engineer
+- Remaining risks or uncertainty: cost sizes remain assumptions (stated in the receipt).
