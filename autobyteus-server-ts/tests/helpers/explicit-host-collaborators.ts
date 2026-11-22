@@ -2,7 +2,7 @@ import type { OnDemandModels, StoredModelOffer, StoredModelOfferCheck } from "..
 import type { StoredModelStartChecks } from "../../src/llm-management/services/run-model-selection-refusal.js";
 import { ConfiguredAgentExecutionFactory } from "../../src/agent-collaboration/execution/backends/configured-agent-execution-factory.js";
 import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import type { RemoteFiles } from "../../src/agent-collaboration/execution/remote/transferred-files.js";
+import type { OutgoingFiles } from "../../src/agent-collaboration/execution/remote/outgoing-files.js";
 import type { ReceivedFiles } from "../../src/remote-collaboration/inbound/received-files.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../src/agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { PeerDiscoveryAccess } from "../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
@@ -25,21 +25,13 @@ import type { TaskDisplayNameResolver, TaskTopRunResolver, TaskWorkerStatusResol
 export const NO_PEER_CHANNEL: RemoteRunChannelAccess = () => null;
 export const OFF_DISCOVERY: PeerDiscoveryAccess = () => REMOTE_COLLABORATION_OFF_DISCOVERY;
 /**
- * autobyteus-587: the file transfer of a host without peer nodes, as its composition builds it (its channel answers
- * null): any file to send is refused, a delivery without files names none, and no file is ever received.
+ * autobyteus-587: the outgoing files of a host without peer nodes, as its composition builds them (its channel answers
+ * null): any file to send is refused, a call without files sends nothing.
  */
-export const NO_REMOTE_FILES: RemoteFiles = Object.freeze({
-  outgoing: Object.freeze({
-    send: async (input: Readonly<{ referenceFiles: readonly string[] | null | undefined }>) => input.referenceFiles?.some((file) => file.trim())
-      ? Object.freeze({ ok: false as const, refusal: Object.freeze({ accepted: false as const, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off }) })
-      : Object.freeze({ ok: true as const, files: Object.freeze([]) }),
-  }),
-  received: Object.freeze({
-    planFor: (input: Readonly<{ files: readonly unknown[] }>) => {
-      if (input.files.length) throw new Error("A host without peer nodes receives no file.");
-      return Object.freeze({ paths: Object.freeze([]), place: async () => Object.freeze({ ok: true as const }) });
-    },
-  }),
+export const NO_OUTGOING_FILES: Pick<OutgoingFiles, "send"> = Object.freeze({
+  send: async (input: Readonly<{ referenceFiles: readonly string[] | null | undefined }>) => input.referenceFiles?.some((file) => file.trim())
+    ? Object.freeze({ ok: false as const, refusal: Object.freeze({ accepted: false as const, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off }) })
+    : Object.freeze({ ok: true as const, files: Object.freeze([]) }),
 });
 
 /**
@@ -49,7 +41,11 @@ export const NO_REMOTE_FILES: RemoteFiles = Object.freeze({
  */
 export const NO_FILES_RECEIVED: Pick<ReceivedFiles, "status" | "appendPiece" | "verify" | "sweep" | "planFor"> = Object.freeze({
   sweep: async () => undefined,
-  planFor: NO_REMOTE_FILES.received.planFor as ReceivedFiles["planFor"],
+  // A delivery without files names and places none; one with files never reaches a node that received none.
+  planFor: ((input: Readonly<{ files: readonly unknown[] }>) => {
+    if (input.files.length) throw new Error("A host without peer nodes receives no file.");
+    return Object.freeze({ paths: Object.freeze([]), place: async () => Object.freeze({ ok: true as const }) });
+  }) as ReceivedFiles["planFor"],
   status: async () => { throw new Error("This test sends this node no files."); },
   appendPiece: async () => { throw new Error("This test sends this node no files."); },
   verify: async (files: readonly Readonly<{ name: string }>[]) => files.length

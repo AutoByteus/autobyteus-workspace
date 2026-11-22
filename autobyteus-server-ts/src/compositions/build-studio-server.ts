@@ -330,7 +330,7 @@ export const buildStudioServer = async (input: {
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
       runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: remote.channel, episodicCatalog: deletedRuns,
-      remoteFiles: files.remoteFiles, running, closedDelegations });
+      outgoingFiles: files.outgoingFiles, running, closedDelegations });
     // autobyteus-587 RF-10: the startup sweep of received files no run uses and of uploads abandoned for 24 hours.
     void files.receivedFiles.sweep().catch((error: unknown) =>
       console.warn(`Received files were not swept at startup: ${error instanceof Error ? error.message : String(error)}`));

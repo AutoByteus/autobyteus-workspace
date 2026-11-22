@@ -6,10 +6,10 @@ import type { AssignToExistingDelegatedRunInput, SpawnTaskInput, TaskDelegationC
 import { RemoteDelegation } from "../../src/agent-collaboration/execution/remote/remote-delegation.js";
 import type { InMemoryTaskExecutionResources } from "../fixtures/task-execution-resource-fixtures.js";
 import type { RemoteRunChannel } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import type { RemoteFiles } from "../../src/agent-collaboration/execution/remote/transferred-files.js";
+import type { OutgoingFiles } from "../../src/agent-collaboration/execution/remote/outgoing-files.js";
 import { PeerRunNodes } from "../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
 import type { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { NO_PEER_CHANNEL, NO_PEER_RUN_PORTS, NO_REMOTE_FILES } from "./explicit-host-collaborators.js";
+import { NO_OUTGOING_FILES, NO_PEER_CHANNEL, NO_PEER_RUN_PORTS } from "./explicit-host-collaborators.js";
 import type { PeerRunStateNotices } from "../../src/agent-collaboration/execution/remote/peer-run-state-notices.js";
 
 const notInThisTest = async (): Promise<never> => { throw new Error("A local run is not started in this test."); };
@@ -26,13 +26,13 @@ type DelegatingRoot = Readonly<{ delegationSource(context: TaskDelegationContext
 export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null,
   ports: Readonly<{
     /** autobyteus-587: the node's outgoing files (a node that sends none refuses any file). */
-    outgoing?: RemoteFiles["outgoing"];
+    outgoing?: Pick<OutgoingFiles, "send">;
     /** autobyteus-591 DN-8: a peer run's follow-up Task; none by default (a test without peers). */
     peerRuns?: Readonly<{ deliverToPeerRun: TaskDelegationPeerPorts["deliverToPeerRun"]; peerNotices: Pick<PeerRunStateNotices, "changed"> }>;
     /** autobyteus-587 RF-14: the live roots whose links `PeerRunNodes` reads (none by default: the Task entries only). */
     activeRoots?: Pick<ActiveCollaborationRootDirectory, "resolve">;
   }> = {}) => {
-  const outgoing = ports.outgoing ?? NO_REMOTE_FILES.outgoing;
+  const outgoing = ports.outgoing ?? NO_OUTGOING_FILES;
   const peerRuns = ports.peerRuns ?? NO_PEER_RUN_PORTS;
   // The node rule as the composition builds it (SR-011): the existing-copy path checks a copy's node with it.
   const nodes = new PeerRunNodes({ activeRoots: ports.activeRoots ?? { resolve: () => null }, tree: () => tree, channel: channel ?? NO_PEER_CHANNEL });

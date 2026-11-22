@@ -20,7 +20,7 @@ import { createNoopAgentToolMcpRunSessionDeactivator } from "../fixtures/agent-t
 import type { TokenUsageRunStore } from "../../src/token-usage/providers/token-usage-run-store.js";
 import { buildCurrentTokenUsagePayload } from "./token-usage-run-record-fixtures.js";
 import { getAgentStreamSequences } from "../../src/services/agent-streaming/agent-stream-sequence.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_MODEL_EXECUTION_FACTORY } from "./explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "./explicit-host-collaborators.js";
 
 export const retainedThread = "isolated-retained-provider-thread";
 export const migrationUsage = (ordinal: number) => buildCurrentTokenUsagePayload({
@@ -93,7 +93,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     activityInspector: new AgentConversationActivityInspector() };
   const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
-    scopeBuilder: new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...dependencies,
+    scopeBuilder: new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...dependencies,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, ...dependencies }),
       orgDefinitions: { getDefinitionById: unavailable }, teamDefinitions: { getDefinitionById: unavailable },
     }),

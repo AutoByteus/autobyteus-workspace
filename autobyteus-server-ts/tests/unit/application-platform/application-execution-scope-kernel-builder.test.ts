@@ -79,7 +79,7 @@ import type {
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -150,7 +150,7 @@ const createHarness = (input: {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     applicationAgentTools,
     providerRelayAccess: null,
-    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     peerDiscovery: OFF_DISCOVERY,
     runPasses: null,
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),

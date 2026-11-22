@@ -180,7 +180,7 @@ const buildNode = async (input: Readonly<{
   const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
   releases.push(() => notices.close());
   const peerFiles = inProcessPeerFiles({ dataDir: memoryDir, memoryDir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
-  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing, peerRuns: { peerNotices: notices,
+  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.outgoingFiles, peerRuns: { peerNotices: notices,
     deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) }, activeRoots });
   // autobyteus-591: the runs a peer started here and then closed (DN-5), in this node's folder.
   const closed = ClosedDelegations.inAppDataDir(memoryDir);
@@ -268,7 +268,7 @@ const buildNode = async (input: Readonly<{
   // This node's send_message_to(run ID) router: the node rule (autobyteus-587 PeerRunNodes), the files (OutgoingFiles), then
   // the peer-run admission (autobyteus-591 DN-9), as the composition builds it. A peer run never takes the local route.
   const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
-    agentRunManager: { getActiveRun: () => null }, outgoing: peerFiles.remoteFiles.outgoing,
+    agentRunManager: { getActiveRun: () => null }, outgoing: peerFiles.outgoingFiles,
     nodes: new PeerRunNodes({ activeRoots, tree: () => taskSide.tree, channel: () => client }),
     crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
       senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },

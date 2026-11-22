@@ -1,5 +1,5 @@
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
@@ -53,7 +53,7 @@ const buildRoot = (input: {
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, receivedFiles: NO_REMOTE_FILES.received,
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, receivedFiles: NO_FILES_RECEIVED,
     rootRun: rootRun as never,
     config,
     tree,

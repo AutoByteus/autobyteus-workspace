@@ -6,7 +6,7 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { getProjectTaskService } from "../../../src/projects/services/project-task-service.js";
 import { REMOTE_COLLABORATION_OFF_DISCOVERY } from "../../../src/agent-tools/agent-discovery/agent-discovery-refusal.js";
 import { APPLICATION_HOST_STANDALONE_RUNS } from "../../../src/agent-execution/services/standalone-run-ports.js";
-import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, NO_REMOTE_FILES, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-500 FU-011, FU-018 (REQ-004, REQ-005, AC-002): a host's owners are passed in, and a composition with one

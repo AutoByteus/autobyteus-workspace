@@ -1,5 +1,5 @@
 import type { EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
-import type { RemoteFiles } from "../agent-collaboration/execution/remote/transferred-files.js";
+import type { OutgoingFiles } from "../agent-collaboration/execution/remote/outgoing-files.js";
 import { PeerRunNodes } from "../agent-collaboration/execution/remote/peer-run-nodes.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
@@ -164,8 +164,11 @@ export const composeCollaboration = async (input: Readonly<{
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve" | "onRegistrationChanged">;
   /** This node's channel to its peers (`null` where it has none). */
   remoteChannel: () => RemoteRunChannel | null;
-  /** This node's file transfer between nodes (autobyteus-587): a peer delegation's files are uploaded before its run starts. */
-  remoteFiles: RemoteFiles;
+  /**
+   * This node's outgoing files (autobyteus-587): uploaded by the router's `node` path and `TaskDelegation` before anything
+   * else changes (SR-010).
+   */
+  outgoingFiles: Pick<OutgoingFiles, "send">;
   /** The episodic catalogs, told by the agent run history service after a committed delete (autobyteus-493). */
   episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
   /** This node's running agents and their listing (autobyteus-492), created before remote collaboration. */
@@ -256,7 +259,7 @@ export const composeCollaboration = async (input: Readonly<{
       tasks: () => tasks,
       tree: () => tree,
       channel: input.remoteChannel,
-      outgoing: input.remoteFiles.outgoing,
+      outgoing: input.outgoingFiles,
       // autobyteus-591 DN-8: a peer run's follow-up Task, after its node confirmed it open, over the run's link.
       deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots: input.activeRoots }, message),
       peerNotices,
@@ -302,7 +305,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, nodes, outgoing: input.remoteFiles.outgoing, coordinators: tree, channel: input.remoteChannel }), tree })));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, nodes, outgoing: input.outgoingFiles, coordinators: tree, channel: input.remoteChannel }), tree })));
     // autobyteus-492: `list_running_agents` without `node`, on every runtime (bound before any run starts).
     releases.push(bindProcessRunningAgentsListing(input.running.listing));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));

@@ -110,7 +110,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     }) as never,
   });
   const peerFiles = inProcessPeerFiles({ dataDir: memoryDir, memoryDir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
-  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing });
+  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.outgoingFiles });
   const views = testViewStreams();
   const viewPublications = vi.spyOn(views.messages, "publish");
   const directory = new ActiveCollaborationRootDirectory();
@@ -150,7 +150,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     runningAgents, activeReceiverRoot: (run) => activeRoot(run),
   });
   const router = new GlobalAgentRunMessageRouter({ crossRun, coordinators: taskSide.tree, channel: () => client, activeRootDirectory: directory,
-    nodes: new PeerRunNodes({ activeRoots: directory, tree: () => taskSide.tree, channel: () => client }), outgoing: peerFiles.remoteFiles.outgoing,
+    nodes: new PeerRunNodes({ activeRoots: directory, tree: () => taskSide.tree, channel: () => client }), outgoing: peerFiles.outgoingFiles,
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,

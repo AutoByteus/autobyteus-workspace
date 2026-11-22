@@ -125,7 +125,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   const notices = new PeerRunStateNotices({ channel: () => client, tasks: resources, retryMs: 3_600_000 });
   releases.push(() => notices.close());
   const peerFiles = inProcessPeerFiles({ dataDir: dir, memoryDir: dir, channel: () => client, workspaceOf: (runId) => metadata.get(runId)?.workspaceRootPath ?? null });
-  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.remoteFiles.outgoing, peerRuns: { peerNotices: notices,
+  const taskSide = testTaskSide(resources, () => client, { outgoing: peerFiles.outgoingFiles, peerRuns: { peerNotices: notices,
     deliverToPeerRun: (message) => deliverMessageToPeerRun({ activeRoots }, message) }, activeRoots });
   const manager = new StandaloneAgentRunRootManager({
     memoryDir: dir, activeRootDirectory: activeRoots,
@@ -173,7 +173,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   // autobyteus-591 DN-9: send_message_to(run ID) through A's router, whose first step is the peer-run admission.
   const router = new GlobalAgentRunMessageRouter({ activeRootDirectory: activeRoots, channel: () => client, coordinators: taskSide.tree,
     agentRunManager: { getActiveRun: () => null },
-    outgoing: peerFiles.remoteFiles.outgoing, nodes: new PeerRunNodes({ activeRoots, tree: () => taskSide.tree, channel: () => client }),
+    outgoing: peerFiles.outgoingFiles, nodes: new PeerRunNodes({ activeRoots, tree: () => taskSide.tree, channel: () => client }),
     crossRun: new CrossRunMessageDelivery({ tree: () => taskSide.tree, tasks: () => resources, peerNotices: notices,
       senderRoot: () => null, receiverRoot: async () => null, activeReceiverRoot: () => null, runningAgents: { rootOf: () => null },
       senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null } }) });
@@ -310,7 +310,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   // send_message_to with node from a member to an agent of A, as the router's node path does it on B (autobyteus-587 SR-010
   // R1; B holds no Task of A's runs, so no admission): the files go to A first, then the root sends the message with them.
   const send = async (from: { address: string; agentRunId: string }, target: string, content: string, referenceFiles: string[] = []) => {
-    const sent = await peerFiles.remoteFiles.outgoing.send({ senderAgentRunId: from.agentRunId, nodeId: A_ID, peerName: "desktop", referenceFiles });
+    const sent = await peerFiles.outgoingFiles.send({ senderAgentRunId: from.agentRunId, nodeId: A_ID, peerName: "desktop", referenceFiles });
     if (!sent.ok) return sent.refusal;
     return (await teamRuns.resolveManagedTeamRun("studio_team_b"))!.deliverToPeerRun({
       sender: { kind: "agent", identity: member(from.address, from.agentRunId), displayName: from.address.slice(1) } as never,

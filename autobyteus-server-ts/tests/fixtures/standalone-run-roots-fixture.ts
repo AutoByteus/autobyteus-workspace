@@ -6,7 +6,7 @@ import type { AgentRunManager } from "../../src/agent-execution/services/agent-r
 import type { StandaloneAgentRunLifecycleService } from "../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentRunMetadataService } from "../../src/run-history/services/agent-run-metadata-service.js";
 import { StandaloneAgentRunRootManager } from "../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../helpers/explicit-host-collaborators.js";
 
 /**
  * The standalone run roots of a test process, composed as the general process run supervisor
@@ -31,7 +31,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       terminateRunAgent: (agentRunId) => input.lifecycleService.terminateRunAgent(agentRunId),
       readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
     },
-    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

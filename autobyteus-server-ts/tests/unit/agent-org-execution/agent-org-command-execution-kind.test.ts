@@ -7,7 +7,7 @@ import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-r
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 describe("AgentOrgRun command execution kind", () => {
   it("returns the configured kind for the Org's own agents while preserving the generic result-only command surface", async () => {
@@ -20,7 +20,7 @@ describe("AgentOrgRun command execution kind", () => {
     const rootCommand = vi.fn(async () => ({ accepted: true as const }));
     const live = new Set([direct.agentRunId]);
     const teamCommand = vi.fn(async () => ({ accepted: true as const }));
-    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree,
       messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

@@ -1,7 +1,6 @@
 import path from "node:path";
 import { OutgoingFiles } from "../../src/agent-collaboration/execution/remote/outgoing-files.js";
 import type { RemoteRunChannelAccess } from "../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import type { RemoteFiles } from "../../src/agent-collaboration/execution/remote/transferred-files.js";
 import type { ClientIdentity } from "../../src/node-access/domain/client-identity.js";
 import type { PeerGateway } from "../../src/remote-collaboration/channel/peer-gateway.js";
 import { REMOTE_RECEIVED_FILES_PATH, REMOTE_RECEIVED_FILES_STATUS_PATH } from "../../src/remote-collaboration/domain/remote-requests.js";
@@ -19,16 +18,16 @@ export const inProcessPeerFiles = (input: Readonly<{
   /** The sending agent's workspace folder, or null (no workspace: its files are refused). */
   workspaceOf?: (agentRunId: string) => string | null;
   maxFileBytes?: () => number;
-}>): Readonly<{ receivedFiles: ReceivedFiles; remoteFiles: RemoteFiles; storeDir: string }> => {
+}>): Readonly<{ receivedFiles: ReceivedFiles; outgoingFiles: OutgoingFiles; storeDir: string }> => {
   const storeDir = path.join(input.dataDir, "received_files");
   const receivedFiles = new ReceivedFiles({ storeDir, memoryDir: input.memoryDir, maxFileBytes: input.maxFileBytes ?? (() => 2048 * 1024 * 1024) });
   // The run's workspace ID is its run ID here; the "workspace manager" answers the folder the test gave that run.
-  const outgoing = new OutgoingFiles({
+  const outgoingFiles = new OutgoingFiles({
     runs: { getActiveRun: (agentRunId: string) => ({ config: { workspaceId: agentRunId } }) as never },
     workspaces: { getWorkspaceRootPathForHistory: async (agentRunId: string) => input.workspaceOf?.(agentRunId) ?? null },
     channel: input.channel,
   });
-  return { receivedFiles, remoteFiles: Object.freeze({ outgoing, received: receivedFiles }), storeDir };
+  return { receivedFiles, outgoingFiles, storeDir };
 };
 
 /**

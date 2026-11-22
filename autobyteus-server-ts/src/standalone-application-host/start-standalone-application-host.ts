@@ -301,7 +301,7 @@ export const startStandaloneApplicationHost = async (
       activeRoots: getActiveCollaborationRootDirectory(),
       // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base), so no peer closed a run of it.
       remoteChannel: () => null, closedDelegations: NO_CLOSED_DELEGATIONS,
-      remoteFiles: files.remoteFiles,
+      outgoingFiles: files.outgoingFiles,
       episodicCatalog: currentEpisodicCatalog,
       // autobyteus-492: this node's running agents (messages by run ID and list_running_agents).
       running: composeRunningAgents({ memoryDir: processResources.appConfig.getMemoryDir(), tempWorkspaceDir: processResources.appConfig.getTempWorkspaceDir(),

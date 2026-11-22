@@ -13,7 +13,7 @@ import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/p
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createCatalogSnapshot = (applicationId: string) => ({
   applications: [{
@@ -117,7 +117,7 @@ describe("application platform runtime isolation", () => {
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
         providerRelayAccess: null,
-        remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
+        remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
         peerDiscovery: OFF_DISCOVERY,
         runPasses: null,
         staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
@@ -254,7 +254,7 @@ describe("application platform runtime isolation", () => {
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
         providerRelayAccess: null,
-        remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
+        remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
         peerDiscovery: OFF_DISCOVERY,
         runPasses: null,
         staticAdapterToolNames: new Set(),

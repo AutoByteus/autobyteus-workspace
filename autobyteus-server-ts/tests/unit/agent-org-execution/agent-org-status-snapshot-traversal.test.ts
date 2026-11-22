@@ -13,7 +13,7 @@ import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/age
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testViewSources } from "../../helpers/child-rows-feed.js";
-import { NO_PEER_CHANNEL, NO_REMOTE_FILES } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const orgRunId = "org-status-traversal";
 
@@ -71,7 +71,7 @@ const buildRun = () => {
   };
   const persistence = { drain: vi.fn(async () => undefined) };
   Object.assign(rootAgents, { freezeForRootTermination: vi.fn(() => []) });
-  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+  const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     root: createAgentOrgRootExecutionIdentity(orgRunId),
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

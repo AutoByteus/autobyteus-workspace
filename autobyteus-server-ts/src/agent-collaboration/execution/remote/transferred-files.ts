@@ -1,5 +1,3 @@
-import type { OutgoingFiles } from "./outgoing-files.js";
-
 /**
  * One file a cross-node message or delegation carries (autobyteus-587, RFC-001 § 6): its content's SHA-256 (64 lowercase
  * hex), its size in bytes and its original file name. The receiving node already holds the content when the message
@@ -37,13 +35,6 @@ export type ReceivedFilesPlan = Readonly<{
 export type ReceivedFilesPlacement = Readonly<{
   planFor(input: Readonly<{ agentFolder: string; senderAgentRunId: string; files: readonly TransferredFile[] }>): ReceivedFilesPlan;
 }>;
-
-/**
- * A host's file transfer between nodes (autobyteus-587), built by its composition root: the router's `node` path and
- * `TaskDelegation` upload files (`outgoing`, SR-010); the roots take only `received` (`ReceivedFilesPlacement`) to place
- * the files they receive.
- */
-export type RemoteFiles = Readonly<{ outgoing: Pick<OutgoingFiles, "send">; received: ReceivedFilesPlacement }>;
 
 /**
  * The receiving agent's own folder, where its received files land (RF-7): the folder its run was configured with
