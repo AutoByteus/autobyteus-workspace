@@ -186,6 +186,14 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 ```
   (in `agent_teams/set_team_1/` log; in `agents/concierge_1/` log the same line with `"counterpart":{"address":"/software_engineering_team/solution_designer","nodeId":null}`)
 
+- A message between a unit's agent and a run delegated by a unit of this container (a delegation-chain message, design
+  SR-014): **related**, one line in each run's log, **no `counterpart`** (as today's related line), shown in every view whose
+  tree holds both runs.
+
+```json
+{"messageId":"collabmsg_c","senderAgentRunId":"pdp_copy_prototyper_1","receiverAgentRunId":"solution_designer_1","content":"…","messageType":"handoff","referenceFiles":[],"createdAt":"2026-11-22T10:10:00.000Z"}
+```
+
 - A message with a party outside the Org (another run, another node; autobyteus-565): one line in the member's unit
   log, every released field kept, `counterpart` as stored.
 - A user message to a member: in that member's unit log, as for any run.
@@ -224,7 +232,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | `rootOrg.members[]` Team node `{address, teamDefinitionId, teamRunId, coordinatorAddress, defaultLaunchConfiguration, role, description, members[]}` | container unit `{address, kind:"agent_team", runId: teamRunId, definitionId: teamDefinitionId}` + Team file (§3): `applicationBinding` per §11, `rootTeam.teamRunId`, `teamDefinitionId`, `teamDefinitionName` (released Team nodes have no name: read through the migration runner's existing definition-names port, guideline §4 "Sealed migration area"; a definition that no longer exists → its definition ID), `defaultLaunchConfiguration` (Team node's), `coordinatorAddress` and each member's `address` with the Team address stripped, members' `agentDefinitionId/agentRunId/platformAgentRunId/launchConfiguration/role/description` unchanged; `createdAt`/`archivedAt` from the Org |
 | `rootOrg.members[]` agent node `{address, agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration, role, description}` | container unit `{kind:"agent"}` + `run_metadata.json` (§4): `runId`, `agentDefinitionId`, `platformAgentRunId`, `address`, launch fields from `launchConfiguration`, `memoryDir` at its new place, `containedIn`, `applicationExecutionContext` per §11 |
 | `handoffs[]` | wholly inside one Team (`from` and `to` under the Team's address) → that Team file, team space; every other → container `handoffs` |
-| Org log line (keys `messageId, senderAgentRunId, receiverAgentRunId, content, messageType, referenceFiles, createdAt`, optional `counterpart`) | both parties in one Team → that Team's log, unchanged; parties in two units → each unit's log, with `counterpart` = the other's Org address, `nodeId: null`; one party outside the Org (has `counterpart`) → the member's unit log, unchanged |
+| Org log line (keys `messageId, senderAgentRunId, receiverAgentRunId, content, messageType, referenceFiles, createdAt`, optional `counterpart`) | both parties in one Team → that Team's log, unchanged; parties in two units → each unit's log, with `counterpart` = the other's Org address, `nodeId: null`; one party outside the Org (with or without `counterpart`, classified by membership as `org-log-split.ts` does) → the member's unit log, unchanged (a line with a run the member delegated is a related line without `counterpart`, kept as is) |
 | Task entries / `delegatedFrom` naming the Org | §6 |
 | `agent_org_task_delegation_records.json` | left in place as inert residue: no current reader (only migrations read it), and nothing deletes history (design Removal Plan aligned, SR-012) |
 | Member folders | renamed (§1) |
@@ -257,7 +265,7 @@ The current standalone agent metadata, plus `containedIn`; `address` is its Org 
 | Org view, rows, history | container + unit files | composed; contained runs under their Org (§8) |
 | Context file from the Org view | container `units` + unit Team file members | `{orgRunId, agentRunId}` → unit folder (§7) |
 | Delegation from an Org member | Task entry, child `delegatedFrom` | delegating run = the unit run (§6) |
-| A run delegated by an Org member reaches the Org's agents by Org address (design R-8) | child `delegatedFrom` → unit run → its `containedIn` → container `units` + unit files | the container's placements at Org addresses; delivery admitted `same_container` through the delegation chain |
+| A run delegated by an Org member reaches the Org's agents by Org address (design R-8, SR-014) | child `delegatedFrom` → unit run → its `containedIn` → container `units` + unit files | the container's placements at Org addresses; the message is **related** (the Task rule extended through the delegation chain): stored as a related line (no `counterpart`), shown in every view whose tree holds both runs |
 
 ## 12. Validation
 

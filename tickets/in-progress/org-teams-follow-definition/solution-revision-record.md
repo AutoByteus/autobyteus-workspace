@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-014 | Design | Architecture review ARCH-REV-008 Fail | AR-010 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-006 | Delegation-chain case is `related` (no counterpart, view rule 1); `same_container` only unit↔unit |
 | SR-013 | Design | Source review CRR-001 (Fail) | CR-001 (Design Impact) | Approved; design Ready (implemented, review Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-003 | Step 2 of runs delegated by a unit: container placements at Org addresses; same_container through the delegation chain |
 | SR-012 | Design | Architecture review ARCH-REV-006 Fail (contract) | AR-008, AR-009 | Approved; design Ready (contract reviewed Fail) | Approved; design Ready (contract aligned) | REQ-003, Out of Scope (application-bound) | counterpart rule pinned with code points and test; one application-ownership rule; residue decision |
 | SR-011 | Design | The user, 2026-11-22: write the storage contract and validate it | V-1..V-6, F-1, F-2 | Approved; design Ready (passed ARCH-REV-005) | Approved; design Ready (contract added) | REQ-001, REQ-003, REQ-006, REQ-007 | org-container-storage-contract.md + contract-validation.md |
@@ -123,3 +124,9 @@
 - R-8: a contained assigner contributes its container's placements at Org addresses (same set as `containerStepTwo()`), never team-space standing; order unchanged; delivery admitted by `same_container` extended to the sender's delegation chain containing a unit of the receiver's container (DEC-006 wake applies); converted delegations covered; docs and tests named; contract §10 row added.
 - Intended behavior changed: No (restores today's behavior). Classification: Large / High.
 - Route: revised design → architecture review (handoff rule); CR-002..CR-004 and N-1 continue as implementation local fixes in the same round.
+
+### SR-014 — The delegation-chain case is `related`
+
+- Trigger: ARCH-REV-008 (Fail): AR-010 — R-8 gave the chain case only an admission; in the implemented code the relation also decides `counterpart` recording and `MessageViewScope`, so `same_container` would change today's related lines (MP-10). Non-blocking: contract §9 wording on outside-party lines.
+- Decision: the chain case is `related` (Task rule extended through the delegation chain): restored when stopped (461 DEC-001, covers DEC-006), no `counterpart`, `MessageViewScope` rule 1; `same_container` only between two units; relation decided once (same_container, then extended related, then unrelated). Contract §5 gains the delegation-chain line with an example; §9 and §10 fixed; test added.
+- Intended behavior changed: No. Next action: architecture re-review; CR-002..CR-004 and N-1 forwarded with the pass.

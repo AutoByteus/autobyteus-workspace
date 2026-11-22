@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-013` (SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
+- Current solution revision ID: `SR-014` (SR-014: the delegation-chain case is `related`, after ARCH-REV-008; SR-013: step 2 of runs delegated by an Org unit, after CRR-001 CR-001; SR-012 aligns the contract after `ARCH-REV-006`: cross-unit `counterpart` on both lines with Org addresses, one application-ownership rule, delegation-records residue; SR-011 adds the storage contract and its validation, at the user's request; SR-010 revises after `ARCH-REV-004`: § SR-010 Revision fixes the meaning of `P`; SR-009 revises after `ARCH-REV-003`: § SR-009 Revision supersedes R-1's list of points; SR-006 revised SR-005 after `ARCH-REV-001`; SR-007 applied the user's DEC-006; SR-008 revises after `ARCH-REV-002`: § SR-008 Revision supersedes R-1, R-3's snapshot paragraph and R-4 (a))
 - Approved requirements: `requirements-doc.md` at SR-004 (REQ-001..REQ-009, AC-001..AC-008, DEC-001..DEC-005), approved by the User on 2026-11-21 (quotes in the requirements' Document Status); direction SR-002 (Org as a container of runs).
 - Behavior-defining supplements: autobyteus-22's approved behavior and texts (archived `tickets/done/team-run-follows-definition/`), reused unchanged; **`org-container-storage-contract.md` (SR-011): the normative on-disk contract (every file, the conversion field by field, use cases), validated in `contract-validation.md`**.
 - User approval of the design: `Not required`.
@@ -366,3 +366,15 @@ Tests (entering through `send_message_to`, not the resolver directly): from a ru
 run delegated by a Team unit member, reaching (a) an agent unit by Org address, (b) a Team unit member by `P/x`, (c) a
 Team unit by `P` (its coordinator); each also with the receiver unit stopped (woken). Base B-4 updated to the container
 rule. A converted delegation (fixture) reaches the Org the same way.
+
+
+## SR-014 Revision (after ARCH-REV-008 AR-010: the relation of the delegation-chain case; supersedes R-8's "Delivery" bullet)
+
+- **Relation of a delegated run ↔ a unit of the container in its delegation chain: `related`** (the Task rule's relation, extended). A receiver unit run counts as related to the sender when the receiver belongs to the container of a unit run in the sender's delegation chain (`DelegationIndex.chainOf(sender)`, assigners upward), and in the other direction a unit's message to such a delegated run by run ID is related as today through the Task. Consequences, all as today when every Org member was part of the assigner run:
+  - a stopped receiver is restored (autobyteus-461 DEC-001), which also satisfies DEC-006;
+  - **no `counterpart`** is recorded on either line (the related rule at `cross-run-message-delivery.ts:214` and `root-communication-engine.ts:315`);
+  - `MessageViewScope` rule 1 (`message-view-scope.ts:28-33`): the message shows in every view whose tree holds both runs (e.g. the delegating unit's and the Org view), not only in the two runs' own views.
+- **`same_container` stays only for messages between two units of one container** (contract §5: `counterpart` on both lines with Org addresses; shown per its rule). Nothing else derives it.
+- The relation is decided once, by the cross-run admission (`DelegationIndex` relation, N-1's one-fact rule): `same_container` (both runs are units of one container) is checked first, then the extended Task relation, then unrelated.
+- Converted lines: a released Org log line between an Org member and a run that member delegated is today a related line (no `counterpart`); the conversion writes it to the unit's log unchanged, identical to a new related line.
+- Test: a copy delegated by a Team unit member messages another unit's agent by Org address: delivered (restored if stopped), stored without `counterpart` in both logs, shown in the delegating unit's view and the Org view as today's related line; the same line produced by the conversion from a released fixture is identical.
