@@ -180,3 +180,7 @@
 - Tests: interrupt-and-retry at two points; a third start changes no byte; a pending writer predecessor and its late output.
 - Next action: architecture re-review of SR-016..SR-018.
 
+
+#### Review note on SR-018 (no new revision)
+
+- 2026-11-22: architecture review `ARCH-REV-013` passed SR-016..SR-018 (AR-011, AR-012 resolved); the reviewer forwarded the package to `/implementation_engineer` for the re-integration round (origin/personal `f2c0d2a902` or newer).
