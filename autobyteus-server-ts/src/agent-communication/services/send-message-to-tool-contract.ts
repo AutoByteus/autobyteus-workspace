@@ -17,5 +17,5 @@ export const SEND_MESSAGE_TO_FIELD_DESCRIPTIONS = {
     "Self-contained work request, result, or specific blocker. State the requested work or outcome and relevant context; include important absolute paths here and put files the recipient should inspect in reference_files. Example: 'Implementation is ready. The handoff is at /Users/me/project/implementation-handoff.md and the test log is at /Users/me/project/test.log; please review the risks below.'",
   messageType: "Optional message type label.",
   referenceFiles:
-    "Optional attachment/reference list of absolute local file paths the recipient may need to inspect. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ['/Users/me/project/implementation-handoff.md', '/Users/me/project/test.log'].",
+    "Optional attachment/reference list of absolute local file paths the recipient may need to inspect. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ['/Users/me/project/implementation-handoff.md', '/Users/me/project/test.log']. With node, only files in your workspace; each is copied to that node and the recipient gets its own copy.",
 } as const;

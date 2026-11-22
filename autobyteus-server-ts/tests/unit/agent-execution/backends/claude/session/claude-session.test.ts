@@ -18,6 +18,7 @@ import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/ba
 import { projectClaudeAgentLifecycleSnapshot } from "../../../../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { SavedRuntimeSessionMissingError } from "../../../../../../src/agent-execution/errors.js";
 import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../../../../../src/agent-execution/domain/system-task-notification-senders.js";
 import type { ClaudeSdkStreamingSessionOptions } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
@@ -191,6 +192,60 @@ const acceptedTurnId = (result: Awaited<ReturnType<ClaudeSession["submitInput"]>
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+// autobyteus-599 (DS-003, PRB-002, PRB-007): a restored session opens its process at activation and awaits the SDK's
+// initialization; the CLI's own "No conversation found" is the typed error, and its pre-turn frames fail no turn.
+describe("ClaudeSession.verifyResumable", () => {
+  const MISSING_TEXT = `Claude Code returned an error result: No conversation found with session ID: ${RESTORED_SESSION_ID}`;
+  const rejected = (error: Error): Promise<unknown> => { const promise = Promise.reject(error); promise.catch(() => undefined); return promise; };
+  /** The CLI as PRB-002 shows it for a missing session: initialization rejects, one error result, then the exit. */
+  const missingCli = (reason: string) => createSession({
+    sessionId: RESTORED_SESSION_ID,
+    openStreamingSession: async (options, open) => {
+      const fake = await open(options);
+      fake.initialized = rejected(new Error(reason));
+      fake.emit({ type: "result", subtype: "error_during_execution", is_error: true, num_turns: 0, session_id: RESTORED_SESSION_ID,
+        errors: [`No conversation found with session ID: ${RESTORED_SESSION_ID}`] });
+      fake.end();
+      return fake;
+    },
+  });
+
+  it("is the typed error for a session the CLI does not have, and its error result and exit fail no turn", async () => {
+    const { session, sdkClient, methods } = missingCli(MISSING_TEXT);
+    const error = await session.verifyResumable().catch((cause: unknown) => cause);
+    expect(error).toBeInstanceOf(SavedRuntimeSessionMissingError);
+    expect(error).toMatchObject({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, platformAgentRunId: RESTORED_SESSION_ID });
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
+      sessionBinding: { kind: "resume", sessionId: RESTORED_SESSION_ID },
+    }));
+    await flushClaudeSession();
+    expect(methods()).not.toContain(ClaudeSessionEventName.TURN_STARTED);
+    expect(methods()).not.toContain(ClaudeSessionEventName.TURN_COMPLETED);
+    expect(methods()).not.toContain(ClaudeSessionEventName.ERROR);
+    expect(session.activeTurnId).toBeNull();
+  });
+
+  it.each([
+    ["an auth failure", "Claude Code returned an error result: Invalid API key · Please run /login"],
+    ["the same answer for another session", "Claude Code returned an error result: No conversation found with session ID: 33333333-3333-4333-8333-333333333333"],
+  ])("throws %s as it is: no lost session", async (_label, reason) => {
+    const { session } = missingCli(reason);
+    const error = await session.verifyResumable().catch((cause: unknown) => cause);
+    expect(error).not.toBeInstanceOf(SavedRuntimeSessionMissingError);
+    expect((error as Error).message).toBe(reason);
+  });
+
+  it("opens a present session before any input and keeps that process for the first turn", async () => {
+    const { session, sdkClient, start } = createSession({ sessionId: RESTORED_SESSION_ID });
+    await session.verifyResumable();
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);
+    expect(sdkClient.current.sent).toHaveLength(0); // nothing was sent: no model call
+    const result = await start("continue");
+    expect(acceptedTurnId(result)).toMatch(/^run-1:turn:/);
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("ClaudeSession streaming lifecycle", () => {

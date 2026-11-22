@@ -23,7 +23,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const tempDirs: string[] = [];
 const createMemoryDir = async (): Promise<string> => {
@@ -172,7 +172,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig(runtimeKinds);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
 
     const run = await manager.createTeamRun({ config, teamDefinitionName: "Runtime Team" });
 
@@ -228,7 +228,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator: modelSelectionValidator as never, remoteChannel: NO_PEER_CHANNEL });
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator: modelSelectionValidator as never, remoteChannel: NO_PEER_CHANNEL });
     const containedIn = { orgRunId: "org_1", address: "/software_engineering_team" } as const;
     const run = await manager.createTeamRun({ config, teamDefinitionName: "Software Engineering Team", containedIn: containedIn as never });
     expect(run.getExecutionTreeSnapshot().containedIn).toEqual(containedIn);
@@ -255,7 +255,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       expect(callbacks.projectRunRoot?.()).toEqual({ kind: "agent_team", runId: config.rootTeam.teamRunId });
     });
     const factory = createFactory({ beforeBackendReturn });
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
 
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Resolver Team" });
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
@@ -266,14 +266,14 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]);
     const initialFactory = createFactory();
-    const initial = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: initialFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const initial = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: initialFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     await initial.createTeamRun({ config, teamDefinitionName: "Restorable Team" });
     initialFactory.state.active = false;
     expect(initial.getActiveTeamRun(config.rootTeam.teamRunId)).toBeNull();
     expect(initial.getManagedTeamRun(config.rootTeam.teamRunId)).not.toBeNull();
 
     const restoredFactory = createFactory();
-    const restoredManager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: restoredFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const restoredManager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: restoredFactory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
 
     expect(restored.getExecutionTreeSnapshot()).toMatchObject({
@@ -300,7 +300,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const snapshots: Array<{ teamRunId: string; isActive: boolean; ending: string | null }> = [];
     manager.subscribeToLifecycle(config.rootTeam.teamRunId, (snapshot) => snapshots.push(snapshot));
 
@@ -320,7 +320,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
     // The fake factory shares lifecycle state across backends; a restored backend is a fresh active owner.
@@ -363,7 +363,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const factory = createFactory({ beforeBackendReturn: async () => {
       if (++materializations === 2) { reportRestoreEntered(); await restoreBarrier; }
     } });
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory,
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
       activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
@@ -388,7 +388,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const memoryDir = await createMemoryDir();
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory,
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
       activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
@@ -430,7 +430,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       kind: "valid" as const,
       selection,
     }));
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
@@ -510,7 +510,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       await validationBarrier;
       return { kind: "valid" as const, selection };
     });
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,
@@ -570,7 +570,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       kind: "valid" as const,
       selection,
     }));
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: factory.factory,
       memberExecutionContextBuilder: memberExecutionContextBuilder as never,

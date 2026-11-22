@@ -82,7 +82,7 @@ describe("RootCommunicationEngine publication (SR-072, autobyteus-565)", () => {
       startedAt: "2026-11-13T00:00:00.000Z" } as never);
     const reply = { ...message, messageId: "m-2", senderAgentRunId: "publisher-b", receiverAgentRunId: "manager" };
     await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(manager, "manager"), receiverDisplayName: "manager",
-      senderNodeName: "docker", senderAddress: "/publisher" })).resolves.toMatchObject({ accepted: true, agentAddress: "/manager" });
+      senderNodeName: "docker", senderAddress: "/publisher", files: [] })).resolves.toMatchObject({ accepted: true, agentAddress: "/manager" });
     expect(engine.getMessages()).toEqual([{ ...reply, counterpart: { address: "/publisher", nodeId: "srv_b" } }]);
     expect(port.publishMessage).toHaveBeenCalledExactlyOnceWith({ message: reply, relation: "remote", sender: { nodeId: "srv_b" }, receiver: { run: manager },
       parties: { sender: { agentRunId: "publisher-b", address: "/publisher", nodeName: "docker" }, receiver: local("manager") } });

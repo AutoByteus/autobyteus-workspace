@@ -14,6 +14,7 @@ import {
   PRODUCT_LICENSE_EXTRA_RESOURCES,
   PRODUCT_LICENSE_REQUIRED_FILES,
 } from './productLicensePackaging'
+import { buildLinuxAppImage, type LinuxTargetArch } from './linuxAppImageBuild'
 
 // Load environment variables from .env.local (for Apple credentials)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
@@ -27,7 +28,6 @@ if (process.env.NO_TIMESTAMP) {
 type PlatformType = 'LINUX' | 'WINDOWS' | 'MAC' | 'ALL'
 type BuildFlavor = 'personal' | 'enterprise'
 type RequestedArch = 'AUTO' | 'ARM64' | 'X64'
-type LinuxTargetArch = 'x64' | 'arm64'
 
 interface BuildConfig {
   config: Configuration,
@@ -476,13 +476,8 @@ async function main(): Promise<void> {
 
       // Build for Linux
       const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
-      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
       console.log(`Building for Linux (${linuxTargetArch})...`)
-      await build({
-        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
-        publish: 'never',
-        targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
-      })
+      await buildLinuxAppImage(linuxTargetArch, sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)))
 
       // Build for Windows
       console.log('Building for Windows...')
@@ -516,12 +511,7 @@ async function main(): Promise<void> {
       console.log('All platform builds completed successfully')
     } else if (platform === 'LINUX') {
       const linuxTargetArch = resolveLinuxTargetArch(requestedArch)
-      const linuxArch = linuxTargetArchToBuilderArch(linuxTargetArch)
-      const result = await build({
-        config: sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)),
-        publish: 'never',
-        targets: new Map([[Platform.LINUX, new Map([[linuxArch, ['AppImage']]])]])
-      })
+      const result = await buildLinuxAppImage(linuxTargetArch, sanitizeConfig(configWithLinuxArtifactName(linuxTargetArch)))
       console.log('Build completed:', result)
     } else {
       // For single platform builds, use the standard configuration

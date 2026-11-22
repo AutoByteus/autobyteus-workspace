@@ -5,6 +5,10 @@ import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execu
 import { APPLICATION_HOST_STANDALONE_RUNS } from "../../agent-execution/services/standalone-run-ports.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { getDefaultRuntimeSwitchMemory } from "../../agent-memory/services/runtime-switch-recorder.js";
+import { readPendingRuntimeHandover } from "../../agent-memory/services/runtime-handover-reader.js";
+import { RuntimeHandoverNoticeService } from "../../runtime-handover-notices/services/runtime-handover-notice-service.js";
+import { AgentRunPlatformNotices } from "../../agent-execution/domain/agent-run-platform-notices.js";
 import { getAgentStreamSequences } from "../../services/agent-streaming/agent-stream-sequence.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
@@ -103,6 +107,12 @@ export const buildApplicationExecutionScopeKernel = (
       artifactDeliverySink: input.artifactDeliverySink,
     });
     const memoryRecorder = new AgentRunMemoryRecorder();
+    // The hand-over notice of a session renewal (autobyteus-599, DEC-007): the scope's only platform notice, wired as the
+    // general supervisor wires its notices (input preface and lifecycle observer), so the fresh session's first input has it.
+    const platformInputNotices = new AgentRunPlatformNotices([new RuntimeHandoverNoticeService({
+      journals: getWorkJournalService(),
+      readPending: readPendingRuntimeHandover,
+    })]);
     const resourceManager = new AgentRunResourceManager({
       runSessions: assembly.runSessions,
       runFileChangeService,
@@ -110,6 +120,7 @@ export const buildApplicationExecutionScopeKernel = (
       memoryRecorder,
       streamSequences: getAgentStreamSequences(),
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
+      lifecycleObserver: platformInputNotices,
       mcpServerInstances: McpServerInstanceManager.getInstance(),
       runPasses: input.runPasses,
     });
@@ -152,6 +163,8 @@ export const buildApplicationExecutionScopeKernel = (
       providerInputNormalizer,
       agentToolMcpRunSessionDeactivator: authority.runSessions,
       runPasses: input.runPasses,
+      inputPreface: platformInputNotices,
+      lifecycleObserver: platformInputNotices,
     });
     const metadataService = new AgentRunMetadataService(input.memoryDir);
     const historyCatalogService = new AgentRunHistoryCatalogService(
@@ -175,6 +188,7 @@ export const buildApplicationExecutionScopeKernel = (
       modelSelectionValidator: input.modelSelectionValidator,
       delegationIndex: input.delegationIndex,
       remoteChannel: input.remoteChannel,
+      receivedFiles: input.receivedFiles,
       viewStreams: input.viewStreams,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
@@ -279,6 +293,9 @@ const buildRunServices = (
       workspaceManager: input.workspaceManager,
       tokenUsageReadiness,
       modelSelectionValidator: input.modelSelectionValidator,
+      // A lost runtime session renews by the switch steps (autobyteus-599, DS-001, DEC-007), with the notice above; an
+      // application run never has a pending runtime switch (`canSwitchRuntime`), so this port serves only renewals here.
+      switching: { memory: getDefaultRuntimeSwitchMemory() },
     },
   );
   const agentRunService = new AgentRunService(input.memoryDir, {

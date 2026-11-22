@@ -6,6 +6,7 @@ import type { RemoteRootDirectory } from "../../../src/remote-collaboration/inbo
 import { RemoteRunViewProvider } from "../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
 import type { RunAgentAccess, RunAgentPresentationListener } from "../../../src/agent-collaboration/execution/remote/run-agent-access.js";
 import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js";
 
 /** autobyteus-278: the running node's one inbound owner of what a peer's owner reads and drives (link check first). */
 
@@ -43,7 +44,7 @@ const harness = () => {
     subscribeToEvents: (listener: (event: unknown) => void) => { leadListeners.add(listener); return () => leadListeners.delete(listener); } } as never,
   { whenPersisted: async () => undefined });
   const provider = new RemoteRunViewProvider(roots, views, sequences);
-  const gateway = new PeerGateway({
+  const gateway = new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never, peerRunMembers: {} as never,

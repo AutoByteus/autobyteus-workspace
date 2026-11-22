@@ -16,12 +16,16 @@ const references = (values: readonly string[] | null | undefined): readonly stri
 const hash = (values: readonly string[]): string => createHash("sha256")
   .update(values.join("\0")).digest("base64url").slice(0, 32);
 
+/** The "Reference files:" block that follows a received message's text, one path per line (empty without files). */
+const referenceFileBlock = (files: readonly string[]): string =>
+  files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";
+
 export const buildRootCommunicationInputMessage = (input: {
   delivery: RootCommunicationDeliveryInput;
   message: CollaborationCommunicationMessage;
 }): AgentInputUserMessage => {
   const files = references(input.message.referenceFiles);
-  const fileBlock = files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";
+  const fileBlock = referenceFileBlock(files);
   const header = receivedMessageHeader({ runId: input.delivery.senderIdentity.agentRunId, address: input.delivery.senderAddress });
   const content = `${header}\nmessage:\n${input.message.content}${fileBlock}`;
   const rootKey = rootExecutionIdentityKey(input.delivery.senderIdentity.root);
@@ -45,7 +49,8 @@ export const buildRootCommunicationInputMessage = (input: {
 
 /**
  * The receiver's input for a message from a run on a peer node (`acceptFromRemote`): the header names the
- * sender's run id and node; the peer's message ID keys its dedupe, so the same message is admitted once.
+ * sender's run id and node; the peer's message ID keys its dedupe, so the same message is admitted once. Its files are
+ * listed as a local message's are, at their received paths on this node (autobyteus-587 RF-8, G-1).
  */
 export const buildRemoteCommunicationInputMessage = (input: {
   root: RootExecutionIdentity;
@@ -54,7 +59,8 @@ export const buildRemoteCommunicationInputMessage = (input: {
   senderNodeName: string;
 }): AgentInputUserMessage => {
   const header = receivedMessageHeader({ runId: input.message.senderAgentRunId, address: null, node: input.senderNodeName });
-  const content = `${header}\nmessage:\n${input.message.content}`;
+  const files = references(input.message.referenceFiles);
+  const content = `${header}\nmessage:\n${input.message.content}${referenceFileBlock(files)}`;
   const rootKey = rootExecutionIdentityKey(input.root);
   const messageId = `memberinput_${hash([rootKey, input.receiverIdentity.agentRunId, input.message.messageId, content])}`;
   return new AgentInputUserMessage(content, SenderType.AGENT, null, {
@@ -70,6 +76,6 @@ export const buildRemoteCommunicationInputMessage = (input: {
     root_subject_kind: input.root.rootSubjectKind,
     root_run_id: input.root.rootRunId,
     parent_communication_message_id: input.message.messageId,
-    reference_files: [],
+    reference_files: files,
   });
 };

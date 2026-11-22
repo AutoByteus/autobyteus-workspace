@@ -24,7 +24,7 @@ import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.j
 import { AgentOrgDefinitionResolver } from '../../../src/agent-org-definition/services/agent-org-definition-resolver.js';
 import { CollaborationHandoffCompiler } from '../../../src/agent-collaboration/definition/collaboration-handoff-compiler.js';
 import { buildCanonicalApplicationId, buildCanonicalApplicationOwnedTeamId } from '../../../src/application-bundles/utils/application-bundle-identity.js';
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 const roots: string[] = [];
 const closers: Array<() => void> = [];
 afterEach(async () => { vi.restoreAllMocks(); closers.splice(0).forEach(close => close()); await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });

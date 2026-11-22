@@ -79,7 +79,7 @@ import type {
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -150,7 +150,7 @@ const createHarness = (input: {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     applicationAgentTools,
     providerRelayAccess: null,
-    remoteChannel: NO_PEER_CHANNEL,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     peerDiscovery: OFF_DISCOVERY,
     runPasses: null,
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),
@@ -307,6 +307,15 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     expect(agentRunManager.runPasses).toBe(runPasses);
     const resourceManager = (agentRunManager.activationRegistry as { resourceManager: { dependencies: Record<string, unknown> } }).resourceManager;
     expect(resourceManager.dependencies.runPasses).toBe(runPasses);
+    kernel.abortConstruction();
+  });
+
+  it("gives the scope's standalone lifecycle the switch memory, so a lost runtime session renews (autobyteus-599, N-4)", async () => {
+    const { getDefaultRuntimeSwitchMemory } = await import("../../../src/agent-memory/services/runtime-switch-recorder.js");
+    const harness = createHarness();
+    const kernel = buildApplicationExecutionScopeKernel(harness.buildInput);
+    const lifecycle = (kernel.agentRunService as unknown as { lifecycleService: { switching: { memory: unknown } | null } }).lifecycleService;
+    expect(lifecycle.switching?.memory).toBe(getDefaultRuntimeSwitchMemory());
     kernel.abortConstruction();
   });
 

@@ -10,7 +10,7 @@ const conversation = (segment?: ToolCallSegment): Conversation => ({ id: 'task',
   { type: 'user', text: 'history text', timestamp: new Date(1000), contextFilePaths: [{ kind: 'workspace_path', id: 'file', locator: '/note', displayName: 'note', type: 'Text' }] },
   ...(segment ? [{ type: 'ai' as const, text: '', segments: [segment], timestamp: new Date(2000), isComplete: true }] : []),
 ] })
-const activity = (segment: ToolCallSegment): ToolActivity => ({ ...segment, kind: 'tool', activityId: 'inv', contextText: 'description', timestamp: new Date(2000) })
+const activity = (segment: ToolCallSegment): ToolActivity => ({ ...segment, kind: 'tool', activityId: 'inv', timestamp: new Date(2000) })
 const input = (current: ToolCallSegment, projected = tool('parsed', { arguments: { message: 'old' }, logs: [] })) => ({ agentRunId: 'task',
   currentConversation: conversation(current), currentActivities: [activity(current)], projectedConversation: conversation(projected), projectedActivities: [activity(projected)] })
 const selected = (result: ReturnType<typeof reconcile>) => (result.conversation.messages.find(m => m.type === 'ai') as any).segments[0]

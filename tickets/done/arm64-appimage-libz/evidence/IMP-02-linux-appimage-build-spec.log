@@ -1,0 +1,15 @@
+# IMP-02
+# Command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run scripts/__tests__/linuxAppImageBuild.spec.ts
+# Commit: 7ad305aeb0
+# Environment: Linux aarch64 container (Ubuntu 24.04, root), Node v22.23.3
+# Date: 2026-11-21T20:49:04Z
+
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > builds x64 with the normal cache and no prepared toolset 2ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > builds arm64 with the prepared toolset, asserts the AppImage and restores the cache setting 1ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > removes the cache setting after arm64 when it was not set before 0ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > fails arm64 unless electron-builder reports exactly one AppImage ([]) 1ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > fails arm64 unless electron-builder reports exactly one AppImage (["/out/a.AppImage","/out/b.AppImage"]) 0ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > buildLinuxAppImage > fails arm64 when the runtime assertion fails, and restores the cache setting 0ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts > assertArm64AppImageRuntime > refuses an image that does not start with the pinned static runtime 26ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

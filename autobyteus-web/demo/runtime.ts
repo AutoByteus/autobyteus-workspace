@@ -184,7 +184,7 @@ export class DemoRuntime {
         const ts = Math.floor(Date.now() / 1000);
         conversationOf(this.world, agent).push({ kind: 'tool_call', invocationId: toolId, toolName: reply.tool, toolArgs: reply.args, toolResult: reply.result, ts });
         activitiesOf(this.world, agent).push({ kind: 'tool', invocationId: toolId, toolName: reply.tool, type: 'tool_call', status: 'success',
-          contextText: String(Object.values(reply.args)[0] ?? ''), arguments: reply.args, logs: [], result: reply.result, error: null, ts });
+          arguments: reply.args, logs: [], result: reply.result, error: null, ts });
       }],
       [300, () => this.publish(agent, 'SEGMENT_START', { id: textId, turn_id: turnId, segment_type: 'text', metadata: null })],
       ...words(reply.text).map((delta): [number, () => void] => [70, () => this.publish(agent, 'SEGMENT_CONTENT', { id: textId, turn_id: turnId, segment_type: 'text', delta })]),

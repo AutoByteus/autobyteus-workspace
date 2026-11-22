@@ -1,0 +1,33 @@
+# IMP-08 changed source files: effective non-empty lines now, before, and changed lines since 0da6bfbfc1
+# Command: grep -cv "^\s*$" <file> (now and at 0da6bfbfc1); git diff --numstat 0da6bfbfc1..HEAD
+# Commit: 0681fcd3af
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+
+247 (before: 216) changed-lines: 67  autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-activation-planner.ts
+461 (before: 500) changed-lines: 61  autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts
+28 (before: 0) changed-lines: 29  autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-session-renewal.ts
+87 (before: 80) changed-lines: 21  autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-platform-binding.ts
+104 (before: 99) changed-lines: 5  autobyteus-server-ts/src/agent-execution/backends/acp/acp-agent-session-profile.ts
+203 (before: 196) changed-lines: 13  autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-session-launcher.ts
+163 (before: 153) changed-lines: 13  autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+170 (before: 158) changed-lines: 13  autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts
+61 (before: 57) changed-lines: 8  autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+126 (before: 116) changed-lines: 11  autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts
+23 (before: 0) changed-lines: 25  autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-resume-check.ts
+497 (before: 494) changed-lines: 4  autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+8 (before: 0) changed-lines: 9  autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-missing-thread.ts
+267 (before: 262) changed-lines: 15  autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts
+51 (before: 48) changed-lines: 6  autobyteus-server-ts/src/agent-execution/backends/deepseek-harness/deepseek-harness-session-profile.ts
+85 (before: 81) changed-lines: 7  autobyteus-server-ts/src/agent-execution/backends/grok/grok-build-session-profile.ts
+85 (before: 54) changed-lines: 35  autobyteus-server-ts/src/agent-execution/domain/runtime-switch.ts
+79 (before: 60) changed-lines: 23  autobyteus-server-ts/src/agent-execution/errors.ts
+487 (before: 461) changed-lines: 36  autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+385 (before: 385) changed-lines: 4  autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+111 (before: 111) changed-lines: 8  autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts
+237 (before: 239) changed-lines: 16  autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts
+80 (before: 80) changed-lines: 4  autobyteus-server-ts/src/agent-team-execution/services/team-agent-platform-binding-committer.ts
+155 (before: 155) changed-lines: 4  autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts
+102 (before: 99) changed-lines: 9  autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-session-opening.ts
+186 (before: 178) changed-lines: 10  autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-streaming-session.ts
+368 (before: 358) changed-lines: 20  autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts

@@ -1,0 +1,44 @@
+# AE-11 extract-and-run cleanup: new static runtime vs legacy runtime — 2026-11-22T00:38:37Z, host aarch64
+# expectation compared against: the legacy runtime shipped today, and docs.appimage.org (extract-and-run 'waits until the app closes, and then cleans up the files again'; NO_CLEANUP=1 disables cleanup)
+# root: /tmp/ae28/desktop-root as uid 1000 (fresh tmpfs /tmp per run); legacy runs need libz.so, so a temporary symlink is added for those runs only and removed after
+
+## provenance: runtime-arm64 is the official AppImage/type2-runtime release 20251108 runtime-aarch64 (electron-builder-binaries packages/appimage/assets/download-runtime.sh pins it):
+APPIMAGE_TYPE2_RELEASE="${APPIMAGE_TYPE2_RELEASE:-20251108}"
+00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444  runtime-arm64
+runtime version string: AppImage runtime version: https://github.com/AppImage/type2-runtime/commit/dd6cebe
+
+## 1. minimal AppImage = static runtime-arm64 + squashfs {AppRun: sh script}, --appimage-extract-and-run
+minimal AppRun ran, APPDIR=/tmp/appimage_extracted_d56a94f1ec577178c61de50b4a8328bc
+exit=0
+left in /tmp: appimage_extracted_d56a94f1ec577178c61de50b4a8328bc
+
+## 2. same minimal payload with the legacy runtime-arm64 (appimage-12.0.1), temporary libz.so present
+minimal AppRun ran, APPDIR=/tmp/appimage_extracted_92350152cd1e2aeed6d1d9c211260456
+exit=0
+left in /tmp: none
+
+## 3. OLD published beta.6 app (legacy runtime), ELECTRON_RUN_AS_NODE=1 (AppRun execs Electron as Node, exits at once), temporary libz.so present
+urces/server/prisma/migrations/20261009120000_token_meter_context_readings/migration.sql
+exit=0
+left in /tmp: none
+
+(temporary libz.so removed: yes; libz.so files in root: 0)
+
+## 4. NEW CI app (static runtime), ELECTRON_RUN_AS_NODE=1, no libz.so
+node ok
+exit=0
+left in /tmp: /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34  entries: 31371  size: 1.2G
+
+## 5. NEW CI app, real GUI start and quit by closing the window: see AE-06-app-start-extract-and-run.log attempt 6A ('runtime exit=0', 'remaining app processes: 0', 'extract dir after quit: /tmp/appimage_extracted_4092ed…')
+
+## 6. strace -f of case 1 after the child exits (static runtime parent): no filesystem call between wait4 and exit_group, so the cleanup never runs
+<pid> <... wait4 resumed>[{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 97114
+<pid> --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=97114, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+<pid> rt_sigprocmask(SIG_BLOCK, ~[RTMIN RT_1 RT_2], [], 8) = 0
+<pid> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+<pid> madvise(0x54f720a0000, 32833536, MADV_DONTNEED) = 0
+<pid> mprotect(0x54f720a0000, 32833536, PROT_NONE) = 0
+<pid> exit_group(0)                     = ?
+<pid> +++ exited with 0 +++
+
+## 7. the same leftover on the host overlay fs as root (not tmpfs- or permission-specific): TMPDIR=/tmp/ae28/tmptest -> appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34 1.2G; a second start reuses the same folder (one folder per image, by md5)

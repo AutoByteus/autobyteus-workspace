@@ -44,6 +44,12 @@ export interface ClaudeSdkStreamingSession {
   readonly messages: AsyncIterable<unknown>;
   /** Capabilities advertised by the first `system/init`; null until it arrives. */
   readonly capabilities: ReadonlySet<string> | null;
+  /**
+   * The SDK's initialization of this query with the CLI (`initializationResult()`, observed once): resolves when the CLI is
+   * ready for input, rejects with the CLI's own reason when it is not, such as a resume of a session it does not have
+   * (autobyteus-599, PRB-007). Already observed, so it never rejects unhandled.
+   */
+  readonly initialized: Promise<unknown>;
   send(message: ClaudeSdkUserMessage): void;
   interruptAndCancelQueued(): Promise<ClaudeSdkInterruptOutcome>;
   resolveSelectedModel(selectedValue: string): Promise<ClaudeSdkSelectedModelResolution>;
@@ -135,6 +141,7 @@ class ClaudeSdkStreamingSessionHandle implements ClaudeSdkStreamingSession {
     private readonly query: ClaudeSdkQueryLike,
     private readonly input: ClaudeSdkInputChannel,
     private readonly assertAccepting: () => void,
+    readonly initialized: Promise<unknown>,
   ) {
     this.messages = { [Symbol.asyncIterator]: () => this.readMessages() };
   }
@@ -203,4 +210,5 @@ export const createClaudeSdkStreamingSession = (
   query: ClaudeSdkQueryLike,
   input: ClaudeSdkInputChannel,
   assertAccepting: () => void,
-): ClaudeSdkStreamingSession => new ClaudeSdkStreamingSessionHandle(query, input, assertAccepting);
+  initialized: Promise<unknown>,
+): ClaudeSdkStreamingSession => new ClaudeSdkStreamingSessionHandle(query, input, assertAccepting, initialized);

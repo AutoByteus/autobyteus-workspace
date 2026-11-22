@@ -43,7 +43,7 @@ const delivery = (overrides: { reached?: unknown; standalone?: boolean } = {}) =
     rootTeamRunId: TEAM, getIndex: () => index,
     collaborators: { reachedPlacementAt, catalogTaskSource } as never,
     communication: { deliver } as never,
-    authorizeIdentity: () => undefined, isLiveAgent: () => true,
+    authorizeIdentity: () => undefined, isLiveAgent: () => true, receivedFiles: {} as never, memberFolderOf: async () => "/unused",
     remoteLinks: { endpointFor: () => null } as never, remoteSend: {} as never,
   });
   const send = (sender: typeof REVIEWER, recipientAddress: string) => subject.deliverToAddress({

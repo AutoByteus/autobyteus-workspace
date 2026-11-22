@@ -1,0 +1,7 @@
+# API-06 NEGATIVE CONTROL: the harness restores WITHOUT verifyResumable (the old, lazy path); the updated restore case must fail | 2026-11-22T15:11:58Z
+     × a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude] 3047ms
+     × a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude] 2661ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: exactly one Claude CLI process serves session 57c79fbb-4445-461a-ac5c-ba837c06730f: expected [] to have a length of 1 but got +0
+AssertionError: exactly one Claude CLI process serves session 6d33c42a-2eaa-4218-bc0c-5330b0e89c01: expected [] to have a length of 1 but got +0
+      Tests  2 failed | 14 skipped (16)

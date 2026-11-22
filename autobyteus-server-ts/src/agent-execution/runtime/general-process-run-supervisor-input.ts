@@ -1,5 +1,6 @@
 import type { OrgContainerDirectory } from "../../agent-org-execution/container/org-container-directory.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
@@ -45,6 +46,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   runPasses: RunPassRevocation | null;
   /** The host's channel to peer nodes, for its roots (autobyteus-500 FU-011): the studio's; `() => null` elsewhere. */
   remoteChannel: RemoteRunChannelAccess;
+  /**
+   * The node's received files (autobyteus-587): placed by its roots into their agents' folders, and swept after a run's
+   * history is deleted (RF-10).
+   */
+  receivedFiles: ReceivedFilesPlacement & Readonly<{ sweep(): Promise<void> }>;
   /** The host's discovery for the discovery tools (autobyteus-500 FU-011). */
   peerDiscovery: PeerDiscoveryAccess;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany" | "storedModelOffer">;
@@ -68,8 +74,12 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
    */
   platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
   /**
-   * The memory and hand-over notice ports of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle.
-   * None (the application host): a lifecycle without them fails closed on a pending switch.
+   * The memory port of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle. It takes the
+   * fresh-session steps of a switch and of a session renewal (autobyteus-599); its hand-over notice comes from a
+   * `RuntimeHandoverNoticeService` in `platformInputNotices`, so a composition gives both. Every composition gives it: the
+   * studio uses it for switches and renewals; the standalone application host only for renewals, since it serves no
+   * run-selection surface (only the application backend proxy), so no switch is ever saved there. Without it, a lifecycle
+   * fails closed on a pending switch and rethrows a lost session.
    */
   runtimeSwitching?: RuntimeSwitching | null;
 }>;
@@ -112,6 +122,7 @@ export const requireGeneralProcessRunSupervisorInput = (
   }
   // autobyteus-500 FU-011: each host passes its own; a missing one is named.
   if (typeof input.remoteChannel !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's remoteChannel.");
+  if (!input.receivedFiles) throw new Error("GeneralProcessRunSupervisor needs its host's receivedFiles.");
   if (typeof input.peerDiscovery !== "function") throw new Error("GeneralProcessRunSupervisor needs its host's peerDiscovery.");
   return input;
 };

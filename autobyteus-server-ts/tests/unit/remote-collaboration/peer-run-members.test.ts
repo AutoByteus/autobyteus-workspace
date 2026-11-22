@@ -78,7 +78,7 @@ describe("FU-003: the delegating node's record of a peer Team run follows its me
     const service = await boot();
     const gateway = new PeerGateway({ ownNodeId: async () => A_ID, capability: { isEnabled: () => true },
       peers: { findByNodeId: async (id) => id === B_ID ? B_ON_A : null },
-      delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never,
+      delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, receivedFiles: {} as never,
       peerRunMembers: new PeerRunMembersReceiver({ tasks: service }) });
     const routes: string[] = [];
     const clientOnB = new PeerClient({

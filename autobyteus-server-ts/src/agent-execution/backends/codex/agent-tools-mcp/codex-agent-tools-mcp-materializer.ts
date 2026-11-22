@@ -11,10 +11,17 @@ import {
 } from "../../../../agent-tools/mcp/agent-tools-mcp-tool-name.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 
+/**
+ * autobyteus-587 (RFC-001 RF-6): a tool call that sends files to another node waits until they arrived; the largest
+ * (4 GiB at 20 Mbit/s) takes about 27 minutes, so the Agent Tools server's calls may take up to an hour.
+ */
+export const AGENT_TOOLS_TOOL_CALL_TIMEOUT_SEC = 3600;
+
 export type CodexAgentToolsMcpServerConfig = {
   url: string;
   enabled_tools: string[];
   startup_timeout_sec: 5;
+  tool_timeout_sec: typeof AGENT_TOOLS_TOOL_CALL_TIMEOUT_SEC;
 };
 
 export type CodexAgentToolsMcpConfig = JsonObject & {
@@ -34,6 +41,7 @@ export const materializeCodexAgentToolsMcpThreadConfig = (
       url: descriptor.serverUrl,
       enabled_tools: [...descriptor.enabledTools],
       startup_timeout_sec: 5,
+      tool_timeout_sec: AGENT_TOOLS_TOOL_CALL_TIMEOUT_SEC,
     },
   },
 });

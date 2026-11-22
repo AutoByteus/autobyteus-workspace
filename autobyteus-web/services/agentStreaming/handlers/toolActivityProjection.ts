@@ -95,19 +95,6 @@ const getActivityType = (segment: ProjectableToolSegment, toolName: string, argu
   return 'tool_call';
 };
 
-const getContextText = (
-  toolName: string,
-  argumentsPayload: Record<string, any>,
-): string => {
-  if (typeof argumentsPayload.path === 'string' && argumentsPayload.path.trim().length > 0) {
-    return argumentsPayload.path;
-  }
-  if (typeof argumentsPayload.command === 'string' && argumentsPayload.command.trim().length > 0) {
-    return argumentsPayload.command;
-  }
-  return toolName;
-};
-
 const hasExistingActivity = (context: AgentContext, invocationId: string): boolean => {
   const activityStore = useAgentActivityStore();
   return activityStore
@@ -136,7 +123,6 @@ export const upsertActivityFromToolSegment = (
       toolName,
       type: getActivityType(segment, toolName, mergedArguments),
       status: segment.status,
-      contextText: getContextText(toolName, mergedArguments),
       arguments: mergedArguments,
       approvalTarget: segment.approvalTarget ?? null,
       logs: [...segment.logs],

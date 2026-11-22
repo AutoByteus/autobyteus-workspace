@@ -22,8 +22,9 @@ import {
 import { messageFields, type CollaborationCommunicationMessage, type MessageCounterpart } from "./collaboration-communication-message.js";
 import { localParty, type MessagePublication } from "./message-publication.js";
 import { buildRemoteCommunicationInputMessage } from "./root-communication-runtime-builder.js";
-import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
+import { REFERENCE_FILE_REFUSAL_TEXT, REMOTE_REFUSAL } from "../remote/remote-refusal-codes.js";
 import type { RemoteEndpoint } from "../remote/remote-endpoint.js";
+import type { ReceivedFilesPlan, TransferredFile } from "../remote/transferred-files.js";
 
 const NOT_HERE = "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given.";
 /** A recipient that stopped accepting input after the durable write (its slot can no longer be committed). */
@@ -96,6 +97,8 @@ export type RemoteAcceptInput = Readonly<{
   senderNodeName: string;
   /** The sending agent's address in its own run, as the request carried it (autobyteus-565); null when not sent. */
   senderAddress: string | null;
+  /** autobyteus-587: the reference files, complete in this node's received files; placed for the receiver at this commit. */
+  files: readonly TransferredFile[];
 }>;
 
 /**
@@ -177,9 +180,6 @@ export class RootCommunicationEngine {
     if (scope) return refuse(scope);
     const content = input.content.trim();
     if (!content) return refuse({ accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." });
-    if (input.referenceFiles?.some((file) => file.trim())) {
-      return refuse({ accepted: false, code: REMOTE_REFUSAL.ATTACHMENTS_NOT_SUPPORTED, message: REMOTE_ROOT_REFUSAL_TEXT.attachments });
-    }
     const createdAt = new Date().toISOString();
     const message = validateCollaborationCommunicationMessage({
       messageId: this.messageId(input.senderIdentity.agentRunId, remoteAgentRunId, content, createdAt),
@@ -187,7 +187,8 @@ export class RootCommunicationEngine {
       receiverAgentRunId: remoteAgentRunId,
       content,
       messageType: input.messageType?.trim() || "agent_message",
-      referenceFiles: [],
+      // The sender's line keeps the sender's own paths (autobyteus-587 RF-9); the receiving node records its copies.
+      referenceFiles: [...(input.referenceFiles ?? [])],
       createdAt,
     });
     return Object.freeze({ ok: true as const, message, endpoint: input.endpoint, senderAddress: input.senderIdentity.memberAddress });
@@ -229,21 +230,26 @@ export class RootCommunicationEngine {
    * second message with the same ID is the existing commit-conflict refusal. Only the receiver's log gets it, with the
    * sender recorded (its address as the request carried it, and its node), and this commit publishes it into this run's
    * views (autobyteus-565).
+   * autobyteus-587 (AR-002): its files land in the receiver's own folder only once every admission check passed: open,
+   * current receiver, Task scope, content, the receiver's slot; then they are placed (through the port), then the log
+   * line is written. Their received paths are known before, so the input the slot holds names them (RF-8), and the line
+   * records them (RF-9). A file that can no longer be placed releases the slot and refuses the message.
    */
   async acceptFromRemote(input: RemoteAcceptInput): Promise<AgentOperationResult> {
     const closed = this.refuseUnlessOpen(ROOT_NOT_ACCEPTING_MESSAGES);
     if (closed) return closed;
     if (!this.isCurrent(input.receiverIdentity)) return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     const nodeId = input.endpoint.reference.nodeId;
-    const message = withCounterpart(validateCollaborationCommunicationMessage({ ...input.message, referenceFiles: [] }),
-      { address: input.senderAddress, nodeId });
-    if (message.receiverAgentRunId !== input.receiverIdentity.agentRunId || message.senderAgentRunId !== input.endpoint.reference.agentRunId) {
+    const received = validateCollaborationCommunicationMessage({ ...input.message, referenceFiles: [] });
+    if (received.receiverAgentRunId !== input.receiverIdentity.agentRunId || received.senderAgentRunId !== input.endpoint.reference.agentRunId) {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
-    const assertAllowed = () => this.port.assertDeliveryAllowed(message.senderAgentRunId, message.receiverAgentRunId);
+    const assertAllowed = () => this.port.assertDeliveryAllowed(received.senderAgentRunId, received.receiverAgentRunId);
     const scope = this.refuseOutsideTaskScope(assertAllowed);
     if (scope) return scope;
-    if (!message.content.trim()) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
+    if (!received.content.trim()) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
+    const plan = input.files.length ? await this.port.receivedFilesFor(input.receiverIdentity, received.senderAgentRunId, input.files) : null;
+    const message = withCounterpart({ ...received, referenceFiles: plan?.paths ?? [] }, { address: input.senderAddress, nodeId });
     const inputMessage = buildRemoteCommunicationInputMessage({
       root: this.port.root, message, receiverIdentity: input.receiverIdentity, senderNodeName: input.senderNodeName,
     });
@@ -251,7 +257,7 @@ export class RootCommunicationEngine {
       relation: "remote", sender: { nodeId }, receiver: { run: this.port.root },
       parties: { sender: Object.freeze({ agentRunId: message.senderAgentRunId, address: input.senderAddress, nodeName: input.senderNodeName }),
         receiver: localParty(input.receiverIdentity.agentRunId, input.receiverIdentity.memberAddress) },
-    })).result;
+    }, plan)).result;
   }
 
   /**
@@ -344,11 +350,23 @@ export class RootCommunicationEngine {
     assertAllowed: () => void,
     /** The message's relation, sides and parties: every commit that reaches here publishes it (SR-072, autobyteus-565). */
     publication: Omit<MessagePublication, "message">,
+    /** A message from another node with files: they are placed once the slot is held, before the log line (autobyteus-587). */
+    files: ReceivedFilesPlan | null = null,
   ): Promise<Readonly<{ result: AgentOperationResult; recorded: boolean }>> {
     const receiverAgentRunId = receiverIdentity.agentRunId;
     const reservationResult = await this.port.reserveRecipientInput(receiverAgentRunId, inputMessage);
     if (!reservationResult.reserved) {
       return { result: { accepted: false, code: reservationResult.code, message: reservationResult.message }, recorded: false };
+    }
+    let placed: Awaited<ReturnType<ReceivedFilesPlan["place"]>> | null = null;
+    try { placed = files ? await files.place() : null; } catch (error) {
+      reservationResult.reservation.cancel();
+      throw error;
+    }
+    if (placed && !placed.ok) {
+      reservationResult.reservation.cancel();
+      return { result: { accepted: false, code: REMOTE_REFUSAL.REFERENCE_FILE_CHECK_FAILED, message: REFERENCE_FILE_REFUSAL_TEXT.notReceived(placed.name) },
+        recorded: false };
     }
     const control = this.appendFor(message, {
       reservation: reservationResult.reservation,

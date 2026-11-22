@@ -107,7 +107,8 @@ const harness = async () => {
     containers: directory,
   });
   const dispatcher = new SendMessageToDispatcher({ tree: index, globalRouter: new GlobalAgentRunMessageRouter({ activeRootDirectory: new ActiveCollaborationRootDirectory(),
-    channel: () => null, coordinators: index, agentRunManager: { getActiveRun: () => null }, crossRun: delivery }) });
+    channel: () => null, coordinators: index, agentRunManager: { getActiveRun: () => null }, crossRun: delivery,
+    nodes: { check: async () => null }, outgoing: { send: async () => ({ ok: true as const, files: [] }) } }) });
   /** `send_message_to` by one agent: its own run does not have the address (step 1 misses), so step 2 and the cross-run route follow. */
   const send = (agentRunId: string, target: Readonly<{ recipient_address: string } | { target_agent_run_id: string }>, content = "A request.") =>
     dispatcher.dispatch({ toolName: "send_message_to", rawArguments: { ...target, content }, sender: buildAgentRunMessageSenderContext({ senderRunId: agentRunId,

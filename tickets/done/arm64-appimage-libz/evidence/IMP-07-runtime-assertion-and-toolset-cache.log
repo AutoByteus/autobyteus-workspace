@@ -1,0 +1,22 @@
+# IMP-07
+# Command: compiled build/dist/arm64AppImageRuntime.js driven by node (assertArm64AppImageRuntime on real images; prepareArm64AppImageToolset reuse / stale folder / missing mksquashfs)
+# Commit: 7ad305aeb0
+# Environment: Linux aarch64 container (Ubuntu 24.04, root), Node v22.23.3, network to github.com
+# Date: 2026-11-21T20:49:27Z
+
+## assertion
+throws: /tmp/ab28/v25/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage does not start with the pinned static AppImage runtime: electron-builder did not use the prepared arm64 toolset (autobyteus-28)
+pass /tmp/ab28/sr002/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage
+## reuse of a complete folder
+root node_modules/.cache/autobyteus-arm64-appimage-toolset ms 4
+## stale folder: legacy runtime-arm64 placed in it
+root node_modules/.cache/autobyteus-arm64-appimage-toolset ms 2022
+00cbdfcf917cc6c0ff6d3347d59e0ca1f7f45a6df1a428a0d6d8a78664d87444  node_modules/.cache/autobyteus-arm64-appimage-toolset/appimage/appimage-12.0.1/runtime-arm64
+-rwxr-xr-x 936456 node_modules/.cache/autobyteus-arm64-appimage-toolset/appimage/appimage-12.0.1/runtime-arm64
+## missing linux-arm64/mksquashfs
+root node_modules/.cache/autobyteus-arm64-appimage-toolset ms 1592
+-rwxr-xr-x node_modules/.cache/autobyteus-arm64-appimage-toolset/appimage/appimage-12.0.1/linux-arm64/mksquashfs
+## no leftover staging folders
+.
+..
+appimage-12.0.1

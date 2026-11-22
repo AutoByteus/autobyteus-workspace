@@ -1,0 +1,137 @@
+# AE-03 independent read of build-only run 44956618584 (2026-11-21T23:37:49Z)
+## gh run view 44956618584 --json conclusion,headSha,headBranch,event,jobs
+{"conclusion":"success","displayTitle":"Desktop Release","event":"workflow_dispatch","headBranch":"codex/arm64-appimage-libz","headSha":"05996bd715a406e69d15dd833b25659c084ffa4a"}
+success	Resolve Release Metadata
+success	Build macOS ARM64
+success	Build macOS Intel x64
+success	Build Linux x64
+success	Build Linux ARM64
+success	Build Windows x64
+skipped	Sign authenticated Linux desktop releases
+skipped	Publish GitHub Release
+  Build Linux x64	success	Set up job
+  Build Linux x64	success	Checkout workspace + submodules
+  Build Linux x64	success	Setup pnpm
+  Build Linux x64	success	Setup Node
+  Build Linux x64	success	Install Linux build deps
+  Build Linux x64	success	Install workspace dependencies
+  Build Linux x64	success	Setup pinned native toolchain
+  Build Linux x64	success	Prepare desktop public trust or disposable build-only identity
+  Build Linux x64	success	Check native and signed-record units
+  Build Linux x64	success	Build Electron Linux x64
+  Build Linux x64	success	Sign build-only final bytes with disposable trust
+  Build Linux x64	success	Verify Linux x64 AppImage and updater metadata
+  Build Linux x64	success	Verify Linux x64 AppImage runs in a clean Ubuntu image
+  Build Linux x64	success	Verify Linux x64 Prisma engines
+  Build Linux x64	success	Verify Linux x64 packaged server startup
+  Build Linux x64	success	Upload Linux x64 artifacts
+  Build Linux x64	success	Post Setup pinned native toolchain
+  Build Linux x64	success	Post Setup Node
+  Build Linux x64	success	Post Setup pnpm
+  Build Linux x64	success	Post Checkout workspace + submodules
+  Build Linux x64	success	Complete job
+  Build Linux ARM64	success	Set up job
+  Build Linux ARM64	success	Checkout workspace + submodules
+  Build Linux ARM64	success	Setup pnpm
+  Build Linux ARM64	success	Setup Node
+  Build Linux ARM64	success	Install Linux build deps
+  Build Linux ARM64	success	Install workspace dependencies
+  Build Linux ARM64	success	Setup pinned native toolchain
+  Build Linux ARM64	success	Prepare desktop public trust or disposable build-only identity
+  Build Linux ARM64	success	Check native and signed-record units
+  Build Linux ARM64	success	Build Electron Linux ARM64
+  Build Linux ARM64	success	Sign build-only final bytes with disposable trust
+  Build Linux ARM64	success	Verify Linux ARM64 AppImage and updater metadata
+  Build Linux ARM64	success	Verify Linux ARM64 AppImage runs in a clean Ubuntu image
+  Build Linux ARM64	success	Verify Linux ARM64 Prisma engines
+  Build Linux ARM64	success	Verify Linux ARM64 packaged server startup
+  Build Linux ARM64	success	Upload Linux ARM64 artifacts
+  Build Linux ARM64	success	Post Setup pinned native toolchain
+  Build Linux ARM64	success	Post Setup Node
+  Build Linux ARM64	success	Post Setup pnpm
+  Build Linux ARM64	success	Post Checkout workspace + submodules
+  Build Linux ARM64	success	Complete job
+
+## clean-image steps (full step log)
+  Build Linux x64	﻿2026-11-21T22:31:50.5155566Z ##[group]Run APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+  Build Linux x64	2026-11-21T22:31:50.5156282Z [36;1mAPPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"[0m
+  Build Linux x64	2026-11-21T22:31:50.5156706Z [36;1mtest -n "$APPIMAGE"[0m
+  Build Linux x64	2026-11-21T22:31:50.5157050Z [36;1mnode scripts/desktop-package/verify-clean-image-runtime.mjs "$APPIMAGE"[0m
+  Build Linux x64	2026-11-21T22:31:50.5186517Z shell: /usr/bin/bash -e {0}
+  Build Linux x64	2026-11-21T22:31:50.5186688Z env:
+  Build Linux x64	2026-11-21T22:31:50.5186842Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+  Build Linux x64	2026-11-21T22:31:50.5187245Z   AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-public.pem
+  Build Linux x64	2026-11-21T22:31:50.5187625Z   AUTOBYTEUS_DESKTOP_TEST_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-test-private.pem
+  Build Linux x64	2026-11-21T22:31:50.5188035Z ##[endgroup]
+  Build Linux x64	2026-11-21T22:31:54.3130169Z Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+  Build Linux ARM64	﻿2026-11-21T22:33:56.9670693Z ##[group]Run APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+  Build Linux ARM64	2026-11-21T22:33:56.9671703Z [36;1mAPPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"[0m
+  Build Linux ARM64	2026-11-21T22:33:56.9672357Z [36;1mtest -n "$APPIMAGE"[0m
+  Build Linux ARM64	2026-11-21T22:33:56.9672833Z [36;1mnode scripts/desktop-package/verify-clean-image-runtime.mjs "$APPIMAGE"[0m
+  Build Linux ARM64	2026-11-21T22:33:56.9694902Z shell: /usr/bin/bash -e {0}
+  Build Linux ARM64	2026-11-21T22:33:56.9695208Z env:
+  Build Linux ARM64	2026-11-21T22:33:56.9695672Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+  Build Linux ARM64	2026-11-21T22:33:56.9696227Z   AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-public.pem
+  Build Linux ARM64	2026-11-21T22:33:56.9697171Z   AUTOBYTEUS_DESKTOP_TEST_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-test-private.pem
+  Build Linux ARM64	2026-11-21T22:33:56.9697678Z ##[endgroup]
+  Build Linux ARM64	2026-11-21T22:34:01.8656042Z Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+
+## Docker present / image pulled on each Linux runner
+
+## verify steps' success lines on the Linux jobs
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	﻿2026-11-21T22:31:48.9227689Z ##[group]Run APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9228276Z [36;1mAPPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9228624Z [36;1mtest -n "$APPIMAGE"[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9228953Z [36;1mnode scripts/desktop-package/verify-layout.mjs "$APPIMAGE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9229275Z [36;1mfile "$APPIMAGE"[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9229460Z [36;1mfile "$APPIMAGE" | grep -Eq 'x86-64|x86_64'[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9229727Z [36;1mtest -f autobyteus-web/electron-dist/latest-linux.yml[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9230005Z [36;1mpython3 scripts/validate_linux_updater_metadata.py \[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9230286Z [36;1m  --metadata autobyteus-web/electron-dist/latest-linux.yml \[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9230537Z [36;1m  --arch-token linux-x64 \[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9230718Z [36;1m  --image "$APPIMAGE"[0m
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9259513Z shell: /usr/bin/bash -e {0}
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9259665Z env:
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9259823Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9260110Z   AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-public.pem
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9260469Z   AUTOBYTEUS_DESKTOP_TEST_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-test-private.pem
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:48.9260729Z ##[endgroup]
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:50.0996625Z Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:50.1440989Z autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.5.14-beta.6.AppImage: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter 
+Build Linux x64	Verify Linux x64 AppImage and updater metadata	2026-11-21T22:31:50.5078736Z Validated autobyteus-web/electron-dist/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+Build Linux x64	Verify Linux x64 packaged server startup	2026-11-21T22:31:56.4544100Z Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-unpacked/resources/server
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	﻿2026-11-21T22:33:55.3255165Z ##[group]Run APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3256237Z [36;1mAPPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3256844Z [36;1mtest -n "$APPIMAGE"[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3257386Z [36;1mnode scripts/desktop-package/verify-layout.mjs "$APPIMAGE" "$AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE"[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3257965Z [36;1mfile "$APPIMAGE"[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3258299Z [36;1mfile "$APPIMAGE" | grep -Eq 'ARM aarch64|aarch64|ARM64'[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3259043Z [36;1mtest -f autobyteus-web/electron-dist/latest-linux-arm64.yml[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3259625Z [36;1mpython3 scripts/validate_linux_updater_metadata.py \[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3260140Z [36;1m  --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3260618Z [36;1m  --arch-token linux-arm64 \[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3261007Z [36;1m  --image "$APPIMAGE"[0m
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3282492Z shell: /usr/bin/bash -e {0}
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3282933Z env:
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3283214Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3283816Z   AUTOBYTEUS_DESKTOP_PUBLIC_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-public.pem
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3284486Z   AUTOBYTEUS_DESKTOP_TEST_KEY_FILE: /home/runner/work/_temp/desktop-trust/desktop-test-private.pem
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:55.3284957Z ##[endgroup]
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:56.5664965Z Verified native AppRun, unchanged Electron ELF, provisioner/client and sandbox-preserving desktop Exec
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:56.6013103Z autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), static-pie linked
+Build Linux ARM64	Verify Linux ARM64 AppImage and updater metadata	2026-11-21T22:33:56.9563618Z Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+Build Linux ARM64	Verify Linux ARM64 packaged server startup	2026-11-21T22:34:06.0817801Z Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/serv
+
+## arm64 runtime assertion / toolset in Build Electron Linux ARM64
+2026-11-21T22:28:41.3300306Z autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+2026-11-21T22:28:47.3920850Z autobyteus-ts build: [verify:runtime-deps] OK
+2026-11-21T22:30:50.8900022Z autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+2026-11-21T22:30:56.9367798Z autobyteus-ts build: [verify:runtime-deps] OK
+2026-11-21T22:32:11.4250794Z [0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+2026-11-21T22:32:12.9487542Z [0;32m✓[0m Prisma client Linux arm64 runtime engines verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.p
+2026-11-21T22:32:12.9490816Z [0;33mPruning onnxruntime-web to its Node build and checking the embedding runtime...[0m
+2026-11-21T22:32:12.9841014Z Removed 127 MB of onnxruntime-web browser builds
+2026-11-21T22:32:13.3509913Z Embedding runtime validation passed
+2026-11-21T22:32:57.0142401Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mruntimeAvailabilityStore.Bm45a-cX.js                [39m[1m[2m    3.23 kB[22m[1m[22m[2m │ gzip:     1.24 kB[22m
+2026-11-21T22:32:57.0149716Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRuntimeScopedModelSelection.4c3MZWLX.js          [39m[1m[2m    4.48 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+2026-11-21T22:33:27.5344958Z   • building        target=AppImage arch=arm64 file=electron-dist/AutoByteus_personal_linux-arm64-1.5.14-beta.6.AppImage

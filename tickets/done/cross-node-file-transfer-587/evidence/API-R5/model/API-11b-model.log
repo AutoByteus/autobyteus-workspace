@@ -1,0 +1,35 @@
+# API-11b: the 461 model after round 5 (CR-587-05): counterpart (565), copiedFrom (22), IR-005 no-node rule, 591's cross-node continuation, DEC-009 S25
+# Commands: python3 -I autobyteus-server-ts/tests/fixtures/collaboration-contract/export_contract_states.py <model> <fixture> (regenerate), then --check; python3 -I <model>/walkthrough.py; python3 -I evidence/API-R5/model/model-node-probe.py <model> S18, then S19
+# Python 3.9.6; 2026-11-22
+## fixture diff
+ .../collaboration-contract/contract-states.json    | 737 ++++++++++++++++++---
+ 1 file changed, 641 insertions(+), 96 deletions(-)
+## --check
+autobyteus-server-ts/tests/fixtures/collaboration-contract/contract-states.json matches the model
+exit 0
+## walkthrough
+exit 0
+## probe
+after S18: A's entries for B's research_team_77aa: ['open']
+  B's peer-started lead -> its delegator M on A, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-a"; pass node: "node-a" with its run id.
+  B's peer-started lead -> its delegator M on A, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-a", not "node-c"; pass node: "node-a".
+  B's peer-started lead -> its delegator M on A, node='node-a': DELIVERED Delivered message to project_task_manager_7c8d on node "node-a".
+  M on A -> its task agent lead on B, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  M on A -> its task agent lead on B, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  M on A -> its task agent lead on B, node='node-b': DELIVERED Delivered message to lead_0c11 on node "node-b".
+  another run of A -> lead on B (row 13), node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  another run of A -> lead on B (row 13), node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  another run of A -> lead on B (row 13), node='node-b': DELIVERED Delivered message to lead_0c11 on node "node-b".
+after S19: A's entries for B's research_team_77aa: ['closed']
+  B's peer-started lead -> its delegator M on A, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-a"; pass node: "node-a" with its run id.
+  B's peer-started lead -> its delegator M on A, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-a", not "node-c"; pass node: "node-a".
+  B's peer-started lead -> its delegator M on A, node='node-a': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+  M on A -> its task agent lead on B, node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  M on A -> its task agent lead on B, node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  M on A -> its task agent lead on B, node='node-b': REFUSED TASK_AGENT_RESOURCE_CLOSED: This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.
+  another run of A -> lead on B (row 13), node=None: REFUSED NODE_REQUIRED: This agent runs on node "node-b"; pass node: "node-b" with its run id.
+  another run of A -> lead on B (row 13), node='node-c': REFUSED NODE_MISMATCH: This agent runs on node "node-b", not "node-c"; pass node: "node-b".
+  another run of A -> lead on B (row 13), node='node-b': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+after M sets T7 to TODO: A's entries: ['closed']
+  another run of A -> lead on B (row 13), node='node-b': REFUSED TASK_AGENT_RESOURCE_CLOSED: This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).
+  M on A -> its task agent lead on B (the assigner continues), node='node-b': DELIVERED Delivered message to lead_0c11 on node "node-b".

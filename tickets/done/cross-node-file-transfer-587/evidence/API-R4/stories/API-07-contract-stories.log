@@ -1,0 +1,17 @@
+# API-07 rerun: gated contract stories §5.1–§5.3 (env -i … RUN_AGY_FAILURE_E2E=1 … CONTRACT_STORIES_EVIDENCE_DIR=<dir> vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts)
+# Code 575c4ec9ed (HEAD 72b84f3c33, documents only after it); Node 22.23.1; macOS 26; 2026-11-21
+# load at start: 19:51  up  6:09, 9 users, load averages: 11.20 12.48 18.45
+     × §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node 67041ms
+     × §5.2 U0 … U11: a team the user starts delegates 313989ms
+     × §5.3 O0 … O9: an org the user starts delegates 189566ms
+AssertionError: S1 (DL-1) M delegates T1 to the Software Engineering Team: expected [ Array(1) ] to deeply equal []
+AssertionError: U9 (R-7) Delivered: runs of different open Tasks (autobyteus-492, CM-13): expected [ …(2) ] to deeply equal []
+AssertionError: O5 (DL-3) The CEO agent delegates Task T4 to a copy of the org's mounted team: expected [ Array(1) ] to deeply equal []
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+EXIT 1
+## Every difference:
++   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.copiedFrom: not in the contract (\"team_definition\")",
++   "A:memory/agents/image_maker_44a1/communication_messages_active.jsonl[1].counterpart: not in the contract ({\"address\":\"/research_agent\",\"nodeId\":null})",
++   "A:memory/agents/research_agent_8f80/communication_messages_active.jsonl[0].counterpart: not in the contract ({\"address\":\"/image_maker\",\"nodeId\":null})",
++   "A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.copiedFrom: not in the contract (\"configured_placement\")",

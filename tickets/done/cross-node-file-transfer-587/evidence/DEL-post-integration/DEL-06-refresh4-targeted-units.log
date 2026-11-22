@@ -1,0 +1,6 @@
+# Merged state dc6e6e550b
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture tests/unit/agent-collaboration tests/unit/remote-collaboration tests/unit/agent-communication tests/unit/compositions tests/unit/standalone-application-host --no-watch
+ Test Files  116 passed (116)
+      Tests  949 passed (949)
+   Duration  83.62s (transform 7.52s, setup 2.63s, import 36.29s, tests 34.08s, environment 7ms)
+exit=0

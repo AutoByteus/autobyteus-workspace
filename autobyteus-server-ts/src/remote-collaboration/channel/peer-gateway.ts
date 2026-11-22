@@ -24,6 +24,10 @@ import type {
   OwnerCommandRequest,
   PeerRunMembersAnswer,
   PeerRunMembersRequest,
+  ReceivedFilePieceAnswer,
+  ReceivedFilePieceRequest,
+  ReceivedFilesStatusAnswer,
+  ReceivedFilesStatusRequest,
   RemoteEnvelope,
   RemoteModelRoutingState,
   RemoteRefusalTarget,
@@ -39,6 +43,12 @@ import type { RunningAgentEntry } from "../../agent-collaboration/running/runnin
 import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import type { RunObservationSink } from "../inbound/remote-run-view-provider.js";
+import type { ReceivedFiles } from "../inbound/received-files.js";
+import {
+  SHA256_HEX_PATTERN,
+  TRANSFERRED_FILE_PIECE_MAX_BYTES,
+  type TransferredFile,
+} from "../../agent-collaboration/execution/remote/transferred-files.js";
 
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
 export type PeerGatewayResponse<TAnswer> =
@@ -80,6 +90,9 @@ export type AvailableAgentsHandler = Readonly<{
 export type RunningAgentsHandler = Readonly<{
   list(): Promise<Readonly<{ accepted: true; agents: readonly RunningAgentEntry[] }> | PeerHandlerRefusal>;
 }>;
+
+/** autobyteus-587: the node's received files, as a peer uploads into them (DS-003). */
+export type ReceivedFilesHandler = Pick<ReceivedFiles, "status" | "appendPiece">;
 
 /**
  * autobyteus-278: what a peer's owner reads and drives on this node, for runs that peer's delegation started (one
@@ -128,6 +141,43 @@ const parseEnvelope = (body: Record<string, unknown>): RemoteEnvelope => ({
 
 const parseEnvelopeRequest = (value: unknown): RemoteEnvelope => parseEnvelope(field(() => objectRecord(value, "request")));
 
+const sha256Of = (value: unknown, label: string): string => {
+  if (typeof value !== "string" || !SHA256_HEX_PATTERN.test(value)) throw new MalformedRequestError(`${label} must be 64 lowercase hex characters.`);
+  return value;
+};
+const sizeOf = (value: unknown, label: string): number => {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) throw new MalformedRequestError(`${label} must be a non-negative integer.`);
+  return value;
+};
+/** autobyteus-587: the reference files a message or work packet names, each `{sha256, size, name}`. */
+const filesOf = (value: unknown): readonly TransferredFile[] => {
+  if (!Array.isArray(value)) throw new MalformedRequestError("files must be an array.");
+  return value.map((entry, index) => {
+    const file = field(() => objectRecord(entry, `files[${index}]`));
+    return { sha256: sha256Of(file.sha256, `files[${index}].sha256`), size: sizeOf(file.size, `files[${index}].size`),
+      name: field(() => requiredString(file.name, `files[${index}].name`)) };
+  });
+};
+
+const parseReceivedFilesStatusRequest = (value: unknown): ReceivedFilesStatusRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  if (!Array.isArray(body.files)) throw new MalformedRequestError("files must be an array.");
+  return { ...parseEnvelope(body), files: body.files.map((entry, index) => {
+    const file = field(() => objectRecord(entry, `files[${index}]`));
+    return { sha256: sha256Of(file.sha256, `files[${index}].sha256`), size: sizeOf(file.size, `files[${index}].size`) };
+  }) };
+};
+
+/** A piece as the route hands it over: the envelope, the file and the offset from the signed query, the bytes from the body. */
+const parseReceivedFilePieceRequest = (value: unknown): ReceivedFilePieceRequest => {
+  const piece = field(() => objectRecord(value, "request"));
+  const number = (raw: unknown, label: string) => sizeOf(typeof raw === "string" && /^\d+$/.test(raw) ? Number(raw) : raw, label);
+  if (!Buffer.isBuffer(piece.bytes)) throw new MalformedRequestError("A piece must be sent as application/octet-stream.");
+  if (piece.bytes.byteLength > TRANSFERRED_FILE_PIECE_MAX_BYTES) throw new MalformedRequestError("A piece is at most 8 MiB.");
+  return { ...parseEnvelope(piece), sha256: sha256Of(piece.sha256, "sha256"), offset: number(piece.offset, "offset"),
+    size: number(piece.size, "size"), bytes: piece.bytes };
+};
+
 const parseStartRequest = (value: unknown): StartDelegatedRunRequest => {
   const body = field(() => objectRecord(value, "request"));
   return {
@@ -167,6 +217,7 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),
     createdAt: field(() => isoTimestamp(body.createdAt, "createdAt")),
+    files: filesOf(body.files),
   };
 };
 
@@ -182,6 +233,7 @@ const parseRunMessageRequest = (value: unknown): DeliverRunMessageRequest => {
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),
     createdAt: field(() => isoTimestamp(body.createdAt, "createdAt")),
+    files: filesOf(body.files),
   };
 };
 
@@ -278,6 +330,7 @@ export class PeerGateway {
     availableAgents: AvailableAgentsHandler;
     runningAgents: RunningAgentsHandler;
     runViews: RemoteRunViewHandler;
+    receivedFiles: ReceivedFilesHandler;
     delegatedRunStates: DelegatedRunStatesHandler;
     peerRunMembers: PeerRunMembersHandler;
   }>) {}
@@ -306,6 +359,20 @@ export class PeerGateway {
   /** autobyteus-492: a message to a running agent of this node by its run ID only (`/rest/remote/run-messages`). */
   deliverRunMessage(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
     return this.admit(body, caller, parseRunMessageRequest, (request, peer) => this.dependencies.messages.acceptRunMessage(request, peer));
+  }
+
+  /** autobyteus-587: what this node holds of a peer's files, and its per-file limit (DS-003, RF-11). */
+  receivedFilesStatus(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<ReceivedFilesStatusAnswer>> {
+    return this.admit(body, caller, parseReceivedFilesStatusRequest, async (request) =>
+      ({ accepted: true as const, ...await this.dependencies.receivedFiles.status(request.files) }));
+  }
+
+  /** autobyteus-587: one piece of a peer's file, into this node's received files only (RF-12). */
+  receivedFilePiece(piece: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<ReceivedFilePieceAnswer>> {
+    return this.admit(piece, caller, parseReceivedFilePieceRequest, async (request) => {
+      const received = await this.dependencies.receivedFiles.appendPiece(request);
+      return "accepted" in received ? received : { accepted: true as const, ...received };
+    });
   }
 
   /** autobyteus-492: this node's running runs a person started (read-only; nothing is started or written). */

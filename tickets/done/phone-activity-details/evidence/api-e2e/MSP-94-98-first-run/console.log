@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api590/msp-94-98 --cases=MSP-94,MSP-95,MSP-96,MSP-97,MSP-98
+
+[mobile-shell] MSP-94 …
+[mobile-shell] MSP-94 Pass
+[mobile-shell] MSP-95 …
+[mobile-shell] MSP-95 Pass
+[mobile-shell] MSP-96 …
+[mobile-shell] MSP-96 Pass
+[mobile-shell] MSP-97 …
+[mobile-shell] MSP-97 Fail: AC-001 an Antigravity write_to_file row shows its file (TargetFile); AC-001 an Antigravity replace_file_content row shows its file (TargetFile)
+[mobile-shell] MSP-98 …
+[mobile-shell] MSP-98 Fail: AC-003 a running tool's Logs grow while its details are open (the result log arrives; the status changes to Success)
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

@@ -1,0 +1,7 @@
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+server exit 0
+└  ✨ You can now deploy dist/public to any static hosting!
+The /mobile build holds no demo code.
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web/dist-mobile/public
+mobile exit 0

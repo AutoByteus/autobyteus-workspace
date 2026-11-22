@@ -1,0 +1,124 @@
+{
+  "stored": {
+    "tree": {
+      "createdAt": "2026-11-22T10:06:31.839Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/extra",
+          "rules": [
+            "Ask the extra member."
+          ]
+        }
+      ],
+      "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "tf-own-team-6ba8ec",
+        "teamDefinitionName": "TF own team 6ba8ec",
+        "teamRunId": "tf_own_team_6ba8ec_e83a17fd9dbe42f2adc5cb1f2d9cd606",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "tf-own-lead-6ba8ec",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72",
+            "platformAgentRunId": "0a79aea0-72bc-479d-ab77-41b8dd34d4ab",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace"
+            }
+          },
+          {
+            "address": "/mate",
+            "agentDefinitionId": "tf-own-mate-6ba8ec",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_mate_6ba8ec_3b5340f9a4c54aea9371a82c024d54bf",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace"
+            }
+          },
+          {
+            "address": "/extra",
+            "agentDefinitionId": "tf-own-extra-6ba8ec",
+            "role": null,
+            "description": null,
+            "agentRunId": "tf_own_extra_6ba8ec_2337ec435cae47f58b1e3c699df40811",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tf-e2e-OfkTiP/workspace"
+            },
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          }
+        ]
+      }
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentRunId": "tf_own_lead_6ba8ec_681a7354de8c444bb425700c95bc5d72",
+        "agentDefinitionId": "tf-own-lead-6ba8ec",
+        "leaving": false
+      },
+      {
+        "address": "/mate",
+        "agentRunId": "tf_own_mate_6ba8ec_3b5340f9a4c54aea9371a82c024d54bf",
+        "agentDefinitionId": "tf-own-mate-6ba8ec",
+        "leaving": false
+      },
+      {
+        "address": "/extra",
+        "agentRunId": "tf_own_extra_6ba8ec_2337ec435cae47f58b1e3c699df40811",
+        "agentDefinitionId": "tf-own-extra-6ba8ec",
+        "leaving": false
+      }
+    ],
+    "former": [],
+    "coordinator": "/lead",
+    "handoffs": [
+      {
+        "from": "/lead",
+        "to": "/extra",
+        "rules": [
+          "Ask the extra member."
+        ]
+      }
+    ]
+  },
+  "leadInput": "Your team changed: its definition was updated.\nJoined: extra at /extra.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Ask the extra member.",
+        "recipient_address": "/extra"
+      }
+    ],
+    "isError": false
+  }
+}

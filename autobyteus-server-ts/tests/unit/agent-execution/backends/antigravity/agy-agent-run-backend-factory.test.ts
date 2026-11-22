@@ -10,11 +10,11 @@ import { AgyDiscoveryError, listAntigravityModels, readAntigravityCliVersion } f
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
-import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
+import { AgentCreationError, SavedRuntimeSessionMissingError } from "../../../../../src/agent-execution/errors.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
-const { start, stop, streamListeners } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
-  streamListeners: [] as Array<(message: unknown) => void> }));
+const { start, stop, streamListeners, stderr } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
+  streamListeners: [] as Array<(message: unknown) => void>, stderr: { text: "" } }));
 
 vi.mock("../../../../../src/runtime-management/antigravity-cli-capability.js", async (importOriginal) => ({
   ...await importOriginal<typeof import("../../../../../src/runtime-management/antigravity-cli-capability.js")>(),
@@ -28,6 +28,7 @@ vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-stre
     subscribe = vi.fn((listener: (message: unknown) => void) => { streamListeners.push(listener); });
     onClose = vi.fn();
     sendUserMessage = vi.fn(async () => undefined);
+    stderrShows = vi.fn(async (text: string) => stderr.text.includes(text));
   },
 }));
 
@@ -60,6 +61,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
     instructions = "Original identity";
     initOverride = {};
     conversationId = null;
+    stderr.text = "";
     vi.mocked(listAntigravityModels).mockResolvedValue([{ id: "test-model", name: "Test Model" }]);
     vi.mocked(readAntigravityCliVersion).mockResolvedValue("1.2.16");
     streamListeners.length = 0;
@@ -249,6 +251,35 @@ describe("AGY backend capability admission and preserved bindings", () => {
     await initial.terminate();
     conversationId = "different-conversation";
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() }))).rejects.toThrow("AGY_CONVERSATION_ID_CONFLICT");
+  });
+
+  // autobyteus-599 (REQ-002, AC-002, AC-003; PRB-004): AGY warns that the conversation is not found and opens a new one.
+  it("is a lost runtime session when AGY warns that this exact conversation is not found", async () => {
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    await initial.terminate();
+    const lost = initial.getPlatformAgentRunId()!;
+    conversationId = "fresh-conversation";
+    stderr.text = `warning: conversation "${lost}" not found\n`;
+    const control = factory.beginPreparation({ kind: "restore", context: initial.getContext() });
+    const error = await control.prepare().catch((cause: unknown) => cause);
+    expect(error).toBeInstanceOf(SavedRuntimeSessionMissingError);
+    expect(error).toMatchObject({ runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, platformAgentRunId: lost });
+    stop.mockClear();
+    await control.release();
+    expect(stop).toHaveBeenCalled(); // the new conversation's process is stopped by the preparation's release
+  });
+
+  it.each([
+    ["no warning", () => ""],
+    ["a not-found warning for another conversation", () => 'warning: conversation "someone-else" not found\n'],
+  ])("keeps a different conversation a conflict with %s", async (_label, warning) => {
+    const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    await initial.terminate();
+    conversationId = "different-conversation";
+    stderr.text = warning();
+    const error = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() })).catch((cause: unknown) => cause);
+    expect(error).not.toBeInstanceOf(SavedRuntimeSessionMissingError);
+    expect(String(error)).toContain("AGY_CONVERSATION_ID_CONFLICT");
   });
 
   it("still checks model availability on restore", async () => {

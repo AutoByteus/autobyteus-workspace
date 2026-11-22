@@ -8,7 +8,13 @@ export type CollaborationAgentPlatformBinding = Readonly<{
   platformAgentRunId: string;
 }>;
 
-export type CollaborationAgentNoConversationBindingReplacement = Readonly<{
+/**
+ * A compare-and-set replacement of a member's stored session ID: `binding` replaces the stored ID only if it still equals
+ * `expectedPreviousPlatformAgentRunId`. Two kinds use it, each keeping its own meaning: a member whose session had no
+ * conversation (`replace_without_conversation`), and a session renewal of a lost runtime session (`replace_lost_session`,
+ * autobyteus-599), whose expected previous ID is the lost one.
+ */
+export type CollaborationAgentBindingReplacement = Readonly<{
   binding: CollaborationAgentPlatformBinding;
   expectedPreviousPlatformAgentRunId: string;
 }>;
@@ -28,19 +34,20 @@ export type CollaborationAgentRuntimeSwitchCommit = Readonly<{
 
 export type CollaborationAgentPlatformBindingChange =
   | Readonly<{ kind: "adopt_or_retain"; binding: CollaborationAgentPlatformBinding }>
-  | Readonly<{ kind: "replace_without_conversation"; replacement: CollaborationAgentNoConversationBindingReplacement }>
+  | Readonly<{ kind: "replace_without_conversation"; replacement: CollaborationAgentBindingReplacement }>
+  | Readonly<{ kind: "replace_lost_session"; replacement: CollaborationAgentBindingReplacement }>
   | CollaborationAgentRuntimeSwitchCommit;
 
 /** The member a binding change is for. */
 export const platformBindingChangeExecution = (change: CollaborationAgentPlatformBindingChange): CollaborationMemberExecutionIdentity =>
   change.kind === "adopt_or_retain" ? change.binding.execution
-    : change.kind === "replace_without_conversation" ? change.replacement.binding.execution
+    : change.kind === "replace_without_conversation" || change.kind === "replace_lost_session" ? change.replacement.binding.execution
       : change.execution;
 
 /** The session ID a binding change leaves on the member (`null`: none, the native agent runtime). */
 export const platformBindingChangeSessionId = (change: CollaborationAgentPlatformBindingChange): string | null =>
   change.kind === "adopt_or_retain" ? change.binding.platformAgentRunId
-    : change.kind === "replace_without_conversation" ? change.replacement.binding.platformAgentRunId
+    : change.kind === "replace_without_conversation" || change.kind === "replace_lost_session" ? change.replacement.binding.platformAgentRunId
       : change.platformAgentRunId;
 
 export const createCollaborationAgentRuntimeSwitchCommit = (input: {
@@ -71,16 +78,16 @@ export const createCollaborationAgentPlatformBinding = (input: {
   });
 };
 
-export const createCollaborationAgentNoConversationBindingReplacement = (input: {
+export const createCollaborationAgentBindingReplacement = (input: {
   binding: CollaborationAgentPlatformBinding;
   expectedPreviousPlatformAgentRunId: string;
-}): CollaborationAgentNoConversationBindingReplacement => {
+}): CollaborationAgentBindingReplacement => {
   const expectedPreviousPlatformAgentRunId = input.expectedPreviousPlatformAgentRunId?.trim();
   if (!expectedPreviousPlatformAgentRunId) {
     throw new Error("expectedPreviousPlatformAgentRunId is required.");
   }
   if (expectedPreviousPlatformAgentRunId === input.binding.platformAgentRunId) {
-    throw new Error("A no-conversation binding replacement must change the provider identity.");
+    throw new Error("A binding replacement must change the provider identity.");
   }
   return Object.freeze({
     binding: createCollaborationAgentPlatformBinding(input.binding),

@@ -1,0 +1,11 @@
+# API-07 rerun (round 2, after T-001): gated §5.1 against the regenerated fixture
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs agy-failure-cli.mjs> CONTRACT_STORIES_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch -t "§5.1"
+# 2026-11-21
+     × §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node 651498ms
+AssertionError: S18 (R-10) The peer team reports to M: expected [ …(2) ] to deeply equal []
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+EXIT 1
+## The whole difference at S18 (FU-002 only):
++   "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl[6].counterpart: not in the contract ({\"address\":\"/lead\",\"nodeId\":\"srv_Iiseq8zaeRwjvzG9sefYoPSFPdpdSVM4\"})",
++   "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl[0].counterpart: not in the contract ({\"address\":\"/project_task_manager\",\"nodeId\":\"srv_jyjbCWNWYDxxzISvi_LtnfOBBaWn9H9n\"})",

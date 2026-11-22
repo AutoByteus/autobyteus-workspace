@@ -34,7 +34,7 @@ describe('existing-copy mode: a copy\'s own ID with task_id (REQ-002)', () => {
   });
   it.each([{ recipient_address: '/team' }, { description: 'work' }, { reference_files: [] }, { project_id: 'P' }])('takes nothing else with the copy ID (%j)', extra => {
     expect(() => parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', ...extra }))
-      .toThrow('with target_team_run_id or target_agent_run_id, supply only that run id and task_id');
+      .toThrow('with target_team_run_id or target_agent_run_id, supply only that run id, task_id and, for a task agent on another node, node');
   });
   it.each([{ target_team_run_id: '' }, { target_agent_run_id: ' ' }])('rejects a blank copy ID (%j)', id => {
     expect(() => parseDelegateTaskInput({ ...id, task_id: 'B' })).toThrow('Invalid delegate_task input');
@@ -42,16 +42,22 @@ describe('existing-copy mode: a copy\'s own ID with task_id (REQ-002)', () => {
 });
 
 describe('`node`: a new copy on a registered peer node (DEC-111)', () => {
-  it('carries a trimmed node with described work or a saved Task; the root refuses the latter and files (REQ-110)', () => {
+  it('carries a trimmed node with described work or a saved Task (autobyteus-587 DEC-009: both go to the peer, with their files)', () => {
     expect(parseDelegateTaskInput({ recipient_address: '/publisher', description: 'Publish it', node: ' docker ' }))
       .toEqual({ subject: 'new_copy', input: { recipient_address: '/publisher', description: 'Publish it', reference_files: [], node: 'docker' } });
     expect(parseDelegateTaskInput({ recipient_address: '/publisher', task_id: 'A', node: 'docker' }))
       .toEqual({ subject: 'new_copy', input: { recipient_address: '/publisher', task_id: 'A', node: 'docker' } });
   });
-  it('keeps the local input unchanged without node, and rejects a blank node or node with an existing copy', () => {
+  it('keeps the local input unchanged without node, and rejects a blank node', () => {
     expect(parseDelegateTaskInput({ recipient_address: '/writer', description: 'w' }).input).not.toHaveProperty('node');
     expect(() => parseDelegateTaskInput({ recipient_address: '/publisher', description: 'w', node: ' ' })).toThrow('Invalid delegate_task input');
-    expect(() => parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', node: 'docker' }))
-      .toThrow('with target_team_run_id or target_agent_run_id, supply only that run id and task_id');
+    expect(() => parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', node: ' ' })).toThrow('Invalid delegate_task input');
+  });
+  it('autobyteus-587 SR-011: carries node with an existing copy (a task agent on another node), for an Agent and a Team; without it, none', () => {
+    expect(parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', node: ' docker ' }))
+      .toEqual({ subject: 'existing_delegated_run', input: { delegatedRun: { agentRunId: 'a' }, taskId: 'B', node: 'docker' } });
+    expect(parseDelegateTaskInput({ target_team_run_id: 't', task_id: 'B', node: 'docker' }))
+      .toEqual({ subject: 'existing_delegated_run', input: { delegatedRun: { teamRunId: 't' }, taskId: 'B', node: 'docker' } });
+    expect(parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B' }).input).not.toHaveProperty('node');
   });
 });

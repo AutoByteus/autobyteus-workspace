@@ -4,6 +4,7 @@ import { getClientIdentity, registerOpenSocket } from "../security/node-access-g
 import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
 import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
+import { TRANSFERRED_FILE_PIECE_MAX_BYTES } from "../../agent-collaboration/execution/remote/transferred-files.js";
 
 
 type PeerSocket = Readonly<{
@@ -43,6 +44,21 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance, re
   post("/remote/peer-run-members", (gateway, body, caller) => gateway.peerRunMembers(body, caller));
   // autobyteus-461 SR-088: one agent's own stream snapshot (its frames come on `run-observations`, opened for the agent).
   post("/remote/agent-stream-snapshot", (gateway, body, caller) => gateway.agentStreamSnapshot(body, caller));
+  // autobyteus-587: files sent with a message or delegation, uploaded before it (RFC-001 § 6).
+  post("/remote/received-files/status", (gateway, body, caller) => gateway.receivedFilesStatus(body, caller));
+  // A piece is raw bytes; its parser and body limit live in this scope only (other routes keep refusing an octet-stream
+  // body). The gate hashes the body as it arrives and checks it against the signature before the handler runs (NA-9).
+  await app.register(async (pieceScope) => {
+    pieceScope.addContentTypeParser("application/octet-stream", { parseAs: "buffer" }, (_request, body, done) => done(null, body));
+    pieceScope.put<{ Params: { sha256: string }; Querystring: Record<string, string | undefined>; Body: Buffer | undefined }>(
+      "/remote/received-files/:sha256",
+      { bodyLimit: TRANSFERRED_FILE_PIECE_MAX_BYTES },
+      async (request, reply) => send(reply, await remote.gateway.receivedFilePiece({
+        fromNodeId: request.query.fromNodeId, toNodeId: request.query.toNodeId, sha256: request.params.sha256,
+        offset: request.query.offset, size: request.query.size, bytes: request.body ?? Buffer.alloc(0),
+      }, getClientIdentity(request))),
+    );
+  });
 
   // autobyteus-437: the inviting node's side of peer pairing (exempt: the caller has no peer secret yet).
   app.post("/remote/peer-pairing-exchanges", async (request, reply) => {

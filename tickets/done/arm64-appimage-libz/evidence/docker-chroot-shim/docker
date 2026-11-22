@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Test-owned stand-in for `docker` on a host without Docker (autobyteus-28 implementation evidence; not in the repo's
+# scripts). Accepts exactly the call verify-clean-image-runtime.mjs makes:
+#   docker run --rm --network none --mount type=bind,source=S,target=T,readonly ubuntu:24.04 sh -ec SCRIPT
+# and runs SCRIPT in a chroot of the official ubuntu-base 24.04 root of this host's arch (same content as ubuntu:24.04),
+# with S copied to T. Differences from Docker: no network namespace (host network), a copy instead of a read-only bind.
+# Needs root. UBUNTU_BASE_TARBALL: ubuntu-base-24.04.5-base-arm64.tar.gz (sha256 a91d5a93…14f2).
+set -euo pipefail
+[ "$1 $2 $3 $4 $5" = "run --rm --network none --mount" ] || { echo "shim: unexpected call: $*" >&2; exit 125; }
+mount_spec="$6"; image_ref="$7"; shift 7
+[ "$image_ref" = "ubuntu:24.04" ] || { echo "shim: unexpected image $image_ref" >&2; exit 125; }
+case "$mount_spec" in type=bind,source=*,target=*,readonly) ;; *) echo "shim: unexpected mount $mount_spec" >&2; exit 125;; esac
+src="${mount_spec#type=bind,source=}"; src="${src%%,target=*}"
+dst="${mount_spec#*,target=}"; dst="${dst%,readonly}"
+[ -f "$src" ] || { echo "docker: Error response from daemon: invalid mount config: bind source path does not exist: $src" >&2; exit 125; }
+root="$(mktemp -d)"; trap 'umount "$root/proc" 2>/dev/null || true; rm -rf "$root"' EXIT
+tar xzf "${UBUNTU_BASE_TARBALL:?}" -C "$root" --exclude='dev/*'
+cp -p "$src" "$root$dst"
+mount -t proc proc "$root/proc"
+set +e; chroot "$root" "$@"; code=$?; set -e
+exit $code

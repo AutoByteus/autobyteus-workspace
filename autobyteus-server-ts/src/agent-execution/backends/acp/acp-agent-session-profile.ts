@@ -109,4 +109,9 @@ export interface AcpAgentSessionProfile {
   interpretProviderCall?(observation: ProviderCallObservation, context: AcpSessionEffectContext): AcpSessionEffect[];
   /** Runtime identity of compaction statuses; profiles without it produce no compaction events. */
   buildCompactionStatusPayload?(input: AcpCompactionStatusInput): Record<string, unknown>;
+  /**
+   * Whether a failed `session/load` or `session/resume` of `sessionId` is the agent's own answer that the session does not
+   * exist (a lost runtime session, autobyteus-599), by its exact JSON-RPC shape. Any other failure is false.
+   */
+  isMissingSession(error: unknown, sessionId: string): boolean;
 }

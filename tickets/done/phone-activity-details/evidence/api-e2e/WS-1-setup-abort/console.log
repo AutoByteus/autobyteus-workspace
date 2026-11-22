@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api590/ws-1
+
+mobile-shell probe: Fail
+Error: alpha serves the phone bundle at /mobile
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:288:87)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-activity-details/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:2717:3
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+200
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

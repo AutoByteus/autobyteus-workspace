@@ -163,6 +163,11 @@ send-message wrappers/handlers.
   inactive, unknown, preallocated-only, recoverable-only, or lazy-startable-only
   ids, posts direct input to the active target run, and emits a direct
   `INTER_AGENT_MESSAGE` without Team Communication projection fields.
+- `node` with `target_agent_run_id`: the agent runs on that registered peer node. Every message to an agent on another
+  node names it (autobyteus-587 RF-14, one owner: `PeerRunNodes`), linked or not: without it, a run on another node is
+  refused `NODE_REQUIRED` with the node to pass, a `node` it is not on `NODE_MISMATCH` with the right one, and a run on
+  a node no longer paired `NODE_NOT_PAIRED`. Its `reference_files` are copied to that node (below) before anything else
+  changes (a Task's reopen included, SR-010 R1), and an accepted result adds `files_sent`.
 
 Explicitly configured standalone runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_address` unless the run is actually executing as a team
@@ -383,22 +388,25 @@ work are delegated through additional `delegate_task` calls.
 
 `delegate_task` has three strict input modes: `{recipient_address, task_id}` and
 `{recipient_address, description, reference_files?}` spawn a new copy;
-`{target_team_run_id | target_agent_run_id, task_id}` gives a saved Task to an
-existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)).
+`{target_team_run_id | target_agent_run_id, task_id, node?}` gives a saved Task to an
+existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)); `node` is
+required for a copy on another node and refused for one on this node (autobyteus-587 SR-011, RF-14).
 A Project Task's `task_id` is its key (any letter case) or its long ID; a Task
 with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-and-part-of)).
 `recipient_address` is therefore not required by the parameter schema; the
 parser requires exactly one mode.
 
-With `node` (the name of a registered peer node), the described mode starts the
+With `node` (the name of a registered peer node), the described mode and the saved-Task mode start the
 task agent (or task agent team) on that node from the Agent or Agent Team at the catalog
 address `recipient_address` there (any shared Agent or shared Agent Team of that node; each
 agent runs with its own default runtime and model, a team member without one with its
-team's default); a `task_id` or `reference_files` with `node` is refused before anything is
-sent. The success result is the local copy's shape plus `node`: for a Team,
+team's default); the files are copied to that node first (below): `reference_files` only from the sender's
+workspace, a saved Task's own context files with it (DEC-009). A saved Task given to an existing copy on another node
+takes its context files too: after the node rule and the Task-side checks, before the assignment. The success result is the local copy's
+shape plus `node` (and `files_sent` when files went): for a Team,
 `{delegated: true, target_kind: "team", target_team_run_id,
 target_team_coordinator_agent_run_id, node}`. Follow-ups use `send_message_to` by the
-returned run ID (for a Team, the coordinator's or any member's run ID) as usual. An agent
+returned run ID (for a Team, the coordinator's or any member's run ID) with that `node`. An agent
 that has the discovery tools finds the node with `list_peer_nodes` and the address
 with `list_available_agents` and that `node`. See [Remote Collaboration](remote_collaboration.md).
 
@@ -455,6 +463,16 @@ resolve local files with `realpath` before invoking the tool. Relative paths,
 URLs/protocol-shaped values, `..` segments, directories, and missing files are
 rejected with `INVALID_REFERENCE_FILE` before anything is prepared; no
 workspace-relative compatibility resolver runs.
+
+To an agent on another node (`delegate_task` or `send_message_to` with `node`, autobyteus-587 CM-14), every
+reference file is copied there before the work packet or message: only files inside the sending agent's workspace
+(links resolved; `REFERENCE_FILE_OUTSIDE_WORKSPACE`), regular files (`REFERENCE_FILE_NOT_A_FILE`), within the receiving
+node's per-file limit and 4 GiB per call (`REFERENCE_FILE_TOO_LARGE`), one name once per call
+(`REFERENCE_FILE_NAME_REPEATED`); a run without a workspace sends none (`NO_WORKSPACE`). A failed upload
+(`REFERENCE_FILE_TRANSFER_FAILED`) or a damaged arrival (`REFERENCE_FILE_CHECK_FAILED`) delivers nothing. The call waits
+until the files arrived; the recipient reads them at its own paths, under
+`<its own folder>/received_files/<sender's run ID>/`. See
+[Remote Collaboration](remote_collaboration.md#reference-files-between-nodes).
 
 ## Server-Owned Media Tools
 

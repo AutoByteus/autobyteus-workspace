@@ -1,0 +1,18 @@
+# IMP-07 N-1 (PRB-009): Grok session/resume of a present session whose cwd was removed
+# Command: env -i PATH="$PATH" HOME=<new temp dir> XDG_*=<inside it> AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node tickets/in-progress/stale-runtime-session-recovery/probes/grok-resume-removed-cwd.mjs <base dir> <worktree>/autobyteus-ts/dist/secrets/provider-api-key-resolver.js
+# Commit: 67eb9a07fd (probe script in the ticket folder)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# DEC-006: the key came from the test vault and reached only the Grok child as XAI_API_KEY; it does not appear in this output.
+# No file in the user's ~/.grok was newer than the probe start. Temp paths are masked.
+
+(node:65418) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+key: from the test vault (provider.grok.api-key), passed to the Grok child only
+initialize: {"protocolVersion":1,"agentCapabilities":{"loadSession":true,"promptCapabilities":{"image":true,"audio":false,"embeddedContext":true},"mcpCapabilities":{"http":true,"sse":true},"sessionCapabilities":{
+session/new (present cwd): {"sessionId":"01a202cb-7da0-74e1-9071-f1032996ebd6","models":{"currentModelId":"grok-4.20-0309-non-reasoning","availableModels":[{"modelId":"grok-4.20-0309-non-reasoning","name":"grok-4.20-0309-non-reasoning","_meta":{"totalContextTokens":256000,"agentType":"grok-build-plan"}},{"modelId":"grok-4.20-0309-reasoning","name":"grok-4.20-0309-reasoning","_meta":{"totalContextTokens":256000,"agentType":"
+removed cwd: <tmp>/tmp.PmHQbA5kaQ/ws exists: false
+session/resume (present session, removed cwd): {"models":{"currentModelId":"grok-4.20-0309-non-reasoning","availableModels":[{"modelId":"grok-4.20-0309-non-reasoning","name":"grok-4.20-0309-non-reasoning","_meta":{"totalContextTokens":256000,"agentType":"grok-build-plan"}},{"modelId":"grok-4.20-0309-reasoning","name":"grok-4.20-0309-reasoning","_meta":{"totalContextTokens":256000,"agentType":"grok-build-plan"}},{"modelId":"grok-4.20-multi-agen
+session/new (removed cwd): {"sessionId":"01a202cb-83d0-7553-ab25-6a868497dba2","models":{"currentModelId":"grok-4.20-0309-non-reasoning","availableModels":[{"modelId":"grok-4.20-0309-non-reasoning","name":"grok-4.20-0309-non-reasoning","_meta":{"totalContextTokens":256000,"agentType":"grok-build-plan"}},{"modelId":"grok-4.20-0309-reasoning","name":"grok-4.20-0309-reasoning","_meta":{"totalContextTokens":256000,"agentType":"
+session/new (existing cwd): {"sessionId":"01a202cb-8446-7592-9c85-273be38ec405","models":{"currentModelId":"grok-4.20-0309-non-reasoning","availableModels":[{"modelId":"grok-4.20-0309-non-reasoning","name":"grok-4.20-0309-non-reasoning","_meta":{"totalContextTokens":256000,"agentType":"grok-build-plan"}},{"modelId":"grok-4.20-0309-reasoning","name":"grok-4.20-0309-reasoning","_meta":{"totalContextTokens":256000,"agentType":"
+session/resume (random missing session, existing cwd): {"code":-32603,"message":"Path not found.","data":{"detail":"No such file or directory (os error 2)","code":"FS_NOT_FOUND"}}

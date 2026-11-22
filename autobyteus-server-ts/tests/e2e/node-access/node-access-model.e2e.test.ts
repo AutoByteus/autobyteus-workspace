@@ -181,6 +181,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     fromNodeId, toNodeId: ownNodeId, kind: "message", messageId,
     targetRoot: { kind: "agent", runId: "agent_nas_target" }, sender: { agentRunId: "agent_nas_sender", address: "/nas_sender" }, // 565: sender.address
     target: { agentRunId: "agent_nas_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString(),
+    files: [], // autobyteus-587: every message names its files (none here)
   });
 
   const capture = (...args: unknown[]) => { output.push(args.map(String).join(" ")); };

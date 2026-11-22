@@ -19,7 +19,8 @@ import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution
 import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { testAgentNode, testTeamRunConfig } from "./current-team-run-fixtures.js";
-import { NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
+import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 
 /**
  * A configured root's placement (org-teams-follow-definition: an Org's mounted Team and direct agents are runs of their
@@ -41,6 +42,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
   activity?: "none" | "present" | "indeterminate";
   /** autobyteus-348: the second member (the Worker) was saved on `runtimeKind` with this pending switch and no session ID. */
   pendingSwitch?: PendingRuntimeSwitch;
+  /** autobyteus-599 (AC-008): a real run manager (as a composition wires it) instead of the controlled preparations. */
+  agentRunManager?: unknown;
 } = {}) => {
   const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-"));
   const mode = options.mode ?? "restore";
@@ -90,7 +93,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     releaseExactRun: vi.fn(async () => ({ accepted: true })),
   }), preparations);
   const dependencies = {
-    agentRunManager: manager as never,
+    agentRunManager: (options.agentRunManager ?? manager) as never,
     memoryLocator: { getMemoryDir: (_placement: unknown, runId: string) => join(memoryDir, runId) } as never,
     activityInspector: { inspect: () => activity.kind === "indeterminate"
       ? { kind: "indeterminate", error: new Error("unreadable") } : { kind: activity.kind } } as never,
@@ -126,7 +129,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,

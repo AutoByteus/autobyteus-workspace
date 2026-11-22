@@ -1,4 +1,5 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { StoredModelOfferCheck } from "../../llm-management/services/run-model-selection-service.js";
 import type { PeerDiscoveryAccess } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
@@ -60,6 +61,8 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   runPasses: RunPassRevocation | null;
   /** The host's channel to peer nodes and its discovery (autobyteus-500 FU-011). */
   remoteChannel: RemoteRunChannelAccess;
+  /** autobyteus-587: the node's received files, placed for its Team roots. */
+  receivedFiles: ReceivedFilesPlacement;
   peerDiscovery: PeerDiscoveryAccess;
 }>;
 

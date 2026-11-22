@@ -130,6 +130,8 @@ export class LiveAgentOrgContainer implements ActiveRootMessageBoundary {
 
   hasAgentExecution(): boolean { return false; }
   ownsAgentRun(): boolean { return false; }
+  /** autobyteus-587 RF-14 (SR-016): the container links no run on a peer; remote links belong to its units' runs. */
+  remoteNodeOf(): string | null { return null; }
   deliverExactAgentMessage(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
   deliverToPeerRun(): Promise<AgentOperationResult> { return Promise.resolve(NOT_HOSTED); }
   /** No message from another run, or from a peer node, is for the container itself (its units' roots take them). */

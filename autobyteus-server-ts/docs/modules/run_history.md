@@ -219,7 +219,25 @@ General lifecycle owners:
   aborts the candidate, and only when its release is confirmed `discard` removes the records written after the watermark, so a
   failed attempt leaves the previous agent's file as it was. A failure after the marker leaves the metadata pending; sending
   again finds the marker and the segment (the watermark is then ignored) and completes with one marker and one segment.
-  A lifecycle built without the port (application runs) fails closed on a pending switch.
+  A lifecycle built without the port fails closed on a pending switch.
+- Every composition that runs external-runtime agents gives both parts of a switch or renewal (autobyteus-599, DEC-007): the
+  switch memory, and a `RuntimeHandoverNoticeService` first in the run manager's input preface, so the fresh session's first
+  input carries the notice. The studio (`build-studio-server.ts`) uses them for switches and renewals. The application execution
+  scope (`application-execution-scope-kernel-builder.ts`, the notice as its only platform notice) and the standalone application
+  host (`start-standalone-application-host.ts`, `runtimeSwitching` to the supervisor) use them only for renewals: an application
+  run never has a pending switch (`canSwitchRuntime`), and the host serves no run-selection surface, so no switch is saved there.
+- A session renewal (autobyteus-599; GLOSSARY "Lost runtime session", "Session renewal") takes the same steps without a
+  pending field. When the restore of the saved session fails with that runtime's own not-found answer
+  (`SavedRuntimeSessionMissingError` for exactly the saved session) and the failed restore's release is confirmed,
+  `StandaloneAgentRunLifecycleService.restoreStarted` logs `RUNTIME_SESSION_LOST` and calls `activateInFreshSession` with
+  `buildSessionRenewal`: same runtime and model on both sides, key `session_renewal:<runId>:<lost session ID>`, marker
+  "The saved <runtime> session of this run was no longer available, so a new session continues from the work journal." The
+  commit replaces the lost session ID. Any other restore error, a quarantined cleanup (an `AggregateError`), an unconfirmed
+  release or a lifecycle without the port fails as before, with nothing written. Team and Org members take the same steps in
+  `ConfiguredAgentExecutionHandle` (`configured-agent-session-renewal.ts`, `ConfiguredAgentActivationPlanner.beginSessionRenewal`)
+  and commit `replace_lost_session`, a compare-and-set of the lost ID in the root's execution tree (shared with
+  `replace_without_conversation`); a delegated run is renewed by the standalone lifecycle. The stored boundary type and marker
+  sender stay those of a switch, so the chat, the journal and the notice read a renewal as a switch.
 - The hand-over notice is derived, not registered: `RuntimeHandoverNoticeService` (a platform notice source, first in the
   notice slot) finds from the run's raw traces once per publication that a hand-over is pending (the active file's first record
   is the hand-over marker and no `user` record follows; a bounded, read-only scan) and hands the notice over with the next input

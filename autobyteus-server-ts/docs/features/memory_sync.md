@@ -175,7 +175,9 @@ A source scans its local memory roots:
 - `memory/agent_teams/`
 
 The scanner lists regular files with their size and modification time; it reads no content. It skips
-symlinks and temporary leaves such as `.tmp`, `.partial`, `.lock`, `.swp`, `.swx`, and `.DS_Store`.
+symlinks and temporary leaves such as `.tmp`, `.partial`, `.lock`, `.swp`, `.swx`, and `.DS_Store`. It also skips
+every `received_files` folder with everything in it (autobyteus-587): files another node sent to an agent are copies of that
+node's files, not the run's memory, so they are never uploaded to the hub (the message lines that name them are).
 
 **Change detection.** A file whose size and modification time equal its last synced record is
 unchanged and is not read. A changed file is hashed (SHA-256) by streaming, so memory use does not

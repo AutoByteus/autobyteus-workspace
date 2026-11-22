@@ -1,0 +1,21 @@
+# Merged state 3be417f8df
+# Command: pnpm -C autobyteus-server-ts test:unit   (the whole server unit suite; no environment failure this time)
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > owns one Agent, standalone Team, and AgentOrg process manager family
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > continues the exact Org, Team, Agent shutdown order and aggregates failures
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases AgentRunManager when exclusive Team manager initialization fails
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > unwinds both root managers when process AgentRunService binding fails
+ FAIL  tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > refuses a second process RunFileChangeService and unwinds its earlier bindings
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > resolves initial targetMemberAddress through the binding before exact root dispatch
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown initial targetMemberAddress before root lookup
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown logical member address before root lookup
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > runs phases 5-10 in order before event-pipeline and application construction
+ Test Files  3 failed | 1047 passed | 5 skipped (1055)
+      Tests  10 failed | 8688 passed | 9 skipped (8707)
+   Duration  744.81s (transform 20.71s, setup 24.71s, import 333.01s, tests 291.68s, environment 866ms)
+exit=1
+
+# Causes (read in the failing output):
+   2 Error: GeneralProcessRunSupervisor needs its host's receivedFiles.
+   3 Received: "GeneralProcessRunSupervisor needs its host's receivedFiles."
+   4 TypeError: Cannot read properties of undefined (reading 'outgoing')

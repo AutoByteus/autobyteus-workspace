@@ -13,6 +13,7 @@ const services = { current: null as unknown };
 import { registerRemoteCollaborationRoutes } from "../../../../src/api/rest/remote.js";
 import { signPeerRequest } from "../../../../src/remote-collaboration/channel/peer-request-signature.js";
 import { registerTestNodeAccess } from "../../../helpers/node-access-test-gate.js";
+import { NO_FILES_RECEIVED } from "../../../helpers/explicit-host-collaborators.js";
 
 /**
  * autobyteus-278 CRR-003 F-002 (N-401): through the real WebSocket route, B's opening `{nodeId}` is the first frame,
@@ -48,7 +49,7 @@ const startNodeB = async () => {
   };
   const roots = { storedLinkCheck: async () => "proceed" as const, runAgents: () => access } as unknown as RemoteRootDirectory;
   const provider = new RemoteRunViewProvider(roots, { runTitle: async () => null, runLaunches: async () => [], agentProjection: async () => { throw new Error("unused"); } });
-  services.current = { gateway: new PeerGateway({
+  services.current = { gateway: new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => (nodeId === ALPHA.nodeId ? ALPHA : null) },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never, peerRunMembers: {} as never,

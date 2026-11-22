@@ -220,7 +220,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.restorability.refusal).not.toHaveBeenCalled();
   });
 
-  it("R-9 (autobyteus-492): a run no Task names is unrelated, both ways: delivered while running, not this route's when stopped; R-10: an open run on a peer goes through the peer endpoints", async () => {
+  it("R-9 (autobyteus-492): a run no Task names is unrelated, both ways: delivered while running, not this route's when stopped; R-10: a run on a peer is not this route's (the router's PeerRunNodes and node path, autobyteus-587 SR-010)", async () => {
     const h = await harness();
     await expect(h.send(LEGACY, "legacy", "designer")).resolves.toMatchObject({ accepted: true, agentRunId: "designer" });
     await expect(h.send(M, "manager", "legacy")).resolves.toMatchObject({ accepted: true, agentRunId: "legacy" });
@@ -266,14 +266,14 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
       expect(h.peerNotices.changed).not.toHaveBeenCalled();
     });
 
-    it("closed, its assigner after the Task's reopen: the entry reopens, then its node is told (no local restorability check); admitted", async () => {
+    it("closed, its assigner after the Task's reopen: the entry reopens, then its node is told (no local restorability check); reopened (a later refusal says so)", async () => {
       const h = await harness();
       await linkRemote(h);
       h.tasks.close("T2");
       h.tasks.setTaskOpen("T2");
       const order: string[] = [];
       h.peerNotices.changed.mockImplementationOnce(async () => { order.push(`notice (open: ${h.tasks.isOpen(REMOTE)})`); return { confirmed: true }; });
-      await expect(admit(h, "remote_1", "manager")).resolves.toBe("admitted");
+      await expect(admit(h, "remote_1", "manager")).resolves.toBe("reopened");
       expect(order).toEqual(["notice (open: true)"]);
       expect(h.tasks.reopenRequests).toEqual([{ execution: REMOTE, requestedBy: "manager" }]);
       expect(h.peerNotices.changed).toHaveBeenCalledExactlyOnceWith({ run: REMOTE, nodeId: "node-b" });
@@ -302,13 +302,14 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
       await expect(admit(h, "remote_1", "manager")).resolves.toBe("admitted");
     });
 
-    it("this route never delivers to a peer run, open or closed: it is the sender root's endpoint's, or `node`'s, after the router's admission", async () => {
+    it("this route never delivers to a peer run, open or closed: it is the router's node path (PeerRunNodes, the files, then this admission; autobyteus-587 SR-010)", async () => {
       const h = await harness();
       await linkRemote(h);
       await expect(h.send(M, "manager", "remote_1")).resolves.toBeNull();
       h.tasks.close("T2");
       for (const [from, sender] of [[M, "manager"], [P, "pd"], [LEGACY, "legacy"]] as const) await expect(h.send(from, sender, "remote_1")).resolves.toBeNull();
       expect(h.log).toEqual([]);
+      expect(h.tasks.reopenRequests).toEqual([]);
     });
   });
 

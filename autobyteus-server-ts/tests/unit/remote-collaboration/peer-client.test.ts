@@ -30,7 +30,7 @@ const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId:
 const message = {
   nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1", senderAddress: "/assistant",
   targetRoot: { kind: "agent" as const, runId: "publisher_7f3" }, targetAgentRunId: "publisher_7f3",
-  content: "hi", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z",
+  content: "hi", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", files: [] as { sha256: string; size: number; name: string }[],
 };
 
 describe("PeerClient", () => {
@@ -108,8 +108,52 @@ describe("PeerClient", () => {
       .resolves.toEqual({ accepted: true, receiverAddress: "/studio/lead" });
     const body = JSON.parse(String(f.fetch.mock.calls[0]![1].body));
     expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" },
-      sender: { agentRunId: message.senderAgentRunId, address: "/assistant" } });
+      sender: { agentRunId: message.senderAgentRunId, address: "/assistant" }, files: [] });
     expect("delegatingRun" in body).toBe(false);
+  });
+
+  describe("autobyteus-587: reference files (RFC-001 § 6)", () => {
+    const SHA = "b".repeat(64);
+
+    it("a message carries its files as the peer holds them: {sha256, size, name}", async () => {
+      const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, receiverAddress: null }));
+      await f.client.deliverMessage({ ...message, files: [{ sha256: SHA, size: 4, name: "brief.pdf" }] });
+      expect(JSON.parse(String(f.fetch.mock.calls[0]![1].body)).files).toEqual([{ sha256: SHA, size: 4, name: "brief.pdf" }]);
+    });
+
+    it("status is read strictly: one entry per file asked, in order, with counts; anything else is unreachable", async () => {
+      const files = [{ sha256: SHA, size: 4 }];
+      const good = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, maxFileBytes: 2048, files: [{ sha256: SHA, receivedBytes: 2, complete: false }] }));
+      await expect(good.client.receivedFilesStatus(PEER.nodeId, files)).resolves.toEqual({ accepted: true, maxFileBytes: 2048,
+        files: [{ sha256: SHA, receivedBytes: 2, complete: false }] });
+      const [url, init] = good.fetch.mock.calls[0]!;
+      expect(url).toBe("http://peer:29700/rest/remote/received-files/status");
+      expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, files });
+      for (const bad of [{ files: [] }, { maxFileBytes: -1, files: [{ sha256: SHA, receivedBytes: 0, complete: false }] },
+        { maxFileBytes: 1, files: [{ sha256: "c".repeat(64), receivedBytes: 0, complete: false }] }]) {
+        const malformed = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, maxFileBytes: 1, ...bad }));
+        await expect(malformed.client.receivedFilesStatus(PEER.nodeId, files)).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
+      }
+    });
+
+    it("a piece is a signed PUT of raw bytes: the envelope, offset and size in the signed query, the body's hash in the signature", async () => {
+      const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, receivedBytes: 4, complete: true }));
+      const bytes = Buffer.from("abcd");
+      await expect(f.client.putReceivedFilePiece({ nodeId: PEER.nodeId, sha256: SHA, offset: 0, size: 4, bytes })).resolves.toEqual({ accepted: true, receivedBytes: 4, complete: true });
+      const [url, init] = f.fetch.mock.calls[0]!;
+      expect(url).toBe(`http://peer:29700/rest/remote/received-files/${SHA}?fromNodeId=${SELF}&toNodeId=${PEER.nodeId}&offset=0&size=4`);
+      expect(init.method).toBe("PUT");
+      const headers = init.headers as Record<string, string>;
+      expect(headers["content-type"]).toBe("application/octet-stream");
+      expect(Buffer.from(init.body as Uint8Array)).toEqual(bytes);
+      expect(headers["x-autobyteus-peer-body-sha256"]).toBe(createHash("sha256").update(bytes).digest("hex"));
+      const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+      await expect(verifier.verify({ method: "PUT", pathWithQuery: new URL(url).pathname + new URL(url).search, headers }))
+        .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
+      const malformed = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, complete: "yes" }));
+      await expect(malformed.client.putReceivedFilePiece({ nodeId: PEER.nodeId, sha256: SHA, offset: 0, size: 4, bytes }))
+        .resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
+    });
   });
 
   it("autobyteus-261: availability and available agents send only the envelope to their routes", async () => {

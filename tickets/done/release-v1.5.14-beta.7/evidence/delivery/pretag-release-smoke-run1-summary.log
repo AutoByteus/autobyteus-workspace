@@ -1,0 +1,21 @@
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: AgentRunActivationError: link-probe-agent-0a7db257 can't start: its saved model 'grok-4.5' is not offered by Grok Build now. Stop it, then choose a runtime and model for link-probe-agent-0a7db257 in Settings.: expected { success: false, …(2) } to match object { success: true, …(1) }
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUN_MODEL_NOT_OFFERED","message":"designer can't start: its saved model 'grok-4.5' is not offered by Grok Build now. Stop it, then choose a runtime and model for designer in Settings.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequ
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    f15aecea5a896a7c1548c3c9db6ee8a49c37186a
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 85s, antigravity 20s, autobyteus 9s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-mamwgwtk

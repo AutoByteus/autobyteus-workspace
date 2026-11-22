@@ -382,6 +382,19 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   the word *media*: media means image, audio and video (media default models,
   media storage, the native runtime's media input).
 
+## Received Files
+
+- **Reference file:** a file an agent attaches to `send_message_to` or `delegate_task` (`reference_files`), by its
+  absolute path on the sender's node. On one node the recipient reads that path; to another node it is copied.
+- **Received file:** a reference file another node sent to an agent (autobyteus-587): it lives in that agent's own
+  folder under `received_files/<sender's run ID>/<file name>`, read-only, and goes when the run's history is deleted.
+- **The node's received files:** `<data>/received_files/` on the receiving node: the bytes of every received file, once
+  per content (named by its SHA-256), linked into every agent folder that received it. Not run memory, never a run.
+- **Transfer:** moving one file into the receiving node's received files, in signed pieces, before the message or
+  work packet that names it is delivered.
+- **Received file limit:** the largest file a node accepts from another node (node setting
+  `AUTOBYTEUS_RECEIVED_FILE_MAX_MB`, default 2048 MiB); one message or delegation carries at most 4 GiB of files.
+
 ## Project Tasks
 
 - **Title:** a Project Task's one-line name, given by its writer (an agent's
@@ -425,6 +438,20 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   or an Agent of a mounted Team) and a delegated run (a task Agent, or a member of a
   task Team, each switched as the run of its own it is); a Team's or an Org's own default launch is not switched. It is made real
   at the Agent's next input.
+- **Lost runtime session:** a run's saved external runtime session that its
+  runtime itself reports as not existing when the run is restored (for example
+  Claude Code's "No conversation found with session ID", Codex's "no rollout
+  found for thread id", Antigravity's "conversation … not found"). Only that
+  answer for exactly the saved session counts; an auth, network or any other
+  restore failure is not a lost session (`SavedRuntimeSessionMissingError` in code).
+- **Session renewal:** continuing a run whose runtime session was lost, in a
+  fresh session of the same agent runtime and model, through the steps of an
+  agent runtime switch: the earlier records are kept as a closed segment, the
+  switch marker starts the new file and the hand-over notice goes with the input
+  (`buildSessionRenewal` in code; a user's switch is `buildRuntimeSwitchBetween`).
+  It happens at activation, for a standalone run, a Team or Org member and a
+  delegated run alike, in the studio, in application-scope runs and on the
+  standalone application host; the user sees the marker, not an error.
 - **Pending agent runtime switch:** the user's saved choice of another agent
   runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
   a member's node in the run's execution tree) until that input.
@@ -433,7 +460,12 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   journal file with work entries, the previous agent's most recent work, and asks
   for a complete read of it before replying (autobyteus-583). It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
-  and the Work Journal show it ("Agent runtime changed from … to …").
+  and the Work Journal show it. After an agent runtime switch it reads "Agent
+  runtime changed from … to …"; after a session renewal, "The saved … session of
+  this run was no longer available, so a new session continues from the work
+  journal." Both are stored the same way (a `runtime_switch` segment, sender
+  `system.runtime_handover`); only the key differs (`runtime_switch:<runId>:<switchId>`
+  or `session_renewal:<runId>:<lost session ID>`).
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
   (wording toward the agent; in code, the earlier raw-trace segment).
 - **Offered models:** the models an agent runtime offers now, read from the

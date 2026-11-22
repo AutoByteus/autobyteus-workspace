@@ -117,6 +117,9 @@ message payloads. Direct exact-run message references remain direct runtime
 input/event metadata unless a separate future projection is designed.
 
 `delegate_task` uses the same explicit absolute-local `reference_files` input
-rule, but its references live only in the child's first message. Released
+rule, but its references live only in the child's first message. To an agent on
+another node (`node`), either tool copies each file there (autobyteus-587): the
+recipient's message lists the received paths under its own folder's `received_files/`
+(see [Remote Collaboration](remote_collaboration.md#reference-files-between-nodes)). Released
 task-records files that still list task references stay on disk untouched; they
 are not served.

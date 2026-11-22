@@ -13,7 +13,11 @@ export type SpawnTaskInput =
   | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; node?: string; task_id?: never }>;
 
 /** `delegate_task` with a delegated run's own ID: assigns saved Task `taskId` to that existing delegated run of the sender's run. */
-export type AssignToExistingDelegatedRunInput = Readonly<{ delegatedRun: TaskExecutionReference; taskId: string }>;
+/**
+ * `delegate_task` with a task agent's run ID and a saved Task (S8). `node` (autobyteus-587 RF-14, SR-011): the peer a copy
+ * on another node runs on; required for it, refused for a copy on this node.
+ */
+export type AssignToExistingDelegatedRunInput = Readonly<{ delegatedRun: TaskExecutionReference; taskId: string; node?: string }>;
 
 /**
  * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
@@ -36,7 +40,7 @@ export type DelegatedRun =
  * commit, that its work was not delivered) and carries the reason.
  */
 export type TaskDelegationOutcome =
-  | Readonly<{ delegated: true; delegatedRun: DelegatedRun; taskId?: string; launchNotes?: readonly string[]; node?: string }>
+  | Readonly<{ delegated: true; delegatedRun: DelegatedRun; taskId?: string; launchNotes?: readonly string[]; node?: string; filesSent?: number }>
   | Readonly<{ delegated: false; message: string }>;
 
 /** The delegated run at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */

@@ -152,7 +152,12 @@ The created provider `init.conversation_id` is stored as
 the saved capsule and workspace, verifies the identity snapshot, and requires
 the resumed `init.conversation_id` to equal the saved provider ID **before**
 input is admitted. Missing/changed workspace or mismatched provider ID fails
-closed; there is no latest-conversation guess or fake bootstrap message.
+closed (`AGY_CONVERSATION_ID_CONFLICT`); there is no latest-conversation guess or
+fake bootstrap message. The one mismatch that is acted on is AGY's own stderr
+warning `conversation "<id>" not found` for the saved ID, followed by a new
+conversation: that is a lost session, renewed in a fresh one with the
+hand-over notice (autobyteus-599; see [Agent Execution](./agent_execution.md)).
+A different conversation without that warning is still the conflict.
 A recorded skill whose `SKILL.md` is no longer reachable (its source was
 deleted or moved) does not block restore: its dangling link is removed, a
 warning names the skill (`disposition=skipped-missing-source`) and the run

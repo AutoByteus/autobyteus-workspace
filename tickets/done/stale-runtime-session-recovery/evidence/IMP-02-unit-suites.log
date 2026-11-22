@@ -1,0 +1,26 @@
+# IMP-02 unit suites of every touched area
+# Command: pnpm exec vitest run tests/unit/agent-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/agent-execution tests/unit/standalone-agent-run-root tests/unit/agent-memory tests/unit/run-history tests/unit/runtime-management
+# Commit: e06715d0a5 (0681fcd3af adds tests only; those run in IMP-03)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+[autobyteus-565 measure] read of a 2,500-message log from disk: 16.2 ms, 2500 messages
+
+ Test Files  419 passed | 4 skipped (423)
+      Tests  3646 passed | 6 skipped (3652)
+   Start at  14:14:57
+   Duration  337.67s (transform 9.49s, setup 9.64s, import 134.68s, tests 155.38s, environment 22ms)
+

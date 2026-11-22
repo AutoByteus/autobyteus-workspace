@@ -3,7 +3,10 @@ import type { RunOwnDelegation, RunOwnDelegations } from "./run-own-delegation.j
 import { taskExecutionConversationUnavailable, type RunConversationAvailability } from "./run-conversation-availability.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
-import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
+import type { PeerNodeRef, RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
+import type { OutgoingFiles } from "../remote/outgoing-files.js";
+import type { PeerRunNodes } from "../remote/peer-run-nodes.js";
+import type { TransferredFile } from "../remote/transferred-files.js";
 import type { PeerRunStateNotices } from "../remote/peer-run-state-notices.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
@@ -127,8 +130,12 @@ export class TaskDelegation {
     discard(run: TaskExecutionReference): Promise<void>;
     /** The peer channel; `null` where remote collaboration is not composed (the application host). */
     channel(): RemoteRunChannel | null;
-    /** A message to a run on a peer node, over its link (`deliverMessageToPeerRun`, autobyteus-591 DN-8). */
-    deliverToPeerRun(input: RunWorkMessage & Readonly<{ nodeId: string }>): Promise<AgentOperationResult>;
+    /** autobyteus-587: a peer delegation's reference files, uploaded to that node before its run starts (DS-001). */
+    outgoing: Pick<OutgoingFiles, "send">;
+    /** A message to a run on a peer node, over its link, with the files already on that node (`deliverMessageToPeerRun`, autobyteus-591 DN-8). */
+    deliverToPeerRun(input: RunWorkMessage & Readonly<{ nodeId: string; files: readonly TransferredFile[] }>): Promise<AgentOperationResult>;
+    /** autobyteus-587 RF-14 (SR-011): the node a copy is on, checked before a saved Task is given to it. */
+    nodes: Pick<PeerRunNodes, "check">;
     /** What a peer run's node is told of its delegation state, in the run's order (autobyteus-591 DN-1b). */
     peerNotices: Pick<PeerRunStateNotices, "changed">;
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
@@ -149,8 +156,9 @@ export class TaskDelegation {
   /**
    * `delegate_task` with `node` (DEC-111, CM-10): the run is created by the peer, which owns it; this node keeps its
    * Task entry, with the peer's node, the team's members and the address (contract §2.1, E3; no tree link). The order
-   * is `toNewRun`'s: work, run (on the peer), Task entry, work packet (through the channel), `markStarted`. The result
-   * names the peer, and the launches the peer resolved are returned for the root's notes (REQ-009).
+   * is `toNewRun`'s: work, its files (uploaded to the peer, autobyteus-587 DS-001: a refusal there starts nothing), run
+   * (on the peer), Task entry, work packet (through the channel, naming the files), `markStarted`. The result names the
+   * peer and the files sent, and the launches the peer resolved are returned for the root's notes (REQ-009).
    */
   async toPeerRun(input: Readonly<{
     sender: CollaborationMemberExecutionIdentity;
@@ -166,6 +174,10 @@ export class TaskDelegation {
     try { work = await this.prepareWork(input.senderRun, input.spawn); }
     catch (error) { const refusal = asRefusal(error); if (refusal && !refusal.delegated) return refused(refusal.message); throw error; }
     const { placement } = input;
+    // A saved Task's own context files may lie outside the workspace (autobyteus-587 DEC-009); described work's may not.
+    const sent = await this.dependencies.outgoing.send({ senderAgentRunId: input.sender.agentRunId, nodeId: placement.peer.nodeId,
+      peerName: placement.peer.name, referenceFiles: work.referenceFiles, ...(work.task ? { taskContextFiles: work.referenceFiles } : {}) });
+    if (!sent.ok) return refused(sent.refusal.message);
     const started = await channel.startDelegatedRun({ nodeId: placement.peer.nodeId, address: placement.address, delegatorAgentRunId: input.sender.agentRunId,
       delegatingRun: { kind: input.senderRun.rootSubjectKind, runId: input.senderRun.rootRunId }, work: work.delegation });
     if (!started.accepted) return refused(started.message);
@@ -193,7 +205,7 @@ export class TaskDelegation {
     await this.recordCollaborating(input);
     const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId, senderAddress: input.sender.memberAddress,
       targetRoot: team ? { kind: "agent_team", runId: started.teamRunId } : { kind: "agent", runId: entryAgentRunId }, targetAgentRunId: entryAgentRunId,
-      content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
+      content: work.delegation.text, messageType: "task_work_packet", createdAt: new Date().toISOString(), files: sent.files })
       .catch((error: unknown) => ({ accepted: false as const, code: REMOTE_REFUSAL.PEER_UNREACHABLE, message: message(error) }));
     if (!delivered.accepted) {
       // As base, any failed dispatch of a new run is recorded as TASK_DISPATCH_FAILED with its message (CR-461-052, REQ-005).
@@ -203,7 +215,8 @@ export class TaskDelegation {
     await tasks.markStarted(execution);
     const delegatedRun: DelegatedRun = team ? { kind: "team", teamRunId: started.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId } : { kind: "agent", agentRunId: entryAgentRunId };
     const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
-    return { outcome: { delegated: true, delegatedRun, node: placement.peer.name, ...(createdTaskId ? { taskId: createdTaskId } : {}) }, launches: started.launches };
+    return { outcome: { delegated: true, delegatedRun, node: placement.peer.name, ...(createdTaskId ? { taskId: createdTaskId } : {}),
+      ...(sent.files.length ? { filesSent: sent.files.length } : {}) }, launches: started.launches };
   }
 
   /**
@@ -371,6 +384,7 @@ export class TaskDelegation {
     const senderReference = runReferenceOf(input.senderRun);
     let taskId: string, content: string, referenceFiles: readonly string[], entryAgentRunId: string, taskReference: string;
     let nodeId: string | undefined;
+    let files: readonly TransferredFile[] = [];
     const execution = input.assign.delegatedRun;
     try {
       if (senderReference && this.dependencies.tree().currentTaskOf(senderReference)) {
@@ -389,13 +403,24 @@ export class TaskDelegation {
       if (current && !sameRootExecutionIdentity(tree.topOf(runIdentityOf(execution)), tree.topOf(input.senderRun))) throw notADelegatedRunOfThisRun(execution);
       const last = current ?? own!;
       entryAgentRunId = last.entryAgentRunId;
+      // autobyteus-587 RF-14 (SR-011): a copy on another node is named with its node, a local one never; read only, first.
+      const peer = await this.peerNamed(input.assign.node);
+      if (peer && "delegated" in peer) return peer;
+      const wrongNode = await this.dependencies.nodes.check({ sender: input.sender, targetAgentRunId: entryAgentRunId, node: peer, localTarget: nodeId === undefined });
+      if (wrongNode) return { delegated: false, message: wrongNode.message ?? wrongNode.code ?? "The node does not match." };
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      if (nodeId !== undefined && referenceFiles.length) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.attachments };
       await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId, ...(own ? { ownDelegatorAgentRunId: own.delegatedFrom.delegatorAgentRunId } : {}) });
       // As base: a run that cannot be restored is refused before anything changes (CR-461-043). A peer's run is restored there.
       const conversation = nodeId === undefined ? await this.dependencies.conversationOf(execution, { agentRunId: entryAgentRunId, address: last.recipientAddress }) : null;
       if (conversation && conversation.activity.kind !== "present") {
         throw taskExecutionConversationUnavailable({ execution, address: last.recipientAddress, entryAddress: conversation.entryAddress, activity: conversation.activity });
+      }
+      // DEC-009: a copy on another node gets the Task's context files, all uploaded before anything changes (SR-010 R3).
+      if (nodeId !== undefined && referenceFiles.length) {
+        const sent = await this.dependencies.outgoing.send({ senderAgentRunId: input.sender.agentRunId, nodeId, peerName: peer!.name,
+          referenceFiles, taskContextFiles: referenceFiles });
+        if (!sent.ok) return { delegated: false, message: sent.refusal.message };
+        files = sent.files;
       }
       const otherOpenTaskReferences = await tasks.openTaskReferencesOf(execution, taskId);
       // The new entry repeats the run's delegation: its last entry's, or its own file's with its own address (U11).
@@ -412,7 +437,7 @@ export class TaskDelegation {
     const work: RunWorkMessage = { sender: input.sender, senderDisplayName: getAgentTeamAddressBasename(input.sender.memberAddress) ?? input.sender.agentRunId,
       targetAgentRunId: entryAgentRunId, content, messageType: TASK_ASSIGNMENT_MESSAGE_TYPE, referenceFiles };
     try {
-      delivered = nodeId === undefined ? await this.dependencies.deliverToRun(work) : await this.toPeerRunAgain(execution, nodeId, work);
+      delivered = nodeId === undefined ? await this.dependencies.deliverToRun(work) : await this.toPeerRunAgain(execution, nodeId, work, files);
     } catch (error) {
       delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: message(error) };
     }
@@ -424,17 +449,26 @@ export class TaskDelegation {
     }
     await tasks.markStarted(execution);
     return { delegated: true, delegatedRun: "agentRunId" in execution ? { kind: "agent", agentRunId: execution.agentRunId }
-      : { kind: "team", teamRunId: execution.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId } };
+      : { kind: "team", teamRunId: execution.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId }, ...(files.length ? { filesSent: files.length } : {}) };
   }
 
   /**
    * DN-8: the peer run's node is told it is open (in the run's order, after any notice in flight, DN-1b), then its work goes
    * over the run's link. A notice its node did not confirm fails the delivery; the notice stays owed.
    */
-  private async toPeerRunAgain(execution: TaskExecutionReference, nodeId: string, work: RunWorkMessage): Promise<AgentOperationResult> {
+  private async toPeerRunAgain(execution: TaskExecutionReference, nodeId: string, work: RunWorkMessage, files: readonly TransferredFile[]): Promise<AgentOperationResult> {
     const noticed = await this.dependencies.peerNotices.changed({ run: execution, nodeId });
     if (!noticed.confirmed) return { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: noticed.message };
-    return this.dependencies.deliverToPeerRun({ ...work, nodeId });
+    return this.dependencies.deliverToPeerRun({ ...work, nodeId, files });
+  }
+
+  /** The peer `node` names (SR-011), or null without `node`; a refusal as `delegate_task` with `node` words it. */
+  private async peerNamed(node: string | undefined): Promise<PeerNodeRef | Readonly<{ delegated: false; message: string }> | null> {
+    if (node === undefined) return null;
+    const channel = this.dependencies.channel();
+    if (!channel) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.off };
+    const peer = await channel.findPeer(node.trim());
+    return "accepted" in peer ? { delegated: false, message: peer.message } : peer;
   }
 
   /** Step 1 (DS-1): the work and how the new run joins a Task, from the sender's own run's Task work (the tree). */

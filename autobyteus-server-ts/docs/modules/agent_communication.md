@@ -23,7 +23,9 @@ Callers must not provide both selectors, omit both selectors, or use selector
 aliases such as `recipient`, `recipientName`, or `targetAgentRunId`. `content`
 must be a non-empty self-contained message body. Optional `reference_files` must
 be an array of absolute local path strings and should be used in addition to, not
-instead of, explanatory message content. Optional `message_type` defaults to
+instead of, explanatory message content. To an agent on another node they are copied
+there (autobyteus-587, CM-14; only files inside the sender's workspace), and the recipient
+reads them at its own paths. Optional `message_type` defaults to
 `agent_message` when omitted; runtime/provider traces must not require providers
 to echo that optional field when the semantic delivery is otherwise valid.
 
@@ -167,7 +169,7 @@ Entry forms, all through the engine:
 | --- | --- | --- | --- |
 | `deliver` | `send_message_to` by address or by run ID within the run, and handoffs | Yes, `same_run` | Its slot is held, then committed, presented and released |
 | `acceptFromRun` | The receiver's root, for a message from another run of this node | Yes, `related` or `unrelated` (both runs' views; the sender's `commitSentToRun` never publishes) | As for `deliver` |
-| `acceptFromRemote` | A message from a run on a peer node, linked or by run ID | Yes, `remote` (this run's views) | As for `deliver` |
+| `acceptFromRemote` | A message from a run on a peer node, linked or by run ID; its files (autobyteus-587) are placed in the receiver's own folder after its checks and the receiver's slot, before the log line | Yes, `remote` (this run's views) | As for `deliver` |
 | `commitSentToRemote` | The sender's record after the peer accepted a message | Yes, `remote` (this run's views) | None (the peer stores its side) |
 
 Since autobyteus-565 every publishing commit hands the node's message feed one publication: the message, its
@@ -267,18 +269,20 @@ run of this node goes from root to root:
    is an Agent run (its Messages) and in no Team, Org or ancestor view (492's DEC-014
    kept there), like a message with another node; both agents' conversations and both
    logs hold it, each line recording the other agent.
-5. a run on a peer that this node's tree holds is not this route's (`null`): the
-   router admitted it first (`admitPeerRun`, below) and it is reached through the
-   sender root's peer endpoint or with `node`.
+5. a run on a peer that this node's tree holds is not this route's (`null`): the router's node rule refused it
+   without `node` (below), and with `node` it is the router's peer path.
 
-**Peer-run admission (autobyteus-591 DN-9).** `GlobalAgentRunMessageRouter.deliver`'s first step after
-normalizing, before every path and outside any root's gate, is `CrossRunMessageDelivery.admitPeerRun`.
-A target whose run this node's Task entries name on a peer is admitted while an entry is open. When they
+**Peer-run node rule and admission (autobyteus-587 RF-14, autobyteus-591 DN-9).** `GlobalAgentRunMessageRouter.deliver`'s
+first step after normalizing (and, with `node`, finding the peer), before every path and outside any root's gate, is
+`PeerRunNodes.check`, the one owner of RF-14: a target this node knows on a peer (the sender root's links, then the
+Task entries) is refused `NODE_REQUIRED` without `node`, `NODE_MISMATCH` with another one, `NODE_NOT_PAIRED` when its
+node is no longer a paired peer. It reads only. On the peer path the files go next (below), then
+`CrossRunMessageDelivery.admitPeerRun`, so a refused file or upload reopens nothing. The admission admits the target while an entry is open. When they
 are all closed, the assigner of its last `assigned` entry continues it, as locally: the entry reopens
 (`assertReopenable`, `reopenAssignment`), the run's node is told it is open (`PeerRunStateNotices`, in the
 run's order), and the message goes on once the node confirmed (otherwise the notice's refusal, the entry
-open and "open" owed). Any other sender gets `TASK_AGENT_RESOURCE_CLOSED`. Any other target is `not_peer`,
-and the router goes on as before.
+open and "open" owed; the answer is `reopened`, and a delivery refused afterwards says the Task is open again). Any
+other sender gets `TASK_AGENT_RESOURCE_CLOSED`. Any other target is `not_peer`, and the message goes on as before.
 
 The receiver sees the sender's address only when it can use that address to reach
 the sender (contract §2.5); otherwise the run ID only.
@@ -288,11 +292,13 @@ path, the router asks every active root (`ActiveCollaborationRootDirectory.findT
 whether the ID is one of its team run IDs; if so it refuses with `TARGET_IS_TEAM_RUN`
 and the coordinator's agent run ID to use.
 
-**Peer path (`node`, DS-004).** `send_message_to(target_agent_run_id, node)` finds the peer by this
-node's name for it (`RemoteRunChannel.findPeer`: the refusals of `delegate_task` with `node`), after the
-peer-run admission above, then hands the message to the sender's root
-(`deliverToPeerRun`), whose `RemoteMessageSend` uses the root's link when the sender is paired with that run,
-else a one-message `unlinked_run` endpoint (`/rest/remote/run-messages`). The peer delivers it only to an
+**Peer path (`node`, DS-004; autobyteus-587 SR-010 R1).** `send_message_to(target_agent_run_id, node)` finds the
+peer by this node's name for it (`RemoteRunChannel.findPeer`: the refusals of `delegate_task` with `node`); then the
+node rule (above); then the reference files (`OutgoingFiles`: every local check, then the whole upload); then the
+Task admission of a peer run (above); then the sender's root sends it with the files' descriptors
+(`deliverToPeerRun`), whose `RemoteMessageSend` uses the root's link when the sender is paired with that run on that
+node, else a one-message `unlinked_run` endpoint (`/rest/remote/run-messages`). Every message to another node takes
+this path: a run ID on another node without `node` is refused by the node rule, RF-14. The peer delivers it only to an
 agent that runs there and never wakes it; a team run's ID is refused with its coordinator's run ID. `node`
 goes only with `target_agent_run_id`, and needs a sender in a collaboration run. The receiver's header names
 the sender's node, and it answers with that `node`. See [Remote Collaboration](remote_collaboration.md).

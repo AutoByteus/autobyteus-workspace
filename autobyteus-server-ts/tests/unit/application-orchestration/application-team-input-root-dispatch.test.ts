@@ -7,6 +7,7 @@ import { TeamRunEventPublisher } from "../../../src/agent-team-execution/service
 import { describe, expect, it, vi } from "vitest";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const applicationId = "app-1";
 const bindingId = "binding-1";
@@ -55,6 +56,7 @@ const buildRootTeamRuntime = () => {
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
   const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),

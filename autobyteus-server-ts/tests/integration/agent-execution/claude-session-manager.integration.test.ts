@@ -243,6 +243,8 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
           type: "http",
           url: "http://127.0.0.1:3000/mcp/agent-tools/claude-manager-integration",
           alwaysLoad: true,
+          // autobyteus-587 RF-6 / DEC-008 (b): a tool call may wait for a file transfer, up to an hour.
+          timeout: 3_600_000,
         },
       },
     }));

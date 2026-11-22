@@ -26,7 +26,7 @@ const stable = (value: unknown): string => {
   return JSON.stringify(value) ?? 'undefined';
 };
 const advanced = (status: ToolInvocationStatus) => status !== 'parsing' && status !== 'parsed';
-type Evidence = { segment: ProjectableToolSegment; timestamp: Date; activity?: ToolActivity };
+type Evidence = { segment: ProjectableToolSegment; timestamp: Date };
 
 const segmentFromActivity = (activity: ToolActivity): ProjectableToolSegment => {
   const base = { invocationId: activity.invocationId, toolName: activity.toolName,
@@ -63,7 +63,7 @@ const collect = (conversation: Conversation, activities: readonly RunActivity[])
     }
   }
   for (const activity of activities) if (activity.kind === 'tool') {
-    add({ segment: segmentFromActivity(activity), timestamp: activity.timestamp, activity }, activityKeys, activity);
+    add({ segment: segmentFromActivity(activity), timestamp: activity.timestamp }, activityKeys, activity);
   }
   return entries;
 };
@@ -141,12 +141,10 @@ export const reconcileTeamMemberToolState = (input: {
   const toActivity = (id: string): ToolActivity => {
     const chosen = decisions.get(id)!;
     const segment = chosen.segment;
-    const descriptive = current.get(id)?.find(e => e.activity)?.activity
-      ?? projected.get(id)?.find(e => e.activity)?.activity;
     const built = buildActivitiesFromProjection([{ kind: 'tool', invocationId: id,
       toolName: segment.toolName, type: segment.type, status: segment.status,
       arguments: segment.arguments, logs: segment.logs, result: segment.result, error: segment.error,
-      contextText: descriptive?.contextText, ts: chosen.timestamp.getTime() / 1000 }])[0] as ToolActivity;
+      ts: chosen.timestamp.getTime() / 1000 }])[0] as ToolActivity;
     return { ...built, approvalTarget: copy(segment.approvalTarget) };
   };
   for (const activity of input.projectedActivities) {

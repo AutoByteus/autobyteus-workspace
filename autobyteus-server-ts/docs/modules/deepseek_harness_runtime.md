@@ -86,7 +86,9 @@ folder is removed when the launch is released, after its process stopped.
 - **Model and effort:** set with `session/set_config_option` (`model`, then `reasoning_effort`) after the session
   opens. A model dsh does not offer is refused by dsh with its own message.
 - **Restore:** dsh offers `session/resume`, not `session/load`; the shared layer restores by resume. dsh replays no
-  history.
+  history. A session dsh no longer has (`-32602`, `Invalid params: session is not resumable: <id>`, for exactly the
+  saved session) is a lost session and is renewed in a fresh one with the hand-over notice (autobyteus-599; see
+  [Agent Execution](./agent_execution.md)).
 - **Approvals:** dsh asks only for sandbox escalations (it runs in its `workspace-write` sandbox). Auto-execute answers
   them allow. A write to the agent's semantic memory folder or the node's global one
   ([Agent Memory](./agent_memory.md#semantic-memory)) is outside that sandbox, so with auto-execute off it asks an escalation; dsh has no option to add a writable folder.
@@ -100,7 +102,8 @@ No prompt, no model call. dsh offers its models only while a key is configured, 
 relay) it lists its built-in catalog without a listing call, so discovery's `DEEPSEEK_API_KEY` is the placeholder
 `autobyteus-model-discovery`: neither a key nor a pass (a call made with it would reach only the relay, which refuses
 it). The models are dsh's `model` options on its DeepSeek route, with the session's reasoning
-efforts as their `reasoning_effort` choices.
+efforts as their `reasoning_effort` choices. The discovery process and a run's `initialize` use the shared ACP start-up
+bound of 90 s (autobyteus-551, see [Grok Build Runtime](./grok_build_runtime.md#availability-models-and-authentication)): a dsh that never answers fails after 90 s, not 15 s.
 
 Diagnostics: `DEEPSEEK_HARNESS_RELAY_UNAVAILABLE` (no credential proxy in this process),
 `DEEPSEEK_HARNESS_RELAY_NOT_READY` (the proxy is not listening yet; transient, nothing caches it),

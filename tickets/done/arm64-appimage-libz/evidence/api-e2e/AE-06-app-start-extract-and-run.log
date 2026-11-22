@@ -1,0 +1,99 @@
+# AE-06 AC-002 app start through --appimage-extract-and-run in a clean Ubuntu 24.04 arm64 desktop root
+# image NEW: CI artifact linux-arm64 of run 44956618584 (commit 05996bd715; source = cd687a31e6), sha256 02525c59…5f42
+# image OLD: published v1.5.14-beta.6 arm64, sha256 64382b42…f337
+# env: /tmp/ae28/desktop-root (precondition: AE-06-desktop-root-precondition.log), entered by AE-06-probe-scripts/enter-desktop-root.sh (unshare mount+pid ns, pivot_root, setpriv uid 1000), Xvfb :187 owned by the session; host aarch64, no /dev/fuse
+# attempts 1-3: harness setup only (no /tmp/.X11-unix in the fresh tmpfs; host X servers on :99/:102/:103 share the abstract socket namespace; xvfb-run as pid-ns PID 1 misses Xvfb's SIGUSR1); no image ran. Attempt 4: same as 5 but curl hit the wrong port and the stop was a SIGTERM to the runtime pid only (not a real-use stop).
+
+########## attempt 5 (session.sh): OLD then NEW, Ctrl+C stop — 2026-11-22 00:32:19.485721013 +0000
+id: uid=1000(tester) gid=1000(tester) groups=1000(tester)
+root fs: PRETTY_NAME="Ubuntu 24.04.5 LTS"
+libz.so present: no
+userns probe (unshare --user --map-root-user true): ok
+/dev/fuse: ls: cannot access '/dev/fuse': No such file or directory
+DISPLAY=:187
+
+===== OLD: /images/old-published-v1.5.14-beta.6.AppImage --appimage-extract-and-run
+old exit=127
+/images/old-published-v1.5.14-beta.6.AppImage: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+
+===== NEW: /images/new-ci-run44956618584.AppImage --appimage-extract-and-run
+server ready=yes after 8s
+
+----- processes of tester (ps -o pid,ppid,etime,args)
+  PID  PPID     ELAPSED COMMAND
+    1     0       00:23 /bin/bash /probe/run.sh
+   25     1       00:23 /bin/sh /usr/bin/xvfb-run -n 187 -e /out/xvfb.log -s -screen 0 1600x1000x24 -nolisten tcp /bin/bash /probe/session.sh
+   34    25       00:23  \_ Xvfb :187 -screen 0 1600x1000x24 -nolisten tcp -nolisten tcp -auth /tmp/xvfb-run.GnrgmR/Xauthority
+   37    25       00:23  \_ /bin/bash /probe/session.sh
+   41    37       00:23      \_ /images/new-ci-run44956618584.AppImage --appimage-extract-and-run
+   53    41       00:18      |   \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/AppRun
+   61    53       00:18      |       \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus
+   65    61       00:18      |           \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=zygote --no-zygote-sandbox
+   96    65       00:17      |           |   \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=gpu-process --ozone-platform=x11 --enable-crash-reporter=374588c0-cda1-4e42-9406-7e0a0fab625f,no_channel --user-data-
+   66    61       00:18      |           \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=zygote
+   68    66       00:18      |           |   \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=zygote
+  139    68       00:17      |           |       \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=renderer --enable-crash-reporter=374588c0-cda1-4e42-9406-7e0a0fab625f,no_channel --user-data-dir=/home/tester/.co
+  100    61       00:17      |           \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --enable-crash-reporter=
+  149    61       00:17      |           \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/resources/server/dist/app.js --port 29695 --data-dir /home/tester/.auto
+  280    61       00:15      |           \_ /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34/autobyteus --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --enable-crash-reporter=3745
+  304    37       00:00      \_ ps -u tester -o pid,ppid,etime,args --forest
+  305    37       00:00      \_ cut -c1-240
+
+----- extracted mount point (runtime extract-and-run dir)
+/tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34
+
+----- X windows (xwininfo -root -tree, named windows)
+     0x200003 "autobyteus": ("autobyteus" "autobyteus")  1200x800+200+100  +200+100
+     0x400001 "autobyteus": ("autobyteus" "Autobyteus")  10x10+10+10  +10+10
+     0x200000 "Chromium clipboard": ()  10x10+-100+-100  +-100+-100
+
+----- Chromium sandbox: user/pid namespaces of the browser vs its renderers (differ = namespace sandbox active)
+browser pid 61: user user:[4026531837] pid pid:[4026533186]
+renderer pid 139: user user:[4026533649] pid pid:[4026533188] seccomp 2
+no --no-sandbox on any process: 1
+
+----- app.log readiness lines
+19:[2026-11-22T00:31:55.495Z] [INFO] [electron] Starting server with port: 29695
+205:[2026-11-22T00:31:57.599Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517599,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:46303"}
+206:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517621,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://127.0.0.1:29695"}
+207:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1795307517621,"pid":149,"hostname":"8abfa09513cd","msg":"Server listening at http://172.17.0.2:29695"}
+208:[2026-11-22T00:31:57.621Z] [INFO] [electron.embedded-server.stdout] [2026-11-22T00:31:57.621Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+230:[2026-11-22T00:31:57.774Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+231:[2026-11-22T00:31:57.775Z] [INFO] [electron] ServerStatusManager: Server is ready
+
+----- server URL from app.log: http://127.0.0.1:29695
+GET http://127.0.0.1:29695/rest/health:
+{"status":"ok","message":"Server is running"}
+HTTP 200
+
+----- screenshot
+saved /out/new-app-screen.png
+
+----- stop: terminal Ctrl+C = SIGINT to the job's process group -41
+launcher exit=130 after stop
+remaining processes of tester other than this session:
+(none)
+extract dir after stop: /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34
+xvfb-run exit=0
+
+########## attempt 6A (session2.sh, openbox): NEW, quit by closing the window — 2026-11-22 00:34:14.344273010 +0000
+id: uid=1000(tester) gid=1000(tester) groups=1000(tester)
+root fs: PRETTY_NAME="Ubuntu 24.04.5 LTS"
+libz.so present: no
+userns probe (unshare --user --map-root-user true): ok
+/dev/fuse: ls: cannot access '/dev/fuse': No such file or directory
+DISPLAY=:187  libz.so present: no
+
+===== A: NEW --appimage-extract-and-run, quit by closing the window
+server ready after 8s
+processes with --no-sandbox (pgrep excludes itself): 0
+extract dir while running: /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34
+windows (wmctrl -l):
+0x00400003  0 8abfa09513cd autobyteus
+wmctrl -c autobyteus (WM close request -> WM_DELETE_WINDOW)
+runtime exit=0 19s after start
+remaining app processes: 0
+extract dir after quit: /tmp/appimage_extracted_4092ed1914d7a9697f54e52f2a55dc34
+app.log quit lines:
+255:[2026-11-22T00:34:11.348Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
+xvfb-run exit=0

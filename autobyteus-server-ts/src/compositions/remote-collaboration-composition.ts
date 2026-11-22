@@ -1,5 +1,6 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { PeerRunMembersReceiver, type PeerRunMembersTaskSide } from "../remote-collaboration/inbound/peer-run-members-receiver.js";
+import type { ReceivedFiles } from "../remote-collaboration/inbound/received-files.js";
 import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
 import { LiveAgentOrgContainer } from "../agent-org-execution/container/live-agent-org-container.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
@@ -66,6 +67,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   rootResolver: CollaborationRootResolver;
   /** autobyteus-492: this node's running agents (messages by run ID) and their listing (a peer's `running-agents`). */
   running: RunningAgentsComposition;
+  /** autobyteus-587: the node's received files: a peer uploads into them; a message or work packet names only complete ones. */
+  receivedFiles: ReceivedFiles;
   /** autobyteus-591: the peer-started runs their delegating node closed, loaded (the state handler and S-5 write it). */
   closedDelegations: ClosedDelegations;
   /** FU-003: this node's Task entries, which keep the members of a Team run a peer started for this node's delegation. */
@@ -95,6 +98,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     settings: getServerSettingsService(),
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
+    receivedFiles: input.receivedFiles,
     handlers: (services) => ({
       delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
         teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),
@@ -103,7 +107,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
           : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
             : Promise.resolve(),
-      }, peerStartedRunDecisions, input.running.runningAgents, input.closedDelegations),
+      }, peerStartedRunDecisions, input.running.runningAgents, input.closedDelegations, input.receivedFiles),
       // autobyteus-591 DN-2: a delegating node's state of a run it started here (closed: recorded and stopped).
       delegatedRunStates: new DelegatedRunStateHandler({ roots, closed: input.closedDelegations,
         agentRuns: input.agentRuns, teamRuns: input.teamRuns }),

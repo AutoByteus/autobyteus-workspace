@@ -1,0 +1,32 @@
+# IMP-05
+# Command: readelf -d; probes/clean-root-runtime-probe.sh (ubuntu-base-24.04.5-base-arm64) --appimage-version / --appimage-extract AppRun; verify-clean-image-runtime.mjs via evidence/docker-chroot-shim (new image and the v25 baseline image)
+# Commit: 7ad305aeb0 (run on the identical uncommitted worktree content before the commit)
+# Environment: Linux aarch64 container (Ubuntu 24.04, root, no libz.so, no Docker), Node v22.23.3
+# Date: 2026-11-21
+
+## readelf NEEDED (new)
+0
+## readelf NEEDED (v25)
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]
+## clean-root probe new --appimage-version
+AppImage runtime version: https://github.com/AppImage/type2-runtime/commit/dd6cebe
+exit=0
+## clean-root probe new --appimage-extract AppRun
+exit=0
+## clean-root probe v25 --appimage-extract AppRun
+/image: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=127
+## verifier via docker-chroot-shim: new
+Verified the AppImage runtime loads and extracts AppRun in a clean ubuntu:24.04 image without libz.so
+exit=0
+## verifier via docker-chroot-shim: v25 build
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 127): /autobyteus.AppImage: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+exit=1
+
+## precondition: clean root with usr/lib/aarch64-linux-gnu/libz.so added (/tmp/ab28/ubuntu-base-with-libz-so.tar.gz); v25 baseline image (would otherwise pass there)
+Error: AppImage does not run in a clean ubuntu:24.04 image (exit 3): clean image has /lib/aarch64-linux-gnu/libz.so
+exit=1

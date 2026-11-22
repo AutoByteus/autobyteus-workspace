@@ -1,0 +1,24 @@
+# API-07a: gated contract stories with CONTRACT_STORIES_CONTINUE=1 against the fixture before the round-5 model change (every difference, every step)
+# Code HEAD 05ffe64554 (server rebuilt); 2026-11-22; load at start:  5:56  up 16:13, 9 users, load averages: 23.70 25.41 25.65
+     × §5.1 S0 … S27: a standalone agent delegates on its node and to a peer node 832549ms
+     × §5.2 U0 … U11: a team the user starts delegates 373503ms
+     × §5.3 O0 … O9: an org the user starts delegates 309381ms
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+EXIT 1
+## Distinct differences (node IDs as srv_*), first step each:
+5.1 S1 A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.copiedFrom: not in the contract ("team_definition")
+5.1 S5 A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.copiedFrom: not in the contract ("team_definition")
+5.1 S17 B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json.copiedFrom: not in the contract ("team_definition")
+5.1 S18 A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl[6].counterpart: not in the contract ({"address":"/lead","nodeId":"srv_*"})
+5.1 S18 B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl[0].counterpart: not in the contract ({"address":"/project_task_manager","nodeId":"srv_*"})
+5.1 S25 B:memory/team_run_history_index.json: expected 1 rows, got 2: <run>, <run>
+5.1 S25 results: expected 0, got 1: [{"delegated":true,"target_kind":"team","target_team_run_id":"<run>","target_team_coordinator_agent_run_id":"<run>","node":"node-b","isError":false}]
+5.1 S25 refusal: expected SAVED_TASK_TO_PEER, the call was accepted
+5.1 S26 refusal: expected the text "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first.", got {"success":false,"message":"This run can't be deleted while a run it delegated to is working (/research_agent, /research_team). Try again when it has finished, or stop it first."}
+5.1 S27 the step failed: AssertionError: This run can't be deleted while a run it delegated to is working (/research_team). Try again when it has finished, or stop it first.: expected false to be true // Object.is equality
+    at S27 (/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:764:50)
+    
+5.2 U9 A:memory/agents/image_maker_44a1/communication_messages_active.jsonl[1].counterpart: not in the contract ({"address":"/research_agent","nodeId":null})
+5.2 U9 A:memory/agents/research_agent_8f80/communication_messages_active.jsonl[0].counterpart: not in the contract ({"address":"/image_maker","nodeId":null})
+5.3 O5 A:memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json.copiedFrom: not in the contract ("configured_placement")

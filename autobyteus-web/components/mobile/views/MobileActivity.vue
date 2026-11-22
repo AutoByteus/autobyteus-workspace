@@ -11,8 +11,16 @@
         :key="activity.activityId"
         :activity="activity"
         :runtime-kind="target.context.config.runtimeKind ?? null"
+        @open="(activityId) => navigation.openActivityItem({ activityId })"
       />
     </div>
+    <!-- A row's details (autobyteus-590 D-6), over the list: the list stays mounted, so Back finds it where it was. -->
+    <MobileActivityDetail
+      v-if="navigation.openActivityItemId.value"
+      :run-id="runId"
+      :activity-id="navigation.openActivityItemId.value"
+      @back="navigation.back()"
+    />
   </section>
 </template>
 
@@ -21,6 +29,8 @@ import { computed } from 'vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import MobileRunActivityItem from '~/components/mobile/views/MobileRunActivityItem.vue';
 import MobileBackgroundTasks from '~/components/mobile/views/MobileBackgroundTasks.vue';
+import MobileActivityDetail from '~/components/mobile/views/MobileActivityDetail.vue';
+import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useBackgroundTaskPanelView } from '~/composables/useBackgroundTaskPanelView';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
@@ -29,6 +39,7 @@ const props = defineProps<{ target: ActiveAgentWorkspaceTarget }>();
 defineEmits<{ (event: 'back'): void }>();
 
 const activityStore = useAgentActivityStore();
+const navigation = useMobileNavigation();
 const runId = computed(() => props.target.context.state.runId);
 const activities = computed(() => activityStore.getActivities(runId.value));
 // The desktop panel's source (REQ-002), read while Activity is open; it also brings tasks started before (REQ-003).

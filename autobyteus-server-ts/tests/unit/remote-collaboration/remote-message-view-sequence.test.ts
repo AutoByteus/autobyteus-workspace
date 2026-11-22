@@ -52,7 +52,7 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
     messageId: "msg_from_remote", senderAgentRunId: REMOTE, receiverAgentRunId: LEAD, content: "reply from remote",
     messageType: "agent_message", referenceFiles: Object.freeze([]), createdAt: "2026-10-20T10:00:00.000Z",
   });
-  await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker", senderAddress: "/publisher" }))
+  await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker", senderAddress: "/publisher", files: [] }))
     .resolves.toMatchObject({ accepted: true });
   await expect(deliverLocal("second local")).resolves.toMatchObject({ accepted: true });
   // The root's message state keeps both remote messages (logs and the local agent's stream show them).
@@ -86,6 +86,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         reserveDirectAgentInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
       }) as unknown as TeamRun),
       commitMessageAppend: vi.fn(runAppendDurably),
+      receivedFilesFor: vi.fn(async () => { throw new Error("No files in this test."); }), 
       publish: (event) => { publisher.publish(event); },
       messageFeed: messageFeedInto(publisher, teamRunMessageEvent, root),
     });
@@ -114,7 +115,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", agentRunId: LEAD, messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        messageFeed: messageFeedInto(publisher, standaloneRootMessageEvent, root), presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, standaloneRootMessageEvent, root), presentCommittedMessage: vi.fn(), receivedFilesFor: vi.fn(async () => { throw new Error("No files in this test."); }),
       }),
       project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
       // autobyteus-565: an Agent root's own view shows every message its agent sent or received, a remote one too.

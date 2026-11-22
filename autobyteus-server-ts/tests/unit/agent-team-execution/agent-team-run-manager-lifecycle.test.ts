@@ -7,7 +7,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 
 const modelSelectionValidator = Object.freeze({
   validateMany: async () => [],
@@ -22,7 +22,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never, NOT_DELEGATED);
 
-const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
@@ -37,7 +37,7 @@ const createRoot = (input: {
 } = {}) => ({
   teamRunId: input.teamRunId ?? "team-run-1",
   isActive: input.active ?? (() => true),
-  hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
+  hasAgentExecution: vi.fn(() => false), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
   deliverExactAgentMessage: vi.fn(async () => ({ accepted: true })),
   terminate: vi.fn(input.terminate ?? (async () => ({ accepted: true }))),
 }) as unknown as RootTeamRun;

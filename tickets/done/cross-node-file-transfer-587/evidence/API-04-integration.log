@@ -1,0 +1,18 @@
+# API-04 whole server integration suite, then the three failed files after their test fixes
+# Commands: pnpm -C autobyteus-server-ts test:integration; then pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-execution/claude-session-manager.integration.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch
+# Code e327ba2467; Node 22.23.1; macOS 26; 2026-11-21
+
+## Whole run
+ Test Files  3 failed | 86 passed | 20 skipped (109)
+      Tests  13 failed | 501 passed | 69 skipped (583)
+ FAIL  tests/integration/agent-execution/claude-session-manager.integration.test.ts > ClaudeSessionManager explicit Agent Tools activator >  || AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package int ||  FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-fil
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package int ||  FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds Team unarchive's manager lane through tree/
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package int || TypeError: Cannot read properties of undefined (reading 'outgoing')
+ FAIL  tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP tokenless route integration > is consu || AssertionError: expected { recipient_address: { …(2) }, …(5) } to match object { …(4) }
+285:+         "timeout": 3600000,
+451:+     "description": "Only with target_agent_run_id, and required when the agent runs on another node: the name of that peer node as this node registered it. A message you received from another no
+
+## After the fixes (Team manager constructions get remoteFiles; Claude config expects timeout 3_600_000; node's RF-14 description)
+ Test Files  3 passed (3)
+      Tests  29 passed | 8 skipped (37)

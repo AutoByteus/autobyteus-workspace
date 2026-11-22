@@ -146,7 +146,7 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
-import { NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
 
 const input = { packageRoot: "/tmp/standalone-package", localApplicationId: "brief-studio", appDataDir: "/tmp/standalone-data", host: "127.0.0.1", port: 0 };
 
@@ -161,7 +161,7 @@ beforeEach(async () => {
       grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never, activationRegistry: { getActiveRun: () => null } as never,
       memoryRecorder: {} as never, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, agentToolMcpRunSessionDeactivator: {} as never, runPasses: null,
     }),
-    teams: AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    teams: AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: path.join(mocks.dirs.root, "memory"), flatTeamExecutionFactory: {} as never, memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never }),
     orgs: AgentOrgRunManager.initializeProcessInstance({ delegationIndex: noDelegations(),

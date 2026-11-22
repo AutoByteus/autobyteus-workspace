@@ -70,7 +70,8 @@ export const signPeerRequest = (input: Readonly<{
   pathWithQuery: string;
   fromNodeId: string;
   toNodeId: string;
-  body: string | null;
+  /** The request body as sent: JSON text, raw bytes (a file piece, autobyteus-587), or none. */
+  body: string | Buffer | null;
   now?: Date;
 }>): Record<string, string> => {
   const fields: SignedFields = {

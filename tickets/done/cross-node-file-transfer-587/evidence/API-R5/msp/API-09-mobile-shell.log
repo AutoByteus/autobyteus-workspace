@@ -1,0 +1,20 @@
+# API-09 round 5: pnpm -C autobyteus-web build:mobile-web; test:e2e:mobile-shell --cases=MSP-08,MSP-93; then MSP-93 again after its send names its node (RF-14)
+# 2026-11-22
+EXIT 0
+## run 1
+> autobyteus@1.5.14-beta.6 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api587/r5/msp --cases=MSP-08,MSP-93
+[mobile-shell] MSP-08 …
+[mobile-shell] MSP-08 Pass
+[mobile-shell] MSP-93 …
+[mobile-shell] MSP-93 Fail: the assigner continues the run
+mobile-shell probe: Fail
+EXIT 1
+MSP-93 run 1 details: {"again":"{"content":[{"type":"text","text":"{"accepted":false,"code":"NODE_REQUIRED","message":"This agent runs on node "alpha-node"; pass node: "alpha-node" with its run id."}"}],"structuredContent":{"accepted":false,"code":"NODE_REQUIRED","message":"This agent runs on node "alpha-node"; pass node: "alpha-node" with its run id."},"isError":true}","media":null,"ts":1795325257.422}]"}
+## run 2 (MSP-93 after the fix)
+> autobyteus@1.5.14-beta.6 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api587/r5/msp2 --cases=MSP-93
+[mobile-shell] MSP-93 …
+[mobile-shell] MSP-93 Pass
+mobile-shell probe: Pass
+EXIT 0

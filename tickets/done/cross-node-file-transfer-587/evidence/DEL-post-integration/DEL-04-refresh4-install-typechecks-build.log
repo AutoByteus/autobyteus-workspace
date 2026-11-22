@@ -1,0 +1,25 @@
+# Delivery refresh 4. Merged state dc6e6e550b (origin/personal 50af37b59b merged into codex/cross-node-file-transfer-587 at f1f0dd92f0; base 18 commits, packaging only, no file both sides changed)
+# pnpm install --frozen-lockfile (the base changed pnpm-lock.yaml and autobyteus-web/package.json)
+Done in 1.4s using pnpm v10.28.2
+exit=0
+
+# pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.2s
+[typecheck] server tests (tsconfig.tests.json): 1000 errors, exit 2, 28.3s
+[typecheck] production errors: 0; test-file errors: 1000 in 313 files (baseline 1000 in 313 files)
+[typecheck] PASS
+exit=0
+
+# pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 39.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.2s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit=0
+
+# pnpm -C autobyteus-server-ts build
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0

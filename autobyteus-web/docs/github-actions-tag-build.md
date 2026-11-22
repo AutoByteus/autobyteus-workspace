@@ -79,6 +79,7 @@ CI build behavior:
 - macOS builds run with `--arm64` and `--x64` explicitly.
 - macOS builds validate the packaged Terminal runtime for both architectures. The validator checks staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server` `node-pty` helpers, and runs a real spawn probe when the runner architecture matches the target.
 - macOS builds run `scripts/verify-macos-signing-policy.mjs` for both ARM64 and x64 before artifact upload. The verifier requires Squirrel, ShipIt, frameworks, `.dylib` files, `.node` native modules, and bundled server native binaries to carry no entitlement keys, while the root app and Electron helper app executables keep their role-specific entitlements.
+- Linux builds (x64 and ARM64) run `scripts/desktop-package/verify-clean-image-runtime.mjs` on the AppImage after the layout and updater-metadata checks. It runs the AppImage's `--appimage-extract AppRun` inside a stock `ubuntu:24.04` Docker container of the runner's architecture, after asserting that the container has no `libz.so`, so an AppImage runtime that needs a library a stock system lacks fails the job. The runner itself has `libz.so`, so a check on the runner cannot catch this (autobyteus-28).
 - `NO_TIMESTAMP=1` is enabled for macOS build stability.
 - Apple signing/notarization secrets are required for release-grade macOS artifacts and for the signing-policy verifier to pass in the release workflow.
 

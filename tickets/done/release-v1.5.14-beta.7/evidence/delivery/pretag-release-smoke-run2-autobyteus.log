@@ -1,0 +1,728 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.7/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.7/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:48136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.7/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.14-beta.7/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/.env
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent Definition created successfully with ID: no-reader-1795331794552-93ced1fa7c2cd
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/media
+Resolved skill 'fresh_skill_1795331794552_93ced1fa7c2cd' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/skills/fresh_skill_1795331794552_93ced1fa7c2cd
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntimeState initialized for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': LLM instance 'DeterministicLLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'no-reader-run-1795331794552_93ced1fa7c2cd' with config: 'no-reader-1795331794552_93ced1fa7c2cd'.
+AgentWorker initialized for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'.
+Registered AgentContext for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'. Context registered.
+Agent facade initialized for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd' created and stored successfully.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd' requesting runtime to start.
+AgentRuntime for 'no-reader-run-1795331794552_93ced1fa7c2cd': Starting worker.
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd': Starting...
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd' asyncRun(): Starting.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (event store initialized).
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (status deriver initialized).
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (AgentEventInbox initialized).
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'no-reader-run-1795331794552_93ced1fa7c2cd' to become idle (timeout: 30s)...
+AgentEventStream (ID: 8b664902-f089-47fb-a99f-f35cf7532c09) initialized for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'. Subscribed to notifier.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: f2b581bf-a01e-461b-83a2-97f163d2a222, AgentID: no-reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Bootstrapper starting direct lifecycle execution.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Executing SystemPromptProcessingStep.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Added 1 configured skill catalog entries with paths.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Final processed system prompt configured and captured. Trace ID: rt_1795331794590_1e6455ad-5876-4284-b94f-3523c0d45a2d. Final length: 4930.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: f2b581bf-a01e-461b-83a2-97f163d2a222, AgentID: no-reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentEventStream (ID: 8b664902-f089-47fb-a99f-f35cf7532c09) for 'no-reader-run-1795331794552_93ced1fa7c2cd': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Removing agent 'no-reader-run-1795331794552_93ced1fa7c2cd'. Attempting graceful shutdown.
+Agent 'no-reader-run-1795331794552_93ced1fa7c2cd' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: f2b581bf-a01e-461b-83a2-97f163d2a222, AgentID: no-reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: f2b581bf-a01e-461b-83a2-97f163d2a222, AgentID: no-reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: f2b581bf-a01e-461b-83a2-97f163d2a222, AgentID: no-reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd' asyncRun() loop has finished.
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd': Shutdown resource cleanup completed successfully.
+AgentWorker 'no-reader-run-1795331794552_93ced1fa7c2cd': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Unregistered AgentContext for agent_id 'no-reader-run-1795331794552_93ced1fa7c2cd'.
+AgentRuntime for 'no-reader-run-1795331794552_93ced1fa7c2cd': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntime for 'no-reader-run-1795331794552_93ced1fa7c2cd' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent Definition created successfully with ID: reader-1795331794552-93ced1fa7c2cd
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/media
+Resolved skill 'fresh_skill_1795331794552_93ced1fa7c2cd' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/skills/fresh_skill_1795331794552_93ced1fa7c2cd
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntimeState initialized for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': LLM instance 'DeterministicLLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'reader-run-1795331794552_93ced1fa7c2cd' with config: 'reader-1795331794552_93ced1fa7c2cd'.
+AgentWorker initialized for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'.
+Registered AgentContext for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'. Context registered.
+Agent facade initialized for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd' created and stored successfully.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd' requesting runtime to start.
+AgentRuntime for 'reader-run-1795331794552_93ced1fa7c2cd': Starting worker.
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd': Starting...
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd' asyncRun(): Starting.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (event store initialized).
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (status deriver initialized).
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (AgentEventInbox initialized).
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'reader-run-1795331794552_93ced1fa7c2cd' to become idle (timeout: 30s)...
+AgentEventStream (ID: 45f99d87-80c1-4cf3-aa51-95ba110bfbae) initialized for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'. Subscribed to notifier.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: b7f26418-379c-4db9-afde-c1e9cac4b48d, AgentID: reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Bootstrapper starting direct lifecycle execution.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Executing SystemPromptProcessingStep.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Added 1 configured skill catalog entries with paths.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Final processed system prompt configured and captured. Trace ID: rt_1795331794626_12526050-2631-4a51-ae26-f7082338978f. Final length: 4924.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1795331794552_93ced1fa7c2cd': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: b7f26418-379c-4db9-afde-c1e9cac4b48d, AgentID: reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1795331794552_93ced1fa7c2cd' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentEventStream (ID: 45f99d87-80c1-4cf3-aa51-95ba110bfbae) for 'reader-run-1795331794552_93ced1fa7c2cd': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Removing agent 'reader-run-1795331794552_93ced1fa7c2cd'. Attempting graceful shutdown.
+Agent 'reader-run-1795331794552_93ced1fa7c2cd' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: b7f26418-379c-4db9-afde-c1e9cac4b48d, AgentID: reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: b7f26418-379c-4db9-afde-c1e9cac4b48d, AgentID: reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: b7f26418-379c-4db9-afde-c1e9cac4b48d, AgentID: reader-run-1795331794552_93ced1fa7c2cd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd' asyncRun() loop has finished.
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd': Shutdown resource cleanup completed successfully.
+AgentWorker 'reader-run-1795331794552_93ced1fa7c2cd': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Unregistered AgentContext for agent_id 'reader-run-1795331794552_93ced1fa7c2cd'.
+AgentRuntime for 'reader-run-1795331794552_93ced1fa7c2cd': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntime for 'reader-run-1795331794552_93ced1fa7c2cd' stop() method completed.
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Tool 'close_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'dom_snapshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_tabs' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'navigate_to' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'open_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'run_script' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'screenshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_available_agents' defined in agent definition 'Daily Assistant' requires a run that can delegate to available agents. Skipping.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/media
+Resolved skill 'daily_enabled_1795331795550_5549114684f1d' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/skills/daily_enabled_1795331795550_5549114684f1d
+Resolved skill 'fresh_skill_1795331794552_93ced1fa7c2cd' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/skills/fresh_skill_1795331794552_93ced1fa7c2cd
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentRuntimeState initialized for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': LLM instance 'DeterministicLLM' and 11 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily-assistant-run-1795331795550_5549114684f1d' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'.
+Registered AgentContext for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'. Context registered.
+Agent facade initialized for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d' created and stored successfully.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d' requesting runtime to start.
+AgentRuntime for 'daily-assistant-run-1795331795550_5549114684f1d': Starting worker.
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d': Starting...
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d' asyncRun(): Starting.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Runtime init completed (event store initialized).
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Runtime init completed (status deriver initialized).
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily-assistant-run-1795331795550_5549114684f1d' to become idle (timeout: 30s)...
+AgentEventStream (ID: c024561b-6cd2-4fed-9214-f5b2bbf40fae) initialized for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'. Subscribed to notifier.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: cc2133ea-6298-4cec-b6f7-c81edd92dff1, AgentID: daily-assistant-run-1795331795550_5549114684f1d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Bootstrapper starting direct lifecycle execution.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Executing SystemPromptProcessingStep.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Added 2 configured skill catalog entries with paths.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Final processed system prompt configured and captured. Trace ID: rt_1795331795565_5145b429-9ea7-4a6e-bcdc-6e53c3d6bd2a. Final length: 6741.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1795331795550_5549114684f1d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: cc2133ea-6298-4cec-b6f7-c81edd92dff1, AgentID: daily-assistant-run-1795331795550_5549114684f1d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1795331795550_5549114684f1d' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentEventStream (ID: c024561b-6cd2-4fed-9214-f5b2bbf40fae) for 'daily-assistant-run-1795331795550_5549114684f1d': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Removing agent 'daily-assistant-run-1795331795550_5549114684f1d'. Attempting graceful shutdown.
+Agent 'daily-assistant-run-1795331795550_5549114684f1d' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: cc2133ea-6298-4cec-b6f7-c81edd92dff1, AgentID: daily-assistant-run-1795331795550_5549114684f1d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: cc2133ea-6298-4cec-b6f7-c81edd92dff1, AgentID: daily-assistant-run-1795331795550_5549114684f1d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: cc2133ea-6298-4cec-b6f7-c81edd92dff1, AgentID: daily-assistant-run-1795331795550_5549114684f1d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d' asyncRun() loop has finished.
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d': Shutdown resource cleanup completed successfully.
+AgentWorker 'daily-assistant-run-1795331795550_5549114684f1d': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Unregistered AgentContext for agent_id 'daily-assistant-run-1795331795550_5549114684f1d'.
+AgentRuntime for 'daily-assistant-run-1795331795550_5549114684f1d': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentRuntime for 'daily-assistant-run-1795331795550_5549114684f1d' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Initialized server settings service with 35 predefined settings
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/media
+Resolved skill 'linked_skill_new_run_1795331795579_f32db2a73a2e1' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/package-new_run_1795331795579_f32db2a73a2e1/agents/linked_agent_new_run_1795331795579_f32db2a73a2e1/skills/linked_skill_new_run_1795331795579_f32db2a73a2e1
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentRuntimeState initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': LLM instance 'DeterministicLLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' with config: 'linked_agent_new_run_1795331795579_f32db2a73a2e1'.
+AgentWorker initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'.
+Registered AgentContext for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Context registered.
+Agent facade initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' created and stored successfully.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' requesting runtime to start.
+AgentRuntime for 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Starting worker.
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Starting...
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' asyncRun(): Starting.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Runtime init completed (event store initialized).
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Runtime init completed (status deriver initialized).
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Runtime init completed (AgentEventInbox initialized).
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' to become idle (timeout: 30s)...
+AgentEventStream (ID: 44ca48ef-e6eb-42bc-a4b9-c2850e29d5ac) initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Subscribed to notifier.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Bootstrapper starting direct lifecycle execution.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Executing SystemPromptProcessingStep.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Added 1 configured skill catalog entries with paths.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Final processed system prompt configured and captured. Trace ID: rt_1795331795597_89e972ee-a14b-41f0-b9d9-53967882b9ac. Final length: 5109.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: 44ca48ef-e6eb-42bc-a4b9-c2850e29d5ac) for 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: f3700561-4d7e-431b-9d3f-89ba07d4339c) initialized for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent run 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': UserInputContextBuildingProcessor completed. Final content length: 63
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent run 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: f3700561-4d7e-431b-9d3f-89ba07d4339c) for 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Removing agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'. Attempting graceful shutdown.
+Agent 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: e02843cf-e3f2-4ce3-9c69-94b2b503344f, AgentID: linked-new-run-new_run_1795331795579_f32db2a73a2e1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' asyncRun() loop has finished.
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Shutdown resource cleanup completed successfully.
+AgentWorker 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Unregistered AgentContext for agent_id 'linked-new-run-new_run_1795331795579_f32db2a73a2e1'.
+AgentRuntime for 'linked-new-run-new_run_1795331795579_f32db2a73a2e1': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentRuntime for 'linked-new-run-new_run_1795331795579_f32db2a73a2e1' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/media
+Resolved skill 'linked_skill_team_member_1795331795666_76c9b021ac3a6' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-6lALJH/package-team_member_1795331795666_76c9b021ac3a6/agents/linked_agent_team_member_1795331795666_76c9b021ac3a6/skills/linked_skill_team_member_1795331795666_76c9b021ac3a6
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentRuntimeState initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': LLM instance 'DeterministicLLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'linked-member-team_member_1795331795666_76c9b021ac3a6' with config: 'linked_agent_team_member_1795331795666_76c9b021ac3a6'.
+AgentWorker initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'.
+Registered AgentContext for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Context registered.
+Agent facade initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6' created and stored successfully.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6' requesting runtime to start.
+AgentRuntime for 'linked-member-team_member_1795331795666_76c9b021ac3a6': Starting worker.
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6': Starting...
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6' asyncRun(): Starting.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Runtime init completed (event store initialized).
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Runtime init completed (status deriver initialized).
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Runtime init completed (AgentEventInbox initialized).
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'linked-member-team_member_1795331795666_76c9b021ac3a6' to become idle (timeout: 30s)...
+AgentEventStream (ID: 34da26be-acc7-4b2d-aae6-c870ddb9bc01) initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Subscribed to notifier.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Bootstrapper starting direct lifecycle execution.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Executing SystemPromptProcessingStep.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Added 1 configured skill catalog entries with paths.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Final processed system prompt configured and captured. Trace ID: rt_1795331795684_ff99796a-e518-4e93-bb59-6598b89a7835. Final length: 5141.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: 34da26be-acc7-4b2d-aae6-c870ddb9bc01) for 'linked-member-team_member_1795331795666_76c9b021ac3a6': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: 2da1b2e9-52aa-4aa1-9f89-b11cb425a1fb) initialized for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent run 'linked-member-team_member_1795331795666_76c9b021ac3a6': UserInputContextBuildingProcessor completed. Final content length: 67
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Agent run 'linked-member-team_member_1795331795666_76c9b021ac3a6': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentEventStream (ID: 2da1b2e9-52aa-4aa1-9f89-b11cb425a1fb) for 'linked-member-team_member_1795331795666_76c9b021ac3a6': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Removing agent 'linked-member-team_member_1795331795666_76c9b021ac3a6'. Attempting graceful shutdown.
+Agent 'linked-member-team_member_1795331795666_76c9b021ac3a6' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentExternalEventNotifier (NotifierID: f9e426a7-16a2-49b8-9a5a-f952bce1931c, AgentID: linked-member-team_member_1795331795666_76c9b021ac3a6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6' asyncRun() loop has finished.
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6': Shutdown resource cleanup completed successfully.
+AgentWorker 'linked-member-team_member_1795331795666_76c9b021ac3a6': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+Unregistered AgentContext for agent_id 'linked-member-team_member_1795331795666_76c9b021ac3a6'.
+AgentRuntime for 'linked-member-team_member_1795331795666_76c9b021ac3a6': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)
+AgentRuntime for 'linked-member-team_member_1795331795666_76c9b021ac3a6' stop() method completed.
+
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 1328ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  999ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  08:16:27
+   Duration  7.97s (transform 4.73s, setup 50ms, import 6.21s, tests 1.33s, environment 0ms)
+
+JSON report written to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-nwbn07oc/autobyteus.json
