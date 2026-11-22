@@ -11,15 +11,18 @@ interface ToolDisplaySummaryOptions {
   preferCompactPath?: boolean;
 }
 
-// Antigravity's own tools name their arguments in PascalCase (`run_command`'s `CommandLine`, `read_file`'s `Path`,
-// `view_file`'s `AbsolutePath`), and the node passes them through as they are (autobyteus-590).
-const FILE_ARG_KEYS = ['path', 'file_path', 'filepath', 'filename', 'target_path', 'Path', 'AbsolutePath'];
+// Antigravity's own tools name their arguments in PascalCase and the node passes them through as they are
+// (`agy-stream-event-converter.ts`; the tools and arguments the node reads: `antigravity-translation.ts`), autobyteus-590:
+// `run_command` CommandLine; `read_file` Path; `view_file` AbsolutePath; `write_to_file` and `replace_file_content`
+// TargetFile; `list_dir` DirectoryPath; `grep_search` Query; `find_by_name` Pattern. A search's folder (SearchPath,
+// SearchDirectory) is not a summary key: a file key would win over the query, and what it looks for says more.
+const FILE_ARG_KEYS = ['path', 'file_path', 'filepath', 'filename', 'target_path', 'Path', 'AbsolutePath', 'TargetFile', 'DirectoryPath'];
 const COMMAND_ARG_KEYS = ['command', 'cmd', 'script', 'CommandLine'];
 // The platform's agent tools (autobyteus-590 DEC-006): whom a message or a delegation addresses, and which Task a Task tool
 // reads or changes. After the command and file keys, before the generic text keys.
 const RECIPIENT_ARG_KEYS = ['recipient_address'];
 const TASK_ARG_KEYS = ['task_id'];
-const TEXT_ARG_KEYS = ['query', 'prompt', 'url', 'message', 'text', 'title', 'name', 'raw'];
+const TEXT_ARG_KEYS = ['query', 'Query', 'Pattern', 'prompt', 'url', 'message', 'text', 'title', 'name', 'raw'];
 
 const normalizeToolName = (toolName: string): string => toolName.trim().toLowerCase();
 

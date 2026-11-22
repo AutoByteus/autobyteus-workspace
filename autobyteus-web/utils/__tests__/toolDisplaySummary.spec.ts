@@ -95,5 +95,20 @@ describe('getToolDisplaySummary', () => {
   ] as const)('Antigravity\'s %s: its PascalCase argument is the summary', (toolName, args, kind, text) => {
     expect(getToolDisplaySummary(toolName, args, { preferCompactPath: true })).toMatchObject({ kind, text });
   });
+
+  // The shapes of the scripted AGY CLI's native_arguments case (agy-native-arguments-turn.mjs), as the node passes them.
+  it.each([
+    ['write_to_file', { TargetFile: '/home/user/project/notes/marker.txt', CodeContent: 'BEFORE', Overwrite: false }, 'file', 'notes/marker.txt'],
+    ['replace_file_content', { TargetFile: '/home/user/project/notes/marker.txt', TargetContent: 'BEFORE', ReplacementContent: 'MIDDLE' }, 'file', 'notes/marker.txt'],
+    ['list_dir', { DirectoryPath: '/home/user/project/src' }, 'file', 'project/src'],
+    ['grep_search', { SearchPath: '/home/user/project', Query: 'AFTER', IsRegex: false }, 'text', 'AFTER'],
+    ['find_by_name', { SearchDirectory: '/home/user/project', Pattern: '*.txt', Type: 'file' }, 'text', '*.txt'],
+  ] as const)('Antigravity\'s %s shows what it works on or looks for', (toolName, args, kind, text) => {
+    expect(getToolDisplaySummary(toolName, args, { preferCompactPath: true })).toMatchObject({ kind, text });
+  });
+
+  it('a search\'s folder alone is not a summary (only what it looks for is)', () => {
+    expect(getToolDisplaySummary('grep_search', { SearchPath: '/home/user/project' })).toBeNull();
+  });
 });
 
