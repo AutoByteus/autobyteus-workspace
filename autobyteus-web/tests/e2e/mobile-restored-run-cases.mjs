@@ -173,9 +173,12 @@ export const runRestoredRunCases = async (probe) => {
       }, 60_000);
       await button.click();
     };
-    /** The notice cards whose text includes `marker`, as the phone shows them now. */
-    const cardsWith = marker => page.locator('[data-testid="mobile-run-conversation"] [data-testid="system-task-notification-segment"]').evaluateAll((nodes, text) => nodes
-      .map(node => node.innerText.replace(/\s+/g, ' ').trim()).filter(line => line.includes(text)), marker);
+    /**
+     * The notice rows labelled `label` (the row's name, its `aria-label`: "Application restarted", "Background tasks
+     * finished", …), as the phone shows them now: each row's text (label and body).
+     */
+    const cardsWith = label => page.locator(`[data-testid="mobile-run-conversation"] [data-testid="system-task-notification-segment"][aria-label="${label}"]`)
+      .evaluateAll(nodes => nodes.map(node => node.innerText.replace(/\s+/g, ' ').trim()));
     const count = async needle => (await conversation()).split(needle).length - 1;
 
     currentCase = 'MSP-75';
@@ -186,7 +189,7 @@ export const runRestoredRunCases = async (probe) => {
       const first = model.requests.length;
       model.steps.push({ toolCalls: [build] }, { text: 'REPLY_ONE' }, { toolCalls: [build] }, { text: 'REPLY_TWO' }, { text: 'REPLY_THREE' });
       /** What the phone shows now: the reminder cards' text, and how often each input and reply appears. */
-      const shown = async () => ({ cards: await cardsWith('application restarted'),
+      const shown = async () => ({ cards: await cardsWith('Application restarted'),
         inputs: [await count('Start the build in the background.'), await count('Start the build again.'), await count('And now?')],
         replies: [await count('REPLY_ONE'), await count('REPLY_TWO'), await count('REPLY_THREE')] });
       const backgroundStarted = (index) => waitFor(`background start ${index + 1}`, async () => model.requests[first + index]?.toolResults[0]?.includes('"status":"running"') ?? false, 60_000);
@@ -248,7 +251,7 @@ export const runRestoredRunCases = async (probe) => {
       await send(`CASE:${caseId} Start the build in the background.`);
       await waitFor(`${caseId}_NOTED on the phone`, async () => (await conversation()).includes(`${caseId}_NOTED`), 120_000);
       await sleep(2_000);
-      const marker = 'background tasks finished';
+      const marker = 'Background tasks finished';
       const live = { cards: await cardsWith(marker), started: await count(`${caseId}_STARTED`), noted: await count(`${caseId}_NOTED`) };
       await page.screenshot({ path: path.join(outputDir, `${shot}-live.png`) }).catch(() => undefined);
       await page.reload({ waitUntil: 'domcontentloaded' });
