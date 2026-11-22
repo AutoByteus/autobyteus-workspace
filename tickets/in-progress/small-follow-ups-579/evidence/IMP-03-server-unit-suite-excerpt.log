@@ -1,0 +1,14 @@
+# IMP-03 whole server unit suite (AC-005)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 02ee9c2237
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# Excerpt (result lines); the full log was /tmp/579-suite-unit.log on the implementation machine, not committed. The APP_DATA_STARTUP_GATE_FAILED line in a full log is an existing test's expected output.
+
+# server test:unit | commit 02ee9c2237 | 2026-11-22T18:11:02Z | load 39.99 47.95 48.93 | fseventsd 0.1%
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  1070 passed | 5 skipped (1075)
+      Tests  8921 passed | 9 skipped (8930)
+   Start at  19:11:03
+   Duration  756.25s (transform 19.43s, setup 24.37s, import 322.77s, tests 314.25s, environment 695ms)
+exit 0

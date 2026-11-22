@@ -1,0 +1,21 @@
+# IMP-11 I-5: the four E2E files that use the cleanup, the dispose unit test, and its control
+# Command: env -i PATH="$PATH" HOME=<new temp dir> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts tests/e2e/runtime/application-import-codex-launch.e2e.test.ts tests/e2e/runtime/application-reload-repair.e2e.test.ts --no-watch (after pnpm build)
+# Commit: 45ad9817e4
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# The control never sees the fake grok login exit (it ignores SIGTERM and keeps running), so the test times out.
+
+ Test Files  4 passed (4)
+      Tests  29 passed (29)
+   Start at  18:39:18
+   Duration  62.24s (transform 6.80s, setup 119ms, import 12.21s, tests 49.23s, environment 0ms)
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 20608ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 16266ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 5795ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 6559ms
+ENOTEMPTY occurrences: 0
+== control: dispose without stopping the writers (agent-runtimes-fake-dispose.test.ts) ==
+     × stops a fake that still runs, waits for its exit, then removes the root 30008ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Test timed out in 30000ms.
+      Tests  1 failed | 1 passed (2)

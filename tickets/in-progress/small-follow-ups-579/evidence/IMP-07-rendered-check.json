@@ -1,0 +1,85 @@
+# IMP-07 AC-001/AC-002 rendered check: real renderer (Nuxt dev, FileExplorerLayout, real Monaco) against a real built server in a probe-owned data root, headless Chrome
+# Command: node tests/e2e/tmp-579-unreadable-file-probe.mjs --output-dir <fresh dir> (a temporary copy of file-explorer-pending-save-draft-probe.mjs with two cases, UNR-001 and UNR-002; removed after the run, not committed)
+# Commit: 4c77e3e78a (with the temporary probe file)
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/small-follow-ups-579
+# Date: 2026-11-22
+# UNR-001: the store opens a file the node does not have (as a chat link to a missing file does): the viewer's error state shows the node's message, no JSON on the page.
+# UNR-002: error-shaped.json ({"error":"x"}) opens in Monaco as that text, no error state.
+# The expected console error is the store's own "Failed to fetch file content" log of the refusal. Screenshots: IMP-07-UNR-001-*.png, IMP-07-UNR-002-*.png.
+
+{
+  "startedAt": "2026-11-22T18:47:42.068Z",
+  "node": "v22.23.1",
+  "cases": {
+    "UNR-001": {
+      "result": "Pass",
+      "name": "AC-001: a file the node does not have opens in the viewer error state with the node message, no JSON",
+      "details": {
+        "alertText": "Error!File not found: <tmp>/pending-save-draft-C7d9iC/workspace/missing-notes.md",
+        "state": {
+          "error": "File not found: <tmp>/pending-save-draft-C7d9iC/workspace/missing-notes.md",
+          "content": null
+        }
+      }
+    },
+    "UNR-002": {
+      "result": "Pass",
+      "name": "AC-002: a file whose text is error-shaped JSON opens as that text",
+      "details": {
+        "editor": "{\"error\":\"x\"}"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 16178
+    },
+    {
+      "label": "frontend",
+      "pid": 16208
+    }
+  ],
+  "writes": [],
+  "browserErrors": [],
+  "expectedFailedSaveConsoleErrors": [
+    {
+      "kind": "console",
+      "message": "Failed to fetch file content ApolloError: File not found: <tmp>/pending-save-draft-C7d9iC/workspace/missing-notes.md\n    at new ApolloError2 (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:3056:26)\n    at http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=5c74a6e0:5483:39\n    at both (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:2801:17)\n    at http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:2789:16)\n    at Object.next (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:2803:39)\n    at notifySubscription (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:1739:18)\n    at onNotify (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:53161/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=5c74a6e0:1814:5)",
+      "case": "UNR-001"
+    }
+  ],
+  "monacoCancellations": [],
+  "cleanup": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 16208,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 16178,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "gitHead": "02ee9c223709a4bcc89a4807d1efa4af27ceedc9",
+  "gitStatusWeb": "M autobyteus-web/components/fileExplorer/FileExplorerTabs.vue\n M autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs\n?? autobyteus-web/tests/e2e/tmp-579-unreadable-file-probe.mjs",
+  "endpoints": {
+    "base": "http://127.0.0.1:53160",
+    "front": "http://127.0.0.1:53161"
+  },
+  "owned": "<tmp>/pending-save-draft-C7d9iC",
+  "workspaceId": "agent_ws_b4053502440da541e55a80914d758f19201299de472d3032568236c6c7a2e65d",
+  "browser": "158.0.8127.36",
+  "warmupErrors": [],
+  "finishedAt": "2026-11-22T18:48:02.809Z"
+}
