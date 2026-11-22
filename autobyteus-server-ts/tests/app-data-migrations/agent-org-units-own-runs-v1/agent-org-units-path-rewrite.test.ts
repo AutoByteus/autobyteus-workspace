@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentOrgUnitsOwnRunsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
 import { createAgentOrgUnitsMigrations } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import { planLogSplit, removeOrgLog, writeUnitLogs } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/org-log-split.js";
+import { moveNeedles, movedPath, rewriteMovedFolderPaths } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/org-path-rewrite.js";
 import { AgentOrgReferenceContentService } from "../../../src/agent-org-execution/services/agent-org-reference-content-service.js";
 import { TeamCommunicationProjectionService } from "../../../src/services/team-communication/team-communication-projection-service.js";
 import { TeamCommunicationContentService } from "../../../src/services/team-communication/team-communication-content-service.js";
@@ -268,6 +269,46 @@ describe("SR-018: the container file is written last, after the node pass", () =
       .find((candidate) => candidate.id === "20261122_agent_org_units_after_raw_trace_rotation_layout")!;
     await expect(followUp.execute()).resolves.toMatchObject({ status: "SUCCEEDED" });
     expect((await lines(path.join(at.concierge, "raw_traces_000002.jsonl")))[0]!.media.images).toEqual([at.picture]);
+  });
+});
+
+describe("CRR-009 CR-008: stored Windows paths (the desktop .exe) are found and moved", () => {
+  const WIN = "C:\\Users\\u\\.autobyteus\\memory";
+  const moves = [{ orgRunId: "org1", from: `${WIN}\\agent_orgs\\org1\\team1`, to: `${WIN}\\agent_teams\\team1` },
+    { orgRunId: "org1", from: `${WIN}\\agent_orgs\\org1\\concierge_1`, to: `${WIN}\\agents\\concierge_1` }];
+  const spec = `${WIN}\\agent_orgs\\org1\\team1\\reviewer_1\\received_files\\peer\\a.txt`;
+  const movedSpec = `${WIN}\\agent_teams\\team1\\reviewer_1\\received_files\\peer\\a.txt`;
+
+  it("the pre-check finds a JSON-encoded Windows path by the move's own folder (the POSIX literal never would)", () => {
+    const line = JSON.stringify({ referenceFiles: [spec] });
+    expect(line.includes("agent_orgs/org1/")).toBe(false);
+    const [needle] = moveNeedles(moves);
+    expect(needle!.bytes.some((bytes) => Buffer.from(line).includes(bytes))).toBe(true);
+    expect(movedPath(spec, moves, path.win32)).toBe(movedSpec);
+    expect(movedPath(`${WIN}\\agent_orgs\\org1\\team10\\x.txt`, moves, path.win32)).toBe(`${WIN}\\agent_orgs\\org1\\team10\\x.txt`);
+  });
+
+  it("the node pass, with Windows path rules, moves a log line's, a trace's and an ad-hoc Task's paths and keeps the rest", async () => {
+    const w = await world();
+    const run = path.join(w.memory, "agents", "delegated_1");
+    await fs.mkdir(run, { recursive: true });
+    await fs.writeFile(path.join(run, "communication_messages_active.jsonl"), `${JSON.stringify({ messageId: "m1", senderAgentRunId: "reviewer_1",
+      receiverAgentRunId: "delegated_1", content: `See ${spec}`, messageType: "agent_message", referenceFiles: [spec, "D:\\other\\x.txt"], createdAt: "2026-11-22T00:00:00.000Z" })}\n`);
+    await fs.writeFile(path.join(run, "raw_traces_active.jsonl"), `${JSON.stringify({ id: "t1", trace_type: "user", content: spec,
+      file_attachments: [{ uri: spec, file_type: "text", file_name: "a.txt" }] })}\n`);
+    await fs.mkdir(path.join(w.appData, "ad-hoc-tasks", "task_w"), { recursive: true });
+    await fs.writeFile(path.join(w.appData, "ad-hoc-tasks", "task_w", "task.json"), `${JSON.stringify({ taskId: "task_w", description: "d",
+      referenceFiles: [spec], status: "TODO", createdAt: "2026-11-22T00:00:00.000Z", updatedAt: "2026-11-22T00:00:00.000Z" }, null, 2)}\n`);
+    const result = await rewriteMovedFolderPaths({ appDataDir: w.appData, memoryDir: w.memory, moves, paths: path.win32 });
+    expect(result).toMatchObject({ failed: new Map(), filesParsed: 3, filesRewritten: 3 });
+    const line = (await lines(path.join(run, "communication_messages_active.jsonl")))[0]!;
+    expect(line.referenceFiles).toEqual([movedSpec, "D:\\other\\x.txt"]);
+    expect(line.content).toBe(`See ${spec}`);
+    const trace = (await lines(path.join(run, "raw_traces_active.jsonl")))[0]!;
+    expect(trace).toMatchObject({ content: spec, file_attachments: [{ uri: movedSpec }] });
+    expect(JSON.parse(await fs.readFile(path.join(w.appData, "ad-hoc-tasks", "task_w", "task.json"), "utf8")).referenceFiles).toEqual([movedSpec]);
+    // A second pass finds nothing left to move.
+    await expect(rewriteMovedFolderPaths({ appDataDir: w.appData, memoryDir: w.memory, moves, paths: path.win32 })).resolves.toMatchObject({ filesRewritten: 0 });
   });
 });
 

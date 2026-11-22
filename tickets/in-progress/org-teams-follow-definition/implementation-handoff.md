@@ -28,17 +28,33 @@ The work was done in the eight slices of the design's Change Sequence; each kept
 
 - Implementation cycle: `Rework` (IR-002: design revisions SR-013/SR-014 after CRR-001 CR-001, and CRR-001's Local Fixes)
 - Implementation revision record: `tickets/in-progress/org-teams-follow-definition/implementation-revision-record.md`
-- Current implementation revision ID: `IR-006` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001)
+- Current implementation revision ID: `IR-007` (IR-001 baseline, IR-002 SR-013/SR-014 and CRR-001, IR-003 CRR-002, IR-004 CRR-004 and SR-015, IR-005 CRR-006, IR-006 SR-016..SR-018 after DR-001, IR-007 CRR-009)
 - Related solution revision IDs: `SR-010` … `SR-018`
 - Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-007`, `ARCH-REV-009`, `ARCH-REV-010`, `ARCH-REV-011` … `ARCH-REV-013`
-- Related code-review revision IDs: `CRR-001` … `CRR-008`
+- Related code-review revision IDs: `CRR-001` … `CRR-009`
 - Related API/E2E revision IDs: `API-REV-001` (the failure CRR-004 reviewed), `API-REV-002` (the failure CRR-006 reviewed)
 - Related delivery revision IDs: `DR-001` (integration refresh blocked; resolved here)
-- Triggering finding IDs: IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
+- Triggering finding IDs: IR-007: `CR-008`, `CR-009` (CRR-009 Local Fix). IR-006: DR-001 (via SR-016), AR-011 (via SR-017), AR-012 (via SR-018), passed by ARCH-REV-013. IR-005: `F-5` (CRR-006 Local Fix). IR-004: `F-1`, `F-2`, `F-3`, `F-4` (CRR-004 Local Fix) and SR-015 (CRR-004 A-1, passed by ARCH-REV-010). IR-003: `CR-005`, `CR-006`, `CR-007`, `CR-002` (remaining), all Local Fix. IR-002: `CR-001` (Design Impact, realized through SR-013 R-8 and SR-014), `CR-002`, `CR-003`, `CR-004` (Local Fix), `N-1` (deviations recorded below). IR-001: N/A (ARCH-REV-005 residual notes and ARCH-REV-007 items addressed below).
 - Commits on `codex/org-teams-follow-definition` (base `origin/personal` `9f6add773b`; since IR-006 merged with `f2c0d2a902` in `21622d75e9` and `a07d6fbac8` in `b933110420`):
   - `1c77d18f56` slice 1 part 1; `7f37435ebc` slice 2; `a3a6b227b1`, `8755ed6343`, `254c5a3a4b`, `ac0825d43a` slice 3 parts 1 … 4; `b324211623` slice 4;
   - `f69004e722` slices 5 … 7: migration, Org follow (with the web Leaving tag and the Org follows e2e), FU-003, the stored-Org reader fixes, and the existing tests moved to the container end state;
   - the slice 8 commit that follows it: docs, release notes draft, this handoff, the revision record and the evidence.
+
+## IR-007 (CRR-009 Local Fixes CR-008, CR-009)
+
+- **CR-008: the node pass's byte pre-check is exact on every platform.**
+  - The needles now come from the moves themselves (`moveNeedles`): each move's resolved old folder, stored raw and JSON-encoded (`JSON.stringify(from).slice(1, -1)`).
+  - On Windows, a JSON or JSONL candidate stores `C:\\…\\agent_orgs\\<org>\\…`, which the old literal `agent_orgs/<orgRunId>/` never matched. The pass then parsed nothing, reported success, and the container file marked the Org converted with every path stale.
+  - The needles are narrower than the Org ID. `movedPath` still decides exactly, and an injectable `PathSemantics` defaults to `node:path`.
+  - The migration header and `org-path-rewrite.ts` note the platform point: the design's literal is POSIX shorthand.
+  - Tests (`agent-org-units-path-rewrite.test.ts`, "CRR-009 CR-008"), with `path.win32`:
+    - the needle finds a JSON-encoded Windows path, while the POSIX literal does not;
+    - `movedPath` maps it, and leaves a sibling `team10` alone;
+    - a real node pass on real files moves a log line's, a trace's and an ad-hoc Task's Windows paths, keeps prose and another drive's path, and a second pass moves nothing.
+
+    The pass case fails with the old pre-check.
+- **CR-009: an agent unit's cross-node file**, in `org-units-remote-files-and-renewal.test.ts`. The unit's own standalone root (`StandaloneAgentRunRootManager`, run file with `containedIn`) places a peer file by run ID in `agents/<runId>/received_files/<sender>/<name>`. The log line and the agent's input name it.
+- Validation: see `evidence/implementation/ir-007/test-summary.md`.
 
 ## IR-006 (SR-016 re-integration with the base; SR-017 typed path rewrite; SR-018 gating)
 

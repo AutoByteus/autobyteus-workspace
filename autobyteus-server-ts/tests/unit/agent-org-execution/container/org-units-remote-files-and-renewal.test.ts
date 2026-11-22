@@ -17,6 +17,10 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { ActiveCollaborationRootDirectory } from "../../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { LiveAgentOrgContainer } from "../../../../src/agent-org-execution/container/live-agent-org-container.js";
 import { ReceivedFiles } from "../../../../src/remote-collaboration/inbound/received-files.js";
+import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
+import { StandaloneAgentRunRootManager } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
+import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 import { testViewStreams } from "../../../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../../../helpers/no-delegations.js";
 import { EXISTING_AGENT_DEFINITIONS, NO_FILES_RECEIVED, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../../helpers/explicit-host-collaborators.js";
@@ -50,7 +54,7 @@ describe("SR-016: the container is an active root that links no run on a peer", 
   });
 });
 
-describe("SR-016 (587): a file from another node to an Org Team unit's member lands in that member's own folder", () => {
+describe("SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder", () => {
   const dirs: string[] = [];
   afterEach(() => { vi.restoreAllMocks(); dirs.splice(0).forEach((dir) => fs.rmSync(dir, { recursive: true, force: true })); });
 
@@ -77,6 +81,44 @@ describe("SR-016 (587): a file from another node to an Org Team unit's member la
       const line = f.root.getCommunicationSnapshot().messages.find((message) => message.messageId === "m-peer-1")!;
       expect(line.referenceFiles).toEqual([placed]);
     } finally { f.dispose(); }
+  });
+
+  it("an agent unit (CRR-009 CR-009): its own standalone root places it in agents/<runId>/received_files/<sender>/<name>; the log line names it", async () => {
+    vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+    const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "org-agent-unit-received-"));
+    dirs.push(memoryDir);
+    const received = new ReceivedFiles({ storeDir: path.join(memoryDir, "received_files"), memoryDir, maxFileBytes: () => 1024 * 1024 });
+    const runId = "concierge_1";
+    const metadata = { runId, agentDefinitionId: "concierge", workspaceRootPath: "/w", memoryDir: path.join(memoryDir, "agents", runId), llmModelIdentifier: "m",
+      llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: "2026-11-22T09:00:00.000Z",
+      containedIn: { orgRunId: "org_1", address: "/concierge" }, address: "/concierge" } as AgentRunMetadata;
+    const inputs: string[] = [];
+    // The unit's agent runs (a provider stand-in): a reserved input is admitted by its commit.
+    const run = { runId, isActive: () => true, config: { memoryDir: metadata.memoryDir }, getStatusSnapshot: () => ({ status: "idle", background_tasks_running: 0 }),
+      reserveUserMessage: vi.fn(async (message: { content: string }) => ({ reserved: true as const, reservation: { agentRunId: runId, cancel: vi.fn(),
+        commit: vi.fn(() => { inputs.push(message.content); return { release: vi.fn() }; }) } })),
+      postUserMessage: vi.fn(async () => ({ accepted: true as const })), publishEvent: vi.fn(async () => undefined) };
+    const manager = new StandaloneAgentRunRootManager({
+      memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+      definitions: { getAgentDefinitionById: async () => new AgentDefinition({ id: "concierge", name: "Concierge", description: "d", instructions: "x", ownershipScope: "shared" }) },
+      orgInstruction: async () => null,
+      agentServices: { getActiveRun: () => run as never, activateRunAgent: vi.fn(async () => ({ run: run as never, metadata })),
+        terminateRunAgent: vi.fn(async () => ({ outcome: "terminated" as const, runtimeKind: null })), readMetadata: async () => metadata },
+      rootDependencies: { taskRecords: openTaskRecords(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), remoteChannel: () => null, receivedFiles: received },
+    });
+    const root = (await manager.resolveRoot(runId))!;
+    const bytes = Buffer.from("# Brief from the other node");
+    const sha256 = createHash("sha256").update(bytes).digest("hex");
+    await expect(received.appendPiece({ sha256, offset: 0, size: bytes.length, bytes })).resolves.toMatchObject({ complete: true });
+    const result = await root.acceptPeerRunMessage({ fromNodeId: "srv_peer", fromNodeName: "laptop", senderAddress: "/lead",
+      files: [{ sha256, size: bytes.length, name: "brief.md" }],
+      message: { messageId: "m-peer-2", senderAgentRunId: "peer_lead_2", receiverAgentRunId: runId, content: "The brief is attached.",
+        messageType: "agent_message", referenceFiles: ["/elsewhere/brief.md"], createdAt: "2026-11-22T10:00:00.000Z" } });
+    expect(result).toMatchObject({ accepted: true });
+    const placed = path.join(memoryDir, "agents", runId, "received_files", "peer_lead_2", "brief.md");
+    expect(fs.readFileSync(placed, "utf8")).toBe("# Brief from the other node");
+    expect(root.getCommunicationSnapshot().messages.find((message) => message.messageId === "m-peer-2")!.referenceFiles).toEqual([placed]);
+    expect(inputs.join("\n")).toContain(placed);
   });
 });
 

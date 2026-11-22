@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-004 | Code Reviewer, `code-review-report.md` CRR-004 (failure-origin review of API-REV-001); Architecture Reviewer ARCH-REV-010 (pass on SR-015) | F-1, F-2, F-3, F-4 (Local Fix); A-1 (via SR-015) | `Local Fix` + `Design Impact` realization | CRR-004, API-REV-001, SR-015, ARCH-REV-010 | Implemented; handed to Code Review |
 | IR-005 | Code Reviewer, `code-review-report.md` CRR-006 (failure-origin review of API-REV-002) | F-5 | `Local Fix` | CRR-006, API-REV-002 | Implemented; handed to Code Review |
 | IR-006 | Architecture Reviewer, `design-review-report.md` ARCH-REV-013 (pass on SR-016..SR-018, after delivery DR-001) | DR-001, AR-011, AR-012 | `Design Impact` realization | SR-016, SR-017, SR-018, ARCH-REV-011..013, DR-001 | Implemented; handed to Code Review |
+| IR-007 | Code Reviewer, `code-review-report.md` CRR-009 (review of IR-006) | CR-008, CR-009 | `Local Fix` | CRR-009 | Implemented; handed to Code Review |
 
 ## Revision Entries
 
@@ -131,3 +132,16 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - the container file is written last, after that pass;
   - the path writer predecessors wait and have follow-ups whose pass also covers converted Orgs.
 - Validation: see `implementation-handoff.md` § IR-006 and `evidence/implementation/ir-006/`.
+
+### IR-007 — CRR-009 Local Fixes
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-009 (Fail on two Local Fixes).
+- Triggering finding IDs: CR-008 (High), CR-009 (minor).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-006 (`e66c099f1a`). Current authoritative result: the IR-007 commit (see `implementation-handoff.md` § IR-007).
+- Related code-review revision IDs: CRR-009.
+- Implementation delta:
+  - the node pass's pre-check needles are each move's resolved old folder, raw and JSON-encoded, so Windows paths are found;
+  - the path rules are injectable for tests (`path.win32`);
+  - an agent unit's cross-node file test is added.
+- Validation: see `implementation-handoff.md` § IR-007 and `evidence/implementation/ir-007/`.

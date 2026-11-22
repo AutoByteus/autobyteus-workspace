@@ -86,7 +86,9 @@ type Json = Record<string, unknown>;
  * 2. each pending Org's units are converted (`convertReleasedOrg`: renames, unit files, log split) and its delegations
  *    name its unit runs;
  * 3. one node pass moves the stored typed paths into every pending Org's moved folders (`rewriteMovedFolderPaths`), with
- *    each Org's committed moves from its released tree (an Org whose step 2 failed included: its moved folders are real);
+ *    each Org's committed moves from its released tree (an Org whose step 2 failed included: its moved folders are real).
+ *    It finds and compares paths with the platform's own path rules: on Windows a stored path is `C:\\…\\agent_orgs\\…`
+ *    (CRR-009 CR-008), so its pre-check looks for each move's resolved old folder, raw and JSON-encoded;
  * 4. last, for each pending Org whose steps 2 and 3 succeeded, the container file replaces the released tree: the one
  *    completion marker. A crash anywhere before it leaves the released tree, and the next start repeats 2 and 3.
  * An Org that cannot be converted is `FAILED` alone (isolated: today's readiness never admits a released tree, so it never

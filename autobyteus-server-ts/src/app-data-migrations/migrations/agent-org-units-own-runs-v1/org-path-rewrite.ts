@@ -23,8 +23,11 @@ import { AGENT_LOG, exists, memoryLayout, writeFileAtomic } from "./org-unit-tar
  * the Org route and the Team projection compute them from the path when read (`agent-org-reference-content-service.ts`
  * `referenceId`, `buildTeamCommunicationReferenceId`), so nothing else names a moved path.
  *
- * Idempotent by structure: a rewritten file names no old prefix, and a file without the bytes `agent_orgs/<orgRunId>/` of
- * any Org being moved is not parsed (byte pre-check). Changed files are written whole (temporary sibling, then a rename);
+ * Idempotent by structure: a rewritten file names no old prefix, and a file that names no moved folder is not parsed (byte
+ * pre-check). The pre-check looks for each move's resolved old folder exactly, both as stored raw and JSON-encoded (every
+ * candidate is JSON or JSON Lines, where a Windows path's separators are escaped: `C:\\…\\agent_orgs\\<org>\\…`). The
+ * design's `agent_orgs/<orgRunId>/` is POSIX shorthand for the same intent (CRR-009 CR-008: on Windows that literal never
+ * matches). Paths are compared with the platform's own `path` (`path.resolve`, `path.sep`). Changed files are written whole (temporary sibling, then a rename);
  * unchanged bytes of unchanged lines are kept (the frozen visitor). A sealed file is changed at most once, as the
  * precedent states (DEC-008 there).
  */
@@ -67,14 +70,32 @@ export const containerMovesOf = (memoryDir: string, container: Json): FolderMove
  * One stored path after the moves: an absolute path under a moved folder's old prefix (compared after `path.resolve`)
  * keeps its relative remainder under the new place; any other value is returned as it was, byte for byte.
  */
-export const movedPath = (value: string, moves: readonly FolderMove[]): string => {
-  if (!path.isAbsolute(value)) return value;
-  const resolved = path.resolve(value);
+export const movedPath = (value: string, moves: readonly FolderMove[], paths: PathSemantics = path): string => {
+  if (!paths.isAbsolute(value)) return value;
+  const resolved = paths.resolve(value);
   for (const move of moves) {
     if (resolved === move.from) return move.to;
-    if (resolved.startsWith(`${move.from}${path.sep}`)) return `${move.to}${resolved.slice(move.from.length)}`;
+    if (resolved.startsWith(`${move.from}${paths.sep}`)) return `${move.to}${resolved.slice(move.from.length)}`;
   }
   return value;
+};
+
+/** The platform's path rules (`node:path`); a test passes `path.win32` to check the Windows shapes on any host. */
+export type PathSemantics = Pick<typeof path, "isAbsolute" | "resolve" | "sep">;
+
+/**
+ * The byte pre-check's needles (CR-008): each move's resolved old folder, as stored raw and as JSON encodes it (a Windows
+ * path's backslashes escaped). A file holding none of them names no moved path and is not parsed.
+ */
+export const moveNeedles = (moves: readonly FolderMove[]): ReadonlyArray<Readonly<{ orgRunId: string; bytes: readonly Buffer[] }>> => {
+  const byOrg = new Map<string, Set<string>>();
+  for (const move of moves) {
+    const set = byOrg.get(move.orgRunId) ?? new Set<string>();
+    set.add(move.from);
+    set.add(JSON.stringify(move.from).slice(1, -1));
+    byOrg.set(move.orgRunId, set);
+  }
+  return [...byOrg].map(([orgRunId, texts]) => Object.freeze({ orgRunId, bytes: [...texts].map((text) => Buffer.from(text)) }));
 };
 
 type Candidate = Readonly<{ filePath: string; read: "visitor"; source: ContextFileRecordSource } | { filePath: string; read: "ad_hoc_task" }>;
@@ -112,28 +133,28 @@ const splitTail = (text: string): [string, string] => {
   return end === text.length - 1 ? [text, ""] : [text.slice(0, end + 1), text.slice(end + 1)];
 };
 
-const movedList = (value: unknown, moves: readonly FolderMove[]): { value: unknown; changed: boolean } => {
+const movedList = (value: unknown, moves: readonly FolderMove[], paths: PathSemantics): { value: unknown; changed: boolean } => {
   if (!Array.isArray(value)) return { value, changed: false };
-  const next = value.map((entry) => typeof entry === "string" ? movedPath(entry, moves) : entry);
+  const next = value.map((entry) => typeof entry === "string" ? movedPath(entry, moves, paths) : entry);
   return { value: next, changed: next.some((entry, index) => entry !== value[index]) };
 };
 
 /** An ad-hoc `task.json`: its `referenceFiles`, and any comment's `referenceFiles`; written in its store's shape when changed. */
-const rewriteAdHocTask = (text: string, moves: readonly FolderMove[]): string => {
+const rewriteAdHocTask = (text: string, moves: readonly FolderMove[], paths: PathSemantics): string => {
   const task = JSON.parse(text) as Json;
   let changed = false;
-  const files = movedList(task.referenceFiles, moves);
+  const files = movedList(task.referenceFiles, moves, paths);
   if (files.changed) { task.referenceFiles = files.value; changed = true; }
   for (const comment of Array.isArray(task.comments) ? task.comments as Json[] : []) {
-    const commentFiles = comment && typeof comment === "object" ? movedList(comment.referenceFiles, moves) : { value: null, changed: false };
+    const commentFiles = comment && typeof comment === "object" ? movedList(comment.referenceFiles, moves, paths) : { value: null, changed: false };
     if (commentFiles.changed) { comment.referenceFiles = commentFiles.value; changed = true; }
   }
   return changed ? `${JSON.stringify(task, null, 2)}\n` : text;
 };
 
-const rewritten = async (candidate: Candidate, text: string, moves: readonly FolderMove[]): Promise<string> => {
-  if (candidate.read === "ad_hoc_task") return rewriteAdHocTask(text, moves);
-  const transform = async (locator: string) => movedPath(locator, moves);
+const rewritten = async (candidate: Candidate, text: string, moves: readonly FolderMove[], paths: PathSemantics): Promise<string> => {
+  if (candidate.read === "ad_hoc_task") return rewriteAdHocTask(text, moves, paths);
+  const transform = async (locator: string) => movedPath(locator, moves, paths);
   if (candidate.source.kind !== "trace") return transformContextFileRecordLocators(candidate.source, text, transform);
   const [complete, tail] = splitTail(text);
   return `${await transformContextFileRecordLocators(candidate.source, complete, transform)}${tail}`;
@@ -152,10 +173,13 @@ export type FolderMovePassResult = Readonly<{
  * a failure of each Org whose old prefix it names (its container file is then not written; the next attempt repeats the
  * pass); any other Org is not held back by it.
  */
-export const rewriteMovedFolderPaths = async (input: Readonly<{ appDataDir: string; memoryDir: string; moves: readonly FolderMove[] }>): Promise<FolderMovePassResult> => {
+export const rewriteMovedFolderPaths = async (input: Readonly<{ appDataDir: string; memoryDir: string; moves: readonly FolderMove[];
+  /** Tests only: the stored paths' platform rules (the files are still read with this host's). */
+  paths?: PathSemantics }>): Promise<FolderMovePassResult> => {
   const failed = new Map<string, string>();
   if (!input.moves.length) return { failed, filesVisited: 0, filesParsed: 0, filesRewritten: 0 };
-  const needles = [...new Set(input.moves.map((move) => move.orgRunId))].map((orgRunId) => ({ orgRunId, bytes: Buffer.from(`agent_orgs/${orgRunId}/`) }));
+  const paths = input.paths ?? path;
+  const needles = moveNeedles(input.moves);
   let filesVisited = 0, filesParsed = 0, filesRewritten = 0;
   let candidates: Candidate[];
   try { candidates = await candidateFiles(input.appDataDir, input.memoryDir); }
@@ -174,12 +198,12 @@ export const rewriteMovedFolderPaths = async (input: Readonly<{ appDataDir: stri
     }
     if (!bytes) continue;
     filesVisited += 1;
-    const named = needles.filter((needle) => bytes.includes(needle.bytes)).map((needle) => needle.orgRunId);
+    const named = needles.filter((needle) => needle.bytes.some((candidateBytes) => bytes!.includes(candidateBytes))).map((needle) => needle.orgRunId);
     if (!named.length) continue;
     filesParsed += 1;
     try {
       const text = bytes.toString("utf8");
-      const next = await rewritten(candidate, text, input.moves);
+      const next = await rewritten(candidate, text, input.moves, paths);
       if (next !== text) { await writeFileAtomic(candidate.filePath, next); filesRewritten += 1; }
     } catch (error) {
       const reason = `'${candidate.filePath}' could not be rewritten: ${error instanceof Error ? error.message : String(error)}`;
