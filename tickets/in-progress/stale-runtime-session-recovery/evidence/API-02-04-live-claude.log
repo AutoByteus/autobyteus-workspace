@@ -1,0 +1,7 @@
+# API-02/03/04 live Claude lost-session renewal on the built server (test-owned HOME and CLAUDE_CONFIG_DIR, api-key mode with the test vault) | commit b220b6ce38 + the new live file | 2026-11-22T15:03:25Z | claude 2.1.330 (Claude Code)
+exit 0
+ ✓ tests/e2e/runtime/lost-session-renewal-live.e2e.test.ts (3 tests | 1 skipped) 33838ms
+     ✓ LC-01: the removed Claude session continues in a new session with the line and the notice; an auth failure does not renew (AC-007, AC-003, AC-006)  20043ms
+     ✓ LC-02: a run stopped by a server shutdown while busy resumes its existing session after the restart and recalls it; no renewal (RSK-003)  9932ms
+ Test Files  1 passed (1)
+      Tests  2 passed | 1 skipped (3)

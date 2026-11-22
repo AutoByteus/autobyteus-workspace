@@ -1,0 +1,30 @@
+{
+  "runId": "lc01_41c805_2f3693e0a6ae442488b35fc030ca3a54",
+  "lost": "31026634-e0f2-4eda-8104-b1d8cc96a905",
+  "fresh": "98d3faf4-f99c-4215-967c-9b830f06bf48",
+  "model": "haiku",
+  "answerAfterLoss": "PLUM-ea84c2",
+  "answerAgain": "OK",
+  "answerRecallsCodeword": true,
+  "refusedFailures": [
+    {
+      "code": "CLAUDE_RUNTIME_TURN_FAILED",
+      "message": "CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login",
+      "error_scope": "turn",
+      "error_effect": "terminal",
+      "turn_id": "lc01_41c805_2f3693e0a6ae442488b35fc030ca3a54:turn:35ea0dea-9f5f-475a-bb2c-124e2aa85468"
+    }
+  ],
+  "firstInputStart": "{\"type\":\"user\",\"uuid\":\"abd61391-bacc-40b8-8f1f-e864b6b2cce6\",\"parent_tool_use_id\":null,\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"[System: runtime hand-over]\\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\\n\\nThe journals are in /Users/normy/autobyteus_org/autobyteus-worktrees/stale-runtime-session-recovery-599/autobyteus-server",
+  "marker": {
+    "id": "rt_runtime_switch_1353457f3d9b28187daece5f",
+    "ts": 1795359815.487,
+    "turn_id": "runtime_switch",
+    "seq": 1,
+    "trace_type": "system_task_notification",
+    "content": "The saved Claude Agent SDK session of this run was no longer available, so a new session continues from the work journal.",
+    "source_event": "runtime_switch",
+    "correlation_id": "session_renewal:lc01_41c805_2f3693e0a6ae442488b35fc030ca3a54:31026634-e0f2-4eda-8104-b1d8cc96a905",
+    "sender_id": "system.runtime_handover"
+  }
+}
