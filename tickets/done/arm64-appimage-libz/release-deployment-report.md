@@ -121,4 +121,30 @@ None.
 
 ## Finalization Record
 
-(Filled in by the record commit after the push.)
+Repository finalization (RELEASE.md § Finalization Target, in the ticket worktree):
+
+- Bootstrap context source: Solution Designer bootstrap (worktree `/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz`, branch `codex/arm64-appimage-libz`, base `origin/personal`), the same as the guide's target.
+- Ticket branch: `codex/arm64-appimage-libz`
+- Ticket branch commit result: `Completed`. `178c2166eb` (delivery DR-001; ticket archived to `tickets/done/`).
+- Secret Gate before the first push of the new commits: `scripts/check_secrets.sh origin/personal..HEAD` → `scanning 14 commit(s)`, `PASS (no secrets found)`.
+- Artifact hygiene on the staged final state: `python3 scripts/check_repository_artifact_hygiene.py` → `passed`, longest path 200 (pre-existing). No staged path is over 200 or uses a Windows-hostile character.
+- Ticket branch push result: `Completed`. `cd687a31e6..178c2166eb  codex/arm64-appimage-libz`.
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification: `No`. `origin/personal` was still `81f6aa8be4` at the fetch after verification and at the fetch right before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. `git checkout -b finalize/arm64-appimage-libz origin/personal` (`81f6aa8be4`).
+- Merge into target result: `Completed`. `git merge --no-ff codex/arm64-appimage-libz` → `e2f7770d0a` (parents `81f6aa8be4`, `178c2166eb`). The Secret Gate on the merged state passed.
+- Push target branch result: `Completed`. `81f6aa8be4..e2f7770d0a  HEAD -> personal`. No workflow runs on a push to `personal`; `gh run list --branch personal` shows only earlier `workflow_dispatch` runs.
+- This record commit goes on top of `e2f7770d0a` on `finalize/arm64-appimage-libz` and is pushed to `personal` after the same fetch-and-compare. The terminal message names its commit.
+- User's checkout of the target branch (`/home/autobyteus/workspace/autobyteus-workspace`): it is on `personal`, behind `origin/personal`, with no local commits. It holds a stale, empty `.git/index.lock` dated 2026-11-21 06:48, with no git process, so a fast-forward is refused. Per the delivery rule the checkout is left untouched and the lock is not deleted. The attempted result after the last push is in the terminal message.
+- Repository finalization status: `Completed`
+
+Post-finalization cleanup (after the record commit is pushed; the results are in the terminal message):
+
+- Dedicated ticket worktree path: `/home/autobyteus/workspace/.codex/worktrees/arm64-appimage-libz`
+- Worktree cleanup: `git worktree remove --force`. The force is needed only for the untracked build output `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/`, which this ticket's validation regenerated. Nothing else is untracked or modified.
+- Worktree prune: `git worktree prune`
+- Local ticket branch cleanup: delete `codex/arm64-appimage-libz` and `finalize/arm64-appimage-libz` (both contained in `origin/personal`).
+- Remote branch cleanup: `Not required`. `origin/codex/arm64-appimage-libz` is kept because the build-only run 44956618584, cited as AC-005 evidence, ran on it.
