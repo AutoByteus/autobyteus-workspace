@@ -1,0 +1,51 @@
+{
+  "followed": true,
+  "containerHandoffs": [
+    {
+      "from": "/concierge",
+      "to": "/team",
+      "rules": [
+        "Send software requests to the team."
+      ]
+    },
+    {
+      "from": "/concierge",
+      "to": "/team/reviewer",
+      "rules": [
+        "Ask the reviewer for reviews."
+      ]
+    },
+    {
+      "from": "/team/writer",
+      "to": "/concierge",
+      "rules": [
+        "Report every draft to the concierge."
+      ]
+    },
+    {
+      "from": "/concierge",
+      "to": "/team/lead",
+      "rules": [
+        "Ask the lead for status."
+      ]
+    }
+  ],
+  "rules": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Ask the reviewer for reviews.",
+        "recipient_address": "/team/reviewer"
+      },
+      {
+        "when": "Ask the lead for status.",
+        "recipient_address": "/team/lead"
+      }
+    ],
+    "isError": false
+  },
+  "notFollowedLog": []
+}

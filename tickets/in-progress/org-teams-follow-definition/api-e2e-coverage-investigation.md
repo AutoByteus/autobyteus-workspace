@@ -18,8 +18,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2 (round-2 additions: OC-12, OC-13; OC-04 asserts DEC-007)
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3 (round-2 additions: OC-12, OC-13; OC-04 asserts DEC-007; round 3 reruns OC, OF, OCU on IR-005, the rest reused)
 - Trigger: code reviewer, CRR-003 pass on implementation head `1f0aad498b` (review records `818e950d53`)
 - Prior Investigation Reviewed: none (first round)
 - Latest Authoritative Investigation: this file

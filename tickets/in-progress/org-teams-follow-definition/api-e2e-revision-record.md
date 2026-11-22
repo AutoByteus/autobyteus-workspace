@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, CRR-003 pass, round 1 | IR-001..IR-003, CRR-001..CRR-003, SR-014 | N/A | Fail / 83% |
 | API-REV-002 | Code reviewer, CRR-005 pass (IR-004), round 2 | IR-004, CRR-004, CRR-005, SR-015 (DEC-007) | Fail / 83% | Fail / 91% |
+| API-REV-003 | Code reviewer, CRR-007 pass (IR-005), round 3 | IR-005, CRR-006, CRR-007 | Fail / 91% | Pass / 95% |
 
 ## Revision Entries
 
@@ -69,3 +70,28 @@ None.
 - New or remaining failure IDs: F-5. While an Org rule names a member removed from its Team, the Org stops following its Org definition (`AGENT_ORG_DEFINITION_NOT_FOLLOWED … AgentOrg endpoint '/team/writer' was not found.`).
 - Recommended owner: code reviewer (failure-origin review); proposed Local Fix (implementation)
 - Remaining risks, blocked evidence, or untested scope: macOS/x64 release jobs; macOS file events; FU-001
+
+### API-REV-003: rerun on IR-005; F-5 resolved, Pass
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-007), round 3
+- Triggering finding or case IDs: F-5 (OC-13)
+- Related revision IDs: IR-005 (`cfc4bc67f2`), CRR-006 (failure-origin review), CRR-007
+- Why this revision was recorded: the requested rerun of the OC file
+- Coverage decisions or durable test paths changed: none
+- Cases added, changed, removed, or rechecked:
+  - rechecked: OC-01..OC-13 (13/13), TC-01, plus OF-01..06 and the OCU probe (both use the changed Org follow planner);
+  - reused from round 2: RC file, OCL, ORG-E2E, AOML (IR-005 touches only the handoff compiler's opt-in mode, the container plan and the membership planner).
+- Commands, environment, fixture, or broader-validation delta: none
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-5 Org stops following its definition while an Org rule names a removed Team member | Local Fix (CRR-006) | Resolved (IR-005) | OC-13 (`"followed": true`, no `AGENT_ORG_DEFINITION_NOT_FOLLOWED`), OC-08/09, OF-05, OCU-05 |
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md` (round 3), `api-e2e-coverage-investigation.md` (meta), `api-e2e-test-progress.md`, `evidence/api-e2e/round-3/`
+- Prior result and confidence: Fail, 91%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (proportional test-code review)
+- Remaining risks, blocked evidence, or untested scope: macOS file events and macOS/x64 release jobs not run here; FU-001 follow-up

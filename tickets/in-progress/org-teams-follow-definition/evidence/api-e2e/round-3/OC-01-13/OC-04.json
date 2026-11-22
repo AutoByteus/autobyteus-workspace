@@ -1,0 +1,174 @@
+{
+  "markerWhileLeaving": [
+    "oc_reviewer_c1db8b_e2243e82b0ab485abc53f03cc95cce6a"
+  ],
+  "rowsWhileLeaving": [
+    {
+      "kind": "team_member",
+      "address": "/team/reviewer",
+      "agentRunId": "oc_reviewer_c1db8b_e2243e82b0ab485abc53f03cc95cce6a"
+    }
+  ],
+  "allRowsWhileLeaving": [
+    {
+      "kind": "org_agent",
+      "address": "/concierge",
+      "agentRunId": "oc_concierge_c1db8b_12f09e84095a454d86ea14ce74692586",
+      "leaving": false
+    },
+    {
+      "kind": "org_team",
+      "address": "/team",
+      "agentRunId": "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd",
+      "leaving": false
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/lead",
+      "agentRunId": "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd",
+      "leaving": false
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/writer",
+      "agentRunId": "oc_writer_c1db8b_bba95b6cc65a4713b00dc3807fce33ad",
+      "leaving": false
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/editor",
+      "agentRunId": "oc_editor_c1db8b_86dc4c10a83f42e683ecbb41eecd2042",
+      "leaving": false
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/reviewer",
+      "agentRunId": "oc_reviewer_c1db8b_e2243e82b0ab485abc53f03cc95cce6a",
+      "leaving": true
+    }
+  ],
+  "refused": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "reviewer (/team/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "refusedFromOrgAgent": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "reviewer (/team/reviewer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "told": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "without": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      }
+    ],
+    "isError": false
+  },
+  "stillLeaving": true,
+  "rowsAfterRelease": [
+    {
+      "key": "org_agent:oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b:oc_concierge_c1db8b_12f09e84095a454d86ea14ce74692586",
+      "parentKey": null,
+      "kind": "org_agent",
+      "name": "concierge",
+      "address": "/concierge",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b",
+        "agentRunId": "oc_concierge_c1db8b_12f09e84095a454d86ea14ce74692586"
+      },
+      "statusIds": [
+        "oc_concierge_c1db8b_12f09e84095a454d86ea14ce74692586"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "org_team:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a",
+      "parentKey": null,
+      "kind": "org_team",
+      "name": "team",
+      "address": "/team",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b",
+        "agentRunId": "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd"
+      },
+      "statusIds": [
+        "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd",
+        "oc_writer_c1db8b_bba95b6cc65a4713b00dc3807fce33ad",
+        "oc_editor_c1db8b_86dc4c10a83f42e683ecbb41eecd2042"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "team_member:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a:oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd",
+      "parentKey": "org_team:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a",
+      "kind": "team_member",
+      "name": "lead",
+      "address": "/team/lead",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b",
+        "agentRunId": "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd"
+      },
+      "statusIds": [
+        "oc_lead_c1db8b_02310f8cb95b411b8a240e9a0489b9bd"
+      ],
+      "depth": 1
+    },
+    {
+      "key": "team_member:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a:oc_writer_c1db8b_bba95b6cc65a4713b00dc3807fce33ad",
+      "parentKey": "org_team:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a",
+      "kind": "team_member",
+      "name": "writer",
+      "address": "/team/writer",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b",
+        "agentRunId": "oc_writer_c1db8b_bba95b6cc65a4713b00dc3807fce33ad"
+      },
+      "statusIds": [
+        "oc_writer_c1db8b_bba95b6cc65a4713b00dc3807fce33ad"
+      ],
+      "depth": 1
+    },
+    {
+      "key": "team_member:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a:oc_editor_c1db8b_86dc4c10a83f42e683ecbb41eecd2042",
+      "parentKey": "org_team:oc_team_c1db8b_71eb65708dde46f8878bfa026687281a",
+      "kind": "team_member",
+      "name": "editor",
+      "address": "/team/editor",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_c1db8b_9827d5b6aabd485db1cc211b8c9eac5b",
+        "agentRunId": "oc_editor_c1db8b_86dc4c10a83f42e683ecbb41eecd2042"
+      },
+      "statusIds": [
+        "oc_editor_c1db8b_86dc4c10a83f42e683ecbb41eecd2042"
+      ],
+      "depth": 1
+    }
+  ],
+  "former": [
+    {
+      "address": "/reviewer",
+      "agentDefinitionId": "oc-reviewer-c1db8b",
+      "role": null,
+      "description": null,
+      "agentRunId": "oc_reviewer_c1db8b_e2243e82b0ab485abc53f03cc95cce6a",
+      "platformAgentRunId": "6a8930ea-7493-456a-966c-e5c073720d64",
+      "launchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-Uufxoc/workspace"
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "delegated": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9",
+    "task_id": "ad_hoc_task_c2d33655-4fdf-4673-9155-f20bd0daea66",
+    "isError": false
+  },
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /team/writer.",
+    "target_agent_run_id": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "isError": false
+  },
+  "received": {
+    "messageId": "collabmsg__CdZIn_6fejJksxtBpxr41jFUE99lL-l",
+    "senderAgentRunId": "of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9",
+    "receiverAgentRunId": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "content": "From the copy.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T18:25:12.908Z"
+  },
+  "copyLine": {
+    "messageId": "collabmsg__CdZIn_6fejJksxtBpxr41jFUE99lL-l",
+    "senderAgentRunId": "of_concierge_940280_ccd40ab60285405f9d82fa179be6b1e9",
+    "receiverAgentRunId": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "content": "From the copy.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T18:25:12.908Z"
+  }
+}

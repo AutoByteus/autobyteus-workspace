@@ -39,3 +39,8 @@
 | 2026-11-22T17:38:33Z | OCU-01..05 | Finished | Pass | 5/5: OCU-04 the leaving writer row tagged Leaving |
 | 2026-11-22T17:41:46Z | OF-01..06, AOML | Finished | Pass | 6/6, 2/2 on IR-004 |
 | 2026-11-22T17:41:46Z | Round 2 | Finished | Fail | F-1..F-4, A-1 resolved; F-5 open (OC-13) |
+| 2026-11-22T18:22:12Z | Round 3 | Started | | IR-005 cfc4bc67f2 (HEAD d3c87be5c5); BLD-01 rebuilt |
+| 2026-11-22T18:24:38Z | OC-01..13 | Finished | Pass | 13/13; OC-13 followed, no AGENT_ORG_DEFINITION_NOT_FOLLOWED (F-5 fixed) |
+| 2026-11-22T18:24:38Z | TC-01 | Finished | Pass | baseline 974 in 300 |
+| 2026-11-22T18:24:38Z | 2026-11-22T18:26:47Z | OF-01..06, OCU-01..05 | Finished | Pass | 6/6; probe 5/5 (follow path rechecked on IR-005) |
+| 2026-11-22T18:26:47Z | Round 3 | Finished | Pass | all criteria proven |
