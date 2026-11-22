@@ -17,6 +17,7 @@ The latest `code-review-report.md` is authoritative for its current result.
 | CRR-009 | `code-review-report.md` | Implementation Review round 5, Full Re-Audit (IR-005, SR-010/SR-011, `07b4b83cef`) | Fail (CRR-008) | Fail (Requirement Gap + Local Fixes) | CR-587-01…04 resolved; CR-587-05 open; CR-587-06 … 08 new |
 | CRR-010 | `code-review-report.md` | Implementation Review round 6, Full Re-Audit (IR-006, SR-012, `a0c233492b`) | Fail (CRR-009) | Fail (Local Fix) | CR-587-06, -07 resolved; -08 closed by DEC-010; -05 open; CR-587-09 new |
 | CRR-011 | `code-review-report.md` | Implementation Review round 7, Full Re-Audit (IR-007, `11b7ed5444`) | Fail (CRR-010) | Pass | CR-587-09 resolved; CR-587-05 open (API/E2E) |
+| CRR-012 | `api-e2e-test-review-report.md` | Test-code review round 5 (API-REV-005, `033e5dc227`) | Pass (CRR-007) | Pass | CR-587-05 resolved |
 
 ## Revision Entries
 
@@ -339,3 +340,30 @@ None.
 - Material score or classification changes: 9.4/10; Shared-Structure and Cleanup up to 9.4
 - Recommended recipient: API/E2E engineer (primary); implementation engineer (informational)
 - Remaining risks or uncertainty: DEC-010 accepted risk; hard-link residual; `task-delegation.ts` at 498 lines.
+
+### CRR-012 — Test-code review round 5: API-REV-005 on IR-007
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-file-transfer-587/tickets/in-progress/cross-node-file-transfer-587/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 5
+- Review scope: `N/A` (test review); `033e5dc227`
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, API-REV-005; CR-587-05; AC-012; SR-010 R1
+- Relevant solution revision IDs: SR-010 … SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: none recorded yet
+- Prior authoritative result: Pass (CRR-007)
+- Current authoritative result: Pass
+- What changed in the review result and why: CR-587-05 is resolved. The model states 565's `counterpart`, 22's `copiedFrom`, IR-005's node rule, 591's continuation across nodes and DEC-009's S25, and the gated stories pass with S18/S19/S25 run. RC-60 (AC-012) and RC-61 (SR-010 R1) prove the new behavior on real servers, and RC-57 now pins the exact in-transit code. RC-61's generic 401 reason for a damaged message body is recorded as FU-009 (fails the scope questions).
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-587-05 | Open (API/E2E) | Resolved | API-REV-005 `033e5dc227` | Model and stories updated; `--check` matches (my rerun); gated stories §5.1 (run 2), §5.2, §5.3 pass with no differences |
+
+- New or remaining finding IDs: None; follow-up FU-009 added
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-001, FU-005, FU-008 (autobyteus-601), FU-009; DEC-010 accepted risk; the hard-link residual; `task-delegation.ts` at 498 lines.

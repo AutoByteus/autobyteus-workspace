@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-001
 - Original Code Review Report: `code-review-report.md` (CRR-001 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
+- Current Code Review Revision ID: `CRR-012`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -114,12 +114,31 @@ Observation kept, not a finding: RC-52's in-transit case accepts either of two c
   - FU-006 (urgent, with FU-002): the contract stories also differ by autobyteus-22's `copiedFrom`, which the 461 model lacks. §5.1 therefore stops at S1 here. RF-14 on the merged code is proven by the two-server suite.
 - **Findings:** None.
 
+## Round 5 (CRR-012): API-REV-005 on IR-007
+
+Changed durable test paths (`033e5dc227`):
+
+| Path | Change | Judgment |
+| --- | --- | --- |
+| `tickets/done/…-461/evidence/collaboration-model/model.py`, `stories.py` | CR-587-05 | The model now states: autobyteus-565's `counterpart` (every cross-node line on both sides; unrelated runs on one node with no node); autobyteus-22's `copiedFrom`; IR-005's node rule (a run known on a peer gets `NODE_REQUIRED` without `node`, open or closed, as `PeerRunNodes` answers); 591's assigner continuation across nodes (the Task-side text while DONE, reopen once TODO); DEC-009's S25 (a saved Task to a new peer team, which B's user then stops so S26/S27 keep their outcomes). Each rule matches the server code reviewed at CRR-009/011. T-001's earlier CLOSED-without-node case is replaced, as IR-005 requires |
+| `tests/fixtures/collaboration-contract/contract-states.json` | Regenerated | My `--check` rerun: "matches the model" |
+| `collaboration-contract-stories.e2e.test.ts` | S25 driver (DEC-009); the peer-start workspace note widened to S25's team | The note is 461's documented model simplification (B's temporary workspace), now naming both peer-started teams. Evidence: before-run API-07a listed every server difference; after it, §5.1 run 2, §5.2 and §5.3 pass with no differences, S18/S19/S25 included |
+| `remote-delegation-two-server.e2e.test.ts` | +RC-60, +RC-61; RC-19, RC-57, RC-23 title, header | RC-60 proves AC-012 on real servers: saved-Task context files outside the workspace go to a new Agent and a new Team copy (wire order status → pieces → start → packet; received paths in the entry agent's or coordinator's folder; bytes equal, read-only, linked); the same file as a reference file is refused with the exact text; the existing-copy form without `node` / with a wrong node (a fourth node) sends nothing and assigns nothing; with `node` the file goes before the message. RC-61 proves SR-010 R1: a refused file or a failed piece reopens nothing and tells beta nothing (exact wire), and a delivery refused after a confirmed reopen says "its Task is open again". RC-19 pins `NODE_NOT_PAIRED` on both sides. RC-57 now pins the in-transit code and text (my round-1 observation). Nothing loosened |
+| `collaboration-prompt-wording.e2e.test.ts` M-26 | The existing-copy form's new text (SR-011) | Stale expectation rewritten to the approved text |
+| `autobyteus-web/tests/e2e/mobile-closed-delegation-cases.mjs` MSP-93 | `node` on 591's continuation | RF-14 applied |
+
+- Checks: Pass on every proportional check. Real triggers throughout: agents' own tool calls on built servers; the proxy's tamper hook for damage in transit; a fourth node for the wrong-node case.
+- Evidence: two-server 61/61 on the first run; whole `test:integration` 517 and `pnpm test:e2e` 574; gated stories green; fresh clone; tracked imports; whole unit suite reused (same code).
+- Observation, not a finding: RC-61 pins the generic "not paired … pair them again" reason for a message body damaged in transit. That is the gate's and client's older 401 mapping for every signed request, not this ticket's file path (CR-587-02 covers pieces). It fails all three scope questions: not introduced here; not in the functionality this ticket changes; not a small fix in its files (it needs a gate code, NA-9). Recorded as FU-009.
+- Still red on the base only: autobyteus-22's TF-04 (FU-005).
+- Findings: None.
+
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 4, CRR-007)
-- Changed durable test paths reviewed: rounds 1–3 as above; round 4's conflict-resolved tests (IR-003) and `remote-delegation-two-server.e2e.test.ts`'s renumbering
+- Result: `Pass` (round 5, CRR-012)
+- Changed durable test paths reviewed: all rounds' paths; round 5's model, stories, fixture, two-server, stories driver, CPW and MSP-93 changes
 - Unresolved finding IDs: None
-- Recommended Recipient: `delivery_engineer` (it asked for the package back)
+- Recommended Recipient: `delivery_engineer`
 - Notes:
-  - The gated contract stories are red only for base issues (FU-002, FU-006), as is autobyteus-22's TF-04 (FU-005). All three are urgent and outside this ticket.
-  - FU-001, FU-003 and FU-004 are open.
+  - CR-587-05 is resolved: the contract stories run this ticket's steps and pass.
+  - Follow-ups: FU-001, FU-005, FU-008 (autobyteus-601), FU-009.
