@@ -1,8 +1,8 @@
 {
-  "level": 1,
+  "level": 2,
   "baseImages": {
-    "default": "sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4",
-    "zh": "sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67"
+    "default": "sha256:86b7891d3d1d74e1b3bd42c44df9729d56343127b6f745f1f3fda8d6a6e6a50b",
+    "zh": "sha256:c381f2e82fc0f0da9a74367e1c4e5029e195c90016e0dd187f9269768dd68783"
   },
-  "systemInputsSha256": "b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562"
+  "systemInputsSha256": "61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7"
 }
