@@ -16,6 +16,7 @@
 | CRR-010 | `code-review-report.md` | Implementation Review / IR-007 complete | Fail | Fail | CR-008, CR-009 |
 | CRR-011 | `code-review-report.md` | Implementation Review / IR-008 complete | Fail | Pass | CR-008 |
 | CRR-012 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-004 passed | Pass (CRR-008) | Fail | T-1 |
+| CRR-013 | `code-review-report.md` | Implementation Review / IR-009 complete | Fail (CRR-012) | Pass | T-1 |
 
 ## Revision Entries
 
@@ -398,3 +399,33 @@ None open before this round.
 - Material score or classification changes: N/A (test review); Large/High preserved
 - Recommended recipient: Implementation engineer
 - Remaining risks or uncertainty: cost sizes remain assumptions (stated in the receipt).
+
+### CRR-013: Source review of IR-009 (T-1)
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition/tickets/in-progress/org-teams-follow-definition/code-review-report.md` (§ IR-009 Delta)
+- Review entry point and round: Implementation Review, round 13
+- Review scope: `Targeted Delta Review` (`1d88041448..70dd2b03f1`: the migration's plan, `predecessorWroteLate`, the follow-ups, T-1 tests)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` § IR-009; T-1 (CRR-012)
+- Relevant solution revision IDs: SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-009
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-012 test review)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - Only path-writer follow-ups may pass over converted Orgs, and only when their predecessor completed after the conversion started. An ordinary upgrade has one node pass.
+  - Control: the no-read case fails with the gate forced on.
+  - Gate: typecheck PASS; 741 + 71 tests pass.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| T-1 | Local Fix | Resolved (source) | `lateWriterOf`, `predecessorWroteLate`; T-1 tests; control; COST-01 rerun pending in API/E2E |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: every category at least 9.4; Large/High preserved
+- Recommended recipient: API/E2E engineer (then an informational note to the implementation engineer)
+- Remaining risks or uncertainty: COST-01 rerun pending; cost sizes remain assumptions.

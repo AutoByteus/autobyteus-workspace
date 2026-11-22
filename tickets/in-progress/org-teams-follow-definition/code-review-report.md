@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-005, IR-006
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-011`
-- Current Review Round: `11`
+- Current Code Review Revision ID: `CRR-013`
+- Current Review Round: `13`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round >1):
   - The base's own changes (autobyteus-587, -599, -579) were reviewed in their own tickets. This round covers:
@@ -25,12 +25,12 @@
     - all new code of `dd310a30eb`, read in full: `org-path-rewrite.ts` (new); the migration's step order; `org-conversion.ts`, `org-log-split.ts` and the follow-ups;
     - the new tests.
   - I re-traced the conversion order from the migration runner and ran the gate.
-- Trigger: IR-008 (`26c6240f33`) ready for a targeted delta review of CRR-010's CR-008 remainder (this report keeps CRR-009's IR-006 audit and the IR-007/IR-008 deltas below)
-- Prior Review Round Reviewed: CRR-010 (Fail)
-- Latest Authoritative Round: 11
+- Trigger: IR-009 (`70dd2b03f1`) ready for source review of CRR-012's T-1 (this report keeps CRR-009's IR-006 audit and the IR-007..IR-009 deltas below)
+- Prior Review Round Reviewed: CRR-012 (test-code review, Fail: T-1)
+- Latest Authoritative Round: 13
 - API/E2E and delivery records: API-REV-003 (Pass, before IR-006); delivery DR-001 (integration blocked, the cause of SR-016)
 
-Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `26c6240f33` (IR-008 and IR-007 on IR-006 `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
+Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-follow-definition`, branch `codex/org-teams-follow-definition`, HEAD `70dd2b03f1` (IR-009, IR-008 and IR-007 on IR-006 `dd310a30eb`; merges `21622d75e9` with `f2c0d2a902` and `b933110420` with `a07d6fbac8`).
 
 ## Routing Classification Review
 
@@ -86,6 +86,21 @@ Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/org-teams-f
 - Gate on `26c6240f33`:
   - typecheck PASS (973);
   - `tests/app-data-migrations tests/unit/agent-org-execution tests/unit/remote-collaboration tests/architecture`: 132 files, 1031 tests pass.
+
+## IR-009 Delta (CRR-013)
+
+- **T-1 (CRR-012): resolved.**
+  - `OrgUnitsPlan.passOverConverted` is replaced by `lateWriterOf`, which only the `PATH_WRITER_PREDECESSORS` follow-ups carry. The reader and delegation-writer follow-ups are back to their pre-IR-006 behavior.
+  - A path writer's follow-up joins converted Orgs' container moves only when `predecessorWroteLate()`: the predecessor's ledger `completedAt` is later than our migration's `startedAt`. If either time is missing, the pass runs (conservative; the pre-check keeps an empty run cheap).
+  - The ledger has had `completed_at` since it was created (`20260517090000_add_app_data_migration_records`), before every path-writer predecessor (June–November), so ordinary upgrades take the skip.
+  - Pending Orgs a follow-up converts still use their own committed moves.
+  - Result on an ordinary upgrade: one node pass (the conversion's), as SR-018 states.
+- Tests ("CRR-012 T-1"):
+  - every predecessor completed before the conversion: none of the 23 follow-ups reads a candidate file (a `fs.readFile` spy), and a planted late file stays untouched;
+  - a path writer completed after the conversion started: its follow-up moves the file, and a reader's follow-up does not.
+  - **Control (mine):** with `predecessorWroteLate` forced to `true`, the first case fails (1 failed / 15). Restored: 15/15. Worktree clean.
+- Gate on `70dd2b03f1`: typecheck PASS (973); `tests/app-data-migrations tests/unit/agent-org-execution` 90 files, 741 tests pass; `tests/architecture` 13 files, 71 tests pass (run alone).
+- Edge noted, not a defect: a converted Org can only meet a late writer's output when that writer was non-terminal at some attempt. Every Org waits while any path writer is non-terminal (step 1), so the pass over converted Orgs is a narrow safety net, exactly what SR-018 asks for.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -211,6 +226,7 @@ No open findings.
 | --- | --- | --- | --- | --- | --- |
 | CR-008 | — | IR-007 (backslash raw and JSON forms) + IR-008 (forward-slash form); `path.win32` pass tests; control | — | Resolved | — |
 | CR-009 | — | `org-units-remote-files-and-renewal.test.ts:86` | — | Resolved | — |
+| T-1 (CRR-012) | — | IR-009 `lateWriterOf` + `predecessorWroteLate`; T-1 tests; control | — | Resolved | — |
 
 ## Follow-ups
 
@@ -222,7 +238,7 @@ No open findings.
 
 ## Recommended Recipient
 
-API/E2E engineer (implementation review passes), then the informational note to the implementation engineer. The next API/E2E round covers IR-006..IR-008: the migration suites, OC-11/OC-12, the two-server file (62 cases), OF, AOML, OC + stopped-org, and the SR-017 conversion on the built server (a released Org whose member received a file from another node and forwarded its own file, if feasible).
+API/E2E engineer (implementation review passes), then the informational note to the implementation engineer. API/E2E reruns COST-01 (the first start should now be close to the conversion's own time plus an ordinary start) and the migration suites; then the test-code review (CRR-012's T-1) is redone.
 
 ## Residual Risks
 
@@ -235,8 +251,8 @@ API/E2E engineer (implementation review passes), then the informational note to 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (MP-CR-03 resolved)
-- Score Summary: 9.45/10 average; every category at least 9.4
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.45/10 average; every category at least 9.4 (unchanged from CRR-011; T-1's fix restores the design's one-pass cost)
 - Failure Origin: N/A
 - Recommended Recipient: API/E2E engineer
-- Notes: SR-016..SR-018 are implemented and correct on every platform. CR-001..CR-009, N-1, F-1..F-5 and A-1 are all resolved.
+- Notes: CR-001..CR-009, N-1, F-1..F-5, A-1 and T-1 are all resolved.
