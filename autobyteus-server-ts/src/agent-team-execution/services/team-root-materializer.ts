@@ -1,6 +1,6 @@
 import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
-import type { RemoteFiles } from "../../agent-collaboration/execution/remote/transferred-files.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
@@ -41,7 +41,8 @@ export type TeamRootMaterializationInput = Readonly<{
   delegationIndex: DelegationIndex;
   /** The host's channel to peer nodes (autobyteus-500 FU-011). */
   remoteChannel: RemoteRunChannelAccess;
-  remoteFiles: RemoteFiles;
+  /** autobyteus-587: the node's received files, placed for the Team root's members. */
+  receivedFiles: ReceivedFilesPlacement;
   /** Where each member's own folder is (autobyteus-587: files from another node land there). */
   memoryLocator: AgentRunMemoryLocator;
   /** Each run's view stream (SR-062). */
@@ -144,7 +145,7 @@ export const materializeTeamRoot = async (
       taskRecords: input.taskRecords,
       delegationIndex: input.delegationIndex,
       remoteChannel: input.remoteChannel,
-      remoteFiles: input.remoteFiles,
+      receivedFiles: input.receivedFiles,
       memoryLocator: input.memoryLocator,
       closedTasks,
       membership,

@@ -1,5 +1,5 @@
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
-import type { RemoteFiles } from "../../agent-collaboration/execution/remote/transferred-files.js";
+import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { RemoteRunChannelAccess } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
@@ -56,7 +56,8 @@ export type AgentTeamRunManagerOptions = Readonly<{
   /** The host's channel to peer nodes (autobyteus-500 FU-011). */
   remoteChannel: RemoteRunChannelAccess;
   /** The host's file transfer between nodes, for its Team roots (autobyteus-587). */
-  remoteFiles: RemoteFiles;
+  /** autobyteus-587: the node's received files, placed for its Team roots' members. */
+  receivedFiles: ReceivedFilesPlacement;
   /** Each run's view stream (SR-062). */
   viewStreams: RunViewStreams;
   executionTreeStore?: TeamRunExecutionTreeStore;
@@ -81,7 +82,7 @@ export class AgentTeamRunManager {
   private readonly taskRecords: RunTaskRecords;
   private readonly delegationIndex: DelegationIndex;
   private readonly remoteChannel: RemoteRunChannelAccess;
-  private readonly remoteFiles: RemoteFiles;
+  private readonly receivedFiles: ReceivedFilesPlacement;
   private readonly viewStreams: RunViewStreams;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
@@ -130,7 +131,7 @@ export class AgentTeamRunManager {
     this.taskRecords = options.taskRecords;
     this.delegationIndex = options.delegationIndex;
     this.remoteChannel = options.remoteChannel;
-    this.remoteFiles = options.remoteFiles;
+    this.receivedFiles = options.receivedFiles;
     this.viewStreams = options.viewStreams;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
@@ -425,7 +426,7 @@ export class AgentTeamRunManager {
       taskRecords: this.taskRecords,
       delegationIndex: this.delegationIndex,
       remoteChannel: this.remoteChannel,
-      remoteFiles: this.remoteFiles,
+      receivedFiles: this.receivedFiles,
       // autobyteus-587: a member's own folder (where files from another node land) is in this manager's memory folder.
       memoryLocator: new AgentRunMemoryLocator({ layout: this.memoryLayout }),
       viewStreams: this.viewStreams,

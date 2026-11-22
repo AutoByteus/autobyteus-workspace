@@ -53,7 +53,7 @@ const buildRoot = (input: {
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, remoteFiles: NO_REMOTE_FILES,
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, receivedFiles: NO_REMOTE_FILES.received,
     rootRun: rootRun as never,
     config,
     tree,

@@ -123,7 +123,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       }),
       readMetadata: async () => currentMetadata,
     },
-    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
+    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
   const agentIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,

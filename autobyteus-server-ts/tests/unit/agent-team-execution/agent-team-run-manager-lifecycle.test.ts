@@ -22,7 +22,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never, NOT_DELEGATED);
 
-const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
@@ -37,7 +37,7 @@ const createRoot = (input: {
 } = {}) => ({
   teamRunId: input.teamRunId ?? "team-run-1",
   isActive: input.active ?? (() => true),
-  hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
+  hasAgentExecution: vi.fn(() => false), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => false), getExecutionTreeSnapshot: () => ({ rootTeam: {} }),
   deliverExactAgentMessage: vi.fn(async () => ({ accepted: true })),
   terminate: vi.fn(input.terminate ?? (async () => ({ accepted: true }))),
 }) as unknown as RootTeamRun;

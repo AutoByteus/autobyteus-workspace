@@ -14,7 +14,7 @@ const status = (agentRunId: string, value: RunAgentStatusEntry["status"]): RunAg
 const setup = () => {
   const directory = new ActiveCollaborationRootDirectory();
   const register = (identity: RootExecutionIdentity, members: readonly string[], extra: Record<string, unknown> = {}) =>
-    directory.reserve(identity, { hasAgentExecution: (id: string) => members.includes(id), ownsAgentRun: (id: string) => members.includes(id), deliverExactAgentMessage: vi.fn(), deliverToPeerRun: vi.fn(), ...extra }).commit();
+    directory.reserve(identity, { hasAgentExecution: (id: string) => members.includes(id), remoteNodeOf: () => null, ownsAgentRun: (id: string) => members.includes(id), deliverExactAgentMessage: vi.fn(), deliverToPeerRun: vi.fn(), ...extra }).commit();
   const statuses = new Map<string, readonly RunAgentStatusEntry[]>();
   const running = new RunningAgents({ roots: directory, statuses: (kind) => ({ runAgentStatuses: (runId) => statuses.get(`${kind}:${runId}`) ?? [] }) });
   return { directory, register, statuses, running };

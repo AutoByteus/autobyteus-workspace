@@ -39,8 +39,9 @@ export type ReceivedFilesPlacement = Readonly<{
 }>;
 
 /**
- * A host's file transfer between nodes, as its roots use it (autobyteus-587): a root's remote send uploads its files
- * (`outgoing`), and its accept steps place the files it receives (`received`). Built by the host's composition root.
+ * A host's file transfer between nodes (autobyteus-587), built by its composition root: the router's `node` path and
+ * `TaskDelegation` upload files (`outgoing`, SR-010); the roots take only `received` (`ReceivedFilesPlacement`) to place
+ * the files they receive.
  */
 export type RemoteFiles = Readonly<{ outgoing: Pick<OutgoingFiles, "send">; received: ReceivedFilesPlacement }>;
 

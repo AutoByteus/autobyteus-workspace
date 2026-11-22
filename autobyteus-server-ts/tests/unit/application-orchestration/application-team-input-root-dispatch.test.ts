@@ -56,7 +56,7 @@ const buildRootTeamRuntime = () => {
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
   const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
-    remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),

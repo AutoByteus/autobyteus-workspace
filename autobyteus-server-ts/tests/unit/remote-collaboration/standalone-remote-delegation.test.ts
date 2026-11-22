@@ -205,7 +205,7 @@ const buildNode = async (input: Readonly<{
       taskRecords: resources,
       delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
       remoteChannel: () => client,
-      remoteFiles: peerFiles.remoteFiles,
+      receivedFiles: peerFiles.receivedFiles,
     },
   });
   let prepared = 0;

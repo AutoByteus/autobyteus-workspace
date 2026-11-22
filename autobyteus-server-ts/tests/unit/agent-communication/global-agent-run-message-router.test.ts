@@ -139,7 +139,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     }));
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     const hasAgentExecution = vi.fn((agentRunId: string) => agentRunId === "same-root-target");
-    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, ownsAgentRun: hasAgentExecution, deliverExactAgentMessage, deliverToPeerRun: vi.fn() }).commit();
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, remoteNodeOf: () => null, ownsAgentRun: hasAgentExecution, deliverExactAgentMessage, deliverToPeerRun: vi.fn() }).commit();
     const router = new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null, admitPeerRun: async () => "not_peer" as const }, ...NO_PEER_PATH, channel: () => null, coordinators: { teamCoordinatorOf: async () => null },
       agentRunManager: { getActiveRun: vi.fn(() => target.run) },
       activeRootDirectory,
@@ -176,7 +176,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "dormant-child",
-      ownsAgentRun: (agentRunId: string) => agentRunId === "dormant-child",
+      remoteNodeOf: () => null, ownsAgentRun: (agentRunId: string) => agentRunId === "dormant-child",
       deliverExactAgentMessage,
       deliverToPeerRun: vi.fn(),
     }).commit();
@@ -207,7 +207,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const deliverExactAgentMessage = vi.fn(async () => ({ accepted: true }));
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
-      hasAgentExecution: (agentRunId: string) => agentRunId === "remote_1", ownsAgentRun: (agentRunId: string) => agentRunId === "remote_1",
+      hasAgentExecution: (agentRunId: string) => agentRunId === "remote_1", remoteNodeOf: () => null, ownsAgentRun: (agentRunId: string) => agentRunId === "remote_1",
       deliverExactAgentMessage, deliverToPeerRun: vi.fn(),
     }).commit();
     const required = { accepted: false as const, code: "NODE_REQUIRED", message: 'This agent runs on node "studio"; pass node: "studio" with its run id.' };
@@ -231,7 +231,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
     activeRootDirectory.reserve(memberExecutionContext.identity.root, {
       hasAgentExecution: (agentRunId: string) => agentRunId === "copy-lead",
-      ownsAgentRun: (agentRunId: string) => agentRunId === "copy-lead",
+      remoteNodeOf: () => null, ownsAgentRun: (agentRunId: string) => agentRunId === "copy-lead",
       teamCoordinatorOf: (teamRunId: string) => teamRunId === "copy-team" ? "copy-lead" : null,
       deliverToPeerRun: vi.fn(),
       deliverExactAgentMessage,
@@ -335,7 +335,7 @@ describe("GlobalAgentRunMessageRouter", () => {
         ? { accepted: false as const, code: "PEER_UNREACHABLE", message: "Node \"docker\" could not be reached." }
         : { accepted: true as const, message: "Delivered message to pm_b on node \"docker\"." }; });
       const directory = new ActiveCollaborationRootDirectory();
-      if (options.root !== false) directory.reserve(senderContext.identity.root, { hasAgentExecution: () => false, ownsAgentRun: () => false, deliverExactAgentMessage: vi.fn(), deliverToPeerRun }).commit();
+      if (options.root !== false) directory.reserve(senderContext.identity.root, { hasAgentExecution: () => false, remoteNodeOf: () => null, ownsAgentRun: () => false, deliverExactAgentMessage: vi.fn(), deliverToPeerRun }).commit();
       const mismatch = { accepted: false as const, code: "NODE_MISMATCH", message: 'This agent runs on node "studio", not "docker"; pass node: "studio".' };
       const nodes = { check: vi.fn(async (): Promise<AgentOperationResult | null> => { calls.push("node"); return options.wrongNode ? mismatch : null; }) };
       const outgoing = { send: vi.fn(async () => { calls.push("files"); return options.files === "refused"

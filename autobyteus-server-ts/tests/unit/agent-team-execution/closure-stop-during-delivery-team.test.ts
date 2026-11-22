@@ -33,7 +33,7 @@ vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-buil
 }));
 vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", () => ({
   materializeTeamRoot: vi.fn(async () => {
-    const root = { teamRunId: "eng", isActive: () => true, hasAgentExecution: vi.fn(() => true), ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+    const root = { teamRunId: "eng", isActive: () => true, hasAgentExecution: vi.fn(() => true), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       terminate: vi.fn(async () => ({ accepted: true })), acceptFromRun: vi.fn(async () => ({ accepted: true })) };
     restored.push(root);
     return root;
@@ -53,7 +53,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager-run" }, execution: run });
     await tasks.markStarted(run);
-    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
@@ -62,7 +62,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     });
     // The running team root: `terminate` closes its gate at once (inactive), and its end is held.
     let active = true, release!: () => void, termination: Promise<{ accepted: boolean }> | null = null;
-    const ending = { teamRunId: "eng", isActive: () => active, hasAgentExecution: vi.fn(() => true), ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
+    const ending = { teamRunId: "eng", isActive: () => active, hasAgentExecution: vi.fn(() => true), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => true), getExecutionTreeSnapshot: () => ({ rootTeam: {} }), deliverExactAgentMessage: vi.fn(),
       acceptFromRun: vi.fn(async () => ({ accepted: false, code: "ROOT_OPERATION_GATE_CLOSED" })),
       // As the real root: the gate closes at the call, and every call gets the same termination.
       terminate: vi.fn(() => { active = false; return termination ??= new Promise((resolve) => { release = () => resolve({ accepted: true }); }); }) };

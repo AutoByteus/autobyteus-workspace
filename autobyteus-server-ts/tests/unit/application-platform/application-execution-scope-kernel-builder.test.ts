@@ -150,7 +150,7 @@ const createHarness = (input: {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), storedModelOffer: OFFERED_STORED_MODEL_OFFER },
     applicationAgentTools,
     providerRelayAccess: null,
-    remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
     peerDiscovery: OFF_DISCOVERY,
     runPasses: null,
     delegationIndex: noDelegations(), viewStreams: testViewStreams(),

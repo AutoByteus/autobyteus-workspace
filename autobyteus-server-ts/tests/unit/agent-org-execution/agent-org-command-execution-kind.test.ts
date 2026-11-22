@@ -20,7 +20,7 @@ describe("AgentOrgRun command execution kind", () => {
     const rootCommand = vi.fn(async () => ({ accepted: true as const }));
     const live = new Set([direct.agentRunId]);
     const teamCommand = vi.fn(async () => ({ accepted: true as const }));
-    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree,
       messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

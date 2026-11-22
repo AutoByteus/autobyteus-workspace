@@ -110,7 +110,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       // autobyteus-587: files from another node land in the receiving agent's own folder.
-      receivedFilesFor: async (receiver, senderAgentRunId, files) => options.remoteFiles.received.planFor({
+      receivedFilesFor: async (receiver, senderAgentRunId, files) => options.receivedFiles.planFor({
         agentFolder: this.agentFolderOf(receiver.agentRunId), senderAgentRunId, files }),
       messageFeed: options.messageFeed,
       presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),

@@ -1,6 +1,6 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
 import { composeRemoteFiles } from "./remote-files-composition.js";
-import type { RemoteFiles } from "../agent-collaboration/execution/remote/transferred-files.js";
+import type { ReceivedFilesPlacement } from "../agent-collaboration/execution/remote/transferred-files.js";
 import type { StoredModelOfferCheck } from "../llm-management/services/run-model-selection-service.js";
 import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
 import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
@@ -120,7 +120,7 @@ const createStudioApplicationServices = (input: {
   runPasses: RunPassRevocation;
   taskSide: TaskSide;
   remote: LateRemoteCollaborationBinding;
-  remoteFiles: RemoteFiles;
+  receivedFiles: ReceivedFilesPlacement;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig, delegationIndex: input.taskSide.tree, viewStreams: input.taskSide.viewStreams, taskRecords: input.taskSide.taskRecords,
@@ -137,7 +137,7 @@ const createStudioApplicationServices = (input: {
     // The studio's application launches get its provider relays and end their passes through the same host.
     providerRelayAccess: input.providerRelayAccess,
     runPasses: input.runPasses,
-    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery, remoteFiles: input.remoteFiles,
+    remoteChannel: input.remote.channel, peerDiscovery: input.remote.discovery, receivedFiles: input.receivedFiles,
     modelAvailabilityService: getModelAvailabilityService(),
     llmProviderService: getLlmProviderService(),
     codexClientManager: getCodexAppServerClientManager(),
@@ -305,7 +305,7 @@ export const buildStudioServer = async (input: {
       definitionChanges: hostDefinitionServices.agentDefinitionChanges, teamChangeNotices: platformNotices.teamChangeNotices,
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
       remoteChannel: remote.channel, peerDiscovery: remote.discovery,
-      remoteFiles: files.remoteFiles, receivedFiles: files.receivedFiles,
+      receivedFiles: files.receivedFiles,
     });
     generalProcessAuthority = null;
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
@@ -352,7 +352,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       remote,
-      remoteFiles: files.remoteFiles,
+      receivedFiles: files.receivedFiles,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;

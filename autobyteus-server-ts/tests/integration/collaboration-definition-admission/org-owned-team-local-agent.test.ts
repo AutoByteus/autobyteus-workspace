@@ -187,7 +187,7 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     });
     const prepareNewAgentRun = vi.fn();
     const read = vi.spyOn(f.service, 'getDefinitionById');
-    const builder = new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const builder = new AgentOrgExecutionScopeBuilder({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: { beginMaterialization } as never,
       agentRunManager: { prepareNewAgentRun } as never,
       orgDefinitions: { getDefinitionById: id => f.orgs.getById(id) },

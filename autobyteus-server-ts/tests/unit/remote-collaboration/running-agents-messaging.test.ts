@@ -125,7 +125,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
       terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
-    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client, remoteFiles: peerFiles.remoteFiles },
+    rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client, receivedFiles: peerFiles.receivedFiles },
   });
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => definitions, listTeamDefinitions: async () => [], isAgentHidden: () => false,

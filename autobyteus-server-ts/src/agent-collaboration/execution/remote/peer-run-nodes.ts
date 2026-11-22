@@ -25,7 +25,8 @@ export class PeerRunNodes {
   /** The peer node the run is on, as this node knows it (the sender root's links, then the Task entries); null otherwise. */
   async nodeOf(sender: CollaborationMemberExecutionIdentity | null, targetAgentRunId: string): Promise<string | null> {
     const target = targetAgentRunId.trim();
-    const linked = sender ? this.dependencies.activeRoots.resolve(sender.root)?.remoteNodeOf?.(target) ?? null : null;
+    const root = sender ? this.dependencies.activeRoots.resolve(sender.root) : null;
+    const linked = root ? root.remoteNodeOf(target) : null;
     if (linked) return linked;
     const tree = this.dependencies.tree();
     const run = await tree.runOfAgent(target);

@@ -93,7 +93,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
       membershipPlanner: planner, changeNotices: new TeamChangeNoticeSource(),
       delegationIndex, viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir,
       flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory, modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
+      activeRootDirectory, modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
     });
     const config = testTeamRunConfig({
       rootTeamRunId: "team_1", rootTeamDefinitionId: "team-root", coordinatorAddress: "/lead",
@@ -170,7 +170,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     const managerWith = (flat: FlatTeamExecutionFactory, changeNotices: TeamChangeNoticeSource) => new AgentTeamRunManager({
       membershipPlanner: planner, changeNotices, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), memoryDir,
       flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
     });
     const first = factory();
     const config = testTeamRunConfig({
@@ -213,7 +213,7 @@ describe("A live Team run follows its definition (reproduction)", () => {
     const managerWith = (flat: FlatTeamExecutionFactory) => new AgentTeamRunManager({
       membershipPlanner: planner, changeNotices: new TeamChangeNoticeSource(), delegationIndex: noDelegations(), viewStreams: testViewStreams(),
       taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory: flat, memberExecutionContextBuilder: { build: vi.fn() } as never,
-      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES,
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), modelSelectionValidator, remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received,
     });
     const first = factory();
     const firstManager = managerWith(first.factory);

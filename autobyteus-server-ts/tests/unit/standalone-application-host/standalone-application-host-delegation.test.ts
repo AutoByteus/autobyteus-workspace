@@ -161,7 +161,7 @@ beforeEach(async () => {
       grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never, activationRegistry: { getActiveRun: () => null } as never,
       memoryRecorder: {} as never, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, agentToolMcpRunSessionDeactivator: {} as never, runPasses: null,
     }),
-    teams: AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    teams: AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: path.join(mocks.dirs.root, "memory"), flatTeamExecutionFactory: {} as never, memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never }),
     orgs: AgentOrgRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),

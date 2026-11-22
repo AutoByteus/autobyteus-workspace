@@ -31,7 +31,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       terminateRunAgent: (agentRunId) => input.lifecycleService.terminateRunAgent(agentRunId),
       readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
     },
-    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

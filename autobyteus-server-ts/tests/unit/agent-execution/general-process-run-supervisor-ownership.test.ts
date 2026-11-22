@@ -55,7 +55,7 @@ const createSupervisorInput = () => {
   const agentTeamDefinitionService = new AgentTeamDefinitionService({ agentDefinitionService });
   const agentOrgDefinitionService = new AgentOrgDefinitionService(undefined, agentDefinitionService, agentTeamDefinitionService);
   return {
-    remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, receivedFiles: NO_FILES_RECEIVED,
+    remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     peerDiscovery: OFF_DISCOVERY,
     memoryDir: "/tmp/general-process-run-supervisor",
     contextFilePathEnvironment: {
@@ -149,7 +149,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases AgentRunManager when exclusive Team manager initialization fails", async () => {
     const input = createSupervisorInput();
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ executionFactory: OFFERED_MODEL_EXECUTION_FACTORY }),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),

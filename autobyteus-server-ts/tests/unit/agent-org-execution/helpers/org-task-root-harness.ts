@@ -88,7 +88,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
   const clock = manualTimers();
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocation = 0;
-  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
+  run = new AgentOrgRun({ remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent, root),
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
     taskRecords: new InMemoryTaskExecutionResources(),

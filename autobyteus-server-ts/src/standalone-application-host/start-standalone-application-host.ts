@@ -292,7 +292,7 @@ export const startStandaloneApplicationHost = async (
         // No peer nodes on this host (ARCH-REV-027; autobyteus-500 FU-011): its file transfer refuses any file.
         remoteChannel: () => null,
         peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
-        remoteFiles: files.remoteFiles, receivedFiles: files.receivedFiles,
+        receivedFiles: files.receivedFiles,
       });
     generalProcessAuthority = null;
     collaboration = await composeCollaboration({ memoryDir: processResources.appConfig.getMemoryDir(), taskSide, runs: generalProcessRunSupervisor,
@@ -326,7 +326,7 @@ export const startStandaloneApplicationHost = async (
       runPasses: null,
       // No peer nodes on this host (autobyteus-500 FU-011).
       remoteChannel: () => null,
-      remoteFiles: files.remoteFiles,
+      receivedFiles: files.receivedFiles,
       peerDiscovery: () => REMOTE_COLLABORATION_OFF_DISCOVERY,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),

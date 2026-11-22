@@ -88,7 +88,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
       ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
     ],
   });
-  const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
+  const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
     config,
     tree: { ...buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }), ...(options.delegatedFrom ? { delegatedFrom: options.delegatedFrom } : {}) },
     messages: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: ROOT, messages: Object.freeze([]) }),
@@ -97,7 +97,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
     const messages = (await dependencies.communicationStore.readLog(teamMemoryDir, ROOT))!;
-    return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, remoteFiles: NO_REMOTE_FILES, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
+    return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_REMOTE_FILES.received, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), 
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,
     });

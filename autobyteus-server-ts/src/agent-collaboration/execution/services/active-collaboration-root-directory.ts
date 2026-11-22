@@ -27,7 +27,7 @@ export interface ActiveRootMessageBoundary {
    * autobyteus-587 RF-14 (`PeerRunNodes`): the peer node this root links the run on (a run it delegated there, or a
    * peer-started root's delegator), or null.
    */
-  remoteNodeOf?(agentRunId: string): string | null;
+  remoteNodeOf(agentRunId: string): string | null;
   /** DS-2: this root as the sender of a message to another run (its own log only). */
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage,
@@ -104,7 +104,8 @@ export class ActiveCollaborationRootDirectory {
       throw new Error(`Collaboration root '${root.rootSubjectKind}:${root.rootRunId}' is already active or reserved.`);
     }
     if (!boundary || typeof boundary.deliverExactAgentMessage !== "function" || typeof boundary.hasAgentExecution !== "function"
-      || typeof boundary.ownsAgentRun !== "function") {
+      || typeof boundary.ownsAgentRun !== "function"
+      || typeof boundary.remoteNodeOf !== "function") {
       throw new Error("Active root message boundary is required.");
     }
     this.reserved.add(key);

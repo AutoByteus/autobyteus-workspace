@@ -85,7 +85,7 @@ it('serializes inspection behind pending termination and never starts another sc
   let active = true;
   const openPackageSnapshotConnection = vi.fn();
   const build = vi.fn(async () => ({ orgRunId: 'org', rootIdentity: createAgentOrgRootExecutionIdentity('org'),
-    isActive: () => active, openPackageSnapshotConnection, hasAgentExecution: vi.fn(() => false), ownsAgentRun: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
+    isActive: () => active, openPackageSnapshotConnection, hasAgentExecution: vi.fn(() => false), remoteNodeOf: () => null, ownsAgentRun: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: async () => { enter(); await held; active = false; return { accepted: true }; },
   }));
   const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir: f.memoryDir, scopeBuilder: { build } as never,
