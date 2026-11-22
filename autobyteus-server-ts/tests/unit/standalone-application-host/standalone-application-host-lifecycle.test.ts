@@ -1,6 +1,8 @@
 const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { OutgoingFiles } from "../../../src/agent-collaboration/execution/remote/outgoing-files.js";
+import { RuntimeSwitchRecorder } from "../../../src/agent-memory/services/runtime-switch-recorder.js";
+import { RuntimeHandoverNoticeService } from "../../../src/runtime-handover-notices/services/runtime-handover-notice-service.js";
 
 const TOKEN_MIGRATION_ID = "token-usage-v1";
 const TEAM_MIGRATION_ID = "team-run-v1";
@@ -348,7 +350,13 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       // A live Team run follows its definition: the definition changes it listens to and the notices it records.
       definitionChanges: mocks.hostDefinitionServices.agentDefinitionChanges,
       teamChangeNotices: expect.objectContaining({ recordChange: expect.any(Function), takePreface: expect.any(Function) }),
+      // autobyteus-599 (DEC-007): the fresh-session steps of a session renewal, with the hand-over notice first (below).
+      runtimeSwitching: { memory: expect.any(RuntimeSwitchRecorder) },
     });
+    const noticeSources = (mocks.createGeneralProcessRunSupervisor.mock.calls[0] as unknown as [{ platformInputNotices: { sources: unknown[] } }])[0]
+      .platformInputNotices.sources;
+    expect(noticeSources[0]).toBeInstanceOf(RuntimeHandoverNoticeService);
+    expect(noticeSources.filter((source) => source instanceof RuntimeHandoverNoticeService)).toHaveLength(1);
     // SR-052: the application host composes the same steps 4–8 with its run services; it has no peer nodes.
     expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory",
       runs: mocks.createGeneralProcessRunSupervisor.mock.results[0]!.value }));

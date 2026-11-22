@@ -1,0 +1,11 @@
+# API-06 claude-agent-streaming-session-lifecycle restore cases after the harness and assertion update, isolated (HOME and CLAUDE_CONFIG_DIR test-owned, api-key mode with the test vault) | commit b220b6ce38 + working-tree test updates | 2026-11-22T15:10:04Z
+exit 0
+Claude process for run 'claude-live-usage-e1beaba6-fd5c-4503-b7b3-6361fdb7abf9' exited: Error: Claude Code process terminated by signal SIGKILL
+Claude process for run 'claude-live-usage-70e4fa34-a96f-4008-811c-5b8b263c1b44' exited: Error: Claude Code process terminated by signal SIGKILL
+ ✓ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts (16 tests | 12 skipped) 93957ms
+     ✓ counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]  11096ms
+     ✓ counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]  73250ms
+     ✓ a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]  4585ms
+     ✓ a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]  5017ms
+ Test Files  1 passed (1)
+      Tests  4 passed | 12 skipped (16)

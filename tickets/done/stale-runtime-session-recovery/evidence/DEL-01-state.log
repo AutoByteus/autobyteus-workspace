@@ -1,0 +1,4 @@
+HEAD 612e426e09 steps: 02 03 04 05 06 07 08
+16:54  up 1 day,  3:12, 9 users, load averages: 7.78 8.01 10.01
+vm.swapusage: total = 2048.00M  used = 998.38M  free = 1049.62M  (encrypted)
+  324   0.0  24240 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd

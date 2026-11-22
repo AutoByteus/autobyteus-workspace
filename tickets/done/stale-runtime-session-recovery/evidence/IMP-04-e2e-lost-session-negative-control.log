@@ -1,0 +1,113 @@
+# IMP-04 negative control: the server built with the AGY not-found text changed to "NC-NEVER <id>" (agy-agent-run-backend-factory.ts), then rebuilt from the real source
+# Command: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts --no-watch (after pnpm build)
+# Commit: c1d316f60b + the control edit (reverted; git diff clean afterwards)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+# Expected: LS-01 and LS-02 fail with AGY_CONVERSATION_ID_CONFLICT (the behavior before this ticket); LS-03 still passes.
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts (3 tests | 2 failed) 10263ms
+     × LS-01: a standalone run continues in a fresh session behind the marker; after a restart the renewed session is restored 2609ms
+     × LS-02: a Team member is renewed through the Team root, and a later activation resumes the renewed session (AC-005) 2622ms
+     ✓ LS-03: a different conversation without the not-found warning is still a conflict: the message fails and nothing changes (AC-003)  2425ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts > a lost runtime session on the built server: standalone run and Team member > LS-01: a standalone run continues in a fresh session behind the marker; after a restart the renewed session is restored
+AssertionError: after the loss: errors: expected [ { …(10) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "accepted": false,
++     "code": "ACTIVATION_FAILED",
++     "command_type": "SEND_MESSAGE",
++     "dedupe_key": "agent_run_input:e2e:e2e-01e67216-7c1c-4b40-9143-d0e1e5909d5c",
++     "duplicate": false,
++     "message": "AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.",
++     "message_id": "e2e-01e67216-7c1c-4b40-9143-d0e1e5909d5c",
++     "run_id": "ls_standalone_849200_5455142a5a634387bf95452fa0e0c804",
++     "state": "failed",
++     "status": {
++       "agent_id": "ls_standalone_849200_5455142a5a634387bf95452fa0e0c804",
++       "background_tasks_running": 0,
++       "error_message": "AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.",
++       "recoverableBlock": null,
++       "status": "error",
++     },
++   },
++ ]
+
+ ❯ talk tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:119:50
+    117|   const talk = async (stream: Stream, agentRunId: string, content: str…
+    118|     const outcome = await send(stream, agentRunId, content, label);
+    119|     expect(outcome.failures, `${label}: errors`).toEqual([]);
+       |                                                  ^
+    120|     expect(outcome.completed, `${label}: the turn ended`).toBe(true);
+    121|     return outcome.messages;
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:170:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts > a lost runtime session on the built server: standalone run and Team member > LS-02: a Team member is renewed through the Team root, and a later activation resumes the renewed session (AC-005)
+AssertionError: worker after the loss: errors: expected [ { …(7) }, { …(8) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "agent_run_id": "ls_team_member_9e170d_225feb0fd2224fbbb4a76c13f7095bc4",
++     "change_sequence": 22,
++     "code": "COLLABORATION_AGENT_ACTIVATION_FAILED",
++     "error_effect": "terminal",
++     "error_scope": "runtime",
++     "message": "AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.",
++     "turn_id": null,
++   },
++   {
++     "agent_run_id": "ls_team_member_9e170d_225feb0fd2224fbbb4a76c13f7095bc4",
++     "change_sequence": null,
++     "code": "TEAM_SEND_MESSAGE_REJECTED",
++     "details": "AGENT_RUN_ACTIVATION_FAILED",
++     "error_effect": null,
++     "error_scope": null,
++     "message": "AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.",
++     "turn_id": null,
++   },
++ ]
+
+ ❯ talk tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:119:50
+    117|   const talk = async (stream: Stream, agentRunId: string, content: str…
+    118|     const outcome = await send(stream, agentRunId, content, label);
+    119|     expect(outcome.failures, `${label}: errors`).toEqual([]);
+       |                                                  ^
+    120|     expect(outcome.completed, `${label}: the turn ended`).toBe(true);
+    121|     return outcome.messages;
+ ❯ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts:219:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  12:10:46
+   Duration  10.87s (transform 60ms, setup 63ms, import 83ms, tests 10.26s, environment 0ms)
+

@@ -1,0 +1,12 @@
+## tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts alone run 1 | 2026-11-22T15:46:43Z | load { 6.75 12.67 12.68 }
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+## tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts alone run 2 | 2026-11-22T15:47:13Z | load { 5.37 11.78 12.35 }
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+## tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts alone run 1 | 2026-11-22T15:47:42Z | load { 4.53 10.94 12.03 }
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+## tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts alone run 2 | 2026-11-22T15:48:00Z | load { 3.95 10.50 11.85 }
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

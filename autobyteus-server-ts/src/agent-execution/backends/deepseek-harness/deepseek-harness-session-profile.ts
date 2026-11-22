@@ -1,4 +1,4 @@
-import type { McpServer, SessionConfigOption } from "@agentclientprotocol/sdk";
+import { RequestError, type McpServer, type SessionConfigOption } from "@agentclientprotocol/sdk";
 import type { AgentToolMcpDescriptor } from "../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { deepSeekHarnessModelEntries } from "../../../runtime-management/deepseek-harness/deepseek-harness-capability.js";
 import { DSH_PROVIDER_ROUTE } from "../../../runtime-management/deepseek-harness/deepseek-harness-identity.js";
@@ -55,4 +55,8 @@ export const deepSeekHarnessSessionProfile: AcpAgentSessionProfile = Object.free
   interpretProviderCall: interpretDeepSeekHarnessProviderCall,
 
   buildCompactionStatusPayload: buildDeepSeekHarnessCompactionStatusPayload,
+
+  // DeepSeek Harness 0.2.2-rc.5 (PRB-008): `session/resume` of a session it does not have answers -32602 with this message.
+  isMissingSession: (error: unknown, sessionId: string): boolean =>
+    error instanceof RequestError && error.code === -32602 && error.message === `Invalid params: session is not resumable: ${sessionId}`,
 });

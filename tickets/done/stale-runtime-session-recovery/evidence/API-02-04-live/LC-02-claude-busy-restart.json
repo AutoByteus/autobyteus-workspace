@@ -1,0 +1,11 @@
+{
+  "runId": "lc02_dcd8cb_927d5e9f34104c88b27aa01ed9f89b4d",
+  "sessionId": "b1b979ef-b370-4206-a604-823d5f93f2d6",
+  "model": "haiku",
+  "recall": "FIG-7aada1",
+  "resumedArgv": [
+    "--version",
+    "--output-format stream-json --verbose --input-format stream-json --setting-sources=user --permission-mode plan",
+    "--output-format stream-json --verbose --input-format stream-json --model haiku --permission-prompt-tool stdio --resume=b1b979ef-b370-4206-a604-823d5f93f2d6 --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSea"
+  ]
+}

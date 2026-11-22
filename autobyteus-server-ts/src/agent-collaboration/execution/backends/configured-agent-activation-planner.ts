@@ -14,12 +14,12 @@ import {
   type ConfiguredAgentActivationMode,
 } from "../domain/configured-agent-execution.js";
 import type { RuntimeSwitchMemory } from "../../../agent-execution/domain/runtime-switch-memory-port.js";
-import { buildRuntimeSwitchBetween } from "../../../agent-execution/domain/runtime-switch.js";
+import { buildRuntimeSwitchBetween, buildSessionRenewal, type RuntimeSwitch } from "../../../agent-execution/domain/runtime-switch.js";
 import { getDefaultRuntimeSwitchMemory } from "../../../agent-memory/services/runtime-switch-recorder.js";
 import type { PendingRuntimeSwitch } from "../../../run-history/store/agent-run-metadata-types.js";
 import { ConfiguredAgentSwitchAttempt } from "./configured-agent-switch-attempt.js";
 import {
-  createCollaborationAgentNoConversationBindingReplacement,
+  createCollaborationAgentBindingReplacement,
   createCollaborationAgentPlatformBinding,
   createCollaborationAgentRuntimeSwitchCommit,
   type CollaborationAgentPlatformBindingChange,
@@ -64,7 +64,7 @@ export class ConfiguredAgentActivationPlanner {
     const bindingChange = plan.kind === "replace_external_without_conversation"
       ? Object.freeze({
           kind: "replace_without_conversation" as const,
-          replacement: createCollaborationAgentNoConversationBindingReplacement({
+          replacement: createCollaborationAgentBindingReplacement({
             binding: binding ?? this.missingReplacementBinding(),
             expectedPreviousPlatformAgentRunId: plan.expectedPreviousPlatformAgentRunId,
           }),
@@ -75,6 +75,7 @@ export class ConfiguredAgentActivationPlanner {
     return Object.freeze({ candidate, bindingChange });
       },
       switching: null,
+      restoring: plan.kind === "restore_external" ? plan.platformAgentRunId : null,
     });
   }
 
@@ -87,31 +88,61 @@ export class ConfiguredAgentActivationPlanner {
   private beginSwitch(config: AgentRunConfig, pending: PendingRuntimeSwitch): ConfiguredAgentActivationOperation {
     const activity = this.inspectConversationActivity(config);
     if (activity.kind === "indeterminate") throw unreadableConversationState(activity.error);
-    const memory = this.input.runtimeSwitchMemory ?? getDefaultRuntimeSwitchMemory();
-    const memoryDir = config.memoryDir!; // known: the inspection above is indeterminate without it
-    const switching = activity.kind === "present"
-      ? new ConfiguredAgentSwitchAttempt(memory, memoryDir, memory.begin(memoryDir, buildRuntimeSwitchBetween({
+    const runtimeSwitch = activity.kind === "present"
+      ? buildRuntimeSwitchBetween({
           runId: this.input.identity.agentRunId,
           to: { runtimeKind: config.runtimeKind, llmModelIdentifier: config.llmModelIdentifier },
           pending,
-        })))
+        })
+      : null;
+    return this.beginFreshSession(config, runtimeSwitch, (binding) => createCollaborationAgentRuntimeSwitchCommit({
+      execution: this.input.identity,
+      switchId: pending.switchId,
+      platformAgentRunId: binding?.platformAgentRunId ?? null,
+    }));
+  }
+
+  /**
+   * The member's saved runtime session was lost (autobyteus-599, DS-002): the restore of `lostPlatformAgentRunId` failed with
+   * the runtime's own "not found" and its operation was released. The same steps as a switch, with the same runtime and model
+   * on both sides: a fresh session behind the lost-session marker, committed as a compare-and-set of the lost ID. The plan that
+   * restored it had a conversation (`restore_external`), so there is always a marker to record.
+   */
+  beginSessionRenewal(config: AgentRunConfig, lostPlatformAgentRunId: string): ConfiguredAgentActivationOperation {
+    const renewal = buildSessionRenewal({
+      runId: this.input.identity.agentRunId,
+      side: { runtimeKind: config.runtimeKind, llmModelIdentifier: config.llmModelIdentifier },
+      lostPlatformAgentRunId,
+    });
+    return this.beginFreshSession(config, renewal, (binding) => Object.freeze({
+      kind: "replace_lost_session" as const,
+      replacement: createCollaborationAgentBindingReplacement({
+        binding: binding ?? this.missingReplacementBinding(),
+        expectedPreviousPlatformAgentRunId: lostPlatformAgentRunId,
+      }),
+    }));
+  }
+
+  /** The steps a switch and a renewal share: the ticket before the candidate prepares, then a fresh session. */
+  private beginFreshSession(
+    config: AgentRunConfig,
+    runtimeSwitch: RuntimeSwitch | null,
+    bindingChange: (binding: CollaborationAgentPlatformBinding | null) => CollaborationAgentPlatformBindingChange,
+  ): ConfiguredAgentActivationOperation {
+    const memory = this.input.runtimeSwitchMemory ?? getDefaultRuntimeSwitchMemory();
+    const memoryDir = config.memoryDir!; // known: a switch with a conversation and a restored session both inspected it
+    const switching = runtimeSwitch
+      ? new ConfiguredAgentSwitchAttempt(memory, memoryDir, memory.begin(memoryDir, runtimeSwitch))
       : null;
     const operation = this.manager.beginActivation({ kind: "new", runId: this.input.identity.agentRunId, config });
     return Object.freeze({
       operation,
       prepare: async () => {
         const candidate = await operation.prepare();
-        const binding = this.createExternalBinding(candidate);
-        return Object.freeze({
-          candidate,
-          bindingChange: createCollaborationAgentRuntimeSwitchCommit({
-            execution: this.input.identity,
-            switchId: pending.switchId,
-            platformAgentRunId: binding?.platformAgentRunId ?? null,
-          }),
-        });
+        return Object.freeze({ candidate, bindingChange: bindingChange(this.createExternalBinding(candidate)) });
       },
       switching,
+      restoring: null,
     });
   }
 
@@ -227,4 +258,6 @@ export type ConfiguredAgentActivationOperation = Readonly<{
   }>>;
   /** Present when the plan is a switch with a conversation to carry over; the handle records it and discards a failed attempt. */
   switching: ConfiguredAgentSwitchAttempt | null;
+  /** The saved session this operation restores (`restore_external`); its loss starts a session renewal (autobyteus-599). */
+  restoring: string | null;
 }>;

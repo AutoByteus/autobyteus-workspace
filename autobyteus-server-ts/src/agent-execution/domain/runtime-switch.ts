@@ -8,7 +8,9 @@ export type RuntimeSwitchSide = Readonly<{ runtimeKind: RuntimeKind; llmModelIde
 
 /**
  * An agent runtime switch as the memory port and the notice port need it: the key that makes it idempotent, the
- * sides, and the marker sentence the chat and the journal show. Built once, by `buildRuntimeSwitch`.
+ * sides, and the marker sentence the chat and the journal show. Built once, by `buildRuntimeSwitchBetween` (the user changed
+ * the agent runtime or model) or `buildSessionRenewal` (the runtime lost the saved session, autobyteus-599). Both take the
+ * same steps and stored records (boundary `runtime_switch`); the builder sets the key prefix and the marker sentence.
  */
 export type RuntimeSwitch = Readonly<{
   key: string;
@@ -46,6 +48,28 @@ export const buildRuntimeSwitchBetween = (input: {
     from,
     to,
     markerText: `Agent runtime changed from ${label(from)} to ${label(to)}.`,
+  });
+};
+
+/**
+ * The session renewal of a run whose runtime lost its saved session (autobyteus-599): a fresh session of the same runtime
+ * and model (`from` = `to`). The key holds the lost session's ID, so a retry after a failure part-way finds the marker and
+ * the segment it wrote, and a later loss of the renewed session is a renewal of its own.
+ */
+export const buildSessionRenewal = (input: {
+  runId: string;
+  side: RuntimeSwitchSide;
+  lostPlatformAgentRunId: string;
+}): RuntimeSwitch => {
+  const side: RuntimeSwitchSide = { runtimeKind: input.side.runtimeKind, llmModelIdentifier: input.side.llmModelIdentifier };
+  const key = `session_renewal:${input.runId}:${input.lostPlatformAgentRunId}`;
+  return Object.freeze({
+    key,
+    markerTraceId: runtimeSwitchMarkerTraceId(key),
+    runId: input.runId,
+    from: side,
+    to: side,
+    markerText: `The saved ${agentRuntimeName(side.runtimeKind)} session of this run was no longer available, so a new session continues from the work journal.`,
   });
 };
 

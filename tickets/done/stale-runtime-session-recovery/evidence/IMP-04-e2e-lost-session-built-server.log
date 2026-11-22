@@ -1,0 +1,30 @@
+# IMP-04 built-server E2E LS-01..LS-03 (scripted Antigravity CLI)
+# Command: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts --no-watch (after pnpm build)
+# Commit: c1d316f60b (server source identical to 0681fcd3af)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, pnpm, vitest 4.1.12; worktree autobyteus-worktrees/stale-runtime-session-recovery-599
+# Date: 2026-11-22
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 <worktree>/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ✓ tests/e2e/runtime/lost-session-renewal-built-server.e2e.test.ts (3 tests) 11820ms
+     ✓ LS-01: a standalone run continues in a fresh session behind the marker; after a restart the renewed session is restored  4247ms
+     ✓ LS-02: a Team member is renewed through the Team root, and a later activation resumes the renewed session (AC-005)  2592ms
+     ✓ LS-03: a different conversation without the not-found warning is still a conflict: the message fails and nothing changes (AC-003)  2509ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  12:09:07
+   Duration  13.05s (transform 60ms, setup 60ms, import 389ms, tests 11.82s, environment 0ms)
+

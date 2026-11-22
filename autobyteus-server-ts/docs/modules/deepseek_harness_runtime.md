@@ -86,7 +86,9 @@ folder is removed when the launch is released, after its process stopped.
 - **Model and effort:** set with `session/set_config_option` (`model`, then `reasoning_effort`) after the session
   opens. A model dsh does not offer is refused by dsh with its own message.
 - **Restore:** dsh offers `session/resume`, not `session/load`; the shared layer restores by resume. dsh replays no
-  history.
+  history. A session dsh no longer has (`-32602`, `Invalid params: session is not resumable: <id>`, for exactly the
+  saved session) is a lost session and is renewed in a fresh one with the hand-over notice (autobyteus-599; see
+  [Agent Execution](./agent_execution.md)).
 - **Approvals:** dsh asks only for sandbox escalations (it runs in its `workspace-write` sandbox). Auto-execute answers
   them allow. A write to the agent's semantic memory folder or the node's global one
   ([Agent Memory](./agent_memory.md#semantic-memory)) is outside that sandbox, so with auto-execute off it asks an escalation; dsh has no option to add a writable folder.

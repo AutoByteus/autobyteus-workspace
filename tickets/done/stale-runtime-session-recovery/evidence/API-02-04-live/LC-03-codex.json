@@ -1,0 +1,18 @@
+{
+  "runId": "lc03_89501e_f1398b4eb6e2428aadb70ae118b1c311",
+  "lost": "01a203cd-cdac-7ae2-a3be-366f41873196",
+  "fresh": "01a203cd-dc94-76d0-9fd2-78321f482467",
+  "model": "gpt-5.6-luna",
+  "answer": "**Planning to read journal**Ready.",
+  "marker": {
+    "id": "rt_runtime_switch_3fed66606c5db9d238fb2fce",
+    "ts": 1795360152.789,
+    "turn_id": "runtime_switch",
+    "seq": 1,
+    "trace_type": "system_task_notification",
+    "content": "The saved Codex App Server session of this run was no longer available, so a new session continues from the work journal.",
+    "source_event": "runtime_switch",
+    "correlation_id": "session_renewal:lc03_89501e_f1398b4eb6e2428aadb70ae118b1c311:01a203cd-cdac-7ae2-a3be-366f41873196",
+    "sender_id": "system.runtime_handover"
+  }
+}

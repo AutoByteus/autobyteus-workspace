@@ -43,6 +43,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
   activity?: "none" | "present" | "indeterminate";
   /** autobyteus-348: the second member (the Worker) was saved on `runtimeKind` with this pending switch and no session ID. */
   pendingSwitch?: PendingRuntimeSwitch;
+  /** autobyteus-599 (AC-008): a real run manager (as a composition wires it) instead of the controlled preparations. */
+  agentRunManager?: unknown;
 } = {}) => {
   const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-"));
   const mode = options.mode ?? "restore";
@@ -92,7 +94,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     releaseExactRun: vi.fn(async () => ({ accepted: true })),
   }), preparations);
   const dependencies = {
-    agentRunManager: manager as never,
+    agentRunManager: (options.agentRunManager ?? manager) as never,
     memoryLocator: { getMemoryDir: (_placement: unknown, runId: string) => join(memoryDir, runId) } as never,
     activityInspector: { inspect: () => activity.kind === "indeterminate"
       ? { kind: "indeterminate", error: new Error("unreadable") } : { kind: activity.kind } } as never,
