@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-015`
 - Package identifier: `org-teams-follow-definition`
 - Request / ticket: Project Task `autobyteus-29` (FU-002, FU-003 of autobyteus-22)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's "work on the follow-up immediately" (2026-11-21)
@@ -100,6 +100,7 @@ Isolated server instances from the ticket worktree with their own data directori
 | DEC-004 | How an Org looks after the change | Unchanged for the user (REQ-006); the container is an internal shape. **Decided.** | Solution Designer | Decided |
 | DEC-005 | Org-level rules | Kept by the container; merged into a unit's rules; left out while a named member is gone (REQ-004). **Decided.** | Solution Designer | Decided |
 | DEC-006 | A unit the user stopped (Stop on its row, REQ-006): should a message from another unit of the same Org wake it? | Today a stopped run is woken only by its assigner, and messages from others are refused (cross-run admission); inside an Org every member starts on its first message, but the user cannot stop one member alone. Waking it would undo the user's explicit Stop with any handoff (for example a costly team). Refusing keeps the user in control; the sending agent gets a clear refusal and can tell the user, and the user resumes the unit by messaging it or opening it. A unit that is only not yet restored (after the Org is reopened, or idle) is always woken by a message. **Recommend: refuse while stopped by the user; wake when merely not restored.** **Decided by the user (2026-11-22): a message wakes it**, also when the user stopped it (units are independent): "To be honest I think since it's a team right and there are also independent in general what do you mean by any handoff if I stop a team but I think a message you can wick it up right". | User (2026-11-22) | Decided |
+| DEC-007 | Which text does another unit get when it messages a Team unit's removed member by its Org address (`P/x`)? (CRR-004 A-1) | A teammate gets autobyteus-22's exact former-member refusal; another unit got the generic not-found text. Consistency across surfaces within the approved direction (REQ-002: every autobyteus-22 behavior, including the clear refusal). **Decided: the same former-member refusal, naming the member at its Org address** ("<name> (/software_engineering_team/x) is no longer a member of your team…" wording as autobyteus-22 § Exact Texts, address presented through `ContainedTeamAddressSpace`), as for a removed Org unit. | Solution Designer (user informed) | Decided |
 
 ## Readiness Check
 

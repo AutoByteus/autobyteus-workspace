@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-015 | Mixed | Failure-origin review CRR-004 A-1 (minor Requirement Gap) | A-1 | Approved | Approved (DEC-007 by the Solution Designer within the direction, user informed) | REQ-002, DEC-007 | Same former-member refusal for other units at `P/x` |
 | SR-014 | Design | Architecture review ARCH-REV-008 Fail | AR-010 | Approved; design Ready (reviewed Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-006 | Delegation-chain case is `related` (no counterpart, view rule 1); `same_container` only unit↔unit |
 | SR-013 | Design | Source review CRR-001 (Fail) | CR-001 (Design Impact) | Approved; design Ready (implemented, review Fail) | Approved; design Ready (revised) | Preserved boundary (delegation from Org units); REQ-003 | Step 2 of runs delegated by a unit: container placements at Org addresses; same_container through the delegation chain |
 | SR-012 | Design | Architecture review ARCH-REV-006 Fail (contract) | AR-008, AR-009 | Approved; design Ready (contract reviewed Fail) | Approved; design Ready (contract aligned) | REQ-003, Out of Scope (application-bound) | counterpart rule pinned with code points and test; one application-ownership rule; residue decision |
@@ -134,3 +135,9 @@
 #### Review note on SR-014 (no new revision)
 
 - 2026-11-22: architecture review `ARCH-REV-009` — Pass on SR-014, AR-010 resolved, Large / High; forwarded to `/implementation_engineer` with CRR-001's CR-002..CR-004 and N-1. Its test-wording note applied to the SR-014 test line (the delegating unit's view shows the message only when that unit is a party).
+
+### SR-015 — Former-member refusal for other units
+
+- Trigger: `/code_reviewer` CRR-004 (failure-origin review): A-1, a minor Requirement Gap — another unit messaging a Team unit's removed member by `P/x` gets the generic not-found text while a teammate gets the exact former-member refusal. F-1..F-4 are implementation-owned (not affected).
+- Decision DEC-007 (Solution Designer, within the direction: REQ-002 covers every autobyteus-22 behavior including the clear refusal; consistency across surfaces; user informed): the same former-member refusal naming the member at its Org address. Design SR-015: `CollaborationTree.resolve` asks the Team unit for `formerMemberAt` and presents `P/x`; test named.
+- Route: architecture reviewer (revised package), to forward to the implementation round under way.
