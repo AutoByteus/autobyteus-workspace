@@ -14,15 +14,31 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
+
+**IR-002 (this round):** fixes CRR-001 CR-001 (`Local Fix`, High): every Org member model save threw and failed with
+`INTERNAL_ERROR`, because `AgentOrgRunManager` built a preview tree through the shared switch rule (`applyAgentOrgRunSelectionPatches`)
+before validation had decided a continuation, and `patchAgent` now correctly throws without one. Fixed by splitting a
+continuation-free "launch-only" preview (`previewAgentOrgLaunchConfigurations`, new in `agent-org-run-config-mutator.ts`)
+out of the mutator, used only to read back each scope's proposed launch for validation; the actual commit still goes
+through the real switch rule, after validation decides the continuation, unchanged.
+
+While building IR-002's own required regression test (no prior test drove `AgentOrgRunManager`'s stopped save of a
+configured Agent at all), self-validation found a second, pre-existing and independent defect: `ContainerConfigTrees.writeAgent`
+and `withLaunch` (`container-config-trees.ts`) never wrote back a node's `platformAgentRunId`, so any Org-member save
+whose continuation changes the session ID (every hand-over, undo or cross-runtime switch — not only this ticket's new
+cases) silently kept the stale one on disk and the manager then reported `PERSISTENCE_INDETERMINATE` to the user instead
+of `UPDATED`. This breaks the in-scope AC-008 "Save succeeds" outcome for every Org-member case, so it is this ticket's
+functionality (the ticket-scope test: whose functionality is a Save of an Org member's model/runtime — this ticket's,
+not other functionality), not a deferred follow-up. Fixed in the same two functions, in the same round.
 
 Implements the design spec's `Change / Refactor Sequence` end to end: `RunContinuation`/`RunHandOver` types; the
 selection service's continuation decision table and its options rewrite; `selectionContextFor`'s DEC-005 reference
@@ -77,6 +93,7 @@ Exactly the design spec's `Final File Responsibility Mapping`, all in `autobyteu
 - `agent-execution/domain/runtime-switch.ts` — the marker text (DEC-008, N-4), `buildRuntimeSwitchBetween` only.
 - `launch-preferences/launch-usability-check.ts`, `model-routing/model-routing-settings.ts` — `handOver: "no_session"` (AR-002).
 - `autobyteus-web/localization/messages/{en,zh-CN}/workspace.ts`, `GLOSSARY.md` — copy and glossary updates.
+- IR-002: `agent-org-execution/services/agent-org-run-config-mutator.ts` (new `previewAgentOrgLaunchConfigurations`), `agent-org-execution/services/agent-org-run-manager.ts` (uses it for the pre-validation preview), `agent-org-execution/container/container-config-trees.ts` (`writeAgent`/`withLaunch` now persist `platformAgentRunId`).
 
 Test files touched are listed in `implementation-revision-record.md`'s delta.
 
@@ -89,9 +106,10 @@ Test files touched are listed in `implementation-revision-record.md`'s delta.
 ## Known Risks
 
 - Carried from the design review (`design-review-report.md` → Residual Risks), unchanged by implementation:
-  - the native→native path (AC-002) and the Team-member case (AC-008) are proven only by the planned built-server E2E, not by this round's unit/integration coverage;
+  - the native→native path (AC-002) and the Team-member case (AC-008) are proven at the full E2E level only by the planned built-server E2E, not by this round's unit/integration coverage (IR-002 now does add direct unit coverage of `AgentOrgRunManager`'s own stopped save for a direct Org member and a Team-mounted member, closing the "no test drives this path at all" gap CRR-001 found, but a real end-to-end run through activation is still the API/E2E engineer's);
   - the editorial `requirements-doc.md` Document Status line still says "baseline SR-005" (Solution Designer's document, not touched here).
-- No new risk found during implementation. The one place the design flagged as needing care — a code path that infers "a switch" from different runtimes instead of reading `continuation` — was searched again during implementation; only `runtime-switch-recorder.ts:37` reads `from.runtimeKind`, unchanged and correct for a same-runtime hand-over.
+- IR-002 found and fixed, in round, a second pre-existing defect unrelated to the continuation decision itself: `ContainerConfigTrees` never wrote back an Org member's `platformAgentRunId` on any save that changes the session ID (see Current Implementation Summary). No other instance of the same shape was found: the standalone path (`agent-run-runtime-switch-commit.ts`) and the Team path (`TeamRunExecutionTreeStore`'s own write, used directly by `AgentTeamRunManager`, not through a second composed-write layer) both write the whole node object, so they were not exposed to this defect.
+- No other new risk found during implementation. The one place the design flagged as needing care — a code path that infers "a switch" from different runtimes instead of reading `continuation` — was searched again during implementation; only `runtime-switch-recorder.ts:37` reads `from.runtimeKind`, unchanged and correct for a same-runtime hand-over.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -136,6 +154,7 @@ None. No new dependency, environment variable, or build-step change.
 | IMP-03 | `pnpm -C autobyteus-server-ts test:unit` | same | macOS | Whole server unit suite (incl. `tests/architecture`) | Regression check: every other server unit behavior | Pass | `evidence/IMP-03-server-unit-suite.log` | `Test Files  1072 passed \| 5 skipped (1077)` |
 | IMP-04 | `pnpm -C autobyteus-server-ts test:integration:prepare` then `pnpm -C autobyteus-server-ts test:integration` | same | macOS | Whole server integration suite, incl. `agent-team-run-manager.integration.test.ts` and `team-agent-tools-mcp-lifecycle.integration.test.ts` (both construct a `modelSelectionValidator` fake touched by this change) | Regression check | Pass | `evidence/IMP-04-server-integration-suite.log` | `Test Files  92 passed \| 21 skipped (113)` |
 | IMP-05 | `pnpm -C autobyteus-web typecheck`; `pnpm -C autobyteus-web guard:localization-boundary`; `pnpm -C autobyteus-web audit:localization-literals` | same | macOS | Web compiles the server's `src` through its cross-package tests; the two changed locale files | REQ-007/AC-010 (compile + localization-boundary gate only; no pinned-text test exists) | Pass | `evidence/IMP-05-web-typecheck-and-guards.log` | `[typecheck] PASS`; `[guard:localization-boundary] Passed.`; `[audit:localization-literals] Passed with zero unresolved findings.` |
+| IMP-06 (IR-002) | typecheck; `pnpm -C autobyteus-server-ts build`; `tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts` (the reviewer's reproduction); `tests/unit/agent-org-execution` + `tests/integration/agent-org-execution`; the new `agent-org-run-manager-model-selection-save.test.ts`; full server unit + integration suites; web typecheck | on top of `14c28a91f9` | macOS | `agent-org-run-config-mutator.ts`, `agent-org-run-manager.ts`, `container-config-trees.ts`, and everything downstream of them | AC-008 (Org member save), BEH-003 (Org member switch, preserved) | Pass | `evidence/IMP-06-crr001-fix-validation.log` | `Test Files 1073 passed \| 5 skipped (1078)`; `Test Files 92 passed \| 21 skipped (113)`; e2e `Tests 1 passed (1)`; new file `Tests 3 passed (3)` |
 
 - Not run, and why (left to API/E2E, gated, needs a live system): the built-server E2E for the native→native model hand-over (AC-002), the Team-member case (AC-008), and a full rerun of the existing switch E2Es (AC-007 end-to-end) all need the fake LM Studio endpoint / scripted runtime harness that `api_e2e_engineer` owns, per the design's `Guidance For Implementation` and `Residual Risks`. The probe (`probes/autobyteus-53-repro.test.ts`) was copied into `tests/unit/llm-management/` and run once to confirm its old pinned assertions now fail against the fixed behavior (native options list both models; native capacity mismatch returns `valid`/`hand_over` instead of `invalid`); it was then deleted (disposable, not committed) — its two native-flip assertions are the same ones the new `run-model-selection-service.test.ts` cases now assert permanently.
 

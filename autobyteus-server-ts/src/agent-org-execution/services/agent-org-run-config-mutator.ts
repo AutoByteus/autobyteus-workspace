@@ -129,6 +129,41 @@ const patchMember = (
 };
 
 /**
+ * A preview of every patched scope's own launch (runtime, model, settings merged from its patch) for every scope kind
+ * alike, with no pending-switch state and no continuation (CRR-001 CR-001): the save path uses this only to re-read
+ * each scope's proposed launch before validation decides the continuation (`listAgentOrgRunSelectionScopes`), never to
+ * commit. It is never a substitute for `applyAgentOrgRunSelectionPatches`, the one owner of the pending-switch
+ * invariants: a configured Agent's actual save still goes through the shared switch rule, after validation.
+ */
+export const previewAgentOrgLaunchConfigurations = (
+  tree: AgentOrgRunExecutionTreeFile,
+  targets: readonly AgentOrgRunSelectionTarget[],
+): AgentOrgRunExecutionTreeFile => {
+  const patchByAddress = new Map(targets.map((target) => [target.patch.scopeAddress, target.patch]));
+  const previewAgent = (agent: ConfiguredAgentExecutionNode): ConfiguredAgentExecutionNode => {
+    const patch = patchByAddress.get(agent.address);
+    return patch ? { ...agent, launchConfiguration: replaceLaunchConfiguration(agent.launchConfiguration, patch) } : agent;
+  };
+  const rootPatch = patchByAddress.get("/");
+  return {
+    ...tree,
+    rootOrg: {
+      ...tree.rootOrg,
+      ...(rootPatch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(tree.rootOrg.defaultLaunchConfiguration, rootPatch) } : {}),
+      members: tree.rootOrg.members.map((member) => {
+        if ("agentRunId" in member) return previewAgent(member);
+        const patch = patchByAddress.get(member.address);
+        return {
+          ...member,
+          ...(patch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(member.defaultLaunchConfiguration, patch) } : {}),
+          members: member.members.map(previewAgent),
+        };
+      }),
+    },
+  };
+};
+
+/**
  * Applies the saves of a stopped Org's scopes. A configured Agent (direct, or of a mounted Team) goes through the shared
  * switch rule (switch, undo or model-only edit; `newSwitchId` names a new switch); the Org's and a mounted Team's default
  * scopes change the default launch only.

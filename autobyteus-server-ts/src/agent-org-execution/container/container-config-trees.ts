@@ -59,10 +59,13 @@ export class ContainerConfigTrees {
     if (!metadata) return ["not_committed"];
     const launch = node.launchConfiguration;
     const { pendingRuntimeSwitch: _pending, launchSource: _source, ...rest } = metadata;
-    // The launch, where it came from (a settings edit records `settings`), and a pending runtime switch: as the edit gives them.
+    // The launch, where it came from (a settings edit records `settings`), the session ID and a pending runtime
+    // switch: as the edit gives them (autobyteus-53: a hand-over or an undo changes the session ID too, not only the
+    // model; keeping the stored one here left a switch's own record unwritten, CRR-001 CR-001).
     const next = { ...rest, runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
       llmConfig: launch.llmConfig as Record<string, unknown> | null, autoExecuteTools: launch.autoExecuteTools,
       workspaceRootPath: launch.workspaceRootPath ?? metadata.workspaceRootPath,
+      platformAgentRunId: node.platformAgentRunId,
       ...(node.launchSource ? { launchSource: node.launchSource } : {}),
       ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: node.pendingRuntimeSwitch } : {}) };
     if (isDeepStrictEqual(next, metadata)) return [];
@@ -71,11 +74,11 @@ export class ContainerConfigTrees {
   }
 }
 
-/** A Team unit member with the launch, its source and a pending runtime switch as its Org settings now give them (its address unchanged). */
+/** A Team unit member with the launch, its session ID, its source and a pending runtime switch as its Org settings now give them (its address unchanged). */
 const withLaunch = (member: ConfiguredAgentExecutionNode, edited: ConfiguredAgentExecutionNode | undefined): ConfiguredAgentExecutionNode => {
   if (!edited) return member;
   const { pendingRuntimeSwitch: _pending, launchSource: _source, ...rest } = member;
-  return Object.freeze({ ...rest, launchConfiguration: edited.launchConfiguration,
+  return Object.freeze({ ...rest, launchConfiguration: edited.launchConfiguration, platformAgentRunId: edited.platformAgentRunId,
     ...(edited.launchSource ? { launchSource: edited.launchSource } : {}),
     ...(edited.pendingRuntimeSwitch ? { pendingRuntimeSwitch: edited.pendingRuntimeSwitch } : {}) });
 };

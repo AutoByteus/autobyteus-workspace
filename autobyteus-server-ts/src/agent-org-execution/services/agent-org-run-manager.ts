@@ -8,7 +8,7 @@ import { isDeepStrictEqual } from "node:util";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentOrgRunConfig, AgentOrgRunConfigResult } from "../domain/agent-org-run-config.js";
-import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
+import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, previewAgentOrgLaunchConfigurations, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
 import { runModelConfigEditability } from "../../run-history/domain/run-model-config.js";
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -231,7 +231,8 @@ export class AgentOrgRunManager {
               message: error instanceof Error ? error.message : String(error) }]);
         }
       }
-      const proposed = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
+      // A preview only (CRR-001 CR-001): no continuation is decided yet, so this must not go through the switch rule.
+      const proposed = previewAgentOrgLaunchConfigurations(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
       const originals = new Map(listAgentOrgRunSelectionScopes(tree).map(scope => [scope.scopeAddress, scope]));
       const modelAddresses = new Set(modelTargets.map(target => target.patch.scopeAddress));
       const workspaceAddresses = new Set<string>(normalizedWorkspaces.flatMap(patch => {

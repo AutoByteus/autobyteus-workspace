@@ -50,10 +50,13 @@ describe("applyRuntimeSelection", () => {
     expect(Object.hasOwn(undone, "pendingRuntimeSwitch")).toBe(false);
   });
 
-  it("continuation same_session on the record's own agent runtime is a model-only edit, and a pending switch stays untouched", () => {
+  it("continuation same_session on the record's own agent runtime is a model-only edit", () => {
     expect(applyRuntimeSelection(claude, { ...claude.binding, llmModelIdentifier: "opus", llmConfig: null, continuation: "same_session" }, "x")).toEqual({
       binding: { ...claude.binding, llmModelIdentifier: "opus", llmConfig: null },
     });
+  });
+
+  it("continuation hand_over on the pending (not the reference) runtime while a switch is pending keeps it pending: a model edit on the new runtime is still a fresh selection, not a replacement of the pending model", () => {
     const pending = applyRuntimeSelection(claude, codex, "switch-1");
     const edited = applyRuntimeSelection(pending, { ...codex, llmModelIdentifier: "gpt-5-mini" }, "x");
     expect(edited.binding.llmModelIdentifier).toBe("gpt-5-mini");
