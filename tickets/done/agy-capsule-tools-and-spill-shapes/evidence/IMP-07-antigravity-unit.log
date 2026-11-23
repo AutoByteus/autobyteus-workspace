@@ -1,0 +1,3 @@
+# IMP-07 antigravity unit folder. Command: npx vitest run tests/unit/agent-execution/backends/antigravity. Commit 0f74222c52. 2026-11-23.
+ Test Files  25 passed | 4 skipped (29)
+      Tests  395 passed | 6 skipped (401)

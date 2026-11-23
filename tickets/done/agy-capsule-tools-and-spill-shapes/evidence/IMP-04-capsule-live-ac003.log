@@ -1,0 +1,9 @@
+# IMP-04 live check AC-003 of the unchanged allowlist, capsule written by the real createAgyRunCapsule. Command: node IMP-02-capsule-live-probe.mjs /tmp/s588/real/capsule-path.json. Real agy 1.5.15, macOS, scratch /tmp/s588/real, base 9d17ad4d1f + uncommitted change (committed next). 2026-11-23. Adds a small synthetic conversation to the local agy history. mcp_config.json removed from the scratch capsule (dead URL).
+agent.md tools: view_file,write_to_file,replace_file_content,grep_search,list_dir,find_by_name,run_command,generate_image
+allowlist names missing from init.tools (the factory warns when non-empty): []
+init.tools has read_file/write_file/edit_file: []
+TURN 1 ANSWER: read_file, write_file, edit_file, run_command, generate_image, manage_task 
+TURN 1 DONE tool steps: none
+TURN 2 ANSWER: DONE 
+TURN 2 DONE tool steps: write_file -> undefined | edit_file -> undefined | run_command -> "Created At: 2026-11-23T18:50:54+01:00\nCompleted At: 2026-11-23T18:50:55+01:00\nCommand exited with code 3.\n\nCommand output:\nalpha\r\ngamma\r\n"
+a.txt: "alpha\ngamma\n"

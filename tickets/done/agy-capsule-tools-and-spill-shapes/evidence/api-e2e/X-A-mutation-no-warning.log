@@ -1,0 +1,11 @@
+# Case: X-A
+# Command: dist factory: the warning condition replaced by false (mutation), CR tests run, then restored (cmp identical)
+# Commit: b55965acf0 (code = 0f74222c52; the new e2e file and the fixture default are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, BUILT server (pnpm build exit 0), test-owned data root and database, private HOME, scripted Antigravity CLI
+# Date: 2026-11-24
+
+     × CR-01 a registry that lacks one allowlist name: one warning naming it, and the run answers 4486ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: exactly one warning for this run: expected [] to have a length of 1 but got +0
+      Tests  1 failed | 2 passed | 1 skipped (4)
+restored (cmp identical)

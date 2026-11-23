@@ -1,0 +1,18 @@
+# Case: API-03
+# Command: env -i PATH HOME USER LOGNAME TMPDIR RUN_AGY_CAPSULE_TOOLS_LIVE_E2E=1 pnpm exec vitest run tests/e2e/runtime/agy-capsule-tool-registry.e2e.test.ts --no-watch (two runs)
+# Commit: b55965acf0 (code = 0f74222c52; the new e2e file and the fixture default are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, BUILT server, test-owned data root and database, REAL agy 1.5.15 on the host login (real HOME/USER/LOGNAME), synthetic scratch workspace
+# Date: 2026-11-24
+
+## run 1
+CR-04 tools used: read_file,edit_file,write_file,run_command
+ ✓ tests/e2e/runtime/agy-capsule-tool-registry.e2e.test.ts (4 tests | 3 skipped) 49166ms
+     ✓ CR-04: no warning; the agent reads, writes, edits and runs a command  49165ms
+      Tests  1 passed | 3 skipped (4)
+exit 0
+## run 2
+CR-04 tools used: read_file,edit_file,write_file,run_command
+ ✓ tests/e2e/runtime/agy-capsule-tool-registry.e2e.test.ts (4 tests | 3 skipped) 21207ms
+     ✓ CR-04: no warning; the agent reads, writes, edits and runs a command  21205ms
+      Tests  1 passed | 3 skipped (4)
+exit 0
