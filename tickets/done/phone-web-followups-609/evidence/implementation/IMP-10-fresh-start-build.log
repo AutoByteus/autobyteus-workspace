@@ -1,0 +1,54 @@
+# IMP-10 (Rule 12) the fresh-start build: a fresh clone, frozen install, the macOS ARM64 job's build and its verify steps
+# command: git clone --no-local <worktree> <tmp>/fresh ; git checkout --detach d4af72998f ; pnpm install --frozen-lockfile ;
+#          cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 ;
+#          then, from the clone's root, the job's "Verify bundled Prisma ARM64 engine target" and "Verify packaged
+#          terminal runtime ARM64" steps (copied from .github/workflows/release-desktop.yml, with the Electron spawn probe)
+# commit: d4af72998f (the pushed HEAD)
+# env: macOS arm64, Node v22.23.1; unsigned (signing and notarization need the runner: not tested here; the other
+#      operating systems: IMP-09)
+# date: 2026-11-22 (22:48:25Z to 22:55:17Z)
+# result: Pass. Install, build and both verify steps passed; no .server-packaging-stage/ left in the clone.
+
+## steps
+== 2026-11-22T22:48:25Z git clone --no-local <worktree> <fresh dir>; checkout d4af72998f69574e839a426c68a85134abc0397f
+d4af72998f docs(phone-web-followups-609): FU-005, a missing workspace file shows the node's raw error text (autobyteus-609)
+== 2026-11-22T22:49:42Z pnpm install --frozen-lockfile
+install exit=0
+== 2026-11-22T22:49:51Z build:electron:mac -- --arm64 (the macOS ARM64 job's command)
+build exit=0
+== 2026-11-22T22:55:12Z Verify bundled Prisma ARM64 engine target
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+prisma verify: ok
+== 2026-11-22T22:55:13Z Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal runtime verify: ok
+stage left in the clone: none
+AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg
+AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.14-beta.7.zip
+AutoByteus_personal_macos-arm64-1.5.14-beta.7.zip.blockmap
+builder-debug.yml
+latest-mac.yml
+mac-arm64
+== 2026-11-22T22:55:17Z done
+script exit=0
+
+## from the build's own log (guards, typecheck, packaging)
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.7.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.7.zip

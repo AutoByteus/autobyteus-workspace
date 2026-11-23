@@ -1,0 +1,59 @@
+# IMP-11 (D-D2, AC-D; SR-005 N-3) a stopped call read back from the node, per writer: the reproduction, then the fix
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts
+#          (first with raw-trace-to-historical-replay-events.ts and historical-replay-events-to-conversation.ts from the
+#          branch head 8ea2261a6a, the files restored after; then on the fix) ;
+#          pnpm exec vitest run --reporter=verbose tests/unit/agent-memory/tool-result-interruption.test.ts
+# commit: head 8ea2261a6a's two replay files + the new test (reproduction); 70f3d8d410 (fix)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Reproduced, then fixed. At the head every writer's stopped call reads back "error" in the activity and on the
+#         earlier-trace page, and the conversation entry carries no status (5 of 5 fail). With D-D2 all 5 pass.
+#
+# The test drives the real writers into a run memory folder and reads it back through LocalMemoryRunViewProjectionProvider
+# (every runtime's history), checking the conversation entry's toolStatus, the activity's status and the page card's
+# statusKey:
+#   - Codex: real-shaped app-server notifications through the Codex thread converter, the segment lifecycle and the
+#     node's runtime memory accumulator; a command still running at `turn/completed` status "interrupted" (shape of the
+#     recorded fixture codex-interrupt-manual) is written by the sequencer with sourceEvent TURN_INTERRUPTED. A command
+#     that failed in the same turn stays "error".
+#   - a runtime reporting TOOL_EXECUTION_INTERRUPTED (Claude, Antigravity) through the accumulator; a failed call stays "error".
+#   - native AutoByteus: the real MemoryManager.finalizePendingToolCallsForTurn (reasons user_interrupt and another);
+#     a failed native call stays "error".
+#   - a stored result with only the interruption's error text; a denial (TOOL_DENIED with provider_state ERROR, even with
+#     error user_interrupt) stays "denied".
+
+## reproduction (the head's replay and conversation transformer)
+ × tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > Codex: a command still running when the user stops the turn reads Stopped; a command that failed reads Failed 15ms
+ × tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > a runtime that reports the call interrupted (TOOL_EXECUTION_INTERRUPTED, as Claude and Antigravity do) reads Stopped 3ms
+ × tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > native AutoByteus: a call open when the turn is interrupted (reason user_interrupt) reads Stopped; a failed call reads Failed 5ms
+ × tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > native AutoByteus: a call open when the turn is interrupted (reason the run was shut down) reads Stopped; a failed call reads Failed 3ms
+ × tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > a stored result with only an interruption's error text reads Stopped; a denial stays denied 3ms
+      Tests  5 failed (5)
+  each failure received:
+   4 +   "activity": "error",
+   4 +   "conversation": undefined,
+
+## fix (70f3d8d410)
+ ✓ tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > Codex: a command still running when the user stops the turn reads Stopped; a command that failed reads Failed 13ms
+ ✓ tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > a runtime that reports the call interrupted (TOOL_EXECUTION_INTERRUPTED, as Claude and Antigravity do) reads Stopped 3ms
+ ✓ tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > native AutoByteus: a call open when the turn is interrupted (reason user_interrupt) reads Stopped; a failed call reads Failed 4ms
+ ✓ tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > native AutoByteus: a call open when the turn is interrupted (reason the run was shut down) reads Stopped; a failed call reads Failed 3ms
+ ✓ tests/unit/run-history/projection/stopped-tool-call-read-back.test.ts > a stored result with only an interruption's error text reads Stopped; a denial stays denied 4ms
+      Tests  5 passed (5)
+
+## the shared rule and the read-back test on 70f3d8d410
+a stopped tool call read back from the node (autobyteus-609 D-D2) > Codex: a command still running when the user stops the turn reads Stopped; a command that failed reads Failed 13ms
+a stopped tool call read back from the node (autobyteus-609 D-D2) > a runtime that reports the call interrupted (TOOL_EXECUTION_INTERRUPTED, as Claude and Antigravity do) reads Stopped 3ms
+a stopped tool call read back from the node (autobyteus-609 D-D2) > native AutoByteus: a call open when the turn is interrupted (reason user_interrupt) reads Stopped; a failed call reads Failed 4ms
+a stopped tool call read back from the node (autobyteus-609 D-D2) > native AutoByteus: a call open when the turn is interrupted (reason the run was shut down) reads Stopped; a failed call reads Failed 4ms
+a stopped tool call read back from the node (autobyteus-609 D-D2) > a stored result with only an interruption's error text reads Stopped; a denial stays denied 2ms
+isInterruptedToolResult (autobyteus-609 D-D2) > the sequencer, a call the runtime reports interrupted: interrupted 1ms
+isInterruptedToolResult (autobyteus-609 D-D2) > the sequencer, a call open when the turn is interrupted: interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > native, a call open when the turn is interrupted: interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > an error-only record with user_interrupt: interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > an error-only record with the sequencer's text: interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > a failed call: not interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > a native failure: not interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > a success: not interrupted 0ms
+isInterruptedToolResult (autobyteus-609 D-D2) > nothing stored: not interrupted 0ms
+      Tests  14 passed (14)

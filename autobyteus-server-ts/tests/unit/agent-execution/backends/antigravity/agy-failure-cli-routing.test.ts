@@ -150,6 +150,21 @@ describe("merged AGY fixture scenario routing (local process boundary, not serve
     expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
   });
 
+  it("linked_skills AGENT_TOOL_STEPS streams four tool steps, each ACTIVE then DONE with its call, then replies", async () => {
+    const owned = await ownedRoot(); const run = await launch("linked_skills", owned, boundConversation);
+    const batch = await run.send("Use the tools. AGENT_TOOL_STEPS");
+    const steps = batch.filter((frame) => frame.step_update?.step_type === "tool").map((frame) => frame.step_update);
+    expect(steps.map((step) => [step.step_index, step.state, step.tool_info.name])).toEqual([
+      [101, "ACTIVE", "call_mcp_tool"], [101, "DONE", "call_mcp_tool"], [102, "ACTIVE", "call_mcp_tool"], [102, "DONE", "call_mcp_tool"],
+      [103, "ACTIVE", "run_command"], [103, "DONE", "run_command"], [104, "ACTIVE", "view_file"], [104, "DONE", "view_file"],
+    ]);
+    expect(steps[0].tool_info.parameters).toMatchObject({ ToolName: "send_message_to", Arguments: { recipient_address: "/release_notes_writer" } });
+    expect(steps[2].tool_info.parameters).toMatchObject({ ToolName: "get_project_task", Arguments: { task_id: "autobyteus-609" } });
+    expect(steps[4].tool_info.parameters).toEqual({ CommandLine: "cd /agy/probe-609 && ls -la docs" });
+    expect(steps[6].tool_info.parameters).toEqual({ AbsolutePath: "/agy/probe-609/docs/notes-609.md" });
+    expect(batch.at(-1)!.result).toMatchObject({ status: "SUCCESS", response: "AGENT_TOOL_STEPS_DONE" });
+  });
+
   it("linked_skills HOLD_TURN keeps the turn running until stopped; a tool call or invalid tool JSON is never held", async () => {
     const owned = await ownedRoot(); const run = await launch("linked_skills", owned, boundConversation);
     // Invalid tool-call JSON ends the turn with a provider ERROR (the Team status probe's failing member).

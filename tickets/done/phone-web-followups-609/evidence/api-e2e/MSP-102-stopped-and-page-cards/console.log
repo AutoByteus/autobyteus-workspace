@@ -1,0 +1,19 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell ~/autobyteus_org/autobyteus-worktrees/phone-web-followups-609/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api609/new-2 --cases=MSP-89,MSP-90,MSP-91,MSP-101,MSP-102
+
+[mobile-shell] MSP-102 …
+[mobile-shell] MSP-102 Fail: AC-D the phone's Activity row and its detail read "Stopped"; AC-D the stopped call's earlier-trace card shows the stop icon (the page answers statusKey interrupted)
+[mobile-shell] MSP-89 …
+[mobile-shell] MSP-89 Pass
+[mobile-shell] MSP-91 …
+[mobile-shell] MSP-91 Pass
+[mobile-shell] MSP-90 …
+[mobile-shell] MSP-90 Pass
+[mobile-shell] MSP-101 …
+[mobile-shell] MSP-101 Fail: locator.click: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-team-member-delivery_team_510fbd5b4ee44e60be3c5608e069ef93-/mate"]').first()
+
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.

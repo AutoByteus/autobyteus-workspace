@@ -44,6 +44,7 @@ describe('TextSegment', () => {
       global: { stubs },
     });
     const action: AbsoluteFilePathAction = {
+      kind: 'absolute',
       id: 'file-1',
       rawCandidate: '/tmp/history.md',
       normalizedCandidate: '/tmp/history.md',

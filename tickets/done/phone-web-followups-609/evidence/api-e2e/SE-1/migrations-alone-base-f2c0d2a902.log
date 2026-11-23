@@ -1,0 +1,9 @@
+     ✓ SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped  2389ms
+     × SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open 1941ms
+     ✓ SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)  3617ms
+     × RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical 1863ms
+     ✓ RRB-2 starts on a data folder that never had them: both are skipped  1843ms
+Error: Unknown system error -102: Unknown system error -102, open '<tmp>/tmp/remove-retired-built-ins-startup-e2e-VVEa66/node-access/local-control.sock'
+Error: Unknown system error -102: Unknown system error -102, open '<tmp>/tmp/remove-skill-improvement-startup-e2e-JpcMqm/node-access/local-control.sock'
+ Test Files  2 failed (2)
+      Tests  2 failed | 3 passed | 1 skipped (6)

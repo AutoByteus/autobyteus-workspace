@@ -25,14 +25,14 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 withDefaults(defineProps<{
   content: string;
   enableEventMonitorFileActions?: boolean;
 }>(), { enableEventMonitorFileActions: false });
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 const showContent = ref(false);
 

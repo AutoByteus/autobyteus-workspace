@@ -129,6 +129,15 @@ node's Origin rule refuses its WebSocket and API requests
 it. The client side and what previewed pages can and cannot do are in
 `autobyteus-web/docs/file_explorer.md` (HTML Preview Resource Contract).
 
+## Workspace File Reads (REST)
+
+`GET /rest/workspaces/:workspaceId/content` and `static/*` (`src/api/rest/workspaces.ts`) find the workspace through
+`WorkspaceManager.getOrCreateWorkspace`, the same restoring lookup the GraphQL Files path uses (autobyteus-609): a workspace
+in memory, else a registered folder restored from the registry, else an on-demand skill or semantic-memory workspace. The
+first read after a node restart therefore answers 200 with the file, not 404 until something else registers the folder
+again. An ID that names no workspace, or any failure of the lookup, answers 404 `Workspace not found`; the lookup creates
+nothing for an unknown ID, and a path outside the folder is refused as before.
+
 ## Workspace History Boundary
 
 Workspace-specific run-history lookup uses the visible-workspace boundary.

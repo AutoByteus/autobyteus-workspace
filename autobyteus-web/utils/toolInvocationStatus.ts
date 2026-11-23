@@ -12,6 +12,10 @@ const STATUS_RANK: Record<ToolInvocationStatus, number> = {
   interrupted: 99,
 };
 
+/** Whether a value read from the node (a projection's activity `status`, a conversation entry's `toolStatus`) is a status. */
+export const isToolInvocationStatus = (value: unknown): value is ToolInvocationStatus =>
+  typeof value === 'string' && Object.prototype.hasOwnProperty.call(STATUS_RANK, value);
+
 export const isTerminalToolInvocationStatus = (
   status: ToolInvocationStatus,
 ): boolean => status === 'success' || status === 'error' || status === 'denied' || status === 'interrupted';

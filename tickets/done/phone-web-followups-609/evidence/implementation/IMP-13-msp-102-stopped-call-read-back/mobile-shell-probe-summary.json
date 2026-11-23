@@ -1,0 +1,139 @@
+{
+ "startedAt": "2026-11-23T01:23:22.356Z",
+ "finishedAt": "2026-11-23T01:25:12.030Z",
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-102": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "browserErrorsCount": 0,
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "cases": {
+  "MSP-102": {
+   "result": "Pass",
+   "seconds": 75.5,
+   "run": "fact_checker_eab085f9a7fe4947bce1c43ca0ac3454",
+   "fillers": 50,
+   "pageEvents": 110,
+   "loadedEarlierCount": 10,
+   "pageRequests": 1,
+   "live": {
+    "send_message_to": {
+     "name": "send_message_to",
+     "summary": "→ /release_notes_writer",
+     "stopped": false
+    },
+    "get_project_task": {
+     "name": "get_project_task",
+     "summary": "autobyteus-609",
+     "stopped": false
+    },
+    "run_command": {
+     "name": "run_command",
+     "summary": "ls -la docs",
+     "stopped": false
+    },
+    "view_file": {
+     "name": "view_file",
+     "summary": "docs/notes-609.md",
+     "stopped": false
+    }
+   },
+   "heldCard": {
+    "name": "run_command",
+    "summary": "sleep 600 # HOLD_TURN",
+    "stopped": true
+   },
+   "deskActivity": [
+    {
+     "name": "run_command",
+     "chip": "Success"
+    },
+    {
+     "name": "run_command",
+     "chip": "Stopped"
+    }
+   ],
+   "phoneRow": {
+    "status": "interrupted",
+    "word": "Stopped"
+   },
+   "phoneDetail": "Stopped",
+   "api": {
+    "send_message_to": {
+     "kind": "tool_card",
+     "toolName": "send_message_to",
+     "statusKey": "success",
+     "summaryArgs": {
+      "recipient_address": "/release_notes_writer"
+     }
+    },
+    "get_project_task": {
+     "kind": "tool_card",
+     "toolName": "get_project_task",
+     "statusKey": "success",
+     "summaryArgs": {
+      "task_id": "autobyteus-609"
+     }
+    },
+    "run_command": {
+     "kind": "tool_card",
+     "toolName": "run_command",
+     "statusKey": "success",
+     "summaryArgs": {
+      "CommandLine": "cd /agy/probe-609 && ls -la docs"
+     }
+    },
+    "view_file": {
+     "kind": "tool_card",
+     "toolName": "view_file",
+     "statusKey": "success",
+     "summaryArgs": {
+      "AbsolutePath": "/agy/probe-609/docs/notes-609.md"
+     }
+    },
+    "held": {
+     "kind": "tool_card",
+     "toolName": "run_command",
+     "statusKey": "interrupted",
+     "summaryArgs": {
+      "CommandLine": "sleep 600 # HOLD_TURN"
+     }
+    }
+   },
+   "browse": {
+    "send_message_to": {
+     "name": "send_message_to",
+     "summary": "→ /release_notes_writer",
+     "stopped": false
+    },
+    "get_project_task": {
+     "name": "get_project_task",
+     "summary": "autobyteus-609",
+     "stopped": false
+    },
+    "run_command": {
+     "name": "run_command",
+     "summary": "ls -la docs",
+     "stopped": false
+    },
+    "view_file": {
+     "name": "view_file",
+     "summary": "docs/notes-609.md",
+     "stopped": false
+    }
+   },
+   "browseHeld": {
+    "name": "run_command",
+    "summary": "sleep 600 # HOLD_TURN",
+    "stopped": true
+   }
+  }
+ }
+}

@@ -235,7 +235,6 @@ const activityRichnessScore = (entry: RunProjectionActivityEntry): number => {
     entry.result,
     entry.error,
     entry.detailLevel,
-    entry.contextText,
   ].filter(hasValue).length;
 };
 

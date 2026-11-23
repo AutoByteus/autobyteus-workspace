@@ -216,6 +216,22 @@ audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
 Files/viewer status surface and do not navigate the application or rewrite the
 original Event Monitor content.
 
+A Markdown link in a run's conversation whose destination is relative (no scheme,
+not `#…`, not `//…`, no leading `/`: `[clip](media/clip.mp4)`,
+`[notes](docs/a.md#x)`) is a file link too (autobyteus-609). The renderer emits it as
+a run-relative link beside the absolute ones; `useEventMonitorFilePreview.openPath`
+resolves it against the run's own folder (`activeWorkspaceTarget.workspaceRootPath`:
+a Team member's or a delegated run's own folder, never the window's main workspace),
+drops the `#fragment` and `?query`, and opens the file as an absolute path inside
+that folder opens, on the desktop and on the phone
+(`utils/eventMonitorFilePaths/runRelativeFileLink.ts`). A link that leaves the folder
+(`../outside.md`), a run with no folder and a file type that cannot be previewed show
+the usual "could not open" status; a run on another node says which node it is on;
+a missing file shows the viewer's not-found state. Nothing outside the folder is
+read. Relative paths in plain text or inline code are not links (they hold many
+non-paths). A relative link inside a workspace file's own Markdown preview is a
+different case: it resolves against that document (autobyteus-576).
+
 #### HTML Preview Resource Contract
 
 The shared `FileViewer` passes `relativeResourceContext` through to

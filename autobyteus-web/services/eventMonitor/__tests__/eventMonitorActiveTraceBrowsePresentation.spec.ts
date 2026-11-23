@@ -133,7 +133,7 @@ describe('event monitor active trace browse presentation', () => {
           __typename: 'EventMonitorToolCardVisual', kind: 'tool_card', eventId: 'tool-event',
           visualId: 'tool-visual', kindOrdinal: 0, invocationId: 'call', cardKind: 'tool_call',
           toolName: 'search_web', statusKey: 'success', errorMessage: null,
-          summaryArgs: { __typename: 'EventMonitorToolSummaryArgs', query: 'cats' },
+          summaryArgs: { query: 'cats' },
           approvalTarget: null,
         },
         {
@@ -161,7 +161,7 @@ describe('event monitor active trace browse presentation', () => {
         __typename: 'EventMonitorToolCardVisual', kind: 'tool_card', eventId: 'failed-tool-event',
         visualId: 'failed-tool-visual', kindOrdinal: 0, invocationId: 'failed-call', cardKind: 'tool_call',
         toolName: 'run_bash', statusKey: 'error', errorMessage,
-        summaryArgs: { __typename: 'EventMonitorToolSummaryArgs', command: 'exit 23' },
+        summaryArgs: { command: 'exit 23' },
         approvalTarget: null,
       }],
     };
@@ -175,4 +175,21 @@ describe('event monitor active trace browse presentation', () => {
     expect(visual.presentation).not.toHaveProperty('errorMessage');
     expect(visual.presentation.statusKey).toBe('error');
   });
+
+  // autobyteus-609 D-D: the node sends `interrupted` for a call the run's stop interrupted; the page shows it as such, and a
+  // status the web does not know still fails loudly.
+  it('accepts an interrupted call\'s status key and refuses an unknown one', () => {
+    const page = (statusKey: string): EventMonitorActiveTracePageEventDto => ({
+      __typename: 'EventMonitorActiveTracePageEvent', eventId: `e-${statusKey}`, turnGroupId: 't', occurredAtMs: 1,
+      visuals: [{
+        __typename: 'EventMonitorToolCardVisual', kind: 'tool_card', eventId: `e-${statusKey}`, visualId: `v-${statusKey}`, kindOrdinal: 0,
+        invocationId: 'c', cardKind: 'terminal_command', toolName: 'run_command', statusKey, errorMessage: null,
+        summaryArgs: { CommandLine: 'sleep 600' }, approvalTarget: null,
+      }],
+    });
+    const [item] = buildEventMonitorActiveTraceBrowsePresentation([page('interrupted')]);
+    expect(item).toMatchObject({ kind: 'assistant', visuals: [{ kind: 'tool', presentation: { statusKey: 'interrupted', summary: { text: 'sleep 600' } } }] });
+    expect(() => buildEventMonitorActiveTraceBrowsePresentation([page('vanished')])).toThrow("Unsupported active-trace tool status 'vanished'.");
+  });
 });
+

@@ -43,6 +43,17 @@ export const useAgentBackgroundTaskStore = defineStore('agentBackgroundTask', {
       }
     },
 
+    /**
+     * The run stopped (autobyteus-609 D-I): every task of it still shown running ends as the run's end does, `stopped` with
+     * `run_ended` and no exit code, as every runtime that streams its tasks ends them when its run stops (ASM-1). Ended
+     * tasks keep their end. A later stream event for a task still replaces it (`upsertTask`).
+     */
+    endRunningTasksForRunEnd(runId: string) {
+      for (const task of this.tasksByRunId.get(runId)?.values() ?? []) {
+        if (task.status === 'running') this.upsertTask(runId, { ...task, status: 'stopped', endReason: 'run_ended', exitCode: null });
+      }
+    },
+
     upsertTask(runId: string, task: BackgroundTask) {
       let tasks = this.tasksByRunId.get(runId);
       if (!tasks) {

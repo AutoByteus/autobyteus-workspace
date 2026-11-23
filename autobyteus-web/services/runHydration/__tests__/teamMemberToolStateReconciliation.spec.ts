@@ -78,3 +78,11 @@ it('TASK-04: actual optional routing retained only in Activity fills the copied 
   expect(selected(result).approvalTarget).toEqual({ agentRunId: 'task' })
   expect((result.activities[0] as ToolActivity).approvalTarget).toEqual({ agentRunId: 'task' })
 })
+it('autobyteus-609 D-D2: a member\'s call stopped live meets the node\'s read-back "interrupted" and stays Stopped; the old read-back "error" was a conflict', () => {
+  const live = tool('interrupted', { error: 'Tool execution interrupted.' })
+  const readBack = tool('interrupted', { arguments: { message: 'actual' }, logs: [], error: 'Tool execution interrupted.' })
+  const result = reconcile(input(live, readBack))
+  expect(selected(result)).toMatchObject({ status: 'interrupted', error: 'Tool execution interrupted.' })
+  expect(result.activities[0]).toMatchObject({ status: 'interrupted' })
+  expect(() => reconcile(input(live, tool('error', { error: 'Tool execution interrupted.' })))).toThrow(/Conflicting terminal tool outcomes/)
+})

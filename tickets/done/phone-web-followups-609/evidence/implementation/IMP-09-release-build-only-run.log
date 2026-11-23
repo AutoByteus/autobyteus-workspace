@@ -1,0 +1,28 @@
+# IMP-09 (Rule 12; D-C, AC-C) the build-only Desktop Release run on the pushed branch
+# command: gh workflow run release-desktop.yml --ref codex/phone-web-followups-609 -f publish_release=false -f prerelease=true ;
+#          gh run watch 45071196716 --exit-status
+# commit: d4af72998f (pushed to origin codex/phone-web-followups-609)
+# env: GitHub Actions runners (Linux x64/ARM64, macOS ARM64/Intel, Windows x64)
+# date: 2026-11-22
+# result: Pass. Every build job passed; signing and publishing were skipped (publish_release=false). The Windows job ran
+#         pnpm prepare-server with its stage at autobyteus-web/.server-packaging-stage and went on to package: the
+#         successful half of AC-C, which only Windows runs.
+
+run: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45071196716
+branch: codex/phone-web-followups-609  sha: d4af72998f69574e839a426c68a85134abc0397f  event: workflow_dispatch
+created: 2026-11-22T21:16:45Z  updated: 2026-11-22T21:40:04Z  conclusion: success
+  Resolve Release Metadata: success
+  Build Linux ARM64: success
+  Build macOS ARM64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Build macOS Intel x64: success
+  Sign authenticated Linux desktop releases: skipped
+  Publish GitHub Release: skipped
+
+## Build Windows x64 (job log lines)
+2026-11-22T21:20:19.2439125Z > cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/
+2026-11-22T21:21:45.6455128Z > node ./scripts/prepare-server-dispatch.mjs
+2026-11-22T21:22:52.8981616Z   Virtual store is at:             autobyteus-web/.server-packaging-stage/node_modules/.pnpm
+2026-11-22T21:30:11.1476045Z   'D:\\a\\autobyteus-workspace\\autobyteus-workspace\\autobyteus-web\\electron-dist\\AutoByteus_personal_windows-1.5.14-beta.7.exe'
+2026-11-22T21:30:11.2589351Z   path: autobyteus-web/electron-dist/*windows-*.exe

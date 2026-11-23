@@ -23,7 +23,6 @@ const tool = (toolResult: unknown): HistoricalReplayToolEvent => ({
   ts: 12,
   activityType: "tool_call",
   status: "success",
-  contextText: "search_web",
   logs: ["hidden log"],
   detailLevel: "source_limited",
 });
@@ -121,4 +120,25 @@ describe("event monitor active trace page projection", () => {
     expect(getterReads).toBe(0);
     expect(projected.visuals[0]).toMatchObject({ summaryArgs: { query: "safe" } });
   });
+
+  // autobyteus-609 D-E: the page card carries the keys the web's summary reads (TOOL_SUMMARY_ARGUMENT_KEYS), so an earlier
+  // page's card shows the live card's summary.
+  it.each([
+    ["send_message_to", "tool_call", { recipient_address: "/architecture_reviewer", content: "Review it." }, { recipient_address: "/architecture_reviewer" }],
+    ["get_project_task", "tool_call", { task_id: "autobyteus-609" }, { task_id: "autobyteus-609" }],
+    ["run_command", "terminal_command", { CommandLine: "cd /w && pnpm test", Cwd: "/w", IsDaemon: false }, { CommandLine: "cd /w && pnpm test" }],
+    ["view_file", "tool_call", { AbsolutePath: "/w/docs/plan.md", StartLine: 1 }, { AbsolutePath: "/w/docs/plan.md" }],
+    ["write_to_file", "write_file", { TargetFile: "/w/notes.md", CodeContent: "x", query: "not a file key" }, { TargetFile: "/w/notes.md" }],
+    ["list_tabs", "tool_call", { limit: 3 }, {}],
+  ] as const)("%s's page card carries the summary keys the web reads", (toolName, activityType, toolArgs, summaryArgs) => {
+    const projected = buildEventMonitorActiveTracePageEvent({ ...tool(null), toolName, activityType, toolArgs });
+    expect(projected.visuals[0]).toMatchObject({ kind: "tool_card", toolName });
+    expect((projected.visuals[0] as { summaryArgs: unknown }).summaryArgs).toEqual(summaryArgs);
+  });
+
+  it("a call the run's stop interrupted keeps its own status key (autobyteus-609 D-D)", () => {
+    expect(buildEventMonitorActiveTracePageEvent({ ...tool(null), status: "interrupted" }).visuals[0]).toMatchObject({ kind: "tool_card", statusKey: "interrupted" });
+    expect(buildEventMonitorActiveTracePageEvent({ ...tool(null), status: "parsed" }).visuals[0]).toMatchObject({ statusKey: "default" });
+  });
 });
+

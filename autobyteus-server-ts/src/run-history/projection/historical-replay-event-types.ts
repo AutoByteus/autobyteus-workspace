@@ -52,7 +52,6 @@ export interface HistoricalReplayToolEvent {
   ts: number | null;
   activityType: RunProjectionActivityType;
   status: RunProjectionActivityStatus;
-  contextText: string;
   logs: string[];
   detailLevel: RunProjectionSourceDetailLevel;
 }

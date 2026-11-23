@@ -84,7 +84,7 @@ import UserMessage from '~/components/conversation/UserMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { getRecentEventMonitorTotalUsageText } from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import EventMonitorBrowseAssistantRow from './EventMonitorBrowseAssistantRow.vue';
 import EventMonitorLatestRow from './EventMonitorLatestRow.vue';
 import type { EventMonitorActiveTraceBrowsePresentationItem } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
@@ -121,7 +121,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
   (event: 'load-earlier'): void;
   (event: 'jump-to-latest'): void;
 }>();

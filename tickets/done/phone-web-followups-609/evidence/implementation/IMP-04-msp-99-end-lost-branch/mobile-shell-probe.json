@@ -1,0 +1,135 @@
+{
+  "startedAt": "2026-11-22T21:09:13.368Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58468,
+      "nodeId": "srv_RAAigICSEJjAd5a7Cq5TLQeLpq_DT0yG",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58469,
+      "nodeId": "srv_8oHjJPgk0F1sM4gDjh-CzhqGxAq8MUSV",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_7cbd4e6e823b4a2caec2e02200f0135d",
+    "writerRun": "release_notes_writer_8808c71b4a144c54bf5f721efcb87113",
+    "squadRun": "docs_review_team_c0d4e75cf868496cb96c0ea2811ba9e6",
+    "reviewer": "release_notes_writer_8c7298eaec9d4b0d80e3fc503d7372e1",
+    "memberDelegated": "fact_checker_2169b6e2e3a84a1bb8da5710a2bfd011",
+    "remoteAgentRun": "publisher_b1bb044ea1c24ffe810c63c362efb220",
+    "remoteTeamRun": "studio_team_c3a8f7058ac44bbaa5e8978099dc12da",
+    "plain": [
+      "fact_checker_0b7d99c85ab841ce9ae26fb72f12201a",
+      "fact_checker_269281a6de6d40f29bbf2d47068dc796",
+      "fact_checker_ff18bcc394234ebc8094d67e3b5fbe50"
+    ],
+    "org": "delivery_org_0a7d82791380400c92ad59ecd65e87ea",
+    "orgPlanner": "release_notes_writer_938fb0ab5e844bb1aefeda3eabe81e73",
+    "reviewOrg": "review_org_3d5421eaf98c4dc4bca8bf0198199ce1",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_cc0395fdee994f42ae2a1a99a0f785ca",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_a239d244b1944181a2ef4e4b6f8e28ba",
+    "deliveryLead": "fact_checker_2591e9451ab34c02a000a5f107036933",
+    "deliveryMate": "release_notes_writer_46c842dba0ee4efeb92786596a936fdb",
+    "leadDelegated": "changelog_helper_7b80dc209a4e46719ed73d8a6256ac56",
+    "approver": "approver_de0ab621d2cf4e1dafdd7eeb0093ffcd",
+    "taskA": "launch-e46382-1",
+    "taskB": "launch-e46382-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 4.2,
+      "endRun": "fact_checker_0990231dcd0746e098d3524cb3a57467",
+      "task": {
+        "taskId": "982db8c4-7cd8-4b1b-8bd3-194cba4a8d9d/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-22T21:09:45.987Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 09:09 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 09:09 PM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-99": {
+      "result": "Pass",
+      "seconds": 4.4,
+      "lostRun": "fact_checker_e6fcf9a056854f348b1568953fa80f5d",
+      "task": {
+        "taskId": "2fc07bc7-4aea-4bdd-90cf-e463a204273f/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-22T21:09:50.149Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 09:09 PM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 09:09 PM",
+          "end": "Stopped: the run ended"
+        }
+      ],
+      "shownStoppedAfterMs": 74,
+      "droppedUpdates": 1,
+      "droppedBeforeStop": 0,
+      "nodeAfterStop": []
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass",
+      "MSP-99": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T21:09:56.202Z"
+}

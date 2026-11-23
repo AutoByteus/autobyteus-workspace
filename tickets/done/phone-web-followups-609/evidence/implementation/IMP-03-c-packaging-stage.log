@@ -1,0 +1,27 @@
+# IMP-03 (D-C, AC-C) the Windows server preparation leaves no .server-packaging-stage/, successfully or not
+# command: cd autobyteus-web && pnpm prepare-server:windows ; test -e .server-packaging-stage && du -sh it
+#          (once on the branch, once with scripts/prepare-server.mjs from f2c0d2a902; the branch file restored after);
+#          git check-ignore -v autobyteus-web/.server-packaging-stage
+# commit: d4af72998f (branch); f2c0d2a902's prepare-server.mjs (base section)
+# env: macOS arm64, Node v22.23.1. On macOS the Windows preparation stages and then stops at its Windows-only
+#      no-symlinks check (exit 1): this is the "fails after staging" half of AC-C. The successful half runs only on
+#      Windows: the build-only Desktop Release run's "Build Windows x64" job (IMP-09) ran prepare-server with the stage
+#      at autobyteus-web/.server-packaging-stage and passed.
+# date: 2026-11-22
+# result: Pass. Branch: no stage folder left after the failure. Base: 454M left. git ignores the folder.
+
+== branch d4af72998f: pnpm prepare-server:windows (macOS, fails at the Windows-only symlink check after staging)
+exit=1
+stage left: none
+== base f2c0d2a902 prepare-server.mjs, same command
+exit=1
+stage left: 454M
+
+## the branch run's failure (the Windows-only check, after staging)
+Error: Found 8 symlink/junction entries in packaged node_modules:
+<worktree>/autobyteus-web/.server-packaging-stage/node_modules/.bin/anthropic-ai-sdk
+<worktree>/autobyteus-web/.server-packaging-stage/node_modules/.bin/mime
+  … (8 entries, all under <worktree>/autobyteus-web/.server-packaging-stage/node_modules/.bin)
+
+## git check-ignore
+autobyteus-web/.gitignore:10:.server-packaging-stage	autobyteus-web/.server-packaging-stage

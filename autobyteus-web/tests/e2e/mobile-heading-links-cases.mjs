@@ -18,17 +18,26 @@
 // Cases:
 //   MSP-44 AC-002, AC-004, AC-005  The desktop Files panel and the phone viewer, each opened from the run's file-action
 //                  links: every Contents entry brings its heading to the top of the viewer's scroll container (or, near the
-//                  end of the document, into view), with the URL unchanged and no new tab; then the broken anchor and the
-//                  links with no scheme change nothing (URL, file shown, scroll position) and open nothing.
+//                  end of the document, into view), with the URL unchanged and no new tab; then in `links.md` the broken
+//                  anchor, the root-absolute link and the link out of the root change nothing (URL, file shown, scroll
+//                  position) and open nothing, while `other.md`, `other.md#x` and `./x.md` open that file of its folder in
+//                  the same viewer (autobyteus-576; autobyteus-609 REQ-F).
 //   MSP-45 AC-002, AC-004  The Skills page (desktop window): the skill's `references/design-principles.md`, every Contents
-//                  entry; then `references/links.md`.
+//                  entry; then `references/links.md`, as MSP-44's `links.md`.
 //   MSP-46 AC-003, AC-004, AC-005  The task agent's conversation, on the desktop and the phone: an entry in the second
 //                  message scrolls to that message's heading while the first message's same heading stays out of view, and the other way
-//                  round; keyboard Enter on an entry (desktop); the broken anchor and the relative link change nothing; the
+//                  round; keyboard Enter on an entry (desktop); the broken anchor changes nothing (a relative link in a
+//                  conversation is a file link of the run's folder, autobyteus-609 MSP-100); the
 //                  external link opens one new tab at that address; the renderer leaves a `mailto:` click to the browser
 //                  (not prevented), as before.
+//   MSP-100 autobyteus-609 AC-H1, AC-H2  A run's message links paths relative to its own folder, on the desktop and the
+//                  phone: `docs-609/a.md#x` and `media-609/clip-609.txt` open that file of the run's folder (the Files
+//                  panel, the phone viewer); `../outside-609.md` (an existing file out of the folder) opens nothing and says
+//                  "The file preview could not be opened."; `docs-609/gone-609.md` (missing) opens the viewer's existing
+//                  not-found state.
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
@@ -38,8 +47,14 @@ const DIR = 'headings-480';
 const SKILL = 'heading-links-480';
 const EXTERNAL = 'https://example.com/heading-links-480';
 const FIXTURE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../utils/__tests__/fixtures/design-principles.md');
-const LINKS_MD = '# Links 480\n\nLINKS-480-BODY\n\n- [Missing](#no-such-heading-480)\n- [Other file](other.md)\n- [Other file anchor](other.md#x)\n- [Root path](/x.md)\n- [Dot path](./x.md)\n';
-const NO_FOLLOW = ['#no-such-heading-480', 'other.md', 'other.md#x', '/x.md', './x.md'];
+const LINKS_MD = '# Links 480\n\nLINKS-480-BODY\n\n- [Missing](#no-such-heading-480)\n- [Other file](other.md)\n- [Other file anchor](other.md#x)\n- [Root path](/x.md)\n- [Dot path](./x.md)\n- [Out of the root](../../out.md)\n';
+// autobyteus-576 (autobyteus-609 REQ-F): a document's link to a file of its folder opens that file; a missing heading, a
+// root-absolute link and a link out of the workspace root open nothing.
+// `links.md` sits one folder deep (headings-480/, references/), so `../../out.md` leaves the root.
+const NO_FOLLOW = ['#no-such-heading-480', '/x.md', '../../out.md'];
+const OPENS = [['other.md', 'OTHER-480-BODY'], ['other.md#x', 'OTHER-480-BODY'], ['./x.md', 'X-480-BODY']];
+const OTHER_MD = '# Other 480\n\nOTHER-480-BODY\n\n## x\n\nThe heading other.md#x names.\n';
+const X_MD = '# X 480\n\nX-480-BODY\n';
 const filler = (label) => Array.from({ length: 30 }, (_, i) => `${label} paragraph ${i + 1}: filler text so the next heading starts well below the first screen.`).join('\n\n');
 const answer = (marker) => [
   marker, '',
@@ -69,8 +84,8 @@ const placeInPage = (el) => {
  *   `waitFor`, `assert`, `redact`, `browser`, `alpha`, `stack`, `desktopRunsView`.
  */
 export const runHeadingLinksCases = async (probe) => {
-  const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView } = probe;
-  const ids = ['MSP-44', 'MSP-45', 'MSP-46'];
+  const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView, sendOver } = probe;
+  const ids = ['MSP-44', 'MSP-45', 'MSP-46', 'MSP-100', 'MSP-101'];
   if (selected && !ids.some(id => selected.has(id))) return;
   let currentCase = 'heading-links-setup';
   const ws = stack.workspace;
@@ -81,10 +96,12 @@ export const runHeadingLinksCases = async (probe) => {
   await fs.mkdir(path.join(ws, DIR), { recursive: true });
   await fs.writeFile(abs('design-principles.md'), doc);
   await fs.writeFile(abs('links.md'), LINKS_MD);
+  await fs.writeFile(abs('other.md'), OTHER_MD);
+  await fs.writeFile(abs('x.md'), X_MD);
 
   // The skill, through the node's public API.
   const skill = (await alpha.gql('mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath}}', { i: { name: SKILL, description: 'Heading links probe skill (autobyteus-480).', content: '# Heading links 480\n\nSee references/.\n' } })).createSkill;
-  for (const [name, content] of [['references/design-principles.md', doc], ['references/links.md', LINKS_MD]]) {
+  for (const [name, content] of [['references/design-principles.md', doc], ['references/links.md', LINKS_MD], ['references/other.md', OTHER_MD], ['references/x.md', X_MD]]) {
     const ok = (await alpha.gql('mutation($s:String!,$p:String!,$c:String!){uploadSkillFile(skillName:$s,path:$p,content:$c)}', { s: SKILL, p: name, c: content })).uploadSkillFile;
     assert(ok === true, `skill file ${name}`);
   }
@@ -120,7 +137,12 @@ export const runHeadingLinksCases = async (probe) => {
     const browserLine = (text, sourceUrl = '') => {
       const line = redact(`${label} console: ${text}`);
       const favicon = /: Failed to load resource: the server responded with a status of 40[14] \((Unauthorized|Not Found)\)$/.test(line) && sourceUrl.startsWith(origin) && new URL(sourceUrl).pathname === '/favicon.ico';
-      evidence.browserErrors.push({ case: currentCase, line, known: favicon, ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}) });
+      // MSP-100 opens a run-relative link to a missing file on purpose (autobyteus-609 AC-H2): the node refuses it with a
+      // GraphQL error (autobyteus-579 I-1), which the web logs before it shows the viewer's error state.
+      const missingFile = currentCase === 'MSP-100' && /: Failed to fetch file content ApolloError: File not found: /.test(line);
+      evidence.browserErrors.push({ case: currentCase, line, known: favicon || missingFile,
+        ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}),
+        ...(missingFile ? { cause: 'the missing file MSP-100 opens on purpose' } : {}) });
     };
     page.on('console', message => { if (message.type() === 'error') browserLine(message.text(), message.location()?.url ?? ''); });
     page.on('pageerror', error => browserLine(`pageerror ${error.message}`));
@@ -177,6 +199,27 @@ export const runHeadingLinksCases = async (probe) => {
     }
     return results;
   };
+  /**
+   * Clicks each link to a file of the document's folder: that file opens in the same viewer (its marker shown), with the
+   * URL unchanged and no new tab; `reopen` brings the links document back before the next one.
+   */
+  const followOpens = async (surface, root, links, reopen) => {
+    const results = [];
+    for (const [href, marker] of links) {
+      await reopen();
+      const link = root().locator(`a[href="${href}"]`).first();
+      await link.scrollIntoViewIfNeeded();
+      const urlBefore = surface.page.url();
+      const popupsBefore = surface.popups.length;
+      await press(surface, link);
+      let opened = false;
+      try { await waitFor(`${href} opened`, async () => (await surface.page.locator('body').innerText()).includes(marker), 10_000); opened = true; } catch { /* recorded */ }
+      results.push({ href, opened, urlUnchanged: surface.page.url() === urlBefore, newTabs: surface.popups.length - popupsBefore });
+    }
+    await reopen();
+    return results;
+  };
+  const allOpened = list => list.every(r => r.opened && r.newTabs === 0);
   const allReached = list => list.every(r => r.reached && r.urlUnchanged && r.newTabs === 0);
   const allStill = list => list.every(r => r.urlUnchanged && r.newTabs === 0 && r.stillShown && !r.notFoundShown && r.scrollUnchanged);
   const summary = list => ({ entries: list.length, reached: list.filter(r => r.reached).length, urlUnchanged: list.filter(r => r.urlUnchanged).length, newTabs: list.reduce((n, r) => n + r.newTabs, 0) });
@@ -258,6 +301,11 @@ export const runHeadingLinksCases = async (probe) => {
       await deskLink('links.md').click();
       await waitFor('links.md in the desktop viewer', async () => (await deskViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const deskNothing = await followNothing(desk, deskViewer, NO_FOLLOW, 'LINKS-480-BODY');
+      const deskOpens = await followOpens(desk, () => deskViewer, OPENS, async () => {
+        if ((await deskViewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        await deskLink('links.md').click();
+        await waitFor('links.md back in the desktop viewer', async () => (await deskViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
       // The phone: the same links open the phone viewer.
       const conv = await openPhoneRun(filesRun);
       const phoneLink = name => conv.locator(`[data-event-monitor-file-action-control="true"][title="${abs(name)}"]`).last();
@@ -273,13 +321,22 @@ export const runHeadingLinksCases = async (probe) => {
       await press(phone, phoneLink('links.md'));
       await waitFor('links.md in the phone viewer', async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const phoneNothing = await followNothing(phone, phoneViewer, NO_FOLLOW, 'LINKS-480-BODY');
+      const phoneOpens = await followOpens(phone, () => phoneViewer, OPENS, async () => {
+        if ((await phoneViewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        for (let step = 0; step < 4 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(400); }
+        await press(phone, phoneLink('links.md'));
+        await waitFor('links.md back in the phone viewer', async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
       await phonePage.screenshot({ path: path.join(outputDir, 'MSP-44-phone-links.png') });
       Object.assign(details, {
-        desktop: { contents: summary(deskContents), notReached: deskContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: deskContents.slice(0, 3), nothing: deskNothing },
-        phone: { contents: summary(phoneContents), notReached: phoneContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: phoneContents.slice(0, 3), nothing: phoneNothing },
+        desktop: { contents: summary(deskContents), notReached: deskContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: deskContents.slice(0, 3), nothing: deskNothing, opens: deskOpens },
+        phone: { contents: summary(phoneContents), notReached: phoneContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: phoneContents.slice(0, 3), nothing: phoneNothing, opens: phoneOpens },
       });
       assert(allReached(deskContents) && allReached(phoneContents), 'every Contents entry brings its heading into view on the desktop Files panel and the phone viewer, URL unchanged, no new tab (AC-002)', details);
-      assert(allStill(deskNothing) && allStill(phoneNothing), 'a broken anchor and links with no scheme change nothing and open nothing (AC-004)', details);
+      assert(allStill(deskNothing) && allStill(phoneNothing), 'a missing heading, a root-absolute link and a link out of the root change nothing and open nothing (AC-004; 576)', details);
+      assert(allOpened(deskOpens), 'a link to a file of the document\'s folder opens that file in the same viewer (576; autobyteus-609 REQ-F)', details);
+      // The phone's viewer shows the file its route names; 576's handler opens the file in the explorer store only, so on
+      // the phone nothing visible opens. Recorded, not asserted (autobyteus-609 DEC-009, follow-up FU-004).
       return details;
     });
 
@@ -303,9 +360,15 @@ export const runHeadingLinksCases = async (probe) => {
       await treeName('links.md').click();
       await waitFor('links.md in the skill viewer', async () => (await viewer.innerText()).includes('LINKS-480-BODY'), 30_000);
       const skillNothing = await followNothing(desk, viewer, NO_FOLLOW, 'LINKS-480-BODY');
-      const details = { url: deskPage.url(), contents: summary(skillContents), notReached: skillContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: skillContents.slice(0, 3), nothing: skillNothing };
+      const skillOpens = await followOpens(desk, () => viewer, OPENS, async () => {
+        if ((await viewer.innerText().catch(() => '')).includes('LINKS-480-BODY')) return;
+        await treeName('links.md').click();
+        await waitFor('links.md back in the skill viewer', async () => (await viewer.innerText()).includes('LINKS-480-BODY'), 30_000);
+      });
+      const details = { url: deskPage.url(), contents: summary(skillContents), notReached: skillContents.filter(r => !r.reached || !r.urlUnchanged || r.newTabs), sample: skillContents.slice(0, 3), nothing: skillNothing, opens: skillOpens };
       assert(allReached(skillContents), 'every Contents entry brings its heading into view in the Skills page preview, URL unchanged (AC-002)', details);
-      assert(allStill(skillNothing), 'a broken anchor and links with no scheme change nothing in the Skills page (AC-004)', details);
+      assert(allStill(skillNothing), 'a missing heading, a root-absolute link and a link out of the root change nothing in the Skills page (AC-004; 576)', details);
+      assert(allOpened(skillOpens), 'a link to a file of the skill\'s folder opens that file in the Skills page viewer (576; autobyteus-609 REQ-F)', details);
       return details;
     });
 
@@ -339,7 +402,9 @@ export const runHeadingLinksCases = async (probe) => {
           const own = await headingPlace(one, 'notes-480');
           out.keyboardEnter = { own, ownReached: Boolean(own && own.inWindow && (Math.abs(own.offsetFromContainerTop) <= 2 || own.containerAtEnd)) };
         }
-        out.nothing = await followNothing(surface, two, ['#no-such-heading-480', 'other.md'], 'HEADINGS-480-TWO');
+        // In a conversation `other.md` is a file link of the run's folder now (autobyteus-609 D-H, MSP-100), so only the
+        // missing heading is left to follow nothing here.
+        out.nothing = await followNothing(surface, two, ['#no-such-heading-480'], 'HEADINGS-480-TWO');
         // The external link: one new tab at that address; this page stays.
         const urlBefore = surface.page.url(); const popupsBefore = surface.popups.length;
         await press(surface, two.locator(`a[href="${EXTERNAL}"]`).first());
@@ -363,9 +428,200 @@ export const runHeadingLinksCases = async (probe) => {
       const scrolledOwn = s => ['twoNotes', 'oneSetup', 'twoSetup'].every(k => s[k].ownReached && s[k].otherInWindow === false && s[k].urlUnchanged);
       assert(scrolledOwn(details.desktop) && scrolledOwn(details.phone), 'each entry scrolls to the heading of its own answer; the other answer\'s same heading stays out of view; URL unchanged (AC-003)', details);
       assert(details.desktop.keyboardEnter.ownReached, 'Enter on a focused entry scrolls to its heading (REQ-002)', details);
-      assert(allStill(details.desktop.nothing) && allStill(details.phone.nothing), 'a broken anchor and a relative link in an answer change nothing (AC-004)', details);
+      assert(allStill(details.desktop.nothing) && allStill(details.phone.nothing), 'a broken anchor in an answer changes nothing (AC-004)', details);
       assert([details.desktop, details.phone].every(s => s.external.newTabs === 1 && s.external.urls[0]?.startsWith(EXTERNAL) && s.external.urlUnchanged), 'the external link opens one new tab at its address; the page stays (AC-005)', details);
       assert([details.desktop, details.phone].every(s => s.mailto.preventedByRenderer.length === 1 && s.mailto.preventedByRenderer[0] === false), 'the renderer leaves a mailto: link to the browser, as before (AC-005)', details);
+      return details;
+    });
+    // autobyteus-609 D-H (AC-H1, AC-H2): a run's message links paths relative to the run's folder.
+    await runCase('MSP-100', async () => {
+      currentCase = 'MSP-100';
+      const ws = stack.workspace;
+      await fs.mkdir(path.join(ws, 'docs-609'), { recursive: true });
+      await fs.mkdir(path.join(ws, 'media-609'), { recursive: true });
+      await fs.writeFile(path.join(ws, 'docs-609', 'a.md'), '# A 609\n\nA-609-BODY\n\n## x\n\nThe heading the link names.\n');
+      await fs.writeFile(path.join(ws, 'media-609', 'clip-609.txt'), 'CLIP-609-BODY\n');
+      await fs.writeFile(path.join(path.dirname(ws), 'outside-609.md'), '# Outside\n\nOUTSIDE-609-BODY\n');
+      const run = await newRun();
+      await stack.agentSay(run, 'ECHO_INPUT RUNREL-609 [notes](docs-609/a.md#x) [clip](media-609/clip-609.txt) [up](../outside-609.md) [gone](docs-609/gone-609.md)');
+      await waitFor('the run-relative links message', async () => { const text = await stack.projection(run); return text.includes('ECHO:') && text.includes('RUNREL-609'); }, 60_000);
+      const FAILED = 'The file preview could not be opened.';
+      const details = {};
+
+      // The desktop window: the Files panel.
+      await openDesktopRun(run);
+      const deskConversationLink = href => deskPage.locator(`a[href="${href}"]`).last();
+      await deskConversationLink('docs-609/a.md#x').waitFor({ timeout: 60_000 });
+      const deskViewer = deskPage.locator('#contentViewer:visible').first();
+      const deskStatus = deskPage.locator('[data-testid="event-monitor-file-preview-status"]');
+      const deskOpen = async (href, marker) => {
+        await deskConversationLink(href).click();
+        let opened = false;
+        try { await waitFor(`${href} in the Files panel`, async () => (await deskViewer.innerText().catch(() => '')).includes(marker), 20_000); opened = true; } catch { /* recorded */ }
+        await deskPage.screenshot({ path: path.join(outputDir, `MSP-100-desktop-${marker}.png`) });
+        return { href, opened };
+      };
+      details.desktop = { notes: await deskOpen('docs-609/a.md#x', 'A-609-BODY'), clip: await deskOpen('media-609/clip-609.txt', 'CLIP-609-BODY') };
+      await deskConversationLink('../outside-609.md').click();
+      await waitFor('the could-not-open status', async () => (await deskStatus.innerText().catch(() => '')).includes(FAILED), 15_000).catch(() => undefined);
+      details.desktop.up = { status: (await deskStatus.innerText().catch(() => '')).trim(), outsideShown: (await deskPage.locator('body').innerText()).includes('OUTSIDE-609-BODY') };
+      await deskConversationLink('docs-609/gone-609.md').click();
+      await sleep(2_000);
+      details.desktop.gone = { viewer: (await deskViewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200), status: (await deskStatus.innerText().catch(() => '')).trim() };
+      await deskPage.screenshot({ path: path.join(outputDir, 'MSP-100-desktop-gone.png') });
+
+      // The phone: its file viewer.
+      const conv = await openPhoneRun(run);
+      const phoneLink = href => conv.locator(`a[href="${href}"]`).last();
+      await phoneLink('docs-609/a.md#x').waitFor({ timeout: 60_000 });
+      const phoneViewer = phonePage.locator('[data-testid="mobile-file-viewer"]');
+      const backToConversation = async () => {
+        for (let step = 0; step < 3 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(500); }
+      };
+      const phoneOpen = async (href, marker) => {
+        await press(phone, phoneLink(href));
+        let opened = false;
+        try { await waitFor(`${href} in the phone viewer`, async () => (await phoneViewer.count()) > 0 && (await phoneViewer.innerText()).includes(marker), 20_000); opened = true; } catch { /* recorded */ }
+        await phonePage.screenshot({ path: path.join(outputDir, `MSP-100-phone-${marker}.png`) });
+        await backToConversation();
+        return { href, opened };
+      };
+      details.phone = { notes: await phoneOpen('docs-609/a.md#x', 'A-609-BODY'), clip: await phoneOpen('media-609/clip-609.txt', 'CLIP-609-BODY') };
+      const phoneStatus = phonePage.locator('[data-testid="event-monitor-file-preview-status"]');
+      await press(phone, phoneLink('../outside-609.md'));
+      await waitFor('the could-not-open status on the phone', async () => (await phoneStatus.innerText().catch(() => '')).includes(FAILED), 15_000).catch(() => undefined);
+      details.phone.up = { status: (await phoneStatus.innerText().catch(() => '')).trim(), viewerOpened: (await phoneViewer.count()) > 0, outsideShown: (await phonePage.locator('body').innerText()).includes('OUTSIDE-609-BODY') };
+      await phonePage.screenshot({ path: path.join(outputDir, 'MSP-100-phone-outside.png') });
+      await press(phone, phoneLink('docs-609/gone-609.md'));
+      await waitFor('the missing file in the phone viewer', async () => (await phoneViewer.count()) > 0, 15_000).catch(() => undefined);
+      await sleep(1_500);
+      details.phone.gone = { viewerOpened: (await phoneViewer.count()) > 0, viewer: (await phoneViewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200) };
+      await phonePage.screenshot({ path: path.join(outputDir, 'MSP-100-phone-gone.png') });
+      await backToConversation();
+
+      const failures = [
+        [details.desktop.notes.opened && details.desktop.clip.opened, 'AC-H1 on the desktop a run-relative link opens that file of the run\'s folder in the Files panel'],
+        [details.phone.notes.opened && details.phone.clip.opened, 'AC-H1 on the phone a run-relative link opens that file of the run\'s folder in the viewer'],
+        [details.desktop.up.status.includes(FAILED) && !details.desktop.up.outsideShown, 'AC-H2 on the desktop a link out of the run\'s folder opens nothing and says it could not be opened'],
+        [details.phone.up.status.includes(FAILED) && !details.phone.up.viewerOpened && !details.phone.up.outsideShown, 'AC-H2 on the phone a link out of the run\'s folder opens nothing and says it could not be opened'],
+        // The viewer's existing error state for a file that cannot be read (autobyteus-579 I-1: the desktop shows the node's
+        // message, "File not found: <path>"; the phone's viewer says it could not open the file, with Retry).
+        [/File not found/.test(details.desktop.gone.viewer) && details.phone.gone.viewerOpened && /Couldn.t open this file/.test(details.phone.gone.viewer),
+          'AC-H2 a missing file opens the viewer\'s existing not-found state, on the desktop and the phone'],
+      ].filter(([ok]) => !ok).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
+      return details;
+    });
+
+    // AC-H1 "for a team member or a delegated run, that run's own folder": the same relative link in three runs whose
+    // folders differ, each folder with its own copy of the linked file (its own marker). The probe's main workspace has
+    // a copy too, so a link resolved against the wrong folder shows a marker of another run.
+    await runCase('MSP-101', async () => {
+      currentCase = 'MSP-101';
+      const base = path.dirname(ws);
+      const folderOf = name => path.join(base, `ws-609-${name}`);
+      const LINK = 'docs-609m/note-609.md';
+      const MARKERS = { lead: 'LEAD-609-BODY', mate: 'MATE-609-BODY', host: 'HOST-609-BODY', main: 'MAIN-609-BODY' };
+      const writeNote = async (folder, marker) => {
+        await fs.mkdir(path.join(folder, 'docs-609m'), { recursive: true });
+        await fs.writeFile(path.join(folder, LINK), `# Note 609\n\n${marker}\n`);
+      };
+      for (const name of ['lead', 'mate', 'host']) await writeNote(folderOf(name), MARKERS[name]);
+      await writeNote(ws, MARKERS.main);
+      for (const name of ['lead', 'mate', 'host']) await alpha.gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: folderOf(name) } }).catch(() => undefined);
+      const folderOfRun = async runId => (await alpha.gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{workspaceRootPath}}}', { id: runId })).getAgentRunResumeConfig?.metadataConfig?.workspaceRootPath ?? null;
+
+      // A Team run whose members work in different folders; the member `/mate` links the file.
+      const conf = folder => ({ ...stack.runConfig, workspaceRootPath: folder });
+      const team = (await alpha.gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: { teamDefinitionId: stack.ids.delivery,
+        teamConfigs: [{ teamAddress: '/', ...conf(folderOf('lead')) }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: stack.ids.checker, ...conf(folderOf('lead')) },
+          { memberAddress: '/mate', agentDefinitionId: stack.ids.writer, ...conf(folderOf('mate')) }] } })).createAgentTeamRun;
+      assert(team.success, team.message);
+      const tree = JSON.stringify((await alpha.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team.teamRunId })).getTeamRunResumeConfig.executionTree);
+      const mate = /"address":"\/mate"[^}]*"agent_run_id":"([^"]+)"/.exec(tree)?.[1];
+      assert(mate, 'the Team\'s member /mate', tree);
+      await sendOver(stack.wsUrl(`agent-team/${team.teamRunId}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
+        context_file_paths: [], image_urls: [], agent_run_id: mate, content: `ECHO_INPUT RUNREL-609-MATE [note](${LINK})` });
+      const mateProjection = async () => JSON.stringify((await alpha.gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}',
+        { id: team.teamRunId, a: mate })).getTeamMemberRunProjection?.conversation ?? []);
+      await waitFor('the member\'s link message', async () => { const text = await mateProjection(); return text.includes('ECHO:') && text.includes('RUNREL-609-MATE'); }, 60_000);
+
+      // A delegated run of a host that works in its own folder; the task agent links the file.
+      const host = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.ptm, ...conf(folderOf('host')) } })).createAgentRun;
+      assert(host.success, host.message);
+      const delegatedResult = await stack.agentCall(host.runId, 'delegate_task', { recipient_address: '/release_notes_writer', description: 'Write the 609 note. Marker RUNREL-609-TASK.' });
+      const delegatedRun = /target_agent_run_id\W+(\w+)/.exec(JSON.stringify(delegatedResult))?.[1];
+      assert(delegatedRun, 'the host delegated', delegatedResult);
+      await stack.agentSay(delegatedRun, `ECHO_INPUT RUNREL-609-DEL [note](${LINK})`);
+      await waitFor('the task agent\'s link message', async () => { const text = await stack.projection(delegatedRun); return text.includes('ECHO:') && text.includes('RUNREL-609-DEL'); }, 60_000);
+      // A member's folder is its member config (set above); a task agent's is the node's own choice, read back.
+      const folders = { mate: folderOf('mate'), delegated: await folderOfRun(delegatedRun), host: await folderOfRun(host.runId) };
+      // The task agent's own folder: the expectation follows what the node gave it (the marker of that folder).
+      const expectedFor = folder => Object.entries({ lead: folderOf('lead'), mate: folderOf('mate'), host: folderOf('host'), main: ws }).find(([, f]) => f === folder)?.[0] ?? null;
+      const expected = { mate: 'mate', delegated: expectedFor(folders.delegated) };
+      const otherMarkers = own => Object.entries(MARKERS).filter(([name]) => name !== own).map(([, marker]) => marker);
+      const details = { team: team.teamRunId, mate, host: host.runId, delegatedRun, folders, expected };
+
+      // The desktop: the member from its Team's row, the task agent under its host.
+      const deskViewer = deskPage.locator('#contentViewer:visible').first();
+      const deskOpenLink = async (label, own) => {
+        const link = deskPage.locator(`a[href="${LINK}"]`).last();
+        await link.waitFor({ timeout: 60_000 });
+        await link.click();
+        let shown = '';
+        try { await waitFor(`${label}: the note in the Files panel`, async () => (shown = await deskViewer.innerText().catch(() => '')).includes('Note 609'), 20_000); } catch { /* recorded */ }
+        await deskPage.screenshot({ path: path.join(outputDir, `MSP-101-desktop-${label}.png`) });
+        return { own: MARKERS[own] ?? null, ownShown: Boolean(own) && shown.includes(MARKERS[own]), othersShown: otherMarkers(own).filter(marker => shown.includes(marker)) };
+      };
+      await deskPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+      await desktopRunsView(deskPage);
+      const showOlder = deskPage.locator('[data-test="run-list-show-older"]');
+      if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+      const memberRow = deskPage.locator(`[data-test="workspace-team-member-${team.teamRunId}-/mate"]`).first();
+      // A Team run's main row opens it and unfolds its members.
+      const teamRow = deskPage.locator(`[data-test="workspace-team-row-${team.teamRunId}"]`).first();
+      for (let round = 0; round < 5 && !(await memberRow.count()); round += 1) {
+        if ((await teamRow.getAttribute('aria-expanded').catch(() => null)) !== 'true') await teamRow.click({ timeout: 30_000 }).catch(() => undefined);
+        await sleep(800);
+      }
+      await memberRow.click({ timeout: 60_000 });
+      const deskMate = await deskOpenLink('team-member', expected.mate);
+      await openDesktopTaskAgent(host.runId, delegatedRun);
+      const deskDelegated = await deskOpenLink('delegated', expected.delegated);
+
+      // The phone: the member under its Team's row, the task agent under its host's row.
+      const phoneViewer = phonePage.locator('[data-testid="mobile-file-viewer"]');
+      const phoneOpenLink = async (conv, label, own) => {
+        const link = conv.locator(`a[href="${LINK}"]`).last();
+        await link.waitFor({ timeout: 60_000 });
+        await press(phone, link);
+        let shown = '';
+        try { await waitFor(`${label}: the note in the phone viewer`, async () => (await phoneViewer.count()) > 0 && (shown = await phoneViewer.innerText()).includes('Note 609'), 20_000); } catch { /* recorded */ }
+        await phonePage.screenshot({ path: path.join(outputDir, `MSP-101-phone-${label}.png`) });
+        for (let step = 0; step < 3 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(500); }
+        return { own: MARKERS[own] ?? null, ownShown: Boolean(own) && shown.includes(MARKERS[own]), othersShown: otherMarkers(own).filter(marker => shown.includes(marker)) };
+      };
+      await phonePage.goto(phoneHome, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      const teamRowKey = `team:${team.teamRunId}`;
+      await phonePage.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
+      const memberOpen = phonePage.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
+      for (let round = 0; round < 5 && !(await memberOpen.count()); round += 1) {
+        const row = phonePage.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first();
+        if ((await row.getAttribute('aria-expanded')) === 'false') await row.locator('[data-testid="mobile-run-toggle"]').click({ timeout: 1_500 }).catch(() => undefined);
+        await sleep(600);
+      }
+      await memberOpen.click({ timeout: 60_000 });
+      const phoneMate = await phoneOpenLink(phonePage.locator('[data-testid="mobile-run-conversation"]'), 'team-member', expected.mate);
+      const phoneDelegated = await phoneOpenLink(await openPhoneRun(delegatedRun, host.runId), 'delegated', expected.delegated);
+
+      Object.assign(details, { desktop: { mate: deskMate, delegated: deskDelegated }, phone: { mate: phoneMate, delegated: phoneDelegated } });
+      const ok = result => result.ownShown && result.othersShown.length === 0;
+      const failures = [
+        [Boolean(expected.delegated), 'the task agent\'s folder is one of the probe\'s folders (the setup)'],
+        [ok(deskMate) && ok(phoneMate), 'AC-H1 a team member\'s relative link opens that file of the member\'s own folder, on the desktop and the phone'],
+        [ok(deskDelegated) && ok(phoneDelegated), 'AC-H1 a delegated run\'s relative link opens that file of the delegated run\'s own folder, on the desktop and the phone'],
+      ].filter(([pass]) => !pass).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
       return details;
     });
   } finally {

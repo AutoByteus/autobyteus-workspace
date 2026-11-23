@@ -1,6 +1,7 @@
 import { normalizeLineEndings } from "./output-shortener.js";
 import { OK, type NormalizedToolResult, type ToolOutcome } from "./tool-outcome.js";
 import type { RecordedResult } from "./runtimes/runtime-translation.js";
+import { isInterruptedToolResult } from "../../agent-memory/domain/tool-result-interruption.js";
 
 /**
  * Contract §6 result envelopes shared by every runtime: AGY `{provider_state, output, …}`, MCP
@@ -139,8 +140,7 @@ export const normalizeRecordedResult = (
   return { outcome: OK, output };
 };
 
-const INTERRUPTION_TEXTS = new Set(["user_interrupt", "Tool execution interrupted."]);
-
-/** `user_interrupt` and `Tool execution interrupted.` (AutoByteus, AGY) mean the call was interrupted. */
+/** An error that means the call was interrupted (`user_interrupt`, `Tool execution interrupted.`): the node's one rule,
+ * which the run replay reads too (autobyteus-609 D-D2). */
 export const interruptedFromError = (error: string): ToolOutcome | null =>
-  INTERRUPTION_TEXTS.has(error.trim()) ? { kind: "interrupted" } : null;
+  isInterruptedToolResult({ error }) ? { kind: "interrupted" } : null;

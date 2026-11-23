@@ -20,7 +20,7 @@ describe('toolActivityStatusPresentation', () => {
     ['parsing', 'Running', 'blue', 'heroicons:clock-solid'],
     ['awaiting-approval', 'Review', 'amber', 'heroicons:hand-raised-solid'],
     ['denied', 'Denied', 'gray', 'heroicons:no-symbol-solid'],
-    ['interrupted', 'Unknown', 'neutral', 'heroicons:wrench-screwdriver-solid'],
+    ['interrupted', 'Stopped', 'neutral', 'heroicons:stop-circle-solid'],
   ] as const)('%s: the desktop\'s word, tone and icon', (status, label, tone, icon) => {
     expect(toolActivityStatusPresentation(status)).toMatchObject({ label, tone, icon });
   });

@@ -1,0 +1,57 @@
+# IMP-02 (D-J, AC-J; D-E, AC-E; D-D) the ticket's server, GraphQL e2e and contract tests by name; J's test on the base route
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose \
+#            tests/integration/api/rest/workspace-content-after-restart.integration.test.ts tests/unit/api/rest/workspaces.test.ts \
+#            tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts \
+#            tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts ;
+#          cd autobyteus-agent-presentation-contracts && pnpm test ;
+#          base: src/api/rest/workspaces.ts from f2c0d2a902 with the branch's integration test, then the branch file restored
+# commit: d4af72998f; base section: f2c0d2a902's workspaces.ts
+# env: macOS arm64, Node v22.23.1 (vitest 4, forks pool)
+# date: 2026-11-22
+# result: Pass. 4 files / 29 tests and the contract package's 23 tests pass on HEAD. J's restart test fails on the base
+#         route with 404 where 200 is expected (the registry is not restored after a restart).
+
+## base route (f2c0d2a902 workspaces.ts)
+ × tests/integration/api/rest/workspace-content-after-restart.integration.test.ts > REST workspace reads after a node restart (autobyteus-609 D-J) > the first read of a registered folder's file after a restart answers 200; an unknown ID 404; a path out of the folder is refused 222ms
+AssertionError: expected 404 to be 200 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+
+## HEAD d4af72998f
+ ✓ tests/integration/api/rest/workspace-content-after-restart.integration.test.ts > REST workspace reads after a node restart (autobyteus-609 D-J) > the first read of a registered folder's file after a restart answers 200; an unknown ID 404; a path out of the folder is refused 191ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections 63ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 57ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive 60ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 139ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes 76ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives 84ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject 108ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite 69ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload 41ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > serves workspace file content 44ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 404 when workspace is missing 3ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > serves static workspace assets 3ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 400 for workspace path violations 1ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > user file sandbox > sandboxes every file both routes serve, HTML and assets alike, with nosniff (416 REQ-007) 5ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > user file sandbox > leaves error replies without the sandbox header 4ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > preserves healthy media bytes, encoded paths, HTML and relative static assets 8ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > projects every closed central kind in canonical event and subvisual order 2ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > projects an agent-to-agent delivery as an inter-agent visual, as the replay does (REQ-007, RD-004) 1ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > emits deterministic distinct visual identities for every central subvisual 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > is byte-identical for null and multi-megabyte results without result/log recursion 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > reads allowlisted shallow data properties without invoking deep or getter fields 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > send_message_to's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > get_project_task's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > run_command's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > view_file's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > write_to_file's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > list_tabs's page card carries the summary keys the web reads 0ms
+ ✓ tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts > event monitor active trace page projection > a call the run's stop interrupted keeps its own status key (autobyteus-609 D-D) 0ms
+ Test Files  4 passed (4)
+      Tests  29 passed (29)
+
+## autobyteus-agent-presentation-contracts pnpm test (node --test)
+ok 23 - the summary argument keys by kind, the one list of the web's summary and the node's page cards (autobyteus-609 D-E)
+# tests 23
+# pass 23
+# fail 0

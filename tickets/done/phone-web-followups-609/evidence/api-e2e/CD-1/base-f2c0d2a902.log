@@ -1,0 +1,8 @@
+...byteus-collaboration-stream-contracts build: Done
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build: Done
+[check:contract-dist] FAIL: the tracked dist/ differs from a build of the source (2 files):
+   M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+   M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+[check:contract-dist] commit these dist/ changes (every package named, dependents included), then run it again.
+exit 1

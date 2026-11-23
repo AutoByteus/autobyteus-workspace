@@ -6,4 +6,5 @@ export * from "./collaborator-mention-note.js";
 export * from "./remote-agent-status.js";
 export * from './accepted-input-identity.js';
 export * from './agent-runtime-names.js';
+export * from './tool-summary-argument-keys.js';
 //# sourceMappingURL=index.d.ts.map

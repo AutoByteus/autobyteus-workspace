@@ -358,8 +358,11 @@ or because Gradle's cache already holds a dependency the runner must download.
   `autobyteus-web/electron-dist/` are untracked. Stage paths explicitly; never `git add -A`.
   Exception: the three contract packages (`autobyteus-agent-presentation-contracts`,
   `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
-  their `dist/`, which their consumers import. After changing their source, rebuild with
-  `pnpm -C <package> build` and commit the `dist/` changes too.
+  their `dist/`, which their consumers import. After changing any contract package's source,
+  run `pnpm check:contract-dist`: it builds all three in dependency order and fails, naming
+  the files, when a tracked `dist/` differs from the build. Commit the `dist/` changes of
+  every package it names (a dependent package's declarations can change too), then run it
+  again until it passes.
 
 ## Test vault
 

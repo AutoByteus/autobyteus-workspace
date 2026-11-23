@@ -569,10 +569,16 @@ async function run() {
 
   await buildWorkspaceArtifacts()
   await buildMobileWebAssets()
-  await stageRuntimeBundle()
-  await copyDownloadIfPresent()
-  await copyMobileWebIfPresent()
-  await publishStageToTarget()
+  // The stage is rebuilt from nothing every run; it is removed once published, and also when a step fails, so no
+  // .server-packaging-stage/ is left inside the package (autobyteus-609 D-C). The native rebuild works on targetDir.
+  try {
+    await stageRuntimeBundle()
+    await copyDownloadIfPresent()
+    await copyMobileWebIfPresent()
+    await publishStageToTarget()
+  } finally {
+    await rm(stageDir, { recursive: true, force: true })
+  }
   await rebuildNativeModulesForElectron()
 
   info('\n=======================================')

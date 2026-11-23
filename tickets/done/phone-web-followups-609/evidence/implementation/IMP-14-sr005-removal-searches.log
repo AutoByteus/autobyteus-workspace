@@ -1,0 +1,70 @@
+# IMP-14 (SR-005, ARCH-REV-003 N-4) the unused Codex view provider and what only it reached: the searches
+# command: git grep, on the base of the removal (70f3d8d410) and after it (e78a539dfe), as listed below
+# commit: 70f3d8d410 (before the removal) and e78a539dfe (after)
+# env: macOS arm64
+# date: 2026-11-23
+# result: Removed: codex-run-view-projection-provider.ts and its test; codex-thread-history-reader.ts (the only
+#         `thread/read` caller); codex-thread-history-item-normalizer.ts and its test; the GraphQL e2e's mock of the
+#         reader and its 6 "never called" assertions (and 2 marker assertions); the removed test's typecheck baseline
+#         entry. Kept: every helper the removed files imported (each has live importers below). Not touched:
+#         claude-run-view-projection-provider.ts (FU-009).
+
+## before the removal (70f3d8d410): who imports each removed file (src, tests, scripts, web)
+-- codex-run-view-projection-provider
+autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts:19:import { CodexRunViewProjectionProvider } from "../../../../src/run-history/projection/providers/codex-run-view-projection-provider.js";
+-- codex-thread-history-reader
+autobyteus-server-ts/src/run-history/projection/providers/codex-run-view-projection-provider.ts:5:} from "../../../agent-execution/backends/codex/history/codex-thread-history-reader.js";
+autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts:36:vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-history-reader.js", () => ({
+autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts:10:  "../../../../src/agent-execution/backends/codex/history/codex-thread-history-reader.js",
+autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts:20:import type { CodexThreadHistoryReader } from "../../../../src/agent-execution/backends/codex/history/codex-thread-history-reader.js";
+-- codex-thread-history-item-normalizer
+autobyteus-server-ts/src/run-history/projection/providers/codex-run-view-projection-provider.ts:9:} from "../../../agent-execution/backends/codex/history/codex-thread-history-item-normalizer.js";
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts:2:import { normalizeCodexThreadHistoryItem } from "../../../../../../src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.js";
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts:4:describe("codex-thread-history-item-normalizer", () => {
+
+-- the service's providers (agent-run-view-projection-service.ts)
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:4:import { LocalMemoryRunViewProjectionProvider } from "../projection/providers/local-memory-run-view-projection-provider.js";
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:10:  RunProjectionProvider,
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:11:  RunProjectionProviderInput,
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:42:  private readonly localProjectionProvider: RunProjectionProvider;
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:48:      localProjectionProvider?: RunProjectionProvider;
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:53:    this.localProjectionProvider =
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:54:      options.localProjectionProvider ?? new LocalMemoryRunViewProjectionProvider(memoryDir);
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:84:    const provider = this.localProjectionProvider as RunProjectionProvider & {
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:85:      buildActiveTracePage?: (pageInput: RunProjectionProviderInput & {
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:106:    const providerInput: RunProjectionProviderInput = { source };
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:108:      this.localProjectionProvider,
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:119:    const projection = await this.localProjectionProvider.buildProjection({
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:140:    provider: RunProjectionProvider,
+autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts:141:    input: RunProjectionProviderInput,
+
+-- thread/read callers
+autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts:47:  async readThread(
+autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts:61:          const response = await client.request<unknown>("thread/read", {
+autobyteus-server-ts/src/run-history/projection/providers/codex-run-view-projection-provider.ts:302:    const payload = await this.historyReader.readThread(threadId, cwd);
+
+## what the removed files imported, and its live importers outside them (70f3d8d410)
+CodexFileChangePayloadHelper: autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-file-change-payload-helper.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts 
+CodexToolPayloadParser: autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts 
+normalizeCodexItemTypeToken: autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-compaction-event-classifier.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-item-family.ts 
+resolveCodexToolItemFamily: autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-mcp-tool-result-projection.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-item-family.ts autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts 
+normalizeCodexAgentToolsToolNameForEvent: autobyteus-server-ts/src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-event-payload.ts autobyteus-server-ts/src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-terminal-tool-execution-event.ts autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts 
+getCodexAppServerClientManager: autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts autobyteus-server-ts/src/compositions/build-studio-server.ts autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts autobyteus-server-ts/src/llm-management/services/codex-model-catalog.ts autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts 
+resolveApprovalPolicyForAutoExecuteTools: autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts 
+normalizeSandboxMode: autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts 
+(resolveApprovalPolicyForAutoExecuteTools and normalizeSandboxMode are used inside codex-thread-bootstrapper.ts itself and by its tests)
+
+## after the removal (e78a539dfe): no reference left in src, tests or scripts
+(none)
+
+## left for documentation sync (prose that names the removed provider)
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:32:- `codex-thread-history-reader.ts` — owner for diagnostic `thread/read` retrieval and protocol replay inspection
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:33:- `codex-thread-history-item-normalizer.ts` — owner for mapping diagnostic `thread/read` item families into historical replay tool facts
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:262:`CodexRunViewProjectionProvider` remains a diagnostic/runtime-native utility
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:463:| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical re
+autobyteus-server-ts/docs/modules/codex_integration.md:463:- `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
+autobyteus-server-ts/docs/modules/codex_integration.md:464:- `src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.ts`
+autobyteus-server-ts/docs/modules/codex_integration.md:466:- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+autobyteus-server-ts/docs/modules/codex_integration.md:499:`CodexRunViewProjectionProvider`, no local/native merge path, and no recovery
+autobyteus-server-ts/docs/modules/run_history.md:1000:- Runtime-native providers such as `CodexRunViewProjectionProvider` and
+autobyteus-server-ts/docs/modules/run_history.md:1133:- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`

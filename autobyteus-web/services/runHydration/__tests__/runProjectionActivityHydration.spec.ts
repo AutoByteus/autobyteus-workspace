@@ -3,14 +3,11 @@ import { buildActivitiesFromProjection } from '../runProjectionActivityHydration
 
 describe('runProjectionActivityHydration', () => {
   it('builds projected history rows without writing a store', () => {
-    // The node still sends its own contextText for a stored activity (FU-001); the web reads the arguments instead
-    // (autobyteus-590 D-2), so it does not reach the activity.
     const fromNode = {
       kind: 'tool' as const,
       invocationId: 'history-1',
       toolName: 'run_bash',
       status: 'success' as const,
-      contextText: 'run_bash',
       arguments: { command: 'pwd' },
       result: { stdout: '/tmp' },
       logs: ['done'],
@@ -28,7 +25,6 @@ describe('runProjectionActivityHydration', () => {
         arguments: { command: 'pwd' },
       }),
     );
-    expect(activities[0]).not.toHaveProperty('contextText');
     const activity = activities[0];
     expect(activity?.kind === 'tool' ? activity.logs : null).toEqual(['done']);
   });

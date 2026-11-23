@@ -74,7 +74,7 @@ const ACTIVE_TRACE_PAGE_FIELDS = `
       ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
       ... on EventMonitorToolCardVisual {
         kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
-        summaryArgs { path command query }
+        summaryArgs
       }
       ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
       ... on EventMonitorCompactionVisual {
@@ -912,8 +912,9 @@ describe("recent run projection GraphQL e2e", () => {
       invocationId: "call-1",
       toolName: "search_web",
       statusKey: "success",
-      summaryArgs: { query: "cats" },
     });
+    // A JSON object of the call's summary argument keys and their string values (autobyteus-609 D-E): only the query here.
+    expect((withHugeResult.events.at(-1)?.visuals[0] as { summaryArgs?: unknown }).summaryArgs).toEqual({ query: "cats" });
     console.info("[active-trace-page-closed-payload-metrics]", JSON.stringify({
       fixtureBytes: activeBytes,
       returnedEvents: withHugeResult.events.length,
