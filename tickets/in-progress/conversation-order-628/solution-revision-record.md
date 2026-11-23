@@ -37,3 +37,21 @@
 - Affected: REQ-003, REQ-004, AC-006, DEC-004; FU-001 resolved in this ticket; design D-3 (data contract first, validated), classification `Large` / `High`.
 - Approval: the user (requirements-doc.md approval reference).
 - Routing: architecture review of SR-004. Implementation continues D-1/D-2 meanwhile, without handing off.
+
+## SR-005 (2026-11-23)
+
+- Trigger: ARCH-REV-001 Fail.
+  - AR-001 (Design Impact): D-3 described one stream's shape for all three; AgentRun has direct listener paths; the field was required on untimed messages; the placeholder had no value for an empty conversation.
+  - AR-002 (editorial): stale lines contradicted REQ-004.
+- Design: D-3 rewritten.
+  - The three boundaries are named, each with field, writer, reader and an example frame.
+  - One field definition, required only on the timed messages (the table).
+  - One AgentRun stamping method covers every delivery.
+  - `accepted_at` on pending input entries.
+  - An own send has a null time until the node confirms it.
+  - `updatedAt` is derived from row times.
+  - SCN-001…004 and the first-message case are re-walked per stream.
+- Requirements: text aligned with REQ-004 (Out of Scope, Non-Goals, BEH-003, Traceability, baseline). Intended behavior is unchanged.
+- Approval: REQ-004 by the user (SR-004); the SR-005 edits are editorial.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review.
+- Design case: docs/design-cases.md Case 2 (one entry form traced, others left open).
