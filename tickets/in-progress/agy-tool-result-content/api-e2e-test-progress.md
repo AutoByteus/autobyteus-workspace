@@ -12,3 +12,4 @@
 | 18:4x | API-03 | Completed | Pass | live run 2: LN-01..05 (another 60 read steps, 0 warnings; large read recorded 46,474 bytes) |
 | 18:5x | API-04 | Completed | Pass | unit 648, typecheck baseline 972 in 299, five regression e2e files 14 passed |
 | 19:0x | API-03c | Completed | Pass | LN-06: asked for grep_search/find_by_name/view_file, the real agy used run_command and read_file only; evidence decision requested for the live grep/find proof |
+| 19:3x | API-01b | Completed | Pass | DEC-10 received (Accepted Unverified Risk); fixture rows corrected to the stored shapes; scripted 4/4, unit 648 |

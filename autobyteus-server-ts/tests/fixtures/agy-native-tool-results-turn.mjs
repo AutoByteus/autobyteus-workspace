@@ -1,7 +1,9 @@
 // Deterministic provider double only (autobyteus-377). Requires a test-owned HOME and workspace.
 // The real CLI streams a finished read/search step as a size summary or nothing, and keeps the step's real result in its transcript
 // (`<HOME>/.gemini/antigravity-cli/brain/<conversation>/.system_generated/logs/transcript_full.jsonl`): a planner row, then one GENERIC row
-// per call with the result as `content`. Synthetic texts only.
+// per call with the result as `content`. Synthetic texts only. Shapes follow the stored rows of older CLIs (autobyteus-377 DEC-10): `view_file`
+// `File Path:`, `Total Lines:`, `Total Bytes:`, `Showing lines a to b`, the numbering sentence, numbered lines; `grep_search` the match lines;
+// `find_by_name` `Found N results`, then the paths; each after the two timestamp header lines.
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -15,11 +17,11 @@ export const nativeToolResultCalls = (workspace) => {
     { name: "read_file", args: { Path: file, StartLine: 2, EndLine: 3 }, summary: { Path: file }, streamOutput: "2 lines, 31 bytes",
       content: `${HEADER}Showing lines 2-3 of 3\n2: second line 🙂\n3: third line` },
     { name: "view_file", args: { AbsolutePath: file }, summary: { AbsolutePath: file }, streamOutput: "3 lines, 50 bytes",
-      content: `${HEADER}File Path: \`file://${file}\`\nTotal Lines: 3\nTotal Bytes: 50\nShowing lines 1-3 of 3\nThe following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.\n1: first line\n2: second line 🙂\n3: third line` },
+      content: `${HEADER}File Path: \`file://${file}\`\nTotal Lines: 3\nTotal Bytes: 50\nShowing lines 1 to 3\nThe following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.\n1: first line\n2: second line 🙂\n3: third line` },
     { name: "grep_search", args: { SearchPath: workspace, Query: "third" }, summary: { SearchPath: workspace, Query: "third" }, streamOutput: null,
       content: `${HEADER}${file}:third line` },
     { name: "find_by_name", args: { SearchDirectory: workspace, Pattern: "*.txt" }, summary: { SearchDirectory: workspace, Pattern: "*.txt" },
-      streamOutput: "1 lines, 20 bytes", content: `${HEADER}${file}` },
+      streamOutput: "1 lines, 20 bytes", content: `${HEADER}Found 1 results\n${file}` },
     { name: "write_file", args: { Path: path.join(workspace, "new.txt"), Content: "first\nsecond\n" }, summary: { Path: path.join(workspace, "new.txt") },
       streamOutput: null, content: `${HEADER}Created file.` },
     { name: "edit_file", args: { Path: file, Target: "second line", Replacement: "2nd line" }, summary: { Path: file },

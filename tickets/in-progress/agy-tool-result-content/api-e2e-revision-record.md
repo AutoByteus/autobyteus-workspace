@@ -4,7 +4,7 @@
 
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
-| API-REV-001 | implementation_engineer, `implementation-handoff.md`, round 1 | SR-001, SR-002, IR-001 | N/A | Blocked on an evidence decision (AC-002 live part) / 93% |
+| API-REV-001 | implementation_engineer, `implementation-handoff.md`, round 1 | SR-001, SR-002, IR-001 | N/A | Pass with DEC-10 accepted unverified risk (AC-002 and the grep/find part of AC-012) / 93% |
 
 ## Revision Entries
 
@@ -21,7 +21,7 @@
 None
 
 - Canonical artifacts and sections updated: investigation, report, progress log, revision record, evidence, `follow-ups.md` (FU-1).
-- Prior result and confidence: N/A; current: Blocked on an evidence decision / 93%.
+- Prior result and confidence: N/A; current: Pass (DEC-10 accepts the real grep/find/view_file rows as unverified risk) / 93%. The evidence decision was requested and recorded in the same round; the fixture's `view_file` and `find_by_name` rows were corrected to the stored shapes.
 - New or remaining failure IDs: none.
-- Recommended owner: Solution Designer (evidence decision).
+- Recommended owner: none.
 - Remaining risks: grep_search, find_by_name, view_file real rows unobserved; `read_url_content` and `search_web` journal lines unit-only; no live broken transcript.
