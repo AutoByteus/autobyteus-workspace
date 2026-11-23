@@ -27,10 +27,11 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/agy-capsule-tools-and-spill-shapes`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `19e4dce128` unchanged since the integration; `finalize/agy-capsule-tools-and-spill-shapes` from it; `--no-ff` merge `1b7b4dc334`; Secret Gate, hygiene and licensing pass on the merged state; pushed `19e4dce128..1b7b4dc334` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## User's checkout and Cleanup
-TBD
+- User's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): fast-forwarded to the last record commit after the final push (the exact commits are in the terminal message), only when it had no local commits and no uncommitted change in the files the update touches; its other modified and untracked files are left as they are.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-capsule-tools-and-spill-shapes` removed and pruned; local branches and remote branch `origin/codex/agy-capsule-tools-and-spill-shapes` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 `release-notes.md` written; not used: no release.
@@ -42,4 +43,4 @@ None. Remote state: none created.
 Revert the merge on `personal`; a renamed native tool would then disappear from the capsule without a log line. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes` (no accepted unverified risk); repository finalization complete `Yes` (`personal` @ `1b7b4dc334` plus this record commit); release not required; cleanup complete `Yes`; blocker `None`; terminal package sent `Yes`.
