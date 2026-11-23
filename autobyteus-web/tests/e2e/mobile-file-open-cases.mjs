@@ -53,6 +53,8 @@
 //                  already under way, so the node itself goes away.) A second phone in Chinese (zh-CN): "正在加载视频…" with "x / y MB" rising, then
 //                  the video plays. The node's gate and path rules on the media routes: no key → 401 on the workspace and
 //                  node-file routes; the phone's key with a path that climbs out of the folder → refused, no bytes.
+//                  autobyteus-609 AC-J: after the node's restart the first read of the run's folder answers 200, and an
+//                  unknown folder ID answers 404.
 //   MSP-92 autobyteus-572 REQ-001 (API/E2E)  A video sent as a Team message's reference: the phone's Messages → the
 //                  reference plays in the reference viewer on an 8 Mbit/s link; while it loads the viewer says it is
 //                  loading ("Loading reference file..."), never "not available" (the reference route sends no length; the
@@ -595,8 +597,8 @@ export const runFileOpenCases = async (probe) => {
           await shot(page, `MSP-91-${label}-failed`);
           await network('fast');
           await epsilon.start();
-          // The user taps Retry once the node is back and serves the file again. Right after a restart the node answers
-          // a read of the run's folder 404 ("non-existent workspace") until it has registered that folder again.
+          // The user taps Retry once the node is back. Since autobyteus-609 (REQ-J) the node restores the run's folder from
+          // its registry on the first read, so the first read after the restart answers 200 (before, 404 for about 2.5 s).
           const url = net.filter((entry) => /^\/rest\/(workspaces\/[^/]+\/content|node-files\/content)$/.test(entry.path)).at(-1)?.request.url() ?? null;
           const key = await page.evaluate(() => { try { const s = JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null'); return s?.credential ?? s?.token ?? s?.accessToken ?? null; } catch { return null; } });
           const back = Date.now(); let servedAfterMs = null; const readsAfterRestart = [];
@@ -643,9 +645,11 @@ export const runFileOpenCases = async (probe) => {
         const phoneKey = await page.evaluate(() => { try { const s = JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null'); return s?.credential ?? s?.token ?? s?.accessToken ?? null; } catch { return null; } });
         const status = async (url, key) => { if (!url) return null; const response = await fetch(url.replace(phoneOrigin, epsilon.baseUrl), { headers: key ? { authorization: `Bearer ${key}`, host: new URL(phoneOrigin).host } : { host: new URL(phoneOrigin).host } }); const bytes = (await response.arrayBuffer()).byteLength; return { status: response.status, bytes, length: response.headers.get('content-length') }; };
         const climbing = read ? (() => { const u = new URL(read); u.searchParams.set('path', '../outside-media-572/retry-572-out.mp4'); return u.toString(); })() : null;
+        // autobyteus-609 AC-J: a folder ID the node does not know still answers 404 after the restart.
+        const unknownFolder = read ? (() => { const u = new URL(read); u.pathname = u.pathname.replace(/\/workspaces\/[^/]+\//, '/workspaces/no-such-folder-609/'); return u.toString(); })() : null;
         const gate = {
           workspaceWithKey: await status(read, phoneKey), workspaceNoKey: await status(read, null), nodeFileNoKey: await status(nodeRead, null),
-          climbingWithKey: await status(climbing, phoneKey), keyRead: Boolean(phoneKey),
+          climbingWithKey: await status(climbing, phoneKey), unknownFolderWithKey: await status(unknownFolder, phoneKey), keyRead: Boolean(phoneKey),
         };
 
         // A phone in Chinese.
@@ -699,6 +703,8 @@ export const runFileOpenCases = async (probe) => {
           [gate.keyRead && gate.workspaceWithKey?.status === 200 && gate.workspaceWithKey.length === String(size) && gate.workspaceNoKey?.status === 401 && gate.nodeFileNoKey?.status === 401,
             'AC-005 the media routes: the phone\'s key reads (Content-Length = the file\'s size); no key → 401 on the workspace and node-file routes'],
           [gate.climbingWithKey && gate.climbingWithKey.status >= 400 && gate.climbingWithKey.bytes < 1000, 'AC-005 the path rules: a path climbing out of the folder is refused, no file bytes'],
+          [inside.readsAfterRestart[0]?.[1] === 200, 'autobyteus-609 AC-J the first read of the run\'s folder after the node\'s restart answers 200'],
+          [gate.unknownFolderWithKey?.status === 404, 'autobyteus-609 AC-J an unknown folder ID answers 404 after the restart'],
           [details.zh.loadingWords && zhSamples.length >= 5 && zhSamples.at(-1) > zhSamples[0] && details.zh.played && !details.zh.notAvailable,
             'zh-CN: "正在加载视频…" with "x / y MB" rising, then the video plays'],
         ].filter(([ok]) => !ok).map(([, label]) => label);

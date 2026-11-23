@@ -37,6 +37,7 @@
 //                  not-found state.
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
@@ -83,8 +84,8 @@ const placeInPage = (el) => {
  *   `waitFor`, `assert`, `redact`, `browser`, `alpha`, `stack`, `desktopRunsView`.
  */
 export const runHeadingLinksCases = async (probe) => {
-  const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView } = probe;
-  const ids = ['MSP-44', 'MSP-45', 'MSP-46', 'MSP-100'];
+  const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView, sendOver } = probe;
+  const ids = ['MSP-44', 'MSP-45', 'MSP-46', 'MSP-100', 'MSP-101'];
   if (selected && !ids.some(id => selected.has(id))) return;
   let currentCase = 'heading-links-setup';
   const ws = stack.workspace;
@@ -502,6 +503,118 @@ export const runHeadingLinksCases = async (probe) => {
         [/File not found/.test(details.desktop.gone.viewer) && details.phone.gone.viewerOpened && /File not found/.test(details.phone.gone.viewer),
           'AC-H2 a missing file opens the viewer\'s existing not-found state, on the desktop and the phone'],
       ].filter(([ok]) => !ok).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
+      return details;
+    });
+
+    // AC-H1 "for a team member or a delegated run, that run's own folder": the same relative link in three runs whose
+    // folders differ, each folder with its own copy of the linked file (its own marker). The probe's main workspace has
+    // a copy too, so a link resolved against the wrong folder shows a marker of another run.
+    await runCase('MSP-101', async () => {
+      currentCase = 'MSP-101';
+      const base = path.dirname(ws);
+      const folderOf = name => path.join(base, `ws-609-${name}`);
+      const LINK = 'docs-609m/note-609.md';
+      const MARKERS = { lead: 'LEAD-609-BODY', mate: 'MATE-609-BODY', host: 'HOST-609-BODY', main: 'MAIN-609-BODY' };
+      const writeNote = async (folder, marker) => {
+        await fs.mkdir(path.join(folder, 'docs-609m'), { recursive: true });
+        await fs.writeFile(path.join(folder, LINK), `# Note 609\n\n${marker}\n`);
+      };
+      for (const name of ['lead', 'mate', 'host']) await writeNote(folderOf(name), MARKERS[name]);
+      await writeNote(ws, MARKERS.main);
+      for (const name of ['lead', 'mate', 'host']) await alpha.gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: folderOf(name) } }).catch(() => undefined);
+      const folderOfRun = async runId => (await alpha.gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{workspaceRootPath}}}', { id: runId })).getAgentRunResumeConfig?.metadataConfig?.workspaceRootPath ?? null;
+
+      // A Team run whose members work in different folders; the member `/mate` links the file.
+      const conf = folder => ({ ...stack.runConfig, workspaceRootPath: folder });
+      const team = (await alpha.gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: { teamDefinitionId: stack.ids.delivery,
+        teamConfigs: [{ teamAddress: '/', ...conf(folderOf('lead')) }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: stack.ids.checker, ...conf(folderOf('lead')) },
+          { memberAddress: '/mate', agentDefinitionId: stack.ids.writer, ...conf(folderOf('mate')) }] } })).createAgentTeamRun;
+      assert(team.success, team.message);
+      const tree = JSON.stringify((await alpha.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team.teamRunId })).getTeamRunResumeConfig.executionTree);
+      const mate = /"address":"\/mate"[^}]*"agent_run_id":"([^"]+)"/.exec(tree)?.[1];
+      assert(mate, 'the Team\'s member /mate', tree);
+      await sendOver(stack.wsUrl(`agent-team/${team.teamRunId}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
+        context_file_paths: [], image_urls: [], agent_run_id: mate, content: `ECHO_INPUT RUNREL-609-MATE [note](${LINK})` });
+      const mateProjection = async () => JSON.stringify((await alpha.gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}',
+        { id: team.teamRunId, a: mate })).getTeamMemberRunProjection?.conversation ?? []);
+      await waitFor('the member\'s link message', async () => { const text = await mateProjection(); return text.includes('ECHO:') && text.includes('RUNREL-609-MATE'); }, 60_000);
+
+      // A delegated run of a host that works in its own folder; the task agent links the file.
+      const host = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.ptm, ...conf(folderOf('host')) } })).createAgentRun;
+      assert(host.success, host.message);
+      const delegatedResult = await stack.agentCall(host.runId, 'delegate_task', { recipient_address: '/release_notes_writer', description: 'Write the 609 note. Marker RUNREL-609-TASK.' });
+      const delegatedRun = /target_agent_run_id\W+(\w+)/.exec(JSON.stringify(delegatedResult))?.[1];
+      assert(delegatedRun, 'the host delegated', delegatedResult);
+      await stack.agentSay(delegatedRun, `ECHO_INPUT RUNREL-609-DEL [note](${LINK})`);
+      await waitFor('the task agent\'s link message', async () => { const text = await stack.projection(delegatedRun); return text.includes('ECHO:') && text.includes('RUNREL-609-DEL'); }, 60_000);
+      // A member's folder is its member config (set above); a task agent's is the node's own choice, read back.
+      const folders = { mate: folderOf('mate'), delegated: await folderOfRun(delegatedRun), host: await folderOfRun(host.runId) };
+      // The task agent's own folder: the expectation follows what the node gave it (the marker of that folder).
+      const expectedFor = folder => Object.entries({ lead: folderOf('lead'), mate: folderOf('mate'), host: folderOf('host'), main: ws }).find(([, f]) => f === folder)?.[0] ?? null;
+      const expected = { mate: 'mate', delegated: expectedFor(folders.delegated) };
+      const otherMarkers = own => Object.entries(MARKERS).filter(([name]) => name !== own).map(([, marker]) => marker);
+      const details = { team: team.teamRunId, mate, host: host.runId, delegatedRun, folders, expected };
+
+      // The desktop: the member from its Team's row, the task agent under its host.
+      const deskViewer = deskPage.locator('#contentViewer:visible').first();
+      const deskOpenLink = async (label, own) => {
+        const link = deskPage.locator(`a[href="${LINK}"]`).last();
+        await link.waitFor({ timeout: 60_000 });
+        await link.click();
+        let shown = '';
+        try { await waitFor(`${label}: the note in the Files panel`, async () => (shown = await deskViewer.innerText().catch(() => '')).includes('Note 609'), 20_000); } catch { /* recorded */ }
+        await deskPage.screenshot({ path: path.join(outputDir, `MSP-101-desktop-${label}.png`) });
+        return { own: MARKERS[own] ?? null, ownShown: Boolean(own) && shown.includes(MARKERS[own]), othersShown: otherMarkers(own).filter(marker => shown.includes(marker)) };
+      };
+      await deskPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+      await desktopRunsView(deskPage);
+      const showOlder = deskPage.locator('[data-test="run-list-show-older"]');
+      if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+      const memberRow = deskPage.locator(`[data-test="workspace-team-member-${team.teamRunId}-/mate"]`).first();
+      // A Team run's main row opens it and unfolds its members.
+      const teamRow = deskPage.locator(`[data-test="workspace-team-row-${team.teamRunId}"]`).first();
+      for (let round = 0; round < 5 && !(await memberRow.count()); round += 1) {
+        if ((await teamRow.getAttribute('aria-expanded').catch(() => null)) !== 'true') await teamRow.click({ timeout: 30_000 }).catch(() => undefined);
+        await sleep(800);
+      }
+      await memberRow.click({ timeout: 60_000 });
+      const deskMate = await deskOpenLink('team-member', expected.mate);
+      await openDesktopTaskAgent(host.runId, delegatedRun);
+      const deskDelegated = await deskOpenLink('delegated', expected.delegated);
+
+      // The phone: the member under its Team's row, the task agent under its host's row.
+      const phoneViewer = phonePage.locator('[data-testid="mobile-file-viewer"]');
+      const phoneOpenLink = async (conv, label, own) => {
+        const link = conv.locator(`a[href="${LINK}"]`).last();
+        await link.waitFor({ timeout: 60_000 });
+        await press(phone, link);
+        let shown = '';
+        try { await waitFor(`${label}: the note in the phone viewer`, async () => (await phoneViewer.count()) > 0 && (shown = await phoneViewer.innerText()).includes('Note 609'), 20_000); } catch { /* recorded */ }
+        await phonePage.screenshot({ path: path.join(outputDir, `MSP-101-phone-${label}.png`) });
+        for (let step = 0; step < 3 && (await phoneViewer.count()) > 0; step += 1) { await phonePage.goBack(); await sleep(500); }
+        return { own: MARKERS[own] ?? null, ownShown: Boolean(own) && shown.includes(MARKERS[own]), othersShown: otherMarkers(own).filter(marker => shown.includes(marker)) };
+      };
+      await phonePage.goto(phoneHome, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      const teamRowKey = `team:${team.teamRunId}`;
+      await phonePage.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
+      const memberOpen = phonePage.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
+      for (let round = 0; round < 5 && !(await memberOpen.count()); round += 1) {
+        const row = phonePage.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first();
+        if ((await row.getAttribute('aria-expanded')) === 'false') await row.locator('[data-testid="mobile-run-toggle"]').click({ timeout: 1_500 }).catch(() => undefined);
+        await sleep(600);
+      }
+      await memberOpen.click({ timeout: 60_000 });
+      const phoneMate = await phoneOpenLink(phonePage.locator('[data-testid="mobile-run-conversation"]'), 'team-member', expected.mate);
+      const phoneDelegated = await phoneOpenLink(await openPhoneRun(delegatedRun, host.runId), 'delegated', expected.delegated);
+
+      Object.assign(details, { desktop: { mate: deskMate, delegated: deskDelegated }, phone: { mate: phoneMate, delegated: phoneDelegated } });
+      const ok = result => result.ownShown && result.othersShown.length === 0;
+      const failures = [
+        [Boolean(expected.delegated), 'the task agent\'s folder is one of the probe\'s folders (the setup)'],
+        [ok(deskMate) && ok(phoneMate), 'AC-H1 a team member\'s relative link opens that file of the member\'s own folder, on the desktop and the phone'],
+        [ok(deskDelegated) && ok(phoneDelegated), 'AC-H1 a delegated run\'s relative link opens that file of the delegated run\'s own folder, on the desktop and the phone'],
+      ].filter(([pass]) => !pass).map(([, text]) => text);
       assert(failures.length === 0, failures.join('; '), details);
       return details;
     });

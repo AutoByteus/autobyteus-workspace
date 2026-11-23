@@ -267,6 +267,27 @@ if (arg === "--version") {
         step_type: "tool", tool_name: "call_mcp_tool", tool_info: { name: "call_mcp_tool", parameters } } });
       return;
     }
+    // `AGENT_TOOL_STEPS` streams four tool steps in AGY 1.2.14's shape (ACTIVE and DONE both carry the call, as in
+    // `mcp_calls`), each with an argument the shared summary reads: an own-MCP `send_message_to` (`recipient_address`),
+    // an own-MCP `get_project_task` (`task_id`), a native `run_command` (`CommandLine`, with a leading `cd`) and a native
+    // `view_file` (`AbsolutePath`), then replies AGENT_TOOL_STEPS_DONE (autobyteus-609: earlier-trace cards against live cards).
+    if (content.includes("AGENT_TOOL_STEPS") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {
+      const own = (ToolName, Arguments) => ["call_mcp_tool", { Arguments, ServerName: "autobyteus_agent_tools", ToolName }];
+      const calls = [
+        [...own("send_message_to", { recipient_address: "/release_notes_writer", content: "Check the notes." }), { output: "{\"accepted\": true}" }],
+        [...own("get_project_task", { task_id: "autobyteus-609" }), { output: "{\"task_id\": \"autobyteus-609\", \"status\": \"IN_PROGRESS\"}" }],
+        ["run_command", { CommandLine: "cd /agy/probe-609 && ls -la docs" }, { output: "notes-609.md" }],
+        ["view_file", { AbsolutePath: "/agy/probe-609/docs/notes-609.md" }, { output: "{\"lines\": 3}" }],
+      ];
+      calls.forEach(([tool_name, parameters, extra], offset) => {
+        const step = { conversation_id, step_index: turns * 100 + offset + 1, step_type: "tool", tool_name };
+        emit({ event: "step_update", step_update: { ...step, state: "ACTIVE", tool_info: { name: tool_name, parameters } } });
+        emit({ event: "step_update", step_update: { ...step, state: "DONE", tool_info: { name: tool_name, parameters, ...extra } } });
+      });
+      reply(turns * 100 + calls.length + 1, "AGENT_TOOL_STEPS_DONE");
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "AGENT_TOOL_STEPS_DONE" } });
+      return;
+    }
     // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
     // user stops it or its run is terminated. A message that also asks for a tool call is not held.
     if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {
