@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 2; round 1 was the Implementation Review, CRR-001 Pass)
+- Review Entry Point: `Implementation Review` (round 3, after IR-002; round 1 Implementation Review Pass CRR-001; round 2 Failure-Origin, Design Impact CRR-002)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003; DEC-009 added during implementation)
 - Investigation Notes Reviewed As Context: through the design spec's evidence table (sections A–J)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
@@ -16,13 +16,13 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2`
-- Review Scope: `N/A` (failure-origin round; the implementation-review sections below are round 1's, updated only where F-1 changes them)
-- Review Scope Evidence (round >1): N/A (failure-origin)
-- Trigger: API/E2E Engineer, API-REV-001 Fail (F-1, AC-D, REQ-D)
-- Prior Review Round Reviewed: 1 (CRR-001, Implementation Review Pass)
-- Latest Authoritative Round: 2
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `3`
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): IR-002 (`70f3d8d410`, `e78a539dfe`) changes a shared data shape (the conversation entry gains `toolStatus`; the web stops deriving the status), adds a shared node rule, and removes three Codex source files and their tests (SR-005). That spreads beyond F-1's files, so every structural check and the full scorecard were rerun. Round-1 evidence is carried forward for items A–C and E–J, whose code IR-002 does not touch (`git diff e418414a2d..7ce2b67ea1` touches only D-D2's and SR-005's files).
+- Trigger: Implementation Engineer, IR-002 (SR-004 D-D2, ARCH-REV-003 Pass; SR-005 N-3/N-4)
+- Prior Review Round Reviewed: 2 (CRR-002, Failure-Origin: F-1 Design Impact)
+- Latest Authoritative Round: 3
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-web-followups-609`, branch `codex/phone-web-followups-609` (pushed), `f2c0d2a902..c9d184ce80` (code commits `6ed56306aa`…`ab72e00e7a`)
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
@@ -31,7 +31,8 @@
 - Failing Scenario IDs: MSP-102 (AC-D, REQ-D): a call the user stopped, read back from the node (phone opened after the stop; desktop after a reload)
 - Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-102` (desktop Stop press, then the phone and a desktop reload; scripted AGY)
 - Failure Evidence Paths: `evidence/api-e2e/MSP-102-stopped-and-page-cards/result.json` (phone row `{"status":"error","word":"Failed"}`, page card `"statusKey":"error"`), `MSP-102-phone-detail-stopped.png`, `MSP-102-desktop-page-cards.png`
-- Tree under failure-origin review: `255a0b0ada` + API/E2E `54a305f690` (tests), `e84ba7fc48` (docs, evidence)
+- Tree under failure-origin review (round 2): `255a0b0ada` + API/E2E `54a305f690`, `e84ba7fc48`
+- Tree under round-3 review: `7ce2b67ea1` (pushed); code `70f3d8d410` (D-D2), `e78a539dfe` (SR-005); evidence IMP-11…IMP-16
 
 ## Routing Classification Review
 
@@ -75,7 +76,7 @@
 | BEH-A | Confirmed | Field and both `resolveContextText` copies removed; the dedupe's term is equal on both sides, so removing it decides nothing new; no `contextText` left in `autobyteus-server-ts/src` or `autobyteus-web` (`grep`) | — |
 | BEH-B | Confirmed | `scripts/check-contract-dist.mjs`: tracked-`dist/` contract packages → one topological `pnpm --filter` build → `git status --porcelain --untracked-files=all` per `dist/`; TESTING.md (own `docs(testing):` commit `2b2c5c3509`) and RELEASE.md name it | — |
 | BEH-C | Confirmed | `run()` wraps stage → publish in `try/finally rm(stageDir, { force: true })`; the native rebuild runs on `targetDir` after it; `.gitignore` entry | — |
-| BEH-D | Contradicted (round 2) | Live surfaces correct: `toolActivityStatusPresentation('interrupted')`, the card key, `ToolCallIndicator`. **Read back from the node it is never `interrupted`**: the trace store persists an interrupted call as a `tool_result` with `toolResult: null`, `toolError: <reason or "Tool execution interrupted.">`, `content: "Tool execution interrupted."`, `sourceEvent: TOOL_EXECUTION_INTERRUPTED` or the turn-interrupt event (`runtime-tool-trace-sequencer.ts:119-124,134-160,179-198`); native stores `ToolResultEvent(…, error = reason, e.g. user_interrupt)` (`autobyteus-ts/src/memory/memory-manager.ts:392-407`); the replay maps any stored error to `error` (`raw-trace-to-historical-replay-events.ts:88-93`). So the page card's `interrupted` key and the web hydration's `interrupted` support never receive it. Round 1 wrongly took the type union as proof of reachability (review gap, below) | MSP-102: phone row and detail "Failed", reloaded page card `statusKey: error` |
+| BEH-D | Confirmed (round 3) | Live: unchanged from round 1. Read back: the shared rule `isInterruptedToolResult({ sourceEvent, error })` (`agent-memory/domain/tool-result-interruption.ts`) is read by the replay's `createToolEvent` after the denial check and only for a call with a result trace (`terminal &&`), which covers both call sites, and by the journal's `interruptedFromError` (its outputs unchanged). The sequencer takes its text from the same file. The conversation transformer puts `toolStatus: event.status` on tool entries, the only producer of them (`historical-replay-events-to-conversation.ts`). The web reads `toolStatus` through `isToolInvocationStatus` (`utils/toolInvocationStatus.ts`; anything else reads `parsed`); `inferToolStatus` is removed. The dedupe keeps a whole winning entry, so `toolStatus` survives a merge. Round 2's gap (no producer) is closed | — |
 | BEH-E | Confirmed | One frozen list in agent-presentation-contracts; the web reads it by kind in the same order; the node page projection copies file keys for write/edit cards, command keys for terminal cards and all keys otherwise; GraphQL `summaryArgs` is `GraphQLJSON`; the query selects it whole; codegen regenerated | — |
 | BEH-F/G | Confirmed | MSP-44/45 follow 576; the phone results are recorded per DEC-009; MSP-55 accepts both codes | — |
 | BEH-H | Confirmed | `MarkdownRenderer`: with file actions on, a scheme-less, non-`#`, non-`//`, non-`/` href emits `{ kind: 'run-relative', href }`; elsewhere it emits `relative-link` (576 preserved). `openPath`: origin and other-node checks first; `resolveRunRelativeFileLink` confines the link through 576's `resolveWorkspaceRelativeReference(href, '')` and builds the absolute action; then the existing desktop or phone flow | — |
@@ -182,9 +183,9 @@ None new.
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | One frozen key list typed for both sides | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | "Stopped", `RunRelativeFileLink`, `endRunningTasksForRunEnd` | — | — |
 | 7 | API/E2E Readiness | 9.4 | Base-fail proofs for B, I, J; probe cases for D, F, G, H, I, J | Team-member and delegated run-relative links are unit-only so far | API/E2E covers them |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 (round 2) | Lookups, confinement and transition guards traced correct | AC-D fails for every read-back surface: the stored replay never yields `interrupted` (F-1) | The stored replay recognizes an interrupted call (Design Impact, below) |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (round 3) | F-1 resolved: every runtime's stored interruption reads `interrupted`; the team reconciliation conflict is gone | A stopped call keeps its stored error text in a red Error section, live and read back (FU-010) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cuts | — | — |
-| 10 | Cleanup Completeness | 9.4 | Every replaced list and rule removed | Two architecture-review documents untracked (CG-07, not code) | Commit them before delivery |
+| 10 | Cleanup Completeness | 9.5 (round 3) | Every replaced list and rule removed; SR-005 removed the dead Codex view provider, reader and normalizer with search evidence (IMP-14); the web's duplicate status guard moved to one place | Three server docs still name the removed files (docs sync); the Claude view provider is FU-009 | — |
 
 ## Failure-Origin Review (Round 2)
 
@@ -228,43 +229,73 @@ None new.
   - Recorded as **FU-007**. API/E2E records it as out of scope.
 - MSP-61: FU-006, red on the base.
 
+## Round 3 (IR-002): D-D2 and SR-005
+
+- **D-D2.** The design's file, rule and readers are implemented as written (`tool-result-interruption.ts` matches the design's code block).
+  - The replay checks the denial first, then `terminal && isInterruptedToolResult(...)` → `interrupted`, then the existing mapping, so an ordinary failure stays `error`.
+  - A call with no result trace stays pending.
+  - The journal's rule now reads the same function, with the same input and outputs.
+  - The sequencer's four literals use the shared constant; no writer's behavior changes.
+  - Persisted data stays `Not Affected`: read-side only, and traces written before the change carry the same `sourceEvent` and error.
+- **Conversation `toolStatus`.**
+  - The only producer of conversation tool entries is the replay's conversation transformer. Its entries now carry the replay's status.
+  - The web takes that status. A missing or unknown value reads `parsed`, the same as the removed `inferToolStatus` gave an undecided entry.
+  - The removed function's `denied` / `error` / `success` decisions are the replay's own (`:88-96`), so no status changes meaning.
+  - Team member reconciliation no longer meets a live `interrupted` against a read-back `error`. The new spec shows both the agreement and the old conflict.
+- **Case 26 consumers:** the handoff lists them, and `recent-run-projection-policy.ts` and `run-projection-utils.ts` read no status (Read).
+- **SR-005.** The Codex view provider, `codex-thread-history-reader.ts` and `codex-thread-history-item-normalizer.ts` are removed with their tests.
+  - No code or config still names them (`grep` over both packages).
+  - The service reads only `LocalMemoryRunViewProjectionProvider`.
+  - The helpers they used keep live importers (IMP-14).
+  - Docs that name them (`autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`, `docs/modules/run_history.md`, `docs/modules/codex_integration.md`) are left for delivery's docs sync, as the handoff lists.
+- **Tests.**
+  - `stopped-tool-call-read-back.test.ts` drives the real writers through the local provider: Codex through its converter, `TOOL_EXECUTION_INTERRUPTED`, native `finalizePendingToolCallsForTurn`, an error-only record, and a denial. All of its cases fail with the old replay and pass with the fix (IMP-11).
+  - The rule's unit test covers each signal.
+  - MSP-102 passes for the phone opened after the stop, the desktop reload and the earlier-trace card (IMP-13).
+- **Sizes:** every file IR-002 changed is far under the limit, and the removals shrink the node.
+- **The implementer's observation:** a stopped call's stored error, "Tool execution interrupted.", still shows in the phone detail's red Error section and under the desktop card. It does so live too (the live activity carries the same error, as the reconciliation spec shows), so read-back matches live. AC-D asks for the word and icon, which are right. Recorded as **FU-010**, outside this ticket.
+
 ## Findings
 
-| ID | Finding | Classification | Owner |
-| --- | --- | --- | --- |
-| F-1 | Stored runs never read back `interrupted`: the phone row and detail of a run opened after the stop, and the earlier-trace card after a reload, read "Failed" / `error` (AC-D) | Design Impact | Solution Designer |
+| ID | Finding | Classification | Owner | Status (round 3) |
+| --- | --- | --- | --- | --- |
+| F-1 | Stored runs never read back `interrupted` (AC-D) | Design Impact | Solution Designer → SR-004/SR-005 → implementation IR-002 | Resolved (`70f3d8d410`; IMP-11, IMP-13) |
+
+No open findings.
 
 ## Follow-ups
 
-- Follow-ups this review added: FU-007 (the migration fixture's `snapshot()` reads the running node's Unix socket). FU-001…FU-006 were recorded upstream.
+- Follow-ups this review added: FU-007 (round 2) and FU-010 (round 3: a stopped call shows its stored interruption text as a red Error, live and read back). FU-001…FU-006, FU-008 (withdrawn) and FU-009 were recorded upstream.
 
 ## Classification
 
-- `Design Impact` (F-1).
+- None (Pass).
 
 ## Recommended Recipient
 
-- Solution Designer (`/solution_designer`).
-- After the design revision: implementation, then source review (a targeted delta on the replay and the shared rule), then API/E2E. API/E2E reruns:
+- API/E2E Engineer (`/api_e2e_engineer`), per the rule "implementation review passes". Implementation Engineer gets the informational notice.
+- API/E2E's next round, as it planned:
   - MSP-102 and the whole phone probe;
-  - the server suites, since node code changes;
-  - the fresh-start build on the final tree.
+  - the server suites, since node code changed;
+  - the fresh-start build on the final tree (IMP-16 ran it on `7ce2b67ea1`'s code).
 
 ## Residual Risks
 
-- C: the successful Windows path is proven only by the release run's Windows job (IMP-09).
+- C: the successful Windows path is proven only by the release run's Windows job (IMP-09, IMP-15).
 - I: a wrong live→Offline transition would end a running row (design Risk).
 - J: a URL read after a restart can create an on-demand skill or temp workspace, as GraphQL Files already does.
-- FU-003, FU-005, FU-006, FU-007.
-- Codex's stored interrupted calls are not traced (point 2 above).
+- Follow-ups: FU-003, FU-005, FU-006, FU-007, FU-009, FU-010.
+- Docs naming the removed Codex files: delivery's docs sync.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure origin confirmed)
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 2)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 3, `Full Re-Audit`)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: N/A for this round. Round 1's Runtime Correctness is corrected to 8.6 for F-1.
-- Failure Origin: `Design Impact`. The design's D-D has no producer of a stored `interrupted`, so every read-back surface shows `error`. It is also a round-1 review gap, owned here.
-- Recommended Recipient: `/solution_designer`
-- Notes: API/E2E's preliminary classification is confirmed. A `Local Fix` was considered and rejected: the fix needs the design to choose the single owner of the interruption rule (the journal already has one) and the stored signals for each runtime.
+- Score Summary: 9.4 average; every category ≥ 9.3. Runtime Correctness is back to 9.4 with F-1 resolved.
+- Failure Origin: N/A (round 2's Design Impact is resolved)
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes:
+  - The round-2 review gap (taking the type union as proof that the status was reachable) is closed: round 3 traced the producer, every consumer of `toolStatus`, and the dedupe.
+  - The implementer's observation is recorded as FU-010.

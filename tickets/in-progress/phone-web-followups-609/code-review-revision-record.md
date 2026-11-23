@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001, F-1 / MSP-102) | Pass | Fail — Design Impact | F-1 |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002: D-D2, SR-005) | Fail — Design Impact | Pass | F-1 (resolved) |
 
 ## Revision Entries
 
@@ -75,3 +76,37 @@ None.
 - Material score or classification changes: Runtime Correctness corrected from 9.4 to 8.6; `Design Impact`
 - Recommended recipient: `/solution_designer`
 - Remaining risks or uncertainty: Codex's stored interrupted calls not traced; FU-003, FU-005, FU-006, FU-007
+
+### CRR-003 — Round 3 of IR-002 (D-D2, SR-005): F-1 resolved, Pass
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Full Re-Audit`. The conversation entry's shape changed and source files were removed; round-1 evidence is carried forward for the items IR-002 does not touch.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-002), F-1
+- Relevant solution revision IDs: SR-004, SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail — Design Impact (CRR-002)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The shared rule `isInterruptedToolResult` is read by the replay (after the denial check, only with a result trace) and by the journal.
+  - Conversation entries carry the replay's `toolStatus`. The replay is their only producer, and the dedupe keeps the whole winning entry.
+  - The web shows the node's status; `inferToolStatus` is removed.
+  - The team reconciliation conflict is gone.
+  - The SR-005 removals leave no code reference.
+  - The read-back test drives every runtime's real writer and fails on the old replay (IMP-11); MSP-102 passes (IMP-13).
+  - FU-010 records the interruption text shown as a red Error, live and read back, which is outside AC-D.
+- Supported product scenario / material-premise basis changes: BEH-D back to Confirmed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-1 | Open (Design Impact) | Resolved | SR-004, SR-005, ARCH-REV-003, IR-002 (`70f3d8d410`, `e78a539dfe`) | `tool-result-interruption.ts`; `raw-trace-to-historical-replay-events.ts:92-94`; `historical-replay-events-to-conversation.ts` `toolStatus`; web `runProjectionConversation.ts` `toolStatusOf`; IMP-11 (5 cases fail before and pass after), IMP-13 (MSP-102 Pass) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Runtime Correctness 8.6 → 9.4; Cleanup 9.4 → 9.5; no classification
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: FU-003, FU-005…FU-007, FU-009, FU-010; docs naming the removed Codex files (docs sync)
