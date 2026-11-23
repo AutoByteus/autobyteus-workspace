@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, requirements-doc.md DEC-003 | A compaction row is placed among the conversation's messages by comparing its time (the viewer's clock live: `compactionActivityProjection.ts:214`; the node's after a reload) with message times that can come from the node (a user message echoed by the node). A viewer whose clock differs from the node's can show a compaction row one message too early or too late | `services/eventMonitor/recentEventMonitorWindow.ts:186-200`; autobyteus-628 investigation notes | The founder's report is message order, which this ticket fixes without depending on any clock; placing compactions without a clock needs their place recorded by each of their four writers | No | Record a compaction row's place in the conversation when it enters the center timeline (live projection, native stop, reload hydration, the activity store's merge), and place it by that instead of by time | |

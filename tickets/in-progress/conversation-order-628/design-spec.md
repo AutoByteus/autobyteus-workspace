@@ -1,0 +1,254 @@
+# Design Spec
+
+## Solution And Approval Basis
+
+- Current solution revision ID: SR-001
+- Approved requirements: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction; user informed 2026-11-23.
+- User approval of the design: Not required.
+- Design status: `Ready`
+- Investigation notes: `tickets/in-progress/conversation-order-628/investigation-notes.md`
+- Authorities read (2026-11-23):
+  - `references/architecture-design.md` (read this conversation)
+  - `references/design-principles.md` (updated: Approach, Principle 17, Practical Application Guide, Structural Triggers re-read)
+  - `references/design-examples.md` Case 11
+  - `templates/design-spec-template.md` (updated: Data Contract section)
+  - project `DESIGN.md` (rules 7, 9, 11)
+  - `docs/design-cases.md` Cases 2, 3, 5
+- Conflicts or discrepancies: none.
+
+## Current-State Read
+
+- The web's conversation window (`services/eventMonitor/recentEventMonitorWindow.ts:184-201`, `buildRecentEventMonitorPresentation`) flattens the conversation into rows, then sorts all rows by timestamp (`:200`) to interleave compaction rows.
+- Live, an agent message's timestamp is the viewer's clock (`segmentHandler.ts:254-272`), while a user message echoed by the node carries the node's `received_at` (`userMessageProjection.ts:29-80`). A viewer behind the node shows the user's message after the reply (Reproduced: `probes/clock-order-reproduction.spec.ts`).
+- After a reload, every timestamp is the node's, so the order is right. But it is right only because of the sort: by entry order a preface notice comes first, because it is stored first (`seq` 1, notice; `seq` 2, user).
+
+## Task Size And Architectural Risk (Mandatory)
+
+- Task size: `Medium`. Two owners in two packages:
+  - the web's conversation window (one function and its spec);
+  - the node's replay builder (one ordering rule and its test);
+  - plus one phone probe case.
+- Architectural risk: `Low`.
+  - No field, route or stored data changes.
+  - The one boundary effect is the order of a preface notice relative to its message in the projection's entries and replay events, which the web reads in order (same-version deploy, DESIGN.md rule 9).
+  - No concurrency, security or deployment surface.
+- Escalation trigger: another runtime stores a preface in a shape the rule does not match; or a reader of the window's order is found that depends on timestamp order.
+
+## Architecture Investigation Evidence
+
+| Source | Path | Observation | Decision |
+| --- | --- | --- | --- |
+| Read + Reproduced | `recentEventMonitorWindow.ts:80-104,184-201`; `probes/clock-order-reproduction.spec.ts` (+ `.run.log`) | Rows sorted by mixed-clock timestamps | D-1 |
+| Read | `recentEventMonitorSelection.ts:24` `selectRecentWindowCandidates`; callers `AgentConversationFeed.vue:160`, `recentEventMonitorMutationCoordinator.ts:34`, fixture `tests/e2e/fixtures/background-agent-renderer-contention.page.vue:354` | The selection takes the ordered list; three readers | D-1 consumers |
+| Read | `compactionActivityProjection.ts:214`; `runProjectionActivityHydration.ts:199`; `nativeCompactionActivityReconciliation.ts:19`; `agentActivityStore.ts:190-194,354` | Four writers of a compaction's timeline time | D-1 keeps time placement for compactions (DEC-003; FU-001) |
+| Read | `raw-trace-to-historical-replay-events.ts:139-200` (traces in stored order → events); `agent-run-input-preface-dispatch.ts:22-45,68-100` (the preface is one provider message, notice first; the notice event is published after forwarding); founder's traces (notes) | The notice is stored before its message; the message's `ts` (its receipt) is not later than the notice's | D-2 |
+| Reproduced (temporary, removed) | the reload pipeline on the founder's shape (`/tmp/sd628/reload-projection.json`) | Entries keep stored order | D-2 |
+
+## Intended Change
+
+- **D-1:** messages and their segments keep the conversation's own order. Compaction rows are merged in by time, never re-sorting messages.
+- **D-2:** the node's replay builder puts a preface notice right after the user message it was delivered with, so reload order equals live order.
+
+## Change Scope (Mandatory)
+
+- In scope: UC-001, UC-002.
+  - Web: `services/eventMonitor/recentEventMonitorWindow.ts` (+ spec).
+  - Node: `run-history/projection/transformers/raw-trace-to-historical-replay-events.ts` (+ test).
+  - Probe: one phone case.
+- Derived consumers:
+
+  | Changed | Consumer | Decision |
+  | --- | --- | --- |
+  | Window row order | `AgentConversationFeed.vue` (desktop, phone) | Shows the new order; no change |
+  | Window row order | `recentEventMonitorMutationCoordinator.ts:34` | Implementation checks it only compares presentations, not relying on timestamp order |
+  | Window row order | `background-agent-renderer-contention.page.vue:354` (fixture) | Unchanged unless its assertions depend on sort |
+  | Window row order | `recentEventMonitorWindow.spec.ts`, `recentEventMonitorPresentationWitness.spec.ts`, 585's notice-row specs | Keep passing; a case that asserted a clock-based reorder is rewritten to the approved order (rule 11) |
+  | Replay event order (D-2) | `historical-replay-events-to-conversation.ts` (conversation entries) | Follows the events |
+  | Replay event order (D-2) | `event-monitor-active-trace-page-projection.ts` (earlier-events page) | Follows the events, so the page shows the same order (consistent) |
+  | Replay event order (D-2) | `historical-replay-events-to-activities.ts` | Unaffected (activities hold no notices or user messages) |
+  | Replay event order (D-2) | the web reload builder `runProjectionConversation.ts:335-405` | Unchanged: it already keeps entry order |
+
+- Deliberately left alone:
+  - compaction placement by time (FU-001);
+  - the shown times;
+  - the stored traces and their writer (old and new runs read the same way);
+  - live handlers (live order is already right once the window keeps it).
+- Follow-ups: FU-001.
+
+## Relevant Behavior And Production-Path Map (Mandatory)
+
+| Behavior | Kind | REQ / AC | Trigger | Existing | Change | Path |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-001 | User | REQ-001 / AC-001, AC-002, AC-005 | Live stream | Timestamp sort | Conversation order | DS-1 |
+| BEH-002 | User | REQ-002 / AC-003 | Reload | Stored order, then sorted | Preface after its message | DS-2 |
+| BEH-003 | User | REQ-003 / AC-004 | Compaction | Sorted with messages | Merged by time | DS-1 |
+
+## Relevant Supplemental Task Artifacts
+
+| Path | Purpose | Related | Relationship |
+| --- | --- | --- | --- |
+| `probes/clock-order-reproduction.spec.ts` | Failing reproduction with the real web code | AC-001 | Implementation turns it into the window's spec |
+
+## Task Design Health Assessment (Mandatory)
+
+- Change posture: Bug Fix.
+- Current design issue found: Yes. A fact (the conversation's order) is recomputed from timestamps that do not share a clock, instead of taken from its owner (the conversation's order).
+- Structural triggers that fire:
+  - Derived data (Principle 11): order derived from timestamps. Response: read the conversation's order.
+  - Data contract (Principle 17): the order of replay events and conversation entries changes for one case. Response: the Data Contract section below.
+  - Several kinds or forms (Principle 1): the window serves desktop and phone, the sender and a non-sender viewer, live and reload. Each is walked in the validation table. D-2 serves every runtime whose stored preface has this shape; implementation checks native, Claude, Antigravity and Codex.
+- Deliberate deviations: `None`.
+- Root cause classification: `Local Implementation Defect` (the window's sort) plus a `Missing Invariant` (the projection's preface order).
+- Refactor needed now: No. One function's ordering and one ordering rule.
+
+## Terminology
+
+- **Preface notice**: a platform notice the node delivered in front of a user's input, in one provider message (`agent-run-input-preface-dispatch.ts`).
+- **Conversation order**: the order of the conversation's messages and of each agent message's segments, as the stream appended them, or as the projection's entries list them.
+
+## Legacy Removal Policy (Mandatory)
+
+- Obsolete: the timestamp sort of message rows (`recentEventMonitorWindow.ts:199-200`).
+- Compatibility kept: `None`.
+
+## Data Contract (Mandatory When The Change Stores Or Exchanges Data)
+
+- Contract location: this section. No field is added, removed or renamed. One ordering invariant of a shape the web receives changes, and one web-internal ordering rule.
+
+| Record / Message | Boundary | Field | Meaning | Written By | Read By |
+| --- | --- | --- | --- | --- | --- |
+| Run projection `conversation[]` entries and replay events | node → web (GraphQL JSON), node → earlier-events page | (order) | Conversation order. **New invariant:** a preface notice follows the user message it was delivered with | `buildHistoricalReplayEvents` (D-2) | `buildConversationFromProjection` (web), the page projection |
+| Window rows (web-internal) | web store → feed | (order) | Conversation order for message rows; a compaction row sits before the first message row (in conversation order) whose time is later than its own | `buildRecentEventMonitorPresentation` (D-1) | `AgentConversationFeed.vue` |
+
+- **Identity:** unchanged. Events keep their `eventId` from the trace's own `id` (`resolveTraceReplayIdentity`); D-2 moves an event, it does not re-identify it.
+- **D-2's rule:** within one turn, a `user` trace stored immediately after a `system_task_notification` trace of the same turn, whose `ts` is not later than the notice's `ts`, comes before that notice.
+  - Both times are the node's: the user message's receipt and the notice's write at dispatch, and dispatch follows receipt.
+  - A notice that started its own turn (a restart reminder, a task notice) is followed, if at all, by a user message received later, so it is not moved.
+- **Examples:**
+  - Founder (stored): `[n seq1 ts .697, u seq2 ts .696, a seq3]` → events `[u, n, a]`.
+  - A notice turn with a message appended later: `[n seq1 ts 10.0, u seq2 ts 12.4, a seq3]` → unchanged `[n, u, a]`.
+  - No notice: `[u seq1, a seq2]` → unchanged.
+  - Window, live, viewer 1 s behind: messages `[AI prev (t 54:00), You (node 55:09.696), AI(notice, reply) (viewer 55:08.996)]` → rows `prev, You, notice, reply` (array order); today `prev, notice, reply, You`.
+  - Window with a compaction (equal clocks): `[You t1, AI t2]`, compaction at t1.5 → `You, compaction, AI`, as today.
+
+### Data Contract Validation
+
+| Scenario | Step | Reads | Writes | Served? |
+| --- | --- | --- | --- | --- |
+| SCN-001 (sender, live) | Send; optimistic You pushed; notice and reply appended into a new AI message | Conversation array | Rows in array order | Yes |
+| SCN-002 (non-sender, live) | Echo (`MEMBER_INPUT_MESSAGE`) pushed; notice published after forwarding, so after it | Array | Rows | Yes (the echo is published right after admission, `configured-agent-execution-handle.ts:150-161`; the notice at settle, after forwarding) |
+| SCN-003 (reload) | Projection entries `[u, n, a]` → web builder `[You, AI(notice), AI(reply)]` | Entries | Rows | Yes (D-2) |
+| SCN-004 (compaction) | Compaction merged before the first later message | Activity time, message times | Rows | Yes, as today; mixed clocks: FU-001 |
+| Preserved (585) | A notice segment becomes its own row | Segments in order | Notice row | Yes |
+
+- Checks run:
+  - The reload pipeline on the founder's shape (temporary server test, removed): entries in stored order today, so D-2 is needed.
+  - The web reproduction: today's sort fails at a 1 s difference.
+  - Both read-only; the founder's data was only read.
+- Contract changes the validation caused: none.
+
+## Persisted Data / State Transition Decision
+
+`Not Affected`. Read-side only. Stored traces keep their order, and old and new runs are read by the same rule.
+
+## Data-Flow Spine Inventory
+
+| Spine | Scope | Behavior | Start | End | Owner | Why |
+| --- | --- | --- | --- | --- | --- | --- |
+| DS-1 | Primary | BEH-001, BEH-003 | Conversation + compactions | Feed rows | `buildRecentEventMonitorPresentation` | Order shown |
+| DS-2 | Primary | BEH-002 | Stored traces | Replay events → entries | `buildHistoricalReplayEvents` | Reload order |
+
+## Primary Execution Spine(s)
+
+- DS-1: `Stream/hydration → AgentContext.conversation (array) → buildRecentEventMonitorPresentation [flatten in array order → merge compactions by time → select window] → AgentConversationFeed (desktop/phone)`
+- DS-2: `Stored raw traces → buildHistoricalReplayEvents [preface rule] → buildRunProjectionConversation → GraphQL → buildConversationFromProjection → DS-1`
+
+## Spine Narratives (Mandatory)
+
+| Spine | Narrative | Owner |
+| --- | --- | --- |
+| DS-1 | Flatten as today (message, then its segments). Take compaction rows ordered by their own time. Walk the message rows in conversation order and insert each compaction before the first message row whose time is later than the compaction's. Then select the recent window and build items as today. | Window |
+| DS-2 | Before mapping traces to events, apply the preface rule within each turn, then map as today | Replay builder |
+
+## Ownership Map
+
+- `buildRecentEventMonitorPresentation` owns the shown order. The conversation array owns message order.
+- `buildHistoricalReplayEvents` owns replay order.
+
+## Removal / Decommission Plan (Mandatory)
+
+| Item | Why | Replaced By |
+| --- | --- | --- |
+| The combined timestamp sort of all rows (`recentEventMonitorWindow.ts:199-200`) | Orders messages by clocks | Array order plus a compaction merge |
+| The `order` field of descriptors, if it becomes unread after the merge | Dead if nothing reads it (Principle 7; implementation checks) | — |
+
+## Off-Spine Concerns
+
+None new.
+
+## Dependency Rules
+
+No new dependency. No lookup or after-construction wiring.
+
+## Interface Boundary Mapping
+
+Unchanged signatures: `buildRecentEventMonitorPresentation(conversation, compactions, limit)` and `buildHistoricalReplayEvents(rawTraces, options)`.
+
+## Final File Responsibility Mapping
+
+| File | Change |
+| --- | --- |
+| `autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts` | D-1: replace the sort with the array-order walk and compaction merge |
+| `autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts` | The reproduction's cases (viewer behind, ahead, equal; sender and non-sender), a compaction between turns, notice rows (585) unchanged |
+| `autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts` | D-2: the preface rule (a small named function in the file, e.g. `orderPrefaceNoticesAfterTheirMessage`) |
+| `autobyteus-server-ts/tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts` | D-2 examples above: founder shape, notice turn with a later message, no notice; plus the conversation entries |
+| `autobyteus-web/tests/e2e/…` (a phone case file) | AC-001/AC-003: the phone page's clock 2 s behind (Playwright `page.clock`), a message to a run whose input carries a platform notice; live order, then the same after a reload; also 2 s ahead |
+| Docs (delivery's sync) | `autobyteus-web/docs/…` conversation window order |
+
+## Concrete Examples / Shape Guidance
+
+```ts
+// D-1, inside buildRecentEventMonitorPresentation
+const messages = flattenConversation(conversation);   // conversation order
+const compactions = compactionDescriptors.sort(byTime); // their own time only
+const ordered: VisualDescriptor[] = [];
+let c = 0;
+for (const m of messages) {
+  while (c < compactions.length && compactions[c].timestampMs < m.timestampMs) ordered.push(compactions[c++]);
+  ordered.push(m);
+}
+while (c < compactions.length) ordered.push(compactions[c++]);
+```
+
+The comparison must keep today's tie rule: with equal clocks, the output equals today's for every existing spec. Implementation confirms the tie (`<` versus `<=`) against `recentEventMonitorWindow.spec.ts`.
+
+The shape avoided: re-stamping live messages with a common clock, or overwriting the echo's time. That would keep a clock in the order, and a hydrated conversation followed by live rows would still mix clocks.
+
+## Backward-Compatibility Rejection Log (Mandatory)
+
+| Candidate | Why Considered | Decision |
+| --- | --- | --- |
+| Reorder old traces on disk | Old runs | Rejected: read-side rule covers old and new |
+
+## Change / Refactor Sequence
+
+1. D-2 and its test.
+2. D-1 and its spec (start from the reproduction).
+3. Probe case.
+4. Web suite, server projection tests, phone probe (the case, MSP-99 and the conversation cases).
+
+## Key Tradeoffs
+
+- Compaction placement still uses time (DEC-003, FU-001).
+- D-2 uses two node times of the same turn to recognize a preface. They are the same clock, and the order of receipt before dispatch is guaranteed by the code path.
+
+## Risks
+
+- A runtime that stores the preface differently (for example inside the user's content). Implementation checks native, Claude, Antigravity and Codex; the rule only moves the exact shape.
+- A spec that encoded timestamp order. It gets rewritten to conversation order (DESIGN.md rule 11).
+
+## Guidance For Implementation
+
+- Reproduction to start from: `tickets/in-progress/conversation-order-628/probes/clock-order-reproduction.spec.ts`. Copy it into `services/eventMonitor/__tests__/`; its second case fails on base and must pass. Run with `npx vitest run <file>` in `autobyteus-web` after `nuxt prepare`.
+- The founder's run is evidence only: never run code against it or copy it.
+- Node 22.
