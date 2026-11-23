@@ -28,10 +28,11 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/agy-tool-result-content`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `1f761bc8db` unchanged since the integration; `finalize/agy-tool-result-content` from it; `--no-ff` merge `87ca2ceb99`; Secret Gate, hygiene and licensing pass on the merged state; pushed `1f761bc8db..87ca2ceb99` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## User's checkout and Cleanup
-TBD
+- User's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): fast-forwarded to the last record commit after the final push (the exact commits are in the terminal message); it is updated only when it has no local commits and no uncommitted change in the files the update touches, and its other modified and untracked files are left as they are.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-tool-result-content` removed and pruned; local branches and remote branch `origin/codex/agy-tool-result-content` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 `release-notes.md` written (journal content for Antigravity tool results; the one-time re-render and re-index); not used: no release.
@@ -43,4 +44,4 @@ Journals are derived data: revision 5 re-renders them once in place from the raw
 Revert the merge on `personal`; new Antigravity runs then record size-only results again and the next release's journals revert after another re-render. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes` (accepted unverified risk: DEC-10); repository finalization complete `Yes` (`personal` @ `87ca2ceb99` plus this record commit); release not required; cleanup complete `Yes`; blocker `None`; terminal package sent `Yes`.
