@@ -21,13 +21,20 @@ const referenceType = (filePath: string): TeamReferenceFileType => {
   return "file";
 };
 
+/**
+ * The one reference ID rule (autobyteus-615): a message's reference file is identified by its message and its path. The
+ * projection below and the message reference reader both use it; the web keeps its client-side mirror.
+ */
+export const messageReferenceId = (messageId: string, filePath: string): string =>
+  createHash("sha256").update(`${messageId}\0${filePath}`).digest("hex");
+
 /** Creates the one current API/stream reference projection from a persisted absolute path. */
 export const projectTeamReferenceFile = (
   ownerId: string,
   filePath: string,
   timestamp: string,
 ): TeamReferenceFileProjection => Object.freeze({
-  referenceId: createHash("sha256").update(`${ownerId}\0${filePath}`).digest("hex"),
+  referenceId: messageReferenceId(ownerId, filePath),
   path: filePath,
   type: referenceType(filePath),
   createdAt: timestamp,

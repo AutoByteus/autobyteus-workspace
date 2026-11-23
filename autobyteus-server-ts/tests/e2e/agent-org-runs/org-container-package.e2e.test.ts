@@ -801,10 +801,10 @@ suite("A released Org with cross-node files is converted at startup with its sto
     };
     const served = async (route: string) => { const response = await fetch(`${server!.url}/rest/${route}`); return { status: response.status, text: await response.text() }; };
     const reads = {
-      orgSpec: await served(`agent-org-runs/${ORG}/communication/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
-      orgBrief: await served(`agent-org-runs/${ORG}/communication/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
-      teamSpec: await served(`team-runs/${SET}/team-communication/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
-      agentBrief: await served(`agent-collaborations/concierge_1/communication/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
+      orgSpec: await served(`collaboration-messages/agent_org/${ORG}/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
+      orgBrief: await served(`collaboration-messages/agent_org/${ORG}/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
+      teamSpec: await served(`collaboration-messages/agent_team/${SET}/messages/m_peer_member/references/${referenceId("m_peer_member", now.spec)}/content`),
+      agentBrief: await served(`collaboration-messages/agent/concierge_1/messages/m_peer_agent/references/${referenceId("m_peer_agent", now.brief)}/content`),
     };
     const hashOf = (file: string) => createHash("sha256").update(fs.readFileSync(file)).digest("hex");
     const watched = [...fs.readdirSync(path.join(memory, "agent_teams", SET)).filter((name) => name.endsWith(".jsonl")).map((name) => path.join(memory, "agent_teams", SET, name)),

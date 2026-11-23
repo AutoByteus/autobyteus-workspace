@@ -7,9 +7,8 @@ import { AgentOrgUnitsOwnRunsV1AppDataMigration } from "../../../src/app-data-mi
 import { createAgentOrgUnitsMigrations } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import { planLogSplit, removeOrgLog, writeUnitLogs } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/org-log-split.js";
 import { moveNeedles, movedPath, rewriteMovedFolderPaths } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/org-path-rewrite.js";
-import { AgentOrgReferenceContentService } from "../../../src/agent-org-execution/services/agent-org-reference-content-service.js";
-import { TeamCommunicationProjectionService } from "../../../src/services/team-communication/team-communication-projection-service.js";
-import { TeamCommunicationContentService } from "../../../src/services/team-communication/team-communication-content-service.js";
+import { MessageReferenceContentReader } from "../../../src/run-history/services/message-reference-content-reader.js";
+import { RunViewMessagesReader } from "../../../src/run-history/services/run-view-messages-reader.js";
 import { MessageLog } from "../../../src/run-history/store/message-log.js";
 import { BETA7, ORG, PDP, SET, writeBeta7CrossNodeOrg } from "../../fixtures/app-data-migrations/released-org-tree-v1-fixtures.js";
 
@@ -59,14 +58,17 @@ const snapshot = async (dir: string): Promise<Map<string, string>> => {
 };
 
 /** The Org view's records (its units' logs, each message once), as the Org route reads a stopped container's. */
-const orgRecords = (w: World) => ({
-  getCollaborationRecordsSnapshot: async () => {
-    const logs = await Promise.all([
-      new MessageLog(path.join(w.memory, "agent_teams", SET), "team_communication_messages").read(),
-      new MessageLog(path.join(w.memory, "agent_teams", PDP), "team_communication_messages").read(),
-      new MessageLog(path.join(w.memory, "agents", "concierge_1"), "communication_messages").read(),
-    ]);
-    return { messages: { messages: [...new Map(logs.flatMap((log) => log ?? []).map((line) => [line.messageId, line])).values()] } };
+/**
+ * Each run's records as its owner reads them after the migration: a unit's own log; the Org's, its units' logs (each
+ * message once). Every agent of a log is the run's own here, so a view keeps each message of its logs.
+ */
+const unitRecords = (w: World) => ({
+  read: async (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string) => {
+    const logOf = (runId: string) => runId === "concierge_1"
+      ? new MessageLog(path.join(w.memory, "agents", runId), "communication_messages").read()
+      : new MessageLog(path.join(w.memory, "agent_teams", runId), "team_communication_messages").read();
+    const logs = await Promise.all(rootKind === "agent_org" ? [SET, PDP, "concierge_1"].map(logOf) : [logOf(rootRunId)]);
+    return { messages: [...new Map(logs.flatMap((log) => log ?? []).map((line) => [line.messageId, line])).values()], isOwnAgent: () => true };
   },
 });
 const read = async (stream: NodeJS.ReadableStream) => { let text = ""; for await (const chunk of stream) text += String(chunk); return text; };
@@ -104,21 +106,16 @@ describe("SR-017: stored typed paths follow a renamed member folder (beta.7 cros
     expect(conciergeTrace).toMatchObject({ media: { images: [at.picture] }, file_attachments: [{ uri: at.brief }] });
     expect(conciergeTrace.content).toContain(old.brief);
 
-    // The Org view's message reference opens through the Org route, for both units.
-    const orgRoute = new AgentOrgReferenceContentService(orgRecords(w));
+    // The message reference reader (autobyteus-615) opens it in the Org's view, for both units, and in each unit's own view.
+    const references = new MessageReferenceContentReader({ views: new RunViewMessagesReader({ records: unitRecords(w),
+      delegatedRunAgents: { prepare: async () => undefined, openRunsBelow: () => [] } }) });
+    const open = async (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, messageId: string, file: string) =>
+      references.resolve({ rootKind, rootRunId, messageId, referenceId: orgReferenceId(messageId, file) });
     for (const [messageId, file, bytes] of [["m_peer_member", at.spec, "SPEC BYTES"], ["m_peer_agent", at.brief, "BRIEF BYTES"]] as const) {
-      const resolved = await orgRoute.resolveCommunication({ orgRunId: ORG, messageId, referenceId: orgReferenceId(messageId, file) });
-      expect(await read(resolved.stream)).toBe(bytes);
+      expect(await read((await open("agent_org", ORG, messageId, file)).stream)).toBe(bytes);
     }
-    // Each unit's own reader opens it: the Team run's projection, and the agent run's records.
-    const teamProjection = new TeamCommunicationProjectionService({ memoryDir: w.memory, teamRunManager: { getManagedTeamRun: () => null } as never });
-    const teamContent = await new TeamCommunicationContentService(teamProjection).resolveContent({ teamRunId: SET, messageId: "m_peer_member",
-      referenceId: orgReferenceId("m_peer_member", at.spec) });
-    expect(teamContent.absolutePath).toBe(at.spec);
-    const agentRoute = new AgentOrgReferenceContentService({ getCollaborationRecordsSnapshot: async () =>
-      ({ messages: { messages: (await new MessageLog(at.concierge, "communication_messages").read()) ?? [] } }) });
-    const picture = await agentRoute.resolveCommunication({ orgRunId: "concierge_1", messageId: "m_peer_agent", referenceId: orgReferenceId("m_peer_agent", at.picture) });
-    expect(await read(picture.stream)).toBe("PNG BYTES");
+    expect((await open("agent_team", SET, "m_peer_member", at.spec)).absolutePath).toBe(at.spec);
+    expect(await read((await open("agent", "concierge_1", "m_peer_agent", at.picture)).stream)).toBe("PNG BYTES");
   });
 
   it("a re-run changes no byte; a file naming no moved Org is never parsed (byte pre-check)", async () => {

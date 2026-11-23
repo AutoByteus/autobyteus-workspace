@@ -160,32 +160,39 @@ describe("Team communication API integration", () => {
       { get: (target, name) => target[name as string] ?? {} }) as never);
     // autobyteus-565: the read is the process ParticipantMessagesReader, as the composition root creates it.
     const [{ ParticipantMessagesReader, setProcessParticipantMessagesReader }, { runRecordsOfRootOwners }, { MessageViewScope },
-      { CounterpartIdentities }, { AgentRunMetadataStore }] = await Promise.all([
+      { CounterpartIdentities }, { AgentRunMetadataStore }, { RunViewMessagesReader },
+      { MessageReferenceContentReader, setProcessMessageReferenceContentReader }] = await Promise.all([
       import("../../../src/run-history/services/participant-messages-reader.js"),
       import("../../../src/run-history/services/run-records-source.js"),
       import("../../../src/agent-collaboration/delegation/message-view-scope.js"),
       import("../../../src/run-history/services/counterpart-identities.js"),
       import("../../../src/run-history/store/agent-run-metadata-store.js"),
+      import("../../../src/run-history/services/run-view-messages-reader.js"),
+      import("../../../src/run-history/services/message-reference-content-reader.js"),
     ]);
     const tree = noDelegations();
     const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
-    const releaseReader = setProcessParticipantMessagesReader(new ParticipantMessagesReader({ records: runRecordsOfRootOwners,
-      scope: new MessageViewScope({ tree }), delegatedRunAgents, identities: new CounterpartIdentities({ delegatedRunAgents, tree,
+    // One view reader for the page and the message references, as the composition root creates them (autobyteus-615).
+    const views = new RunViewMessagesReader({ records: runRecordsOfRootOwners, delegatedRunAgents });
+    const releaseReader = setProcessParticipantMessagesReader(new ParticipantMessagesReader({ views,
+      scope: new MessageViewScope({ tree }), identities: new CounterpartIdentities({ delegatedRunAgents, tree,
         runMetadata: new AgentRunMetadataStore(appConfigProvider.config.getMemoryDir()), peerName: async (nodeId) => nodeId }) }));
+    const releaseReferences = setProcessMessageReferenceContentReader(new MessageReferenceContentReader({ views }));
     releaseOwnedRunManagers = () => {
+      releaseReferences();
       releaseReader();
       studio.close();
       AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
       AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     };
 
-    const [{ registerTeamCommunicationRoutes }, { registerGraphql }] = await Promise.all([
-      import("../../../src/api/rest/team-communication.js"),
+    const [{ registerCollaborationMessageReferenceRoutes }, { registerGraphql }] = await Promise.all([
+      import("../../../src/api/rest/collaboration-message-references.js"),
       import("../../../src/api/graphql/index.js"),
     ]);
 
     app = fastify();
-    await registerTeamCommunicationRoutes(app);
+    await registerCollaborationMessageReferenceRoutes(app);
     await registerGraphql(app);
   });
 
@@ -254,7 +261,7 @@ describe("Team communication API integration", () => {
 
     const contentResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, readableReferencePath)}/content`,
+      url: `/collaboration-messages/agent_team/${encodeURIComponent(teamRunId)}/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, readableReferencePath)}/content`,
     });
 
     expect(contentResponse.statusCode).toBe(200);
@@ -264,14 +271,14 @@ describe("Team communication API integration", () => {
 
     const missingResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, missingReferencePath)}/content`,
+      url: `/collaboration-messages/agent_team/${encodeURIComponent(teamRunId)}/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, missingReferencePath)}/content`,
     });
     expect(missingResponse.statusCode).toBe(404);
     expect(missingResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_CONTENT_UNAVAILABLE" }));
 
     const directoryResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, directoryReferencePath)}/content`,
+      url: `/collaboration-messages/agent_team/${encodeURIComponent(teamRunId)}/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, directoryReferencePath)}/content`,
     });
     expect(directoryResponse.statusCode).toBe(404);
     expect(directoryResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_CONTENT_UNAVAILABLE" }));
@@ -281,7 +288,7 @@ describe("Team communication API integration", () => {
 
     const unknownReferenceResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/ref-unknown/content`,
+      url: `/collaboration-messages/agent_team/${encodeURIComponent(teamRunId)}/messages/${encodeURIComponent(messageId)}/references/ref-unknown/content`,
     });
     expect(unknownReferenceResponse.statusCode).toBe(404);
     expect(unknownReferenceResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_NOT_FOUND" }));
@@ -329,39 +336,6 @@ describe("Team communication API integration", () => {
     const body = response.json() as GraphqlResponse<{ collaborationParticipantMessages: unknown }>;
     expect(body.errors?.[0]?.message).toBeTruthy();
     expect(body.data?.collaborationParticipantMessages ?? null).toBeNull();
-  });
-
-  it("maps unreadable reference content failures to a graceful 403 REST response", async () => {
-    const [{ registerTeamCommunicationRoutes }, { TeamCommunicationReferenceContentError }] = await Promise.all([
-      import("../../../src/api/rest/team-communication.js"),
-      import("../../../src/services/team-communication/team-communication-content-service.js"),
-    ]);
-    const routeApp = fastify();
-    await registerTeamCommunicationRoutes(routeApp, {
-      contentService: {
-        resolveContent: async () => {
-          throw new TeamCommunicationReferenceContentError(
-            "REFERENCE_CONTENT_FORBIDDEN",
-            "Referenced communication file content is not readable.",
-          );
-        },
-      } as any,
-    });
-
-    try {
-      const response = await routeApp.inject({
-        method: "GET",
-        url: "/team-runs/team-1/team-communication/messages/message-1/references/ref-unreadable/content",
-      });
-
-      expect(response.statusCode).toBe(403);
-      expect(response.json()).toEqual({
-        code: "REFERENCE_CONTENT_FORBIDDEN",
-        detail: "Referenced communication file content is not readable.",
-      });
-    } finally {
-      await routeApp.close();
-    }
   });
 
 });

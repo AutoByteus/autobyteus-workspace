@@ -72,6 +72,8 @@ import { createChildRowProjection } from "../agent-collaboration/delegation/run-
 import { AgentOrgAgentStatuses } from "../agent-org-execution/services/agent-org-agent-statuses.js";
 import { peerNodeNames } from "../agent-collaboration/execution/remote/remote-run-observation.js";
 import { ParticipantMessagesReader, setProcessParticipantMessagesReader } from "../run-history/services/participant-messages-reader.js";
+import { RunViewMessagesReader } from "../run-history/services/run-view-messages-reader.js";
+import { MessageReferenceContentReader, setProcessMessageReferenceContentReader } from "../run-history/services/message-reference-content-reader.js";
 import { CounterpartIdentities } from "../run-history/services/counterpart-identities.js";
 import { runRecordsOfRootOwners } from "../run-history/services/run-records-source.js";
 import { AgentRunMetadataStore } from "../run-history/store/agent-run-metadata-store.js";
@@ -351,12 +353,16 @@ export const composeCollaboration = async (input: Readonly<{
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { peerRunOf, runTree }, registrations: input.activeRoots,
       closedTasks: taskSide.closedTasks, restorability });
     const delegatedRunAgents = new DelegatedRunAgentsReader(tree, taskSide.containers);
+    // The messages of a run's view, read one way for its page and its message references (autobyteus-615).
+    const runViewMessages = new RunViewMessagesReader({ records: runRecordsOfRootOwners, delegatedRunAgents });
     // autobyteus-565: one participant's messages a page at a time, by the views' one rule, every other agent named.
     releases.push(setProcessParticipantMessagesReader(new ParticipantMessagesReader({
-      records: runRecordsOfRootOwners, scope: taskSide.messageScope, delegatedRunAgents,
+      views: runViewMessages, scope: taskSide.messageScope,
       identities: new CounterpartIdentities({ delegatedRunAgents, tree, runMetadata: new AgentRunMetadataStore(memoryDir),
         peerName: async (nodeId) => (await input.remoteChannel()?.peerName(nodeId)) ?? nodeId }),
     })));
+    // A message's reference file, only through a message of the view the list is read from (autobyteus-615, QR-001).
+    releases.push(setProcessMessageReferenceContentReader(new MessageReferenceContentReader({ views: runViewMessages })));
     return Object.freeze({
       tasks, views, runTree, runStatus, delegatedRunAgents,
       rowChanged: (run: RootExecutionIdentity) => feed.rowChanged(run),

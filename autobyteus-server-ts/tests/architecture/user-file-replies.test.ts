@@ -24,9 +24,8 @@ const FILE_ROUTES = [
   "files.ts",
   "context-files.ts",
   "run-file-changes.ts",
-  "team-communication.ts",
-  "agent-org-references.ts",
-  "agent-collaboration-references.ts",
+  // The message references of every root kind (F13-F15), one route since autobyteus-615.
+  "collaboration-message-references.ts",
 ];
 const PROTECTIVE_HEADERS = /^(content-security-policy|x-content-type-options)$/i;
 
