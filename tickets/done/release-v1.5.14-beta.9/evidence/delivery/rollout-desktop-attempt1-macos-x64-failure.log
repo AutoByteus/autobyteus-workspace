@@ -1,0 +1,7 @@
+# Desktop Release run 45194517927 attempt 1, job 'Build macOS Intel x64' (137762331216): the failing lines (14:44Z), from the job log
+2026-11-23T14:44:41.7211540Z Build process failed: Error: codesign --sign 37C9698B12C2CE90D9B9E9F882B67C65C9F5B4FA --force --options runtime --entitlements /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/build/entitlements.mac.helper.renderer.plist /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) failed
+2026-11-23T14:44:41.7216790Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/mac/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer): The timestamp service is not available.
+2026-11-23T14:44:41.7218230Z     at runCodesign (/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/build/dist/macCodeSign.js:56:15)
+2026-11-23T14:44:41.7219920Z     at signPath (/Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/build/dist/macCodeSign.js:14:5)
+2026-11-23T14:44:41.7947810Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-23T14:44:41.8795980Z ##[error]Process completed with exit code 1.

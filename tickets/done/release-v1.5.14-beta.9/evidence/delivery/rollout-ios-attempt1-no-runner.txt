@@ -1,0 +1,8 @@
+# iOS App Store Connect Release run 45194517640 attempt 1, job 'Build And Test iOS App' (137762178656): no runner was assigned, 2026-11-23
+status completed, conclusion cancelled, runner_name "", labels ["xcode-27"], steps listed: 0, created 2026-11-23T14:29:33Z, started 2026-11-23T14:29:33Z, completed 2026-11-23T14:44:34Z
+log API: HTTP 404 BlobNotFound (the job produced no log)
+Resolve iOS Release Metadata: completed success (2026-11-23T14:28:10Z to 2026-11-23T14:29:32Z)
+Build And Test iOS App: completed cancelled (2026-11-23T14:29:33Z to 2026-11-23T14:44:34Z)
+Validate iOS Publish Secrets: completed skipped (2026-11-23T14:44:35Z to 2026-11-23T14:44:34Z)
+Archive And Upload To App Store Connect: completed skipped (2026-11-23T14:44:35Z to 2026-11-23T14:44:34Z)
+other jobs of the same tag push: Android, Docker, Desktop builds were assigned runners and ran
