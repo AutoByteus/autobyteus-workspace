@@ -54,7 +54,6 @@ type ConversationDescriptor = {
   segmentIndex: number;
   completed: boolean;
   timestampMs: number;
-  order: number;
   stableIdentity: string | null;
 };
 
@@ -63,7 +62,6 @@ type CompactionDescriptor = {
   activity: CompactionActivity;
   completed: boolean;
   timestampMs: number;
-  order: number;
   stableIdentity: string;
 };
 
@@ -84,7 +82,7 @@ const flattenConversation = (conversation: Conversation): ConversationDescriptor
     if (message.type === 'user') {
       descriptors.push({
         source: 'message', message, messageIndex, segment: null, segmentIndex: -1,
-        completed: true, timestampMs, order: messageIndex * 10_000,
+        completed: true, timestampMs,
         stableIdentity: message.messageId
           ? `user-message:${message.messageId}`
           : message.dedupeKey ? `user-dedupe:${message.dedupeKey}` : null,
@@ -95,7 +93,7 @@ const flattenConversation = (conversation: Conversation): ConversationDescriptor
       descriptors.push({
         source: 'message', message, messageIndex, segment, segmentIndex,
         completed: isRecentEventMonitorSegmentComplete(segment, message.isComplete),
-        timestampMs, order: messageIndex * 10_000 + segmentIndex,
+        timestampMs,
         stableIdentity: getRecentEventMonitorSegmentStableIdentity(segment),
       });
     });
@@ -180,6 +178,27 @@ const buildRetainedAIMessage = (
   return retained;
 };
 
+/**
+ * The shown order (autobyteus-628): message rows keep the conversation's own order, which the stream and the stored
+ * history define. Their timestamps come from different clocks (a live agent message takes the viewer's, a user message
+ * the node's), so they never reorder messages. A compaction row goes before the first message row (in conversation
+ * order) whose time is later than its own; at an equal time the message comes first.
+ */
+const mergeCompactionsIntoConversation = (
+  messages: readonly ConversationDescriptor[],
+  compactions: readonly CompactionDescriptor[],
+): VisualDescriptor[] => {
+  const byTime = [...compactions].sort((left, right) => left.timestampMs - right.timestampMs);
+  const ordered: VisualDescriptor[] = [];
+  let next = 0;
+  for (const message of messages) {
+    while (next < byTime.length && byTime[next]!.timestampMs < message.timestampMs) ordered.push(byTime[next++]!);
+    ordered.push(message);
+  }
+  while (next < byTime.length) ordered.push(byTime[next++]!);
+  return ordered;
+};
+
 export const buildRecentEventMonitorPresentation = (
   conversation: Conversation,
   compactions: readonly CompactionActivity[],
@@ -189,15 +208,13 @@ export const buildRecentEventMonitorPresentation = (
   const compactionDescriptors: CompactionDescriptor[] = compactions
     .filter((activity) => Boolean(activity.centerTimelineTimestamp)
       && (activity.phase === 'started' || isCompleteCompactionPhase(activity.phase)))
-    .map((activity, index) => ({
+    .map((activity) => ({
       source: 'compaction', activity,
       completed: isRecentEventMonitorActivityComplete(activity),
       timestampMs: toRecentWindowTimestampMs(activity.centerTimelineTimestamp),
-      order: conversation.messages.length * 10_000 + index,
       stableIdentity: `compaction:${activity.activityId}`,
     }));
-  const ordered: VisualDescriptor[] = [...conversationDescriptors, ...compactionDescriptors]
-    .sort((left, right) => left.timestampMs - right.timestampMs || left.order - right.order);
+  const ordered = mergeCompactionsIntoConversation(conversationDescriptors, compactionDescriptors);
   const retained = selectRecentWindowCandidates(ordered, limit).selected;
   const items: RecentEventMonitorPresentationItem[] = [];
 
