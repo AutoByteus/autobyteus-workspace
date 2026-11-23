@@ -377,6 +377,8 @@ Principle 11 (derived consumers of a changed structure).
 - **Why it mattered:** the renewal would have worked for standalone runs and failed for exactly the observed member.
 - **Notice it by:** a design that adds a kind, variant or enum value and names "its writer" or "the handler". Search every `kind ===`, `switch` and ternary chain on that union, and list each with a decision. A fallthrough `else` that treats unknown kinds as one known kind is where the new one goes wrong.
 
+- **Again in autobyteus-609 (CRR-002):** the design added the `interrupted` status to the cards and listed every consumer, but traced only the live producer. For a stored run, the node's replay turns every stored error into `error`, and the web re-derives the conversation card's status from the error text, so a stopped call read "Failed" after a reload. Fix (SR-004): one node rule decides "this stored result is an interruption" from what each writer stores, and the conversation entry carries the node's status. Lesson: for a new value, trace every producer too: live and stored, for each runtime.
+
 ### Case 27: A Capability That Needs Two Collaborators, Wired In Only One Composition (autobyteus-599, CRR-001 CR-002)
 
 Principle 1 (several kinds: trace each composition root) and Principle 16 (one composition root, visible dependencies).

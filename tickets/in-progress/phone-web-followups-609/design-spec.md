@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-002 (D-I revised after ARCH-REV-001 AR-001; N-1 and the E consumers added)
+- Current solution revision ID: SR-004 (SR-002: D-I after ARCH-REV-001; SR-003: evidence only; SR-004: D-D's stored-run producer after CRR-002, below)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction; user informed in conversation 2026-11-22.
 - Behavior-defining supplements: none
 - User approval of the design: Not required (the Task does not ask for it)
@@ -65,6 +65,7 @@ Evidence for every item is in the investigation notes, sections A–J.
 | Read | `MarkdownRenderer.vue:118-126,154-162`; `composables/useEventMonitorFilePreview.ts:62-140`; `composables/mobile/mobileFileOpening.ts:21-44`; `utils/fileExplorer/workspaceResourceUrl.ts:39-46,66-110` | A relative link emits `relative-link` with no conversation listener. Both openers use `activeWorkspaceTarget.workspaceRootPath`. 576's resolver resolves against a document path; `''` gives the root. | D-H | — |
 | Read + Reproduced | `composables/useBackgroundTaskPanelView.ts:36-90`; `stores/agentRunStore.ts:68`; MSP-59 ×3 Pass at load ~30; native-reporter delay of 1.5 s and 8 s: Pass (irrelevant, the probe uses Antigravity, `mobile-shell-probe.mjs:436`) | In `event-stream` mode the list never re-reads; only live events update it | D-I | Which hop lost the update in 572's run (FU-001) |
 | Read | Antigravity `agy-agent-run-backend.ts:180-188`, monitor `stopAll`/`list()` (`agy-background-task-monitor.ts:78-88`); `standalone-agent-run-root.ts:291-312` (root lifecycle published before the agent's terminate); `agent-stream-handler.ts:234-246` (the session sends AGENT_STATUS after the run's sequence ends) | The node's task view is correct once the agent has stopped; the phone's status turns Offline after that | D-I re-reads on the status transition and re-reads while a task still shows running | — |
+| Read (CRR-002, SR-004) | node `raw-trace-to-historical-replay-events.ts:88-93` (every stored error → `error`; both `createToolEvent` call sites, `:144` and `:214`, pass the result trace as `terminal`); `agent-memory/services/runtime-tool-trace-sequencer.ts:119-124,134-160,179-198` (interrupted result: `sourceEvent` `TOOL_EXECUTION_INTERRUPTED` or `TURN_INTERRUPTED`, content `Tool execution interrupted.`, `toolResult` null); `autobyteus-ts/src/agent/loop/agent-turn-runner.ts:107-110` and `memory/memory-manager.ts:392-407` (native: result with `source: 'AgentTurnInterruptedEvent'`, error = the reason); `agent-work-journal/rendering/result-envelopes.ts:143-146` (the journal's rule: error ∈ {`user_interrupt`, `Tool execution interrupted.`}); `historical-replay-events-to-conversation.ts:75-91` (tool entries carry no status); web `runProjectionConversation.ts:211-224` (`inferToolStatus` derives denied/error/success from the entry); `agent-memory/domain/models.ts:8-14` (traces carry `sourceEvent`, `toolError`); Codex `codex-thread-history-item-normalizer.ts:12` (statuses parsed/success/error/denied) | No stored run ever produced `interrupted`, and the web re-derives the conversation card's status | D-D2 below | — |
 | Read (ARCH-REV-001 AR-001) | `api/graphql/types/agent-background-task-view.ts:94-101`; `useBackgroundTaskPanelView.ts:27-32,78`; `agentBackgroundTaskStore.ts:36-46`; Claude `claude-background-task-registry.ts:249`, native `autobyteus-background-task-reporter.ts:21`, Antigravity `agy-background-task-monitor.ts:82-88`; `agentRuntimeStatusState.ts:66,74` | The task view answers `unavailable/inactive` for a stopped run, so SR-001's re-read could never show the end, and the existing `finally` re-reads a stopped run every 2 s without bound. Every streaming runtime ends running tasks with `run_ended` at run end, and the web already zeroes the running count on Offline. | D-I (SR-002): end the rows on the observed stop; no polling while stopped | — |
 | Read | `api/rest/workspaces.ts:25,79`; `workspace-manager.ts:111-150,315`; `api/graphql/types/file-explorer.ts:29`; `skill-workspace.ts:17-30` (a skill ID resolves through `SkillService.getSkill`, not a path) | The REST path lacks the restore the GraphQL path has | D-J | — |
 | Read | `playwright-core ^1.48.0` (`autobyteus-web/package.json:210`); `page.routeWebSocket` used in `agent-org-task-team-disclosure-probe.mjs:212-216` | Frames can be intercepted per page | AC-I probe | — |
@@ -86,6 +87,14 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
   | Background task panel view gains a run-liveness input | Its two callers, `BackgroundTaskPanel.vue:135` and `MobileActivity.vue:46`. |
   | Workspace REST lookup | Both routes (`content`, `static/*`). |
 
+- D-D2 consumers (SR-004):
+
+  | Structure | Decision |
+  | --- | --- |
+  | New `isInterruptedToolResult` (node) | Producers that read it: the replay's `createToolEvent` (both call sites) and the work journal's `interruptedFromError` (its outputs unchanged). The sequencer takes its `Tool execution interrupted.` text from the same file. |
+  | `HistoricalReplayToolEvent.status` can now be `interrupted` for a stored run | Activities builder: passes it on. Page projection `statusKey`: `interrupted` (SR-001 D-D). Conversation transformer: `interrupted` is not pending, so `tool_call`, and the entry now carries `toolStatus`. Codex and Claude view providers: unchanged (their own statuses). `recent-run-projection-policy.ts` and `run-projection-utils.ts`: implementation lists each status read and decides each (Case 26). |
+  | Conversation tool entry gains `toolStatus` (JSON wire) | Web `runProjectionConversation.ts` `buildToolSegments` takes `status` from `toolStatus`, and `inferToolStatus` is removed. Org hydration (`agentOrgContextHydration.ts`) and the stored-state loader go through `buildConversationFromProjection` and need no change. Team member reconciliation (`teamMemberToolStateReconciliation.ts`): implementation checks it reads segments, not entries. Codex provider entries also carry `toolStatus` (their own mapped status). |
+
 - Deliberately left alone:
   - the summary rules (order, the `cd` rule);
   - the card's other icons (they differ from the Activity panel's icons: FU-002);
@@ -94,7 +103,7 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
   - the workspace registry format;
   - `relative-link` handling in `MarkdownPreviewer` (576);
   - which hop lost MSP-59's update (FU-001).
-- Follow-ups: FU-001, FU-002.
+- Follow-ups: FU-001 … FU-004, FU-008 (Codex read-back of a stopped call).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -378,3 +387,46 @@ DS-I inside `useBackgroundTaskPanelView`:
   - I: MSP-99 fails on base. Add a unit case of `useBackgroundTaskPanelView`: live → Offline with a running row ends it as `run_ended`; initial Offline ends nothing; Offline schedules no re-read.
 - Build inputs touched (B, C, E): run the fresh-start build (TESTING.md) and the build-only Desktop Release run on the ticket branch (DESIGN.md rule 12, RELEASE.md). The Windows job proves C.
 - Run Node 22.
+
+## D-D2: A stopped call read back from the node (SR-004, CRR-002)
+
+**Problem.** Live, an interrupted call reads "Stopped". Read back from the node, it reads "Failed":
+- the replay maps every stored error to `error` (`raw-trace-to-historical-replay-events.ts:88-93`);
+- the web's conversation hydration derives the card status from `toolError` (`runProjectionConversation.ts:211-224`).
+
+**One rule, one owner.** New file `autobyteus-server-ts/src/agent-memory/domain/tool-result-interruption.ts`, beside the memory trace models it reads:
+
+```ts
+export const TOOL_EXECUTION_INTERRUPTED_TEXT = "Tool execution interrupted.";
+const INTERRUPTION_SOURCE_EVENTS = new Set([
+  AgentRunEventType.TOOL_EXECUTION_INTERRUPTED, AgentRunEventType.TURN_INTERRUPTED, // the node's trace sequencer
+  "AgentTurnInterruptedEvent",                                                        // the native memory manager
+]);
+const INTERRUPTION_ERRORS = new Set(["user_interrupt", TOOL_EXECUTION_INTERRUPTED_TEXT]);
+/** A stored tool result is an interruption: written on an interrupt, or recorded with an interruption's text. */
+export const isInterruptedToolResult = (result: { sourceEvent?: string | null; error?: string | null }): boolean =>
+  INTERRUPTION_SOURCE_EVENTS.has(result.sourceEvent ?? "") || INTERRUPTION_ERRORS.has(result.error?.trim() ?? "");
+```
+
+- The signals are the ones each writer already stores:
+  - the sequencer writes the interrupt event as `sourceEvent`;
+  - native writes `source: 'AgentTurnInterruptedEvent'`;
+  - the two texts are the journal's existing rule, for records that carry only an error.
+- No writer changes. The sequencer only imports `TOOL_EXECUTION_INTERRUPTED_TEXT` in place of its four literals. The native memory manager (`autobyteus-ts`) keeps its literal, because that package does not depend on the server.
+
+**Readers.**
+- The replay's `createToolEvent` keeps the denied check first, then: `terminal && isInterruptedToolResult({ sourceEvent: terminal.sourceEvent, error: interaction.error })` → `"interrupted"`; otherwise the existing mapping. One change covers both call sites (`:144`, `:214`).
+- The work journal's `interruptedFromError(error)` returns `{kind:"interrupted"}` when `isInterruptedToolResult({ error })`. Its input and outputs are unchanged, and its text set moves into the shared file (Principle 11: one owner of the fact).
+- The conversation transformer adds `toolStatus: event.status` to tool entries (`run-projection-types.ts` conversation entry gains `toolStatus?: RunProjectionActivityStatus`). The web's `buildToolSegments` uses `entry.toolStatus` (normalized by the existing `runProjectionActivityHydration.ts:93` status guard, or the same set). `inferToolStatus` is removed: the node owns the status (Principle 11), including `denied`, which the replay already decides (`:88-90`).
+
+**Persisted data.** Not Affected: read-side only. Traces stored before the change carry the same `sourceEvent` and error, so they read the same way.
+
+**Out of scope.** Codex runs are read from Codex's thread files, whose tool statuses have no interruption (DEC-010, FU-008).
+
+**Tests.**
+- Node unit (replay): an interrupted result written by the sequencer (both source events), one written by native (`AgentTurnInterruptedEvent`, error `user_interrupt` and another reason), an error-only record, and an ordinary failure (stays `error`) and a denial (stays `denied`).
+- Conversation entry `toolStatus`.
+- Journal tests: unchanged and passing.
+- Web: hydration takes `toolStatus`.
+- MSP-102 passes for the phone opened after the stop, the desktop reload and the earlier-trace card.
+- Source review: targeted, of the replay and the shared rule (CRR-002).

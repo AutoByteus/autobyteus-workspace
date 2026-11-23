@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile` passed (`/tmp/sd609-install.log`)
 - Bootstrap blocker: None
-- Current solution revision ID: SR-002
+- Current solution revision ID: SR-004
 - Authorities read (requirements reading gate, 2026-11-22):
   - `references/requirements-engineering.md`
   - `references/ticket-scope.md`
@@ -185,3 +185,14 @@ The items, as referred to in these notes:
   - Codex is a snapshot runtime (`codex-agent-run-backend.ts:50`).
 - The web already applies "an offline run has no running background task" to the count (`services/runStatus/agentRuntimeStatusState.ts:66,74`).
 - `stores/agentBackgroundTaskStore.ts:36-46`: a row that has ended is never replaced by a running one.
+
+## SR-004 evidence (CRR-002, API-REV-001 F-1), 2026-11-23 (Read; failure Reproduced by API/E2E MSP-102)
+
+- How an interrupted call is stored:
+  - The server's trace sequencer (`runtime-tool-trace-sequencer.ts:119-124,134-160,179-198`) writes a `tool_result` with `sourceEvent` `TOOL_EXECUTION_INTERRUPTED` (a tool interrupt) or `TURN_INTERRUPTED` (`interruptTurn`, via `runtime-memory-event-accumulator.ts:116-119,199-205`), content `Tool execution interrupted.`, `toolResult` null, and error = the payload's error or reason, else `Tool execution interrupted.`.
+  - Native (`autobyteus-ts/src/agent/loop/agent-turn-runner.ts:107-110` → `memory-manager.ts:392-407`) writes the pending calls' results with `source: 'AgentTurnInterruptedEvent'` and error = the interrupt reason.
+- How it is read back:
+  - The replay maps every error to `error` (`raw-trace-to-historical-replay-events.ts:88-93`), so no stored run produces `interrupted`. SR-001's notes D named hydration as a setter of `interrupted`; the node never sent it.
+  - The conversation entries carry no status (`historical-replay-events-to-conversation.ts:75-91`), and the web derives one from `toolError` (`runProjectionConversation.ts:211-224`).
+- The work journal already decides "interrupted" from the error text alone (`result-envelopes.ts:143-146`), used by the AutoByteus and Antigravity translations.
+- Codex's provider statuses are parsed/success/error/denied (`codex-thread-history-item-normalizer.ts:12`).

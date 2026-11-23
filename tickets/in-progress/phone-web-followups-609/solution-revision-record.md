@@ -44,3 +44,19 @@ Review note: ARCH-REV-002 passed SR-002 (2026-11-22, `design-review-report.md`).
 - Approval: Solution Designer within the direction; user informed. No renewed review: the design and its scope are unchanged.
 - Remaining gaps: FU-004 (new), plus FU-001…FU-003.
 - Accepted from implementation: the MSP-44 fixture uses `../../out.md` (leaves the root; `../out.md` from `headings-480/` is inside it), and MSP-46 now follows only the missing heading (`other.md` in a conversation is a run-relative file link under D-H, covered by its own case).
+
+## SR-004 (2026-11-23)
+
+- Trigger: CRR-002 (failure-origin review of API-REV-001 F-1): Design Impact. A stopped call reads "Failed" once the run is read back from the node.
+- Prior status: design Ready (SR-002), implemented at 255a0b0ada; API/E2E round 1 failed. Current status: requirements Approved (SR-004); design Ready.
+- Affected IDs: AC-D (read-back made explicit; Codex excluded), DEC-010 (new), REQ-D (unchanged wording).
+- Canonical sections changed: requirements AC-D, DEC-010; design evidence row, Change Scope (D-D2 consumers, follow-ups), the new D-D2 section; investigation notes SR-004 section.
+- Approval: Solution Designer within the direction (REQ-D already requires the status wherever it is shown); user informed.
+- Design: D-D2.
+  - One node rule `isInterruptedToolResult` reads what each writer stores. The replay and the work journal read it.
+  - Conversation entries carry the node's `toolStatus`, and the web's `inferToolStatus` is removed.
+  - Read-side only; persisted data Not Affected.
+- Classification: unchanged, `Large` / `High`.
+- Routing: implementation, then a targeted source review of the replay and the shared rule, then API/E2E (MSP-102, the whole phone probe, the server suites, the fresh-start build), as CRR-002 lists.
+- Design case: docs/design-cases.md Case 26, "again in autobyteus-609".
+- Remaining gaps: FU-001 … FU-004, FU-008.
