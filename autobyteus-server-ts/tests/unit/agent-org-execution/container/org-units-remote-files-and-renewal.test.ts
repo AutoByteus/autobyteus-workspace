@@ -62,7 +62,9 @@ describe("SR-016 (587): a file from another node to an Org unit lands in the rec
     const data = fs.mkdtempSync(path.join(os.tmpdir(), "org-unit-received-"));
     dirs.push(data);
     // The node's memory folder holds every agent folder it places into (the fixture's run folder is a sibling under the temp folder).
-    const received = new ReceivedFiles({ storeDir: path.join(data, "received_files"), memoryDir: fs.realpathSync(os.tmpdir()), maxFileBytes: () => 1024 * 1024 });
+    // One form of the root on both sides, as the product configures one memory folder (autobyteus-619 REQ-004): a TMPDIR reached
+    // through a link (macOS /var/folders → /private/var/folders) must not put the agent folders "outside" the memory folder.
+    const received = new ReceivedFiles({ storeDir: path.join(data, "received_files"), memoryDir: os.tmpdir(), maxFileBytes: () => 1024 * 1024 });
     const f = await configuredRootFixture("standalone_team", { activity: "present", containedIn: IN_ORG, receivedFiles: received });
     try {
       expect(f.root.getExecutionTreeSnapshot().containedIn).toEqual(IN_ORG);
