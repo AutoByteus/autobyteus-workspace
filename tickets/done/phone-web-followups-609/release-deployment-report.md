@@ -49,7 +49,7 @@ Finalize the verified ticket on `origin/personal`. No release, publication or de
 | `DEL-05` phone and desktop cases, after the fixes | `… --cases=MSP-44,MSP-45,MSP-55,MSP-59,MSP-75,MSP-76,MSP-77,MSP-91,MSP-96,MSP-99,MSP-100,MSP-101,MSP-102,MSP-103,MSP-104` (this ticket's cases and the base's `MSP-75…77`, `MSP-99`, together) | `"result": "Pass"`, all 15 Pass, no `(duplicate)` entry, `unknown browser errors: none`, cleanup `serversLeft: 0, rootRemoved: true`. An earlier run of the same set failed only MSP-100 (Problem 3); the other 14 were already Pass |
 | Build-input rule | `git diff --name-only f2c0d2a902 d5b1cac327` against TESTING.md's Fresh-start build list | matches: `autobyteus-web/scripts/prepare-server.mjs`, `autobyteus-web/generated/graphql.ts`, the contract packages' `src/` and `dist/`, `autobyteus-server-ts/typecheck-baseline.json`, root `package.json`. API/E2E ran the fresh-clone build (FS-1, on the final code) and, for the build step (DESIGN.md rule 12), the build-only Desktop Release run (IMP-15); the base's own build-input change is one `package.json` script line, `test:e2e:notice-row-presentation` |
 | Hygiene, lockfile | `python3 scripts/check_repository_artifact_hygiene.py`; `pnpm install --frozen-lockfile --lockfile-only` | passed (104 137 tracked files); consistent |
-| Secret Gate | `scripts/check_secrets.sh origin/personal..HEAD` | recorded in the Finalization Record |
+| Secret Gate | `scripts/check_secrets.sh origin/personal..HEAD` | `PASS` (45 commits) before the first push; repeated on the merged state in the Finalization Record |
 
 - Post-integration verification result: `Passed`
 - No-rerun rationale: not applicable (new base commits were integrated). FS-1 and IMP-15 were read, not rerun: they ran on the ticket's final code, and the merge adds no build input of its own that they would read.
@@ -110,7 +110,7 @@ None (no release).
 - Bootstrap context source: the Solution Designer's bootstrap (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-web-followups-609`, branch `codex/phone-web-followups-609`, base `origin/personal`) and `RELEASE.md` "Finalization Target".
 - Ticket branch: `codex/phone-web-followups-609` (no upstream is configured; delivery pushes with the explicit refspec).
 - Finalization target remote / branch: `origin` / `personal`, `--no-ff` merge from a `finalize/phone-web-followups-609` branch (RELEASE.md).
-- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push.
+- The outcome (commits, push, the user's checkout, cleanup) is in the "Finalization Record" at the end of this report, written after the push. Merge `042e0517d2` on `origin/personal`.
 
 ## Release / Publication / Deployment
 
@@ -137,10 +137,23 @@ Revert the merge commit on `personal` (`git revert -m 1 <merge>`). Nothing persi
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes` (Finalization Record below)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: run after the record commit's push (Finalization Record, last two bullets); its result is in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the Finalization Record
-- Terminal package sent to the Solution Designer: see the Finalization Record
-- Terminal message/reference: see the Finalization Record
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
+- Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/phone-web-followups-609`: committed (tip `b751e375d1`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/phone-web-followups-609` (`7ce2b67ea1..b751e375d1`, a fast-forward of the tip pushed earlier for the build-only release run). The branch has no configured upstream. Secret Gate on `origin/personal..HEAD`: `PASS`, 45 commits.
+- Target refreshed before the merge and again before the push: `git fetch origin personal` showed `1956c232c8` both times, which the ticket branch already contained (merge `fecee4ad82`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/phone-web-followups-609` (from `origin/personal` `1956c232c8`), `git merge --no-ff codex/phone-web-followups-609` = `042e0517d2` (parents `1956c232c8` and `b751e375d1`; the merged tree equals the ticket branch's tree). Secret Gate on the merged state: `PASS`, 46 commits. Hygiene check on the archived tree: passed (104 161 tracked files).
+- Push: `git push origin HEAD:personal` `1956c232c8..042e0517d2`; `origin/personal` = `042e0517d2` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/phone-web-followups-609` and pushed to `origin/personal` as the commit that follows `042e0517d2`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/phone-web-followups-609` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/phone-web-followups-609` and `codex/phone-web-followups-609`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
