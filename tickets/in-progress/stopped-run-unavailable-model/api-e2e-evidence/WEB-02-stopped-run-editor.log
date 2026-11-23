@@ -1,0 +1,13 @@
+# WEB-02 web tests of the stopped-run settings editor (options, store, saved snapshot, delegated saves) — commit e6380c2acf — macOS — 2026-11-23 — NUXT_TEST=true pnpm exec vitest run <files>
+ ✓ stores/__tests__/existingRunModelOptionsActions.spec.ts (9 tests) 5ms
+ ✓ services/runConfigEditing/__tests__/existingRunModelOptionsState.spec.ts (9 tests) 6ms
+ ✓ services/runConfigEditing/__tests__/delegatedRunSaves.spec.ts (5 tests) 9ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (32 tests) 164ms
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run. ZodError: [
+[runTree] Could not read the tree of agent_org:org-run-next. ZodError: [
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts (3 tests) 70ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (13 tests) 208ms
+ Test Files  6 passed (6)
+      Tests  71 passed (71)

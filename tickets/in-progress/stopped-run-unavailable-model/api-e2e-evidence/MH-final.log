@@ -1,0 +1,10 @@
+# Cases MH-01..MH-06 — final run — api e2e engineer — commit e6380c2acf — macOS, env -i clean env + RUN_AGY_FAILURE_E2E=1 + fake AGY CLI, 2026-11-23 — pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/native-model-handover-built-server.e2e.test.ts --no-watch
+ ✓ tests/e2e/runtime/native-model-handover-built-server.e2e.test.ts (6 tests) 21161ms
+     ✓ MH-01: a stopped native run whose model was removed: the menu lists the offered models, Save is a pending model hand-over, the next message hands over to a fresh session of the new model with the marker and the notice, and the chat keeps the earlier messages  1856ms
+     ✓ MH-02: re-edits of a native run: on a model with a verified capacity (a custom endpoint's) an equal model keeps the session; while a hand-over is pending (a) the first model again undoes it, (b) a smaller third model stays pending from the first, (c) an equal third model resumes the first session, (d) another runtime stays pending from the first  1501ms
+     ✓ MH-03: a Team member on a removed model hands over (that member only); the Team's default row on a removed model accepts any offered model directly  2039ms
+     ✓ MH-04: Org members on removed models, a direct Agent and an Agent of a mounted Team, saved in one Org save: UPDATED (no internal error), the session is persisted in the Org's tree, and each hands over by its own first message  3199ms
+     ✓ MH-05: an LM Studio model has no verified capacity in the real catalog, so even an equal-window LM Studio model is a hand-over (the user's rule: unknown capacity hands over)  686ms
+     ✓ MH-06: a pending native model hand-over survives a server restart; a first message whose archive step fails leaves the previous agent's file as it was and the hand-over pending; the retry completes with one marker and one segment  5470ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
