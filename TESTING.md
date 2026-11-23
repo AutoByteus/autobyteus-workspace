@@ -355,6 +355,12 @@ or because Gradle's cache already holds a dependency the runner must download.
   never run a migration, startup or conversion on real user data or a copy of it; use a
   test-owned data root, and never wake a converted run against real runtime sessions.
   Prove the conversion, that nothing is lost, and that a second start changes nothing.
+  A startup test that places data a released build wrote models an install upgraded from that
+  release, so its migration ledger must hold what that release ran: make it with
+  `autobyteus-server-ts/tests/e2e/app-data-migrations/helpers/faithful-upgrade-ledger.ts` (a first
+  start records every migration, then the rows of those the release never ran are removed).
+  An empty ledger reruns every earlier migration on data already past it, which no install does,
+  and can fail, or pass, for that reason alone.
 - **Build outputs** such as the application SDK `dist/` folders and
   `autobyteus-web/electron-dist/` are untracked. Stage paths explicitly; never `git add -A`.
   Exception: the three contract packages (`autobyteus-agent-presentation-contracts`,
