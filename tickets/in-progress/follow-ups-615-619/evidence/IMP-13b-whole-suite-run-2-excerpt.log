@@ -1,0 +1,21 @@
+# IMP-13b
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare; then env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts test --run (the whole server suite; second whole run)
+# Commit: 233f813d19 (server built from 36102a28f3; 233f813d19 changes only a test helper)
+# Environment: macOS (Darwin 25.5.0), clean environment, synthetic data only
+# Date: 2026-11-23
+# Note: Excerpt (the full log is not committed). No failure; scoped-org-history-graphql passes (whole run 2 of 2 for AC-003).
+
+ ✓ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests) 600ms
+ ✓ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests) 8ms
+ ✓ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts (1 test) 154ms
+ ✓ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test) 31ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 20992ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 6480ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 4403ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 3987ms
+ ✓ tests/unit/e2e-helpers/restore-by-member-message.test.ts (3 tests) 1451ms
+ ✓ tests/unit/agent-memory/team-memory-explorer-service.test.ts (8 tests) 485ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 409ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts (4 tests) 353ms
+ Test Files  1291 passed | 192 skipped (1483)
+      Tests  10008 passed | 865 skipped (10873)

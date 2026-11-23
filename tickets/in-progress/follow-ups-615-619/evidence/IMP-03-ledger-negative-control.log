@@ -1,0 +1,16 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest --run collaborators-to-delegated-runs-startup.e2e.test.ts removed-skill-access-mode-history-graphql.e2e.test.ts, with both files at the base (no ledger), the build of this branch
+# Commit: dad158474c test files; dist of the base build
+# Environment: macOS (Darwin 25.5.0); the agent shell (inherited environment; the test spawns the built server with its own sanitized environment); synthetic data in temporary folders
+# Date: 2026-11-23
+# Note: Fails as reported: "AgentOrg package is not admitted."
+
+## ledger-base-control.log
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+    "message": "AgentOrg package is not admitted.",
+ FAIL  tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ Test Files  2 failed (2)
+      Tests  2 failed (2)

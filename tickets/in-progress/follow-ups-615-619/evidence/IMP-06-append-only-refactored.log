@@ -1,0 +1,9 @@
+# IMP-06
+# Command: pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts
+# Commit: the working tree committed as 36102a28f3
+# Environment: macOS (Darwin 25.5.0); the agent shell (inherited environment; the test spawns the built server with its own sanitized environment); synthetic data in temporary folders
+# Date: 2026-11-23
+
+## append-only.log
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
