@@ -29,6 +29,7 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.loading_reference': 'Loading reference file...',
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable': 'Reference file unavailable',
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': 'The file may have been deleted, moved, or become unreadable.',
+  'workspace.components.workspace.team.TeamCommunicationPanel.reference_not_found_detail': "This file's message could not be found in this conversation.",
   'workspace.components.workspace.team.TeamCommunicationPanel.preview': 'Preview',
   'workspace.components.workspace.team.TeamCommunicationPanel.raw': 'Raw',
   'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': 'Maximize view',
@@ -61,7 +62,7 @@ const storedSession = (): MobileNodeSession => ({
 
 const mountSubject = (props: Record<string, unknown> = {}) => mount(CollaborationMessageReferenceViewer, {
   props: {
-    contentPath: 'team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/ref%3Awith%2Fslash/content',
+    contentPath: 'collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/ref%3Awith%2Fslash/content',
     reference: baseReference,
     ...props,
   },
@@ -105,7 +106,7 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
     await flushPromises();
 
     expect(fetch).toHaveBeenCalledWith(
-      'http://127.0.0.1:4100/rest/team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/ref%3Awith%2Fslash/content',
+      'http://127.0.0.1:4100/rest/collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/ref%3Awith%2Fslash/content',
       expect.objectContaining({
         cache: 'no-store',
         headers: expect.any(Headers),
@@ -145,7 +146,7 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
       });
 
       const wrapper = mountSubject({
-        contentPath: `team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/${referenceType}-ref/content`,
+        contentPath: `collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/${referenceType}-ref/content`,
         reference: {
           ...baseReference,
           referenceId: `${referenceType}-ref`,
@@ -156,7 +157,7 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
       await flushPromises();
 
       expect(fetch).toHaveBeenCalledWith(
-        `http://127.0.0.1:4100/rest/team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/${referenceType}-ref/content`,
+        `http://127.0.0.1:4100/rest/collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/${referenceType}-ref/content`,
         expect.objectContaining({
           cache: 'no-store',
           headers: expect.any(Headers),
@@ -170,18 +171,26 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
     },
   );
 
-  it('shows the unavailable state when the content route returns 404', async () => {
+  // autobyteus-615 (REQ-003, AC-004, DEC-003): a 404 reads the node's code; only a missing message or reference reads as
+  // such, and a missing file (or an answer without a code) keeps today's text.
+  it.each([
+    ['a file that is gone (REFERENCE_CONTENT_UNAVAILABLE)', { code: 'REFERENCE_CONTENT_UNAVAILABLE' }, 'deleted, moved, or become unreadable'],
+    ['a message or reference not in this conversation (REFERENCE_NOT_FOUND)', { code: 'REFERENCE_NOT_FOUND' }, "This file's message could not be found in this conversation."],
+    ['an answer without a code', null, 'deleted, moved, or become unreadable'],
+  ])('shows the unavailable state for %s', async (_label, body, detail) => {
     vi.stubGlobal('fetch', vi.fn(async () => ({
       status: 404,
       ok: false,
       text: async () => '',
+      json: async () => { if (!body) throw new SyntaxError('no JSON body'); return body; },
     })));
 
     const wrapper = mountSubject();
     await flushPromises();
 
     expect(wrapper.text()).toContain('Reference file unavailable');
-    expect(wrapper.text()).toContain('deleted, moved, or become unreadable');
+    expect(wrapper.text()).toContain(detail);
+    if (body?.code === 'REFERENCE_NOT_FOUND') expect(wrapper.text()).not.toContain('deleted, moved');
   });
 
   it('uses the shared-policy fallback for an SVG team reference and revokes its blob URL', async () => {

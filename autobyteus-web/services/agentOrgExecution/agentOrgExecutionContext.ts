@@ -320,8 +320,6 @@ export class AgentOrgExecutionContext {
         identityOf: (agentRunId) => this.index.agents.has(agentRunId) ? projectAgentOrgMessageIdentity(this.index, agentRunId)
           : treeAgentIdentity(this.treeRows(), agentRunId, this.orgRunId),
       }),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `agent-org-runs/${encodeURIComponent(this.orgRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 }

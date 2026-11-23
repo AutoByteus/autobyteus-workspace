@@ -156,7 +156,7 @@ describe('Collaboration messages on a large Agent Org root', () => {
     await rows[REFS_PER_MESSAGE - 1].trigger('click')
     const lastPath = `/repo/m${HISTORY_MESSAGES}/file-${REFS_PER_MESSAGE - 1}.ts`
     expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(
-      `agent-org-runs/org-run/communication/messages/message-${HISTORY_MESSAGES}/references/${serverReferenceId(`message-${HISTORY_MESSAGES}`, lastPath)}/content`)
+      `collaboration-messages/agent_org/org-run/messages/message-${HISTORY_MESSAGES}/references/${serverReferenceId(`message-${HISTORY_MESSAGES}`, lastPath)}/content`)
     expect(counters.hashes).toBe(0) // already derived for the rendered row; memoized
 
     // The newest designer message is shared with reviewer: it stays selected, Show all collapses.
@@ -164,6 +164,14 @@ describe('Collaboration messages on a large Agent Org root', () => {
     await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
     expect(referenceRows(wrapper).length).toBeLessThanOrEqual(PREVIEW)
+  })
+
+  it('links a reference of a run the Org delegated through that run, as its list is loaded (autobyteus-615)', async () => {
+    const { org } = await mountOrgMessages()
+    expect(org().delegatedRunMessagesView({ kind: 'team_member', teamRunId: 'task-team', agentRunId: 'task-lead' }, '/task-team/lead', 'task-lead')
+      .referenceContentPath('m1', 'r1')).toBe('collaboration-messages/agent_team/task-team/messages/m1/references/r1/content')
+    expect(org().delegatedRunMessagesView({ kind: 'agent', agentRunId: 'task-agent' }, '/task-agent', 'task-agent')
+      .referenceContentPath('m1', 'r1')).toBe('collaboration-messages/agent/task-agent/messages/m1/references/r1/content')
   })
 
   it('applies a live communication message with one projection and identity work bounded by the visible rows', async () => {

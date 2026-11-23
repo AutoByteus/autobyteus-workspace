@@ -237,6 +237,8 @@ const messages = {
     "引用文件不可用",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail":
     "文件可能已被删除、移动或变为不可读。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_not_found_detail":
+    "在此对话中找不到这个文件所属的消息。",
   "workspace.components.workspace.team.TeamCommunicationPanel.preview": "预览",
   "workspace.components.workspace.team.TeamCommunicationPanel.raw": "原文",
   "workspace.components.workspace.team.TeamCommunicationPanel.maximize_view":

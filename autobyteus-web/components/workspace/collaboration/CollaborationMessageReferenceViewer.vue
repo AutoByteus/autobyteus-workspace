@@ -53,7 +53,9 @@
       <div v-else-if="isDeleted" class="flex flex-1 flex-col items-center justify-center p-4 text-center text-gray-400">
         <Icon icon="heroicons:trash" class="mb-2 h-8 w-8 text-gray-300" />
         <p class="text-sm font-medium text-gray-500">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable') }}</p>
-        <p class="mt-1 text-xs">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail') }}</p>
+        <p class="mt-1 text-xs">{{ isNotFoundInView
+          ? $t('workspace.components.workspace.team.TeamCommunicationPanel.reference_not_found_detail')
+          : $t('workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail') }}</p>
       </div>
       <FileViewer
         v-else
@@ -101,6 +103,8 @@ const fetchedContent = ref<string | null>(null);
 const resolvedUrl = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
 const isDeleted = ref(false);
+/** The node found no such message or reference in this conversation (`REFERENCE_NOT_FOUND`), not a missing file (autobyteus-615). */
+const isNotFoundInView = ref(false);
 const activeObjectUrl = ref<string | null>(null);
 let fetchToken = 0;
 
@@ -141,6 +145,7 @@ const resetResolvedState = () => {
   resolvedUrl.value = null;
   errorMessage.value = null;
   isDeleted.value = false;
+  isNotFoundInView.value = false;
 };
 
 const mapReferenceTypeToFileType = (): FileDataType | null => {
@@ -176,7 +181,9 @@ const fetchContent = async () => {
   try {
     const response = await authorizedFetch(contentUrl.value, { cache: 'no-store' });
     if (response.status === 404) {
+      const body = await Promise.resolve().then(() => response.json()).catch(() => null) as { code?: unknown } | null;
       if (currentToken !== fetchToken) return;
+      isNotFoundInView.value = body?.code === 'REFERENCE_NOT_FOUND';
       isDeleted.value = true;
       return;
     }
