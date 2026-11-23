@@ -1,0 +1,15 @@
+# DEL-R2-10 SR-016 on the final state | commit 900cb3bef5 | 2026-11-23T13:00:47Z
+--- TMPDIR form: link (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/)
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016: the container is an active root that links no run on a peer > registered in the active root directory, it answers remoteNodeOf null and hosts no agent; a unit's agent is placed in its own run 1ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it 70ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > an agent unit (CRR-009 CR-009): its own standalone root places it in agents/<runId>/received_files/<sender>/<name>; the log line names it 32ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (599): an Org unit whose saved runtime session is gone is renewed; its first input begins with the hand-over notice > an agent unit (its own run file names its container) and a Team unit's member each renew from their journals 255ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+--- TMPDIR form: canonical (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T)
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016: the container is an active root that links no run on a peer > registered in the active root directory, it answers remoteNodeOf null and hosts no agent; a unit's agent is placed in its own run 1ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it 58ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > an agent unit (CRR-009 CR-009): its own standalone root places it in agents/<runId>/received_files/<sender>/<name>; the log line names it 32ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (599): an Org unit whose saved runtime session is gone is renewed; its first input begins with the hand-over notice > an agent unit (its own run file names its container) and a Team unit's member each renew from their journals 260ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
