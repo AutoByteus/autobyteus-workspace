@@ -257,7 +257,6 @@
   "tests/unit/run-history/agent-run-metadata-service.test.ts": 2,
   "tests/unit/run-history/projection/active-trace-event-page-policy.test.ts": 7,
   "tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts": 1,
-  "tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts": 1,
   "tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts": 2,
   "tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts": 1,
   "tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts": 32,

@@ -102,7 +102,7 @@ const mountShell = (pinia: any, width: number, height: number, realMonitor = fal
     reveal = useWorkspaceToolReveal()!; // same setup-captured capability as the real monitor
     const activate = async () => {
       result.value = (await useEventMonitorFilePreview({ revealTool: reveal, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' }).openPath({
-        id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
+        kind: 'absolute', id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
       })).status;
     };
     return () => h('button', { 'data-test': 'file-origin', onClick: activate }, 'Open selected file');
@@ -122,7 +122,7 @@ const mountShell = (pinia: any, width: number, height: number, realMonitor = fal
         // captured provider, selection/Files store and enclosing shell remain real.
         AgentConversationFeed: { emits: ['file-path-action'], setup(_, { emit }) {
           return () => h('button', { 'data-test': 'file-origin', onClick: () => emit('file-path-action', {
-            id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
+            kind: 'absolute', id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
           }) }, 'Open selected file');
         } },
         FileViewer: { props: ['file', 'readOnly'], template: '<article data-test="rendered-file" :data-read-only="readOnly">{{ file.content }}</article>' },

@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.14-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-web-followups-609/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-44,MSP-45,MSP-55,MSP-59,MSP-91,MSP-96,MSP-99,MSP-100,MSP-101,MSP-102,MSP-103 --output-dir=/tmp/del609/phone-merged
+
+mobile-shell probe: duplicate case IDs MSP-99 (mobile-restored-run-cases.mjs, mobile-background-tasks-cases.mjs)
+ ELIFECYCLE  Command failed with exit code 1.
+probe exit 1

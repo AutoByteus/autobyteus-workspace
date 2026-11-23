@@ -63,7 +63,7 @@ import MessageNotDeliveredNotice from '~/components/agentInput/MessageNotDeliver
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import AgentConversationFeed from '~/components/workspace/agent/AgentConversationFeed.vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import {
   useEventMonitorActiveTraceBrowse,
 } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
@@ -115,7 +115,7 @@ provide(RUN_VIEW_FILES_KEY, {
     return node !== null;
   },
 });
-const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
+const handleFilePathAction = async (action: ConversationFileLink): Promise<void> => {
   // Keep the launcher effect boundary out of Markdown rendering and passive
   // message arrival. It is created only for explicit user activation.
   const originRunId = effectiveRunId.value;

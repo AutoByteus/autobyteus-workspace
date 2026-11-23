@@ -85,6 +85,7 @@ export const buildRunProjectionConversation = (
       toolArgs: event.toolArgs,
       toolResult: event.toolResult,
       toolError: event.toolError,
+      toolStatus: event.status,
       media: event.media,
       ts: event.ts,
     }];

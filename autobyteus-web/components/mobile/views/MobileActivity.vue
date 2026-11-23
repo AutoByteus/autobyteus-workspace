@@ -32,6 +32,7 @@ import MobileBackgroundTasks from '~/components/mobile/views/MobileBackgroundTas
 import MobileActivityDetail from '~/components/mobile/views/MobileActivityDetail.vue';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useBackgroundTaskPanelView } from '~/composables/useBackgroundTaskPanelView';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 
@@ -43,5 +44,7 @@ const navigation = useMobileNavigation();
 const runId = computed(() => props.target.context.state.runId);
 const activities = computed(() => activityStore.getActivities(runId.value));
 // The desktop panel's source (REQ-002), read while Activity is open; it also brings tasks started before (REQ-003).
-const { tasks: backgroundTasks } = useBackgroundTaskPanelView(runId, computed(() => true));
+// Offline: the run stopped (autobyteus-609 D-I); its running tasks then end as run_ended.
+const runStopped = computed(() => props.target.context.state.currentStatus === AgentStatus.Offline);
+const { tasks: backgroundTasks } = useBackgroundTaskPanelView(runId, computed(() => true), runStopped);
 </script>

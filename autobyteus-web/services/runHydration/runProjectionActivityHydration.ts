@@ -7,6 +7,7 @@ import type {
 import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolInvocationStatus } from '~/types/segments';
 import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
+import { isToolInvocationStatus } from '~/utils/toolInvocationStatus';
 
 export interface RunProjectionToolActivityEntry {
   kind: 'tool';
@@ -80,17 +81,6 @@ const toDate = (seconds?: number | null): Date => {
   }
   return new Date();
 };
-
-const isToolInvocationStatus = (value: unknown): value is ToolInvocationStatus =>
-  value === 'parsing' ||
-  value === 'parsed' ||
-  value === 'awaiting-approval' ||
-  value === 'approved' ||
-  value === 'executing' ||
-  value === 'success' ||
-  value === 'error' ||
-  value === 'denied' ||
-  value === 'interrupted';
 
 import { isCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 

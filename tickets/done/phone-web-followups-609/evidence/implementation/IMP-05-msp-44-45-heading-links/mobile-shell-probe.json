@@ -1,0 +1,366 @@
+{
+  "startedAt": "2026-11-22T20:56:27.273Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 55054,
+      "nodeId": "srv_rlwUldpyJlhQVxVjhMNLL7qkSIExA69h",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 55053,
+      "nodeId": "srv_C0559cME00n8yeFfhAAu8Rs-Trc5J4vl",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_5ec7d8648bb246a7b623320a9abcae70",
+    "writerRun": "release_notes_writer_da00265e9bff4be7989acad612d87215",
+    "squadRun": "docs_review_team_a0cf459819cb4bfdbe17d0a88e4df47b",
+    "reviewer": "release_notes_writer_e5d47ebb87ae44ba95f0144ccd714c15",
+    "memberDelegated": "fact_checker_d8bc3c1379874912918eabb7474221a4",
+    "remoteAgentRun": "publisher_e346e30e1dd4473a9459646594a346ef",
+    "remoteTeamRun": "studio_team_9995294d6c2f48e38660150281f6e7da",
+    "plain": [
+      "fact_checker_4e0e2ffb021f44fbbcf8b795e3ebb72d",
+      "fact_checker_2289995791064aa99ce3ad24c0090ce5",
+      "fact_checker_d4f01c2500fd4a27bc10f9d1de0cd79a"
+    ],
+    "org": "delivery_org_e61b46ab2a0a42878014a40c3cf7d000",
+    "orgPlanner": "release_notes_writer_749f8bcca41d4c418634049ecd143691",
+    "reviewOrg": "review_org_d6ce047f38804bc999011aab76bcd8af",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_bdb28e5b8358452db48a70e6da2a8d2c",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_bbeaecf12e3a42cf80d86a172125f2f7",
+    "deliveryLead": "fact_checker_d32af245166b46ab9b40f4855bc9f364",
+    "deliveryMate": "release_notes_writer_8ca3ef33d0d94007b3061a2ba552af6a",
+    "leadDelegated": "changelog_helper_b847378f2260418899d20329108371ee",
+    "approver": "approver_d7abf4aaf381478a93b965de7c97093f",
+    "taskA": "launch-5142e8-1",
+    "taskB": "launch-5142e8-2"
+  },
+  "cases": {
+    "MSP-44": {
+      "result": "Pass",
+      "seconds": 64.1,
+      "desktop": {
+        "contents": {
+          "entries": 25,
+          "reached": 25,
+          "urlUnchanged": 25,
+          "newTabs": 0
+        },
+        "notReached": [],
+        "sample": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 3568,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 10048,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "terminology",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 12828,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ],
+        "nothing": [
+          {
+            "href": "#no-such-heading-480",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "/x.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "../../out.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          }
+        ],
+        "opens": [
+          {
+            "href": "other.md",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "other.md#x",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "./x.md",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ]
+      },
+      "phone": {
+        "contents": {
+          "entries": 25,
+          "reached": 25,
+          "urlUnchanged": 25,
+          "newTabs": 0
+        },
+        "notReached": [],
+        "sample": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 1696,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 4472,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "terminology",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 5732,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ],
+        "nothing": [
+          {
+            "href": "#no-such-heading-480",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "/x.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "../../out.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          }
+        ],
+        "opens": [
+          {
+            "href": "other.md",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "other.md#x",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "./x.md",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ]
+      }
+    },
+    "MSP-45": {
+      "result": "Pass",
+      "seconds": 18.1,
+      "url": "http://127.0.0.1:55052/skills",
+      "contents": {
+        "entries": 25,
+        "reached": 25,
+        "urlUnchanged": 25,
+        "newTabs": 0
+      },
+      "notReached": [],
+      "sample": [
+        {
+          "anchor": "the-approach-spine-first-practices-in-context",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 1192,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "anchor": "project-specific-design-principles",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 2480,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "anchor": "terminology",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 3204,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        }
+      ],
+      "nothing": [
+        {
+          "href": "#no-such-heading-480",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        },
+        {
+          "href": "/x.md",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        },
+        {
+          "href": "../../out.md",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        }
+      ],
+      "opens": [
+        {
+          "href": "other.md",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "href": "other.md#x",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "href": "./x.md",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "headingLinks": {
+    "filesRun": "fact_checker_bd17fcf141d34551a79c37c64f8552c9",
+    "host": "project_task_manager_29778ec6a9e04d538d67b81501a72b02",
+    "talkRun": "release_notes_writer_cfbbd580ffae45c1b41480991c745c6f",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "summary": {
+    "cases": {
+      "MSP-44": "Pass",
+      "MSP-45": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T21:02:04.862Z"
+}

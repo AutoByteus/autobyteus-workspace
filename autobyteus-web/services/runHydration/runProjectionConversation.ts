@@ -4,6 +4,7 @@ import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 import { parseInterAgentDelivery } from '~/utils/collaboration/interAgentDelivery';
 import { enforceRecentConversationWindow } from '~/services/eventMonitor/recentEventMonitorWindow';
+import { isToolInvocationStatus } from '~/utils/toolInvocationStatus';
 
 export interface RunProjectionConversationEntry {
   kind: string;
@@ -14,6 +15,8 @@ export interface RunProjectionConversationEntry {
   toolArgs?: Record<string, unknown> | null;
   toolResult?: unknown | null;
   toolError?: string | null;
+  /** A tool entry's status as the node's replay decided it (autobyteus-609 D-D2). */
+  toolStatus?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
   messageId?: string;
@@ -208,20 +211,10 @@ const buildUserContextFilePaths = (entry: RunProjectionConversationEntry): Conte
   })),
 ];
 
-const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationStatus => {
-  const result = asRecord(entry.toolResult);
-  if (result.status === 'denied' && (result.provider_state === 'ERROR' || result.provider_state === 'DONE')) return 'denied';
-  if (entry.toolError) {
-    return 'error';
-  }
-  if (entry.kind === 'tool_call_pending') {
-    return 'parsed';
-  }
-  if (entry.toolResult !== null && entry.toolResult !== undefined) {
-    return 'success';
-  }
-  return 'parsed';
-};
+/** The node owns a tool call's status (autobyteus-609 D-D2: denied, interrupted, failed, done); a value it did not send
+ * reads as not yet decided. */
+const toolStatusOf = (entry: RunProjectionConversationEntry): ToolInvocationStatus =>
+  isToolInvocationStatus(entry.toolStatus) ? entry.toolStatus : 'parsed';
 
 const appendTextSegment = (
   segments: AIResponseSegment[],
@@ -247,7 +240,7 @@ const buildToolSegments = (
       invocationId: entry.invocationId || `history-${runId}-${index}`,
       toolName: entry.toolName || 'tool',
       arguments: asRecord(entry.toolArgs),
-      status: inferToolStatus(entry),
+      status: toolStatusOf(entry),
       logs: [],
       result: entry.toolResult ?? null,
       error: entry.toolError ?? null,

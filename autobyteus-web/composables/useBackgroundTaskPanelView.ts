@@ -12,8 +12,15 @@ type Snapshot = Extract<View, { __typename?: 'AgentBackgroundTaskSnapshot' }>;
 /** `no-run`: no agent run is selected, so there is nothing to read (autobyteus-483, REQ-005). */
 type Mode = 'no-run' | 'loading' | 'snapshot' | 'event-stream' | 'unsupported' | 'unavailable';
 
-/** The expanded selected panel is the only refresh owner. Never activates a run or publishes lifecycle events. */
-export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boolean>) => {
+/**
+ * The expanded selected panel is the only refresh owner. Never activates a run or publishes lifecycle events.
+ *
+ * `runStopped` is whether the run is Offline (its caller's `currentStatus`). When it turns from false to true, an observed
+ * stop, the run's tasks still shown running end as `run_ended` (autobyteus-609 D-I): the node answers a stopped run's view
+ * as inactive, so a lost live end update could not be read back. Its first value never counts (a run's status starts
+ * Offline before it is known). While stopped the list is not re-read every 2 s; it is read once when the run is live again.
+ */
+export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boolean>, runStopped: Ref<boolean>) => {
   const node = useWindowNodeContextStore();
   const stream = useAgentBackgroundTaskStore();
   const mode = ref<Mode>('loading');
@@ -75,7 +82,7 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
         if (current()) {
           pending = null;
           controller = null;
-          if (mode.value !== 'event-stream') timer = setTimeout(() => void refresh(), 2_000);
+          if (mode.value !== 'event-stream' && !runStopped.value) timer = setTimeout(() => void refresh(), 2_000);
         }
       }
     })();
@@ -89,6 +96,18 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
     mode.value = selected ? 'loading' : 'no-run';
     if (expanded.value && selected) void refresh();
   }, { immediate: true, flush: 'sync' });
+
+  // A change of the same run's liveness only: switching to another run (whose status may still be the initial Offline) is
+  // no stop or restart of either.
+  watch([runId, runStopped], ([selected, stopped], [previousRun, wasStopped]) => {
+    if (!selected || selected !== previousRun) return;
+    if (stopped && wasStopped === false) {
+      clearTimer();
+      stream.endRunningTasksForRunEnd(selected);
+    } else if (!stopped && wasStopped) {
+      void refresh();
+    }
+  }, { flush: 'sync' });
 
   // Network reconnection re-reads this selection, without opening any runtime input path.
   const onOnline = () => { if (expanded.value) void refresh(); };

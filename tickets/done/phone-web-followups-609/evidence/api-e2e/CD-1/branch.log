@@ -1,0 +1,3 @@
+[check:contract-dist] building autobyteus-agent-presentation-contracts, autobyteus-collaboration-stream-contracts, autobyteus-team-stream-contracts
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.
+exit 0

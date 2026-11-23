@@ -61,6 +61,7 @@ describe('ThinkSegment disclosure', () => {
     expect(wrapper.get('code').text()).toBe('code');
 
     const action: AbsoluteFilePathAction = {
+      kind: 'absolute',
       id: 'file-1',
       rawCandidate: '/tmp/reasoning.md',
       normalizedCandidate: '/tmp/reasoning.md',

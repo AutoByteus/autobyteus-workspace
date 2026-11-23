@@ -25,7 +25,7 @@ import { useMarkdownSegments } from '~/composables/useMarkdownSegments';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
 import { useLocalization } from '~/composables/useLocalization';
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { AbsoluteFilePathAction, ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import MermaidDiagram from './MermaidDiagram.vue'; 
 import { readAnchorHref, resolveExternalHttpUrl } from './externalHttpLink';
 import { HEADING_ANCHOR_ID_PREFIX } from '~/utils/markdownHeadingAnchors';
@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
   /** A scheme-less link was clicked (its raw href); a parent that knows the document's place may open it (FU-002). */
   (event: 'relative-link', href: string): void;
 }>();
@@ -157,7 +157,10 @@ const handleLinkClick = (event: MouseEvent) => {
   }
   if (href && !URL_SCHEME.test(href) && !href.startsWith('//')) {
     event.preventDefault();
-    emit('relative-link', href);
+    // In a run's conversation a path relative to the run's folder is a file of the run: the opener resolves it
+    // (autobyteus-609 D-H). Elsewhere (a document's preview) the host resolves it against the document (576).
+    if (props.enableEventMonitorFileActions && !href.startsWith('/')) emit('file-path-action', { kind: 'run-relative', href });
+    else emit('relative-link', href);
     return;
   }
 

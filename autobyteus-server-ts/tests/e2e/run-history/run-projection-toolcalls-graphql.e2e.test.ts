@@ -7,7 +7,7 @@ import { createRequire } from "node:module";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -29,17 +29,6 @@ import { AgentSegmentLifecycleEventTransformer } from "../../../src/agent-execut
 import { AgentSegmentLifecycleState } from "../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { AgentTurnLifecycleState } from "../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 
-const { readThreadMock } = vi.hoisted(() => ({
-  readThreadMock: vi.fn(),
-}));
-
-vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-history-reader.js", () => ({
-  CodexThreadHistoryReader: class {},
-  getCodexThreadHistoryReader: () => ({
-    readThread: readThreadMock,
-  }),
-}));
-
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
@@ -52,7 +41,6 @@ const REASONING_TS = 1_710_000_000.5;
 const TOOL_TS = 1_710_000_001;
 const ASSISTANT_TS = 1_710_000_002;
 const LOCAL_REPLAY_MARKER = "LOCAL_REPLAY_IS_CODEX_UI_PROJECTION_SOURCE";
-const NATIVE_THREAD_MARKER = "NATIVE_THREAD_SHOULD_NOT_RECOVER_UI_PROJECTION";
 
 type ProjectionPayload = {
   summary: string | null;
@@ -219,24 +207,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   beforeEach(async () => {
-    readThreadMock.mockReset();
-    readThreadMock.mockResolvedValue({
-      thread: {
-        id: "native-thread-that-must-not-be-read",
-        turns: [
-          {
-            id: "native-turn",
-            items: [
-              {
-                type: "agentMessage",
-                id: "native-message",
-                text: NATIVE_THREAD_MARKER,
-              },
-            ],
-          },
-        ],
-      },
-    });
     await fs.rm(memoryDir, { recursive: true, force: true });
     await fs.mkdir(memoryDir, { recursive: true });
   });
@@ -322,7 +292,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const mcpActivity = findToolRow(projection.activities, "mcp-call-1");
     const serializedConversation = JSON.stringify(projection.conversation);
 
-    expect(readThreadMock).not.toHaveBeenCalled();
     expect(serializedConversation).toContain(LOCAL_REPLAY_MARKER);
     expect(dynamicConversation).toMatchObject({
       kind: "tool_call",
@@ -477,7 +446,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       { runId },
     );
 
-    expect(readThreadMock).not.toHaveBeenCalled();
     expect(findToolRow(result.getRunProjection.conversation, "exec-command-failure")).toMatchObject({
       kind: "tool_call",
       toolName: "run_bash",
@@ -589,7 +557,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const activityRows = result.getRunProjection.activities.filter(
       (row) => row.invocationId === "cross-file-tool-1",
     );
-    expect(readThreadMock).not.toHaveBeenCalled();
     expect(conversationRows).toHaveLength(1);
     expect(activityRows).toHaveLength(1);
     expect(conversationRows[0]).toMatchObject({
@@ -774,8 +741,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const messageIndex = (content: string): number =>
       rowIndex((row) => row.kind === "message" && row.content === content);
 
-    expect(readThreadMock).not.toHaveBeenCalled();
-    expect(serializedProjection).not.toContain(NATIVE_THREAD_MARKER);
     expect(reasoningRows.map((row) => row.content)).toEqual(expect.arrayContaining([
       "think before explicit tool",
       "think before inferred terminal result",
@@ -1099,7 +1064,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       (row) => row.kind === "reasoning" && row.content === "after insufficient terminal",
     );
 
-    expect(readThreadMock).not.toHaveBeenCalled();
     expect(reasoningContents).toEqual([
       "A\n\nB",
       "after next tool",
@@ -1158,8 +1122,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const projection = result.getRunProjection;
     const serializedProjection = JSON.stringify(projection);
 
-    expect(readThreadMock).not.toHaveBeenCalled();
-    expect(serializedProjection).not.toContain(NATIVE_THREAD_MARKER);
     expect(projection.summary).toBeNull();
     expect(projection.lastActivityAt).toBeNull();
     expect(projection.conversation).toEqual([]);

@@ -264,7 +264,7 @@ for (const knownId of [false, true]) {
       expect(useFileExplorerStore() === files).toBe(true);
       expect(useActiveContextStore() === active).toBe(true);
       const launch = useEventMonitorFilePreview({ revealTool: async tab => { useRightSideTabs().selectTabExplicitly(tab); await nextTick(); return true; }, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' });
-      const action = { id: 'native', rawCandidate: '/workspace/B/brief.md', normalizedCandidate: '/workspace/B/brief.md', sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const };
+      const action = { kind: 'absolute' as const, id: 'native', rawCandidate: '/workspace/B/brief.md', normalizedCandidate: '/workspace/B/brief.md', sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const };
       expect((await launch.openPath(action)).status).toBe('opened'); await flush();
       expect(wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B');
       expect(wrapper.text()).toContain('owned native content: /workspace/B/brief.md');

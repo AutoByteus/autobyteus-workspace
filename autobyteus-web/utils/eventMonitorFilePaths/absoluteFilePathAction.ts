@@ -10,6 +10,7 @@ export type AbsoluteFilePathSourceKind =
   | 'fenced-code';
 
 export interface AbsoluteFilePathAction {
+  kind: 'absolute';
   id: string;
   rawCandidate: string;
   rawDestination?: string;
@@ -18,6 +19,18 @@ export interface AbsoluteFilePathAction {
   displayLabel: string;
   previewType: SupportedFileDataType;
 }
+
+/**
+ * A Markdown link in a run's conversation whose destination is a path relative to the run's own folder (no scheme, no
+ * leading `/` or `#`), as written (autobyteus-609 D-H). The conversation's opener resolves it against the run's folder.
+ */
+export interface RunRelativeFileLink {
+  kind: 'run-relative';
+  href: string;
+}
+
+/** A file link in a conversation: an absolute path the renderer recognized, or a run-relative link the opener resolves. */
+export type ConversationFileLink = AbsoluteFilePathAction | RunRelativeFileLink;
 
 export interface AbsoluteFilePathActionCandidate {
   rawCandidate: string;
@@ -263,6 +276,7 @@ export function createAbsoluteFilePathAction(
   }
 
   const action: AbsoluteFilePathAction = {
+    kind: 'absolute',
     id,
     rawCandidate: candidate.rawCandidate,
     normalizedCandidate,

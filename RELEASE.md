@@ -93,7 +93,10 @@ authorized merely because an installation or preflight failed.
   ```
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
-  other packaged app files. CI builds every release from source.
+  other packaged app files. CI builds every release from source. The one exception
+  is the tracked `dist/` of the three contract packages, which their consumers import
+  ([TESTING.md, Build outputs](TESTING.md)); `pnpm check:contract-dist` keeps it equal to
+  their source.
 - **Before the merge, delivery audits; it does not redo.** It opens the
   ticket's evidence (the API/E2E execution report and the files it names)
   and checks that each acceptance criterion is proven. It does not rerun the

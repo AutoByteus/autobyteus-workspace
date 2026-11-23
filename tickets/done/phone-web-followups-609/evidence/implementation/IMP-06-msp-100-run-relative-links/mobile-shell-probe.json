@@ -1,0 +1,120 @@
+{
+  "startedAt": "2026-11-22T21:12:53.495Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 59206,
+      "nodeId": "srv_ym2AxCR9kY-0dlBsCFX5YobbBniRECri",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 59207,
+      "nodeId": "srv_fIbBiToY96sn0eI7KFkO-8_0yDAT_UYH",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_c3d62832fe8a42bc8ee8debdc8ea379d",
+    "writerRun": "release_notes_writer_a0479c938352468b8490862d25deefc3",
+    "squadRun": "docs_review_team_5321a5b12fac4f688dba882cdd06ef36",
+    "reviewer": "release_notes_writer_7fdc0e13a6764ebf957d7a46a78c5782",
+    "memberDelegated": "fact_checker_1dcabc8b432d4e39bdba5c90d3c0938d",
+    "remoteAgentRun": "publisher_edcb5ae58a034a62ba22e95898a6ff7a",
+    "remoteTeamRun": "studio_team_a86cfe386da24f2a9ac8b65316e1e7d5",
+    "plain": [
+      "fact_checker_815f82c70ca94250bd7fb2121b10184f",
+      "fact_checker_d53a4df1fa38410a81bd45bd69d4531a",
+      "fact_checker_4d8070529a504ce0b22af8c80f9c5136"
+    ],
+    "org": "delivery_org_97aacc26961941b2a7924fc18002cc83",
+    "orgPlanner": "release_notes_writer_74dc87ab13c7418ebeb5218460aabd66",
+    "reviewOrg": "review_org_5d31da1da30c4321b8bb0ee47fe988c0",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_b1bf4bb113ec4decab7675867b60b7dc",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_e10f82a1218a45afb3cde476e5af9e27",
+    "deliveryLead": "fact_checker_eec0fc8fb4574d8199c5c7a41be66db2",
+    "deliveryMate": "release_notes_writer_3ac80b19912847c2adde2f4701357cad",
+    "leadDelegated": "changelog_helper_18c59a217e204457965d2659c238b5ae",
+    "approver": "approver_130512c978f44a0eaf535e38f7be2f13",
+    "taskA": "launch-b8a978-1",
+    "taskB": "launch-b8a978-2"
+  },
+  "cases": {
+    "MSP-100": {
+      "result": "Pass",
+      "seconds": 40.3,
+      "desktop": {
+        "notes": {
+          "href": "docs-609/a.md#x",
+          "opened": true
+        },
+        "clip": {
+          "href": "media-609/clip-609.txt",
+          "opened": true
+        },
+        "up": {
+          "status": "The file preview could not be opened.",
+          "outsideShown": false
+        },
+        "gone": {
+          "viewer": "a.md clip-609.txt gone-609.md {“error”:“File not found: <probe-root>/alpha/workspace/docs-609/gone-609.md”}",
+          "status": ""
+        }
+      },
+      "phone": {
+        "notes": {
+          "href": "docs-609/a.md#x",
+          "opened": true
+        },
+        "clip": {
+          "href": "media-609/clip-609.txt",
+          "opened": true
+        },
+        "up": {
+          "status": "The file preview could not be opened.",
+          "viewerOpened": false,
+          "outsideShown": false
+        },
+        "gone": {
+          "viewerOpened": true,
+          "viewer": "gone-609.md {“error”:“File not found: <probe-root>/alpha/workspace/docs-609/gone-609.md”}"
+        }
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "headingLinks": {
+    "filesRun": "fact_checker_cd127541bb5b4ede818cb862f008aa72",
+    "host": "project_task_manager_c133516e0de94f3696b5afe3a4f38d20",
+    "talkRun": "release_notes_writer_1a1fd03229d341d690033889091c224a",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "summary": {
+    "cases": {
+      "MSP-100": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T21:15:31.664Z"
+}

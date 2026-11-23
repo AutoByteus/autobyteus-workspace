@@ -976,6 +976,27 @@ team member metadata -> member memoryDir -> active raw traces -> historical repl
   anchored to the call even when call and result are in different raw-trace
   files. A result-local name supports partial evidence, but does not replace
   call correlation for arguments, anchoring, ordering, or lifecycle integrity.
+- A stored tool result that is an interruption reads back as `interrupted`, the
+  status the web shows as "Stopped" (autobyteus-609). One rule decides it,
+  `isInterruptedToolResult` (`src/agent-memory/domain/tool-result-interruption.ts`),
+  from what each writer already stores, with no writer change and no migration:
+  the result's source event (`TOOL_EXECUTION_INTERRUPTED`, `TURN_INTERRUPTED`, or
+  the native memory manager's `AgentTurnInterruptedEvent`) or, for a record that
+  carries only an error, the interruption texts (`user_interrupt`,
+  `Tool execution interrupted.`). A failed call writes neither and stays a
+  failure; a denial is decided before this rule. The replay builder
+  (`raw-trace-to-historical-replay-events.ts`) and the work journal read it, and
+  every projection derives from the replay event, so the Activity entry's
+  `status`, the conversation tool entry's `toolStatus` and the earlier-trace page
+  card's `statusKey` agree for the same call, on every runtime and for runs
+  recorded before this rule.
+- The projection carries no `contextText` (autobyteus-609): an Activity entry
+  holds a call's name, status, arguments, logs, result and error, and each client
+  summarizes the arguments itself. The earlier-trace page card's `summaryArgs` is a
+  JSON object holding only the summary argument keys the call has, taken from the
+  one list `TOOL_SUMMARY_ARGUMENT_KEYS` in `@autobyteus/agent-presentation-contracts`
+  that the web's `getToolDisplaySummary` also reads, so a page card and a live card
+  show the same summary.
 - Existing historical results may omit a name or may contain duplicated or
   late/effective name/arguments. `buildToolInteractions(...)` reads both shapes
   normally and may use result-side fields as a read-only historical override,
@@ -997,10 +1018,12 @@ team member metadata -> member memoryDir -> active raw traces -> historical repl
   carries the start-owned finite type. Recording never creates a fallback turn,
   derives a segment ID/type, synthesizes a missing start, or recovers text from
   a segment end.
-- Runtime-native providers such as `CodexRunViewProjectionProvider` and
-  `ClaudeRunViewProjectionProvider` are diagnostic utilities only. They are not
-  reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI
-  history and must not be used to recover missing local display rows.
+- Runtime-native providers such as `ClaudeRunViewProjectionProvider` are
+  diagnostic utilities only. They are not reachable from normal
+  `getRunProjection` / `getTeamMemberRunProjection` UI history and must not be
+  used to recover missing local display rows. (The Codex one, with Codex's
+  `thread/read` reader and normalizer, was removed in autobyteus-609: nothing
+  but their own tests called them.)
 - Local replay is the only display source, so there is no local/native
   transcript reconciliation for focused history reload.
 
@@ -1060,9 +1083,9 @@ raw traces and memory-inspector views only; run-history is the only subsystem
 that may normalize those raw traces into the historical replay bundle used by
 reopen/hydration.
 
-Local replay is the display authority for normal run-history UI. Codex
-thread-history replay and other runtime-native replay providers may still be
-useful for diagnostics and provider protocol investigation, but they are not
+Local replay is the display authority for normal run-history UI. The Claude
+runtime-native replay provider may still be useful for diagnostics and provider
+protocol investigation, but it is not
 reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI
 history and must not be used to recover missing display rows. Missing Codex,
 Claude, or AutoByteus display rows should be fixed by ensuring live normalized
@@ -1128,9 +1151,8 @@ Projection files:
 - `src/run-history/services/agent-run-view-projection-service.ts`
 - `src/run-history/services/team-member-run-view-projection-service.ts`
 
-Runtime-native diagnostic utilities:
+Runtime-native diagnostic utility:
 
-- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
 - `src/run-history/projection/providers/claude-run-view-projection-provider.ts`
 
 ## Archive / Rotation / Retention Boundaries

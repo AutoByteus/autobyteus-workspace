@@ -1,8 +1,9 @@
 import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
+import type { ToolSummaryArgumentKey } from "@autobyteus/agent-presentation-contracts";
 
 export type EventMonitorToolCardKind = "tool_call" | "write_file" | "edit_file" | "terminal_command";
 export type EventMonitorToolStatusKey =
-  | "running" | "success" | "error" | "approved" | "awaiting-approval" | "denied" | "default";
+  | "running" | "success" | "error" | "approved" | "awaiting-approval" | "denied" | "interrupted" | "default";
 export type EventMonitorMediaType = "image" | "audio" | "video";
 
 export interface EventMonitorActiveTraceAttachment {
@@ -12,24 +13,8 @@ export interface EventMonitorActiveTraceAttachment {
   locator: string;
 }
 
-export interface EventMonitorToolSummaryArgs {
-  path?: string | null;
-  file_path?: string | null;
-  filepath?: string | null;
-  filename?: string | null;
-  target_path?: string | null;
-  command?: string | null;
-  cmd?: string | null;
-  script?: string | null;
-  query?: string | null;
-  prompt?: string | null;
-  url?: string | null;
-  message?: string | null;
-  text?: string | null;
-  title?: string | null;
-  name?: string | null;
-  raw?: string | null;
-}
+/** A page card's summary inputs: the string values of the call's summary argument keys (`TOOL_SUMMARY_ARGUMENT_KEYS`). */
+export type EventMonitorToolSummaryArgs = Partial<Record<ToolSummaryArgumentKey, string>>;
 
 export interface EventMonitorApprovalTarget {
   agentRunId: string;

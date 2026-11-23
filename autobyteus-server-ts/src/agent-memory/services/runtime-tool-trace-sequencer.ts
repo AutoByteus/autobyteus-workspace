@@ -1,6 +1,7 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
+import { TOOL_EXECUTION_INTERRUPTED_TEXT } from "../domain/tool-result-interruption.js";
 import {
   createToolCallIdentity,
   toolCallIdentityKey,
@@ -117,10 +118,10 @@ export class RuntimeToolTraceSequencer {
   }
 
   interruptTurn(event: AgentRunEvent, turnId: string): void {
-    const error = extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution interrupted.";
+    const error = extractError(event.payload) ?? extractReason(event.payload) ?? TOOL_EXECUTION_INTERRUPTED_TEXT;
     for (const tool of this.tools.values()) {
       if (tool.identity.turnId !== turnId || !tool.callRawTraceId || tool.resultRawTraceId) continue;
-      this.persistToolResult(tool, event, null, error, "Tool execution interrupted.");
+      this.persistToolResult(tool, event, null, error, TOOL_EXECUTION_INTERRUPTED_TEXT);
     }
   }
 
@@ -140,7 +141,7 @@ export class RuntimeToolTraceSequencer {
       : failed
         ? extractError(event.payload) ?? "Tool execution failed."
         : interrupted
-          ? extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution interrupted."
+          ? extractError(event.payload) ?? extractReason(event.payload) ?? TOOL_EXECUTION_INTERRUPTED_TEXT
           : null;
     const result = denied
       ? {
@@ -156,7 +157,7 @@ export class RuntimeToolTraceSequencer {
       event,
       result,
       error,
-      denied ? "Tool execution denied." : interrupted ? "Tool execution interrupted." : "",
+      denied ? "Tool execution denied." : interrupted ? TOOL_EXECUTION_INTERRUPTED_TEXT : "",
     );
   }
 

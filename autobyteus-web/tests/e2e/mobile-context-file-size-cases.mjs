@@ -141,8 +141,10 @@ export const runContextFileSizeCases = async (probe) => {
       const favicon = /status of 40[14] \((Unauthorized|Not Found)\)$/.test(line) && pathname === '/favicon.ico';
       const refusal = currentCase === 'MSP-54' && /status of 413 \(Payload Too Large\)$/.test(line) && pathname === '/rest/context-files/upload';
       // MSP-55 resets the link on purpose: the browser logs the reset request, and the composer logs the failed upload's
-      // technical detail to the console (REQ-006: raw text goes to the console, never to the UI).
-      const drop = currentCase === 'MSP-55' && (/net::ERR_CONNECTION_RESET$/.test(line) || /^phone-eta console: Context file upload failed for 'drop-clip\.mp4'/.test(line));
+      // technical detail to the console (REQ-006: raw text goes to the console, never to the UI). The same cut can end the
+      // request as ERR_CONNECTION_RESET or ERR_SOCKET_NOT_CONNECTED, depending on where Chrome is in it (as the reconnect
+      // cases record, mobile-live-reconnect-cases.mjs; autobyteus-609 REQ-G). Any other error still fails the probe.
+      const drop = currentCase === 'MSP-55' && (/net::ERR_(CONNECTION_RESET|SOCKET_NOT_CONNECTED)$/.test(line) || /^phone-eta console: Context file upload failed for 'drop-clip\.mp4'/.test(line));
       evidence.browserErrors.push({ case: currentCase, line, known: favicon || refusal || drop,
         ...(favicon ? { cause: 'the browser\'s own favicon request at the origin root (/favicon.ico)' } : refusal ? { cause: 'the node\'s 413 of the stale-limits upload, provoked on purpose' }
           : drop ? { cause: 'the link reset of the interrupted-upload case, provoked on purpose' } : {}) });

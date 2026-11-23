@@ -115,6 +115,7 @@ import { computed, reactive } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useBackgroundTaskPanelView } from '~/composables/useBackgroundTaskPanelView';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useLocalization } from '~/composables/useLocalization';
 import { describeBackgroundTaskEnd } from '~/utils/backgroundTaskEnd';
 import type { BackgroundTaskPanelRow, BackgroundTaskPanelStatus } from '~/types/backgroundTaskView';
@@ -132,7 +133,9 @@ const { t, resolvedLocale } = useLocalization();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 
-const { tasks, counts, mode, confirmed, snapshotView } = useBackgroundTaskPanelView(currentAgentRunId, computed(() => !props.collapsed));
+// Offline: the run stopped (autobyteus-609 D-I); Error does not count (a recoverable block keeps the agent and its tasks).
+const runStopped = computed(() => activeContextStore.activeAgentContext?.state.currentStatus === AgentStatus.Offline);
+const { tasks, counts, mode, confirmed, snapshotView } = useBackgroundTaskPanelView(currentAgentRunId, computed(() => !props.collapsed), runStopped);
 const countsLabel = computed(() => mode.value === 'no-run' ? ''
   : confirmed.value ? t('workspace.components.progress.BackgroundTaskPanel.counts', counts.value)
     : tasks.value.length ? t('workspace.components.progress.BackgroundTaskPanel.recordedCounts', counts.value)

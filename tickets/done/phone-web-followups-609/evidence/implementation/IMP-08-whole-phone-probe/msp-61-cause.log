@@ -1,0 +1,24 @@
+## MSP-66,MSP-61 on the branch (d4af72998f), unchanged case: three runs
+[mobile-shell] MSP-61 Fail: REQ-006 another runtime clears the model; Save waits for a model
+  model row 500 ms after choosing Grok Build: Loading…
+[mobile-shell] MSP-61 Fail: REQ-006 another runtime clears the model; Save waits for a model
+  model row 500 ms after choosing Grok Build: Loading…
+[mobile-shell] MSP-61 Fail: REQ-006 another runtime clears the model; Save waits for a model
+  model row 500 ms after choosing Grok Build: Loading…
+
+## the same with the 500 ms sleep replaced by polling the model row every 100 ms (a local, uncommitted change)
+branch d4af72998f:
+[timing-609] model row after the runtime change: [[1,"Loading…"],[3183,"Choose"],31]
+[mobile-shell] MSP-61 Pass
+base f2c0d2a902 (a separate worktree, its own server build and phone bundle):
+[timing-609] model row after the runtime change: [[0,"Loading…"],[3200,"Choose"],31]
+[mobile-shell] MSP-61 Pass
+[timing-609] model row after the runtime change: [[1,"Loading…"],[3135,"Choose"],31]
+[mobile-shell] MSP-61 Pass
+
+## the node's Grok Build model discovery alone (built server, fake Grok CLI, as the probe's node runs it)
+node <script importing dist/runtime-management/grok/grok-build-capability.js>, GROK_BUILD_COMMAND=<fake grok>
+discover 0: 3456 ms, 1 models
+discover 1: 3127 ms, 1 models
+discover 2: 3133 ms, 1 models
+node -e 0: 0.02-0.03 s ; fake-grok-cli start: 0.02-0.03 s

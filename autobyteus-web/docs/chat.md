@@ -570,6 +570,10 @@ target mode.
   so stored history keeps rendering. The
   "From <Sender>:" label never comes from the header text: it comes from the sender's run ID
   (the app's lookup by run ID, else a readable form of the run ID).
+- **Tool cards on the "earlier events" page** show the same one-line summary and status as the live cards (autobyteus-609):
+  the node sends each page card's `summaryArgs` as a JSON object of the summary argument keys the call has, taken from the
+  list the web's `getToolDisplaySummary` also reads (`TOOL_SUMMARY_ARGUMENT_KEYS`), and its `statusKey`, where a call the
+  user stopped is `interrupted` and reads "Stopped" with a stop icon, as it does live and in the Activity panel.
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and the mention-aware input described above), the run row

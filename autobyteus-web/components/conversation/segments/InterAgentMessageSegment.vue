@@ -78,7 +78,7 @@ import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = withDefaults(defineProps<{
   segment: InterAgentMessageSegment;
@@ -86,7 +86,7 @@ const props = withDefaults(defineProps<{
   enableEventMonitorFileActions?: boolean;
 }>(), { enableEventMonitorFileActions: false });
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 const showDetails = ref(false);
 

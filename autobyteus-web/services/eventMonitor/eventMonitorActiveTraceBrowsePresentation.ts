@@ -35,7 +35,7 @@ const toAttachment = (
 });
 
 const STATUS_KEYS = new Set<ToolCardStatusPresentationKey>([
-  'running', 'success', 'error', 'approved', 'awaiting-approval', 'denied', 'default',
+  'running', 'success', 'error', 'approved', 'awaiting-approval', 'denied', 'interrupted', 'default',
 ]);
 
 const toAssistantVisual = (

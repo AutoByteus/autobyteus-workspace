@@ -197,9 +197,7 @@ const activeTracePageFields = gql`
         ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
         ... on EventMonitorToolCardVisual {
           kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
-          summaryArgs {
-            path file_path filepath filename target_path command cmd script query prompt url message text title name raw
-          }
+          summaryArgs
           approvalTarget {
             agentRunId
           }

@@ -6,6 +6,8 @@ nuxt.d.ts
 dist
 electron-dist
 resources
+# prepare-server.mjs's staging folder (Windows), removed at the end of every run (autobyteus-609 D-C).
+.server-packaging-stage
 .DS_Store
 android
 build/icons

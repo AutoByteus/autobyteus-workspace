@@ -57,7 +57,7 @@ describe('MobileRunActivityItem (autobyteus-590)', () => {
 
   it.each([
     ['error', 'Failed'], ['executing', 'Running'], ['parsing', 'Running'], ['awaiting-approval', 'Review'],
-    ['denied', 'Denied'], ['approved', 'Approved'], ['parsed', 'Parsed'],
+    ['denied', 'Denied'], ['approved', 'Approved'], ['parsed', 'Parsed'], ['interrupted', 'Stopped'],
   ] as const)('%s shows its icon and the word %s', (status, word) => {
     const chip = row(tool({ status })).get('[data-testid="mobile-run-activity-status"]');
     expect(chip.text()).toBe(word);

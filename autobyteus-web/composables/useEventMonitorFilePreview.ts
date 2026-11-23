@@ -5,7 +5,8 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { FILE_ON_OTHER_NODE_MESSAGE_KEY, remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { AbsoluteFilePathAction, ConversationFileLink, RunRelativeFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import { resolveRunRelativeFileLink } from '~/utils/eventMonitorFilePaths/runRelativeFileLink';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
@@ -61,11 +62,27 @@ export function useEventMonitorFilePreview(options: {
     return outcome.status === 'unavailable' ? onOtherNode(outcome.nodeName) : failed();
   };
 
-  const openPath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
+  /**
+   * A run-relative link's file in the run's own folder (autobyteus-609 D-H): the open run's folder (a team member's or a
+   * delegated run's own), or, when the target names none, the folder of the run's workspace metadata, where the absolute
+   * flow reads it too. (`resolveWorkspaceMetadataForTarget` answers null for a target without a folder, so it cannot
+   * supply one.) Null when the run has no folder, or the link leaves it or names no file.
+   */
+  const resolveRunRelativeLink = (link: RunRelativeFileLink): AbsoluteFilePathAction | null => {
+    const target = activeContextStore.activeWorkspaceTarget;
+    const root = normalizeWorkspaceRootPath(target?.workspaceRootPath)
+      || normalizeWorkspaceRootPath(target?.context.config.workspaceMetadata?.workspaceRootPath);
+    return root ? resolveRunRelativeFileLink(link.href, root) : null;
+  };
+
+  const openPath = async (link: ConversationFileLink): Promise<EventMonitorFilePreviewResult> => {
     try {
       if (!options.isOriginCurrent()) return failed();
       const remoteNode = remoteRunFileNode(options.originRunId());
       if (remoteNode) return onOtherNode(remoteNode);
+      // A run-relative link becomes the absolute path of that file in the run's folder, then opens as one.
+      const action = link.kind === 'run-relative' ? resolveRunRelativeLink(link) : link;
+      if (!action) return failed();
       if (isMobileRemoteAccessRuntime()) {
         return await openMobilePath(action);
       }
