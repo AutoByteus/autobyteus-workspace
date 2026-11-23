@@ -1835,6 +1835,8 @@ const runCases = async () => {
 
   await runCase('MSP-14', async () => {
     await toList(page);
+    // The PTM run need not be one of the five newest runs here (cases before this one create runs, e.g. MSP-103's Team run).
+    await showOlder(page);
     const writerKey = `agent:${stack.ptm}/agent:${stack.writerRun}`;
     assert(await page.locator(rowSel(writerKey)).count(), 'the task agent is listed before');
     const navigationsBefore = await page.evaluate(() => performance.getEntriesByType('navigation').length);

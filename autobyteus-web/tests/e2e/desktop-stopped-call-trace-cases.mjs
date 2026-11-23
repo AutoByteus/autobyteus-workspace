@@ -187,6 +187,7 @@ export const runStoppedCallTraceCases = async (probe) => {
     await attachToBrowserContext(context);
     await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
     const desk = await context.newPage();
+    let phoneList = null;
     const deskErrors = [];
     desk.on('console', (message) => { if (message.type() === 'error') deskErrors.push(message.text().slice(0, 300)); });
     desk.on('pageerror', (error) => deskErrors.push(`pageerror ${error.message}`.slice(0, 300)));
@@ -210,6 +211,8 @@ export const runStoppedCallTraceCases = async (probe) => {
       // The phone opens `/mate` and presses Stop.
       const openMateOnPhone = async () => {
         await toList(page);
+        // The list's own address, without any query (the page may still carry its pairing link's query).
+        phoneList ??= new URL('/mobile/', page.url()).toString();
         const teamRowKey = `team:${team.teamRunId}`;
         await page.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
         const memberOpen = page.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
@@ -291,6 +294,12 @@ export const runStoppedCallTraceCases = async (probe) => {
       return details;
     } finally {
       await context.close().catch(() => undefined);
+      // The next cases start from the phone's run list: after the reload the phone's history holds only the member's
+      // screen, so the list is loaded again (a cold load of the production bundle can take tens of seconds).
+      if (phoneList) {
+        await page.goto(phoneList, { waitUntil: 'domcontentloaded', timeout: 120_000 }).catch(() => undefined);
+        await page.locator('[data-testid="mobile-run-tree"]:visible').waitFor({ timeout: 60_000 }).catch(() => undefined);
+      }
     }
   });
 };
