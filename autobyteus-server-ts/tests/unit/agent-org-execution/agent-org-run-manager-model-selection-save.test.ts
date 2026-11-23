@@ -68,12 +68,15 @@ describe("AgentOrgRunManager's stopped save of a configured Agent (autobyteus-53
       pendingRuntimeSwitch: { from: { runtimeKind: "autobyteus", llmModelIdentifier: "large", llmConfig: null, platformAgentRunId: "session-direct" } } });
   });
 
-  it("a direct member's equal/bigger native edit stays in the same session (no pending switch)", async () => {
+  it("a direct member's bigger native edit stays in the same session (no pending switch)", async () => {
     const h = await harness();
+    // The member's baseline is `equal` (128000), so `large` (272000) is a real edit and not the `UNCHANGED` no-op.
+    const baseline = await h.agents.readMetadata("direct-run");
+    await h.agents.writeMetadata("direct-run", { ...baseline!, llmModelIdentifier: "equal" });
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: "org-1",
       selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/direct", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "large", llmConfig: null }],
       teamWorkspacePatches: [] });
-    expect(result).toMatchObject({ outcome: "UNCHANGED", success: true });
+    expect(result).toMatchObject({ outcome: "UPDATED", success: true, fieldErrors: [] });
     const direct = await h.agents.readMetadata("direct-run");
     expect(direct).toMatchObject({ llmModelIdentifier: "large", platformAgentRunId: "session-direct" });
     expect(Object.hasOwn(direct!, "pendingRuntimeSwitch")).toBe(false);
