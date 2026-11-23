@@ -1,0 +1,12 @@
+# IMP-03 agent.md `tools:` list variants on the real agy 1.5.15 (autobyteus-588, AC-002). Date 2026-11-23, macOS, base commit 250d99c868 (+ uncommitted list change).
+# Probe: IMP-03-capsule-conflict-probe.mjs; the designed 11-name list run through a capsule written by the real createAgyRunCapsule (IMP-02-capsule-live-probe.mjs).
+# five = read_file,write_file,edit_file,run_command,generate_image
+--- designed list (five + view_file, write_to_file, replace_file_content, grep_search, list_dir, find_by_name), real capsule:
+EV {"event":"result","result":{"conversation_id":"1abe66f4-923f-4fff-b5a9-e6b261b1560c","status":"ERROR","response":"","error":"failed to construct executor: tool name conflict: multiple tools resolved with name \"read_file\"","duration_seconds":0,"num_turns":1,"
+TURN 1 ANSWER: 
+--- variants (INV-01 probe, scratch capsules):
+five                       -> ANSWER: read_file, write_file, edit_file, run_command, generate_image, manage_task
+five+view_file             -> RESULT ERROR: failed to construct executor: tool name conflict: multiple tools resolved with name "read_file"
+five+write_to_file         -> RESULT ERROR: failed to construct executor: tool name conflict: multiple tools resolved with name "write_file"
+five+replace_file_content  -> RESULT ERROR: failed to construct executor: tool name conflict: multiple tools resolved with name "edit_file"
+five+grep_search,list_dir,find_by_name -> ANSWER: read_file, write_file, edit_file, run_command, generate_image, manage_task
