@@ -2,6 +2,7 @@ import { createToolCallIdentity, toolCallIdentityKey } from "autobyteus-ts/memor
 import { ToolInteraction, ToolInteractionStatus } from "autobyteus-ts/memory/models/tool-interaction.js";
 import { buildToolInteractions } from "autobyteus-ts/memory/tool-interaction-builder.js";
 import type { ToolCallContext } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
+import { NATIVE_INPUT_TRACE_SOURCE_EVENT } from "autobyteus-ts/agent/input-processor/memory-ingest-input-processor.js";
 import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../../../agent-memory/domain/models.js";
 import { isInterruptedToolResult } from "../../../agent-memory/domain/tool-result-interruption.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
@@ -133,6 +134,37 @@ const createCompactionEvent = (
   };
 };
 
+/**
+ * A platform notice the node delivered in front of a user's input (the preface, `agent-run-input-preface-dispatch.ts`)
+ * shows right after that input, as it does live (autobyteus-628 D-2). Each writer stores the pair notice first, in one
+ * turn, and the pair is recognized by what it stores:
+ * - external runtimes (`RuntimeMemoryEventAccumulator`): the input is stamped when it was forwarded and the notice when
+ *   it was published after forwarding, so the input's time is not later than the notice's. A notice that opened its
+ *   own turn (a restart or task notice) and an input appended to that turn later keep their order;
+ * - native (`MemoryIngestInputProcessor`): both carry its input source event, and it writes a notice there only as a
+ *   preface. Their times are two consecutive clock reads, so they cannot tell the pair apart.
+ */
+const isPrefaceOfInput = (notice: MemoryTraceEvent, input: MemoryTraceEvent): boolean =>
+  notice.scope === "turn" && input.scope === "turn"
+  && notice.traceType === "system_task_notification" && input.traceType === "user"
+  && notice.turnId === input.turnId
+  && (input.ts <= notice.ts
+    || (notice.sourceEvent === NATIVE_INPUT_TRACE_SOURCE_EVENT && input.sourceEvent === NATIVE_INPUT_TRACE_SOURCE_EVENT));
+
+/** The traces in replay order: each preface notice after its input. The stored traces are not changed. */
+const orderPrefaceNoticesAfterTheirInput = (rawTraces: readonly MemoryTraceEvent[]): MemoryTraceEvent[] => {
+  const ordered = [...rawTraces];
+  for (let index = 0; index + 1 < ordered.length; index += 1) {
+    const notice = ordered[index]!;
+    const input = ordered[index + 1]!;
+    if (!isPrefaceOfInput(notice, input)) continue;
+    ordered[index] = input;
+    ordered[index + 1] = notice;
+    index += 1;
+  }
+  return ordered;
+};
+
 export type HistoricalReplayBuildOptions = {
   callContextByIdentity?: ReadonlyMap<string, ToolCallContext>;
 };
@@ -157,7 +189,7 @@ export const buildHistoricalReplayEvents = (
   const events: HistoricalReplayEvent[] = [];
   const nextLegacyOccurrence = createLegacyOccurrenceAllocator();
 
-  for (const trace of rawTraces) {
+  for (const trace of orderPrefaceNoticesAfterTheirInput(rawTraces)) {
     if (trace.scope === "run") {
       events.push({
         eventId: trace.id,

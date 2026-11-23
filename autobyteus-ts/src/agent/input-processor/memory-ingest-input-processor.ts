@@ -9,7 +9,12 @@ import { resolveInterAgentSenderId } from '../message/inter-agent-sender.js';
 import { LLMUserMessage } from '../../llm/user-message.js';
 import { readPlatformInputPreface, stripPlatformInputPreface } from '../message/platform-input-preface-metadata.js';
 
-const SOURCE_EVENT = 'LLMUserMessageReadyEvent';
+/**
+ * The source event of every input trace this processor writes: the user message and, for an input carrying a platform
+ * notice, the notice it stores right before it. The server's run replay reads it to recognize native's preface pair
+ * (autobyteus-628).
+ */
+export const NATIVE_INPUT_TRACE_SOURCE_EVENT = 'LLMUserMessageReadyEvent';
 
 export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcessor {
   static getOrder(): number {
@@ -57,7 +62,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
       // notice, then the input as it was sent (when there is one). The working-context entry is
       // linked to both traces explicitly, because its content matches neither.
       const traceIds = [memoryManager.appendRawTrace({
-        turnId, traceType: 'system_task_notification', content: preface.content, senderId: preface.senderId, sourceEvent: SOURCE_EVENT,
+        turnId, traceType: 'system_task_notification', content: preface.content, senderId: preface.senderId, sourceEvent: NATIVE_INPUT_TRACE_SOURCE_EVENT,
         messageId: preface.noticeId ?? undefined,
       }).id];
       const inputContent = stripPlatformInputPreface(llmUserMessage.content, preface);
@@ -69,7 +74,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
             audio_urls: llmUserMessage.audio_urls,
             video_urls: llmUserMessage.video_urls,
           }),
-          turnId, SOURCE_EVENT, fileAttachments, resolveInterAgentSenderId(original.metadata), identity,
+          turnId, NATIVE_INPUT_TRACE_SOURCE_EVENT, fileAttachments, resolveInterAgentSenderId(original.metadata), identity,
         ));
       }
       context.state.activeTurn?.recordInputRawTraceIds(traceIds);
@@ -78,7 +83,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     }
 
     memoryManager.ingestUserMessage(
-      llmUserMessage, turnId, SOURCE_EVENT, fileAttachments,
+      llmUserMessage, turnId, NATIVE_INPUT_TRACE_SOURCE_EVENT, fileAttachments,
       resolveInterAgentSenderId(original.metadata),
       identity,
     );
