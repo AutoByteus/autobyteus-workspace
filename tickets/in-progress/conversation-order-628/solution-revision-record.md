@@ -14,3 +14,11 @@
 - Design: D-1 (window keeps conversation order; compactions merged by time) and D-2 (the replay puts a preface notice after its message). Classified `Medium` / `Low`.
 - Routing: direct implementation.
 - Remaining gaps: FU-001.
+
+## SR-002 (2026-11-23)
+
+- Trigger: implementation Design Impact (the design's own escalation trigger). Native stores a preface as `[n ts t, u ts t' ≥ t]` from `MemoryIngestInputProcessor`, each write with its own time, so D-2's time condition matched native only within the same millisecond.
+- Kind: design only. No requirement changes; REQ-002 and AC-003 are unchanged.
+- Change: D-2's rule now has two cases: (a) the time condition for external runtimes (one writer, `RuntimeMemoryEventAccumulator`), and (b) both traces with `sourceEvent "LLMUserMessageReadyEvent"` for native, whose processor writes a notice only as a preface. Writers stay unchanged.
+- Evidence: implementation's citations, verified by the Solution Designer (`memory-ingest-input-processor.ts:12,53-73` read).
+- Classification: unchanged, Medium / Low. Routing: back to implementation directly; no review rule applies to a Medium/Low design revision.
