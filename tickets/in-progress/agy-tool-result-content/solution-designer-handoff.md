@@ -9,3 +9,6 @@ Cause (reproduced, measured): Antigravity's stream sends a size summary of the *
 Open risks: the row's timing at DONE (D-3: measure first, then decide a retry); a live `grep_search` row shape (U-2); the layout is undocumented (fail-safe by design). Private data: synthetic fixtures only; the founder's runs and brain files are not to be read or copied. Release: only on the founder's word.
 
 Ticket folder: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-tool-result-content/tickets/in-progress/agy-tool-result-content
+
+## Update SR-002 (2026-11-23)
+The founder asked for every Antigravity tool problem. Added: D-6 (the arguments reader generalized to parallel calls through one shared identification helper, which the results reader also uses), D-7 (journal entries for `write_file`, `edit_file`, `read_url_content`, `search_web`; `run_command` exit code), REQ-009…011, AC-013…015. Read requirements-doc.md, design-spec.md and the census in the investigation notes (F-12…F-15). The earlier steps (reader, converter, journal revision 5, fixture, live measurement) stand.

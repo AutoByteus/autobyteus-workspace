@@ -47,7 +47,7 @@
 | UC-003 | The Antigravity backend records the full arguments of parallel calls | SCN-006 |
 
 ### Out Of Scope
-Raw traces already stored (no migration); other runtimes; MCP tool results; `run_command`'s exit code and the wrapper lines beyond the timestamp header (561's FU-1 remainder; autobyteus-183: exit code and file-change kind for Codex/Grok); the ACP move (autobyteus-386); the Activity tab's presentation; the CLI.
+Raw traces already stored (no migration); other runtimes; MCP tool results; autobyteus-183 (exit code and file-change kind recorded for Codex/Grok); backfilling stored raw traces (an option for the founder, below); the ACP move (autobyteus-386); the Activity tab's presentation; the CLI.
 
 ### Non-Goals
 Recording content the CLI did not give the model; reconstructing results from the files on disk (they may have changed); a retry loop for a missing row beyond what the measurement (D-3) shows is needed.
@@ -163,4 +163,8 @@ N/A — not applicable (the Activity tab shows the recorded `result` unchanged i
 Preserve the arguments reader's strictness and the converter's lookup-then-convert order; verify the lag (U-1) and a live `grep_search` row (U-2) in the first step.
 
 ## Readiness Check
-Content ready: `Yes`. Approval recorded: `Yes`. Ready for design: `Yes`.
+Content ready: `Yes`. Approval recorded: `Yes` (SR-002 extends SR-001 on the founder's request of 2026-11-23). Ready for design: `Yes`.
+
+## Optional For The Founder (not part of the approval, not built)
+
+Backfill: the CLI's transcripts of existing Antigravity runs are still on the node (465 conversations), so the raw traces of past runs could be re-recorded with the content, and the journals would then show it. That changes stored data: it needs his explicit approval, a backup and a separate ticket; the default is that only new runs and new turns carry the content.
