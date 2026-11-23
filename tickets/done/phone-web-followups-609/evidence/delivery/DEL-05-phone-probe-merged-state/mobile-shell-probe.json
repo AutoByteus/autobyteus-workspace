@@ -1,0 +1,2270 @@
+{
+  "startedAt": "2026-11-23T05:59:23.083Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 55243,
+      "nodeId": "srv_ZwVd6yNHdXs_ynDEyMk22wt74uAmqgQP",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 55242,
+      "nodeId": "srv_pW6fOQZa-u6xUbdLZw36ISE49xr6pObh",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "zeta": {
+      "port": 55929,
+      "nodeId": "srv_62u5ypK2FMkn2JLBTLoiJJxUcUPbQfW0",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "epsilon": {
+      "port": 55928,
+      "nodeId": "srv_Q5281__3-mvMi6Xco_8OM42mBLHj63wb",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "eta": {
+      "port": 56924,
+      "nodeId": "srv_J0-s3lzxt-JBTdy4T9J37Rwa3ZFrHOwZ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 56992,
+      "nodeId": "srv_o8X7fzvaXM0G456V-2AfQMy_5Q0XPXzX",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_adb705fd79d5476b91f42f17bfc4c7af",
+    "writerRun": "release_notes_writer_ebd94f5f86374d15a9a4c186a4aab2da",
+    "squadRun": "docs_review_team_1f61766586f24e109b1a18ebc93aeb12",
+    "reviewer": "release_notes_writer_6d4243bef0c64054b6335f1f013a3cdc",
+    "memberDelegated": "fact_checker_73cc2708481e4d6c84c00fece18a36af",
+    "remoteAgentRun": "publisher_3f37c5ace3514ae5b0705abf30bb052f",
+    "remoteTeamRun": "studio_team_484dc637c97e493dace0e7bdd58ac982",
+    "plain": [
+      "fact_checker_32804349f7c14088a452d0e049e463e0",
+      "fact_checker_5971ce09747649c2a8e8d29a458962de",
+      "fact_checker_71b95d7f929743d487481d2599aead76"
+    ],
+    "org": "delivery_org_34e5242318b84182b6537476dc1be6a2",
+    "orgPlanner": "release_notes_writer_bf1fcd42bbe242eda34c33f9d4039b3e",
+    "reviewOrg": "review_org_429eb0c639044109bddddbe91af89726",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_28956e53f03748469072140d2a490db3",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_8c48e3b30d4345e4887fb2d7d4bce8d9",
+    "deliveryLead": "fact_checker_3b318a78a4e3419e8dc581e4911f47b8",
+    "deliveryMate": "release_notes_writer_a422a5fad26749a5b6b42eb040c9976c",
+    "leadDelegated": "changelog_helper_936db2adfa1743b89076c0da6582e5fe",
+    "approver": "approver_5406484a8b7642fd8011e04becf5d446",
+    "taskA": "launch-b23312-1",
+    "taskB": "launch-b23312-2"
+  },
+  "cases": {
+    "MSP-59": {
+      "result": "Pass",
+      "seconds": 4.2,
+      "endRun": "fact_checker_3682fdedb4b041c3bac68b49f0a77197",
+      "task": {
+        "taskId": "faada4ea-b918-4132-944e-1f49ba934401/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-23T05:59:57.445Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 05:59 AM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 05:59 AM",
+          "end": "Stopped: the run ended"
+        }
+      ]
+    },
+    "MSP-104": {
+      "result": "Pass",
+      "seconds": 4.3,
+      "lostRun": "fact_checker_b91dcb68faff41a7bf7cf12e8c41967b",
+      "task": {
+        "taskId": "40dcead7-7ccc-4b8e-9a77-96719f1efa4f/task-11",
+        "status": "running",
+        "command": "sleep 120 # background step 11",
+        "summary": null,
+        "startedAt": "2026-11-23T06:00:01.601Z"
+      },
+      "terminated": {
+        "success": true
+      },
+      "listed": [
+        {
+          "status": "running",
+          "text": "sleep 120 # background step 11RunningStarted 06:00 AM",
+          "end": null
+        }
+      ],
+      "ended": [
+        {
+          "status": "stopped",
+          "text": "sleep 120 # background step 11StoppedStopped: the run endedStarted 06:00 AM",
+          "end": "Stopped: the run ended"
+        }
+      ],
+      "shownStoppedAfterMs": 86,
+      "droppedUpdates": 1,
+      "droppedBeforeStop": 0,
+      "nodeAfterStop": []
+    },
+    "MSP-96": {
+      "result": "Pass",
+      "seconds": 6.5,
+      "run": "fact_checker_135941da82d8459489f1f8b7084612bc",
+      "label": "pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+      "commandRow": {
+        "text": "run_commandsleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "name": "run_command",
+        "summary": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "summaryTitle": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "status": "success",
+        "statusWord": "",
+        "statusLabel": "Success",
+        "error": null,
+        "height": 91.5
+      },
+      "titleBefore": {
+        "clamped": true,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 45
+      },
+      "expanded": "true",
+      "titleAfter": {
+        "clamped": false,
+        "text": "sleep 4 # background step 11 pnpm --filter autobyteus-web exec vitest run components/mobile/views/__tests__/MobileActivityDetail.spec.ts --reporter=verbose --coverage",
+        "height": 113
+      },
+      "running": {
+        "runningShown": {
+          "title": "run_command",
+          "status": "Running",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        },
+        "stopped": {
+          "success": true
+        },
+        "liveShown": {
+          "title": "run_command",
+          "status": "Stopped",
+          "summary": "sleep 600 # HOLD_TURN",
+          "sections": [
+            {
+              "key": "arguments",
+              "title": "Arguments",
+              "open": true,
+              "text": "{\n  \"CommandLine\": \"sleep 600 # HOLD_TURN\"\n}"
+            },
+            {
+              "key": "error",
+              "title": "Error",
+              "open": true,
+              "text": "interrupted"
+            }
+          ],
+          "rows": null,
+          "overflowX": 0
+        }
+      }
+    },
+    "MSP-102": {
+      "result": "Pass",
+      "seconds": 76.6,
+      "run": "fact_checker_baffd3a136cf4ba1a9478aaaeb4237be",
+      "fillers": 50,
+      "pageEvents": 110,
+      "loadedEarlierCount": 10,
+      "pageRequests": 1,
+      "live": {
+        "send_message_to": {
+          "name": "send_message_to",
+          "summary": "→ /release_notes_writer",
+          "stopped": false
+        },
+        "get_project_task": {
+          "name": "get_project_task",
+          "summary": "autobyteus-609",
+          "stopped": false
+        },
+        "run_command": {
+          "name": "run_command",
+          "summary": "ls -la docs",
+          "stopped": false
+        },
+        "view_file": {
+          "name": "view_file",
+          "summary": "docs/notes-609.md",
+          "stopped": false
+        }
+      },
+      "heldCard": {
+        "name": "run_command",
+        "summary": "sleep 600 # HOLD_TURN",
+        "stopped": true
+      },
+      "deskActivity": [
+        {
+          "name": "run_command",
+          "chip": "Success"
+        },
+        {
+          "name": "run_command",
+          "chip": "Stopped"
+        }
+      ],
+      "phoneRow": {
+        "status": "interrupted",
+        "word": "Stopped"
+      },
+      "phoneDetail": "Stopped",
+      "api": {
+        "send_message_to": {
+          "kind": "tool_card",
+          "toolName": "send_message_to",
+          "statusKey": "success",
+          "summaryArgs": {
+            "recipient_address": "/release_notes_writer"
+          }
+        },
+        "get_project_task": {
+          "kind": "tool_card",
+          "toolName": "get_project_task",
+          "statusKey": "success",
+          "summaryArgs": {
+            "task_id": "autobyteus-609"
+          }
+        },
+        "run_command": {
+          "kind": "tool_card",
+          "toolName": "run_command",
+          "statusKey": "success",
+          "summaryArgs": {
+            "CommandLine": "cd /agy/probe-609 && ls -la docs"
+          }
+        },
+        "view_file": {
+          "kind": "tool_card",
+          "toolName": "view_file",
+          "statusKey": "success",
+          "summaryArgs": {
+            "AbsolutePath": "/agy/probe-609/docs/notes-609.md"
+          }
+        },
+        "held": {
+          "kind": "tool_card",
+          "toolName": "run_command",
+          "statusKey": "interrupted",
+          "summaryArgs": {
+            "CommandLine": "sleep 600 # HOLD_TURN"
+          }
+        }
+      },
+      "browse": {
+        "send_message_to": {
+          "name": "send_message_to",
+          "summary": "→ /release_notes_writer",
+          "stopped": false
+        },
+        "get_project_task": {
+          "name": "get_project_task",
+          "summary": "autobyteus-609",
+          "stopped": false
+        },
+        "run_command": {
+          "name": "run_command",
+          "summary": "ls -la docs",
+          "stopped": false
+        },
+        "view_file": {
+          "name": "view_file",
+          "summary": "docs/notes-609.md",
+          "stopped": false
+        }
+      },
+      "browseHeld": {
+        "name": "run_command",
+        "summary": "sleep 600 # HOLD_TURN",
+        "stopped": true
+      }
+    },
+    "MSP-103": {
+      "result": "Pass",
+      "seconds": 10.1,
+      "team": "delivery_team_586e1521c86949889232408ea743b28b",
+      "lead": "fact_checker_23a1dafc8d3d486ea78fc6a07d84c39b",
+      "mate": "release_notes_writer_23b3aa5530c74c4098494cf9345c08cf",
+      "phoneLive": {
+        "status": "interrupted",
+        "word": "Stopped"
+      },
+      "deskCard": {
+        "name": "run_command",
+        "summary": "sleep 600 # HOLD_TURN",
+        "stopped": true,
+        "error": false
+      },
+      "deskActivity": [
+        {
+          "name": "run_command",
+          "chip": "Stopped"
+        }
+      ],
+      "phoneReadBack": {
+        "status": "interrupted",
+        "word": "Stopped"
+      },
+      "stored": [
+        "interrupted"
+      ],
+      "conflicts": [],
+      "deskErrors": []
+    },
+    "MSP-91": {
+      "result": "Pass",
+      "seconds": 56.1,
+      "size": 9755644,
+      "inside": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572.mp4 This video could not be played. Retry",
+          "loading": false,
+          "progress": null,
+          "alert": "This video could not be played. Retry",
+          "retry": true,
+          "media": null
+        },
+        "timeline": [
+          {
+            "at": 1,
+            "viewer": false
+          },
+          {
+            "at": 105,
+            "viewer": true,
+            "text": "retry-572.mp4 Opening…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 207,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 309,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.0 of 9.8 MB",
+            "loading": true,
+            "progress": "0.0 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5077,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 4.8 of 9.8 MB",
+            "loading": true,
+            "progress": "4.8 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5179,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 4.9 of 9.8 MB",
+            "loading": true,
+            "progress": "4.9 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5285,
+            "viewer": true,
+            "text": "retry-572.mp4 This video could not be played. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "This video could not be played. Retry",
+            "retry": true,
+            "media": null
+          }
+        ],
+        "notAvailableShown": false,
+        "wentOffline": 2555,
+        "servedAfterMs": 5,
+        "readsAfterRestart": [
+          [
+            5,
+            200
+          ]
+        ],
+        "progressBeforeOffline": [
+          "4.7 of 9.8 MB",
+          "4.8 of 9.8 MB",
+          "4.9 of 9.8 MB"
+        ]
+      },
+      "insideRetry": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572.mp4",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": {
+            "tag": "video",
+            "blob": true,
+            "readyState": 4,
+            "error": null,
+            "duration": 20
+          }
+        },
+        "timeline": [
+          {
+            "at": 1,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 102,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.0 of 9.8 MB",
+            "loading": true,
+            "progress": "0.0 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 203,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.1 of 9.8 MB",
+            "loading": true,
+            "progress": "0.1 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 305,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.2 of 9.8 MB",
+            "loading": true,
+            "progress": "0.2 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9832,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 9.6 of 9.8 MB",
+            "loading": true,
+            "progress": "9.6 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9933,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 9.7 of 9.8 MB",
+            "loading": true,
+            "progress": "9.7 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 10037,
+            "viewer": true,
+            "text": "retry-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          }
+        ],
+        "notAvailableShown": false
+      },
+      "outside": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572-out.mp4 The file preview could not be opened. Retry",
+          "loading": false,
+          "progress": null,
+          "alert": "The file preview could not be opened.",
+          "retry": true,
+          "media": null
+        },
+        "timeline": [
+          {
+            "at": 0,
+            "viewer": false
+          },
+          {
+            "at": 104,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 205,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.1 of 9.8 MB",
+            "loading": true,
+            "progress": "0.1 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 307,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.2 of 9.8 MB",
+            "loading": true,
+            "progress": "0.2 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 3920,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 3.8 of 9.8 MB",
+            "loading": true,
+            "progress": "3.8 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 4020,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 3.9 of 9.8 MB",
+            "loading": true,
+            "progress": "3.9 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 4127,
+            "viewer": true,
+            "text": "retry-572-out.mp4 The file preview could not be opened. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "The file preview could not be opened.",
+            "retry": true,
+            "media": null
+          }
+        ],
+        "notAvailableShown": false,
+        "wentOffline": 2546,
+        "servedAfterMs": 4,
+        "readsAfterRestart": [
+          [
+            4,
+            200
+          ]
+        ],
+        "progressBeforeOffline": [
+          "3.7 of 9.8 MB",
+          "3.8 of 9.8 MB",
+          "3.9 of 9.8 MB"
+        ]
+      },
+      "outsideAgain": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572-out.mp4",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": {
+            "tag": "video",
+            "blob": true,
+            "readyState": 4,
+            "error": null,
+            "duration": 20
+          }
+        },
+        "timeline": [
+          {
+            "at": 0,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 102,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.0 of 9.8 MB",
+            "loading": true,
+            "progress": "0.0 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 203,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.1 of 9.8 MB",
+            "loading": true,
+            "progress": "0.1 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 304,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.2 of 9.8 MB",
+            "loading": true,
+            "progress": "0.2 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9498,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 9.6 of 9.8 MB",
+            "loading": true,
+            "progress": "9.6 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9602,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 9.7 of 9.8 MB",
+            "loading": true,
+            "progress": "9.7 of 9.8 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9704,
+            "viewer": true,
+            "text": "retry-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          }
+        ],
+        "notAvailableShown": false
+      },
+      "gate": {
+        "workspaceWithKey": {
+          "status": 200,
+          "bytes": 9755644,
+          "length": "9755644"
+        },
+        "workspaceNoKey": {
+          "status": 401,
+          "bytes": 142,
+          "length": "142"
+        },
+        "nodeFileNoKey": {
+          "status": 401,
+          "bytes": 142,
+          "length": "142"
+        },
+        "climbingWithKey": {
+          "status": 400,
+          "bytes": 73,
+          "length": "73"
+        },
+        "unknownFolderWithKey": {
+          "status": 404,
+          "bytes": 32,
+          "length": "32"
+        },
+        "keyRead": true
+      },
+      "zh": {
+        "loadingWords": true,
+        "progress": [
+          "0.0 / 9.8 MB",
+          "0.1 / 9.8 MB",
+          "0.2 / 9.8 MB",
+          "9.5 / 9.8 MB",
+          "9.6 / 9.8 MB",
+          "9.7 / 9.8 MB"
+        ],
+        "samples": 94,
+        "played": true,
+        "notAvailable": false
+      }
+    },
+    "MSP-44": {
+      "result": "Pass",
+      "seconds": 63.5,
+      "desktop": {
+        "contents": {
+          "entries": 25,
+          "reached": 25,
+          "urlUnchanged": 25,
+          "newTabs": 0
+        },
+        "notReached": [],
+        "sample": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 3568,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 10048,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "terminology",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 12828,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ],
+        "nothing": [
+          {
+            "href": "#no-such-heading-480",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "/x.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "../../out.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          }
+        ],
+        "opens": [
+          {
+            "href": "other.md",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "other.md#x",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "./x.md",
+            "opened": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ]
+      },
+      "phone": {
+        "contents": {
+          "entries": 25,
+          "reached": 25,
+          "urlUnchanged": 25,
+          "newTabs": 0
+        },
+        "notReached": [],
+        "sample": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 1696,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 4472,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "anchor": "terminology",
+            "headings": 1,
+            "offsetFromContainerTop": 0,
+            "inContainer": true,
+            "inWindow": true,
+            "containerAtEnd": false,
+            "containerScrollTop": 5732,
+            "reached": true,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ],
+        "nothing": [
+          {
+            "href": "#no-such-heading-480",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "/x.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "../../out.md",
+            "urlUnchanged": true,
+            "newTabs": 0,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          }
+        ],
+        "opens": [
+          {
+            "href": "other.md",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "other.md#x",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          },
+          {
+            "href": "./x.md",
+            "opened": false,
+            "urlUnchanged": true,
+            "newTabs": 0
+          }
+        ]
+      }
+    },
+    "MSP-45": {
+      "result": "Pass",
+      "seconds": 17.6,
+      "url": "http://127.0.0.1:55241/skills",
+      "contents": {
+        "entries": 25,
+        "reached": 25,
+        "urlUnchanged": 25,
+        "newTabs": 0
+      },
+      "notReached": [],
+      "sample": [
+        {
+          "anchor": "the-approach-spine-first-practices-in-context",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 1192,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "anchor": "project-specific-design-principles",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 2480,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "anchor": "terminology",
+          "headings": 1,
+          "offsetFromContainerTop": 0,
+          "inContainer": true,
+          "inWindow": true,
+          "containerAtEnd": false,
+          "containerScrollTop": 3204,
+          "reached": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        }
+      ],
+      "nothing": [
+        {
+          "href": "#no-such-heading-480",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        },
+        {
+          "href": "/x.md",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        },
+        {
+          "href": "../../out.md",
+          "urlUnchanged": true,
+          "newTabs": 0,
+          "stillShown": true,
+          "notFoundShown": false,
+          "scrollUnchanged": true
+        }
+      ],
+      "opens": [
+        {
+          "href": "other.md",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "href": "other.md#x",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        },
+        {
+          "href": "./x.md",
+          "opened": true,
+          "urlUnchanged": true,
+          "newTabs": 0
+        }
+      ]
+    },
+    "MSP-100": {
+      "result": "Pass",
+      "seconds": 39.9,
+      "desktop": {
+        "notes": {
+          "href": "docs-609/a.md#x",
+          "opened": true
+        },
+        "clip": {
+          "href": "media-609/clip-609.txt",
+          "opened": true
+        },
+        "up": {
+          "status": "The file preview could not be opened.",
+          "outsideShown": false
+        },
+        "gone": {
+          "viewer": "a.md clip-609.txt gone-609.md Error!File not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/workspace/docs-609/gone-609.md",
+          "status": ""
+        }
+      },
+      "phone": {
+        "notes": {
+          "href": "docs-609/a.md#x",
+          "opened": true
+        },
+        "clip": {
+          "href": "media-609/clip-609.txt",
+          "opened": true
+        },
+        "up": {
+          "status": "The file preview could not be opened.",
+          "viewerOpened": false,
+          "outsideShown": false
+        },
+        "gone": {
+          "viewerOpened": true,
+          "viewer": "gone-609.md Couldn’t open this file. Retry"
+        }
+      }
+    },
+    "MSP-101": {
+      "result": "Pass",
+      "seconds": 11.2,
+      "team": "delivery_team_953cfa97383b4b0c86923833d699924a",
+      "mate": "release_notes_writer_3aa5a78d1474446b977ec2edfb859cd5",
+      "host": "project_task_manager_a521187c986b4b3cb63fea2e89e55805",
+      "delegatedRun": "release_notes_writer_7553bb5ec92b46e390f3becc086f4053",
+      "folders": {
+        "mate": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/ws-609-mate",
+        "delegated": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/ws-609-host",
+        "host": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/ws-609-host"
+      },
+      "expected": {
+        "mate": "mate",
+        "delegated": "host"
+      },
+      "desktop": {
+        "mate": {
+          "own": "MATE-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        },
+        "delegated": {
+          "own": "HOST-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        }
+      },
+      "phone": {
+        "mate": {
+          "own": "MATE-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        },
+        "delegated": {
+          "own": "HOST-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        }
+      }
+    },
+    "MSP-55": {
+      "result": "Pass",
+      "seconds": 3,
+      "cancelLabel": "取消上传 drop-clip.mp4",
+      "cancelLines": [],
+      "cancelUploadRequests": 1,
+      "dropLines": [
+        "无法附加 drop-clip.mp4：上传中断，请检查网络后重试。"
+      ],
+      "draftFilesAfterDrop": 0,
+      "itemAfterDrop": 0,
+      "sendUsable": true
+    },
+    "MSP-75": {
+      "result": "Pass",
+      "seconds": 19.8,
+      "runId": "build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f",
+      "agentTimes": [
+        "2026-11-23 06:05 UTC",
+        "2026-11-23 06:05 UTC"
+      ],
+      "expectedCards": [
+        "23 Nov 2026, 07:05 CET",
+        "23 Nov 2026, 07:05 CET"
+      ],
+      "afterFirst": {
+        "cards": [
+          "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          0
+        ],
+        "replies": [
+          1,
+          1,
+          0
+        ]
+      },
+      "live": {
+        "cards": [
+          "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "reloaded": {
+        "cards": [
+          "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "requests": 5
+    },
+    "MSP-76": {
+      "result": "Pass",
+      "seconds": 14.2,
+      "key": "team:build_team_59081ab976f84076b93e6e9ac4613f37",
+      "runId": "build_team_59081ab976f84076b93e6e9ac4613f37",
+      "live": {
+        "cards": [
+          "Background tasks finished pid 18910 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_c94f7914c39942a7997a6717bacab0f3/call-1795413942304-18795.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "Background tasks finished pid 18910 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_c94f7914c39942a7997a6717bacab0f3/call-1795413942304-18795.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    },
+    "MSP-77": {
+      "result": "Pass",
+      "seconds": 14.2,
+      "key": "org:build_org_04c89ae78a2540b39e4400242dff62af",
+      "runId": "build_org_04c89ae78a2540b39e4400242dff62af",
+      "live": {
+        "cards": [
+          "Background tasks finished pid 25321 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_c30fb66a5c0144a18dfc839c5204b3aa/call-1795413956394-25239.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "Background tasks finished pid 25321 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_c30fb66a5c0144a18dfc839c5204b3aa/call-1795413956394-25239.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    },
+    "MSP-99": {
+      "result": "Pass",
+      "seconds": 82.4,
+      "runId": "notice_reader_8c58f937766f4ae2a51c7b506146faa7",
+      "wakeLive": {
+        "at": 2,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "restartLive": {
+        "at": 6,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "wakeReloaded": {
+        "at": 2,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "restartReloaded": {
+        "at": 6,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "rowsAfterReload": [
+        [
+          "user",
+          "You You CASE:MSP-99 Start the short build in the background."
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+        ],
+        [
+          "system",
+          "Background tasks finished pid 30537 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z"
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader MSP99_NOTED"
+        ],
+        [
+          "user",
+          "You You CASE:MSP-99 Start the long build."
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader run_bash · \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_c379e"
+        ],
+        [
+          "system",
+          "Application restarted The application restarted at 23 Nov 2026, 07:07 CET (reason: a restart). If you started any backgr"
+        ],
+        [
+          "user",
+          "You You CASE:MSP-99 And now?"
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+        ]
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:55928/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-collaboration/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/file-explorer/agent_ws_9f3b1da8302979eeea88636d816372276ccde609755e0ba10158cdda09d63aa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: net::ERR_CONTENT_LENGTH_MISMATCH",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:55928/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-collaboration/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/file-explorer/agent_ws_9f3b1da8302979eeea88636d816372276ccde609755e0ba10158cdda09d63aa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/file-explorer/agent_ws_9f3b1da8302979eeea88636d816372276ccde609755e0ba10158cdda09d63aa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-collaboration/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:55928/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: net::ERR_CONTENT_LENGTH_MISMATCH",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/file-explorer/agent_ws_9f3b1da8302979eeea88636d816372276ccde609755e0ba10158cdda09d63aa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent-collaboration/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:55928/ws/agent/content_creator_9534ed9c8a0340b6af3fc4a399282569?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:55928/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-100",
+      "line": "desktop console: Failed to fetch file content ApolloError: File not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/workspace/docs-609/gone-609.md\n    at new ApolloError2 (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:3321:26)\n    at http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=250ba793:5483:39\n    at both (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:2801:17)\n    at http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:2789:16)\n    at Object.next (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:2803:39)\n    at notifySubscription (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:1739:18)\n    at onNotify (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:55241/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=250ba793:1814:5)",
+      "known": true,
+      "cause": "the missing file MSP-100 opens on purpose"
+    },
+    {
+      "case": "MSP-100",
+      "line": "phone console: Failed to fetch file content ApolloError: File not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-jii37c/alpha/workspace/docs-609/gone-609.md\n    at new t (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:84:153)\n    at http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:88:80522\n    at d (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:8520)\n    at http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:8402)\n    at Object.next (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:8530)\n    at xE (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:1908)\n    at mf (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:2318)\n    at t.next (http://192.168.77.70:55242/mobile/_nuxt/CsQeQKf6.js:83:2838)",
+      "known": true,
+      "cause": "the missing file MSP-100 opens on purpose"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "size-setup",
+      "line": "phone-eta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's own favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Context file upload failed for 'drop-clip.mp4': ContextFileUploadError: Context file upload failed: interrupted\n    at p1 (http://192.168.77.40:56946/mobile/_nuxt/CsQeQKf6.js:1165:2332)\n    at Proxy.uploadAttachment (http://192.168.77.40:56946/mobile/_nuxt/CsQeQKf6.js:1165:3646)\n    at async http://192.168.77.40:56946/mobile/_nuxt/C8ieGdcD.js:2:5613\n    at async Promise.all (index 0)\n    at async O (http://192.168.77.40:56946/mobile/_nuxt/C8ieGdcD.js:2:5370)\n    at async $e (http://192.168.77.40:56946/mobile/_nuxt/C8ieGdcD.js:2:16368)",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    },
+    {
+      "case": "MSP-55",
+      "line": "phone-eta console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the link reset of the interrupted-upload case, provoked on purpose"
+    },
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent/build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:56992/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-collaboration/build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent/build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:56992/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-collaboration/build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent/build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:56992/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent/notice_reader_8c58f937766f4ae2a51c7b506146faa7?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:56992/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-team/build_team_59081ab976f84076b93e6e9ac4613f37?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:56992/mobile/_nuxt/CsQeQKf6.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:56992/ws/agent-collaboration/notice_reader_8c58f937766f4ae2a51c7b506146faa7?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:55242/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:55242/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:55242/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:55242/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "http://192.168.77.40:55928/rest/workspaces/agent_ws_9f3b1da8302979eeea88636d816372276ccde609755e0ba10158cdda09d63aa2/content?path=media%2Fretry-572.mp4",
+      "error": "net::ERR_CONTENT_LENGTH_MISMATCH"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:55928/93fa7bd9-2505-4af1-a56c-81a0ad2e53e8",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "http://192.168.77.40:55928/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-jii37c%2Fepsilon%2Foutside-media-572%2Fretry-572-out.mp4",
+      "error": "net::ERR_CONTENT_LENGTH_MISMATCH"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:55928/8f6323a6-d6db-4f64-a5a1-78303377489f",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon-zh",
+      "url": "blob:http://192.168.77.40:55928/89798533-020c-40a3-a66e-c2938e8c7882",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileOpen": {
+    "runs": {
+      "run": "content_creator_9534ed9c8a0340b6af3fc4a399282569",
+      "remoteRun": "publisher_3f614a8f5cb64d818ba2a176d843952d"
+    }
+  },
+  "headingLinks": {
+    "filesRun": "fact_checker_59348a52cb054e15b375dc76ab950db0",
+    "host": "project_task_manager_c79bba0952384d36a65a9bf27d37d3c9",
+    "talkRun": "release_notes_writer_38be14f5f5db4afdbbc94ae487d534f2",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "restoredRun": {
+    "runId": "build_runner_ceb95fd2b46c4effb7541ec1fdcbef3f",
+    "agentTimes": [
+      "2026-11-23 06:05 UTC",
+      "2026-11-23 06:05 UTC"
+    ],
+    "expectedCards": [
+      "23 Nov 2026, 07:05 CET",
+      "23 Nov 2026, 07:05 CET"
+    ],
+    "afterFirst": {
+      "cards": [
+        "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        0
+      ],
+      "replies": [
+        1,
+        1,
+        0
+      ]
+    },
+    "live": {
+      "cards": [
+        "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "reloaded": {
+      "cards": [
+        "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "Application restarted The application restarted at 23 Nov 2026, 07:05 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "requests": 5
+  },
+  "noticeOnceMSP-76": {
+    "key": "team:build_team_59081ab976f84076b93e6e9ac4613f37",
+    "runId": "build_team_59081ab976f84076b93e6e9ac4613f37",
+    "live": {
+      "cards": [
+        "Background tasks finished pid 18910 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_c94f7914c39942a7997a6717bacab0f3/call-1795413942304-18795.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "Background tasks finished pid 18910 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_c94f7914c39942a7997a6717bacab0f3/call-1795413942304-18795.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "noticeOnceMSP-77": {
+    "key": "org:build_org_04c89ae78a2540b39e4400242dff62af",
+    "runId": "build_org_04c89ae78a2540b39e4400242dff62af",
+    "live": {
+      "cards": [
+        "Background tasks finished pid 25321 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_c30fb66a5c0144a18dfc839c5204b3aa/call-1795413956394-25239.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "Background tasks finished pid 25321 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_c30fb66a5c0144a18dfc839c5204b3aa/call-1795413956394-25239.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "noticeRows": {
+    "runId": "notice_reader_8c58f937766f4ae2a51c7b506146faa7",
+    "wakeLive": {
+      "at": 2,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "restartLive": {
+      "at": 6,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "wakeReloaded": {
+      "at": 2,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "restartReloaded": {
+      "at": 6,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "rowsAfterReload": [
+      [
+        "user",
+        "You You CASE:MSP-99 Start the short build in the background."
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+      ],
+      [
+        "system",
+        "Background tasks finished pid 30537 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z"
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader MSP99_NOTED"
+      ],
+      [
+        "user",
+        "You You CASE:MSP-99 Start the long build."
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader run_bash · \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_c379e"
+      ],
+      [
+        "system",
+        "Application restarted The application restarted at 23 Nov 2026, 07:07 CET (reason: a restart). If you started any backgr"
+      ],
+      [
+        "user",
+        "You You CASE:MSP-99 And now?"
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+      ]
+    ]
+  },
+  "summary": {
+    "cases": {
+      "MSP-59": "Pass",
+      "MSP-104": "Pass",
+      "MSP-96": "Pass",
+      "MSP-102": "Pass",
+      "MSP-103": "Pass",
+      "MSP-91": "Pass",
+      "MSP-44": "Pass",
+      "MSP-45": "Pass",
+      "MSP-100": "Pass",
+      "MSP-101": "Pass",
+      "MSP-55": "Pass",
+      "MSP-75": "Pass",
+      "MSP-76": "Pass",
+      "MSP-77": "Pass",
+      "MSP-99": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-23T06:07:34.793Z"
+}

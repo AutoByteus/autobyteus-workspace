@@ -447,7 +447,8 @@ This keeps Codex skill loading aligned with the Codex filesystem contract instea
 Normal Codex UI history uses the same local application-owned replay trace as
 all other runtimes. `getRunProjection(runId)` and
 `getTeamMemberRunProjection(teamRunId, memberAddress)` do not call, fallback
-to, or merge with Codex native `thread/read` history for display. If local
+to, or merge with Codex native `thread/read` history for display (no code reads it at all since
+autobyteus-609). If local
 replay traces are absent or incomplete, focused Codex UI history may be empty
 or incomplete. That is the accepted display boundary.
 
@@ -458,12 +459,9 @@ Relevant display components:
 - `src/run-history/services/agent-run-view-projection-service.ts`
 - `src/run-history/services/team-member-run-view-projection-service.ts`
 
-Diagnostic/runtime-native Codex components:
+Shared Codex component:
 
-- `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
-- `src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.ts`
 - `src/agent-execution/backends/codex/items/codex-tool-item-family.ts`
-- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
 
 The normal display projection path uses:
 
@@ -495,8 +493,7 @@ the read projection. That overlay is never used to decide a new write.
 
 `AgentRunViewProjectionService` owns the source-authority policy and always
 loads local replay projection through `LocalMemoryRunViewProjectionProvider`,
-regardless of `runtimeKind`. It has no normal UI branch that selects
-`CodexRunViewProjectionProvider`, no local/native merge path, and no recovery
+regardless of `runtimeKind`. It has no runtime-native branch, no local/native merge path, and no recovery
 from native thread history when local replay is missing.
 
 `TeamMemberRunViewProjectionService` resolves team/member metadata, including
@@ -504,24 +501,13 @@ the member memory directory, and delegates to `AgentRunViewProjectionService`.
 It must not read member raw traces as a second projection beside another source
 and must not pass Codex native provider output into focused member history.
 
-Codex `thread/read` replay still maps active Codex tool item families for
-diagnostics and protocol investigation:
-
-- `dynamicToolCall` -> canonical `tool_call` rows for unrelated custom dynamic
-  tools. Migrated server-owned backend tool families are not Codex dynamic
-  tools.
-- `mcpToolCall` -> canonical `tool_call` rows with canonicalized Agent Tools MCP
-  names when applicable, or server-qualified names for other MCP servers when
-  available.
-- `webSearch` -> `search_web`.
-- `commandExecution` -> `run_bash`, preserving stable `command` and `cwd`
-  fields as canonical tool arguments when present.
-- `fileChange` -> `edit_file`.
-
-Those runtime-native rows are not the normal UI display authority. Missing
-Codex display rows after reload should be fixed in the live normalized event
-and local raw-trace recording path so the application-owned replay trace
-contains the expected reasoning/tool/text facts.
+Codex tool families (`dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`,
+`fileChange`) reach the replay trace only through the live normalization above: a
+reload shows what the recorder wrote. Missing Codex display rows after reload are
+fixed in the live normalized event and local raw-trace recording path, so the
+application-owned replay trace contains the expected reasoning/tool/text facts. A call
+the user stopped is stored by the shared tool trace sequencer and reads back as
+"Stopped" like every runtime's (see [Run History](./run_history.md)).
 
 Projection consumers must apply conversation and Activity rows as one replay
 bundle. If a subscribed live context is preserved during reopen, the frontend

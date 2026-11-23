@@ -16,7 +16,6 @@ The authoritative raw-event interpretation boundaries live under:
 
 - `src/agent-execution/backends/codex/thread/`
 - `src/agent-execution/backends/codex/events/`
-- `src/agent-execution/backends/codex/history/` for diagnostic `thread/read` replay
 - `src/agent-execution/backends/codex/items/` for shared tool item payload parsing
 
 The most important owners are:
@@ -29,8 +28,6 @@ The most important owners are:
 - `codex-thread-lifecycle-event-converter.ts` — authoritative owner for `thread/*` and `error`
 - `codex-raw-response-event-converter.ts` — raw-response sidecar normalization
 - `codex-thread-server-request-handler.ts` — server-request handling for approval requests and dynamic tool calls
-- `codex-thread-history-reader.ts` — owner for diagnostic `thread/read` retrieval and protocol replay inspection
-- `codex-thread-history-item-normalizer.ts` — owner for mapping diagnostic `thread/read` item families into historical replay tool facts
 - `codex-tool-item-family.ts` and `codex-tool-payload-parser.ts` — shared item family and payload extraction helpers used to keep live conversion and history replay aligned
 
 Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent`s exposed by these owners. They should not infer Codex raw protocol details themselves.
@@ -203,8 +200,8 @@ result. The memory recorder must not parse raw Codex MCP item internals to
 repair missing arguments.
 
 Codex Agent Tools MCP calls use this MCP spine through the thread-scoped
-`autobyteus_agent_tools` server config. Live conversion and diagnostic
-`thread/read` replay canonicalize provider/server-qualified tool identities to
+`autobyteus_agent_tools` server config. Live conversion canonicalizes
+provider/server-qualified tool identities to
 application-facing canonical names such as `send_message_to`, `generate_image`,
 `delegate_task`, and `publish_artifacts`, preserve invocation id and arguments,
 apply any family-specific result canonicalization owned by the corresponding
@@ -255,34 +252,19 @@ Here, minimal means canonical name plus result/error with no repeated arguments.
 
 ## Thread History Replay Mapping
 
-Codex `thread/read` is not a live notification stream and is no longer the
-normal focused UI history display source. Normal `getRunProjection` and
-`getTeamMemberRunProjection` responses are hydrated from the local
-application-owned replay trace for every runtime, including Codex. The
-`CodexRunViewProjectionProvider` remains a diagnostic/runtime-native utility
-for inspecting saved Codex turns/items and protocol mapping behavior.
+A Codex run's history is read like every runtime's: from the local
+application-owned replay trace, which the live event normalization above writes.
+Normal `getRunProjection` and `getTeamMemberRunProjection` responses are hydrated
+from it, and no code reads Codex `thread/read` for display or diagnostics (the
+`thread/read` reader, its item normalizer and `CodexRunViewProjectionProvider` were
+removed in autobyteus-609, because nothing but their own tests called them). If a
+Codex reload is missing rows, fix the live event normalization and the local
+raw-trace recording path so the replay trace holds the expected display facts.
 
-Diagnostic `thread/read` replay still maps active Codex tool families into the
-canonical replay shape:
-
-- `dynamicToolCall` -> canonical `tool_call` conversation row and Activity row
-  using the original invocation id when present.
-- `mcpToolCall` -> canonical `tool_call` row pair with the MCP server name
-  qualified into the tool name when the item exposes one.
-- `webSearch` -> `search_web` replay row pair.
-- `commandExecution` -> `run_bash` replay row pair, retaining stable item
-  `command` and `cwd` as canonical arguments when present.
-- `fileChange` -> `edit_file` replay row pair.
-
-Those diagnostic rows should preserve stable invocation id, tool name, parsed
-arguments, terminal result/error, and status when those facts exist in Codex
-history. They must not be used as a normal UI fallback, complementary source,
-or merge partner for local replay display. If Codex UI reload is missing rows,
-fix the live event normalization and local raw-trace recording path so the
-application-owned replay trace contains the expected display facts.
-
-Unsupported tool-like `thread/read` items are logged only under
-`CODEX_THREAD_HISTORY_DEBUG=1` or `CODEX_THREAD_EVENT_DEBUG=1`.
+A call the user stopped is stored by the same sequencer as every runtime's (the
+`Tool execution interrupted.` result) and reads back as `interrupted`, "Stopped" on
+every surface, through the shared rule `isInterruptedToolResult`; see
+[Run History](../modules/run_history.md).
 
 ## Command Execution CWD Projection
 
@@ -298,7 +280,7 @@ stable command facts into the canonical runtime lifecycle:
   production projection source, and the converter does not invent a default.
 
 The same shared argument parser feeds live lifecycle conversion, approval
-presentation, and diagnostic native-history normalization. Local raw-trace
+and presentation. Local raw-trace
 recording therefore persists `cwd` for future command calls through the
 existing arguments object. Pre-change command-only traces remain valid and are
 neither rewritten nor backfilled.
@@ -318,8 +300,7 @@ fabricate stdout/stderr separation, or construct the richer native AutoByteus
 Standalone and Team transports carry the same normalized error. The local
 raw-trace writer persists it as `tool_error`, so newly recorded local replay
 uses the detailed string without a schema migration. Older generic values stay
-readable and are not rewritten; diagnostic `thread/read` projection remains a
-separate inspection path rather than a normal UI recovery source.
+readable and are not rewritten.
 
 ## Local Replay Reasoning Persistence
 
@@ -345,7 +326,7 @@ This preserves reload ordering such as reasoning before MCP/dynamic tool cards
 using the same local replay trace that the UI displays. A run that terminates
 with open reasoning and no later visible write or `TURN_COMPLETED` boundary has
 no reliable flush signal; the local replay may remain incomplete rather than
-speculatively writing or recovering from diagnostic `thread/read`.
+speculatively writing or recovering from Codex native history.
 
 ### Reasoning Block Identity And Semantic Boundaries
 
@@ -460,7 +441,6 @@ prefix.
 | `item/completed` | `item.type = webSearch` | Terminal lifecycle with authoritative action arguments: `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep; storage appends call first when deferred, then a minimal result |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
-| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; `commandExecution` preserves stable item `command` and `cwd` when present; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | matching `SEGMENT_END(reasoning)` when active, then `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/delta` | legacy reasoning text delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
 | `item/reasoning/summaryPartAdded` | legacy reasoning summary delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
@@ -512,7 +492,6 @@ Optional console debug flags:
 
 - `CODEX_THREAD_EVENT_DEBUG=1`
 - `CODEX_THREAD_RAW_EVENT_DEBUG=1`
-- `CODEX_THREAD_HISTORY_DEBUG=1` for unsupported tool-like `thread/read` item diagnostics during history projection
 - `CODEX_THREAD_RAW_EVENT_MAX_CHARS=<number>`
 
 Output shape:
@@ -533,9 +512,7 @@ Output shape:
 - Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status. Do not fabricate `{}` arguments for a placeholder start; defer persistence until the terminal action can be written as call-then-result.
 - For every newly persisted Codex tool lifecycle, use compound `(turn_id, tool_call_id)` identity. A call owns canonical name/arguments; a separate result repeats the matched canonical name, physically owns both result/error keys, and omits arguments. Reject and log a supplied non-empty terminal name that conflicts with lifecycle state without writing or completing the result; accept an omitted terminal name when the matched call supplies it. Existing historical name-less results and supersets remain a normal read-only projection concern, not a writer input.
 - Treat local application-owned raw traces as the focused Codex UI reload
-  source. `thread/read` replay is diagnostic/runtime-native mapping support;
-  keep supported history item families aligned with the live lifecycle families
-  above, but do not use them as the normal UI display fallback or merge partner.
+  source; no code reads Codex `thread/read` history.
 - Treat allocator-owned `reasoning-block:<nonce>:<sequence>` ids as normalized
   contiguous-block identity. Provider item ids are correlation-only; close or
   preserve the active block from transcript/lifecycle semantics, not raw event
