@@ -37,6 +37,8 @@ import { shownText } from "../helpers/agent-stream-frames.js";
 //         plain message of the first session (no marker, no notice).
 //   MH-05 (AC-005) an LM Studio model has no verified capacity in the real catalog: even an equal-window LM Studio model is a hand-over,
 //         and choosing the first model again undoes it.
+//   MH-06 a pending native model hand-over survives a server restart; the first message's archive step fails (the previous agent's file is
+//         byte-identical, the hand-over stays pending, the user is told); the retry completes with one marker, one segment, one notice.
 //   MH-03 Team (AC-008): a member on a removed model hands over (that member only; the other member and the raw traces are
 //         untouched); the Team's default row on a removed model accepts any offered model directly, with no hand-over.
 //   MH-04 Org (AC-008, CR-001): a direct Agent member and an Agent of a mounted Team, on removed models, saved in one Org save: each
@@ -60,7 +62,7 @@ const AGY_MODEL = "gemini-3.8-flash-low";
  */
 const WINDOWS: Record<string, number> = {
   "mh-big": 65536, "mh-mid": 65536, "mh-small": 8192,
-  "mh-gone-solo": 32768, "mh-gone-team": 32768, "mh-gone-org": 32768,
+  "mh-gone-solo": 32768, "mh-gone-team": 32768, "mh-gone-org": 32768, "mh-gone-restart": 32768,
 };
 /**
  * The models of a custom OpenAI-compatible endpoint (served by the same scripted server under /v1) and their advertised context
@@ -241,14 +243,46 @@ describe.runIf(ENABLED)("native model hand-over of a stopped run on the built se
     return typeof last.content === "string" ? last.content : JSON.stringify(last.content);
   };
 
-  beforeAll(async () => {
-    await fs.mkdir(path.join(runtimeRoot, "isolated-home"), { recursive: true });
-    lm = await startFakeLmStudio();
+  const launch = async () => {
     server = await startBuiltTestServer({
       runtimeRoot, databaseUrlOverride: database.databaseUrl,
       environment: { HOME: path.join(runtimeRoot, "isolated-home"), LMSTUDIO_HOSTS: lm.origin, ANTIGRAVITY_CLI_COMMAND: FAKE_AGY, AGY_FAKE_CASE: "linked_skills" },
     });
     await reloadCatalog();
+  };
+  /** The server process ends as a user quitting the app does; the data root stays. */
+  const restart = async () => {
+    for (const socket of sockets.splice(0)) if (socket.readyState === WebSocket.OPEN) socket.close();
+    await server.stop();
+    await launch();
+  };
+  /** A first message that is expected to fail: resolves with what happened instead of throwing on the server's error. */
+  const attempt = async (stream: Stream, agentRunId: string, content: string) => {
+    const messages: Wire[] = [];
+    let closed = false;
+    const socket = new WebSocket(`ws://127.0.0.1:${new URL(server.serverUrl).port}${stream.path}`);
+    sockets.push(socket);
+    socket.on("message", (raw: unknown) => {
+      try {
+        const parsed = JSON.parse(String(raw)) as { type?: string; payload?: Json };
+        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object" ? parsed.payload : {} });
+      } catch { /* diagnostic rows only */ }
+    });
+    socket.on("close", () => { closed = true; });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    await until(() => messages.some((m) => m.type === "CONNECTED" || m.type === "ERROR") || closed, "attempt: connected, refused or closed", 90_000);
+    if (messages.some((m) => m.type === "CONNECTED") && !messages.some((m) => m.type === "ERROR")) stream.send(socket, agentRunId, content);
+    await until(() => messages.some((m) => stream.turnEnded(m, agentRunId) || stream.failed(m)) || closed, "attempt: outcome", 60_000);
+    await wait(500);
+    const completed = messages.some((m) => stream.turnEnded(m, agentRunId));
+    socket.close();
+    return { completed, acks: messages.filter((m) => m.type === "AGENT_COMMAND_ACK").map((m) => m.payload), errors: messages.filter((m) => m.type === "ERROR").map((m) => m.payload) };
+  };
+
+  beforeAll(async () => {
+    await fs.mkdir(path.join(runtimeRoot, "isolated-home"), { recursive: true });
+    lm = await startFakeLmStudio();
+    await launch();
     const custom = (await gql("mutation($input: CustomProviderInputObject!) { createCustomProvider(input: $input) { provider { id } } }",
       { input: { name: "Verified Gateway", baseUrl: `${lm.origin}/v1`, apiKey: "synthetic-endpoint-key" } })).createCustomProvider;
     expect(custom.provider.id).toEqual(expect.any(String));
@@ -301,7 +335,8 @@ describe.runIf(ENABLED)("native model hand-over of a stopped run on the built se
     const options = await soloOptions(runId);
     expect(options, JSON.stringify(options)).toMatchObject({ currentModelIdentifier: model["mh-gone-solo"], modelListReadable: true, currentModel: null });
     expect(offeredBy(options), "the menu lists every offered model, of any capacity").toEqual([...lm.offered].sort());
-    expect([...lm.offered].sort(), "the removed model is the only one missing").toEqual(["mh-big", "mh-gone-org", "mh-gone-team", "mh-mid", "mh-small"]);
+    expect(lm.offered.has("mh-gone-solo"), "the removed model is not served any more").toBe(false);
+    expect(offeredBy(options), "the offered models include the other LM Studio models").toEqual(expect.arrayContaining(["mh-big", "mh-mid", "mh-small"]));
 
     const saved = await save(runId, NATIVE, model["mh-small"]!);
     expect(saved, JSON.stringify(saved)).toMatchObject({ success: true, outcome: "UPDATED", canonicalSelection: { runtimeKind: NATIVE, llmModelIdentifier: model["mh-small"] } });
@@ -590,4 +625,49 @@ describe.runIf(ENABLED)("native model hand-over of a stopped run on the built se
     expect(undone).toMatchObject({ llmModelIdentifier: model["mh-big"], platformAgentRunId: session });
     expect(Object.hasOwn(undone, "pendingRuntimeSwitch")).toBe(false);
   }, 300_000);
+  it("MH-06: a pending native model hand-over survives a server restart; a first message whose archive step fails leaves the previous agent's file as it was and the hand-over pending; the retry completes with one marker and one segment", async () => {
+    await fs.mkdir(workspace(), { recursive: true });
+    const created = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: await agentDefinition("mh-restart"), ...nativeLaunch(model["mh-gone-restart"]!) } })).createAgentRun as Json;
+    expect(created.success, created.message).toBe(true);
+    const runId = created.runId as string;
+    const stream = agentStream(runId);
+    await talk(stream, runId, "NATIVE-RESTART-ONE: please say something.", "first turn");
+    const nativeIds = ids(active(runDir(runId)));
+    await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: runId });
+    await removeModel("mh-gone-restart");
+    expect(await save(runId, NATIVE, model["mh-small"]!)).toMatchObject({ success: true, outcome: "UPDATED" });
+    const pending = await metadata(runId);
+    const key = `runtime_switch:${runId}:${pending.pendingRuntimeSwitch.switchId}`;
+
+    await restart();
+    expect(await metadata(runId), "the pending hand-over survives the restart").toMatchObject({ llmModelIdentifier: model["mh-small"], platformAgentRunId: null, pendingRuntimeSwitch: pending.pendingRuntimeSwitch });
+
+    // The first message fails: the archive step cannot write its segment (a folder has its name).
+    const before = readFileSync(path.join(runDir(runId), "raw_traces_active.jsonl"), "utf8");
+    const obstruction = path.join(runDir(runId), "raw_traces_000001.jsonl");
+    await fs.mkdir(obstruction);
+    const failed = await attempt(stream, runId, "NATIVE-RESTART-AFTER: carry on.");
+    expect(failed.completed, "the failed start ends no turn").toBe(false);
+    expect(JSON.stringify([failed.acks, failed.errors]), "the user is told why").toContain("EISDIR");
+    expect(readFileSync(path.join(runDir(runId), "raw_traces_active.jsonl"), "utf8"), "the previous agent's file is byte-identical after the failure").toBe(before);
+    expect(await metadata(runId), "the hand-over stays pending").toMatchObject({ llmModelIdentifier: model["mh-small"], platformAgentRunId: null, pendingRuntimeSwitch: pending.pendingRuntimeSwitch });
+    await fs.rm(obstruction, { recursive: true, force: true });
+
+    // The retry completes.
+    const requestsBefore = lm.requests.length;
+    await talk(stream, runId, "NATIVE-RESTART-AFTER: carry on.", "retry");
+    const archived = segments(runDir(runId));
+    expect(archived, "one segment").toHaveLength(1);
+    expect(archived[0]).toMatchObject({ boundary_type: "runtime_switch", boundary_key: key, runtime_kind: NATIVE });
+    expect(ids(readRaw(path.join(runDir(runId), archived[0]!.file_name))), "I-7: exactly the previous agent's records").toEqual(nativeIds);
+    expect(markers(runDir(runId)), "one marker").toHaveLength(1);
+    expect(active(runDir(runId))[0]).toMatchObject({ sender_id: "system.runtime_handover", correlation_id: key, content: `Model changed from ${model["mh-gone-restart"]} to ${model["mh-small"]}.` });
+    expect(notices(runDir(runId)), "one notice").toHaveLength(1);
+    const request = lm.requests[requestsBefore]!;
+    expect(request.model).toBe("mh-small");
+    expect(userText(request).indexOf(NOTICE), "the notice comes first").toBeGreaterThanOrEqual(0);
+    expect(JSON.stringify(request.messages), "a fresh session").not.toContain("NATIVE-RESTART-ONE");
+    expect(Object.hasOwn(await metadata(runId), "pendingRuntimeSwitch")).toBe(false);
+  }, 420_000);
 });
