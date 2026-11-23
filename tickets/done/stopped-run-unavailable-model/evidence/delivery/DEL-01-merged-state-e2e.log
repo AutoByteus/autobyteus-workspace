@@ -1,0 +1,58 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-unavailable-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-unavailable-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 19585ms
+     ✓ SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry  7369ms
+     ✓ SB-02: a delegated copy Antigravity -> native -> Antigravity  4971ms
+     ✓ SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era  4442ms
+ ✓ tests/e2e/runtime/native-model-handover-built-server.e2e.test.ts (6 tests) 14720ms
+     ✓ MH-01: a stopped native run whose model was removed: the menu lists the offered models, Save is a pending model hand-over, the next message hands over to a fresh session of the new model with the marker and the notice, and the chat keeps the earlier messages  1779ms
+     ✓ MH-02: re-edits of a native run: on a model with a verified capacity (a custom endpoint's) an equal model keeps the session; while a hand-over is pending (a) the first model again undoes it, (b) a smaller third model stays pending from the first, (c) an equal third model resumes the first session, (d) another runtime stays pending from the first  1307ms
+     ✓ MH-03: a Team member on a removed model hands over (that member only); the Team's default row on a removed model accepts any offered model directly  1772ms
+     ✓ MH-04: Org members on removed models, a direct Agent and an Agent of a mounted Team, saved in one Org save: UPDATED (no internal error), the session is persisted in the Org's tree, and each hands over by its own first message  3000ms
+     ✓ MH-05: an LM Studio model has no verified capacity in the real catalog, so even an equal-window LM Studio model is a hand-over (the user's rule: unknown capacity hands over)  633ms
+     ✓ MH-06: a pending native model hand-over survives a server restart; a first message whose archive step fails leaves the previous agent's file as it was and the hand-over pending; the retry completes with one marker and one segment  3841ms
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  20:41:17
+   Duration  35.59s (transform 102ms, setup 79ms, import 693ms, tests 34.31s, environment 0ms)
+

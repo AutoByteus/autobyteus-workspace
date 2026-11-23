@@ -904,6 +904,12 @@ The saved-run view uses the start surfaces' visual language:
   model menu matches the chat model menu: a search box, the run's runtime as a
   locked label ("The runtime is fixed for this run") and only that runtime's
   models.
+  - For an AutoByteus run, every offered model is listed (autobyteus-53). A model
+    with a smaller or unknown context window than the one the run last ran on is
+    marked by the help text ("A model with a smaller or unknown context window starts
+    a fresh session that continues from the work journal."); Save then says "Model
+    saved. Your next message starts a fresh session…" and the next message shows
+    "Model changed from … to …" in the chat.
 - **One agent at a time (autobyteus-366).** Settings show the agent focused in the
   left tree, resolved by `utils/runSettings/settingsSubject.ts`
   (`resolveSettingsSubject`), and stay open while the focus moves within the run.

@@ -1561,8 +1561,11 @@ options for the saved subject. It receives self-contained current and
 replacement descriptors; it does not intersect server choices with a second
 frontend catalog. Replacements stay within the fixed runtime. Claude Agent
 SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness use the backend's distinct offered
-IDs without a platform capacity comparison. AutoByteus alone requires verified
-positive non-decreasing context capacity for replacements. An exact saved
+IDs without a platform capacity comparison. For AutoByteus, a replacement with verified
+positive non-decreasing context capacity keeps the session; one with a smaller or unknown
+capacity is still offered and starts a fresh session that continues from the work journal
+(the native help text says so; the Save message of a standalone run says "Model saved.
+Your next message starts a fresh session…"). An exact saved
 Claude `default` can remain current-only with its schema, but a filtered alias
 is not a new choice. Advisory options are rechecked by the server on Save.
 Unavailable native capacity does not block same-model settings when ordinary

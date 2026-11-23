@@ -224,12 +224,24 @@ and a config with nothing declared stores `null`.
 
 Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI,
 Grok Build and DeepSeek Harness requires fresh membership in that runtime/workspace **offered** catalog and
-target-schema validation, not a platform context-capacity comparison. AutoByteus replacement
-continues to require verified positive saved and target context capacities with
-target >= saved capacity; the focused native evidence resolver accepts only
-live or static-definition provenance and a valid active context no greater than
-the evidenced maximum. Same-model settings bypass native capacity lookup but
-still require ordinary catalog/schema validation.
+target-schema validation, not a platform context-capacity comparison. For an
+AutoByteus replacement, native capacity no longer refuses a Save of a record that can
+hand over; it chooses the **continuation** of the valid result (autobyteus-53).
+Verified positive saved and target capacities with target >= saved keep the session
+(`same_session`). A smaller or unknown capacity, or a saved model the catalog no longer
+offers, is a **model hand-over** (`hand_over`): the Save makes a pending switch on the
+same agent runtime and the next message starts a fresh session that continues from the
+Work Journal. The focused native evidence resolver still accepts only live or
+static-definition provenance and a valid active context no greater than the evidenced
+maximum. The reference model is the one the record's session last ran on
+(`selectionContextFor`: while a switch is pending, its `from` side, so an undo or a
+re-edit keeps the first session). The context's `handOver` capability decides the rest:
+`available` (a started record that can switch: every offered native model is a
+replacement), `unavailable` (an application-owned, system-owned or peer-started run: a
+capacity mismatch is still refused with the old message, and the options list keeps the
+capacity filter) and `no_session` (a launch default or a never-started run: nothing to
+continue, any offered model is accepted as the same session). Same-model settings bypass
+native capacity lookup but still require ordinary catalog/schema validation.
 
 `ModelCatalogService.runtimeModelSelectionCatalog` owns the rule that an external
 agent runtime always offers a model: an empty list is a failed read, so it throws

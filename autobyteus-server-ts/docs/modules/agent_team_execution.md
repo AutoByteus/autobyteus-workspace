@@ -176,9 +176,13 @@ its original saved selection, another agent runtime as a fresh selection of it
 (`selectionContextFor`: the stored model counts as the current one only on the member's own
 agent runtime and while no switch is pending). A
 replacement needs fresh runtime-catalog membership and valid target-schema
-settings. AutoByteus additionally needs verified positive non-decreasing
-context capacity; external runtimes do not. Same-model settings skip the
-AutoByteus replacement-capacity comparison only. An incompatible descendant blocks
+settings. For AutoByteus, verified positive non-decreasing context capacity keeps the
+member's session; a smaller or unknown capacity makes a **model hand-over** (a pending
+switch on the same agent runtime; the next input starts a fresh session that continues
+from the Work Journal, marker "Model changed from … to …"); a Team's own default
+launch row has nothing to continue and takes any offered model. External runtimes have
+no capacity gate. Same-model settings skip the AutoByteus replacement-capacity
+comparison only. An incompatible descendant blocks
 the whole Save; it is not silently omitted. See
 [LLM Management](./llm_management.md#persisted-run-model-selection-validation).
 
