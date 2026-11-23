@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-002 (D-2's rule covers native, after implementation's Design Impact)
+- Current solution revision ID: SR-004 (SR-002: D-2 covers native; SR-003: evidence; SR-004: D-3, the server's time on every live agent event, the founder's rule)
 - Approved requirements: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction; user informed 2026-11-23.
 - User approval of the design: Not required.
 - Design status: `Ready`
@@ -24,7 +24,8 @@
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- Task size: `Medium`. Two owners in two packages:
+- Task size: SR-004 reclassifies to `Large` / `High` (D-3 below); SR-001's text follows for D-1/D-2.
+- SR-001 task size: `Medium`. Two owners in two packages:
   - the web's conversation window (one function and its spec);
   - the node's replay builder (one ordering rule and its test);
   - plus one phone probe case.
@@ -263,3 +264,65 @@ The shape avoided: re-stamping live messages with a common clock, or overwriting
 - Reproduction to start from: `tickets/in-progress/conversation-order-628/probes/clock-order-reproduction.spec.ts`. Copy it into `services/eventMonitor/__tests__/`; its second case fails on base and must pass. Run with `npx vitest run <file>` in `autobyteus-web` after `nuxt prepare`.
 - The founder's run is evidence only: never run code against it or copy it.
 - Node 22.
+
+## D-3: The server records every time; the app only shows it (SR-004, the founder's rule)
+
+### Why
+
+Live, the app stamps agent messages (`findOrCreateAIMessage`, `segmentHandler.ts:254-272`, `new Date()`) and compaction rows (`compactionActivityProjection.ts:214`, `now`) with its own clock. Only the user's message carries the server's time (`MEMBER_INPUT_MESSAGE.received_at`). REQ-004 requires the server's time for every row.
+
+### Data Contract (Principle 17; designed before the rest)
+
+| Record / Message | Boundary | Field | Meaning | Written By | Read By |
+| --- | --- | --- | --- | --- | --- |
+| `AgentRunEvent` (node, in process) | runtime → AgentRun → subscribers | `occurredAt: number` (epoch ms, required) | The server's time the event happened, stamped once | AgentRun's event dispatch (`dispatchProcessedAgentRunEvents`, the one path every runtime's events take); an event built by another owner (e.g. the preface notice's `publishEvent`) goes through the same dispatch | The memory recorder for external runtimes (trace `ts` = `occurredAt / 1000`, so stored = live); the presentation adapter |
+| `AgentPresentationEvent` (node) | adapter → projector | `occurredAt: number` | Same time, carried | `CollaborationAgentPresentationEventAdapter` and the Team/Org adapters: from `AgentRunEvent.occurredAt`. Non-run events: `member_input` from its `receivedAt`; `status_overlay` from the overlay snapshot's time; a task notice built from a member input from that input's time | `projectAgentPresentationMessage` |
+| `AgentPresentationMessage` (`@autobyteus/agent-presentation-contracts`) | node → web, embedded unchanged in the agent, Team and Org/collaboration streams | `occurred_at: string` (ISO 8601, required on every variant, top level beside `type` and `payload`) | The server's time of this event | `projectAgentPresentationMessage` (the 4 call sites: collaboration adapter, Org container, Team run agent access ×2) | Web `agentStreamMessageProjector` and the team stream service: the AI message's timestamp when a frame creates it, the compaction row's `centerTimelineTimestamp`, the user message's timestamp (echo) |
+| Web `UserMessage.timestamp` of an own send before its echo | web-internal | — | The latest server time the conversation holds (its last message's timestamp), replaced by the echo's `received_at` | `beginLocalUserSubmission` | Window (D-1 orders by array; the time only places compactions) |
+
+- **Identity:** no new identity; `occurred_at` is a value, not a key.
+- **Invariants:**
+  - Every agent presentation message carries `occurred_at`.
+  - The web never calls its clock for a conversation row's time.
+  - A frame's time is the server's at the event.
+  - Stored traces of external runtimes have `ts` equal to the live `occurred_at`. Native (`autobyteus-ts` writes its own traces) uses the same server clock, a few ms apart.
+- **Examples:**
+  - Live segment frame: `{"type":"SEGMENT_CONTENT","payload":{…},"occurred_at":"2026-11-23T16:55:15.948Z"}`.
+  - The founder's turn with the viewer 1 s behind: You `received_at 16:55:09.696Z`; notice frame `occurred_at 16:55:09.697Z` creates the AI message at `16:55:09.697Z`; the reply's frames carry later server times. The viewer's clock appears nowhere.
+  - A compaction frame `occurred_at 17:02:00.100Z` becomes `centerTimelineTimestamp` `17:02:00.100Z`, placed by D-1's merge among server-timed messages.
+
+### Data Contract Validation
+
+| Scenario | Step | Reads | Writes | Served? |
+| --- | --- | --- | --- | --- |
+| SCN-001 sender | Send: optimistic message (latest server time) → echo `received_at` → notice frame creates the AI message with its `occurred_at` → segments | frames | row times | Yes |
+| SCN-002 non-sender | echo, then frames | frames | row times | Yes |
+| SCN-003 reload | stored `ts` (server) → hydration as today | entries | row times | Yes (unchanged) |
+| SCN-004 compaction | compaction frame `occurred_at` → `centerTimelineTimestamp`; merge (D-1) | frame, message times | row order | Yes; one clock (FU-001 resolved) |
+| Snapshot on connect | stored part (server `ts`) plus live frames | snapshot, frames | row times | Yes |
+| Team member, Org member | the same `AgentPresentationMessage` inside their stream messages | frames | row times | Yes |
+
+- Checks: the shared message is embedded unchanged in the team and collaboration contracts (`rg agent-presentation-contracts` in both packages' `src/`). There are 4 `projectAgentPresentationMessage` call sites (`rg`). Run by the Solution Designer, read-only.
+- Contract changes the validation caused: the own-send placeholder (above), so the app stamps no time.
+
+### Persisted data
+
+Not Affected. Read-side for old runs. External runtimes' new traces take `ts` from `occurredAt`, which is the same server clock as before.
+
+### Design
+
+- AgentRun's dispatch stamps `occurredAt` once per event, in the same function for every runtime.
+- The adapters carry it, and the projector writes `occurred_at`. The contract package adds it to every variant (strict schemas) and rebuilds its tracked `dist/`, and the dependent contract packages are rebuilt too (`pnpm check:contract-dist`).
+- Web:
+  - the projector hands `occurred_at` to the handlers;
+  - `findOrCreateAIMessage(context, occurredAt)` replaces `new Date()`;
+  - the compaction projection takes `occurredAt` in place of `now`;
+  - the own send's placeholder is the latest server time;
+  - an inventory of every remaining `new Date()`/`nowIso()` that becomes a conversation or activity row time, each replaced by the frame time. Pure UI timers stay.
+- Derived consumers (Case 3, Case 26): every switch on the presentation message, every handler that creates a row, the team and Org stream parsers, test fixtures that build frames (they gain `occurred_at`), and the earlier-events page (stored times, unchanged).
+
+### Classification (SR-004)
+
+- `Large` / `High`. A shared stream contract changes (a required field on every agent presentation message, carried by three streams), across server, contracts and web.
+- Contract `dist/` is a build input, so the fresh-start build and the build-only release run apply (DESIGN.md rule 12).
+- Route: architecture review.

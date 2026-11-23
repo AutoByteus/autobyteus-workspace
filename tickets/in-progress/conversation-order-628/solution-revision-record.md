@@ -29,3 +29,11 @@
 - Kind: evidence-only clarification. Requirements, design and classification are unchanged; the SR-002 rule stands.
 - Sections: investigation notes, "SR-003 correction".
 - Design case: docs/design-cases.md Case 21 (a premise checked on a stand-in path).
+
+## SR-004 (2026-11-23)
+
+- Trigger: the user's direction in conversation: the server records every time and the client only shows it, one single source of truth.
+- Kind: requirements change (REQ-004 added; REQ-003 revised; AC-006; DEC-004), approved by the user's own words, plus a design addition (D-3) and reclassification.
+- Affected: REQ-003, REQ-004, AC-006, DEC-004; FU-001 resolved in this ticket; design D-3 (data contract first, validated), classification `Large` / `High`.
+- Approval: the user (requirements-doc.md approval reference).
+- Routing: architecture review of SR-004. Implementation continues D-1/D-2 meanwhile, without handing off.

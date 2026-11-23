@@ -2,14 +2,16 @@
 
 ## Document Status
 
-- Status: `Approved`
-- Current solution revision ID: SR-001 (DEC-003 narrowed before handoff)
+- Status: `Approved` (SR-004: REQ-004 added and REQ-003 revised on the founder's direction)
+- Current solution revision ID: SR-004
 - Package identifier: `conversation-order-628`
 - Request / ticket: autobyteus-628, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the founder
 - Requirements owner: Solution Designer
 - Date: 2026-11-23
-- Approved by and reference: Solution Designer within the direction (the Task: "if it is a bug, design, implement and prove the fix"); user informed in conversation 2026-11-23. No `Needs user` decision.
+- Approved by and reference:
+  - SR-001: Solution Designer within the direction (the Task: "if it is a bug, design, implement and prove the fix"); user informed 2026-11-23.
+  - SR-004: **the user**, in conversation 2026-11-23: "the time itself … it's not like the client is recording a time, it's actually the server records a time … the client is only showing … one single source of truth" (and earlier: "it should be a consistent timing from the server, definitely from the server"). The user chose this ticket over a separate one by stating the rule after the question.
 - Exact approved baseline: this document at SR-001
 - Behavior-defining supplements: none (`probes/` is evidence)
 
@@ -76,7 +78,8 @@ As the template states.
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | The conversation shows its messages, notices and agent output in the order they happened in the conversation, never by comparing timestamps from different clocks: live, on the phone and the desktop, for a run on the viewer's own node or another node | BEH-001 | Must | The founder's report; Reproduced | N/A | Task |
 | REQ-002 | A platform notice delivered with the user's message shows right after that message, live and after a reload | BEH-002 | Must | Live and reload must agree; the notice is what the platform added to that message | N/A | DEC-002 |
-| REQ-003 | Placing compaction rows never reorders messages: a compaction row is placed between messages by its time, as today | BEH-003 | Must | The fix of REQ-001 must keep compaction rows | N/A | DEC-003 |
+| REQ-003 | Placing compaction rows never reorders messages: a compaction row is placed between messages (in conversation order) by its time, and that time and the messages' times are all the server's (REQ-004) | BEH-003 | Must | The fix of REQ-001 must keep compaction rows; with one clock their place is right (FU-001 resolved here) | N/A | DEC-003, DEC-004 |
+| REQ-004 | Every time the app keeps for a conversation's rows (user messages, agent messages, notices, tool and compaction rows) is a time the server recorded; the app never stamps one from its own clock. Live and after a reload, the app uses the server's times | BEH-001, BEH-003 | Must | The founder's rule: one source of truth for time | N/A | User 2026-11-23; DEC-004 |
 
 ## Acceptance Criteria
 
@@ -86,6 +89,7 @@ As the template states.
 | AC-002 | REQ-001 | BEH-001, SCN-002 | A message sent from another window (desktop) to a Team member while the phone (clock behind) watches | The phone shows You before the notice and the reply | — | Web spec (echo only, no local send); phone probe |
 | AC-003 | REQ-002 | BEH-002, SCN-003 | Reload the run after AC-001 | The same order as live: You, notice, reply | — | Server projection unit test on the founder's trace shape; web hydration spec; the probe's reload step |
 | AC-004 | REQ-003 | BEH-003, SCN-004 | A compaction happens between two turns (equal clocks), and the same with the viewer's clock behind | Equal clocks: the row between the two turns, as today. Behind: the messages keep their order whatever the compaction's place | — | Web spec |
+| AC-006 | REQ-004 | BEH-001, BEH-003 | A live turn (message with a preface notice, agent output, a tool call, a compaction) with the viewer's clock 2 s behind, then 2 s ahead | Every user message, agent message and compaction row in the web's state carries the server's time (the echo's `received_at`, the frame's server time, or the stored `ts` after a reload); none carries the viewer's clock | — | Web specs with fake timers far from the frame times; a server unit test that every agent presentation message carries the server time; the phone probe case reads the rows' times |
 | AC-005 | All | Preserved | The existing recent-window, notice-row, usage and pending-input specs, and MSP-99 (585) | Pass unchanged, or changed only where they asserted a clock-based order | — | Web suite; MSP-99 |
 
 ## Relevant Scenarios And Journeys
@@ -129,6 +133,7 @@ As the template states.
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | A current bug or an old-format artifact? | The Task's branch | Stored traces in order; Reproduced with current code | A current bug in the web's conversation window: fix it | Solution Designer | Decided |
 | DEC-002 | Where a platform notice delivered with the user's message shows | Live and reload disagree by entry order | (a) You → notice → reply; (b) notice → You → reply (the stored and provider order) | (a): it reads as what happened from the user's side (you asked; the platform told the agent about the update; it answered). It is what live already shows, and what reload shows today. | Solution Designer (within the direction) | Decided; user informed |
+| DEC-004 | Where the times come from (the founder's rule) | The app stamped agent messages and compaction rows with its own clock | (a) Order only (SR-001); (b) the server records every time and the app only shows it | **(b), the user's decision.** The server stamps each live agent event once, with the same server time its memory records, and the app takes every row's time from the server. With one clock, the compaction placement of FU-001 is right too | User | Decided |
 | DEC-003 | Is the compaction row's placement in scope? | The same timestamp sort places it | (a) Record each compaction's place in the conversation (its writers: live projection, native stop, reload hydration, the activity store's merge); (b) keep placing it by time, but between messages in their own order | (b) here: the founder's problem is message order, which (b) fixes completely. A compaction row misplaced by a clock difference is rare, it is not what was reported, and (a) touches four writers. (a) is FU-001. | Solution Designer | Decided; user informed |
 
 ## Traceability
