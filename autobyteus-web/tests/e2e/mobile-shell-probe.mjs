@@ -1831,7 +1831,7 @@ const runCases = async () => {
   await runBackgroundTaskCases({ runCase, page, stack, alpha, browser, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir });
   await runActivityDetailsCases({ runCase, page, stack, alpha, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, serverAt, freePort, chromium, executablePath, selected, root });
   // autobyteus-609: a stopped call and the earlier-trace cards on the desktop and the phone (`desktop-stopped-call-trace-cases.mjs`).
-  await runStoppedCallTraceCases({ runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected });
+  await runStoppedCallTraceCases({ runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver });
 
   await runCase('MSP-14', async () => {
     await toList(page);

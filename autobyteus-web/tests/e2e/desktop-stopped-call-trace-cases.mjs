@@ -15,7 +15,14 @@
 //                  the conversation scrolled to its top with the wheel: the cards then shown come from that page (the request is
 //                  recorded). Each of the four calls' page card shows the same summary as its live card, and the stopped call's
 //                  page card shows the stop icon. The page's own answer (GraphQL) is recorded: `summaryArgs` and `statusKey`.
+//   MSP-103 AC-D (D-D2, a Team member)  A Team run open on the desktop on its coordinator (the Team stream live, the member
+//                  `/mate` not loaded yet). `/mate` holds a running call; the phone opens `/mate` and presses Stop; the phone's
+//                  Activity reads "Stopped". Then the desktop opens `/mate`: the member loads from the node while the Team's live
+//                  state also has the call (the member loader's reconciliation of live and read-back state); its card shows the
+//                  stop icon and its Activity "Stopped", with no conflict error. The phone app loaded again at its home and
+//                  `/mate` opened again (read back only): "Stopped".
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
@@ -23,10 +30,11 @@ const STOP = 'Stop generation';
 const TOOLS = ['send_message_to', 'get_project_task', 'run_command', 'view_file'];
 
 export const runStoppedCallTraceCases = async (probe) => {
-  const { runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected } = probe;
-  if (selected && !selected.has('MSP-102')) return;
+  const { runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver } = probe;
+  if (selected && !['MSP-102', 'MSP-103'].some((id) => selected.has(id))) return;
+  const wants = (id) => !selected || selected.has(id);
 
-  await runCase('MSP-102', async () => {
+  if (wants('MSP-102')) await runCase('MSP-102', async () => {
     const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.checker, ...stack.runConfig } })).createAgentRun;
     assert(created.success, created.message);
     const run = created.runId;
@@ -151,6 +159,133 @@ export const runStoppedCallTraceCases = async (probe) => {
         [latest.loadedEarlierCount > 0 && details.pageRequests > 0, 'the reopened conversation read the node\'s earlier-trace page (the setup)'],
         [sameSummary.length === 0, `AC-E each page card shows the same summary as its live card (differs: ${sameSummary.join(', ') || 'none'})`],
         [browseHeld?.stopped === true && api.held?.statusKey === 'interrupted', 'AC-D the stopped call\'s earlier-trace card shows the stop icon (the page answers statusKey interrupted)'],
+      ].filter(([ok]) => !ok).map(([, text]) => text);
+      assert(failures.length === 0, failures.join('; '), details);
+      return details;
+    } finally {
+      await context.close().catch(() => undefined);
+    }
+  });
+
+  if (wants('MSP-103')) await runCase('MSP-103', async () => {
+    const team = (await alpha.gql('mutation($i:CreateAgentTeamRunInput!){createAgentTeamRun(input:$i){success message teamRunId}}', { i: { teamDefinitionId: stack.ids.delivery,
+      teamConfigs: [{ teamAddress: '/', ...stack.runConfig }], memberConfigs: [{ memberAddress: '/lead', agentDefinitionId: stack.ids.checker, ...stack.runConfig },
+        { memberAddress: '/mate', agentDefinitionId: stack.ids.writer, ...stack.runConfig }] } })).createAgentTeamRun;
+    assert(team.success, team.message);
+    const tree = JSON.stringify((await alpha.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team.teamRunId })).getTeamRunResumeConfig.executionTree);
+    const lead = /"address":"\/lead"[^}]*"agent_run_id":"([^"]+)"/.exec(tree)?.[1];
+    const mate = /"address":"\/mate"[^}]*"agent_run_id":"([^"]+)"/.exec(tree)?.[1];
+    assert(lead && mate, 'the Team\'s members', tree);
+    const say = (agentRunId, content) => sendOver(stack.wsUrl(`agent-team/${team.teamRunId}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
+      context_file_paths: [], image_urls: [], agent_run_id: agentRunId, content });
+    const memberProjection = async (agentRunId, field = 'conversation') => JSON.stringify((await alpha.gql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){${field}}}`,
+      { id: team.teamRunId, a: agentRunId })).getTeamMemberRunProjection?.[field] ?? []);
+    await say(lead, 'Lead ready. Marker TEAM-STOP-609-LEAD.');
+    await waitFor('the lead\'s reply', async () => (await memberProjection(lead)).includes('TEAM-STOP-609-LEAD'), 60_000);
+
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    await attachToBrowserContext(context);
+    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const desk = await context.newPage();
+    const deskErrors = [];
+    desk.on('console', (message) => { if (message.type() === 'error') deskErrors.push(message.text().slice(0, 300)); });
+    desk.on('pageerror', (error) => deskErrors.push(`pageerror ${error.message}`.slice(0, 300)));
+    try {
+      // The desktop on the Team's coordinator: the Team stream is live; `/mate` is not loaded.
+      await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
+      await desk.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+      await desktopRunsView(desk);
+      const showOlder = desk.locator('[data-test="run-list-show-older"]');
+      if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+      const teamRow = desk.locator(`[data-test="workspace-team-row-${team.teamRunId}"]`).first();
+      await teamRow.click({ timeout: 60_000 });
+      const feed = () => desk.locator('[data-testid="agent-conversation-feed"]').first();
+      await waitFor('the lead\'s conversation on the desktop', async () => (await feed().innerText().catch(() => '')).includes('TEAM-STOP-609-LEAD'), 60_000);
+
+      // `/mate` runs a call.
+      await say(mate, 'Keep working. HOLD_TURN');
+      await waitFor('the member\'s running call', async () => (await memberProjection(mate)).includes('HOLD_TURN'), 60_000);
+      await sleep(1_500);
+
+      // The phone opens `/mate` and presses Stop.
+      const openMateOnPhone = async () => {
+        await toList(page);
+        const teamRowKey = `team:${team.teamRunId}`;
+        await page.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
+        const memberOpen = page.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
+        for (let round = 0; round < 5 && !(await memberOpen.count()); round += 1) {
+          const row = page.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first();
+          if ((await row.getAttribute('aria-expanded')) === 'false') await row.locator('[data-testid="mobile-run-toggle"]').click({ timeout: 1_500 }).catch(() => undefined);
+          await sleep(600);
+        }
+        await memberOpen.click({ timeout: 60_000 });
+        await page.locator('[data-testid="mobile-run-conversation"]').waitFor({ timeout: 30_000 });
+      };
+      const phoneHeld = async () => {
+        if (!(await page.locator('[data-testid="mobile-activity"]:visible').count())) await menuOpen(page, 'activity');
+        await page.locator('[data-testid="mobile-activity"]').waitFor({ timeout: 20_000 });
+        const row = page.locator('[data-testid="mobile-activity"] [data-testid="mobile-run-activity-row"]').filter({ hasText: 'HOLD_TURN' }).first();
+        let shown = null;
+        await waitFor('the held call on the phone', async () => (shown = await row.evaluate((el) => ({ status: el.getAttribute('data-status'),
+          word: el.querySelector('[data-testid="mobile-run-activity-status"]')?.textContent.trim() ?? null })).catch(() => null))?.status !== 'executing' && Boolean(shown), 30_000).catch(() => undefined);
+        return shown;
+      };
+      await openMateOnPhone();
+      const stop = page.locator(`button[aria-label="${STOP}"]`).last();
+      await waitFor('the phone\'s Stop for /mate', async () => (await stop.count()) > 0 && await stop.isEnabled(), 30_000);
+      await stop.tap();
+      await waitFor('the member stopped', async () => (await page.locator(`button[aria-label="${STOP}"]`).count()) === 0, 30_000).catch(() => undefined);
+      const phoneLive = await phoneHeld();
+      await shot(page, 'MSP-103-phone-live-stopped');
+
+      // The desktop opens `/mate`: it loads from the node, reconciled with the Team's live state.
+      const cards = () => feed().evaluate((el) => [...el.querySelectorAll('div.my-2 > div.rounded-lg')].map((card) => ({
+        name: card.querySelector('span.font-medium')?.textContent.trim() ?? null,
+        summary: card.querySelector('[data-test="tool-context-summary"]')?.textContent.replace(/^\s*·\s*/, '').trim() ?? null,
+        stopped: Boolean(card.querySelector('[data-testid="tool-call-status-stopped"]')),
+        error: Boolean(card.querySelector('[data-icon*="exclamation"], svg.text-red-500')),
+      })));
+      await desk.locator(`[data-test="workspace-team-member-${team.teamRunId}-/mate"]`).first().click({ timeout: 60_000 });
+      let deskCard = null;
+      await waitFor('the member\'s stopped card on the desktop', async () => Boolean((deskCard = (await cards()).find((card) => card.summary?.includes('HOLD_TURN')))?.stopped), 30_000).catch(() => undefined);
+      await desk.locator('[data-test="right-side-tab-list"]').getByText('Activity', { exact: true }).first().click();
+      const activityItems = () => desk.evaluate(() => [...document.querySelectorAll('[data-test="activity-feed-scroll-container"] div.border.rounded-lg')].map((item) => ({
+        name: item.querySelector('span.font-bold')?.textContent.trim() ?? null,
+        chip: item.querySelector('span.rounded-full')?.textContent.trim() ?? null,
+      })).filter((item) => item.name));
+      let deskActivity = [];
+      await waitFor('the member\'s desktop Activity reads Stopped', async () => (deskActivity = await activityItems()).some((item) => item.name === 'run_command' && /^stopped$/i.test(item.chip ?? '')), 20_000).catch(() => undefined);
+      await shot(desk, 'MSP-103-desktop-member-stopped');
+
+      // The phone reloaded (a fresh page: nothing live kept; a member's screen reopens, MSP-33), `/mate`'s Activity again:
+      // read back only.
+      const failedRequests = [];
+      const onFailed = (request) => failedRequests.push(`${request.method()} ${new URL(request.url()).pathname} ${request.failure()?.errorText ?? ''}`);
+      page.on('requestfailed', onFailed);
+      const urlBeforeReload = page.url();
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await waitFor('the phone after the reload', async () => (await page.locator('[data-testid="mobile-run-tree"]:visible, [data-testid="mobile-run-conversation"]:visible, [data-testid="mobile-activity"]:visible').count()) > 0, 60_000)
+        .catch(async (error) => {
+          error.details = { urlBeforeReload, url: page.url(), failedRequests: failedRequests.slice(0, 20),
+            body: (await page.evaluate(() => document.body.innerHTML.slice(0, 600)).catch(() => null)) };
+          throw error;
+        });
+      page.off('requestfailed', onFailed);
+      await shot(page, 'MSP-103-phone-reloaded');
+      // The reload reopens the screen it was on (`?row=<the member>&screen=activity`); from the list, `/mate` is opened again.
+      if (!(await page.locator('[data-testid="mobile-run-conversation"]:visible, [data-testid="mobile-activity"]:visible').count())) await openMateOnPhone();
+      const phoneReadBack = await phoneHeld();
+      await shot(page, 'MSP-103-phone-read-back-stopped');
+      const stored = JSON.parse(await memberProjection(mate, 'activities')).filter((activity) => JSON.stringify(activity).includes('HOLD_TURN')).map((activity) => activity.status);
+
+      const conflicts = deskErrors.filter((line) => /Conflicting terminal tool outcomes|changed while it was loading/.test(line));
+      const details = { team: team.teamRunId, lead, mate, phoneLive, deskCard, deskActivity: deskActivity.filter((item) => item.name === 'run_command'), phoneReadBack, stored, conflicts, deskErrors: deskErrors.slice(0, 10) };
+      const failures = [
+        [phoneLive?.status === 'interrupted' && phoneLive.word === 'Stopped', 'AC-D the phone reads "Stopped" for the member\'s call it stopped (live)'],
+        [deskCard?.stopped === true && deskCard.error === false, 'AC-D the desktop member card shows the stop icon after the member loads (live and read-back state reconciled)'],
+        [deskActivity.some((item) => item.name === 'run_command' && /^stopped$/i.test(item.chip ?? '')), 'AC-D the desktop member Activity reads "Stopped"'],
+        [conflicts.length === 0, 'no conflict between the live and the read-back state on the desktop'],
+        [phoneReadBack?.status === 'interrupted' && phoneReadBack.word === 'Stopped' && stored.every((status) => status === 'interrupted') && stored.length > 0, 'AC-D the member\'s call read back from the node reads "Stopped" (phone after a reload; the node\'s activity status)'],
       ].filter(([ok]) => !ok).map(([, text]) => text);
       assert(failures.length === 0, failures.join('; '), details);
       return details;
