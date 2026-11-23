@@ -1,0 +1,3 @@
+# Case API-03: every live read_file result of the f-files names the file its own call read (30 reads per turn, 2 turns per run, 2 runs)
+run1 f-file results matching their own call: 60 mismatching: 0 | tool calls in the raw trace: 65
+run2 f-file results matching their own call: 60 mismatching: 0 | tool calls in the raw trace: 66

@@ -33,6 +33,7 @@ if (arg === "--version") {
   // Native image DONE uses a UUID conversation; the test owns that conversation's (temporary) AGY brain files.
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
   const nativeArguments = process.env.AGY_FAKE_CASE === "native_arguments";
+  const nativeToolResults = process.env.AGY_FAKE_CASE === "native_tool_results";
   const autoCompaction = process.env.AGY_FAKE_CASE === "auto_compaction";
   const interruptResend = process.env.AGY_FAKE_CASE === "interrupt_resend";
   const contextFiles = process.env.AGY_FAKE_CASE === "context_files";
@@ -47,7 +48,7 @@ if (arg === "--version") {
   const replaced = lostConversation || (Boolean(requested) && lostLines.includes(`silent:${requested}`));
   if (lostConversation) process.stderr.write(`warning: conversation "${requested}" not found\n`);
   // These independent fixtures all model exact conversation binding on resume.
-  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend || contextFiles
+  const conversation_id = runtimeError || linkedSkills || nativeArguments || nativeToolResults || autoCompaction || interruptResend || contextFiles
     || usageReport
     ? (replaced ? randomUUID() : requested || randomUUID())
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
@@ -326,6 +327,13 @@ if (arg === "--version") {
     if (nativeArguments) {
       import("./agy-native-arguments-turn.mjs").then(({ nativeArgumentsTurn }) =>
         nativeArgumentsTurn({ line, conversationId: conversation_id, emit })).catch((error) => {
+        emit({ event: "result", result: { conversation_id, status: "ERROR", error: String(error), response: "" } });
+      });
+      return;
+    }
+    if (nativeToolResults) {
+      import("./agy-native-tool-results-turn.mjs").then(({ nativeToolResultsTurn }) =>
+        nativeToolResultsTurn({ line, conversationId: conversation_id, emit })).catch((error) => {
         emit({ event: "result", result: { conversation_id, status: "ERROR", error: String(error), response: "" } });
       });
       return;

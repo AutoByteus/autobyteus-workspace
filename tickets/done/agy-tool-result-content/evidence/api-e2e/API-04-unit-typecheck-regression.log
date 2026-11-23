@@ -1,0 +1,8 @@
+# Case: API-04 (independent reruns)
+# Commit: dbfae1e493 (code 7069972efe)
+# Date: 2026-11-23
+
+unit: vitest run tests/unit/agent-execution/backends/antigravity tests/agent-work-journal --no-watch: Test Files  44 passed | 5 skipped (49); Tests  648 passed | 8 skipped (656)
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+scripted e2e (private HOME): work-journal-agy-schema-reads, work-journal-agy-read-file-spill, work-journal-neutral-vocabulary, agy-linked-skills-transport, agy-mcp-tool-call-transport: Test Files  5 passed (5); Tests  14 passed (14)

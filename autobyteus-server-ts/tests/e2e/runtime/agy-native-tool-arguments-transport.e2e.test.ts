@@ -191,13 +191,23 @@ suite("future native input capture across AGY CLI / server / saved history / act
     expect(await projection(run.runId)).toEqual(captured);
   }, 40_000);
 
-  it.each(["SUMMARY_ONLY", "AMBIGUOUS"])("E-002 retains truthful summary and completion for %s detail", async (content) => {
-    const run = await openRun(); send(run, content); await complete(run);
+  it("E-002 retains the truthful summary and completion when the transcript holds no detail", async () => {
+    const run = await openRun(); send(run, "SUMMARY_ONLY"); await complete(run);
     expect(starts(run)).toHaveLength(1);
     const summary = { TargetFile: path.join(workspace, "marker.txt") };
     expect(starts(run)[0]!.payload["arguments"]).toEqual(summary);
     expect((await projection(run.runId)).activities.find((r) => r["invocationId"] === starts(run)[0]!.payload["invocation_id"]))
       .toMatchObject({ arguments: summary, status: "success" });
+  }, 40_000);
+
+  // autobyteus-377 (D-6): a planner response of several calls identifies each step by position and name; the first step of two
+  // same-name calls is the first call, so its full arguments are recorded.
+  it("E-002b records the full arguments of a step of a two-call planner response by its position", async () => {
+    const run = await openRun(); send(run, "AMBIGUOUS"); await complete(run);
+    expect(starts(run)).toHaveLength(1);
+    expect(starts(run)[0]!.payload["arguments"]).toEqual(expectedArgs()[0]);
+    expect((await projection(run.runId)).activities.find((r) => r["invocationId"] === starts(run)[0]!.payload["invocation_id"]))
+      .toMatchObject({ arguments: expectedArgs()[0], status: "success" });
   }, 40_000);
 
   it("E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged", async () => {

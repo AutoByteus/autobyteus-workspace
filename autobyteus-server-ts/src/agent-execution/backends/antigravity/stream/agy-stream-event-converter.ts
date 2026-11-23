@@ -8,6 +8,7 @@ import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sin
 import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
 import type { AgyBackgroundToolStep } from "./agy-background-task-monitor.js";
 import type { AgyNativeToolArgumentLookup } from "./agy-native-tool-arguments-reader.js";
+import type { AgyNativeToolResultLookup } from "./agy-native-tool-result-reader.js";
 import { buildAgyCompactionStatusPayload } from "./agy-compaction-status-payload.js";
 import { MIN_TPS_DURATION_MS, type ModelCallThroughput } from "../../../domain/model-call-throughput.js";
 
@@ -27,6 +28,9 @@ const hasProviderError = (value: unknown): boolean => {
   if (typeof value === "object") return Object.keys(value).length > 0;
   return true;
 };
+/** The stream's result of a native read/search step: nothing, or only a size summary such as `12 lines, 340 bytes`. */
+const isLossyAgyOutput = (output: unknown): boolean =>
+  output === null || output === undefined || (typeof output === "string" && /^\d+ lines, \d+ bytes$/.test(output.trim()));
 const errorText = (value: unknown): string => agyString(value) ?? agyString(agyRecord(value)?.message) ?? "";
 const BACKGROUND_TOOL_OUTPUT = "Started as a background task; still running when the turn ended.";
 
@@ -76,7 +80,23 @@ export class AgyStreamEventConverter {
     return { stepIndex: index, toolName: name, summary };
   }
 
-  convert(message: AgyStreamMessage, nativeArguments: Record<string, unknown> | null = null): AgentRunEvent[] {
+  /** Eligibility only: a finished native step whose stream result is lossy; the step's real result is in the CLI's transcript. */
+  getPendingNativeToolResultLookup(message: AgyStreamMessage): AgyNativeToolResultLookup | null {
+    if (!this.turnId || message.event !== "step_update") return null;
+    const payload = message.step_update;
+    const index = payload.step_index;
+    if (payload.conversation_id !== this.conversationId || payload.step_type !== "tool" || payload.state !== "DONE" ||
+        typeof index !== "number" || !Number.isSafeInteger(index) || index < 0 || this.toolTerminals.has(index)) return null;
+    const info = agyRecord(payload.tool_info);
+    const name = agyString(payload.tool_name) ?? agyString(info?.name);
+    if (!name || name === "call_mcp_tool" || name === "generate_image" ||
+        (agyString(payload.tool_name) && agyString(info?.name) && payload.tool_name !== info?.name) ||
+        hasProviderError(info?.error) || !isLossyAgyOutput(info?.output)) return null;
+    return { stepIndex: index, toolName: name };
+  }
+
+  convert(message: AgyStreamMessage, nativeArguments: Record<string, unknown> | null = null,
+    nativeResult: Readonly<{ text: string }> | null = null): AgentRunEvent[] {
     if (message.event === "init") return [];
     const payload = message.event === "result" ? message.result : message.step_update;
     if (agyString(payload.conversation_id) !== this.conversationId)
@@ -89,7 +109,7 @@ export class AgyStreamEventConverter {
     const state = agyString(payload.state);
     if (stepIndex === null || !stepType || !state) throw new Error("AGY_STREAM_INVALID_STEP");
     if (stepType === "agent_response") return this.agentResponse(payload, turnId, stepIndex, state);
-    if (stepType === "tool") return this.tool(payload, turnId, stepIndex, state, nativeArguments);
+    if (stepType === "tool") return this.tool(payload, turnId, stepIndex, state, nativeArguments, nativeResult);
     if (stepType === "checkpoint") return this.checkpoint(payload, turnId, stepIndex, state);
     return [];
   }
@@ -188,7 +208,7 @@ export class AgyStreamEventConverter {
   }
 
   private tool(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string,
-    nativeArguments: Record<string, unknown> | null): AgentRunEvent[] {
+    nativeArguments: Record<string, unknown> | null, nativeResult: Readonly<{ text: string }> | null): AgentRunEvent[] {
     if (state !== "ACTIVE" && state !== "DONE" && state !== "ERROR") throw new Error(`AGY_STREAM_INVALID_TOOL_STATE: ${state}`);
     if (this.toolTerminals.has(stepIndex)) return [];
     const info = agyRecord(payload.tool_info);
@@ -239,7 +259,7 @@ export class AgyStreamEventConverter {
         ...common,
         result: mcpCall?.toolName === OPEN_TAB_TOOL_NAME
           ? normalizeBrowserMcpToolResult(OPEN_TAB_TOOL_NAME, output)
-          : { provider_state: "DONE", output },
+          : { provider_state: "DONE", output: nativeResult && name !== "call_mcp_tool" ? nativeResult.text : output },
         provider_state: "DONE",
       }));
     }
