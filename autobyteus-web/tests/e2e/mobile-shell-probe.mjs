@@ -1831,12 +1831,10 @@ const runCases = async () => {
   await runBackgroundTaskCases({ runCase, page, stack, alpha, browser, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir });
   await runActivityDetailsCases({ runCase, page, stack, alpha, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, serverAt, freePort, chromium, executablePath, selected, root });
   // autobyteus-609: a stopped call and the earlier-trace cards on the desktop and the phone (`desktop-stopped-call-trace-cases.mjs`).
-  await runStoppedCallTraceCases({ runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver });
+  await runStoppedCallTraceCases({ runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver, openPhone, paired });
 
   await runCase('MSP-14', async () => {
     await toList(page);
-    // The PTM run need not be one of the five newest runs here (cases before this one create runs, e.g. MSP-103's Team run).
-    await showOlder(page);
     const writerKey = `agent:${stack.ptm}/agent:${stack.writerRun}`;
     assert(await page.locator(rowSel(writerKey)).count(), 'the task agent is listed before');
     const navigationsBefore = await page.evaluate(() => performance.getEntriesByType('navigation').length);

@@ -19,8 +19,8 @@
 //                  `/mate` not loaded yet). `/mate` holds a running call; the phone opens `/mate` and presses Stop; the phone's
 //                  Activity reads "Stopped". Then the desktop opens `/mate`: the member loads from the node while the Team's live
 //                  state also has the call (the member loader's reconciliation of live and read-back state); its card shows the
-//                  stop icon and its Activity "Stopped", with no conflict error. The phone app loaded again at its home and
-//                  `/mate` opened again (read back only): "Stopped".
+//                  stop icon and its Activity "Stopped", with no conflict error. A second phone (the same pairing, a fresh
+//                  page: read back only) opens `/mate`'s Activity: "Stopped".
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
@@ -30,7 +30,7 @@ const STOP = 'Stop generation';
 const TOOLS = ['send_message_to', 'get_project_task', 'run_command', 'view_file'];
 
 export const runStoppedCallTraceCases = async (probe) => {
-  const { runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver } = probe;
+  const { runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver, openPhone, paired } = probe;
   if (selected && !['MSP-102', 'MSP-103'].some((id) => selected.has(id))) return;
   const wants = (id) => !selected || selected.has(id);
 
@@ -187,8 +187,8 @@ export const runStoppedCallTraceCases = async (probe) => {
     await attachToBrowserContext(context);
     await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
     const desk = await context.newPage();
-    let phoneList = null;
     const deskErrors = [];
+    let readBackPhone = null;
     desk.on('console', (message) => { if (message.type() === 'error') deskErrors.push(message.text().slice(0, 300)); });
     desk.on('pageerror', (error) => deskErrors.push(`pageerror ${error.message}`.slice(0, 300)));
     try {
@@ -209,36 +209,34 @@ export const runStoppedCallTraceCases = async (probe) => {
       await sleep(1_500);
 
       // The phone opens `/mate` and presses Stop.
-      const openMateOnPhone = async () => {
-        await toList(page);
-        // The list's own address, without any query (the page may still carry its pairing link's query).
-        phoneList ??= new URL('/mobile/', page.url()).toString();
+      const openMateOnPhone = async (phone) => {
+        await toList(phone);
         const teamRowKey = `team:${team.teamRunId}`;
-        await page.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
-        const memberOpen = page.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
+        await phone.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first().waitFor({ timeout: 60_000 });
+        const memberOpen = phone.locator(`[data-testid^="mobile-run-row-${teamRowKey}/"]`).filter({ hasText: /mate/i }).locator('[data-testid="mobile-run-open"]').first();
         for (let round = 0; round < 5 && !(await memberOpen.count()); round += 1) {
-          const row = page.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first();
+          const row = phone.locator(`[data-testid="mobile-run-row-${teamRowKey}"]`).first();
           if ((await row.getAttribute('aria-expanded')) === 'false') await row.locator('[data-testid="mobile-run-toggle"]').click({ timeout: 1_500 }).catch(() => undefined);
           await sleep(600);
         }
         await memberOpen.click({ timeout: 60_000 });
-        await page.locator('[data-testid="mobile-run-conversation"]').waitFor({ timeout: 30_000 });
+        await phone.locator('[data-testid="mobile-run-conversation"]').waitFor({ timeout: 30_000 });
       };
-      const phoneHeld = async () => {
-        if (!(await page.locator('[data-testid="mobile-activity"]:visible').count())) await menuOpen(page, 'activity');
-        await page.locator('[data-testid="mobile-activity"]').waitFor({ timeout: 20_000 });
-        const row = page.locator('[data-testid="mobile-activity"] [data-testid="mobile-run-activity-row"]').filter({ hasText: 'HOLD_TURN' }).first();
+      const phoneHeld = async (phone) => {
+        if (!(await phone.locator('[data-testid="mobile-activity"]:visible').count())) await menuOpen(phone, 'activity');
+        await phone.locator('[data-testid="mobile-activity"]').waitFor({ timeout: 20_000 });
+        const row = phone.locator('[data-testid="mobile-activity"] [data-testid="mobile-run-activity-row"]').filter({ hasText: 'HOLD_TURN' }).first();
         let shown = null;
         await waitFor('the held call on the phone', async () => (shown = await row.evaluate((el) => ({ status: el.getAttribute('data-status'),
           word: el.querySelector('[data-testid="mobile-run-activity-status"]')?.textContent.trim() ?? null })).catch(() => null))?.status !== 'executing' && Boolean(shown), 30_000).catch(() => undefined);
         return shown;
       };
-      await openMateOnPhone();
+      await openMateOnPhone(page);
       const stop = page.locator(`button[aria-label="${STOP}"]`).last();
       await waitFor('the phone\'s Stop for /mate', async () => (await stop.count()) > 0 && await stop.isEnabled(), 30_000);
       await stop.tap();
       await waitFor('the member stopped', async () => (await page.locator(`button[aria-label="${STOP}"]`).count()) === 0, 30_000).catch(() => undefined);
-      const phoneLive = await phoneHeld();
+      const phoneLive = await phoneHeld(page);
       await shot(page, 'MSP-103-phone-live-stopped');
 
       // The desktop opens `/mate`: it loads from the node, reconciled with the Team's live state.
@@ -260,25 +258,14 @@ export const runStoppedCallTraceCases = async (probe) => {
       await waitFor('the member\'s desktop Activity reads Stopped', async () => (deskActivity = await activityItems()).some((item) => item.name === 'run_command' && /^stopped$/i.test(item.chip ?? '')), 20_000).catch(() => undefined);
       await shot(desk, 'MSP-103-desktop-member-stopped');
 
-      // The phone reloaded (a fresh page: nothing live kept; a member's screen reopens, MSP-33), `/mate`'s Activity again:
-      // read back only.
-      const failedRequests = [];
-      const onFailed = (request) => failedRequests.push(`${request.method()} ${new URL(request.url()).pathname} ${request.failure()?.errorText ?? ''}`);
-      page.on('requestfailed', onFailed);
-      const urlBeforeReload = page.url();
-      await page.reload({ waitUntil: 'domcontentloaded' });
-      await waitFor('the phone after the reload', async () => (await page.locator('[data-testid="mobile-run-tree"]:visible, [data-testid="mobile-run-conversation"]:visible, [data-testid="mobile-activity"]:visible').count()) > 0, 60_000)
-        .catch(async (error) => {
-          error.details = { urlBeforeReload, url: page.url(), failedRequests: failedRequests.slice(0, 20),
-            body: (await page.evaluate(() => document.body.innerHTML.slice(0, 600)).catch(() => null)) };
-          throw error;
-        });
-      page.off('requestfailed', onFailed);
-      await shot(page, 'MSP-103-phone-reloaded');
-      // The reload reopens the screen it was on (`?row=<the member>&screen=activity`); from the list, `/mate` is opened again.
-      if (!(await page.locator('[data-testid="mobile-run-conversation"]:visible, [data-testid="mobile-activity"]:visible').count())) await openMateOnPhone();
-      const phoneReadBack = await phoneHeld();
-      await shot(page, 'MSP-103-phone-read-back-stopped');
+      // A second phone, paired as the first (its stored session), opens `/mate`'s Activity: a fresh page, nothing live kept,
+      // so the call reads as the node stores it. The first phone keeps its history and goes back to its list at the end.
+      readBackPhone = await openPhone({ storageState: paired, label: 'phone-read-back' });
+      await readBackPhone.page.goto(new URL('/mobile/', page.url()).toString(), { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      await readBackPhone.page.locator('[data-testid="mobile-run-tree"]:visible').waitFor({ timeout: 60_000 });
+      await openMateOnPhone(readBackPhone.page);
+      const phoneReadBack = await phoneHeld(readBackPhone.page);
+      await shot(readBackPhone.page, 'MSP-103-phone-read-back-stopped');
       const stored = JSON.parse(await memberProjection(mate, 'activities')).filter((activity) => JSON.stringify(activity).includes('HOLD_TURN')).map((activity) => activity.status);
 
       const conflicts = deskErrors.filter((line) => /Conflicting terminal tool outcomes|changed while it was loading/.test(line));
@@ -294,12 +281,8 @@ export const runStoppedCallTraceCases = async (probe) => {
       return details;
     } finally {
       await context.close().catch(() => undefined);
-      // The next cases start from the phone's run list: after the reload the phone's history holds only the member's
-      // screen, so the list is loaded again (a cold load of the production bundle can take tens of seconds).
-      if (phoneList) {
-        await page.goto(phoneList, { waitUntil: 'domcontentloaded', timeout: 120_000 }).catch(() => undefined);
-        await page.locator('[data-testid="mobile-run-tree"]:visible').waitFor({ timeout: 60_000 }).catch(() => undefined);
-      }
+      if (readBackPhone) await readBackPhone.context.close().catch(() => undefined);
+      await toList(page).catch(() => undefined);
     }
   });
 };
