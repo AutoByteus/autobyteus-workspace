@@ -1,0 +1,19 @@
+# IMP-15 (IR-002, Rule 12) the build-only Desktop Release run on the pushed head
+# command: gh workflow run release-desktop.yml --ref codex/phone-web-followups-609 -f publish_release=false -f prerelease=true ;
+#          gh run watch 45094535212 --exit-status
+# commit: e78a539dfe (pushed to origin codex/phone-web-followups-609)
+# env: GitHub Actions runners (Linux x64/ARM64, macOS ARM64/Intel, Windows x64)
+# date: 2026-11-23
+# result: Pass. Every build job passed; signing and publishing were skipped (publish_release=false).
+
+run: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45094535212
+branch: codex/phone-web-followups-609  sha: e78a539dfe70801cbb0167815ca3af3c8100d537  event: workflow_dispatch
+created: 2026-11-23T01:25:56Z  updated: 2026-11-23T01:49:18Z  conclusion: success
+  Resolve Release Metadata: success
+  Build Windows x64: success
+  Build Linux ARM64: success
+  Build Linux x64: success
+  Build macOS Intel x64: success
+  Build macOS ARM64: success
+  Sign authenticated Linux desktop releases: skipped
+  Publish GitHub Release: skipped

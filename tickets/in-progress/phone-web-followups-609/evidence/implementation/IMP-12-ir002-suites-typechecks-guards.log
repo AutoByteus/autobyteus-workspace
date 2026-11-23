@@ -1,0 +1,51 @@
+# IMP-12 (IR-002) the whole web and server unit suites, both typechecks, the three web guards, the tracked-imports guard
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run ; cd autobyteus-server-ts && pnpm test:unit ;
+#          pnpm -C autobyteus-server-ts typecheck (after `typecheck:update-baseline`: the removed test's entry) ;
+#          pnpm -C autobyteus-web typecheck ; the three web guards ;
+#          cd autobyteus-server-ts && pnpm exec vitest run tests/e2e/run-history tests/agent-work-journal tests/architecture
+#            tests/unit/agent-execution/backends/codex tests/unit/agent-memory      (one at a time)
+# commit: working tree = e78a539dfe (the D-D2 and SR-005 commits; run before committing, same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Pass. Web 799 files / 6082 tests; server 1068 files / 8924 tests (two test files removed, two added); the
+#         server typecheck at its new baseline 999 in 312 (was 1000 in 313: the removed Codex provider test's 1);
+#         web 86 in 36. The targeted run passed after the new files were added to git (the tracked-imports guard
+#         fails on a tracked file importing an untracked one, as it should).
+
+## web unit suite
+ Test Files  799 passed (799)
+      Tests  6082 passed | 2 skipped (6084)
+   Duration  271.33s (transform 26.83s, setup 1809.35s, collect 178.38s, tests 89.58s, environment 143.44s, prepare 89.93s)
+
+## server unit suite
+ Test Files  1068 passed | 5 skipped (1073)
+      Tests  8924 passed | 9 skipped (8933)
+   Duration  701.17s (transform 16.36s, setup 22.18s, import 284.70s, tests 304.36s, environment 527ms)
+
+## server typecheck
+[typecheck] baseline written: 999 errors in 312 files (was 1000 in 313)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.9s
+[typecheck] server tests (tsconfig.tests.json): 999 errors, exit 2, 25.8s
+[typecheck] production errors: 0; test-file errors: 999 in 312 files (baseline 999 in 312 files)
+[typecheck] PASS
+
+## web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 36.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.1s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## targeted server folders (first run: the new files not yet in git)
+     × finds no tracked code importing an untracked file in this repository 1654ms
+ Test Files  1 failed | 82 passed | 5 skipped (88)
+      Tests  1 failed | 900 passed | 9 skipped (910)
++  - autobyteus-server-ts/src/agent-memory/services/runtime-tool-trace-sequencer.ts -> ../domain/tool-result-interruption.js
+## the guard after git add -N of the new files
+      Tests  2 passed (2)
