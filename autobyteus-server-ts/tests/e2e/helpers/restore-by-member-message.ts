@@ -53,9 +53,9 @@ export const restoreByMemberMessage = async (input: Readonly<{
         message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
       : { agent_run_id: input.memberRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
         content, context_file_paths: [], image_urls: [] } }));
+    const active = () => isRunActive(input.gql, input.kind, input.runId);
     const deadline = Date.now() + (input.timeoutMs ?? 60_000);
     while (Date.now() < deadline) {
-      const active = () => isRunActive(input.gql, input.kind, input.runId);
       if (input.kind === "org") {
         // The Org's acknowledgement of this message: sent once it is posted and the run's summary is recorded.
         const ack = frames.find((f) => f.type === "AGENT_COMMAND_ACK" && f.payload?.command_id === commandId);
