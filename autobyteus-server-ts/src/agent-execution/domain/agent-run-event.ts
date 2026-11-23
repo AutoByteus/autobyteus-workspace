@@ -60,6 +60,10 @@ export const isAgentRunEvent = (value: unknown): value is AgentRunEvent => {
   );
 };
 
+/** The event as a run delivers it: with the node's time now, unless it already has one (autobyteus-628 D-3). */
+export const stampForDelivery = (event: AgentRunEvent): AgentRunEvent =>
+  event.occurredAt === undefined ? { ...event, occurredAt: Date.now() } : event;
+
 /**
  * The event's `occurred_at` on the wire: the node's time as ISO 8601 UTC (autobyteus-628 D-3). An event a run delivered
  * always has one; a producer outside the run stamps its own (`occurredAt: Date.now()`). A timed event without one is a
