@@ -4,6 +4,11 @@ export const nonEmptyStringSchema = z.string().trim().min(1);
 export const nullableNonEmptyStringSchema = nonEmptyStringSchema.nullable();
 export const finiteNumberSchema = z.number().finite();
 export const nullableFiniteNumberSchema = finiteNumberSchema.nullable();
+/**
+ * A time the server recorded, as ISO 8601 UTC (`Date.toISOString()`): the one source of a conversation row's time
+ * (autobyteus-628 D-3). The app shows it and never stamps a row with its own clock.
+ */
+export const serverTimeSchema = z.iso.datetime();
 
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 export const jsonValueSchema: z.ZodType<JsonValue> = z.lazy(() => z.union([
