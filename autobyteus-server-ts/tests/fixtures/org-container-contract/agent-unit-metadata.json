@@ -1,0 +1,16 @@
+{
+  "runId": "concierge_1",
+  "agentDefinitionId": "concierge",
+  "workspaceRootPath": "/home/u/workspace",
+  "memoryDir": "<data-dir>/memory/agents/concierge_1",
+  "llmModelIdentifier": "gpt-6-astra",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": null,
+  "containedIn": {
+    "orgRunId": "sdd_org_1",
+    "address": "/concierge"
+  },
+  "address": "/concierge"
+}

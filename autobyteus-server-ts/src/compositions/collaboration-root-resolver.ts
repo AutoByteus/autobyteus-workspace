@@ -1,5 +1,5 @@
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { AgentOrgRun } from "../agent-org-execution/domain/agent-org-run.js";
+import type { LiveAgentOrg } from "../agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { RootTeamRun } from "../agent-team-execution/domain/root-team-run.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
@@ -13,7 +13,7 @@ import {
 export type ResolvedRoot =
   | Readonly<{ kind: "agent"; root: StandaloneAgentRunRoot }>
   | Readonly<{ kind: "agent_team"; root: RootTeamRun }>
-  | Readonly<{ kind: "agent_org"; root: AgentOrgRun }>;
+  | Readonly<{ kind: "agent_org"; root: LiveAgentOrg }>;
 
 /**
  * One resolution of a root by its identity, through the root managers' public resolve / restore APIs

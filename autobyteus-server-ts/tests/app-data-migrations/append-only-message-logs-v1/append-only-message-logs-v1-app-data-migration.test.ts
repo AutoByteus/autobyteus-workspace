@@ -28,6 +28,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/app-data-migrations/froz
 import { StandaloneRootPackageStore } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { T0, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
+import { runOrgStartupChain } from "../../helpers/append-only-message-log-startup.js";
 
 /**
  * `20261018_append_only_message_logs_v1` (design DS-005; AC-004, AC-006, AC-007) on faithful synthesized
@@ -232,13 +233,20 @@ describe("20261018_append_only_message_logs_v1", () => {
     // Readiness admits the converted runs.
     const readiness = new RootRunPackageReadinessIndex(memory); await readiness.rebuild();
     expect(readiness.listAdmitted("agent_team")).toEqual(["team-empty", "team-r"]);
-    expect(readiness.listAdmitted("agent_org")).toEqual(["org-empty", "org-o", "org-unordered"]);
     expect(readiness.listAdmitted("agent")).toContain("hub");
+    // A released Org tree is admitted once it is a container (org-teams-follow-definition, 20261122, registered after this one).
+    expect(readiness.listAdmitted("agent_org")).toEqual([]);
 
     // A second start changes nothing.
     const converted = await logFiles(memory);
     expect(await convert(memory)).toMatchObject({ status: "SUCCEEDED", summary: { scannedCount: 0 } });
     expect(await logFiles(memory)).toEqual(converted);
+
+    // The rest of the start (ending with the Org units conversion, which reads these append-only Org logs) admits the Orgs.
+    const chain = await runOrgStartupChain(path.dirname(memory), memory);
+    expect(chain.at(-1)).toMatchObject({ id: "20261122_agent_org_units_own_runs_v1", status: "SUCCEEDED" });
+    await readiness.rebuild();
+    expect(readiness.listAdmitted("agent_org")).toEqual(["org-empty", "org-o", "org-unordered"]);
   });
 
   it("rotates a large log by the 4 MiB limit, keeping every message in order (F-HUB-LARGE, F-TEAM-LARGE, F-ORG-LARGE)", async () => {

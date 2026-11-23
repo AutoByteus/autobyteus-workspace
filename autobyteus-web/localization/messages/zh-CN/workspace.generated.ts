@@ -20,7 +20,6 @@ const messages = {
   'workspace.components.conversation.segments.MediaSegment.view_full_size': '查看全尺寸',
   'workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the': '您的浏览器不支持音频元素。',
   'workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2': '您的浏览器不支持视频标签。',
-  'workspace.components.conversation.segments.SystemTaskNotificationSegment.system_task_notification': '系统任务通知',
   'workspace.components.conversation.segments.ToolCallRejectionModal.textareaplaceholder': '文本区域占位符',
   'workspace.components.conversation.segments.ToolCallRejectionModal.cancel': '取消',
   'workspace.components.conversation.segments.ToolCallRejectionModal.reject': '拒绝',

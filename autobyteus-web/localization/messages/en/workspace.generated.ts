@@ -20,7 +20,6 @@ const messages = {
   'workspace.components.conversation.segments.MediaSegment.view_full_size': 'View Full Size',
   'workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the': 'Your browser does not support the audio element.',
   'workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2': 'Your browser does not support the video tag.',
-  'workspace.components.conversation.segments.SystemTaskNotificationSegment.system_task_notification': 'System Task Notification',
   'workspace.components.conversation.segments.ToolCallRejectionModal.textareaplaceholder': 'textareaPlaceholder',
   'workspace.components.conversation.segments.ToolCallRejectionModal.cancel': 'Cancel',
   'workspace.components.conversation.segments.ToolCallRejectionModal.reject': 'Reject',

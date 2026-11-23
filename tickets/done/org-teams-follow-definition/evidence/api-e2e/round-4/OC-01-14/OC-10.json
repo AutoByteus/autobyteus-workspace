@@ -1,0 +1,68 @@
+{
+  "statusesBeforeStop": [
+    {
+      "agentRunId": "oc_concierge_e06aa0_d0705b6795b642558a9f8b516d70d12b",
+      "status": "idle"
+    },
+    {
+      "agentRunId": "oc_lead_e06aa0_c1779b9ea2bc4901a60f87a1dda1ba45",
+      "status": "idle"
+    },
+    {
+      "agentRunId": "oc_writer_e06aa0_aba2d81e7efc42a1a47c17fa0fed8fab",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_editor_e06aa0_0f0b830834a04b149d8246de66df515c",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_reviewer_e06aa0_e30cef61e7d3440ca440bf2a398a3101",
+      "status": "offline"
+    }
+  ],
+  "statusesAfterStop": [
+    {
+      "agentRunId": "oc_concierge_e06aa0_d0705b6795b642558a9f8b516d70d12b",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_lead_e06aa0_c1779b9ea2bc4901a60f87a1dda1ba45",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_writer_e06aa0_aba2d81e7efc42a1a47c17fa0fed8fab",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_editor_e06aa0_0f0b830834a04b149d8246de66df515c",
+      "status": "offline"
+    },
+    {
+      "agentRunId": "oc_reviewer_e06aa0_e30cef61e7d3440ca440bf2a398a3101",
+      "status": "offline"
+    }
+  ],
+  "whileStopped": false,
+  "reopened": {
+    "first": "Your team changed: its definition was updated.\nJoined: helper at /team/helper.\nYour handoff rules are unchanged.\n\nECHO_INPUT",
+    "second": "ECHO_INPUT"
+  },
+  "afterReopen": [
+    "/lead",
+    "/writer",
+    "/editor",
+    "/reviewer",
+    "/helper"
+  ],
+  "restarted": {
+    "first": "Your team changed: its definition was updated.\nLeft: helper (/team/helper); messages to it are no longer delivered.\nYour handoff rules are unchanged.\n\nECHO_INPUT",
+    "second": "ECHO_INPUT"
+  },
+  "afterRestart": [
+    "/lead",
+    "/writer",
+    "/editor",
+    "/reviewer"
+  ]
+}

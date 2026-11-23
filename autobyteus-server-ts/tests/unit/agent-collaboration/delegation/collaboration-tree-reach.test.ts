@@ -40,13 +40,26 @@ const partsOf = (standing: RunStanding): RunParts => {
 const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: string) =>
   createCollaborationMemberExecutionIdentity({ root, memberAddress: memberAddress as never, agentRunId });
 
+/**
+ * The org is an Org container (org-teams-follow-definition design R-8): a run it delegated (an older delegation that named no
+ * delegator stays with it, contract §6) reaches its placements at Org addresses, as `placementsOf` answers them (here from
+ * its standing: an address whose agent also stands under it is a mounted Team, answered by its coordinator).
+ */
+const containers = {
+  containedInOf: async () => null, sameContainer: async () => false, orgAddressOf: async () => null, formerUnitAt: () => null, formerMemberAt: async () => null,
+  placementsOf: async (orgRunId: string) => orgRunId !== "org" ? [] : [...STANDING.org!.agents].map(([orgAddress, agentRunId]) => ({
+    orgAddress, agentRunId, run: run("agent", agentRunId), memberAddress: orgAddress, ref: { kind: "agent" as const, definitionId: agentRunId } })),
+} as never;
+
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
   const reads: string[] = [];
   const tree = new DelegationIndex(() => tasks, { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: async (r) => {
     reads.push(r.rootRunId);
+    // A container hosts no agent: its own parts are empty; its units answer step 2 (`placementsOf`).
+    if (r.rootRunId === "org") return { agents: [], formerAgents: [], coordinatorAddress: null, mountedTeams: [] };
     return STANDING[r.rootRunId] ? partsOf(STANDING[r.rootRunId]!) : null;
-  } });
+  } }, containers);
   tree.build();
   tasks.setEntriesListener(tree);
   for (const taskId of ["T1", "T3", "T4", "T5"]) tasks.addTask(taskId);
@@ -70,8 +83,9 @@ describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.
     ["B-1: a delegated team's member reaches its Task's assigner", E, "/code_reviewer", "coder", "/project_task_manager", "manager"],
     ["B-2: a sub-work run reaches its Task's assigner, not its delegator", P, "/product_designer", "pd", "/project_task_manager", "manager"],
     ["B-3: a run delegated by a team member reaches the assigning team's member", H, "/helper", "helper", "/solution_designer", "u_designer"],
-    ["B-4: a run delegated by an org reaches the org's agent", S, "/tutor", "tutor", "/ceo_agent", "ceo"],
-    ["B-4: … and the org's mounted team's member", S, "/tutor", "tutor", "/dev_team/dev_lead", "dev_lead"],
+    ["B-4 (container rule, R-8): a run delegated by an org reaches the org's agent at its Org address", S, "/tutor", "tutor", "/ceo_agent", "ceo"],
+    ["B-4: … and the org's mounted team's member as P/x", S, "/tutor", "tutor", "/dev_team/dev_lead", "dev_lead"],
+    ["B-4: … and the org's mounted team as P (its coordinator)", S, "/tutor", "tutor", "/dev_team", "dev_lead"],
     ["B-5: … and its handoff target outside the team, kept as written", S, "/tutor", "tutor", "/Teacher", "teacher"],
     ["SR-081: the org's own mounted team member under the copy's old name, not one of the copy's own members, is reached", X, "/x_lead", "x_lead", "/dev_team/dev_lead", "dev_lead"],
   ])("%s (step 2)", async (_case, root, address, agentRunId, target, expected) => {

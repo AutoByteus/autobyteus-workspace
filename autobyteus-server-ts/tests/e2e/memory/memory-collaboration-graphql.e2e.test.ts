@@ -8,13 +8,12 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
@@ -48,13 +47,13 @@ const writeTeamRoot = async (memoryRoot: string, tree: TeamRunExecutionTreeSnaps
   return packageDir;
 };
 
-const writeOrgRoot = async (memoryRoot: string, tree: AgentOrgRunExecutionTreeSnapshot) => {
-  const orgRunId = tree.rootOrg.orgRunId;
-  const packageDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(orgRunId);
-  await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-  await new AgentOrgCommunicationMessagesStore().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
-  return packageDir;
-};
+/** An Org container (org-teams-follow-definition): `/ceo` and the Team unit `/engineering` with its `/solution_designer`. */
+const writeOrgRoot = (memoryRoot: string, orgRunId: string, orgDefinitionId: string) => writeStoredOrgContainer(memoryRoot, {
+  orgRunId, orgDefinitionId, orgDefinitionName: "Tree Org Name", createdAt: "2026-09-01T00:00:00.000Z",
+  units: [{ kind: "agent", address: "/ceo", runId: `${orgRunId}-ceo`, agentDefinitionId: `definition-${orgRunId}-ceo` },
+    { kind: "agent_team", address: "/engineering", runId: `${orgRunId}-engineering`, coordinatorAddress: "/solution_designer",
+      members: [{ address: "/solution_designer", agentRunId: `${orgRunId}-designer`, agentDefinitionId: `definition-${orgRunId}-designer` }] }],
+});
 
 /** Writing team root: configured coordinator `/writer` plus its delegated task instance (flat Team V2 has no nested teams). */
 const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecutionTreeSnapshot => {
@@ -144,21 +143,21 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     ]);
 
     // Org roots (admitted): org-a has two runs with member memory; org-b has none.
-    await writeOrgRoot(memoryDir, orgTree("gql-org-a-1", "gql-org-a"));
-    await writeOrgRoot(memoryDir, orgTree("gql-org-a-2", "gql-org-a"));
-    await writeOrgRoot(memoryDir, orgTree("gql-org-b-1", "gql-org-b"));
-    semantic(orgDir("gql-org-a-1", "gql-org-a-1-ceo"), "org ceo", "2026-09-01T01:00:00.000Z");
-    semantic(orgDir("gql-org-a-1", "gql-org-a-1-engineering", "gql-org-a-1-designer"), "org designer", "2026-09-01T02:00:00.000Z");
+    await writeOrgRoot(memoryDir, "gql-org-a-1", "gql-org-a");
+    await writeOrgRoot(memoryDir, "gql-org-a-2", "gql-org-a");
+    await writeOrgRoot(memoryDir, "gql-org-b-1", "gql-org-b");
+    semantic(path.join(memoryDir, "agents", "gql-org-a-1-ceo"), "org ceo", "2026-09-01T01:00:00.000Z");
+    semantic(path.join(memoryDir, "agent_teams", "gql-org-a-1-engineering", "gql-org-a-1-designer"), "org designer", "2026-09-01T02:00:00.000Z");
     semantic(path.join(memoryDir, "agents", "gql-org-a-1-task-ceo"), "org task ceo", "2026-09-01T03:00:00.000Z");
     semantic(path.join(memoryDir, "agent_teams", "gql-org-a-1-engineering-task", "gql-org-a-1-task-team-designer"), "org task team member", "2026-09-01T04:00:00.000Z");
-    semantic(orgDir("gql-org-a-2", "gql-org-a-2-ceo"), "org second run", "2026-09-02T01:00:00.000Z");
+    semantic(path.join(memoryDir, "agents", "gql-org-a-2-ceo"), "org second run", "2026-09-02T01:00:00.000Z");
     await new AgentOrgRunHistoryIndexStore(memoryDir).writeIndex([
       { orgRunId: "gql-org-a-1", orgDefinitionId: "gql-org-a", orgDefinitionName: "Alpha Org", workspaceRootPath: "/tmp/alpha", summary: "first alpha run", createdAt: "2026-09-01T00:00:00.000Z", archivedAt: null, terminatedAt: null },
       { orgRunId: "gql-org-a-2", orgDefinitionId: "gql-org-a", orgDefinitionName: "Alpha Org", workspaceRootPath: null, summary: "", createdAt: "2026-09-02T00:00:00.000Z", archivedAt: null, terminatedAt: null },
     ]);
     createdPaths.push(
       ...["gql-team-run-1", "gql-team-run-2", "gql-team-unadmitted", "gql-team-invalid", "gql-team-corrupt-later"].map((id) => teamDir(id)),
-      ...["gql-org-a-1", "gql-org-a-2", "gql-org-b-1"].map((id) => orgDir(id)),
+      ...["gql-org-a-1", "gql-org-a-2", "gql-org-b-1"].flatMap((id) => [orgDir(id), path.join(memoryDir, "agents", `${id}-ceo`), teamDir(`${id}-engineering`)]),
       path.join(memoryDir, "imports", "gql-collab-import"),
     );
     resetRootRunPackageReadinessIndex(memoryDir);

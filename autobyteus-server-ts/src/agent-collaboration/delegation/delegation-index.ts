@@ -6,6 +6,7 @@ import {
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 import { CollaborationTree, type RunFilesReader, type SubtreeRow } from "./collaboration-tree.js";
 import type { RunAgent, RunParts, RunStanding } from "./run-parts.js";
+import type { OrgContainerPort } from "../domain/org-container-port.js";
 
 /** A run that a run delegated to, whose Task work is open (one hop, DS-8). */
 export type DelegatedChild = Readonly<{
@@ -51,7 +52,8 @@ const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
  *   warning naming it and the reason (`DESIGN.md` rule 7).
  *
  * The Task side stays the authority for "is this run's Task open" at a gate head (`isOpen`); the tree answers who is
- * related to whom, and who may message whom (`canMessage`, contract §10.2).
+ * related to whom, and who may message whom (`canMessage`, contract §10.2). With the Org container directory, a unit run's
+ * collaboration tree reaches its container's other units (org-teams-follow-definition).
  */
 export class DelegationIndex implements TaskEntriesListener {
   /** Each Task's entries (each run's last one). */
@@ -74,11 +76,11 @@ export class DelegationIndex implements TaskEntriesListener {
   private readonly listeners = new Set<() => void>();
   private readonly childRowsListeners = new Set<(change: ChildRowsChange) => void>();
 
-  constructor(private readonly source: () => Source, private readonly reader: RunFilesReader) {}
+  constructor(private readonly source: () => Source, private readonly reader: RunFilesReader, private readonly containers: OrgContainerPort | null = null) {}
 
   /** A run's collaboration tree (SR-060): every cross-run answer for it, derived now, never stored. */
   collaborationTreeOf(run: RootExecutionIdentity): CollaborationTree {
-    return new CollaborationTree(this, this.reader, run);
+    return new CollaborationTree(this, this.reader, run, this.containers);
   }
 
   /** `byRunId` (contract §4): a run's node, `null` for a run no Task names (nor names as delegating run). */

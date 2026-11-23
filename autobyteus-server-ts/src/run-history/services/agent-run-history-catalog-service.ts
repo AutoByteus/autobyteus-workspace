@@ -22,6 +22,7 @@ import {
   type StandaloneRunCollaborationRoots,
   type StandaloneRunLiveness,
 } from "./standalone-run-liveness.js";
+import { cloneRows, getState, type CatalogState } from "./agent-run-history-catalog-state.js";
 import {
   commitAgentRunRuntimeSwitch,
   type AgentRunModelConfigCommitResult,
@@ -30,13 +31,6 @@ import {
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
-};
-
-type CatalogState = {
-  initialized: boolean;
-  initPromise: Promise<void> | null;
-  rows: Map<string, AgentRunHistoryIndexRowRecord>;
-  queue: Promise<void>;
 };
 
 type CatalogMutationResult<T> = {
@@ -49,39 +43,6 @@ type AgentDefinitionLookup = {
     agentDefinitionId: string,
   ): Promise<{ name?: string | null } | null>;
 };
-
-const catalogStates = new Map<string, CatalogState>();
-
-const getState = (memoryDir: string): CatalogState => {
-  const key = path.resolve(memoryDir);
-  const existing = catalogStates.get(key);
-  if (existing) {
-    return existing;
-  }
-  const created: CatalogState = {
-    initialized: false,
-    initPromise: null,
-    rows: new Map(),
-    queue: Promise.resolve(),
-  };
-  catalogStates.set(key, created);
-  return created;
-};
-
-export const resetAgentRunHistoryCatalogState = (memoryDir: string): void => {
-  const state = catalogStates.get(path.resolve(memoryDir));
-  if (!state) {
-    return;
-  }
-  state.initialized = false;
-  state.initPromise = null;
-  state.rows = new Map();
-};
-
-const cloneRows = (
-  rows: Map<string, AgentRunHistoryIndexRowRecord>,
-): Map<string, AgentRunHistoryIndexRowRecord> =>
-  new Map(Array.from(rows.entries()).map(([runId, row]) => [runId, { ...row }]));
 
 const isPreparedIdentity = (metadata: AgentRunMetadata): boolean =>
   Boolean(metadata.preparedAt) && !metadata.startedAt;
@@ -182,6 +143,20 @@ export class AgentRunHistoryCatalogService {
         }).catch(() => undefined);
         throw error;
       }
+    });
+    await this.readiness.admitCurrent("agent", input.runId);
+  }
+
+  /**
+   * A unit of an Org container (org-teams-follow-definition, contract §8): its own file and its package admission, and no
+   * history row (it is listed under its Org, never as a top-level run).
+   */
+  async recordPreparedUnit(input: { runId: string; metadata: AgentRunMetadata }): Promise<void> {
+    await this.enqueue(async () => {
+      if (this.state.rows.has(input.runId) || await this.metadataStore.readMetadata(input.runId)) {
+        throw new Error(`Run '${input.runId}' already exists.`);
+      }
+      await this.metadataStore.writeMetadata(input.runId, { ...input.metadata, runId: input.runId });
     });
     await this.readiness.admitCurrent("agent", input.runId);
   }

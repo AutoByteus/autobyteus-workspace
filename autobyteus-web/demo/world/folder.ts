@@ -42,10 +42,11 @@ export const folderChildrenJson = (folderPath: string): string => {
   return JSON.stringify({ id: idOf(relative), name, path: relative || ROOT_NAME, is_file: false, children: childrenOf(relative), children_loaded: true } satisfies FolderDict);
 };
 
-/** `fileContent`: a file's text, or the node's error (as a JSON string, as the node answers). */
+/** `fileContent`: a file's exact text; a file the demo does not have throws the node's error (a GraphQL error). */
 export const fileContentText = (filePath: string): string => {
   const relative = normalized(filePath);
-  if (!isFile(relative)) return JSON.stringify({ error: `File not found: ${filePath}` });
+  // The node refuses a file it does not have as a GraphQL error, never as text (autobyteus-579).
+  if (!isFile(relative)) throw new Error(`File not found: ${filePath}`);
   return PICTURE.test(relative) ? demoImageFor(relative) : DEMO_FILES[relative]!;
 };
 

@@ -17,6 +17,8 @@ import {
 } from "../domain/inter-agent-message-delivery.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import { ContainedTeamAddressSpace } from "../container/contained-team-address-space.js";
 import {
   resolveMemberCollaborationScope,
   type MemberHostTeam,
@@ -28,7 +30,7 @@ export class MemberExecutionContextBuilder {
 
   constructor(
     private readonly teamDefinitionService: Pick<AgentTeamDefinitionService, "getDefinitionById">,
-    /** Whether the team run works on a Task an org assigned (the organization line, SR-058). */
+    /** Whether the team run works on a Task an org assigned (the organization line, SR-058), and a Team unit's Org rules. */
     private readonly tree: Pick<DelegationIndex, "collaborationTreeOf">,
   ) {}
 
@@ -65,9 +67,11 @@ export class MemberExecutionContextBuilder {
     });
     const agentRunId = input.agentNode.agentRunId;
     const membership = input.teamContext.membership;
+    const teamRules = scope.role === "team_member" ? () => membership.handoffsOf(agentRunId) : () => scope.outgoingHandoffs;
     const collaboration = new MemberCollaborationContext({
-      // DS-005: read from the team's membership on each call: a current member's rules now, none once it left.
-      outgoingHandoffs: scope.role === "team_member" ? () => membership.handoffsOf(agentRunId) : () => scope.outgoingHandoffs,
+      // DS-005: read from the team's membership on each call: a current member's rules now, none once it left. A Team
+      // unit's member is shown them in the Org, with the Org's rules from its Org address (design R-1'', R-6).
+      outgoingHandoffs: await this.withOrgRules(root, input.agentNode, membership, teamRules),
       deliverLogicalMessage: (message) => input.deliverInterAgentMessage({
         rootTeamRunId: root.rootRunId,
         recipientAddress: message.recipientAddress,
@@ -89,11 +93,21 @@ export class MemberExecutionContextBuilder {
       identity,
       teamScoped: true,
       collaborationRole: scope.role,
-      inOrganization: this.tree.collaborationTreeOf(root).inOrganization(),
+      inOrganization: await this.tree.collaborationTreeOf(root).inOrganization(),
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCapability,
     });
+  }
+
+  /** A Team unit member's rules: the Team's own shown in the Org, then the Org's from its Org address; none once it left. */
+  private async withOrgRules(root: CollaborationMemberExecutionIdentity["root"], agentNode: TeamRunAgentNode, membership: TeamRunContext<unknown>["membership"],
+    teamRules: () => readonly CollaborationHandoff[]): Promise<() => readonly CollaborationHandoff[]> {
+    const unit = await this.tree.collaborationTreeOf(root).orgUnit();
+    if (!unit) return teamRules;
+    const space = ContainedTeamAddressSpace.of(unit.containedIn)!;
+    const orgAddress = space.toOrg(agentNode.address);
+    return () => membership.stateOf(agentNode.agentRunId) === "current" ? [...space.rulesToOrg(teamRules()), ...unit.orgRulesFrom(orgAddress)] : [];
   }
 
   private resolveSummary(teamDefinitionId: string): Promise<{ instruction: string | null }> {

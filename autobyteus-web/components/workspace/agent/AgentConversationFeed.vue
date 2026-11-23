@@ -25,25 +25,13 @@
         </template>
         <template v-else>
           <div v-for="item in latestFeedItems" :key="item.key" class="conv-row break-words px-2 py-3" :data-speaker="item.kind === 'message' ? (item.message.type === 'user' ? 'user' : 'agent') : 'system'">
-            <template v-if="item.kind === 'message'">
-              <div>
-                <UserMessage v-if="item.message.type === 'user'" :message="item.message" user-display-name="You" />
-                <AIMessage v-else :message="item.message" :run-id="runId"
-                  :agent-name="agentName"
-                  :agent-avatar-url="agentAvatarUrl"
-                  :inter-agent-sender-name-by-id="interAgentSenderNameById"
-                  :message-index="item.messageIndex"
-                  :enable-event-monitor-file-actions="enableEventMonitorFileActions"
-                  @file-path-action="emit('file-path-action', $event)" />
-              </div>
-
-              <span v-if="showTokenCosts && getRecentEventMonitorMessageUsageText(item.message)"
-                class="mt-1 block pr-8 text-right text-[0.6875rem] font-medium text-gray-400">
-                {{ getRecentEventMonitorMessageUsageText(item.message) }}
-              </span>
-            </template>
-
-            <CompactionStatusRow v-else :activity="item.activity" />
+            <EventMonitorLatestRow :item="item" :run-id="runId"
+              :agent-name="agentName"
+              :agent-avatar-url="agentAvatarUrl"
+              :inter-agent-sender-name-by-id="interAgentSenderNameById"
+              :show-token-costs="showTokenCosts"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)" />
           </div>
         </template>
       </div>
@@ -93,12 +81,12 @@ import { Icon } from '@iconify/vue';
 import type { Conversation } from '~/types/conversation';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
 import UserMessage from '~/components/conversation/UserMessage.vue';
-import AIMessage from '~/components/conversation/AIMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
-import { getRecentEventMonitorMessageUsageText, getRecentEventMonitorTotalUsageText } from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
+import { getRecentEventMonitorTotalUsageText } from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
 import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import EventMonitorBrowseAssistantRow from './EventMonitorBrowseAssistantRow.vue';
+import EventMonitorLatestRow from './EventMonitorLatestRow.vue';
 import type { EventMonitorActiveTraceBrowsePresentationItem } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
 import type { EventMonitorActiveTraceBrowseState } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
 import { useOwnSendFollow } from '~/composables/workspace/useOwnSendFollow';

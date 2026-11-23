@@ -1,3 +1,4 @@
+import { AgentOrgContainerStore } from "../../run-history/store/agent-org-container-store.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -126,8 +127,10 @@ export class RunFolderDiscovery {
       if (runFolders.has(run.memoryDir) && !runs.has(run.memoryDir)) runs.set(run.memoryDir, run);
     };
     const kind = scope?.rootSubjectKind ?? null;
-    if (!kind || kind === "agent_team") await this.guarded("team runs", async () => (await this.teamMembers(scope)).forEach(add));
+    // Org members first: an Org container's units' agents are attributed to their Org (org-teams-follow-definition, design
+    // R-5: the Memory page shows the Org with its units, as before), never to their unit runs.
     if (!kind || kind === "agent_org") await this.guarded("agent org runs", async () => (await this.orgMembers(scope)).forEach(add));
+    if (!kind || kind === "agent_team") await this.guarded("team runs", async () => (await this.teamMembers(scope)).forEach(add));
     if (!kind || kind === "agent") await this.guarded("agent runs", async () => (await this.agentRuns(runFolders, scope)).forEach(add));
     // After the team and org sources: they awaited the readiness index whose diagnostics are read here (N-7).
     const unreadableRoot = this.unreadableRoots(kind);
@@ -275,6 +278,13 @@ export class RunFolderDiscovery {
     return runs;
   }
 
+  /** An Org container's unit run folders; `null` for a released Org run (its members are in its own folder). */
+  private async containerUnitFolders(orgRunId: string): Promise<string[] | null> {
+    const file = await new AgentOrgContainerStore().readIfContainer(this.layout.getOrgDirPath(orgRunId), orgRunId).catch(() => null);
+    return file ? [...file.rootOrg.units, ...file.rootOrg.formerUnits].map((unit) => unit.kind === "agent"
+      ? this.layout.getStandaloneRunDirPath(unit.runId) : this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] })) : null;
+  }
+
   /** Every folder with raw traces under the three family roots, or under one root's folder (absolute, resolved). */
   private async runFolders(scope: RootExecutionIdentity | null): Promise<Set<string>> {
     const found = new Set<string>();
@@ -289,7 +299,9 @@ export class RunFolderDiscovery {
       }
     };
     if (scope) {
-      await walk(this.rootFolder(scope), 1);
+      // An Org container's agents are in its unit runs' folders.
+      const units = scope.rootSubjectKind === "agent_org" ? await this.containerUnitFolders(scope.rootRunId) : null;
+      for (const folder of units ?? [this.rootFolder(scope)]) await walk(folder, 1);
       return found;
     }
     for (const root of [this.layout.getStandaloneRootDirPath(), this.layout.getTeamRootDirPath(), this.layout.getOrgRootDirPath()]) {

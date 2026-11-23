@@ -27,7 +27,6 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-12", "send_message_to", "The agent '<run id>' did not accept the message: <reason>."],
   ["M-13", "send_message_to", "You can't send a message to yourself."],
   ["M-14", "send_message_to", "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given."],
-  ["M-15", "send_message_to", "The agent '<run id>' is not running, so the message was not sent."],
   // M-16 ("The task agent '<run id>' has stopped …") was withdrawn with hosting (autobyteus-461): a delegated run is its own
   // run, and a message to it when stopped restores it.
   // M-17 ("The user is stopping this task agent.") went with hosted copies (autobyteus-461): a delegated run stops as itself.
@@ -88,10 +87,11 @@ const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|the r
 describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
   // M-30 ("Tasks are not available here …") was withdrawn with the process binding (autobyteus-461 SR-047, SR-052): every host
   // composes the Task side and its delegation, so no delegation finds none. M-37 (a team member's run ID) was withdrawn by
-  // SR-071: a member's run ID gets base's M-34.
-  it("lists M-01 to M-50 once each, without the withdrawn M-43, M-16, M-17, M-30, M-37 and M-06 (autobyteus-492)", () => {
+  // SR-071: a member's run ID gets base's M-34. M-15 (an Org root's configured agent that was not running) was withdrawn with
+  // the Org root's agent hosting (org-teams-follow-definition: an Org's agents run in their units' own roots).
+  it("lists M-01 to M-50 once each, without the withdrawn M-43, M-16, M-17, M-30, M-37, M-06 (autobyteus-492) and M-15", () => {
     expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 50 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
-      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30" && id !== "M-37" && id !== "M-06"));
+      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30" && id !== "M-37" && id !== "M-06" && id !== "M-15"));
   });
 
   const source = normalizedSource();

@@ -68,6 +68,7 @@
     "test:e2e:remote-runs-in-tree": "node tests/e2e/remote-runs-in-tree-probe.mjs",
     "test:e2e:standalone-messages": "node tests/e2e/standalone-messages-probe.mjs",
     "test:e2e:mobile-shell": "node tests/e2e/mobile-shell-probe.mjs",
+    "test:e2e:notice-row-presentation": "node tests/e2e/notice-row-presentation-probe.mjs",
     "test:e2e:dev-proxy-websockets": "node tests/e2e/dev-proxy-websockets-probe.mjs",
     "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",
     "test:e2e:remote-nodes-page": "node tests/e2e/remote-nodes-page-probe.mjs",

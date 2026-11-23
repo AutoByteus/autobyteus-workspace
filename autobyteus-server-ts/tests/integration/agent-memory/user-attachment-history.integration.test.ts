@@ -18,9 +18,8 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { registerContextFileRoutes } from "../../../src/api/rest/context-files.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { writeStoredOrgContainer } from "../../helpers/stored-org-container.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { testExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { createStoredCollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
@@ -49,11 +48,9 @@ beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), "attachment-history-"));
   memoryDir = path.join(config.root, "memory");
   const layout = new AgentMemoryLayout(memoryDir);
-  const direct = testOrgAgentNode("/same", "direct");
-  const lead = testOrgAgentNode("/team/lead", "lead");
-  const team = testOrgTeamNode({ address: "/team", teamRunId: "team", coordinatorAddress: lead.address, members: [lead] });
-  const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct, team] })) as any;
-  await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
+  // An Org container (org-teams-follow-definition): its members' files are in their unit runs (R-7: same owner form).
+  await writeStoredOrgContainer(memoryDir, { orgRunId: "org", units: [{ kind: "agent", address: "/same", runId: "direct" },
+    { kind: "agent_team", address: "/team", runId: "team", coordinatorAddress: "/lead", members: [{ address: "/lead", agentRunId: "lead" }] }] });
   // The runs the org delegated to are runs of their own (autobyteus-461): an agent run `repeat` and a team run
   // `task-team` rooted at `/`, each holding its own files.
   for (const [teamRunId, agentRunId] of [["standalone-team", "standalone-lead"], ["task-team", "task-lead"]]) {

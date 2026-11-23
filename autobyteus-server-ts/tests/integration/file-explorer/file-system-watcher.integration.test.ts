@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import { watch as fsWatch } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
@@ -12,6 +11,7 @@ import {
 } from "../../../src/file-explorer/file-system-changes.js";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 import { FILE_EVENT_TEST_TIMEOUT_MS, IN_PROCESS_SERVER_HOOK_TIMEOUT_MS, OS_FILE_EVENT_WAIT_MS } from "../../helpers/os-latency-under-load.js";
+import { labelFileEventTimeout, OS_FILE_EVENT_PROBE_MS } from "../../helpers/os-file-event-probe.js";
 
 const createTempWorkspace = async (): Promise<string> => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-watch-"));
@@ -27,35 +27,14 @@ const createTempWorkspace = async (): Promise<string> => {
  * runs when the guard is reached, so the probe still runs (and labels the failure) before it.
  */
 const HANG_GUARD_MS = OS_FILE_EVENT_WAIT_MS;
-const ENVIRONMENT_PROBE_MS = 10_000;
-const TEST_TIMEOUT_MS = FILE_EVENT_TEST_TIMEOUT_MS + ENVIRONMENT_PROBE_MS;
+const TEST_TIMEOUT_MS = FILE_EVENT_TEST_TIMEOUT_MS + OS_FILE_EVENT_PROBE_MS;
 let guardEndsAt = 0;
 const HANG_GUARD_MESSAGE = "Timed out waiting for event (hang guard)";
 
 /**
- * SR-013 (D-13, ARCH-REV-006): when a wait reaches the hang guard, whether the OS delivers file events at all now. A raw
- * `fs.watch` on a fresh temp dir, one write, at most 10 s; none of our watcher code. The OS can drop events under load
- * (FSEvents; investigation notes "FU-021, continued"), and then a watcher result says nothing about the watcher.
+ * SR-013/SR-014 (D-13, D-13b): when a wait reaches the hang guard, the shared probe (`os-file-event-probe.ts`) labels the
+ * failure `ENVIRONMENT` or `INCONCLUSIVE` (TESTING.md "File watching on a busy Mac"); neither is a product verdict.
  */
-const osDeliversFileEvents = async (): Promise<boolean> => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-watch-probe-"));
-  try {
-    return await new Promise<boolean>((resolve) => {
-      const watcher = fsWatch(dir, () => { clearTimeout(timer); watcher.close(); resolve(true); });
-      const timer = setTimeout(() => { watcher.close(); resolve(false); }, ENVIRONMENT_PROBE_MS);
-      void fs.writeFile(path.join(dir, "probe.txt"), "probe", "utf-8");
-    });
-  } finally {
-    await fs.rm(dir, { recursive: true, force: true });
-  }
-};
-const ENVIRONMENT_MESSAGE = "ENVIRONMENT: the OS delivered no file event within 10 s (FSEvents under load); this watcher result is not meaningful";
-/**
- * SR-014 (D-13b): the probe's own stream got its event, but under load the OS can drop one stream's events and not
- * another's (IMP-012), so this is not a product verdict either. The proof runs where the OS delivers events.
- */
-const INCONCLUSIVE_MESSAGE = "INCONCLUSIVE: the watcher saw no change; a fresh fs.watch stream did. Under load the OS can drop one stream's events (FU-500-06); rerun where the OS delivers events.";
-
 const nextEvent = async (
   events: AsyncGenerator<string, void, void>,
   timeoutMs = HANG_GUARD_MS,
@@ -92,7 +71,7 @@ const collectUntil = async (
     if (!(error instanceof Error) || error.message !== HANG_GUARD_MESSAGE) throw error;
     // The case's diagnostics: what arrived before the guard.
     const seen = JSON.stringify(changes.map((change) => ({ type: change.type, path: pathOf(change) || (change as { path?: string }).path })));
-    throw new Error(`${await osDeliversFileEvents() ? INCONCLUSIVE_MESSAGE : ENVIRONMENT_MESSAGE}\nChanges before the guard: ${seen}`);
+    throw await labelFileEventTimeout(`Changes before the guard: ${seen}`);
   }
   return changes;
 };

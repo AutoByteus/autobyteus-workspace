@@ -1,0 +1,737 @@
+{
+  "startedAt": "2026-11-22T20:28:54.827Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50499,
+      "nodeId": "srv_g6jXAuaYwnSuIfUcSoHIsjjJtUiwLQ5g",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 50498,
+      "nodeId": "srv_BnTXslMExX-HeEK5EJJQr7LoJWJjI7nr",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 50669,
+      "nodeId": "srv__VQm9Uk78C_F4jCc5vmF8xT_JuYyDmoa",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_e45eb279ede246a6ba1ee5b47896d95f",
+    "writerRun": "release_notes_writer_3ccd7bfa2ff14748bc8175071a18d2a0",
+    "squadRun": "docs_review_team_d7d698611c8c44a1934ef77313ed531f",
+    "reviewer": "release_notes_writer_b6e16dfa0e7a49c093841124b918d1db",
+    "memberDelegated": "fact_checker_c83a8b00f7594eb29ffd040a3315d6ea",
+    "remoteAgentRun": "publisher_34571a09175146939bad99cfc2d5f061",
+    "remoteTeamRun": "studio_team_c1b802140fdc4cd6807040b7b832415c",
+    "plain": [
+      "fact_checker_21d2678d906e4cceb1195b430a6b6a85",
+      "fact_checker_d39aed8c0e2d4787837b58cde3a3dee1",
+      "fact_checker_70a091618d1944f98ac03be7a3aaacf6"
+    ],
+    "org": "delivery_org_0701be17863943209140f4743b632eaf",
+    "orgPlanner": "release_notes_writer_5b6814af6a6f44ef9921cde65ad04834",
+    "reviewOrg": "review_org_7bdaa33edcdc4728a914f501e1711775",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_fc8ae842004140929569bb4e8f11f969",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_b3294b6fadc948c39ab927cdb0fbf9d2",
+    "deliveryLead": "fact_checker_3e0e06b35fa84a018954f71462b5818d",
+    "deliveryMate": "release_notes_writer_60a718100bf94f9dbfd4af83cb05316d",
+    "leadDelegated": "changelog_helper_8be4343989b242e6897cdb6e8a45057c",
+    "approver": "approver_48ca7b6df68547e6b54240200514ceb4",
+    "taskA": "launch-364856-1",
+    "taskB": "launch-364856-2"
+  },
+  "cases": {
+    "MSP-75": {
+      "result": "Pass",
+      "seconds": 20,
+      "runId": "build_runner_adc9a89857f6451588a90f4a69f5fc45",
+      "agentTimes": [
+        "2026-11-22 20:29 UTC",
+        "2026-11-22 20:29 UTC"
+      ],
+      "expectedCards": [
+        "22 Nov 2026, 21:29 CET",
+        "22 Nov 2026, 21:29 CET"
+      ],
+      "afterFirst": {
+        "cards": [
+          "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          0
+        ],
+        "replies": [
+          1,
+          1,
+          0
+        ]
+      },
+      "live": {
+        "cards": [
+          "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "reloaded": {
+        "cards": [
+          "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+          "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+        ],
+        "inputs": [
+          1,
+          1,
+          1
+        ],
+        "replies": [
+          1,
+          1,
+          1
+        ]
+      },
+      "requests": 5
+    },
+    "MSP-76": {
+      "result": "Pass",
+      "seconds": 14.2,
+      "key": "team:build_team_9d110ae809b845df998f9590afe758ab",
+      "runId": "build_team_9d110ae809b845df998f9590afe758ab",
+      "live": {
+        "cards": [
+          "Background tasks finished pid 93306 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_5f4bbf60bb394682baefca824704f40e/call-1795379394562-93277.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "Background tasks finished pid 93306 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_5f4bbf60bb394682baefca824704f40e/call-1795379394562-93277.log. Last lines: MSP-76_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    },
+    "MSP-77": {
+      "result": "Pass",
+      "seconds": 14.3,
+      "key": "org:build_org_ad3ade41ec2e41bf8c229375866cb422",
+      "runId": "build_org_ad3ade41ec2e41bf8c229375866cb422",
+      "live": {
+        "cards": [
+          "Background tasks finished pid 98657 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_00b513e33b7941609ffc866b77d0d2cb/call-1795379408691-98576.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "reloaded": {
+        "cards": [
+          "Background tasks finished pid 98657 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_00b513e33b7941609ffc866b77d0d2cb/call-1795379408691-98576.log. Last lines: MSP-77_BUILT"
+        ],
+        "started": 1,
+        "noted": 1
+      },
+      "requests": 3,
+      "noticeReachedAgent": true
+    },
+    "MSP-99": {
+      "result": "Pass",
+      "seconds": 83.6,
+      "runId": "notice_reader_a295eb7a27af464ab0382aaa867d59d5",
+      "wakeLive": {
+        "at": 2,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "restartLive": {
+        "at": 6,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "wakeReloaded": {
+        "at": 2,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "restartReloaded": {
+        "at": 6,
+        "agentName": "Notice Reader",
+        "checks": {
+          "ownRow": true,
+          "labelAsSpeakerLine": true,
+          "iconNoAgentAvatar": true,
+          "noHeaderLine": true,
+          "noColoredPanel": true,
+          "beforeIsAgent": true,
+          "beforeHasNoNotice": true,
+          "beforeText": true,
+          "afterSpeaker": true,
+          "afterShowsItsSpeaker": true,
+          "afterText": true
+        }
+      },
+      "rowsAfterReload": [
+        [
+          "user",
+          "You You CASE:MSP-99 Start the short build in the background."
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+        ],
+        [
+          "system",
+          "Background tasks finished pid 3851 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3"
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader MSP99_NOTED"
+        ],
+        [
+          "user",
+          "You You CASE:MSP-99 Start the long build."
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader run_bash · \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_e5104"
+        ],
+        [
+          "system",
+          "Application restarted The application restarted at 22 Nov 2026, 21:31 CET (reason: a restart). If you started any backgr"
+        ],
+        [
+          "user",
+          "You You CASE:MSP-99 And now?"
+        ],
+        [
+          "agent",
+          "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+        ]
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "restored-run-setup",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent/build_runner_adc9a89857f6451588a90f4a69f5fc45?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:50669/mobile/_nuxt/u-uBpMPK.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-collaboration/build_runner_adc9a89857f6451588a90f4a69f5fc45?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent/build_runner_adc9a89857f6451588a90f4a69f5fc45?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:50669/mobile/_nuxt/u-uBpMPK.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-collaboration/build_runner_adc9a89857f6451588a90f4a69f5fc45?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-75",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-76",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-77",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (401 /favicon.ico, no credential)"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent/build_runner_adc9a89857f6451588a90f4a69f5fc45?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:50669/mobile/_nuxt/u-uBpMPK.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent/notice_reader_a295eb7a27af464ab0382aaa867d59d5?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:50669/mobile/_nuxt/u-uBpMPK.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-team/build_team_9d110ae809b845df998f9590afe758ab?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.21:50669/mobile/_nuxt/u-uBpMPK.js:1165:5901)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: WebSocket connection to 'ws://192.168.77.21:50669/ws/agent-collaboration/notice_reader_a295eb7a27af464ab0382aaa867d59d5?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    },
+    {
+      "case": "MSP-99",
+      "line": "phone-delta console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "delta restarted on purpose; the phone reconnects"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "restoredRun": {
+    "runId": "build_runner_adc9a89857f6451588a90f4a69f5fc45",
+    "agentTimes": [
+      "2026-11-22 20:29 UTC",
+      "2026-11-22 20:29 UTC"
+    ],
+    "expectedCards": [
+      "22 Nov 2026, 21:29 CET",
+      "22 Nov 2026, 21:29 CET"
+    ],
+    "afterFirst": {
+      "cards": [
+        "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        0
+      ],
+      "replies": [
+        1,
+        1,
+        0
+      ]
+    },
+    "live": {
+      "cards": [
+        "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "reloaded": {
+      "cards": [
+        "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+        "Application restarted The application restarted at 22 Nov 2026, 21:29 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+      ],
+      "inputs": [
+        1,
+        1,
+        1
+      ],
+      "replies": [
+        1,
+        1,
+        1
+      ]
+    },
+    "requests": 5
+  },
+  "noticeOnceMSP-76": {
+    "key": "team:build_team_9d110ae809b845df998f9590afe758ab",
+    "runId": "build_team_9d110ae809b845df998f9590afe758ab",
+    "live": {
+      "cards": [
+        "Background tasks finished pid 93306 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_5f4bbf60bb394682baefca824704f40e/call-1795379394562-93277.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "Background tasks finished pid 93306 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_lead_5f4bbf60bb394682baefca824704f40e/call-1795379394562-93277.log. Last lines: MSP-76_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "noticeOnceMSP-77": {
+    "key": "org:build_org_ad3ade41ec2e41bf8c229375866cb422",
+    "runId": "build_org_ad3ade41ec2e41bf8c229375866cb422",
+    "live": {
+      "cards": [
+        "Background tasks finished pid 98657 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_00b513e33b7941609ffc866b77d0d2cb/call-1795379408691-98576.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "reloaded": {
+      "cards": [
+        "Background tasks finished pid 98657 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/build_worker_00b513e33b7941609ffc866b77d0d2cb/call-1795379408691-98576.log. Last lines: MSP-77_BUILT"
+      ],
+      "started": 1,
+      "noted": 1
+    },
+    "requests": 3,
+    "noticeReachedAgent": true
+  },
+  "noticeRows": {
+    "runId": "notice_reader_a295eb7a27af464ab0382aaa867d59d5",
+    "wakeLive": {
+      "at": 2,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "restartLive": {
+      "at": 6,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "wakeReloaded": {
+      "at": 2,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "restartReloaded": {
+      "at": 6,
+      "agentName": "Notice Reader",
+      "checks": {
+        "ownRow": true,
+        "labelAsSpeakerLine": true,
+        "iconNoAgentAvatar": true,
+        "noHeaderLine": true,
+        "noColoredPanel": true,
+        "beforeIsAgent": true,
+        "beforeHasNoNotice": true,
+        "beforeText": true,
+        "afterSpeaker": true,
+        "afterShowsItsSpeaker": true,
+        "afterText": true
+      }
+    },
+    "rowsAfterReload": [
+      [
+        "user",
+        "You You CASE:MSP-99 Start the short build in the background."
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+      ],
+      [
+        "system",
+        "Background tasks finished pid 3851 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: /var/folders/7w/9r4_s1_s42z3"
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader MSP99_NOTED"
+      ],
+      [
+        "user",
+        "You You CASE:MSP-99 Start the long build."
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader run_bash · \"/Users/normy/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_e5104"
+      ],
+      [
+        "system",
+        "Application restarted The application restarted at 22 Nov 2026, 21:31 CET (reason: a restart). If you started any backgr"
+      ],
+      [
+        "user",
+        "You You CASE:MSP-99 And now?"
+      ],
+      [
+        "agent",
+        "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+      ]
+    ]
+  },
+  "summary": {
+    "cases": {
+      "MSP-75": "Pass",
+      "MSP-76": "Pass",
+      "MSP-77": "Pass",
+      "MSP-99": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T20:35:40.365Z"
+}

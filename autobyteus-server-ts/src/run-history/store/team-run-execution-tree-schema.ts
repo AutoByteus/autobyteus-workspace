@@ -23,6 +23,7 @@ import {
   requiredString,
   requireKeys,
 } from "./run-execution-tree-shared-record-schemas.js";
+import { parseContainedIn } from "./contained-in-schema.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
 import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
@@ -121,7 +122,10 @@ export const validateTeamRunExecutionTreePayload = (
     // unreadable, as for a standalone run's `run_metadata.json`.
     ...(payload.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(payload.delegatedFrom) }),
     ...(payload.copiedFrom === undefined ? {} : { copiedFrom: parseCopiedFrom(payload.copiedFrom) }),
+    ...(payload.containedIn === undefined ? {} : { containedIn: parseContainedIn(payload.containedIn) }),
   };
+  // A Team unit of an Org (contract §3) is not a delegated run: it has neither `delegatedFrom` nor `copiedFrom`.
+  if (tree.containedIn && (tree.delegatedFrom || tree.copiedFrom)) throw new Error("A Team run contained in an Org is not a delegated run.");
   if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
   }

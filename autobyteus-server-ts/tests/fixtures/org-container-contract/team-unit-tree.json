@@ -1,0 +1,64 @@
+{
+  "createdAt": "2026-09-21T11:47:04.136Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/solution_designer",
+      "to": "/architecture_reviewer",
+      "rules": [
+        "When the design is ready for review."
+      ]
+    }
+  ],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "software-engineering-team",
+    "teamDefinitionName": "Software Engineering Team",
+    "teamRunId": "set_team_1",
+    "coordinatorAddress": "/solution_designer",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6-astra",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/home/u/workspace"
+    },
+    "members": [
+      {
+        "address": "/solution_designer",
+        "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer",
+        "role": null,
+        "description": null,
+        "agentRunId": "solution_designer_1",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6-astra",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/home/u/workspace"
+        }
+      },
+      {
+        "address": "/architecture_reviewer",
+        "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer",
+        "role": null,
+        "description": null,
+        "agentRunId": "architecture_reviewer_1",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6-astra",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/home/u/workspace"
+        }
+      }
+    ]
+  },
+  "containedIn": {
+    "orgRunId": "sdd_org_1",
+    "address": "/software_engineering_team"
+  }
+}

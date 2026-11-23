@@ -560,9 +560,27 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   interrupt still work, but it receives nothing; it stops when it is quiet, then it is former. It is leaving only while
   its team run is live; a stopped run has no leaving members. Its run-tree row is tagged "Leaving".
 - **Follows its definition** (a Team run): its members, coordinator and handoff rules change when its Team definition
-  changes. A standalone Team run and a copy of a Team definition do; an application's Team run, a copy of a configured
-  placement and a Team mounted in an Org run do not (`copiedFrom`,
+  changes. A standalone Team run, a Team mounted in an Org (a Team run of its own since org-teams-follow-definition) and a
+  copy of a Team definition do; an application's Team run and a copy of a configured placement do not (`copiedFrom`,
   [agent_team_execution.md](autobyteus-server-ts/docs/modules/agent_team_execution.md#membership-follows-the-definition)).
+  An Org follows its Org definition the same way (units join and leave; [agent_orgs.md](autobyteus-server-ts/docs/modules/agent_orgs.md)).
+
+## Org Runs
+
+- **Container** (an Org run since org-teams-follow-definition): the Org run that groups its units. It hosts no agent and
+  has no message log; its file (`agent_orgs/<orgRunId>/agent_org_run_execution_tree.json`) keeps the Org's definition
+  reference and launch, its units, its former units and the Org-level handoff rules.
+- **Unit** (of an Org): a direct Org agent or a mounted Team; each is a run of its own (an agent run, a Team run) in the
+  container. "Member" stays the word for a Team's agents.
+- **`containedIn`** (`{ orgRunId, address }` on a unit's own run file): the unit's fixed back-link to its container, with
+  its Org address; written once at creation (or by the conversion), never edited. A unit is not a delegated run (no
+  `delegatedFrom`) and is not listed as a top-level run.
+- **Former unit** (`formerUnits` in the container file): a unit removed by an Org definition change, kept with its run and
+  history; its address is refused by name. A unit removed while running is **leaving** (`leaving: true`) until it
+  finished and stopped. A unit the definition adds again (same address, kind and definition) comes back with its run.
+- **Org rule**: a handoff rule of the Org definition that is not wholly inside one mounted Team (in Org addresses); the
+  container keeps it, and a unit agent's rules are its own run's plus the Org rules from its Org address. A rule to a
+  member that is not currently in its Team is left out until it returns.
 
 ## Agent Definitions
 

@@ -12,6 +12,8 @@ import type { DelegationIndex } from "./delegation-index.js";
  * - A message with an unrelated local run or with another node (autobyteus-492 DEC-014): only the view of an Agent root
  *   that is one of its two runs, which shows every message its own agent sent or received (autobyteus-565 REQ-002). A
  *   Team or Org view never shows it, and no run above shows another run's.
+ * - A message between two units of one Org container: the views of its two runs (the Org view composes its units'
+ *   views, design R-3), as within one Org run before; no run above shows it.
  */
 export class MessageViewScope {
   constructor(private readonly dependencies: Readonly<{ tree: Pick<DelegationIndex, "collaborationTreeOf"> }>) {}
@@ -22,6 +24,7 @@ export class MessageViewScope {
     const runs = [input.sender, input.receiver].flatMap((side) => "run" in side ? [side.run] : []);
     const ownSide = runs.some((run) => key(run) === key(view));
     if (input.relation === "unrelated" || input.relation === "remote") return ownSide && view.rootSubjectKind === "agent";
+    if (input.relation === "same_container") return ownSide;
     if (ownSide) return true;
     if (runs.length < 2) return false;
     const tree = new Set([key(view), ...this.dependencies.tree.collaborationTreeOf(view).rows()

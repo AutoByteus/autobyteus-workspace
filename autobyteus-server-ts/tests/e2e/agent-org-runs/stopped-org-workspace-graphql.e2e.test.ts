@@ -108,6 +108,16 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     expect(before).toMatchObject({ isActive: false, editability: { editable: true } });
     const treeFile = path.join(target.runtimeRoot, "memory", "agent_orgs", orgRunId, "agent_org_run_execution_tree.json");
     const bytes = await fs.readFile(treeFile, "utf8");
+    // org-teams-follow-definition (autobyteus-29): the Org file is the container (its units by run ID); each Team unit's
+    // launch settings live in its own Team run's file, which a refused update must not change either.
+    const unitFile = (address: string) => {
+      const unit = (JSON.parse(bytes).rootOrg.units as Json[]).find((entry) => entry.address === address)!;
+      return path.join(target.runtimeRoot, "memory", "agent_teams", unit.runId, "team_run_execution_tree.json");
+    };
+    const teamFile = unitFile("/team");
+    const siblingFile = unitFile("/sibling");
+    const teamBytes = await fs.readFile(teamFile, "utf8");
+    const siblingBytes = await fs.readFile(siblingFile, "utf8");
     for (const patches of [
       [{ teamAddress: "/", workspaceRootPath: b }],
       [{ teamAddress: "/direct", workspaceRootPath: b }],
@@ -118,6 +128,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
       await expect(updateConfig(first, { ...input, teamWorkspacePatches: patches }))
         .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
       expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
+      expect(await fs.readFile(teamFile, "utf8")).toBe(teamBytes);
     }
     const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead", runtimeKind: "autobyteus",
       llmModelIdentifier: model.modelIdentifier, llmConfig: { reasoning_effort: "not-a-level" } };
@@ -142,7 +153,13 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     expect(JSON.stringify(JSON.parse(await fs.readFile(treeFile, "utf8")))).not.toContain("taskExecutions");
     expect(stored(saved.canonical)).toEqual(stored(expected)); // Protect every field except approved Team/child paths.
     expect(stored((await readConfig(first, orgRunId)).executionTree)).toEqual(stored(expected));
-    expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(stored(expected));
+    const containerAfter = JSON.parse(await fs.readFile(treeFile, "utf8"));
+    expect(containerAfter.rootOrg).not.toHaveProperty("members");
+    expect((containerAfter.rootOrg.units as Json[]).map((unit) => [unit.address, unit.kind])).toEqual([["/direct", "agent"], ["/team", "agent_team"], ["/sibling", "agent_team"]]);
+    const teamAfter = JSON.parse(await fs.readFile(teamFile, "utf8"));
+    expect(teamAfter.rootTeam.defaultLaunchConfiguration.workspaceRootPath).toBe(b);
+    expect((teamAfter.rootTeam.members as Json[]).map((member) => member.launchConfiguration.workspaceRootPath)).toEqual([b, b]);
+    expect(await fs.readFile(siblingFile, "utf8"), "the other Team unit is unchanged").toBe(siblingBytes);
     expect(expected).not.toHaveProperty("schemaVersion");
     for (const member of expected.rootOrg.members) {
       for (const agent of member.members ?? [member]) expect(agent.platformAgentRunId).toBeNull();
@@ -153,10 +170,10 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
       teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: c }],
       selectionPatches: [{ ...modelPatch, llmConfig: { reasoning_effort: "high" } }],
     });
-    expect(mixed).toMatchObject({ success: true, outcome: "UPDATED" });
     affected.defaultLaunchConfiguration.workspaceRootPath = c;
     for (const member of affected.members) member.launchConfiguration.workspaceRootPath = c;
     affected.members.find((member: Json) => member.address === "/team/lead").launchConfiguration.llmConfig = { reasoning_effort: "high" };
+    expect(mixed, JSON.stringify({ mixed, expected: stored(expected) })).toMatchObject({ success: true, outcome: "UPDATED" });
     expect(stored(mixed.canonical)).toEqual(stored(expected));
 
     await first.stop(); servers.delete(first);

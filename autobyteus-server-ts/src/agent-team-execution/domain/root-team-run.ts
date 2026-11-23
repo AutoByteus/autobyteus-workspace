@@ -4,7 +4,7 @@ import type { ReceivedFilesPlacement } from "../../agent-collaboration/execution
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
-import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
+import { teamMentionViewerOf } from "../container/contained-team-mention-viewer.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -55,6 +55,7 @@ import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 import type { TeamRunMembership } from "./team-run-membership.js";
 import { TeamMembershipCommitter } from "../membership/team-membership-committer.js";
+import { withPeerRunMembers } from "../../agent-collaboration/execution/remote/peer-run-members-notice.js";
 import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
 import type { TeamDefinitionView, TeamMembershipChange } from "../membership/team-membership-change.js";
 import { TeamRunMemberAuthority } from "./team-run-member-authority.js";
@@ -187,12 +188,11 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
-    this.membershipChanges = new TeamMembershipCommitter({
-      rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
+    this.membershipChanges = new TeamMembershipCommitter({ rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
       assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
-      followers: { teamRun: options.rootRun, notices: options.changeNotices, runParts: options.delegationIndex,
-        publish: (event) => options.publisher.publish(event) },
+      followers: { teamRun: options.rootRun, notices: withPeerRunMembers(options.changeNotices, () => this.tree, options.remoteChannel),
+        runParts: options.delegationIndex, publish: (event) => options.publisher.publish(event) },
     });
     this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;
@@ -231,6 +231,7 @@ export class RootTeamRun {
     return Object.freeze([...live, ...dormant]);
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
+  getInputStateSnapshots() { return this.options.rootRun.getInputStateSnapshots(); }
   /** Run-ID membership: the team's own members and its peer endpoints. */
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
@@ -273,7 +274,7 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.index, input.focusedAgentRunId))
+        ? this.collaborators.resolveMentions(input.mentions, teamMentionViewerOf(this.index, input.focusedAgentRunId))
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
   }

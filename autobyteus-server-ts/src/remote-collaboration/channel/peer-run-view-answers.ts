@@ -1,5 +1,5 @@
 import { agentPresentationMessageSchema, remoteAgentStatusSchema, type AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteRunMembers, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { parseLaunchConfigurationSource } from "../../run-history/store/launch-configuration-source-schema.js";
 
 const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
@@ -43,10 +43,24 @@ export const remoteRunSummariesOf = (answer: Readonly<Record<string, unknown>>):
     if (statuses.some((status) => status === null)) return null;
     const launches = run.launches === undefined ? Object.freeze([]) : remoteAgentLaunchesOf(run.launches);
     if (!launches) return null;
-    return Object.freeze({ kind: run.kind, runId: run.runId, title: run.title as string | null,
+    // FU-003: a Team run's members (absent from an older peer); a malformed one is left out, not the summary.
+    const team = run.kind === "agent_team" ? remoteRunMembersOf(run.team) : null;
+    return Object.freeze({ kind: run.kind, runId: run.runId, title: run.title as string | null, ...(team ? { team } : {}),
       statuses: Object.freeze(statuses as NonNullable<(typeof statuses)[number]>[]), launches });
   });
   return runs.some((run) => run === null) ? null : Object.freeze(runs as RemoteRunSummary[]);
+};
+
+/** A Team run's members as a peer sends them: its coordinator's address among its members; `null` otherwise. */
+export const remoteRunMembersOf = (value: unknown): RemoteRunMembers | null => {
+  const team = record(value);
+  if (!team || !nonEmpty(team.coordinatorAddress) || !Array.isArray(team.members)) return null;
+  const members = team.members.map((entry: unknown) => {
+    const member = record(entry);
+    return member && nonEmpty(member.address) && nonEmpty(member.agentRunId) ? Object.freeze({ address: member.address, agentRunId: member.agentRunId }) : null;
+  });
+  if (members.some((member) => member === null) || !members.some((member) => member!.address === team.coordinatorAddress)) return null;
+  return Object.freeze({ coordinatorAddress: team.coordinatorAddress, members: Object.freeze(members as NonNullable<(typeof members)[number]>[]) });
 };
 
 /** A peer's agent projection, read strictly: the run-view projection payload (its entries are the window's). */

@@ -31,7 +31,7 @@ const teamService = (deleted: boolean, workGuard: { guard: (...args: never[]) =>
 
 const orgService = (deleted: boolean, workGuard: { guard: (...args: never[]) => Promise<Outcome> } = noWorkGuard()) => {
   const episodicCatalog = { runDeleted: vi.fn() };
-  const service = new AgentOrgRunService({ workGuard, episodicCatalog,
+  const service = new AgentOrgRunService({ workGuard, episodicCatalog, manager: { unitRunsOf: async () => [] },
     history: { deleteStored: vi.fn(async () => result(deleted)), archiveStored: vi.fn(async () => result(true)) },
     adHocTasks: { deleteAdHocTasksDelegatedFrom: vi.fn(async () => undefined) } } as never);
   return { service, episodicCatalog };

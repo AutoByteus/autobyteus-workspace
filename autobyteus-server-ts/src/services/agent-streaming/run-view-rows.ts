@@ -8,7 +8,7 @@ export type RunViewRowSources = Readonly<{
   /** A peer run by its own ID (SR-066): a view's command for a peer row goes to its handle, never through a root. */
   peerRunOf: PeerRunOf;
   /** The run's tree (SR-084): its rows read with a snapshot's base, sent after it, and read again on each tree notice. */
-  runTree: Pick<RunTreeView, "readAtBase" | "rowsOf">;
+  runTree: Pick<RunTreeView, "prepare" | "readAtBase" | "rowsOf">;
 }>;
 
 /** A view snapshot's tree, read in the one synchronous step that takes its base (SR-063). */

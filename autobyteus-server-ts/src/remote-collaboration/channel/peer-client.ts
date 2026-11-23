@@ -13,6 +13,7 @@ import type {
   RemoteRunChannel,
   RemoteRunObservationStream,
   RemoteRunObserver,
+  RemoteRunMembers,
   RemoteRunSummaries,
   RemoteStartedRun,
   RemoteStartedRunRef,
@@ -34,6 +35,7 @@ import {
   REMOTE_AVAILABILITY_PATH,
   REMOTE_AVAILABLE_AGENTS_PATH,
   REMOTE_DELEGATED_RUN_STATES_PATH,
+  REMOTE_PEER_RUN_MEMBERS_PATH,
   REMOTE_DELEGATED_RUNS_PATH,
   REMOTE_MESSAGES_PATH,
   REMOTE_OWNER_COMMANDS_PATH,
@@ -47,6 +49,7 @@ import {
   type DeliverRemoteMessageRequest,
   type DeliverRunMessageRequest,
   type DelegatedRunStateRequest,
+  type PeerRunMembersRequest,
   type OwnerCommandRequest,
   type RemoteRefusalTarget,
   type RunSummariesRequest,
@@ -304,6 +307,14 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     return this.call(nodeId, REMOTE_DELEGATED_RUN_STATES_PATH, (envelope): DelegatedRunStateRequest => ({
       ...envelope, run: { kind: run.kind, runId: run.runId }, open,
     }), "did not answer in time; the state may have been applied", () => Object.freeze({ accepted: true as const }));
+  }
+
+  /** FU-003 (DS-007): a Team run the delegating node started here changed its members; that node updates its record. */
+  deliveredRunMembers(nodeId: string, run: RemoteStartedRunRef, team: RemoteRunMembers): Promise<RemoteDeliveryReceipt> {
+    return this.call(nodeId, REMOTE_PEER_RUN_MEMBERS_PATH, (envelope): PeerRunMembersRequest => ({
+      ...envelope, run: { kind: run.kind, runId: run.runId }, coordinatorAddress: team.coordinatorAddress,
+      members: team.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId })),
+    }), "did not answer in time; it is reconciled at the next contact", () => Object.freeze({ accepted: true as const }));
   }
 
   /** autobyteus-278: a command of this node's owner for one agent of such a run. */

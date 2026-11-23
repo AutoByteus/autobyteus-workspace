@@ -18,7 +18,7 @@ import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as LOCATORS } from
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID as SUMMARY } from "../../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
 import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID as TASK_AGENT_OWN_RUN } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
+import { validateAgentOrgContainerPayload } from "../../../src/run-history/store/agent-org-container-file-schema.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
@@ -158,10 +158,11 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
     delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-a" } } });
   expect(own).not.toHaveProperty("taskAgent");
   expect(own.launchConfiguration ?? own).not.toHaveProperty("skillAccessMode");
-  // (2) 20260901 produced the Org exactly as released (Org tree V1); the current reader loads it.
+  // (2) 20260901 produced the Org as released (Org tree V1); 20261122 (org-teams-follow-definition, last) made it a container
+  // whose direct agent and mounted Team are runs of their own; the current reader loads it.
   const orgTreeRaw = JSON.parse(await fs.readFile(path.join(memory, "agent_orgs", "org-a", "agent_org_run_execution_tree.json"), "utf8"));
-  expect(orgTreeRaw).toMatchObject({ schemaVersion: 1, subjectKind: "agent_org", rootOrg: { orgRunId: "org-a" } });
-  expect(validateAgentOrgRunExecutionTreePayload(orgTreeRaw, "org-a").rootOrg.members.map((member) => member.address)).toEqual(["/director", "/team"]);
+  expect(validateAgentOrgContainerPayload(orgTreeRaw, "org-a").rootOrg.units.map((unit) => [unit.address, unit.kind, unit.runId]))
+    .toEqual([["/director", "agent", "director"], ["/team", "agent_team", "mounted"]]);
   // (3) 20260926 converted the locator inside the released Team package.
   const trace = JSON.parse(await fs.readFile(path.join(teamDir, "configured-run", "raw_traces_active.jsonl"), "utf8"));
   expect(trace.media.images).toEqual([`/rest/team-runs/team-a/agent-runs/configured-run/context-files/${filename}`]);
@@ -171,10 +172,10 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   // (4b) 20261018 (last) converted the admitted runs' message logs; the tree-less root's log stays JSON (a warning).
   const conversion = results.find((candidate) => candidate.migrationId === APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID)!;
   expect(conversion.status).toBe("SUCCEEDED_WITH_WARNINGS");
-  for (const dir of [teamDir, path.join(memory, "agent_orgs", "org-a")]) {
-    expect((await fs.readdir(dir)).filter((name) => name.includes("communication_messages"))).toEqual(
-      [dir === teamDir ? "team_communication_messages_active.jsonl" : "agent_org_communication_messages_active.jsonl"]);
-  }
+  expect((await fs.readdir(teamDir)).filter((name) => name.includes("communication_messages"))).toEqual(["team_communication_messages_active.jsonl"]);
+  // The Org's log was split into its units' logs (20261122): the container keeps none; the Team unit has its own.
+  expect((await fs.readdir(path.join(memory, "agent_orgs", "org-a"))).filter((name) => name.includes("communication_messages"))).toEqual([]);
+  expect((await fs.readdir(path.join(memory, "agent_teams", "mounted"))).filter((name) => name.includes("communication_messages"))).toEqual(["team_communication_messages_active.jsonl"]);
   // (5) Records files stay byte-identical; admission takes the tree roots and still excludes the
   // tree-less root (no tree is created for it).
   expect(await sha(path.join(teamDir, "task_delegation_records.json"))).toBe(recordsHash);
@@ -184,7 +185,7 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   const readiness = new RootRunPackageReadinessIndex(memory);
   await readiness.rebuild();
   expect(readiness.listDiagnostics()).toEqual([expect.objectContaining({ rootRunId: "no-tree", code: "ROOT_RUN_PACKAGE_MISSING_TREE" })]);
-  expect(readiness.listAdmitted("agent_team")).toEqual(["team-a"]);
+  expect(readiness.listAdmitted("agent_team")).toEqual(["mounted", "team-a"]);
   expect(readiness.listAdmitted("agent_org")).toEqual(["org-a"]);
 
   // (6) A repeat startup runs nothing and changes nothing.

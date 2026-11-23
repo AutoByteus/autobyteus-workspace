@@ -1,0 +1,56 @@
+{
+  "subjectKind": "agent_org",
+  "createdAt": "2026-09-21T11:47:04.136Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/software_engineering_team/solution_designer",
+      "to": "/product_design_prototyping_team/product_prototyper",
+      "rules": [
+        "When a product design request is ready."
+      ]
+    },
+    {
+      "from": "/concierge",
+      "to": "/software_engineering_team",
+      "rules": [
+        "When a software request arrives."
+      ]
+    }
+  ],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "software-development-department",
+    "orgDefinitionName": "Software Development Department",
+    "orgRunId": "sdd_org_1",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6-astra",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/home/u/workspace"
+    },
+    "units": [
+      {
+        "address": "/software_engineering_team",
+        "kind": "agent_team",
+        "runId": "set_team_1",
+        "definitionId": "software-engineering-team"
+      },
+      {
+        "address": "/product_design_prototyping_team",
+        "kind": "agent_team",
+        "runId": "pdp_team_1",
+        "definitionId": "product-design-prototyping-team"
+      },
+      {
+        "address": "/concierge",
+        "kind": "agent",
+        "runId": "concierge_1",
+        "definitionId": "concierge"
+      }
+    ],
+    "formerUnits": []
+  }
+}

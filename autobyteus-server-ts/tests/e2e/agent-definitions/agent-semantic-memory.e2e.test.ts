@@ -268,8 +268,11 @@ describe("Semantic memory for every agent at the real server boundary", () => {
       const content = async (w: string, file: string) =>
         (await h.graphql(`query($w: String!, $f: String!) { fileContent(workspaceId: $w, filePath: $f) }`, { w, f: file })).fileContent as string;
       expect(await content(workspaceId, "sites/linkedin/controls.md")).toBe(`# LinkedIn controls ${unique}\n`);
-      expect(JSON.parse(await content(workspaceId, "secret-link.md")).error).toMatch(/^WORKSPACE_LINK_NOT_OPENED/);
-      expect(JSON.parse(await content(workspaceId, "shared/secret.md")).error).toMatch(/^WORKSPACE_LINK_NOT_OPENED/);
+      // A refusal is a GraphQL error with its code, never text (autobyteus-579); the harness throws the errors as JSON.
+      for (const file of ["secret-link.md", "shared/secret.md"]) {
+        const refused = await content(workspaceId, file).then(() => null, (error: Error) => JSON.parse(error.message) as Rec[]);
+        expect(refused?.[0]).toMatchObject({ message: expect.stringMatching(/^WORKSPACE_LINK_NOT_OPENED/), extensions: { code: "WORKSPACE_LINK_NOT_OPENED" } });
+      }
       expect(await content("semantic_global_ws", "product.md")).toBe(`# Product ${unique}\n`);
 
       const before = { agent: await treeHashes(folderOf(ids.scout)), global: await treeHashes(globalFolder()), outside: await treeHashes(outside) };

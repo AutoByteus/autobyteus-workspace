@@ -1,6 +1,5 @@
 import type { CollaborationRootKind } from "@autobyteus/collaboration-stream-contracts";
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
-import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 import { getTeamCommunicationProjectionService } from "../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -24,12 +23,18 @@ export const runRecordsOfRootOwners: RunRecordsSource = Object.freeze({
       case "agent_team": {
         const records = await getTeamCommunicationProjectionService().getCollaborationRecordsSnapshot(rootRunId);
         const index = new TeamExecutionIndex(records.executionTree);
-        return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
+        // A former member (removed by a definition change) is still the run's agent: its messages stay the run's (CRR-004 F-4).
+        return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null || index.formerMemberByRunId(id) !== null };
       }
       case "agent_org": {
-        const records = await AgentOrgRunManager.getInstance().getCollaborationRecordsSnapshot(rootRunId);
-        const index = new AgentOrgExecutionIndex(records.executionTree);
-        return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
+        // An Org container keeps no log: its messages are its units' (CM-9), each message once (a message between two
+        // units is in both logs, contract §5).
+        const units = await AgentOrgRunManager.getInstance().unitRunsOf(rootRunId);
+        const parts = await Promise.all(units.map((unit) => runRecordsOfRootOwners.read(unit.rootSubjectKind as "agent" | "agent_team", unit.rootRunId)
+          .catch((error: unknown) => { console.warn(`Org unit run '${unit.rootRunId}' messages are left out: ${String(error)}`); return null; })));
+        const messages = new Map(parts.flatMap((part) => part?.messages ?? []).map((message) => [message.messageId, message]));
+        return { messages: [...messages.values()].sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+          isOwnAgent: (id) => parts.some((part) => part?.isOwnAgent(id) ?? false) };
       }
     }
   },

@@ -243,6 +243,7 @@ const buildNode = async (input: Readonly<{
     }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions(),
     { rootOf: () => null, teamCoordinatorOf: () => null }, closed, peerFiles.receivedFiles),
     // autobyteus-591 DN-2: the delegating node's state of a run it started here; the Stop as the agent run service's.
+    peerRunMembers: {} as never,
     delegatedRunStates: new DelegatedRunStateHandler({ closed,
       roots: { storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found" },
       agentRuns: { stopForTaskClosure: async (runId, stillClosed) => {
@@ -565,7 +566,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(runStatus.peerSummaryOf("publisher_r1")).toEqual({ nodeId: B_ID, runId: "publisher_r1", reachable: true,
       title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle", backgroundTasksRunning: 0 }],
       // SR-038: the run's launches, from B's own file.
-      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] });
+      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })],
+      // FU-003: an Agent run has no members to reconcile.
+      team: null });
     // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.
     const changes = () => statuses.filter((message) => message.type === "RUN_STATUS_CHANGED");
     expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "idle" } });
@@ -591,7 +594,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     runStatus.retryPeers(["publisher_r1"]);
     await settle();
     expect(runStatus.peerSummaryOf("publisher_r1")).toEqual({ nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] });
+      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })], team: null });
     statusConnection.close();
   });
 });

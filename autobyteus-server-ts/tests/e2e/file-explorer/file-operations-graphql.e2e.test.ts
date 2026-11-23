@@ -171,11 +171,9 @@ describe("File operations GraphQL e2e", () => {
     expect(deleteChange?.node_id).toBeTruthy();
     expect(deleteChange?.parent_id).toBeTruthy();
 
-    const readMissing = await execGraphql<{ fileContent: string }>(readQuery, {
-      workspaceId,
-      filePath,
-    });
-    expect(readMissing.fileContent).toContain("error");
+    // A refusal is a GraphQL error with its code, never text (autobyteus-579).
+    const readMissing = await execGraphql<{ fileContent: string }>(readQuery, { workspaceId, filePath }).catch((error: unknown) => error);
+    expect(readMissing).toMatchObject({ message: expect.stringContaining("File not found"), extensions: { code: "FILE_NOT_FOUND" } });
 
     expect(fs.existsSync(path.join(rootPath, filePath))).toBe(false);
     await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({

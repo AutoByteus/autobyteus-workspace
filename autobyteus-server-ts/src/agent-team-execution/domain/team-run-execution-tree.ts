@@ -8,6 +8,7 @@ import type {
   TeamRunApplicationBinding,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
+import type { ContainedIn } from "../../agent-collaboration/domain/contained-in.js";
 
 export type {
   ConfiguredAgentExecutionNode,
@@ -58,6 +59,12 @@ export type TeamRunExecutionTreeFile = Readonly<{
   delegatedFrom?: DelegatedFrom;
   /** A delegated Team run's origin, written once when it is created (absent: a standalone run, or an older copy). */
   copiedFrom?: TeamRunCopiedFrom;
+  /**
+   * A Team mounted in an Org: its Org container and its address there, written once when it is created. Its tree stays
+   * in team space (members at `/x`); the address boundary presents them as `<address>/x` (design R-1''). Absent: a Team
+   * run outside any Org.
+   */
+  containedIn?: ContainedIn;
 }>;
 
 export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFile;

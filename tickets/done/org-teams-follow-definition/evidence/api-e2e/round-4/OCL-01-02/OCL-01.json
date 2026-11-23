@@ -1,0 +1,75 @@
+{
+  "conversation": [
+    "memberinput_ItTyQJODxNHZSI_CShxMCl6KiqPzVQyq",
+    "member_input:agent_team\u0000ocl_team_61b64356_8db5fdb1db7548869df4d98dd0ea5429:ocl_concierge_61b64356_532de93418254e42bdcc5e251d346511:memberinput_ItTyQJODxNHZSI_CShxMCl6KiqPzVQyq",
+    "You received a message from the agent with sender address \"/team/lead\" and sender run id \"ocl_lead_61b64356_b093a43f719644d4879e6bb6ce651ab6\".\nmessage:\nThe team code is TEAMCODE-61b64356.",
+    "reasoning",
+    "01a2052a-c7e2-7790-9bff-84e99905b1db",
+    "**Awaiting response**",
+    "message",
+    "assistant",
+    "01a2052a-c7e2-7790-9bff-84e99905b1db",
+    "The team code is **TEAMCODE-61b64356**."
+  ],
+  "toLead": {
+    "messageId": "collabmsg_AurULz9wIi-p9YqXd5gLpV6tk18ddbBs",
+    "senderAgentRunId": "ocl_concierge_61b64356_532de93418254e42bdcc5e251d346511",
+    "receiverAgentRunId": "ocl_lead_61b64356_b093a43f719644d4879e6bb6ce651ab6",
+    "content": "What is the team code? The user asked me to obtain it from you and tell them.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T21:30:27.312Z",
+    "counterpart": {
+      "address": "/team/lead",
+      "nodeId": null
+    }
+  },
+  "fromLead": {
+    "messageId": "collabmsg_c1HS23VoADhDdi4U4lWCPVyKEB6fIAfW",
+    "senderAgentRunId": "ocl_lead_61b64356_b093a43f719644d4879e6bb6ce651ab6",
+    "receiverAgentRunId": "ocl_concierge_61b64356_532de93418254e42bdcc5e251d346511",
+    "content": "The team code is TEAMCODE-61b64356.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T21:30:29.350Z",
+    "counterpart": {
+      "address": "/team/lead",
+      "nodeId": null
+    }
+  },
+  "teamLines": [
+    {
+      "messageId": "collabmsg_AurULz9wIi-p9YqXd5gLpV6tk18ddbBs",
+      "senderAgentRunId": "ocl_concierge_61b64356_532de93418254e42bdcc5e251d346511",
+      "receiverAgentRunId": "ocl_lead_61b64356_b093a43f719644d4879e6bb6ce651ab6",
+      "content": "What is the team code? The user asked me to obtain it from you and tell them.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-11-22T21:30:27.312Z",
+      "counterpart": {
+        "address": "/concierge",
+        "nodeId": null
+      }
+    },
+    {
+      "messageId": "collabmsg_c1HS23VoADhDdi4U4lWCPVyKEB6fIAfW",
+      "senderAgentRunId": "ocl_lead_61b64356_b093a43f719644d4879e6bb6ce651ab6",
+      "receiverAgentRunId": "ocl_concierge_61b64356_532de93418254e42bdcc5e251d346511",
+      "content": "The team code is TEAMCODE-61b64356.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-11-22T21:30:29.350Z",
+      "counterpart": {
+        "address": "/concierge",
+        "nodeId": null
+      }
+    }
+  ],
+  "leadLaunch": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "claude-haiku-5-5",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/root/.autobyteus-e2e/org-container-live-USWWMm/workspace"
+  }
+}

@@ -16,6 +16,7 @@ const buildItems = (): RecentEventMonitorPresentationItem[] => [{
   kind: 'message',
   key: 'user-1',
   messageIndex: 0,
+  showsUsage: true,
   message: {
     type: 'user',
     text: 'hello',
@@ -35,6 +36,7 @@ const buildItems = (): RecentEventMonitorPresentationItem[] => [{
   kind: 'message',
   key: 'ai-1',
   messageIndex: 1,
+  showsUsage: true,
   message: {
     type: 'ai',
     text: '',
@@ -173,6 +175,38 @@ describe('recent Event Monitor presentation witness', () => {
     const segments = aiSegments(reorderedItems);
     [segments[0], segments[1]] = [segments[1], segments[0]];
     expect(areRecentEventMonitorPresentationWitnessesEqual(witness(beforeItems), witness(reorderedItems))).toBe(false);
+  });
+
+  // autobyteus-585: a notice is its own row; a split message's usage is on its last row only.
+  describe('notice rows and split messages', () => {
+    const notice = { type: 'system_task_notification' as const, senderId: 'system.restart_resume', content: 'Restarted.', messageId: 'n1' };
+    const agentRow = (key: string, content: string, showsUsage: boolean): RecentEventMonitorPresentationItem => ({
+      kind: 'message', key, messageIndex: 0, showsUsage,
+      message: {
+        type: 'ai', text: content, timestamp: new Date(2), isComplete: true,
+        completionTokens: 7, completionCost: 0.002, segments: [{ type: 'text', content }],
+      },
+    });
+    const splitItems = (content = 'Restarted.'): RecentEventMonitorPresentationItem[] => [
+      agentRow('message-0-0', 'before', false),
+      { kind: 'notice', key: 'notice-0-1', messageIndex: 0, segment: { ...notice, content } },
+      agentRow('message-0-2', 'after', true),
+    ];
+
+    it('gives a notice row one token with the notice\'s identity and no usage, and usage only to the last row', () => {
+      const result = witness(splitItems());
+      expect(result.tokens.map((token) => [token.kind, token.values.at(-1)])).toEqual([
+        ['text', ''],
+        ['system_task_notification', ''],
+        ['text', '7 tokens / $0.0020'],
+      ]);
+      expect(result.tokens[1]?.identity).toBe('system_task_notification:ordinal:1');
+      expect(result.totalUsageText).toBe('Total: 7 tokens / $0.0020');
+    });
+
+    it('detects a change in a notice row', () => {
+      expect(areRecentEventMonitorPresentationWitnessesEqual(witness(splitItems()), witness(splitItems('changed')))).toBe(false);
+    });
   });
 
   it('does not recursively traverse unused arguments, results, or logs', () => {

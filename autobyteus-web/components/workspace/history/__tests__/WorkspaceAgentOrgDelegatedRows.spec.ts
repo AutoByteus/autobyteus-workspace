@@ -15,9 +15,9 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
  * autobyteus-461 SR-084: an Org run's tree from the server. Its own agents and mounted teams are the Org's rows; each run
  * it delegated is the shared delegated row (FU-031), under the agent that delegated it, opening where the server says.
  */
-const mountOrg = () => {
+const mountOrg = (rows = taskBearingTreeRows()) => {
   const tree = structuredClone(taskBearingView().execution_tree);
-  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, taskBearingTreeRows());
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, rows);
   const group: AgentOrgHistoryDefinitionGroup = {
     stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org',
     runs: [{ stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
@@ -50,6 +50,15 @@ describe('Org history delegated rows (SR-084)', () => {
     expect(team!.attributes()).toMatchObject({ 'data-delegated-run-kind': 'task_team', 'aria-level': '2' });
     expect(wrapper.text()).not.toContain('Started by');
     expect(worker!.attributes('aria-label')).toContain('Started by director');
+  });
+
+  it('org-teams-follow-definition (REQ-009): a unit leaving the Org (its agent, its mounted team and members) is tagged Leaving while it finishes', () => {
+    const rows = taskBearingTreeRows().map((row) => row.kind === 'org_team' || (row.kind === 'team_member' && row.parentKey?.startsWith('org_team:'))
+      || row.address === '/director' ? { ...row, leaving: true as const } : row);
+    const { wrapper } = mountOrg(rows);
+    expect(wrapper.get('[data-test="agent-org-agent-row-agent-director"]').find('[data-test="workspace-member-leaving"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"]').find('[data-test="workspace-member-leaving"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="agent-org-agent-row-agent-worker-configured"]').find('[data-test="workspace-member-leaving"]').exists()).toBe(false);
   });
 
   it('gives the mounted team and a delegated team one Team status dot each; a delegated team\'s is its run\'s own (SR-086 G-A4)', async () => {

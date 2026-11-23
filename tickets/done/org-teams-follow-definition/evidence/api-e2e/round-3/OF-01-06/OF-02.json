@@ -1,0 +1,35 @@
+{
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /team/writer.",
+    "target_agent_run_id": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "isError": false
+  },
+  "message": {
+    "messageId": "collabmsg_7GVmO3dLBtPBhNxnKXjN3yJpTjfZcQec",
+    "senderAgentRunId": "of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f",
+    "receiverAgentRunId": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "content": "ECHO_INPUT",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T18:25:11.349Z",
+    "counterpart": {
+      "address": "/team/writer",
+      "nodeId": null
+    }
+  },
+  "teamLine": {
+    "messageId": "collabmsg_7GVmO3dLBtPBhNxnKXjN3yJpTjfZcQec",
+    "senderAgentRunId": "of_concierge_940280_fc0b24b5f9eb4344bd470168fa6f1d0f",
+    "receiverAgentRunId": "of_writer_940280_a83a422586eb4bb3ab0a82a67edca53f",
+    "content": "ECHO_INPUT",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T18:25:11.349Z",
+    "counterpart": {
+      "address": "/concierge",
+      "nodeId": null
+    }
+  }
+}

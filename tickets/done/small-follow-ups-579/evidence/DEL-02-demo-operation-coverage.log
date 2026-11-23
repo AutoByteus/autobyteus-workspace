@@ -1,0 +1,29 @@
+# DEL-02-demo-operation-coverage | commit a107a3c2d1 | 2026-11-22T19:38:13Z | load { 37.45 35.12 29.11 }
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-579/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the /mobile build check > finds each demo marker, with its file 4ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the /mobile build check > passes a build with no demo code 1ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > reads the handled operations from the DemoOperations table 2ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > names a compiled operation the demo neither answers nor lists 3ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > passes when every compiled operation is answered or listed with a defined reason 3ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo build check > keeps the list exact: no entry for an answered or vanished operation, none with an undefined reason 2ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > reads the operations defined in the source, not in dependencies, build outputs, generated code, tests or the demo 6ms
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else 254ms
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts > the demo boundary > has no product file importing demo/ 350ms
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts > the demo boundary > enters the demo only from nuxt.config.ts, for AUTOBYTEUS_DEMO_BUILD=1 1ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  20:38:17
+   Duration  858ms (transform 63ms, setup 240ms, collect 34ms, tests 626ms, environment 0ms, prepare 179ms)
+
+exit 0

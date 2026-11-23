@@ -24,6 +24,7 @@ import {
   type ResolvedRunFileChangeEntry,
 } from "./run-file-change-projection-service.js";
 import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
+import type { OrgUnitMemberViews } from "./org-unit-member-views.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -48,6 +49,7 @@ export class AgentOrgMemberRunViewProjectionService {
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
+  private readonly units: OrgUnitMemberViews | null;
 
   constructor(options: {
     /** The relationships between runs, from the Task entries (SR-047). */
@@ -59,7 +61,10 @@ export class AgentOrgMemberRunViewProjectionService {
     locations?: AgentOrgExecutionTreeLocationService;
     tokenUsage?: TokenUsageRunStore;
     runFileChangeProjectionService?: RunFileChangeProjectionService;
+    /** An Org container's members, read from their unit runs (org-teams-follow-definition). */
+    units?: OrgUnitMemberViews;
   }) {
+    this.units = options.units ?? null;
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.tree = options.tree;
     this.peerRunOf = options.peerRunOf;
@@ -80,6 +85,8 @@ export class AgentOrgMemberRunViewProjectionService {
     // N-403, SR-066: an agent of a peer run is read from its node through the run's handle (autobyteus-278).
     const peer = this.peerRunOf(agentRunId.trim());
     if (peer) return await peerMemberProjection(peer, agentRunId.trim(), memberAddress) as AgentOrgMemberRunProjection;
+    const unit = await this.unitOf(orgRunId, memberAddress, agentRunId);
+    if (unit) return this.units!.projection(unit, memberAddress.trim(), agentRunId.trim());
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({
       runId: location.agentRunId,
@@ -102,6 +109,8 @@ export class AgentOrgMemberRunViewProjectionService {
     agentRunId: string,
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
+    const unit = await this.unitOf(orgRunId, memberAddress, agentRunId);
+    if (unit) return this.units!.tracePage(orgRunId.trim(), unit, memberAddress.trim(), agentRunId.trim(), beforeCursor);
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const page = await this.agentViews.getActiveTracePageFromMetadata({
       runId: location.agentRunId,
@@ -124,6 +133,7 @@ export class AgentOrgMemberRunViewProjectionService {
     memberAddress: string,
     agentRunId: string,
   ): Promise<TokenUsageRunSummaryPayload> {
+    if (await this.unitOf(orgRunId, memberAddress, agentRunId)) return this.units!.tokenUsage(agentRunId.trim());
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const summary = await this.tokenUsage.getAgentRunSummary(location.agentRunId);
     if (summary.run_id !== location.agentRunId || summary.root_team_run_id !== null) {
@@ -134,6 +144,8 @@ export class AgentOrgMemberRunViewProjectionService {
 
   /** The member's artifacts: live while the org runs, else its stored file changes. */
   async getFileChanges(orgRunId: string, memberAddress: string, agentRunId: string): Promise<RunFileChangeEntry[]> {
+    const unit = await this.unitOf(orgRunId, memberAddress, agentRunId);
+    if (unit) return this.units!.fileChanges(unit, agentRunId.trim());
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     return this.fileChanges().getLocatedCollaborationMemberProjection(location);
   }
@@ -145,8 +157,15 @@ export class AgentOrgMemberRunViewProjectionService {
     agentRunId: string,
     filePath: string,
   ): Promise<ResolvedRunFileChangeEntry | null> {
+    const unit = await this.unitOf(orgRunId, memberAddress, agentRunId);
+    if (unit) return this.units!.resolveFileChange(unit, agentRunId.trim(), filePath);
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     return this.fileChanges().resolveLocatedCollaborationMemberEntry(location, filePath);
+  }
+
+  /** An Org container's member's unit; `null` for a released Org run (its own location answers). */
+  private unitOf(orgRunId: string, memberAddress: string, agentRunId: string) {
+    return this.units ? this.units.unitOf(required(orgRunId, "orgRunId"), required(memberAddress, "memberAddress"), required(agentRunId, "agentRunId")) : Promise.resolve(null);
   }
 
   private fileChanges(): RunFileChangeProjectionService {

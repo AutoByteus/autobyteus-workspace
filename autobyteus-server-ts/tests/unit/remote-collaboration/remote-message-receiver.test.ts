@@ -82,8 +82,12 @@ describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
     const f = setup();
     f.directory.team.mockResolvedValueOnce(null as never);
     await expect(f.receiver.accept(request(), PEER)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     f.directory.team.mockRejectedValueOnce(new Error("TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED"));
     await expect(f.receiver.accept(request(), PEER)).resolves.toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_FOUND" });
+    // Why it could not be restored is logged on this node (CRR-004 F-4); the sender still reads "not found".
+    expect(warn).toHaveBeenCalledWith("REMOTE_TARGET_ROOT_UNAVAILABLE", { error: "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED" });
+    warn.mockRestore();
   });
 });
 

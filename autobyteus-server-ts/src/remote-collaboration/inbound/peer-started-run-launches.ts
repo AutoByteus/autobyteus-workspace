@@ -1,5 +1,5 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import type { RemoteAgentLaunch, RemoteStartedRunRef } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteRunMembers, RemoteStartedRunRef } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -19,6 +19,14 @@ export class PeerStartedRunLaunches {
   constructor(memoryDir: string, private readonly teams = new TeamRunExecutionTreeStore()) {
     this.layout = new AgentMemoryLayout(memoryDir);
     this.agents = new AgentRunMetadataStore(memoryDir);
+  }
+
+  /** FU-003: a Team run's current members and coordinator, from its own tree; `null` for an Agent run or an absent file. */
+  async team(run: RemoteStartedRunRef): Promise<RemoteRunMembers | null> {
+    if (run.kind !== "agent_team") return null;
+    const tree = await this.teams.read(this.layout.getTeamDirPath({ rootTeamRunId: run.runId, ancestorTeamRunIds: [] }), run.runId);
+    return tree ? Object.freeze({ coordinatorAddress: tree.rootTeam.coordinatorAddress,
+      members: Object.freeze(tree.rootTeam.members.map((member) => Object.freeze({ address: member.address as string, agentRunId: member.agentRunId }))) }) : null;
   }
 
   async of(run: RemoteStartedRunRef): Promise<readonly RemoteAgentLaunch[]> {

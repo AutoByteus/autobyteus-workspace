@@ -8,7 +8,7 @@ import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/tea
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { writeStoredOrgContainer } from "../../../helpers/stored-org-container.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 
@@ -67,9 +67,9 @@ describe("RunOwnAgentsReader", () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-standing-"));
     roots.push(memory);
     const layout = new AgentMemoryLayout(memory);
-    await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org-1"), testAgentOrgExecutionTree({ orgRunId: "org-1", members: [testOrgAgentNode("/ceo_agent", "ceo"),
-      testOrgTeamNode({ address: "/dev_team", teamRunId: "dev-1", coordinatorAddress: "/dev_team/dev_lead",
-        members: [testOrgAgentNode("/dev_team/dev_lead", "dev_lead"), testOrgAgentNode("/dev_team/qa", "qa")] })] }));
+    // An Org container (org-teams-follow-definition) hosts no agent: its units' agents are their own runs'.
+    await writeStoredOrgContainer(memory, { orgRunId: "org-1", units: [{ kind: "agent", address: "/ceo_agent", runId: "ceo" },
+      { kind: "agent_team", address: "/dev_team", runId: "dev-1", coordinatorAddress: "/dev_lead", members: [{ address: "/dev_lead", agentRunId: "dev_lead" }] }] });
     const metadata = { runId: "manager", agentDefinitionId: "project-task-manager", workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", "manager"),
       llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true, runtimeKind: "autobyteus", platformAgentRunId: null } as never;
     await new AgentRunMetadataStore(memory).writeMetadata("manager", { ...(metadata as object), address: "/project_task_manager" } as never);
@@ -80,10 +80,10 @@ describe("RunOwnAgentsReader", () => {
     // Not collaborating yet: no address fixed.
     expect(await reader.partsOf({ rootSubjectKind: "agent", rootRunId: "fresh" })).toEqual({
       agents: [{ agentRunId: "fresh", address: null, agentDefinitionId: "project-task-manager" }], formerAgents: [], coordinatorAddress: null, mountedTeams: [] });
-    expect(await reader.partsOf({ rootSubjectKind: "agent_org", rootRunId: "org-1" })).toEqual({
-      agents: [expect.objectContaining({ agentRunId: "ceo", address: "/ceo_agent" }), expect.objectContaining({ agentRunId: "dev_lead", address: "/dev_team/dev_lead" }),
-        expect.objectContaining({ agentRunId: "qa", address: "/dev_team/qa" })],
-      formerAgents: [], coordinatorAddress: null, mountedTeams: [{ address: "/dev_team", coordinatorAgentRunId: "dev_lead" }] });
+    expect(await reader.partsOf({ rootSubjectKind: "agent_org", rootRunId: "org-1" })).toEqual({ agents: [], formerAgents: [], coordinatorAddress: null, mountedTeams: [] });
+    // Each unit run answers its own parts: the Team unit its members in its own space.
+    expect(await reader.partsOf({ rootSubjectKind: "agent_team", rootRunId: "dev-1" })).toMatchObject({
+      agents: [expect.objectContaining({ agentRunId: "dev_lead", address: "/dev_lead" })], coordinatorAddress: "/dev_lead" });
   });
 
   it("delegationOf (SR-072 F-24): a delegated run's own delegation, address, definition and entry agent; none for a peer-started or user-started run", async () => {

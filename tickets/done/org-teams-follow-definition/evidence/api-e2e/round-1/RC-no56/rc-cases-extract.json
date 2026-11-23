@@ -1,0 +1,659 @@
+{
+  "note": "extracted from remote-two-server-receipt.json (full receipt and server logs not kept: peer secrets, size)",
+  "cases": {
+    "RC-07": {
+      "orgRunId": "remote_org_6b1ce174a5c34a4fb3a977d5b4f9890f",
+      "delegated": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_c6dbec5fdcb046f98461b43c06758516",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_38bbb28e-e8e1-4c74-9332-386c2c11fc3f",
+        "isError": false,
+        "elapsedMs": 645
+      },
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_c6dbec5fdcb046f98461b43c06758516",
+        "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+        "delegatorAgentRunId": "delegator_cccf2fbe1a094dd09151ca55201c4317",
+        "startedAt": "2026-11-22T15:12:53.279Z"
+      },
+      "replyLogs": {
+        "messageId": "collabmsg_wEUc7Qz0vMdwulRxaNtIId6eoH5Bl_mE",
+        "files": {
+          "beta": "memory/agents/publisher_c6dbec5fdcb046f98461b43c06758516/communication_messages_active.jsonl",
+          "alpha": "memory/agents/delegator_cccf2fbe1a094dd09151ca55201c4317/communication_messages_active.jsonl"
+        },
+        "counterparts": {
+          "beta": {
+            "address": "/lead",
+            "nodeId": "srv_J043oQYNIldfMU3BiguIl7EE06msNeaA"
+          },
+          "alpha": {
+            "address": "/publisher",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB"
+          }
+        }
+      },
+      "sequences": {
+        "snapshots": [
+          0,
+          1,
+          65
+        ],
+        "sequenced": 86,
+        "lastSequence": 93,
+        "gaps": [],
+        "errorFrames": []
+      },
+      "frameTypes": [
+        "CONNECTED",
+        "ROOT_EXECUTION_VIEW_SNAPSHOT",
+        "RUN_TREE_SNAPSHOT",
+        "ROOT_LIFECYCLE",
+        "ROOT_EXECUTION_VIEW_SNAPSHOT",
+        "RUN_TREE_SNAPSHOT",
+        "ROOT_LIFECYCLE",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_VIEW_SNAPSHOT",
+        "RUN_TREE_SNAPSHOT",
+        "ROOT_LIFECYCLE",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT"
+      ]
+    },
+    "RC-33": {
+      "agentRow": {
+        "key": "peer_agent:publisher_49131b261426453c85a14e8f4a114319",
+        "parentKey": "team_member:remote_squad_703208eb7d214b1c83527c185fa1b8c7:delegator_ca4f4643c5334e248cdb9b75b9e40118",
+        "kind": "peer_agent",
+        "name": "publisher",
+        "address": "/publisher",
+        "openTarget": {
+          "runKind": "agent",
+          "runId": "publisher_49131b261426453c85a14e8f4a114319",
+          "agentRunId": "publisher_49131b261426453c85a14e8f4a114319",
+          "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB"
+        },
+        "statusIds": [
+          "publisher_49131b261426453c85a14e8f4a114319"
+        ],
+        "peer": {
+          "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+          "nodeName": "beta-node",
+          "title": "Team work. Marker TEAM-PACKET.",
+          "reachable": true
+        },
+        "launch": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": null,
+          "workspaceRootPath": null,
+          "source": {
+            "origin": "agent_default",
+            "fallbacks": []
+          },
+          "ownSource": true
+        },
+        "depth": 2
+      },
+      "teamRow": {
+        "key": "peer_team:studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+        "parentKey": "team_member:remote_squad_703208eb7d214b1c83527c185fa1b8c7:delegator_ca4f4643c5334e248cdb9b75b9e40118",
+        "kind": "peer_team",
+        "name": "studio team",
+        "address": "/studio_team",
+        "openTarget": {
+          "runKind": "agent_team",
+          "runId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+          "agentRunId": "publisher_d94dab5842664421afaf49f3414125c0",
+          "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB"
+        },
+        "statusIds": [
+          "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86"
+        ],
+        "peer": {
+          "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+          "nodeName": "beta-node",
+          "title": "Studio work. Marker STUDIO-PACKET.",
+          "reachable": true
+        },
+        "depth": 2
+      },
+      "memberRows": [
+        {
+          "key": "peer_member:studio_team_fb1a0b2e02974c1d9d8b201806bd7c86:publisher_d94dab5842664421afaf49f3414125c0",
+          "parentKey": "peer_team:studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+          "kind": "peer_member",
+          "name": "lead",
+          "address": "/lead",
+          "openTarget": {
+            "runKind": "agent_team",
+            "runId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+            "agentRunId": "publisher_d94dab5842664421afaf49f3414125c0",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB"
+          },
+          "statusIds": [
+            "publisher_d94dab5842664421afaf49f3414125c0"
+          ],
+          "peer": {
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "nodeName": "beta-node",
+            "title": "Studio work. Marker STUDIO-PACKET.",
+            "reachable": true
+          },
+          "launch": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": null,
+            "workspaceRootPath": null,
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "depth": 3
+        },
+        {
+          "key": "peer_member:studio_team_fb1a0b2e02974c1d9d8b201806bd7c86:checker_83c4cd0d653940b2bd3fe62b53c6d499",
+          "parentKey": "peer_team:studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+          "kind": "peer_member",
+          "name": "checker",
+          "address": "/checker",
+          "openTarget": {
+            "runKind": "agent_team",
+            "runId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+            "agentRunId": "checker_83c4cd0d653940b2bd3fe62b53c6d499",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB"
+          },
+          "statusIds": [
+            "checker_83c4cd0d653940b2bd3fe62b53c6d499"
+          ],
+          "peer": {
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "nodeName": "beta-node",
+            "title": "Studio work. Marker STUDIO-PACKET.",
+            "reachable": true
+          },
+          "launch": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": null,
+            "workspaceRootPath": null,
+            "source": {
+              "origin": "team_default",
+              "fallbacks": []
+            },
+            "ownSource": true
+          },
+          "depth": 3
+        }
+      ],
+      "liveSeen": true,
+      "atChecker": "From the owner of node \"alpha-node\":\n\nOwner of alpha here. Marker OWNER-TO-CHECKER."
+    },
+    "RC-12": {
+      "liveAtStart": false,
+      "shutDownAfterMs": 198,
+      "relaunch": {
+        "argv": [
+          "--conversation",
+          "d028b365-4a96-46d7-ad23-d4062de1a747",
+          "--agent",
+          "autobyteus-88ad5cbc1eb96226",
+          "--add-dir",
+          "/tmp/remote-collab-two-server-jPS5HE/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/tmp/remote-collab-two-server-jPS5HE/beta/data/memory/agents/publisher_5b194c9f7046478080a11ba0bb08fe11/agy-project"
+      },
+      "heldAfterGrace": {
+        "coordinator": true,
+        "checker": true,
+        "atMs": 75384
+      },
+      "teamShutDownAfterMs": 150633,
+      "studioListedWhenStopped": {
+        "teamRunId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+        "isActive": false
+      },
+      "unusedListed": {
+        "teamRunId": "studio_team_87a1118fdbd94f7ca8e3ac39dbd2a20e",
+        "isActive": false
+      },
+      "teamRelaunch": {
+        "argv": [
+          "--conversation",
+          "8a99b81e-10a5-4650-b306-81776d20fdc8",
+          "--agent",
+          "autobyteus-c91c9bd34e1c34f6",
+          "--add-dir",
+          "/tmp/remote-collab-two-server-jPS5HE/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/tmp/remote-collab-two-server-jPS5HE/beta/data/memory/agent_teams/studio_team_fb1a0b2e02974c1d9d8b201806bd7c86/publisher_d94dab5842664421afaf49f3414125c0/agy-project"
+      }
+    },
+    "RC-13": {
+      "betaRelaunches": [
+        {
+          "argv": [
+            "--conversation",
+            "d028b365-4a96-46d7-ad23-d4062de1a747",
+            "--agent",
+            "autobyteus-88ad5cbc1eb96226",
+            "--add-dir",
+            "/tmp/remote-collab-two-server-jPS5HE/beta/data/temp_workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/tmp/remote-collab-two-server-jPS5HE/beta/data/memory/agents/publisher_5b194c9f7046478080a11ba0bb08fe11/agy-project"
+        }
+      ],
+      "alphaRelaunches": [
+        {
+          "argv": [
+            "--conversation",
+            "17a6d123-85a3-4899-aaa9-1a24cdf52967",
+            "--agent",
+            "autobyteus-23e87c24627e4e70",
+            "--add-dir",
+            "/tmp/remote-collab-two-server-jPS5HE/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/tmp/remote-collab-two-server-jPS5HE/alpha/data/memory/agents/delegator_9d64646e52dc4d6c86e337544bee2a68/agy-project"
+        },
+        {
+          "argv": [
+            "--conversation",
+            "c874f65c-a157-4dea-b7ba-94ffa54ef38c",
+            "--agent",
+            "autobyteus-d7c0778d3d3f65c0",
+            "--add-dir",
+            "/tmp/remote-collab-two-server-jPS5HE/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/tmp/remote-collab-two-server-jPS5HE/alpha/data/memory/agent_teams/remote_squad_703208eb7d214b1c83527c185fa1b8c7/delegator_ca4f4643c5334e248cdb9b75b9e40118/agy-project"
+        },
+        {
+          "argv": [
+            "--conversation",
+            "cdf02125-0b8c-4778-9ac9-7d302fbb3c79",
+            "--agent",
+            "autobyteus-abbc89f8901729d7",
+            "--add-dir",
+            "/tmp/remote-collab-two-server-jPS5HE/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/tmp/remote-collab-two-server-jPS5HE/alpha/data/memory/agents/delegator_cccf2fbe1a094dd09151ca55201c4317/agy-project"
+        }
+      ],
+      "replies": {
+        "solo": "Delivered message to delegator_9d64646e52dc4d6c86e337544bee2a68 on node \"alpha-node\".",
+        "team": "Delivered message to delegator_ca4f4643c5334e248cdb9b75b9e40118 on node \"alpha-node\".",
+        "org": "Delivered message to delegator_cccf2fbe1a094dd09151ca55201c4317 on node \"alpha-node\"."
+      },
+      "observed": {
+        "team": {
+          "reply": {
+            "accepted": true,
+            "text": "Delivered message to delegator_ca4f4643c5334e248cdb9b75b9e40118 on node \"alpha-node\"."
+          },
+          "inAlphaLog": true,
+          "delegatorRelaunched": true,
+          "conversation": "readable"
+        },
+        "org": {
+          "reply": {
+            "accepted": true,
+            "text": "Delivered message to delegator_cccf2fbe1a094dd09151ca55201c4317 on node \"alpha-node\"."
+          },
+          "inAlphaLog": true,
+          "delegatorRelaunched": true,
+          "conversation": "readable"
+        }
+      },
+      "linksAfter": {
+        "solo": [
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_ba63a07082fc448fba58a7fb7e679aba",
+            "coordinatorAgentRunId": "publisher_56e4fd6db9dd49f690ddba37512b16cf",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "members": [
+              {
+                "address": "/lead",
+                "agentRunId": "publisher_56e4fd6db9dd49f690ddba37512b16cf"
+              },
+              {
+                "address": "/checker",
+                "agentRunId": "checker_62906abffe2844eeb1a7d43ff3649a0f"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:13:46.855Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_6f9bb7def09642bfb8dc14d6abe1be86",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:13:03.800Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_5b194c9f7046478080a11ba0bb08fe11",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:12:47.718Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_87a1118fdbd94f7ca8e3ac39dbd2a20e",
+            "coordinatorAgentRunId": "publisher_a7b2ef10c9a2422aa38220a41d007cd6",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "members": [
+              {
+                "address": "/lead",
+                "agentRunId": "publisher_a7b2ef10c9a2422aa38220a41d007cd6"
+              },
+              {
+                "address": "/checker",
+                "agentRunId": "checker_e126af90f3904de6bc8ad229aa1a49af"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:14:04.138Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_ba63a07082fc448fba58a7fb7e679aba",
+            "coordinatorAgentRunId": "publisher_56e4fd6db9dd49f690ddba37512b16cf",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "members": [
+              {
+                "address": "/lead",
+                "agentRunId": "publisher_56e4fd6db9dd49f690ddba37512b16cf"
+              },
+              {
+                "address": "/checker",
+                "agentRunId": "checker_62906abffe2844eeb1a7d43ff3649a0f"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:13:47.386Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_6f9bb7def09642bfb8dc14d6abe1be86",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "delegatorAgentRunId": "delegator_9d64646e52dc4d6c86e337544bee2a68",
+            "startedAt": "2026-11-22T15:13:08.553Z"
+          }
+        ],
+        "team": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_49131b261426453c85a14e8f4a114319",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "delegatorAgentRunId": "delegator_ca4f4643c5334e248cdb9b75b9e40118",
+            "startedAt": "2026-11-22T15:12:51.228Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+            "coordinatorAgentRunId": "publisher_d94dab5842664421afaf49f3414125c0",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "members": [
+              {
+                "address": "/lead",
+                "agentRunId": "publisher_d94dab5842664421afaf49f3414125c0"
+              },
+              {
+                "address": "/checker",
+                "agentRunId": "checker_83c4cd0d653940b2bd3fe62b53c6d499"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_ca4f4643c5334e248cdb9b75b9e40118",
+            "startedAt": "2026-11-22T15:13:42.434Z"
+          }
+        ],
+        "org": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_c6dbec5fdcb046f98461b43c06758516",
+            "nodeId": "srv_ELE2uEoqVMQ_yuNz4t7FfTB73O_dObfB",
+            "delegatorAgentRunId": "delegator_cccf2fbe1a094dd09151ca55201c4317",
+            "startedAt": "2026-11-22T15:12:53.279Z"
+          }
+        ]
+      },
+      "reopened": {
+        "teamRunId": "remote_squad_703208eb7d214b1c83527c185fa1b8c7",
+        "orgMembers": 2
+      },
+      "studioReply": "Delivered message to delegator_ca4f4643c5334e248cdb9b75b9e40118 on node \"alpha-node\".",
+      "coldWake": {
+        "reply": "Delivered message to delegator_ca4f4643c5334e248cdb9b75b9e40118 on node \"alpha-node\".",
+        "relaunches": [
+          {
+            "argv": [
+              "--conversation",
+              "c874f65c-a157-4dea-b7ba-94ffa54ef38c",
+              "--agent",
+              "autobyteus-d7c0778d3d3f65c0",
+              "--add-dir",
+              "/tmp/remote-collab-two-server-jPS5HE/alpha/workspace",
+              "--model",
+              "gemini-3.8-flash-low",
+              "--input-format",
+              "stream-json",
+              "--output-format",
+              "stream-json",
+              "--dangerously-skip-permissions"
+            ],
+            "cwd": "/tmp/remote-collab-two-server-jPS5HE/alpha/data/memory/agent_teams/remote_squad_703208eb7d214b1c83527c185fa1b8c7/delegator_ca4f4643c5334e248cdb9b75b9e40118/agy-project"
+          }
+        ]
+      }
+    },
+    "RC-24": {
+      "stopped": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      },
+      "listed": {
+        "teamRunId": "studio_team_fb1a0b2e02974c1d9d8b201806bd7c86",
+        "isActive": false
+      },
+      "relaunch": {
+        "argv": [
+          "--conversation",
+          "8a99b81e-10a5-4650-b306-81776d20fdc8",
+          "--agent",
+          "autobyteus-c91c9bd34e1c34f6",
+          "--add-dir",
+          "/tmp/remote-collab-two-server-jPS5HE/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/tmp/remote-collab-two-server-jPS5HE/beta/data/memory/agent_teams/studio_team_fb1a0b2e02974c1d9d8b201806bd7c86/publisher_d94dab5842664421afaf49f3414125c0/agy-project"
+      }
+    },
+    "RC-20": {
+      "total": 348,
+      "counts": {
+        "status": 6,
+        "/rest/remote/delegated-runs": 72,
+        "work_packet": 41,
+        "receiverAddress": 44,
+        "toAlpha": 17,
+        "toBeta": 30,
+        "/rest/remote/run-messages": 10,
+        "runStatesConfirmed": 18,
+        "/rest/remote/delegated-run-states": 34,
+        "/rest/remote/run-summaries": 39,
+        "observation": 33,
+        "runningAgentsEntries": 6,
+        "/rest/remote/running-agents": 3,
+        "/rest/remote/peer-run-members": 2,
+        "/rest/remote/agent-stream-snapshot": 13,
+        "/rest/remote/agent-projection": 9,
+        "/rest/remote/owner-commands": 24,
+        "/rest/remote/available-agents": 12,
+        "/rest/remote/availability": 3
+      },
+      "headerNames": [
+        "accept",
+        "accept-encoding",
+        "accept-language",
+        "cache-control",
+        "connection",
+        "content-length",
+        "content-type",
+        "host",
+        "pragma",
+        "sec-fetch-mode",
+        "sec-websocket-extensions",
+        "sec-websocket-key",
+        "sec-websocket-version",
+        "upgrade",
+        "user-agent",
+        "x-autobyteus-peer-body-sha256",
+        "x-autobyteus-peer-from",
+        "x-autobyteus-peer-nonce",
+        "x-autobyteus-peer-signature",
+        "x-autobyteus-peer-timestamp",
+        "x-autobyteus-peer-to"
+      ]
+    }
+  }
+}

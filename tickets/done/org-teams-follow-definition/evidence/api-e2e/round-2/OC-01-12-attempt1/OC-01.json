@@ -1,0 +1,265 @@
+{
+  "container": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-11-22T17:14:18.774Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/concierge",
+        "to": "/team",
+        "rules": [
+          "Send software requests to the team."
+        ]
+      },
+      {
+        "from": "/concierge",
+        "to": "/team/reviewer",
+        "rules": [
+          "Ask the reviewer for reviews."
+        ]
+      },
+      {
+        "from": "/team/writer",
+        "to": "/concierge",
+        "rules": [
+          "Report every draft to the concierge."
+        ]
+      }
+    ],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "oc-org-7de1eb",
+      "orgDefinitionName": "oc-org-7de1eb",
+      "orgRunId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace"
+      },
+      "units": [
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f",
+          "definitionId": "oc-concierge-7de1eb"
+        },
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+          "definitionId": "oc-team-7de1eb"
+        }
+      ],
+      "formerUnits": []
+    }
+  },
+  "concierge": {
+    "runId": "oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f",
+    "agentDefinitionId": "oc-concierge-7de1eb",
+    "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace",
+    "memoryDir": "/tmp/oc-e2e-uZLEpx/memory/agents/oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": null,
+    "preparedAt": "2026-11-22T17:14:18.755Z",
+    "preparedExpiresAt": "2026-11-23T17:14:18.755Z",
+    "startedAt": null,
+    "applicationExecutionContext": null,
+    "address": "/concierge",
+    "containedIn": {
+      "orgRunId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+      "address": "/concierge"
+    }
+  },
+  "teamTree": {
+    "createdAt": "2026-11-22T17:14:18.764Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/lead",
+        "to": "/writer",
+        "rules": [
+          "Draft the text."
+        ]
+      }
+    ],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "oc-team-7de1eb",
+      "teamDefinitionName": "oc-team-7de1eb",
+      "teamRunId": "oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+      "coordinatorAddress": "/lead",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace"
+      },
+      "members": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "oc-lead-7de1eb",
+          "role": null,
+          "description": null,
+          "agentRunId": "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace"
+          }
+        },
+        {
+          "address": "/writer",
+          "agentDefinitionId": "oc-writer-7de1eb",
+          "role": null,
+          "description": null,
+          "agentRunId": "oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace"
+          }
+        },
+        {
+          "address": "/reviewer",
+          "agentDefinitionId": "oc-reviewer-7de1eb",
+          "role": null,
+          "description": null,
+          "agentRunId": "oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/tmp/oc-e2e-uZLEpx/workspace"
+          }
+        }
+      ]
+    },
+    "containedIn": {
+      "orgRunId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+      "address": "/team"
+    }
+  },
+  "snapshot": [
+    {
+      "address": "/concierge",
+      "agentRunId": "oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f",
+      "status": "offline"
+    },
+    {
+      "address": "/team/lead",
+      "agentRunId": "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0",
+      "status": "offline"
+    },
+    {
+      "address": "/team/writer",
+      "agentRunId": "oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e",
+      "status": "offline"
+    },
+    {
+      "address": "/team/reviewer",
+      "agentRunId": "oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0",
+      "status": "offline"
+    }
+  ],
+  "rows": [
+    {
+      "key": "org_agent:oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d:oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f",
+      "parentKey": null,
+      "kind": "org_agent",
+      "name": "concierge",
+      "address": "/concierge",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+        "agentRunId": "oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f"
+      },
+      "statusIds": [
+        "oc_concierge_7de1eb_8b92d6451a3a42b29cca10838b41926f"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "org_team:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+      "parentKey": null,
+      "kind": "org_team",
+      "name": "team",
+      "address": "/team",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+        "agentRunId": "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0"
+      },
+      "statusIds": [
+        "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0",
+        "oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e",
+        "oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "team_member:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d:oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0",
+      "parentKey": "org_team:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+      "kind": "team_member",
+      "name": "lead",
+      "address": "/team/lead",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+        "agentRunId": "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0"
+      },
+      "statusIds": [
+        "oc_lead_7de1eb_9837d843a6484a188d8ac49a39a92eb0"
+      ],
+      "depth": 1
+    },
+    {
+      "key": "team_member:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d:oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e",
+      "parentKey": "org_team:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+      "kind": "team_member",
+      "name": "writer",
+      "address": "/team/writer",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+        "agentRunId": "oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e"
+      },
+      "statusIds": [
+        "oc_writer_7de1eb_948e0031add846e2b62b7a15a5d46f0e"
+      ],
+      "depth": 1
+    },
+    {
+      "key": "team_member:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d:oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0",
+      "parentKey": "org_team:oc_team_7de1eb_ae11012feaa445a7b593bb8b1f6b576d",
+      "kind": "team_member",
+      "name": "reviewer",
+      "address": "/team/reviewer",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_7de1eb_b7ea7434dc04485f9cb3b2f63f2a391d",
+        "agentRunId": "oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0"
+      },
+      "statusIds": [
+        "oc_reviewer_7de1eb_cd7735f713dd422c8651101591b58da0"
+      ],
+      "depth": 1
+    }
+  ],
+  "history": []
+}

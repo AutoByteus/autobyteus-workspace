@@ -1,10 +1,11 @@
+import { createAgentOrgUnitsMigrations } from "./migrations/agent-org-units-own-runs-v1/agent-org-units-follow-ups.js";
 import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "./migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { createDelegatedRunOwnAttachmentLinksMigrations } from "./migrations/delegated-run-own-attachment-links/delegated-run-own-attachment-links-app-data-migration.js";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import { getBuiltInLlmProviderCatalog } from "../llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js";
-import { resetAgentRunHistoryCatalogState } from "../run-history/services/agent-run-history-catalog-service.js";
+import { resetAgentRunHistoryCatalogState } from "../run-history/services/agent-run-history-catalog-state.js";
 import { resetCollaborationRunHistoryCatalogState } from "../run-history/services/collaboration-run-history-catalog-core.js";
 import { getAppDataMigrationRecordRepository } from "./repositories/app-data-migration-record-repository.js";
 import type { DefinitionNameLookup } from "./domain/definition-name-lookup.js";
@@ -182,6 +183,10 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // 20261017_task_agent_own_run_v1, the one later writer of a scanned folder (M-7). 491's migration touches
     // definition folders under agents/, these only raw traces under memory/: either order gives the same result.
     ...createDelegatedRunOwnAttachmentLinksMigrations(appDataDir, memoryDir),
+    // org-teams-follow-definition (design DS-005): each stored Org run becomes a container whose mounted Teams and direct
+    // agents are runs of their own; registered after every released migration (guideline §4), then one follow-up per
+    // writer or reader predecessor (each after it and ours) converts what that predecessor left.
+    ...createAgentOrgUnitsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
   ];
 };
 

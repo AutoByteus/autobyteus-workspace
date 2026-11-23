@@ -1,0 +1,39 @@
+{
+  "before": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Hand every draft to the writer.",
+        "recipient_address": "/team/writer"
+      }
+    ],
+    "isError": false
+  },
+  "told": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "without": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      }
+    ],
+    "isError": false
+  },
+  "toldAgain": "Your team changed: its definition was updated.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "back": {
+    "handoffs": [
+      {
+        "when": "Send software requests to the team.",
+        "recipient_address": "/team"
+      },
+      {
+        "when": "Hand every draft to the writer.",
+        "recipient_address": "/team/writer"
+      }
+    ],
+    "isError": false
+  }
+}

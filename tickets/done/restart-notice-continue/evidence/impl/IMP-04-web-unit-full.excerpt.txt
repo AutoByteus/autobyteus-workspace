@@ -1,0 +1,11 @@
+# IMP-04
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run (after pnpm -C autobyteus-ts build and nuxi prepare)
+# Commit: 75e085d889 (branch codex/restart-notice-continue) (IMP-02/IMP-03/IMP-04 ran on the same source before the commit; only e2e files changed after them, and IMP-02 was rerun after)
+# Environment: macOS arm64, Node, headless Chrome; 2026-11-22
+
+# Excerpt of IMP-04-web-unit-full.txt: the summary lines
+
+ Test Files  793 passed (793)
+exit=0
+      Tests  5994 passed | 2 skipped (5996)
+   Duration  358.84s (transform 34.05s, setup 2421.34s, collect 238.16s, tests 104.49s, environment 189.34s, prepare 112.32s)

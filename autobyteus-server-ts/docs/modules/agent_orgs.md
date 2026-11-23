@@ -31,6 +31,70 @@ An AgentTeam contains Agents only. AgentOrg cannot contain another AgentOrg, and
 configured Team-within-Team nesting is rejected. Delegation to a flat Team
 starts a team run of its own; it is not configured membership.
 
+## Org Container (since org-teams-follow-definition)
+
+An Org run is a **container of runs**. Each mounted Team is a Team run of its own
+(`agent_teams/<teamRunId>/`) and each direct agent an agent run of its own
+(`agents/<agentRunId>/`); each carries the fixed back-link
+`containedIn: { orgRunId, address }` (its Org address). The container hosts no
+agent: `agent_orgs/<orgRunId>/agent_org_run_execution_tree.json` keeps the Org's
+definition reference, its own launch, `rootOrg.units` (address, kind, run ID,
+definition), `rootOrg.formerUnits` and the Org-level handoff rules (the Org
+definition's rules not wholly inside one mounted Team, in Org addresses). It has
+no message log and no member folders. The normative shape is the storage
+contract of the ticket (`org-container-storage-contract.md`).
+
+- **Start** (`AgentOrgRunService.create` → `AgentOrgContainers.create`): each unit
+  is created by its own run service (members Offline until first work), then the
+  container file lists them. An application's Org gives each unit the same
+  ownership (a Team unit's `applicationBinding`, an agent unit's
+  `applicationExecutionContext`).
+- **Messages**: a unit's agent reaches another unit's agent by its Org address
+  (`/concierge`, `/software_engineering_team/solution_designer`). The container
+  directory (`OrgContainerDirectory`, the one `OrgContainerPort`) answers the
+  unit's step 2; `CrossRunMessageDelivery` admits the pair as `same_container`
+  (a receiver that is not running is restored) and stores the message in both
+  units' logs, each line naming the other side's Org address (`counterpart`).
+- **Rules**: a unit agent's `get_handoff_rules` is its own run's rules plus the
+  Org rules from its Org address. An Org rule to a member that is not currently
+  in its Team is left out until it returns (derived at each read); the sender
+  hears the autobyteus-22 notice line, merged into one net notice with any Team
+  change (`TeamChangeNoticeSource`). A Team unit's member that left its Team
+  (idle, or still finishing) is refused by name at its Org address `P/x` to
+  every other unit, with the text its teammates get; the container asks the
+  Team's own tree (live, else stored; a stopped unit is not restored to answer).
+- **Following**: every Team unit follows its Team definition (team-run-follows-
+  definition). The Org follows its Org definition on every definition change and
+  when it reopens (`OrgDefinitionChangeListener`, `OrgMembershipPlanner`,
+  `planOrgMembershipChange`): a new unit is created Offline; a removed unit
+  becomes a former unit (a running one is marked `leaving`, finishes, then its run
+  stops and the marker is cleared; its rows show it leaving); its address is then
+  refused by name, as a Team's former member is; the Org rules become the
+  definition's. An application's Org does not follow.
+- **View, rows, history**: `OrgViewComposition` composes the live units' views
+  and the others' stored files into today's Org view in the container's stream
+  (one order; a snapshot reads the live units at its base); commands go to the
+  owning unit's root. Rows and history read the container and its unit files;
+  unit runs are not top-level runs.
+- **Stop / reopen**: Stop stops every unit run; reopening reads the container
+  file and restores a unit when it is first needed.
+- **Delegation**: a delegation by a unit's agent names the unit run as its
+  delegating run.
+- **Upgrade**: startup migration `20261122_agent_org_units_own_runs_v1` converts
+  each stored Org run (folders renamed, not copied; the Org log split into the
+  units' logs; delegations rewritten to the unit run; one follow-up per earlier
+  writer or reader migration). One pass over the node's files then moves stored
+  absolute paths into a renamed folder (message logs' and ad-hoc Tasks'
+  `referenceFiles`, traces' `media` and `file_attachments`; never prose, journals
+  or provider sessions), so a file received from another node still opens. The
+  container file is written last, as the one sign an Org is converted: an
+  interrupted start repeats the steps and the pass. An older build cannot read a
+  container: rolling back is not possible.
+
+Sections below that describe member hosting inside the Org root, the Org's own
+message log or the Org as delegating run describe the released shape that the
+migration converts.
+
 ## Definition Contract
 
 A normal AgentOrg definition uses
@@ -164,8 +228,21 @@ unrelated roots.
 **A Team instance is one unit (REQ-007).** A message from inside a Team instance
 to an address inside that Team resolves within that same instance. A delegated
 team run is rooted at `/` and its members reach each other by their own
-addresses; a member reaches the org's standing agents (the run that assigned its
-Task) by their org addresses (contract §2.3 step 2). Reaching another run is
+addresses. Since org-teams-follow-definition the run that assigned its Task is an
+Org member's unit run (design R-8): a unit run as assigner contributes its
+container's placements at Org addresses (every unit's agents, a Team unit's
+members as `P/x`, a Team unit's `P` answered by its coordinator), never its own
+team-space standing; so a run an Org member delegated reaches the Org's agents and
+mounted Teams by their Org addresses, as when the Org was its assigner (contract
+§2.3 step 2). An older delegation that named no delegator stays with the
+container, which contributes the same placements. Its messages to the container's
+units are related runs' messages (design SR-014: the Task relation extended along
+its delegation chain): a stopped unit is restored, neither line records
+`counterpart`, and the message shows as a related line (in the two runs' views
+and the Org view; the delegating unit's view only when it is a party), while its
+Task is open. A unit's message to such a run, by run ID, is related the same way
+while its Task is open; once it is closed, only its assigner continues it (after
+the Task's reopen), as any delegated run. Reaching another run is
 possible only by run ID.
 
 ## Launch Configuration And Admission
@@ -202,11 +279,10 @@ supply a recipient.
 ## Runtime And Focus
 
 `AgentOrgRunService` plans and validates the fixed-depth definition,
-`AgentOrgRunManager` owns root lifecycle, and `AgentOrgRun` owns the
-coordinator-free root scope. Direct Agents use configured-Agent execution
-handles. Each mounted Team uses the same flat Team execution machinery as a
-standalone Team while keeping its definition identity, direct coordinator,
-Team-local handoffs, and independent launchability.
+`AgentOrgRunManager` owns the container lifecycle (`AgentOrgContainers`), and
+each live container is a `LiveAgentOrgContainer` (see Org Container above). Direct
+Agents are standalone agent runs and mounted Teams are Team runs, each with
+`containedIn`; the container hosts no execution.
 
 Launching makes the full Org scope available with no focused recipient. Unused
 configured Agents, both direct and inside mounted Teams, remain genuinely
@@ -243,7 +319,9 @@ client commands are `SEND_MESSAGE`, `INTERRUPT_GENERATION`,
 `APPROVE_TOOL`, and `DENY_TOOL`. Unknown roots, stale run IDs, incomplete
 task lineage, and cross-root targets fail closed.
 
-The AgentOrg communication sidecar remains the single root message authority.
+Since org-teams-follow-definition the Org has no communication sidecar: each
+message is stored in its units' logs (CM-9) and the container's view composes
+them. The released behavior was: the AgentOrg communication sidecar was the single root message authority.
 After an inter-Agent append is durable, the root stream publishes that message.
 For every admitted ordinary endpoint pair, the same commit also presents exactly
 one `MEMBER_INPUT_MESSAGE` to the receiving Agent before releasing its reserved
@@ -327,15 +405,14 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
 
 ## Persistence And History
 
-AgentOrg has its own durable family:
+AgentOrg has its own durable family (since org-teams-follow-definition):
 
 ```text
 memory/agent_org_run_history_index.json
 memory/agent_orgs/<org-run-id>/
-  agent_org_run_execution_tree.json
-  agent_org_communication_messages_active.jsonl   # the org's message log (append-only JSON Lines)
-  agent_org_communication_messages_000001.jsonl   # sealed files once the log has rotated
-  <rooted member memory...>        # direct agents and mounted teams' members
+  agent_org_run_execution_tree.json   # the container: units, former units, Org rules; no log, no member folders
+memory/agents/<unit-agent-run-id>/       # a direct agent: its own run (run_metadata.json with containedIn), memory and log
+memory/agent_teams/<unit-team-run-id>/   # a mounted Team: its own run (team tree with containedIn), members and log
 memory/agents/<run-id>/                  # a run the org delegated to: a run of its own (run_metadata.json with delegatedFrom, own log)
 memory/agent_teams/<team-run-id>/        # a team run the org delegated to: its own tree rooted at / (with delegatedFrom), log and members
 ```

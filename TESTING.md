@@ -290,6 +290,21 @@ or because Gradle's cache already holds a dependency the runner must download.
     When the installed `agy` keeps no `antigravity-oauth-token` file, a throwaway `HOME` gives a
     signed-out `agy`; live AGY suites then run on the host login with the real `HOME`, and each
     run adds its own conversations to the user's `agy` history. Say so in your report.
+  - **Claude Code (`claude`).** It keeps its login, settings and saved sessions under
+    `CLAUDE_CONFIG_DIR` (default `$HOME/.claude`). For a test-owned Claude, give the server a
+    throwaway `HOME` and `CLAUDE_CONFIG_DIR`, and set `CLAUDE_AGENT_SDK_AUTH_MODE=api-key` with the
+    [test vault](#test-vault): the server then hands the vault's `provider.anthropic.api-key` to
+    the CLI child only, so nothing of the user's `~/.claude` is read or written. A built server
+    gets the vault through `startBuiltTestServer({ testVaultSetting })` (read the setting with
+    `capturedTestVaultSetting()`: the test setup takes `AUTOBYTEUS_TEST_VAULT` out of the
+    environment); an in-process suite calls `initializeLiveServerVault()`. Example:
+    `autobyteus-server-ts/tests/e2e/runtime/lost-session-renewal-live.e2e.test.ts`.
+  - **A recorder in front of a CLI** (`CLAUDE_CODE_EXECUTABLE_PATH`, `CODEX_APP_SERVER_COMMAND`,
+    `GROK_BUILD_COMMAND`) runs the real CLI unchanged and keeps what the server sends it. Inside an
+    ES-module package (such as `autobyteus-server-ts/tests/.tmp/`) name a CommonJS recorder `.cjs`,
+    or Node loads it as a module and it fails. The server uses `CLAUDE_CODE_EXECUTABLE_PATH` only
+    when it answers `--version` with exit 0 within 3 s, and otherwise silently runs the real
+    `claude`; check that before the server starts.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process

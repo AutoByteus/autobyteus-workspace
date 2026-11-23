@@ -9,8 +9,9 @@ import { FlatTeamAgentExecutionHandle } from "../../../src/agent-team-execution/
 import { configuredRootFixture, placements } from "../../fixtures/configured-root-first-work-fixture.js";
 
 /**
- * autobyteus-599 (DS-002; REQ-006, AC-005, with AC-001, AC-003, AC-004 for members): a Team member (standalone Team), an Org
- * member of a mounted Team and a direct Org Agent whose saved runtime session is lost, through the REAL roots, their
+ * autobyteus-599 (DS-002; REQ-006, AC-005, with AC-001, AC-003, AC-004 for members): a Team member whose saved runtime session
+ * is lost (an Org's members are its Team and agent units' members since org-teams-follow-definition: the same roots; their own
+ * cases are in `org-unit-received-files-and-renewal.test.ts`), through the REAL roots, their
  * execution-tree persistence, the Flat Team cache and the real switch recorder on real files; only the provider and the
  * conversation check are controlled. The restore of the saved session fails with the runtime's own "not found", and the same
  * activation continues in a fresh session of the same runtime behind the lost-session marker, committed as a compare-and-set
@@ -69,7 +70,7 @@ for (const placement of placements) describe(`${placement}: a member whose saved
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-1");
     expect(f.members()[0]!.platformAgentRunId).toBe(LOST); // the other members are untouched
     expect(await f.reload()).toEqual(f.members());
-    if (placement !== "direct_org") expect(cacheUpdate).toHaveBeenCalledWith(LOST, "new-thread-1");
+    expect(cacheUpdate).toHaveBeenCalledWith(LOST, "new-thread-1");
     // the previous records kept as one closed segment, the lost-session marker first in the active file
     expect(segment(f).map((entry) => entry.id)).toEqual(["old-user", "old-assistant"]);
     expect(manifest(f).segments).toEqual([expect.objectContaining({
@@ -96,7 +97,7 @@ for (const placement of placements) describe(`${placement}: a member whose saved
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-1");
   });
 
-  if (placement !== "direct_org") it("a re-created configured handle restores the renewed session (Change Scope #3)", async () => {
+  it("a re-created configured handle restores the renewed session (Change Scope #3)", async () => {
     // The Flat Team handle re-creates its configured handle from its own config and cache, as after a disposal.
     const created: FlatTeamAgentExecutionHandle[] = [];
     const createHandle = (FlatTeamAgentExecutionHandle.prototype as any).createHandle;
@@ -198,7 +199,7 @@ for (const placement of placements) describe(`${placement}: a member whose saved
 
   it("the root's compare-and-set refuses a renewal whose lost ID is no longer the stored one, writing nothing", async () => {
     const f = await setup();
-    const root = placement === "standalone_team" ? { rootSubjectKind: "agent_team", rootRunId: "test-root" } : { rootSubjectKind: "agent_org", rootRunId: "test-root" };
+    const root = { rootSubjectKind: "agent_team", rootRunId: "test-root" };
     const change = { kind: "replace_lost_session", replacement: { expectedPreviousPlatformAgentRunId: "not-current",
       binding: { execution: { root, memberAddress: f.addresses[1], agentRunId: f.ids[1] }, platformAgentRunId: "renewed" } } };
     await expect(f.root.commitAgentPlatformBindingChange(change as never)).rejects.toThrow();

@@ -1,0 +1,529 @@
+# IMP-08 I-2: where each busy-Mac E2E file spends its time (DEC-002), before and after
+# Commands: each file alone, one at a time: env -i PATH="$PATH" HOME=<new temp dir> TMPDIR="$TMPDIR" pnpm exec vitest run <file> --no-watch
+#   --reporter=<phase reporter: each test's duration; console PHASE lines>, with temporary, uncommitted timers: each hook's
+#   body wrapped in a timer, fetch calls over 200 ms logged, and for project-mutation-node-locality the fixture's migrate,
+#   start and stop timed (the instrumentation scripts are reproduced at the end; files restored with git checkout afterwards).
+# Busy-Mac emulation for the "stressed" runs: 16 CPU spinners and 8 file churners (write, rename, delete in a temp tree;
+#   fseventsd reached ~60%, and a fresh fs.watch got no event within 20 s under it); stopped right after.
+# Commits: before = 45ad9817e4 (I-1, I-3, I-4, I-5 done; I-2 not), after = 02ee9c2237 (I-2)
+# Environment: macOS (Darwin 25.5.0), 10 cores, Node v22.23.1, vitest 4.1.12, built server from the worktree (pnpm build)
+# Date: 2026-11-22
+# The regime the failures came from (not reproducible here: fseventsd stays near 60% under any churn tried, and a recursive
+#   fs.watch close took 0-2 ms): autobyteus-576 API-08b (load 8-12, fseventsd 166%) and autobyteus-583 API-07b (load 45-55,
+#   fseventsd 140%). There the same files took 5-14 x their time here (node-locality 60 s, request-origin 31 s, provider-secret
+#   28 s, embedding 18 s) and tests that answer in 5-120 ms timed out at 5 s.
+
+== CALM (load 24-36, fseventsd 0-28%), before, two runs ==
+### run 1 provider-secret-lifecycle-graphql.e2e.test.ts load=24.64 34.19 35.38 fseventsd=0.2%
+PHASE hook beforeAll 1810 ms
+PHASE test 40 ms passed :: saves and replaces a provider key without value readback
+PHASE test 6 ms passed :: exposes only the approved ordinary-provider and Gemini configuration commands
+PHASE test 27 ms passed :: serves five warm credential descriptor reads within the local budget
+PHASE test 30 ms passed :: keeps Gemini configuration independent and activation explicit with no priority/fallback
+PHASE test 5 ms passed :: keeps vault status and built-in catalogs value-free and available with missing credentials
+PHASE test 56 ms passed :: probes, creates, discovers, and deletes a custom provider through GraphQL and the vault
+PHASE hook afterAll 59 ms
+PHASE module total 2035 ms, setup 58, collect 25, prepare 3, environment 0 :: provider-secret-lifecycle-graphql.e2e.test.ts
+### run 1 request-origin-and-phone-routes.e2e.test.ts load=23.79 33.85 35.25 fseventsd=4.8%
+PHASE hook beforeAll 253 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 16 ms passed :: NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family
+PHASE test 2860 ms passed :: accepts each allowed-origin class and refuses near misses (AC-002)
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 6 ms passed :: refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003)
+PHASE test 8 ms passed :: NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+PHASE test 1244 ms passed :: NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+PHASE hook beforeEach 1 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 7 ms passed :: NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credentia
+PHASE test 30 ms passed :: NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled
+PHASE test 10 ms passed :: refuses a request addressed to a name that is not the node's on every entry form, before any route (
+PHASE test 843 ms passed :: accepts every allowed-host class, configured name and paired-phone host, and refuses other public na
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook afterAll 14 ms
+PHASE test 1 ms passed :: warns once at start about invalid entries of the two settings (416 AC-003)
+PHASE test 9 ms passed :: refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (4
+PHASE module total 5304 ms, setup 55, collect 8206, prepare 3, environment 0 :: request-origin-and-phone-routes.e2e.test.ts
+### run 1 embedding-settings.e2e.test.ts load=21.62 32.90 34.89 fseventsd=21.9%
+PHASE hook beforeAll 276 ms
+PHASE test 53 ms passed :: answers models and Project indexes in one read-only document: fresh install is Not downloaded and No
+PHASE test 78 ms passed :: downloads the active model (Preparing with bytes, not cancellable), then indexes on request
+PHASE test 21 ms passed :: downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing 
+PHASE test 27 ms passed :: switches the active model through the setting, prepares it at once, keeps the old files, and shows t
+PHASE test 14 ms passed :: shows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+PHASE test 3053 ms passed :: indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-01
+PHASE hook afterAll 20 ms
+PHASE module total 3544 ms, setup 55, collect 8156, prepare 3, environment 0 :: embedding-settings.e2e.test.ts
+### run 1 project-mutation-node-locality.e2e.test.ts load=21.81 32.35 34.65 fseventsd=20.5%
+PHASE test 5925 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+PHASE module total 5925 ms, setup 49, collect 14, prepare 3, environment 0 :: project-mutation-node-locality.e2e.test.ts
+### run 1 mcp-bulk-import.e2e.test.ts load=23.74 32.57 34.72 fseventsd=1.7%
+PHASE test 50 ms passed :: reports each failed entry with its reason, without any secret value, and stores rule matches in the 
+PHASE test 119 ms passed :: imports the content of the app's own mcps.json, keeping its own references and marking foreign ones 
+PHASE module total 2040 ms, setup 52, collect 16, prepare 3, environment 0 :: mcp-bulk-import.e2e.test.ts
+### run 1 project-task-search.e2e.test.ts load=25.68 32.83 34.80 fseventsd=4.7%
+PHASE hook beforeAll 201 ms
+PHASE test 151 ms passed :: answers exact matches at once, reports preparation, then adds meaning matches without a new query te
+PHASE test 280 ms passed :: POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no l
+PHASE hook afterAll 13 ms
+PHASE test 110 ms passed :: CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and 
+PHASE test 10 ms passed :: validates the active-model setting and offers Retry only for an unavailable model
+PHASE module total 767 ms, setup 53, collect 7965, prepare 3, environment 0 :: project-task-search.e2e.test.ts
+### run 1 node-files.e2e.test.ts load=27.76 33.03 34.85 fseventsd=27.8%
+PHASE hook afterAll 7 ms
+PHASE test 6 ms passed :: NAS-39 the owner and a paired phone read a file outside every workspace, read-only, with the user-fi
+PHASE test 5 ms passed :: NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symb
+PHASE test 18 ms passed :: NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is re
+PHASE test 1 ms passed :: NAS-39 only reads: POST, PUT and DELETE are not served, and no folder is listed
+PHASE test 0 ms passed :: logs no node file path (QR-001)
+PHASE module total 293 ms, setup 57, collect 8245, prepare 3, environment 0 :: node-files.e2e.test.ts
+### run 2 provider-secret-lifecycle-graphql.e2e.test.ts load=32.07 33.79 35.09 fseventsd=16.3%
+PHASE hook beforeAll 1862 ms
+PHASE test 48 ms passed :: saves and replaces a provider key without value readback
+PHASE test 6 ms passed :: exposes only the approved ordinary-provider and Gemini configuration commands
+PHASE test 30 ms passed :: serves five warm credential descriptor reads within the local budget
+PHASE test 33 ms passed :: keeps Gemini configuration independent and activation explicit with no priority/fallback
+PHASE test 7 ms passed :: keeps vault status and built-in catalogs value-free and available with missing credentials
+PHASE test 57 ms passed :: probes, creates, discovers, and deletes a custom provider through GraphQL and the vault
+PHASE hook afterAll 54 ms
+PHASE module total 2101 ms, setup 55, collect 22, prepare 3, environment 0 :: provider-secret-lifecycle-graphql.e2e.test.ts
+### run 2 request-origin-and-phone-routes.e2e.test.ts load=32.07 33.79 35.09 fseventsd=3.8%
+PHASE hook beforeAll 218 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 14 ms passed :: NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family
+PHASE test 2874 ms passed :: accepts each allowed-origin class and refuses near misses (AC-002)
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 6 ms passed :: refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003)
+PHASE test 7 ms passed :: NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+PHASE test 1232 ms passed :: NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+PHASE hook beforeEach 1 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE test 3 ms passed :: NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credentia
+PHASE test 19 ms passed :: NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled
+PHASE test 6 ms passed :: refuses a request addressed to a name that is not the node's on every entry form, before any route (
+PHASE test 832 ms passed :: accepts every allowed-host class, configured name and paired-phone host, and refuses other public na
+PHASE hook beforeEach 0 ms
+PHASE hook beforeEach 0 ms
+PHASE hook afterAll 13 ms
+PHASE test 1 ms passed :: warns once at start about invalid entries of the two settings (416 AC-003)
+PHASE test 9 ms passed :: refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (4
+PHASE module total 5239 ms, setup 53, collect 8177, prepare 3, environment 0 :: request-origin-and-phone-routes.e2e.test.ts
+### run 2 embedding-settings.e2e.test.ts load=33.09 33.95 35.13 fseventsd=23.8%
+PHASE hook beforeAll 306 ms
+PHASE test 57 ms passed :: answers models and Project indexes in one read-only document: fresh install is Not downloaded and No
+PHASE test 82 ms passed :: downloads the active model (Preparing with bytes, not cancellable), then indexes on request
+PHASE test 22 ms passed :: downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing 
+PHASE test 26 ms passed :: switches the active model through the setting, prepares it at once, keeps the old files, and shows t
+PHASE test 14 ms passed :: shows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+PHASE test 3080 ms passed :: indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-01
+PHASE hook afterAll 21 ms
+PHASE module total 3612 ms, setup 53, collect 8078, prepare 3, environment 0 :: embedding-settings.e2e.test.ts
+### run 2 project-mutation-node-locality.e2e.test.ts load=34.67 34.28 35.23 fseventsd=11.4%
+PHASE test 6010 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+PHASE module total 6011 ms, setup 50, collect 16, prepare 3, environment 0 :: project-mutation-node-locality.e2e.test.ts
+### run 2 mcp-bulk-import.e2e.test.ts load=36.08 34.58 35.32 fseventsd=0.5%
+PHASE test 61 ms passed :: reports each failed entry with its reason, without any secret value, and stores rule matches in the 
+PHASE test 124 ms passed :: imports the content of the app's own mcps.json, keeping its own references and marking foreign ones 
+PHASE module total 2006 ms, setup 53, collect 25, prepare 3, environment 0 :: mcp-bulk-import.e2e.test.ts
+### run 2 project-task-search.e2e.test.ts load=36.08 34.58 35.32 fseventsd=5.6%
+PHASE hook beforeAll 213 ms
+PHASE test 162 ms passed :: answers exact matches at once, reports preparation, then adds meaning matches without a new query te
+PHASE test 276 ms passed :: POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no l
+PHASE test 111 ms passed :: CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and 
+PHASE hook afterAll 11 ms
+PHASE test 9 ms passed :: validates the active-model setting and offers Retry only for an unavailable model
+PHASE module total 782 ms, setup 49, collect 8105, prepare 3, environment 0 :: project-task-search.e2e.test.ts
+### run 2 node-files.e2e.test.ts load=35.26 34.46 35.27 fseventsd=23.2%
+PHASE hook afterAll 9 ms
+PHASE test 5 ms passed :: NAS-39 the owner and a paired phone read a file outside every workspace, read-only, with the user-fi
+PHASE test 5 ms passed :: NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symb
+PHASE test 28 ms passed :: NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is re
+PHASE test 1 ms passed :: NAS-39 only reads: POST, PUT and DELETE are not served, and no folder is listed
+PHASE test 0 ms passed :: logs no node file path (QR-001)
+PHASE module total 318 ms, setup 51, collect 8392, prepare 3, environment 0 :: node-files.e2e.test.ts
+
+== node-locality fixture phases, calm, before, two runs (count, phase) ==
+### run 1 load=37.26 35.51 35.62
+   2 PHASE stop-total 30 ms
+   2 PHASE stop-exit 28 ms
+   2 PHASE gql 8 ms
+   2 PHASE gql 5 ms
+   2 PHASE gql 4 ms
+   1 PHASE test 7135 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+   1 PHASE stop-total 27 ms
+   1 PHASE stop-total 21 ms
+   1 PHASE stop-exit 23 ms
+   1 PHASE stop-exit 19 ms
+   1 PHASE start 2290 ms
+   1 PHASE start 1333 ms
+   1 PHASE start 1320 ms
+   1 PHASE start 1319 ms
+   1 PHASE module total 7136 ms, setup 64, collect 16, prepare 4, environment 0 :: project-mutation-node-locality.e2e.test.ts
+   1 PHASE migrate 329 ms
+   1 PHASE migrate 309 ms
+   1 PHASE mcp update_project 8 ms
+   1 PHASE mcp update_project 18 ms
+   1 PHASE mcp list_projects 3 ms
+### run 2 load=34.40 34.96 35.42
+   3 PHASE gql 6 ms
+   3 PHASE gql 4 ms
+   2 PHASE stop-total 22 ms
+   2 PHASE stop-exit 21 ms
+   2 PHASE stop-exit 19 ms
+   1 PHASE test 6211 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+   1 PHASE stop-total 23 ms
+   1 PHASE stop-total 21 ms
+   1 PHASE start 1383 ms
+   1 PHASE start 1352 ms
+   1 PHASE start 1310 ms
+   1 PHASE start 1276 ms
+   1 PHASE module total 6212 ms, setup 65, collect 17, prepare 3, environment 0 :: project-mutation-node-locality.e2e.test.ts
+   1 PHASE migrate 337 ms
+   1 PHASE migrate 335 ms
+   1 PHASE mcp update_project 9 ms
+   1 PHASE mcp update_project 18 ms
+   1 PHASE mcp list_projects 3 ms
+   1 PHASE mcp create_project 25 ms
+   1 PHASE mcp create_project 18 ms
+
+== STRESSED (load 45-127, fseventsd 55-65%), before ==
+### stressed provider-secret-lifecycle-graphql.e2e.test.ts load=44.69 36.72 35.96 fseventsd=60.0%
+PHASE hook beforeAll 7022 ms
+PHASE test 243 ms passed :: saves and replaces a provider key without value readback
+PHASE test 31 ms passed :: exposes only the approved ordinary-provider and Gemini configuration commands
+PHASE test 80 ms passed :: serves five warm credential descriptor reads within the local budget
+PHASE test 110 ms passed :: keeps Gemini configuration independent and activation explicit with no priority/fallback
+PHASE test 16 ms passed :: keeps vault status and built-in catalogs value-free and available with missing credentials
+PHASE test 185 ms passed :: probes, creates, discovers, and deletes a custom provider through GraphQL and the vault
+PHASE hook afterAll 149 ms
+PHASE module total 7841 ms, setup 202, collect 63, prepare 3, environment 0 :: provider-secret-lifecycle-graphql.e2e.test.ts
+### stressed request-origin-and-phone-routes.e2e.test.ts load=61.48 40.83 37.44 fseventsd=59.3%
+PHASE hook beforeAll 750 ms
+PHASE test 156 ms passed :: NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family
+PHASE test 2844 ms passed :: accepts each allowed-origin class and refuses near misses (AC-002)
+PHASE test 9 ms passed :: refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003)
+PHASE test 20 ms passed :: NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+PHASE test 1230 ms passed :: NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+PHASE test 5 ms passed :: NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credentia
+PHASE test 61 ms passed :: NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled
+PHASE test 20 ms passed :: refuses a request addressed to a name that is not the node's on every entry form, before any route (
+PHASE test 896 ms passed :: accepts every allowed-host class, configured name and paired-phone host, and refuses other public na
+PHASE hook afterAll 42 ms
+PHASE test 0 ms passed :: warns once at start about invalid entries of the two settings (416 AC-003)
+PHASE test 5 ms passed :: refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (4
+PHASE module total 6041 ms, setup 205, collect 25947, prepare 4, environment 0 :: request-origin-and-phone-routes.e2e.test.ts
+### stressed embedding-settings.e2e.test.ts load=84.26 49.40 40.74 fseventsd=65.4%
+PHASE hook beforeAll 991 ms
+PHASE test 135 ms passed :: answers models and Project indexes in one read-only document: fresh install is Not downloaded and No
+PHASE test 216 ms passed :: downloads the active model (Preparing with bytes, not cancellable), then indexes on request
+PHASE test 19 ms passed :: downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing 
+PHASE test 34 ms passed :: switches the active model through the setting, prepares it at once, keeps the old files, and shows t
+PHASE test 96 ms passed :: shows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+PHASE test 3165 ms passed :: indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-01
+PHASE hook afterAll 102 ms
+PHASE module total 4776 ms, setup 224, collect 27791, prepare 5, environment 0 :: embedding-settings.e2e.test.ts
+### stressed project-mutation-node-locality.e2e.test.ts load=103.30 57.79 44.13 fseventsd=56.9%
+PHASE migrate 983 ms
+PHASE start 5580 ms
+PHASE migrate 1195 ms
+PHASE start 5762 ms
+PHASE stop-exit 34 ms code=0 signal=null
+PHASE start 6026 ms
+PHASE stop-exit 80 ms code=0 signal=null
+PHASE start 5885 ms
+PHASE stop-exit 30 ms code=0 signal=null
+PHASE stop-exit 49 ms code=0 signal=null
+PHASE test 25938 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+PHASE module total 25940 ms, setup 292, collect 73, prepare 7, environment 0 :: project-mutation-node-locality.e2e.test.ts
+### stressed mcp-bulk-import.e2e.test.ts load=109.21 63.63 46.73 fseventsd=62.5%
+PHASE test 247 ms passed :: reports each failed entry with its reason, without any secret value, and stores rule matches in the 
+PHASE test 334 ms passed :: imports the content of the app's own mcps.json, keeping its own references and marking foreign ones 
+PHASE module total 7936 ms, setup 145, collect 36, prepare 3, environment 0 :: mcp-bulk-import.e2e.test.ts
+### stressed project-task-search.e2e.test.ts load=119.51 68.11 48.62 fseventsd=55.1%
+PHASE hook beforeAll 723 ms
+PHASE test 424 ms passed :: answers exact matches at once, reports preparation, then adds meaning matches without a new query te
+PHASE test 706 ms passed :: POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no l
+PHASE test 242 ms passed :: CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and 
+PHASE hook afterAll 39 ms
+PHASE test 13 ms passed :: validates the active-model setting and offers Retry only for an unavailable model
+PHASE module total 2152 ms, setup 119, collect 28164, prepare 14, environment 0 :: project-task-search.e2e.test.ts
+### stressed node-files.e2e.test.ts load=126.59 75.94 52.29 fseventsd=59.4%
+PHASE test 12 ms passed :: NAS-39 the owner and a paired phone read a file outside every workspace, read-only, with the user-fi
+PHASE test 36 ms passed :: NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symb
+PHASE test 45 ms passed :: NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is re
+PHASE test 2 ms passed :: NAS-39 only reads: POST, PUT and DELETE are not served, and no folder is listed
+PHASE test 0 ms passed :: logs no node file path (QR-001)
+PHASE hook afterAll 28 ms
+PHASE module total 1241 ms, setup 207, collect 27698, prepare 8, environment 0 :: node-files.e2e.test.ts
+
+== STRESSED (load 31-63, fseventsd 55-59%), after I-2 ==
+### stressed-after provider-secret-lifecycle-graphql.e2e.test.ts load=30.80 40.15 46.53 fseventsd=57.1%
+PHASE hook beforeAll 6397 ms
+PHASE fetch 208 ms http://127.0.0.1:64768/graphql
+PHASE test 326 ms passed :: saves and replaces a provider key without value readback
+PHASE test 34 ms passed :: exposes only the approved ordinary-provider and Gemini configuration commands
+PHASE test 89 ms passed :: serves five warm credential descriptor reads within the local budget
+PHASE test 69 ms passed :: keeps Gemini configuration independent and activation explicit with no priority/fallback
+PHASE test 10 ms passed :: keeps vault status and built-in catalogs value-free and available with missing credentials
+PHASE test 150 ms passed :: probes, creates, discovers, and deletes a custom provider through GraphQL and the vault
+PHASE hook afterAll 122 ms
+PHASE module total 7200 ms, setup 286, collect 44, prepare 5, environment 0 :: provider-secret-lifecycle-graphql.e2e.test.ts
+### stressed-after request-origin-and-phone-routes.e2e.test.ts load=38.24 41.28 46.82 fseventsd=58.6%
+PHASE hook beforeAll 1106 ms
+PHASE test 117 ms passed :: NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family
+PHASE test 453 ms passed :: accepts each allowed-origin class and refuses near misses (AC-002)
+PHASE test 8 ms passed :: refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003)
+PHASE test 24 ms passed :: NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+PHASE test 415 ms passed :: NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+PHASE hook beforeEach 4 ms
+PHASE test 19 ms passed :: NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credentia
+PHASE test 57 ms passed :: NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled
+PHASE test 36 ms passed :: refuses a request addressed to a name that is not the node's on every entry form, before any route (
+PHASE test 544 ms passed :: accepts every allowed-host class, configured name and paired-phone host, and refuses other public na
+PHASE hook afterAll 37 ms
+PHASE test 7 ms passed :: warns once at start about invalid entries of the two settings (416 AC-003)
+PHASE test 36 ms passed :: refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (4
+PHASE module total 2865 ms, setup 193, collect 32852, prepare 3, environment 0 :: request-origin-and-phone-routes.e2e.test.ts
+### stressed-after embedding-settings.e2e.test.ts load=54.07 44.79 47.84 fseventsd=58.3%
+PHASE fetch 269 ms http://127.0.0.1:64924/graphql
+PHASE hook beforeAll 1189 ms
+PHASE test 138 ms passed :: answers models and Project indexes in one read-only document: fresh install is Not downloaded and No
+PHASE test 149 ms passed :: downloads the active model (Preparing with bytes, not cancellable), then indexes on request
+PHASE test 50 ms passed :: downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing 
+PHASE test 38 ms passed :: switches the active model through the setting, prepares it at once, keeps the old files, and shows t
+PHASE test 169 ms passed :: shows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+PHASE test 3304 ms passed :: indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-01
+PHASE hook afterAll 45 ms
+PHASE module total 5087 ms, setup 231, collect 33026, prepare 3, environment 0 :: embedding-settings.e2e.test.ts
+### stressed-after mcp-bulk-import.e2e.test.ts load=56.07 46.68 48.40 fseventsd=59.3%
+PHASE test 213 ms passed :: reports each failed entry with its reason, without any secret value, and stores rule matches in the 
+PHASE test 347 ms passed :: imports the content of the app's own mcps.json, keeping its own references and marking foreign ones 
+PHASE module total 8338 ms, setup 214, collect 100, prepare 3, environment 0 :: mcp-bulk-import.e2e.test.ts
+### stressed-after project-task-search.e2e.test.ts load=60.44 48.08 48.87 fseventsd=57.7%
+PHASE hook beforeAll 912 ms
+PHASE test 626 ms passed :: answers exact matches at once, reports preparation, then adds meaning matches without a new query te
+PHASE test 863 ms passed :: POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no l
+PHASE test 342 ms passed :: CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and 
+PHASE hook afterAll 23 ms
+PHASE test 18 ms passed :: validates the active-model setting and offers Retry only for an unavailable model
+PHASE module total 2788 ms, setup 135, collect 28532, prepare 3, environment 0 :: project-task-search.e2e.test.ts
+### stressed-after node-files.e2e.test.ts load=63.41 50.31 49.64 fseventsd=55.1%
+PHASE test 7 ms passed :: NAS-39 the owner and a paired phone read a file outside every workspace, read-only, with the user-fi
+PHASE test 8 ms passed :: NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symb
+PHASE test 53 ms passed :: NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is re
+PHASE test 4 ms passed :: NAS-39 only reads: POST, PUT and DELETE are not served, and no folder is listed
+PHASE test 0 ms passed :: logs no node file path (QR-001)
+PHASE hook afterAll 50 ms
+PHASE module total 866 ms, setup 144, collect 27220, prepare 27, environment 1 :: node-files.e2e.test.ts
+### stressed-after project-mutation-node-locality.e2e.test.ts load=59.70 50.74 49.83 fseventsd=57.0%
+PHASE migrate 1512 ms
+PHASE start 5849 ms
+PHASE migrate 1093 ms
+PHASE start 6043 ms
+PHASE stop-exit 45 ms code=0 signal=null
+PHASE start 5552 ms
+PHASE stop-exit 62 ms code=0 signal=null
+PHASE start 5507 ms
+PHASE stop-exit 41 ms code=0 signal=null
+PHASE stop-exit 57 ms code=0 signal=null
+PHASE test 26040 ms passed :: E-008: separate built nodes accept the same local path but cannot patch remote Project identities; r
+PHASE module total 26044 ms, setup 142, collect 174, prepare 92, environment 0 :: project-mutation-node-locality.e2e.test.ts
+
+== AFTER, calm, all seven files together (verbose) ==
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts > E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes 7146ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts > MCP bulk import through GraphQL > reports each failed entry with its reason, without any secret value, and stores rule matches in the vault 50ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts > MCP bulk import through GraphQL > imports the content of the app's own mcps.json, keeping its own references and marking foreign ones as needing a secret 120ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > saves and replaces a provider key without value readback 45ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > exposes only the approved ordinary-provider and Gemini configuration commands 6ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > serves five warm credential descriptor reads within the local budget 31ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps Gemini configuration independent and activation explicit with no priority/fallback 33ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > keeps vault status and built-in catalogs value-free and available with missing credentials 7ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts > provider and Gemini one-vault GraphQL E2E > probes, creates, discovers, and deletes a custom provider through GraphQL and the vault 59ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family before the route runs (AC-001) 15ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002) 416ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 7ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 7ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005) 413ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credential (AC-006) 7ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled 48ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001) 9ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003) 436ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > warns once at start about invalid entries of the two settings (416 AC-003) 1ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (416 AC-005) 3ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > answers models and Project indexes in one read-only document: fresh install is Not downloaded and Not indexed (AC-011) 61ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads the active model (Preparing with bytes, not cancellable), then indexes on request 86ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > downloads another model ahead, refuses removal while it downloads, cancels it, and refuses removing the active model 22ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > switches the active model through the setting, prepares it at once, keeps the old files, and shows the Projects as Not indexed 27ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > shows an unavailable model with its reason, and Retry prepares it again at once (AC-012) 16ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts > Embedding settings over the production GraphQL boundary > indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015) 3078ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at once, reports preparation, then adds meaning matches without a new query text 159ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID 275ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and the tool; commentCount only when > 0 111ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > validates the active-model setting and offers Retry only for an unavailable model 9ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts > Node files: one file by absolute path, read-only (autobyteus-436) > NAS-39 the owner and a paired phone read a file outside every workspace, read-only, with the user-file headers 5ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts > Node files: one file by absolute path, read-only (autobyteus-436) > NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symbolic link to its file 4ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts > Node files: one file by absolute path, read-only (autobyteus-436) > NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is refused 401 18ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts > Node files: one file by absolute path, read-only (autobyteus-436) > NAS-39 only reads: POST, PUT and DELETE are not served, and no folder is listed 1ms
+ ✓ tests/e2e/node-files/node-files.e2e.test.ts > Node files: one file by absolute path, read-only (autobyteus-436) > logs no node file path (QR-001) 0ms
+ Test Files  7 passed (7)
+      Tests  35 passed (35)
+
+== instrumentation: hook timers ==
+# Temporary I-2 instrumentation (autobyteus-579): wraps each hook body with a timer and logs fetch calls over 200 ms.
+import sys, re
+p=sys.argv[1]
+s=open(p).read()
+def close_of(s, i):
+    depth=0; q=None; j=i
+    while j < len(s):
+        c=s[j]
+        if q:
+            if c=='\\': j+=2; continue
+            if c==q: q=None
+        elif c in '"\'`': q=c
+        elif c=='(': depth+=1
+        elif c==')':
+            depth-=1
+            if depth==0: return j
+        j+=1
+    raise Exception('no close')
+out=s; pos=0; n=0
+while True:
+    m=re.compile(r'\b(beforeAll|afterAll|beforeEach|afterEach)\((async )?\(').search(out, pos)
+    if not m: break
+    open_paren=out.index('(', m.start())
+    fn_start=open_paren+1
+    # the function argument ends at the first top-level comma or the closing paren of the hook call
+    close=close_of(out, open_paren)
+    # find end of function argument: scan from fn_start tracking depth
+    depth=0; q=None; j=fn_start; fn_end=None
+    while j<close:
+        c=out[j]
+        if q:
+            if c=='\\': j+=2; continue
+            if c==q: q=None
+        elif c in '"\'`': q=c
+        elif c in '({[': depth+=1
+        elif c in ')}]': depth-=1
+        elif c==',' and depth==0: fn_end=j; break
+        j+=1
+    if fn_end is None: fn_end=close
+    label=m.group(1)
+    out=out[:fn_start]+f'__timed("{label}", '+out[fn_start:fn_end]+')'+out[fn_end:]
+    pos=fn_end+len(f'__timed("{label}", ')+1; n+=1
+head='''const __timed = (name: string, fn: () => any) => async () => { const t = Date.now(); try { return await fn(); } finally { console.log(`PHASE hook ${name} ${Date.now() - t} ms`); } };
+{ const f = globalThis.fetch; globalThis.fetch = (async (...a: any[]) => { const t = Date.now(); try { return await (f as any)(...a); } finally { const ms = Date.now() - t; if (ms > 200) console.log(`PHASE fetch ${ms} ms ${String(a[0]).slice(0, 120)}`); } }) as any; }
+'''
+open(p,'w').write(head+out)
+print('wrapped', n)
+
+== instrumentation: node-locality fixture ==
+import sys
+p=sys.argv[1]; s=open(p).read()
+def rep(o,n):
+    global s
+    assert s.count(o)==1,o[:50]; s=s.replace(o,n)
+rep('''    await promisify(execFile)(process.execPath, [path.resolve("node_modules/prisma/build/index.js"), "migrate", "deploy", "--schema", "prisma/schema.prisma"], {env});
+    await this.start();''','''    const __m = Date.now();
+    await promisify(execFile)(process.execPath, [path.resolve("node_modules/prisma/build/index.js"), "migrate", "deploy", "--schema", "prisma/schema.prisma"], {env});
+    console.log(`PHASE migrate ${Date.now() - __m} ms`);
+    await this.start();''')
+rep('''  async start() {
+    await fs.access''','''  async start() {
+    const __s = Date.now();
+    await fs.access''')
+rep('''    expect((await fetch(`${this.origin}/rest/health`)).status).toBe(200);
+  }''','''    expect((await fetch(`${this.origin}/rest/health`)).status).toBe(200);
+    console.log(`PHASE start ${Date.now() - __s} ms`);
+  }''')
+rep('''    const exit = once(child, "exit"); child.kill("SIGTERM");''','''    const __t = Date.now();
+    const exit = once(child, "exit"); child.kill("SIGTERM");''')
+rep('''    try { await exit; expect(child.exitCode, this.logs).toBe(0); } finally {clearTimeout(force);}''','''    try { await exit; console.log(`PHASE stop-exit ${Date.now() - __t} ms code=${child.exitCode} signal=${child.signalCode}`); expect(child.exitCode, this.logs).toBe(0); } finally {clearTimeout(force);}''')
+open(p,'w').write(s); print("ok")
+
+== phase reporter ==
+// Logs each hook and each test with its duration (autobyteus-579 I-2 measurement; not committed).
+const started = new Map();
+const name = (entity) => (entity.fullName ?? entity.name ?? entity.moduleId ?? "?");
+export default class PhaseReporter {
+  onUserConsoleLog(log) { if (String(log.content).includes("PHASE")) process.stdout.write(String(log.content)); }
+  onHookStart(hook) { started.set(hook, Date.now()); }
+  onHookEnd(hook) {
+    const ms = Date.now() - (started.get(hook) ?? Date.now());
+    const owner = hook.entity?.type === "module" ? "file" : name(hook.entity ?? {});
+    console.log(`PHASE hook ${hook.name} ${ms} ms :: ${String(owner).slice(0, 100)}`);
+  }
+  onTestCaseResult(test) {
+    const d = test.diagnostic?.();
+    console.log(`PHASE test ${Math.round(d?.duration ?? 0)} ms ${test.result().state} :: ${test.name.slice(0, 100)}`);
+  }
+  onTestModuleEnd(module) {
+    const d = module.diagnostic?.();
+    console.log(`PHASE module total ${Math.round(d?.duration ?? 0)} ms, setup ${Math.round(d?.setupDuration ?? 0)}, collect ${Math.round(d?.collectDuration ?? 0)}, prepare ${Math.round(d?.prepareDuration ?? 0)}, environment ${Math.round(d?.environmentSetupDuration ?? 0)} :: ${module.moduleId.split('/').pop()}`);
+  }
+}
+
+== busy-Mac emulation ==
+#!/bin/bash
+# start: launches CPU spinners and file churners, writing their pids to /tmp/579-tools/stress.pids; stop: ends them.
+case "$1" in
+  start)
+    : > /tmp/579-tools/stress.pids
+    for i in $(seq 1 ${CPU:-12}); do (while :; do :; done) & echo $! >> /tmp/579-tools/stress.pids; done
+    for i in $(seq 1 ${CHURN:-4}); do node /tmp/579-tools/churn.mjs & echo $! >> /tmp/579-tools/stress.pids; done
+    ;;
+  stop)
+    while read pid; do kill $pid 2>/dev/null; done < /tmp/579-tools/stress.pids; sleep 1
+    while read pid; do kill -9 $pid 2>/dev/null; done < /tmp/579-tools/stress.pids
+    rm -rf ${TMPDIR:-/tmp}/579-churn-* 2>/dev/null; : > /tmp/579-tools/stress.pids
+    ;;
+esac
+
+// File-event churn to load fseventsd (autobyteus-579 I-2 measurement only): writes, renames and deletes files in its own temp tree.
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+const root = fs.mkdtempSync(path.join(os.tmpdir(), "579-churn-"));
+process.on("SIGTERM", () => { fs.rmSync(root, { recursive: true, force: true }); process.exit(0); });
+let i = 0;
+for (;;) {
+  const dir = path.join(root, `d${i % 200}`);
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, `f${i}.txt`);
+  fs.writeFileSync(file, "x".repeat(512));
+  fs.renameSync(file, `${file}.r`);
+  fs.rmSync(`${file}.r`);
+  i++;
+  if (i % 5000 === 0) await new Promise((r) => setImmediate(r));
+}
+
+// How long creating and closing a recursive fs.watch blocks the main thread (TESTING.md "File watching on a busy Mac").
+import fs from "node:fs"; import os from "node:os"; import path from "node:path";
+const root = fs.mkdtempSync(path.join(os.tmpdir(), "579-watchclose-"));
+for (let i = 0; i < 50; i++) { fs.mkdirSync(path.join(root, `d${i}`)); fs.writeFileSync(path.join(root, `d${i}`, "f.txt"), "x"); }
+const results = [];
+for (let r = 0; r < 3; r++) {
+  let t = performance.now(); const w = fs.watch(root, { recursive: true }, () => {}); const open = performance.now() - t;
+  const ev = await new Promise((resolve) => { const s = performance.now(); const w2 = fs.watch(root, { recursive: true }, () => { w2.close(); resolve(performance.now() - s); }); fs.writeFileSync(path.join(root, `probe${r}.txt`), "p"); setTimeout(() => { w2.close(); resolve(-1); }, 20000); });
+  t = performance.now(); w.close(); const close = performance.now() - t;
+  results.push({ open: Math.round(open), eventMs: Math.round(ev), close: Math.round(close) });
+}
+fs.rmSync(root, { recursive: true, force: true });
+console.log(JSON.stringify(results));
+
+== watch-close.mjs under churn only (no CPU spinners), 20 s after starting the churners ==
+churn=8  load=82.37 79.32 57.07 fseventsd=58.5% watch=[{"open":2,"eventMs":-1,"close":1},{"open":0,"eventMs":57,"close":2},{"open":0,"eventMs":-1,"close":2}]
+churn=16 load=68.63 77.09 58.06 fseventsd=60.2% watch=[{"open":1,"eventMs":-1,"close":1},{"open":0,"eventMs":-1,"close":0},{"open":0,"eventMs":-1,"close":0}]
+churn=24 load=45.81 67.73 56.28 fseventsd=57.3% watch=[{"open":2,"eventMs":-1,"close":0},{"open":0,"eventMs":-1,"close":0},{"open":0,"eventMs":-1,"close":2}]
+(eventMs -1: a fresh recursive fs.watch got no event for a write within 20 s; close: ms the close blocked the main thread)

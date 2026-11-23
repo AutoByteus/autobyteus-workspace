@@ -148,6 +148,7 @@ export class AgentTeamRunManager {
     delegatedFrom?: DelegatedFrom;
     /** A delegated Team run's origin (D-SCOPE): only a copy of a Team definition follows that definition. */
     copiedFrom?: TeamRunCopiedFrom;
+    containedIn?: TeamRunExecutionTreeSnapshot["containedIn"]; // A Team mounted in an Org: its container back-link, kept on the tree.
     /** The Project the Team run is started under: recorded by the Project before the tree is written (DS-002). */
     projectId?: string;
   }): Promise<RootTeamRun> {
@@ -160,8 +161,8 @@ export class AgentTeamRunManager {
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
-      const tree = input.delegatedFrom
-        ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom, ...(input.copiedFrom ? { copiedFrom: input.copiedFrom } : {}) }) : initial;
+      const tree = Object.freeze({ ...initial, ...(input.containedIn ? { containedIn: input.containedIn } : {}),
+        ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom, ...(input.copiedFrom ? { copiedFrom: input.copiedFrom } : {}) } : {}) });
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,

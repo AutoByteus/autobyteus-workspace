@@ -1,0 +1,48 @@
+{
+  "sent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /team/writer.",
+    "target_agent_run_id": "oc_writer_6ba555_5d839d7ec4ce4e28a43fdc13b9e9c35f",
+    "isError": false
+  },
+  "leadInput": "Your team changed: its definition was updated.\nLeft: writer (/team/writer); messages to it are no longer delivered.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "teamLine": {
+    "messageId": "collabmsg_rcZ3CBxOnQi9TTxd4VJ_Z-JyAUhBibwi",
+    "senderAgentRunId": "oc_concierge_6ba555_86268fa333ca4c798acb2be213fb5e5d",
+    "receiverAgentRunId": "oc_writer_6ba555_5d839d7ec4ce4e28a43fdc13b9e9c35f",
+    "content": "HANDOFF-KEPT-6ba555 Reply OK.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T22:00:53.609Z",
+    "counterpart": {
+      "address": "/concierge",
+      "nodeId": null
+    }
+  },
+  "conciergeLine": {
+    "messageId": "collabmsg_rcZ3CBxOnQi9TTxd4VJ_Z-JyAUhBibwi",
+    "senderAgentRunId": "oc_concierge_6ba555_86268fa333ca4c798acb2be213fb5e5d",
+    "receiverAgentRunId": "oc_writer_6ba555_5d839d7ec4ce4e28a43fdc13b9e9c35f",
+    "content": "HANDOFF-KEPT-6ba555 Reply OK.",
+    "messageType": "agent_message",
+    "referenceFiles": [],
+    "createdAt": "2026-11-22T22:00:53.609Z",
+    "counterpart": {
+      "address": "/team/writer",
+      "nodeId": null
+    }
+  },
+  "former": [
+    {
+      "address": "/helper",
+      "agentRunId": "oc_helper_6ba555_ed4c1dff577f46a3bc0e86dac3f9cae0",
+      "leaving": false
+    },
+    {
+      "address": "/writer",
+      "agentRunId": "oc_writer_6ba555_5d839d7ec4ce4e28a43fdc13b9e9c35f",
+      "leaving": false
+    }
+  ]
+}

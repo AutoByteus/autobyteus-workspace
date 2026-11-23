@@ -1,0 +1,153 @@
+{
+  "formerWhileLeaving": [
+    {
+      "address": "/team",
+      "runId": "oc_team_6dcd80_791be05bbe834f0eb7b42e42f293854e",
+      "leaving": true
+    },
+    {
+      "address": "/scribe",
+      "runId": "oc_scribe_6dcd80_2e581f5b9c934ae3badd6d8a91264255",
+      "leaving": false
+    }
+  ],
+  "rowsWhileLeaving": [
+    {
+      "kind": "org_team",
+      "address": "/team",
+      "agentRunId": "oc_lead_6dcd80_34c1a2457aa5423e8a95dcbfc36349bd"
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/lead",
+      "agentRunId": "oc_lead_6dcd80_34c1a2457aa5423e8a95dcbfc36349bd"
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/editor",
+      "agentRunId": "oc_editor_6dcd80_af7ae67410e34149b9b79dd59b87809a"
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/reviewer",
+      "agentRunId": "oc_reviewer_6dcd80_ea0d41a5d33141c4a2545e76bbcb29b5"
+    },
+    {
+      "kind": "team_member",
+      "address": "/team/writer",
+      "agentRunId": "oc_writer_6dcd80_e399ca3d4a1a4a50baa2a4b5c1379151"
+    }
+  ],
+  "refused": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "writer (/team/writer) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "refusedScribe": {
+    "accepted": false,
+    "code": "COLLABORATION_TARGET_NOT_FOUND",
+    "message": "scribe (/scribe) is no longer a member of your team: it was removed from the team definition. Call get_handoff_rules for your current handoff rules.",
+    "isError": true
+  },
+  "told": "Your team changed: its definition was updated.\nLeft: team (/team); messages to it are no longer delivered.\nLeft: scribe (/scribe); messages to it are no longer delivered.\nYour handoff rules changed; call get_handoff_rules to read them.\n\nECHO_INPUT",
+  "stillLeaving": true,
+  "rowsAfterRelease": [
+    {
+      "key": "org_agent:oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2:oc_concierge_6dcd80_7bf1401ef526435980dbace847c6cbd4",
+      "parentKey": null,
+      "kind": "org_agent",
+      "name": "concierge",
+      "address": "/concierge",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2",
+        "agentRunId": "oc_concierge_6dcd80_7bf1401ef526435980dbace847c6cbd4"
+      },
+      "statusIds": [
+        "oc_concierge_6dcd80_7bf1401ef526435980dbace847c6cbd4"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "org_team:oc_team2_6dcd80_7684f8938145437e978f09f303ecd7ea",
+      "parentKey": null,
+      "kind": "org_team",
+      "name": "team2",
+      "address": "/team2",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2",
+        "agentRunId": "oc_lead2_6dcd80_d9803acaf74f47c08db95480d5251c93"
+      },
+      "statusIds": [
+        "oc_lead2_6dcd80_d9803acaf74f47c08db95480d5251c93"
+      ],
+      "depth": 0
+    },
+    {
+      "key": "team_member:oc_team2_6dcd80_7684f8938145437e978f09f303ecd7ea:oc_lead2_6dcd80_d9803acaf74f47c08db95480d5251c93",
+      "parentKey": "org_team:oc_team2_6dcd80_7684f8938145437e978f09f303ecd7ea",
+      "kind": "team_member",
+      "name": "lead2",
+      "address": "/team2/lead2",
+      "openTarget": {
+        "runKind": "agent_org",
+        "runId": "oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2",
+        "agentRunId": "oc_lead2_6dcd80_d9803acaf74f47c08db95480d5251c93"
+      },
+      "statusIds": [
+        "oc_lead2_6dcd80_d9803acaf74f47c08db95480d5251c93"
+      ],
+      "depth": 1
+    }
+  ],
+  "container": {
+    "subjectKind": "agent_org",
+    "createdAt": "2026-11-22T17:18:49.562Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "oc-org-6dcd80",
+      "orgDefinitionName": "oc-org-6dcd80",
+      "orgRunId": "oc_org_6dcd80_92471fd2942b42b9b1bf229cb7ad45d2",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/tmp/oc-e2e-XYWh59/workspace"
+      },
+      "units": [
+        {
+          "address": "/concierge",
+          "kind": "agent",
+          "runId": "oc_concierge_6dcd80_7bf1401ef526435980dbace847c6cbd4",
+          "definitionId": "oc-concierge-6dcd80"
+        },
+        {
+          "address": "/team2",
+          "kind": "agent_team",
+          "runId": "oc_team2_6dcd80_7684f8938145437e978f09f303ecd7ea",
+          "definitionId": "oc-team2-6dcd80"
+        }
+      ],
+      "formerUnits": [
+        {
+          "address": "/team",
+          "kind": "agent_team",
+          "runId": "oc_team_6dcd80_791be05bbe834f0eb7b42e42f293854e",
+          "definitionId": "oc-team-6dcd80"
+        },
+        {
+          "address": "/scribe",
+          "kind": "agent",
+          "runId": "oc_scribe_6dcd80_2e581f5b9c934ae3badd6d8a91264255",
+          "definitionId": "oc-scribe-6dcd80"
+        }
+      ]
+    }
+  }
+}

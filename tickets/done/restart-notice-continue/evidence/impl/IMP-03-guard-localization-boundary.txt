@@ -1,0 +1,10 @@
+# IMP-03
+# Command: pnpm -C autobyteus-web guard:localization-boundary
+# Commit: 75e085d889 (branch codex/restart-notice-continue) (IMP-02/IMP-03/IMP-04 ran on the same source before the commit; only e2e files changed after them, and IMP-02 was rerun after)
+# Environment: macOS arm64, Node, headless Chrome; 2026-11-22
+
+
+> autobyteus@1.5.14-beta.7 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restart-notice-continue/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

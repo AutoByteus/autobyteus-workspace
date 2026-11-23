@@ -7,8 +7,7 @@ import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memo
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../../src/run-history/services/root-run-package-readiness-index.js';
 import { TeamRunExecutionTreeStore } from '../../../../src/run-history/store/team-run-execution-tree-store.js';
 import { TeamCommunicationStore } from '../../../../src/services/team-communication/team-communication-store.js';
-import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgCommunicationMessagesStore } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
+import { writeStoredOrgContainer } from '../../../helpers/stored-org-container.js';
 import { testAgentNode, testExecutionTree } from '../../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
 
@@ -39,15 +38,10 @@ const writeTeam = async (memoryDir: string, id: string): Promise<string> => {
   return packagePath;
 };
 
+/** An Org container (org-teams-follow-definition) with one direct agent unit, `${id}-agent`. */
 const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
-  const packagePath = new AgentMemoryLayout(memoryDir).getOrgDirPath(id);
-  await fs.mkdir(packagePath, { recursive: true });
-  await new AgentOrgRunExecutionTreeStore().write(packagePath, testAgentOrgExecutionTree({
-    orgRunId: id,
-    members: [testOrgAgentNode('/direct', `${id}-agent`)],
-  }));
-  await new AgentOrgCommunicationMessagesStore().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
-  return packagePath;
+  await writeStoredOrgContainer(memoryDir, { orgRunId: id, units: [{ kind: 'agent', address: '/direct', runId: `${id}-agent` }] });
+  return new AgentMemoryLayout(memoryDir).getOrgDirPath(id);
 };
 
 describe('RootRunPackageReadinessIndex', () => {
@@ -172,7 +166,7 @@ describe('RootRunPackageReadinessIndex', () => {
     await writeTeam(memoryDir, 'team-old');
     await writeOrg(memoryDir, 'org-old');
     const logReads = [
-      vi.spyOn(TeamCommunicationStore.prototype, 'readLog'), vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'readLog'),
+      vi.spyOn(TeamCommunicationStore.prototype, 'readLog'),
     ];
     const scan = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scan');
     const index = new RootRunPackageReadinessIndex(memoryDir);

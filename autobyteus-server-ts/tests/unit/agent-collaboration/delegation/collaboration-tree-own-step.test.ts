@@ -8,7 +8,7 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
 import { AgentOrgExecutionIndex } from "../../../../src/agent-org-execution/services/agent-org-execution-index.js";
 import { TeamExecutionIndex } from "../../../../src/agent-team-execution/services/team-execution-index.js";
 import { buildInitialTeamRunExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { writeStoredOrgContainer } from "../../../helpers/stored-org-container.js";
 import { RunOwnAgentsReader } from "../../../../src/run-history/store/run-own-agents-reader.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
@@ -44,21 +44,16 @@ describe("a run's map and its loaded root agree on its own addresses", () => {
     }
   });
 
-  it("an org run: its direct agents, a mounted team by its coordinator, and the team's members", async () => {
+  it("an Org container hosts no agent: no address is its own; each unit run answers its own (org-teams-follow-definition)", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "map-own-step-")); directories.push(memoryDir);
-    const lead = testOrgAgentNode("/squad/lead", "squad-lead");
-    const writer = testOrgAgentNode("/squad/writer", "squad-writer");
-    const file = testAgentOrgExecutionTree({ orgRunId: "org", members: [
-      testOrgAgentNode("/director", "director"),
-      testOrgTeamNode({ address: "/squad", teamRunId: "squad-team", coordinatorAddress: lead.address, members: [lead, writer] }),
-    ] });
-    await new AgentOrgRunExecutionTreeStore().write(new AgentMemoryLayout(memoryDir).getOrgDirPath("org"), file);
-    const index = new AgentOrgExecutionIndex(file);
-    const map = (await treeOver(memoryDir)).collaborationTreeOf({ rootSubjectKind: "agent_org", rootRunId: "org" });
-    const fromIndex = (address: string) => (index.getMessagePlacement(address)
-      ?? index.memberOfInstance("squad-team", assertAgentTeamAddress(address)))?.receiver.agentRunId ?? null;
-    for (const address of ["/director", "/squad", "/squad/lead", "/squad/writer", "/nobody"]) {
-      await expect(map.ownReceiverOf(address), address).resolves.toBe(fromIndex(address));
-    }
+    await writeStoredOrgContainer(memoryDir, { orgRunId: "org", units: [{ kind: "agent", address: "/director", runId: "director" },
+      { kind: "agent_team", address: "/squad", runId: "squad-team", coordinatorAddress: "/lead",
+        members: [{ address: "/lead", agentRunId: "squad-lead" }, { address: "/writer", agentRunId: "squad-writer" }] }] });
+    const tree = await treeOver(memoryDir);
+    const org = tree.collaborationTreeOf({ rootSubjectKind: "agent_org", rootRunId: "org" });
+    for (const address of ["/director", "/squad", "/squad/lead", "/squad/writer", "/nobody"]) await expect(org.ownReceiverOf(address), address).resolves.toBeNull();
+    const squad = tree.collaborationTreeOf({ rootSubjectKind: "agent_team", rootRunId: "squad-team" });
+    await expect(squad.ownReceiverOf("/lead")).resolves.toBe("squad-lead");
+    await expect(squad.ownReceiverOf("/writer")).resolves.toBe("squad-writer");
   });
 });

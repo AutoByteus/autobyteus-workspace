@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SystemTaskNotificationSegment from '../SystemTaskNotificationSegment.vue';
 import { getCatalog } from '~/localization/runtime/catalogRegistry';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 const enCatalog = getCatalog('en') as Record<string, string>;
 const zhCatalog = getCatalog('zh-CN') as Record<string, string>;
@@ -82,7 +83,8 @@ describe('SystemTaskNotificationSegment', () => {
       expect(wrapper.get('[data-testid="system-task-notification-segment"]').attributes('aria-label')).toBe('Skill updated');
       expect(wrapper.text()).toContain('code-review (/skills/code-review/SKILL.md): SKILL.md');
     }
-    expect(mountSegment('Task finished successfully.').find('[data-testid="system-task-notification-label"]').exists()).toBe(false);
+    // autobyteus-585: every notice is labelled; one the label mapping does not name reads "Platform notice"
+    expect(mountSegment('Task finished successfully.').get('[data-testid="system-task-notification-label"]').text()).toBe('Platform notice');
   });
 
   it('renders the per-package changed-files notice as separate paragraphs and one list item per file', () => {
@@ -210,4 +212,58 @@ describe('SystemTaskNotificationSegment', () => {
       });
     });
   });
+
+  // autobyteus-585: every notice is its own labelled row; the label names it, the header line is not repeated.
+  describe('labels and row layout (autobyteus-585)', () => {
+    const notice = (header: string, body: string) => `${header}\n\n${body}`;
+    const CASES: Array<[string, string, string, string]> = [
+      // [kind, senderId, content, en label key]
+      ['restart', 'system.restart_resume', notice('[Platform notice — application restarted]', 'The application restarted at 2026-11-21 07:32 UTC. Continue your task.'), 'applicationRestarted'],
+      ['skill', 'system.skill_update_notifier', notice('[Platform notice — skill updated]', 'Your skill package `x` has been updated.'), 'skillUpdated'],
+      ['tools', 'system.tool_list_update_notifier', notice('[Platform notice — tools updated]', 'Your tools changed. Now available: search.'), 'toolsUpdated'],
+      ['runtime change', 'system.runtime_handover', 'Agent runtime changed from A to B.', 'runtimeChanged'],
+      ['background tasks', 'system.background_task_notifier', notice('[Platform notice — background tasks finished]', 'build (completed, 3s)'), 'backgroundTasksFinished'],
+      ['background tasks, replayed', 'system', notice('[Platform notice — background tasks finished]', 'build (completed, 3s)'), 'backgroundTasksFinished'],
+      ['task notice', 'system_task_runner', 'You have a new task.\n\nTask ID: task_0001', 'platformNotice'],
+      ['other, unknown sender', 'system.something_new', notice('[Platform notice — something new]', 'Details.'), 'platformNotice'],
+    ];
+    const KEY = 'workspace.components.conversation.segments.SystemTaskNotificationSegment';
+
+    it.each(CASES)('labels the %s notice in both locales, as its aria-label, and does not repeat the header line', async (_kind, senderId, content, labelKey) => {
+      for (const locale of ['en', 'zh-CN'] as const) {
+        await localizationRuntime.setPreference(locale);
+        try {
+          const wrapper = mountSegment(content, senderId);
+          const label = getCatalog(locale)[`${KEY}.${labelKey}`];
+          expect(label).toBeTruthy();
+          expect(wrapper.get('[data-testid="system-task-notification-label"]').text()).toBe(label);
+          const root = wrapper.get('[data-testid="system-task-notification-segment"]');
+          expect(root.attributes('role')).toBe('note');
+          expect(root.attributes('aria-label')).toBe(label);
+          expect(wrapper.get('[data-testid="system-task-notification-body"]').text()).not.toContain('[Platform notice');
+        } finally {
+          await localizationRuntime.setPreference('en');
+        }
+      }
+    });
+
+    it('keeps a body that has no header line as written, and the tools body as only what changed', () => {
+      expect(mountSegment('You have a new task.\n\nTask ID: task_0001', 'system_task_runner')
+        .get('[data-testid="system-task-notification-body"]').text()).toContain('You have a new task.');
+      expect(mountSegment(TOOLS_NOTICE, 'system.tool_list_update_notifier')
+        .get('[data-testid="system-task-notification-body"]').text())
+        .toBe('Now available: get_project_task, send_message_to. No longer available: search_memory.');
+    });
+
+    it('is laid out as its own light turn: an icon where an avatar would be, the label as the phone speaker line', () => {
+      const wrapper = mountSegment(TOOLS_NOTICE, 'system.tool_list_update_notifier');
+      const root = wrapper.get('[data-testid="system-task-notification-segment"]');
+      expect(root.classes()).toContain('conv-turn');
+      expect(root.get('.conv-avatar').find('img').exists()).toBe(false);
+      expect(root.get('.conv-speaker').text()).toBe('Tools updated');
+      expect(root.find('.conv-body').exists()).toBe(true);
+      expect(root.html()).not.toMatch(/bg-(purple|amber|blue|indigo)-|border-(purple|amber)-|font-mono/);
+    });
+  });
 });
+

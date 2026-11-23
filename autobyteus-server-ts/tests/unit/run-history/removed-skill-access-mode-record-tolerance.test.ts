@@ -4,9 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
@@ -127,33 +125,19 @@ describe("run history stored with the removed skillAccessMode field", () => {
     expect(launchConfigurationsOf(rewritten).map((launch) => Object.keys(launch).sort())).toEqual([LAUNCH_KEYS, LAUNCH_KEYS, LAUNCH_KEYS]);
   });
 
-  it.each(STORED_MODES)("loads an agent-org execution tree stored with %s and writes launch configurations without it", async (mode) => {
-    const orgMemoryDir = path.join(memoryDir, "org");
-    await fs.mkdir(orgMemoryDir, { recursive: true });
-    await fs.writeFile(getAgentOrgRunExecutionTreePath(orgMemoryDir), JSON.stringify(withStoredMode(orgTree(), mode)), "utf-8");
-    const store = new AgentOrgRunExecutionTreeStore();
-
-    const tree = await store.read(orgMemoryDir, "org-run");
-
+  it.each(STORED_MODES)("reads an agent-org execution tree stored with %s as launch configurations without it", (mode) => {
+    // The Org tree's schema (today's composed Org tree); a stored Org is a container since org-teams-follow-definition.
+    const tree = validateAgentOrgRunExecutionTreePayload(JSON.parse(JSON.stringify(withStoredMode(orgTree(), mode))), "org-run");
     expect(tree).toEqual(validateAgentOrgRunExecutionTreePayload(orgTree(), "org-run"));
-    expect(launchConfigurationsOf(tree)).toHaveLength(4);
-
-    await store.write(orgMemoryDir, tree!);
-    const rewritten = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(orgMemoryDir), "utf-8")) as Json;
-    expect(launchConfigurationsOf(rewritten).map((launch) => Object.keys(launch).sort())).toEqual([LAUNCH_KEYS, LAUNCH_KEYS, LAUNCH_KEYS, LAUNCH_KEYS]);
+    expect(launchConfigurationsOf(tree).map((launch) => Object.keys(launch).sort())).toEqual([LAUNCH_KEYS, LAUNCH_KEYS, LAUNCH_KEYS, LAUNCH_KEYS]);
   });
 
   it("writes new records of every kind without the field", async () => {
     const teamMemoryDir = path.join(memoryDir, "new-team");
-    const orgMemoryDir = path.join(memoryDir, "new-org");
     await fs.mkdir(teamMemoryDir, { recursive: true });
-    await fs.mkdir(orgMemoryDir, { recursive: true });
 
     await new TeamRunExecutionTreeStore().write(teamMemoryDir, validateTeamRunExecutionTreePayload(teamTree(), "team-run"));
-    await new AgentOrgRunExecutionTreeStore().write(orgMemoryDir, validateAgentOrgRunExecutionTreePayload(orgTree(), "org-run"));
-
-    for (const filePath of [getTeamRunExecutionTreePath(teamMemoryDir), getAgentOrgRunExecutionTreePath(orgMemoryDir)]) {
-      expect(await fs.readFile(filePath, "utf-8")).not.toContain("skillAccessMode");
-    }
+    expect(await fs.readFile(getTeamRunExecutionTreePath(teamMemoryDir), "utf-8")).not.toContain("skillAccessMode");
+    expect(JSON.stringify(validateAgentOrgRunExecutionTreePayload(orgTree(), "org-run"))).not.toContain("skillAccessMode");
   });
 });

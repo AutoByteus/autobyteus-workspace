@@ -21,6 +21,12 @@
         <StatusDot class="mr-1.5" :status="display.row.status" :background-tasks-running="display.row.backgroundTasksRunning" />
         <span class="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600">{{ initials(display.row.address) }}</span>
         <span class="truncate">{{ label(display.row.address) }}</span>
+        <span
+          v-if="display.row.leaving"
+          class="ml-1.5 inline-block flex-none rounded bg-amber-50 px-1 text-[0.6875rem] font-medium leading-4 text-amber-700"
+          data-test="workspace-member-leaving"
+          :title="t('workspace.history.hierarchy.leaving_title')"
+        >{{ t('workspace.history.hierarchy.leaving') }}</span>
       </button>
       <button
         v-else-if="display.row.kind === 'team'"
@@ -41,6 +47,12 @@
         <TeamAggregateStatusDot class="mr-1.5" :status="display.row.status" :background-tasks-running="display.row.backgroundTasksRunning" />
         <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
         <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
+        <span
+          v-if="display.row.leaving"
+          class="ml-1.5 inline-block flex-none rounded bg-amber-50 px-1 text-[0.6875rem] font-medium leading-4 text-amber-700"
+          data-test="workspace-member-leaving"
+          :title="t('workspace.history.hierarchy.leaving_title')"
+        >{{ t('workspace.history.hierarchy.leaving') }}</span>
       </button>
       <!-- A run this Org delegated, here or on another node (SR-084): the shared delegated row, as in every view (FU-031). -->
       <WorkspaceDelegatedRunRow
@@ -113,9 +125,9 @@ const runStatus = useRunStatusStore()
 const treeRef = computed(() => ({ kind: 'agent_org' as const, runId: props.run.rootRunId }))
 watch(() => props.run.rootRunId, (_id, _previous, onCleanup) => onCleanup(trees.hold(treeRef.value)), { immediate: true })
 
-/** `backgroundTasksRunning`: the agent's own, or the mounted team's agents' sum (autobyteus-448). */
-type OrgAgentRow = Readonly<{ key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; backgroundTasksRunning: number; depth: number }>
-type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; backgroundTasksRunning: number; depth: number }>
+/** `backgroundTasksRunning`: the agent's own, or the mounted team's agents' sum (autobyteus-448); `leaving`: a unit leaving the Org. */
+type OrgAgentRow = Readonly<{ key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; backgroundTasksRunning: number; depth: number; leaving: boolean }>
+type OrgTeamRow = Readonly<{ key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; backgroundTasksRunning: number; depth: number; leaving: boolean }>
 type OrgDisplayRow = Readonly<{
   row: OrgAgentRow | OrgTeamRow | Readonly<{ key: string; kind: 'delegated'; address: string }>
   tree: RunTreeRowDto
@@ -140,13 +152,15 @@ const rows = computed<OrgDisplayRow[]>(() => runTreeDisplayRows({
   if (tree.kind === 'org_team') {
     // An Org's mounted team is one of its own parts: its status is its members', as the Org's own stream reports them.
     const status = resolveTeamStatus(tree.statusIds.map(statusOf), true)
+    // A unit leaving the Org (org-teams-follow-definition, REQ-009) is tagged "Leaving" while it finishes, as a Team's member is.
     return { ...base, row: { key: tree.key, kind: 'team', address: tree.address ?? '', teamRunId: tree.key.slice('org_team:'.length), status,
-      backgroundTasksRunning: runStatus.treeRowBackgroundTasksOf(tree, tree.key), depth: display.row.depth },
+      backgroundTasksRunning: runStatus.treeRowBackgroundTasksOf(tree, tree.key), depth: display.row.depth, leaving: tree.leaving === true },
       delegatedRun: null, teamStatus: null }
   }
   if (isOwn(tree)) {
     return { ...base, row: { key: tree.key, kind: 'agent', address: tree.address ?? '', agentRunId: tree.openTarget!.agentRunId,
-      status: statusOf(tree.statusIds[0]!), backgroundTasksRunning: runStatus.backgroundTasksOf(tree.statusIds[0]!), depth: display.row.depth },
+      status: statusOf(tree.statusIds[0]!), backgroundTasksRunning: runStatus.backgroundTasksOf(tree.statusIds[0]!), depth: display.row.depth,
+      leaving: tree.leaving === true },
       delegatedRun: null, teamStatus: null }
   }
   return { ...base, row: { key: tree.key, kind: 'delegated', address: tree.address ?? '' }, delegatedRun: display.row, teamStatus: display.teamStatus }
