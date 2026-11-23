@@ -57,3 +57,10 @@
 - Design case: docs/design-cases.md Case 2 (one entry form traced, others left open).
 
 Review note: ARCH-REV-002 passed SR-005 (2026-11-23). The reviewer routed it to `/implementation_engineer`. N-3 (stale FU-001 mentions in design-spec.md) is fixed editorially; N-1 and N-2 are for implementation.
+
+## SR-006 (2026-11-23)
+
+- Trigger: implementation Design Impact. D-3's `occurredAt` on the external notice trace can precede the user trace's `forwardedAt`, which breaks D-2 rule (a) and the reload order (MSP-105 fails after a reopen, 3/3).
+- Design: the external user trace's `ts` is its admission time `acceptedAt`, carried on `AgentRunUserMessageForwardedPayload`. Admission precedes the preface's dispatch, so `u.ts < n.ts` by construction.
+- Requirements: unchanged. Classification: unchanged, `Large` / `High`. Routing: architecture review (a revised Large/High package); implementation applies it after the pass.
+- Follow-ups added: FU-002 (Org member and root-view probe cases failing on base), FU-003 (base server e2e failures), plus a note on the runtime e2e packages.

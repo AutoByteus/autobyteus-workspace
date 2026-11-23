@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-005 (SR-002: D-2 covers native; SR-003: evidence; SR-004: D-3, the founder's time rule; SR-005: D-3 revised after ARCH-REV-001)
+- Current solution revision ID: SR-006 (… SR-005: D-3 per boundary; SR-006: the external user trace's time is its admission time, after implementation's Design Impact)
 - Approved requirements: `requirements-doc.md` at SR-005. SR-001…003: Solution Designer within the direction, user informed. SR-004's REQ-004: the user, 2026-11-23 (in their words). SR-005: the text aligned (AR-002).
 - User approval of the design: Not required.
 - Design status: `Ready`
@@ -380,3 +380,20 @@ Not Affected:
 - contract `dist/` is a build input (rule 12).
 
 Route: architecture review.
+
+## SR-006: The external user trace is stamped at admission (implementation Design Impact)
+
+- **Problem:** D-3 makes an external notice trace take the run's `occurredAt` (its delivery). That can come before `forwardedAt` (`agent-run-command-observer-dispatch.ts:31`), the user trace's time today (`runtime-memory-event-accumulator.ts:74-95`).
+  - So `n.ts < u.ts`. D-2 rule (a) fails, and the read path's `ts` sort (`raw-trace-record-normalizer.ts:121-130`) puts the notice first.
+  - MSP-105 (a Team member on scripted Antigravity) fails after a reopen, with the notice 1 ms before the message in 3 of 3 rounds.
+- **Decision:** the external user trace is stored at the input's admission time, `acceptedAt`. It is the same value as D-3's pending entry `accepted_at`: when the node took the message.
+  - Admission happens in AgentRun's dispatch job before the preface is taken for that dispatch (`agent-run.ts` `postUserMessage`: `admit` → `claimNextInput` → `startInputDispatch`), so `u.ts < n.ts` holds by construction and D-2 rule (a) works again.
+- **Contract:** `AgentRunUserMessageForwardedPayload` carries `acceptedAt`, written from the admission entry. `recordForwardedUserMessage` uses it as the trace `ts`. No stored field is added; only the time the writer chooses changes. `forwardedAt` stays for what else reads it (implementation lists its readers, and removes it if the trace was its only reader, Principle 7).
+- **Validation:**
+  - The founder's shape and MSP-105: `u.ts` (admission) < `n.ts` (delivery) → reload shows You → notice.
+  - Native: unchanged (rule b).
+  - Old traces: read as before.
+  - Live: unchanged (D-1, D-3).
+- **Rejected:**
+  - a tolerance window in D-2 (a heuristic);
+  - a stored preface link on the user trace (a new stored field for what admission order already guarantees).
