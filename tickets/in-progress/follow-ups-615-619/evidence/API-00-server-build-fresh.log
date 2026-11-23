@@ -1,0 +1,4 @@
+# API-00 fresh server build (dist removed) | commit 99a45cc1a0 (code 233f813d19) | 2026-11-23T11:09:44Z
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0
