@@ -1,0 +1,15 @@
+# IMP-13 stampForDelivery moved from agent-run.ts to agent-run-event.ts (the size guardrail: agent-run.ts was 500 effective lines at base, D-3 took it to 501, now 498)
+# command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution tests/unit/services/agent-streaming
+#          tests/unit/agent-team-execution tests/unit/agent-memory tests/unit/run-history ; pnpm typecheck
+# commit: 6ad8920bd6 (run on its working tree before committing; same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-24
+# result: Pass. No behavior change: AgentRun's two callers call the moved function; agent-run-event-time.test.ts covers it.
+
+## tests
+ Test Files  320 passed | 4 skipped (324)
+      Tests  2851 passed | 6 skipped (2857)
+
+## server typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
