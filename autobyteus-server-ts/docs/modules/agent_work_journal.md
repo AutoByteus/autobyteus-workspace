@@ -114,7 +114,7 @@ Manifest (exact shape, no generation time, no paths):
 ```json
 {
   "run_id": "run_…",
-  "renderer_revision": 4,
+  "renderer_revision": 5,
   "files": [
     { "journal_file": "work_journal_000001.md", "source_file": "raw_traces_000001.jsonl",
       "source_record_count": 141, "state": "closed", "content_sha256": "…", "runtime_kind": "claude_agent_sdk" },
