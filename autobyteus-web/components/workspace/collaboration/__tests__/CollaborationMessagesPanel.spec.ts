@@ -105,7 +105,7 @@ describe('CollaborationMessagesPanel current AgentRun perspective', () => {
     await wrapper.get('[data-test="team-communication-reference-row"]').trigger('click');
     // A reference's ID is derived from its message and path, as the server derives it (autobyteus-358).
     const id = referenceIdOf('message-sent', '/tmp/handoff.md');
-    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(`team-runs/team-1/team-communication/messages/message-sent/references/${id}/content:${id}`);
+    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(`collaboration-messages/agent_team/team-1/messages/message-sent/references/${id}/content:${id}`);
   });
 });
 
@@ -135,7 +135,7 @@ describe('CollaborationMessagesPanel bounded reference files', () => {
     expect(wrapper.find('[data-test="team-communication-show-all-references"]').exists()).toBe(false);
     await references[BIG_REFERENCE_COUNT - 1].trigger('click');
     expect(wrapper.get('[data-test="reference-viewer"]').text())
-      .toBe(`team-runs/team-big/team-communication/messages/message-big/references/${referenceIdOf('message-big', '/repo/big-44.md')}/content:${referenceIdOf('message-big', '/repo/big-44.md')}`);
+      .toBe(`collaboration-messages/agent_team/team-big/messages/message-big/references/${referenceIdOf('message-big', '/repo/big-44.md')}/content:${referenceIdOf('message-big', '/repo/big-44.md')}`);
   });
 
   it('shows no Show all control when the selected message is within the preview limit', async () => {

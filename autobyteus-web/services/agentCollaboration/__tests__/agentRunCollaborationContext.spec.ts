@@ -63,7 +63,12 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'Research Assistant', kind: 'configured' } }])
     // A delegated team's member names its team run.
     expect(context.messagesView('host-run').memberIdentityByAgentRunId()['pp-run']).toMatchObject({ kind: 'delegated', runId: 'team-run', executionRunId: 'team-run' })
-    expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
+    // autobyteus-615: each list's reference link is built from the key it was loaded with, so the server reads the same view:
+    // the run's own agent by the run; a delegated task agent by its own run; a delegated task team's member by its team run.
+    expect(host.referenceContentPath('m1', 'r1')).toBe('collaboration-messages/agent/host-run/messages/m1/references/r1/content')
+    expect(context.messagesView('cua-run').referenceContentPath('m1', 'r1')).toBe('collaboration-messages/agent/cua-run/messages/m1/references/r1/content')
+    expect(context.messagesView('pp-run').referenceContentPath('m/1', 'r 1'))
+      .toBe('collaboration-messages/agent_team/team-run/messages/m%2F1/references/r%201/content')
     expect(() => context.messagesView('stranger')).toThrow('not in this run')
   })
 

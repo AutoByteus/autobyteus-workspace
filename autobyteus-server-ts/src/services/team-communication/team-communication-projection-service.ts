@@ -6,12 +6,6 @@ import type { TeamCommunicationMessagesSnapshot } from "./team-communication-mes
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { validateTeamRunStatePackage } from "../../run-history/services/team-run-state-package-validator.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
-import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type {
-  TeamCommunicationMessage,
-  TeamCommunicationReferenceFile,
-} from "./team-communication-types.js";
-import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -61,31 +55,7 @@ export class TeamCommunicationProjectionService {
     const state = validateTeamRunStatePackage({ executionTree: tree, communicationMessages: messages });
     return Object.freeze({ executionTree: state.executionTree, messages: state.communicationMessages });
   }
-
-  async resolveReference(input: {
-    teamRunId: string;
-    messageId: string;
-    referenceId: string;
-  }): Promise<{ message: TeamCommunicationMessage; reference: TeamCommunicationReferenceFile } | null> {
-    const stored = (await this.getCollaborationRecordsSnapshot(input.teamRunId)).messages.messages
-      .find((entry) => entry.messageId === required(input.messageId, "messageId"));
-    const message = stored ? projectMessage(stored) : null;
-    const reference = message?.referenceFiles
-      .find((entry) => entry.referenceId === required(input.referenceId, "referenceId")) ?? null;
-    return message && reference ? { message, reference } : null;
-  }
 }
-
-const projectMessage = (message: CollaborationCommunicationMessage): TeamCommunicationMessage => ({
-  messageId: message.messageId,
-  senderAgentRunId: message.senderAgentRunId,
-  receiverAgentRunId: message.receiverAgentRunId,
-  content: message.content,
-  messageType: message.messageType,
-  createdAt: message.createdAt,
-  referenceFiles: message.referenceFiles.map((filePath) =>
-    projectTeamReferenceFile(message.messageId, filePath, message.createdAt)),
-});
 
 let cachedProjectionService: TeamCommunicationProjectionService | null = null;
 export const getTeamCommunicationProjectionService = (): TeamCommunicationProjectionService =>

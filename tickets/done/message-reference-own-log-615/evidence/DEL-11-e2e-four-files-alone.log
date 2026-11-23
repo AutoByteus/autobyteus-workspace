@@ -1,0 +1,32 @@
+# DEL-11 the four DEL-10 failures, each file alone (env -i, canonical TMPDIR) | commit 6472d9199c | 2026-11-23T07:49:33Z | load { 9.20 10.48 12.89 }
+# FU-003 (implementation) recorded the last three failing on the base 1956c232c8 (IMP-06d); scoped-org-history passed alone in IMP-06c.
+--- tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts run 1
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+--- tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts run 2
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+--- tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts run 1
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+--- tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts run 2
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+--- tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts run 1
+AssertionError: expected 2 to be 1 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+--- tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts run 2
+AssertionError: expected 2 to be 1 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+--- tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts run 1
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+--- tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts run 2
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ Test Files  1 failed (1)
+      Tests  1 failed (1)

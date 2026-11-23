@@ -1058,8 +1058,11 @@ team communication events are processor input; derived
 the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). The Team tab
 reads one participant's messages when it is shown, through
 `collaborationParticipantMessages(rootKind: "agent_team", rootRunId, agentRunId)` (autobyteus-358),
-and referenced content opens by persisted message-owned identity at
-`/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+and referenced content opens through the one route
+`/rest/collaboration-messages/agent_team/:teamRunId/messages/:messageId/references/:referenceId/content`
+(autobyteus-615), by the identity the list was read with: the server reads the same view
+(`RunViewMessagesReader`) the page reads and serves only a file that a message of it names, whichever run's log
+holds the message.
 The projection stores `teamRunId` once at the projection level and each message
 stores `senderAgentRunId` and `receiverAgentRunId`. Messages to configured
 Agents, task-Team Agents, and delegated task Agents remain attributable to

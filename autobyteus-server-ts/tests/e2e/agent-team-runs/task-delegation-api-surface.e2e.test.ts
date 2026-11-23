@@ -75,8 +75,8 @@ describe("Task delegation public API surface on the running studio server", () =
       expect(response.json()).toMatchObject({ message: `Route GET:${url} not found` });
     }
 
-    // The retained Org communication reference route is still registered (it answers for the resource, not the route).
-    const retained = "/rest/agent-org-runs/org-run-1/communication/messages/message-1/references/reference-1/content";
+    // The message reference route is registered (it answers for the resource, not the route; autobyteus-615).
+    const retained = "/rest/collaboration-messages/agent_org/org-run-1/messages/message-1/references/reference-1/content";
     const retainedResponse = await app!.inject({ method: "GET", url: retained, headers: owner() });
     expect(JSON.stringify(retainedResponse.json())).not.toContain(`Route GET:${retained} not found`);
   });

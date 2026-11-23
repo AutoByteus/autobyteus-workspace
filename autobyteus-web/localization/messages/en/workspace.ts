@@ -237,6 +237,8 @@ const messages = {
     "Reference file unavailable",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail":
     "The file may have been deleted, moved, or become unreadable.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_not_found_detail":
+    "This file's message could not be found in this conversation.",
   "workspace.components.workspace.team.TeamCommunicationPanel.preview":
     "Preview",
   "workspace.components.workspace.team.TeamCommunicationPanel.raw": "Raw",

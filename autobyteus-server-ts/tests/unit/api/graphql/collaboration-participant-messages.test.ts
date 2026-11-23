@@ -12,6 +12,7 @@ import { readCollaborationParticipantMessages } from "../../../../src/api/graphq
 import { MessageViewScope } from "../../../../src/agent-collaboration/delegation/message-view-scope.js";
 import { CounterpartIdentities } from "../../../../src/run-history/services/counterpart-identities.js";
 import { ParticipantMessagesReader, setProcessParticipantMessagesReader } from "../../../../src/run-history/services/participant-messages-reader.js";
+import { RunViewMessagesReader } from "../../../../src/run-history/services/run-view-messages-reader.js";
 import { runRecordsOfRootOwners } from "../../../../src/run-history/services/run-records-source.js";
 import { AgentOrgRunManager } from "../../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { TeamCommunicationProjectionService } from "../../../../src/services/team-communication/team-communication-projection-service.js";
@@ -50,7 +51,7 @@ const PEERS: Record<string, string> = { srv_b: "docker" };
 const withReader = async <T>(tree: never, run: () => Promise<T>, memory = path.join(os.tmpdir(), "participant-messages-no-runs")): Promise<T> => {
   const delegatedRunAgents = new DelegatedRunAgentsReader(tree);
   const release = setProcessParticipantMessagesReader(new ParticipantMessagesReader({
-    records: runRecordsOfRootOwners, scope: new MessageViewScope({ tree }), delegatedRunAgents,
+    views: new RunViewMessagesReader({ records: runRecordsOfRootOwners, delegatedRunAgents }), scope: new MessageViewScope({ tree }),
     identities: new CounterpartIdentities({ delegatedRunAgents, tree, runMetadata: new AgentRunMetadataStore(memory),
       peerName: async (nodeId) => PEERS[nodeId] ?? nodeId }),
   }));

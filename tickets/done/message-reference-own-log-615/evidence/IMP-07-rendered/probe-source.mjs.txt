@@ -1,0 +1,305 @@
+// TEMPORARY (autobyteus-615 step 6, not committed): the rendered check, from standalone-messages-probe.mjs's stack.
+// Browser + server probe for the Messages of a standalone run on the desktop (autobyteus-565): what the owner sees in the
+// window's right panel, against test-owned servers built from this worktree (the scripted AGY CLI, no model).
+//
+// Servers: alpha (the window's node) and beta, switched on and paired by invite (alpha calls beta "beta-node"), each with
+// the probe's launch owner credential (fixtures/probe-node-access.mjs). Alpha: the agent "Project Task Manager" (the PM), a
+// "Worker" it delegates to, a "Neighbour" run a person started (unrelated to the PM) and a "Quiet" run that never messages.
+// Beta: its own "Project Task Manager". Every message is an agent's own `send_message_to` (`CALL_TOOL`/`CALL_TOOLS`):
+//   - the PM's task agent reports to it (form 2, a Task-related run);
+//   - the Neighbour messages the PM (form 4, an unrelated run of this node), then 55 more (more than one page);
+//   - the PM messages beta's PM with `node` (form 6, a run on another node), which answers with `node`.
+// The web app runs with `nuxt dev` against alpha; the browser is Chrome through playwright-core at 1440 px.
+//
+// Cases:
+//   SMP-01 AC-001  A standalone run that never delegated or messaged: the right panel offers "Messages" and opens on
+//                  Activity (DEC-001, DEC-003); Messages says "No messages yet".
+//   SMP-02 AC-002, AC-004  The PM's Messages: newest 50 first with "Load more"; Load more brings the rest; then every stored
+//                  message is a row, once, newest first: its task agent's report, the Neighbour's (no chip) and beta's PM's
+//                  (the chip "beta-node"); the participant details name beta's PM and its node.
+//   SMP-03 AC-003  With the list open, beta's PM answers and the Neighbour writes: both rows appear without a reload, once
+//                  (the remote one with its chip).
+//   SMP-04 AC-004  A reload brings the newest page again; "Load more" while a new message arrives: the new row once, every
+//                  stored message shown once.
+//
+// Prerequisite: `pnpm -C autobyteus-server-ts build`. Run: `pnpm -C autobyteus-web test:e2e:standalone-messages`
+// (`--output-dir=<dir>`, `--browser-executable=<path>`). About 4 minutes.
+import { createWriteStream, existsSync, mkdtempSync, realpathSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import process from 'node:process';
+import { randomUUID } from 'node:crypto';
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
+
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright-core');
+const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const serverDir = path.join(path.dirname(webDir), 'autobyteus-server-ts');
+const appEntry = path.join(serverDir, 'dist', 'app.js');
+const agyCli = path.join(serverDir, 'tests', 'fixtures', 'agy-failure-cli.mjs');
+const arg = (name, fallback) => {
+  const value = process.argv.find(item => item.startsWith(`--${name}=`));
+  return value ? value.slice(name.length + 3) : fallback;
+};
+const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/tmp-615-references'));
+const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
+  || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
+const MODEL = 'gemini-3.8-flash-low';
+const NODE = 'beta-node';
+const PAGE = 50;
+const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, servers: {}, runs: {}, cases: {}, browserErrors: [], cleanup: {}, error: null };
+const assert = (condition, message, details) => { if (!condition) throw Object.assign(new Error(message), { details }); };
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const waitFor = async (description, fn, timeoutMs = 60_000) => {
+  const deadline = Date.now() + timeoutMs;
+  let lastError;
+  while (Date.now() < deadline) {
+    try { const value = await fn(); if (value) return value; } catch (error) { lastError = error; }
+    await sleep(200);
+  }
+  throw new Error(`Timed out waiting for ${description}${lastError ? `: ${lastError.message}` : ''}`);
+};
+const freePort = () => new Promise((resolve, reject) => {
+  const server = net.createServer();
+  server.once('error', reject);
+  server.listen(0, '127.0.0.1', () => { const { port } = server.address(); server.close(() => resolve(port)); });
+});
+const exited = child => child.exitCode !== null || child.signalCode !== null;
+const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'tmp-615-references-')));
+const children = new Set();
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
+const serverAt = async (name) => {
+  const port = await freePort();
+  const dataDir = path.join(root, name, 'data');
+  const home = path.join(root, name, 'home');
+  await fs.mkdir(dataDir, { recursive: true });
+  await fs.mkdir(home, { recursive: true });
+  const baseUrl = `http://127.0.0.1:${port}`;
+  await fs.writeFile(path.join(dataDir, '.env'), `AUTOBYTEUS_SERVER_HOST=${baseUrl}\nAPP_ENV=test\nLOG_LEVEL=WARN\nHTTP_ACCESS_LOG_MODE=off\n`);
+  const log = createWriteStream(path.join(outputDir, `server-${name}.log`), { flags: 'a' });
+  const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
+    cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off',
+      AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...probeNodeEnvironment() } });
+  child.stdout.pipe(log); child.stderr.pipe(log);
+  child.once('close', () => log.end());
+  children.add(child);
+  await waitFor(`${name} health`, async () => {
+    if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
+    return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
+  }, 120_000);
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
+  evidence.servers[name] = { port, nodeId };
+  const gql = async (query, variables) => {
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
+    if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
+    return body.data;
+  };
+  return { name, port, baseUrl, dataDir, nodeId, gql };
+};
+const callTool = (name, args) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
+const sendMessages = (target, contents, node) => `CALL_TOOLS:${JSON.stringify(contents.map((content, index) => ({ name: 'send_message_to',
+  arguments: { target_agent_run_id: target, content, ...(node ? { node } : {}) }, delayMs: index * 30 })))}`;
+
+
+let frontend, browser;
+await fs.mkdir(outputDir, { recursive: true });
+try {
+  assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
+  const alpha = await serverAt('alpha');
+  const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
+  const def = async (name) => (await alpha.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
+    { i: { name, role: 'assistant', description: `${name} (615 probe)`, instructions: 'Help.', toolNames: [], defaultLaunchConfig: agy } })).createAgentDefinition.id;
+  const pmDef = await def('Project Task Manager'), workerDef = await def('Worker');
+  await alpha.gql('mutation($i:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$i){id}}', { i: { name: 'Crew', description: 'Task team',
+    instructions: 'Follow requests.', coordinatorMemberName: 'lead', nodes: ['lead', 'member'].map(memberName => ({ memberName, ref: workerDef, refScope: 'SHARED' })) } });
+  const workspace = path.join(root, 'alpha', 'workspace');
+  await fs.mkdir(path.join(workspace, 'refs'), { recursive: true });
+  const inside = path.join(workspace, 'refs', 'inside-615.md'), gone = path.join(workspace, 'refs', 'gone-615.md');
+  await fs.writeFile(inside, '# INSIDE-615\n\nThe draft the lead shares with its teammate.\n');
+  await fs.writeFile(gone, '# GONE-615\n');
+  const pm = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}',
+    { i: { agentDefinitionId: pmDef, workspaceRootPath: workspace, autoExecuteTools: true, ...agy } })).createAgentRun.runId;
+  const conversation = async (runId) => JSON.stringify((await alpha.gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
+  const say = async (runId, content, marker = 'CALLED', extra = {}) => {
+    const count = async () => (await conversation(runId)).split(marker).length;
+    const before = await count();
+    const socket = new WebSocket(ownerSocketUrl(`${alpha.baseUrl.replace('http', 'ws')}/ws/agent/${runId}`));
+    await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
+    await sleep(300);
+    const id = randomUUID();
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: id, dedupe_key: `agent_run_input:probe:${id}`, context_file_paths: [], image_urls: [], agent_run_id: runId, content, ...extra } }));
+    await sleep(600);
+    socket.close();
+    if (marker) await waitFor(`${runId} answered`, async () => (await count()) > before, 120_000);
+  };
+  const page1 = async (k, r, a) => (await alpha.gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k, r, a })).collaborationParticipantMessages;
+  // The PM delegates a task team whose lead, at its start, sends its teammate two files (a message only in the team's log),
+  // and a task agent.
+  await say(pm, callTool('delegate_task', { recipient_address: '/crew', description: callTool('send_message_to',
+    { recipient_address: '/member', content: 'INSIDE-MSG-615: check these two drafts.', reference_files: [inside, gone] }) }));
+  await say(pm, callTool('delegate_task', { recipient_address: '/worker', description: 'Write the notes.' }));
+  // The delegated runs: from the PM's conversation (the delegation results).
+  const results = await waitFor('both delegation results', async () => {
+    const text = await conversation(pm);
+    const id = (field) => new RegExp(`${field}\\\\*":\\\\*"([A-Za-z0-9_-]+)`).exec(text);
+    const team = id('target_team_run_id'), lead = id('target_team_coordinator_agent_run_id'), agent = id('target_agent_run_id');
+    return team && lead && agent ? { team: team[1], lead: lead[1], agent: agent[1] } : null;
+  }, 120_000).catch(async (error) => { await fs.writeFile(path.join(outputDir, 'pm-conversation.json'), await conversation(pm)); throw error; });
+  evidence.runs = { pm, ...results };
+  await waitFor('the in-team message listed for the lead', async () => (await page1('agent_team', results.team, results.lead)).messages.some(m => m.content.startsWith('INSIDE-MSG-615')), 120_000);
+  await fs.rm(gone); // AC-004 (b): a listed file that is gone
+
+  // A context file of the delegated task agent (AC-006): the user's message to it with one file, as the composer sends it.
+  const ctxBytes = 'CTX-615 notes for the worker\n';
+  const draftOwner = { kind: 'agent_draft', draftRunId: results.agent }, finalOwner = { kind: 'agent_final', runId: results.agent };
+  const form = new FormData();
+  form.set('owner', JSON.stringify(draftOwner));
+  form.set('file', new Blob([ctxBytes], { type: 'text/markdown' }), 'ctx-615.md');
+  const uploaded = await (await fetch(`${alpha.baseUrl}/rest/context-files/upload`, { method: 'POST', headers: ownerHeaders(), body: form })).json();
+  const finalized = await (await fetch(`${alpha.baseUrl}/rest/context-files/finalize`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }),
+    body: JSON.stringify({ draftOwner, finalOwner, attachments: [uploaded] }) })).json();
+  await say(results.agent, 'CTX-MSG-615 here are my notes.', null, { context_file_paths: [finalized.attachments[0].locator] });
+  await waitFor('the context-file message stored', async () => (await conversation(results.agent)).includes('CTX-MSG-615'), 60_000);
+
+  const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
+  frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
+    stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.baseUrl } });
+  frontend.stdout.pipe(frontendLog); frontend.stderr.pipe(frontendLog);
+  await waitFor('frontend', async () => { if (exited(frontend)) throw new Error(`frontend exited ${frontend.exitCode}`); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240_000);
+  browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US', timezoneId: 'UTC' });
+  await attachToBrowserContext(context);
+  await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  const page = await context.newPage();
+  const requests = [];
+  page.on('request', r => { if (r.url().includes('/rest/collaboration-messages/') || r.url().includes('/context-files/')) requests.push(r.url()); });
+  page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));
+  page.on('console', message => { if (message.type() === 'error') evidence.browserErrors.push(`console: ${message.text()}`); });
+  const shot = name => page.screenshot({ path: path.join(outputDir, `${name}.png`), fullPage: false });
+  const runCase = async (id, fn) => {
+    try { evidence.cases[id] = { result: 'Pass', ...(await fn()) }; }
+    catch (error) { evidence.cases[id] = { result: 'Fail', error: error.message, details: error.details ?? null }; await shot(`${id}-fail`).catch(() => undefined); }
+    console.log(`${id}: ${evidence.cases[id].result}${evidence.cases[id].error ? ` (${evidence.cases[id].error})` : ''}`);
+  };
+  const selectRun = async (agentName, runId) => {
+    const workspaceRow = page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first();
+    await workspaceRow.waitFor({ timeout: 180_000 });
+    if (await workspaceRow.getAttribute('aria-expanded') !== 'true') await workspaceRow.locator('button').first().click();
+    const agentRow = page.locator('[data-test="workspace-agent-row"]', { hasText: agentName }).first();
+    await agentRow.waitFor({ timeout: 60_000 });
+    if (await agentRow.getAttribute('aria-expanded') !== 'true') await agentRow.click();
+    const runRow = page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${runId}"]`).first();
+    await runRow.waitFor({ timeout: 60_000 });
+    await runRow.click();
+    await waitFor(`${runId} selected`, async () => new URL(page.url()).searchParams.get('id') === runId, 60_000);
+    await sleep(1_500);
+  };
+  const tree = () => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${pm}"]`);
+  const selectDelegated = async (agentRunId, teamRunId) => {
+    if (teamRunId) {
+      const disclosure = tree().locator(`[data-test="workspace-team-transient-disclosure"][data-member-address="${teamRunId}"]`).first();
+      await disclosure.waitFor({ timeout: 60_000 });
+      if (await disclosure.getAttribute('aria-expanded') !== 'true') await disclosure.click();
+    }
+    const row = tree().locator(`[data-test="workspace-team-transient-execution-row"]:not([aria-hidden="true"])[data-agent-run-id="${agentRunId}"]`).first();
+    await row.waitFor({ timeout: 60_000 });
+    await row.click();
+    await waitFor(`${agentRunId} selected`, async () => (await row.getAttribute('aria-selected')) === 'true', 30_000);
+    await sleep(1_500);
+    await shot(`step-selected-${agentRunId.slice(0, 12)}`);
+    evidence.steps = [...(evidence.steps ?? []), { selected: agentRunId, url: page.url().replace(frontendUrl, '') }];
+  };
+  const openMessages = async () => {
+    const tab = page.getByRole('tab', { name: 'Messages', exact: true }).first();
+    await tab.waitFor({ timeout: 60_000 });
+    await waitFor('the Messages tab selected', async () => { if (await tab.getAttribute('aria-selected') === 'true') return true; await tab.click(); await sleep(500); return false; }, 30_000);
+    await page.locator('[data-test="collaboration-messages-section"]').first().waitFor({ timeout: 30_000 });
+  };
+  const openReference = async (name) => {
+    const row = page.locator('[data-test="collaboration-messages-section"] [data-test="team-communication-message-row"]', { hasText: 'INSIDE-MSG-615' }).first();
+    await row.waitFor({ timeout: 60_000 });
+    await row.click();
+    const reference = page.locator('[data-test="team-communication-reference-row"]', { hasText: name }).first();
+    await reference.waitFor({ timeout: 30_000 });
+    await reference.click();
+  };
+
+  await page.goto(`${frontendUrl}/workspace`, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+  await selectRun('Project Task Manager', pm);
+
+  evidence.treeRows = await page.locator('[data-test="workspace-team-transient-execution-row"], [data-test="workspace-team-transient-disclosure"]').evaluateAll(list => list.map(el => ({
+    test: el.getAttribute('data-test'), kind: el.getAttribute('data-node-kind'), team: el.getAttribute('data-team-run-id'), agent: el.getAttribute('data-agent-run-id'),
+    address: el.getAttribute('data-member-address'), hidden: el.getAttribute('aria-hidden'), expanded: el.getAttribute('aria-expanded'), tree: el.closest('[data-test="workspace-agent-run-task-tree"]')?.getAttribute('data-run-id') ?? null })));
+  await runCase('R615-01', async () => {
+    // The observed case: a delegated task team member's Messages tab, a file of a message inside that team.
+    await selectDelegated(results.lead, '/crew');
+    await openMessages();
+    await openReference('inside-615.md');
+    const text = await waitFor('the file in the viewer', async () => { const body = await page.locator('body').innerText(); return body.includes('INSIDE-615') && body.includes('shares with its teammate') ? body : null; }, 30_000);
+    await shot('R615-01-delegated-team-member-reference-open');
+    const asked = requests.filter(url => url.includes('/rest/collaboration-messages/agent_team/'));
+    assert(asked.some(url => url.includes(`/agent_team/${results.team}/`)), 'the link names the task team run, the list\'s key', asked);
+    assert(!/could not be found|deleted, moved/.test(text), 'no unavailable text');
+    return { link: asked.at(-1)?.replace(alpha.baseUrl, '').replace(frontendUrl, '') };
+  });
+
+  await runCase('R615-02', async () => {
+    // AC-004 (b): the listed file was deleted: today's text, not "not found in this conversation".
+    await openReference('gone-615.md');
+    const detail = await waitFor('the unavailable state', async () => { const body = await page.locator('body').innerText(); return body.includes('Reference file unavailable') ? body : null; }, 30_000);
+    await shot('R615-02-gone-file-unavailable');
+    assert(detail.includes('The file may have been deleted, moved, or become unreadable.'), 'the missing-file text');
+    assert(!detail.includes("This file's message could not be found"), 'not the not-found text');
+    return {};
+  });
+
+  await runCase('R615-03', async () => {
+    // AC-006: a context file of the delegated task agent opens from its conversation.
+    await selectDelegated(results.agent, null);
+    // A non-image file that is not a workspace path opens in a new browser tab (contextAttachmentPresentation: window.open).
+    const attachment = page.locator('button.message-attachment-chip', { hasText: 'ctx-615.md' }).first();
+    await attachment.waitFor({ timeout: 60_000 });
+    const [opened] = await Promise.all([page.context().waitForEvent('page', { timeout: 30_000 }), attachment.click()]);
+    await opened.waitForLoadState('load').catch(() => {});
+    await waitFor('the context file content', async () => (await opened.locator('body').innerText().catch(() => '')).includes('CTX-615 notes for the worker'), 30_000);
+    const openedUrl = opened.url().replace(alpha.baseUrl, '<node>').replace(frontendUrl, '<web>');
+    await opened.screenshot({ path: path.join(outputDir, 'R615-03-context-file-tab.png') });
+    await opened.close();
+    await shot('R615-03-delegated-agent-context-file-open');
+    return { openedUrl, contextFileRequests: requests.filter(url => url.includes('/context-files/')).map(url => url.replace(alpha.baseUrl, '').replace(frontendUrl, '')).slice(-2) };
+  });
+
+  evidence.requests = requests.map(url => url.replace(alpha.baseUrl, '<node>').replace(frontendUrl, '<web>'));
+  // The expected console errors: none for these cases except the viewer's 404 fetch line of R615-02 (the browser logs a failed resource).
+  evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass')
+    && evidence.browserErrors.filter(line => !/favicon|DevTools|504 \(Outdated Optimize Dep\)|Failed to fetch dynamically imported module|error caught during app initialization|status of 404/.test(line)).length === 0 ? 'Pass' : 'Fail';
+  if (evidence.result !== 'Pass') process.exitCode = 1;
+} catch (error) {
+  evidence.error = error instanceof Error ? `${error.stack ?? error.message}${error.details ? `\n${JSON.stringify(error.details).slice(0, 2000)}` : ''}` : String(error);
+  process.exitCode = 1;
+} finally {
+  if (browser) await browser.close().catch(() => undefined);
+  if (frontend && !exited(frontend)) {
+    try { process.kill(-frontend.pid, 'SIGTERM'); } catch { /* gone */ }
+    await Promise.race([new Promise(resolve => frontend.once('close', resolve)), sleep(8_000)]);
+    if (!exited(frontend)) { try { process.kill(-frontend.pid, 'SIGKILL'); } catch { /* gone */ } }
+  }
+  for (const child of [...children]) {
+    if (!exited(child)) { child.kill('SIGTERM'); await Promise.race([new Promise(resolve => child.once('close', resolve)), sleep(10_000)]); if (!exited(child)) child.kill('SIGKILL'); }
+    children.delete(child);
+  }
+  await fs.rm(root, { recursive: true, force: true }).catch(() => undefined);
+  evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root) };
+  evidence.finishedAt = new Date().toISOString();
+  await fs.writeFile(path.join(outputDir, 'tmp-615-references-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+  console.log(`615 references probe: ${evidence.result}${evidence.error ? `\n${evidence.error}` : ''}`);
+  process.exit(process.exitCode ?? 0);
+}

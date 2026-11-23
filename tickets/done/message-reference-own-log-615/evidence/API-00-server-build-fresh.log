@@ -1,0 +1,5 @@
+# API-00 fresh server build: dist removed first | commit 725891acc1 (code 0629b5c631) | 2026-11-23T07:00:19Z | load { 6.02 8.20 10.49 }
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0
+Nov 23 08:00:39 2026 autobyteus-server-ts/dist/app.js

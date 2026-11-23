@@ -670,9 +670,11 @@ Run GraphQL operations:
 - `getAgentOrgMemberTokenUsageSummary`
 - `listCollaborationRootHistory`
 
-Reference-content REST routes are rooted below
-`/agent-org-runs/:orgRunId/communication/messages/...`. The former
-`/agent-org-runs/:orgRunId/task-delegations/...` route is removed.
+A message's reference file opens through the one route
+`/rest/collaboration-messages/agent_org/:orgRunId/messages/:messageId/references/:referenceId/content`
+(autobyteus-615), which reads the Org root's view like its message list does, so a message stored in a delegated
+run's log opens too. The former `/agent-org-runs/:orgRunId/communication/...` and
+`/agent-org-runs/:orgRunId/task-delegations/...` routes are removed.
 
 ## Key Source
 

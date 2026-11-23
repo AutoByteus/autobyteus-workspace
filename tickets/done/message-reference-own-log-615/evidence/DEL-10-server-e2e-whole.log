@@ -1,0 +1,10 @@
+# DEL-10 whole server E2E (ungated), root: env -i PATH HOME=<temp> TMPDIR=<canonical> USER pnpm test:e2e | commit 6472d9199c | 2026-11-23T07:29:41Z | load { 7.63 15.86 15.43 }
+exit 0
+ FAIL  tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts > scoped Org history real HTTP lifecycle > reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes
+ FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+ FAIL  tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL
+ Test Files  4 failed | 123 passed | 165 skipped (292)
+      Tests  4 failed | 569 passed | 784 skipped (1357)
+   Duration  1168.76s (transform 15.88s, setup 6.20s, import 351.79s, tests 785.47s, environment 15ms)
+ENOTEMPTY occurrences: 0

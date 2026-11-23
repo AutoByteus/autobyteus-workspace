@@ -2057,7 +2057,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
     - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
-    - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+    - Opens reference content by persisted message identity (the list's `rootKind + rootRunId`, then `messageId + referenceId`) through `/rest/collaboration-messages/:rootKind/:rootRunId/messages/:messageId/references/:referenceId/content`, built by `messageReferenceContentPath` from the key the list was loaded with (autobyteus-615).
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
     - AgentOrg contexts retain their own strict root-sidecar payload and build a
       `CollaborationMessagesContextView` with

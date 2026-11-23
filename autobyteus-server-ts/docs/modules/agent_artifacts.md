@@ -47,9 +47,10 @@ Team Communication.
   - `src/agent-collaboration/execution/communication/root-message-append.ts`
   - `src/services/team-communication/team-communication-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`
-  - `src/services/team-communication/team-communication-content-service.ts`
-  - `src/api/graphql/types/team-communication.ts`
-  - `src/api/rest/team-communication.ts`
+  - `src/api/graphql/types/collaboration-participant-messages.ts`
+  - `src/run-history/services/run-view-messages-reader.ts` (the view's messages, read by the page and by the reference route)
+  - `src/run-history/services/message-reference-content-reader.ts`
+  - `src/api/rest/collaboration-message-references.ts` (the one reference-content route)
 - Delegation work-packet reference validation:
   - `src/agent-collaboration/execution/task/task-execution-input.ts`
 - Streaming transport:

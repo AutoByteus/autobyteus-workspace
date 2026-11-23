@@ -38,7 +38,5 @@ export const teamCollaborationMessagesView = (team: AgentTeamContext, delegated:
       isRemote: false,
       identityOf,
     }),
-    referenceContentPath: (messageId: string, referenceId: string) =>
-      `team-runs/${encodeURIComponent(rootRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
   });
 };

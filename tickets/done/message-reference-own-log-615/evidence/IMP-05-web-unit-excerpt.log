@@ -1,0 +1,9 @@
+# IMP-05
+# Command: pnpm -C autobyteus-web test:nuxt --run (whole web unit suite)
+# Commit: working tree committed as 1b1be2e822
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+# Note: Excerpt (summary and failures). The full log, 2.6 MB, is not committed.
+
+ Test Files  798 passed (798)
+      Tests  6072 passed | 2 skipped (6074)

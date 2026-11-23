@@ -106,8 +106,6 @@ export class AgentRunCollaborationContext {
         ...this.treeRows().flatMap((candidate) => candidate.openTarget && !isTeamRow(candidate) ? [candidate.openTarget.agentRunId] : [])]
         .flatMap((agentRunId) => { const identity = this.identityOf(agentRunId); return identity ? [[agentRunId, identity]] : [] }))),
       ...participantMessagesView({ key, isRemote: Boolean(row?.peer), identityOf: (agentRunId) => this.identityOf(agentRunId) }),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `agent-collaborations/${encodeURIComponent(this.runId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 

@@ -390,3 +390,16 @@ Principle 1 (several kinds: trace each composition root) and Principle 16 (one c
 - **The fix (SR-003):** a Compositions table, with the rule that every composition that runs external-runtime agents wires both parts or offers no renewal. All three now wire both, and each composition gets a test that the notice arrives after a renewal.
 - **Why it mattered:** a renewal without the notice looks like success but hands the user an agent with no memory of the work.
 - **Notice it by:** a design that reuses a mechanism "unchanged" when that mechanism is assembled in a composition root. List every composition root that builds the owners involved: studio, application scope, standalone host, tests' harnesses. Check each wires every collaborator the behavior needs. A default lookup (`getDefault…()`) can make one part work where the other is missing.
+
+### Case 28: One Fact Derived In Four Places, And A Refactor Updated One (autobyteus-461 → autobyteus-615)
+
+Principle 11 (each fact is derived by one owner) and Principle 1 (trace every kind and form).
+
+- **The design said:** autobyteus-461 moved each delegated run's messages into its own log and composed the view of run X from X's own log plus the logs of the open runs below it (SR-072). The Messages tab's list was moved to that composition. The reference files of those messages were "expected to open, not proven by any case".
+- **What the code does:** "the messages of the view of run X" was also derived by three server reference readers, each reading one log, and by three hand-written web links pointing at the root run. A delegated run's message, and a root's message stored in a delegated run's log, were listed but their reference answered 404. The viewer called that "file deleted or moved". The founder's server log held 90 such 404s in one day.
+- **The fix (SR-001):**
+  - One server owner, `RunViewMessagesReader`, is used by the message page and by one reference reader, behind one route with the page's identity `(rootKind, rootRunId)`.
+  - One web owner, `participantMessagesView`, builds the link from the same key.
+  - The viewer reads the refusal's code.
+- **Why it mattered:** nearly every reference the founder clicked failed, because every SE ticket runs as a delegated task team, and the error message blamed the files.
+- **Notice it by:** a refactor that changes where some data lives. List every reader of that data, including a reader of "something belonging to it" (its attachments, its counts, its links), not only the main list. Two readers of one fact that take different identities (one a composed view, one a single log) will disagree after the next change. An expectation written as "expected to work" without a case is a gap to close in the same ticket.

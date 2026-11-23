@@ -203,7 +203,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
     const view = (state: 'loading' | 'loaded' | 'error', messages: readonly unknown[] = []) => ({
       loadMessages: vi.fn(), listMessages: () => messages, messagesStatus: () => ({ state, error: state === 'error' ? 'gone' : null }),
       hasMore: () => false, moreStatus: () => ({ state: 'idle', error: null }), loadMore: vi.fn(),
-      referenceContentPath: (messageId: string, referenceId: string) => `team-runs/t/messages/${messageId}/references/${referenceId}/content`,
+      referenceContentPath: (messageId: string, referenceId: string) => `collaboration-messages/agent_team/t/messages/${messageId}/references/${referenceId}/content`,
       memberIdentityByAgentRunId: () => ({}),
     });
     const message = { messageId: 'm-1', content: 'Requirements are approved.', createdAt: '2026-11-06T07:35:00.000Z', direction: 'received',
@@ -226,7 +226,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       await wrapper.get('[data-testid="mobile-team-reference-row"]').trigger('click');
       await flushPromises();
       expect(router.currentRoute.value.query).toMatchObject({ screen: 'messages', message: 'm-1', reference: 'r-1' });
-      expect(wrapper.get('[data-testid="reference-stub"]').text()).toBe('team-runs/t/messages/m-1/references/r-1/content');
+      expect(wrapper.get('[data-testid="reference-stub"]').text()).toBe('collaboration-messages/agent_team/t/messages/m-1/references/r-1/content');
       // CRR-003 F-04: only the phone's bar (VIS-011), not the shared viewer's header.
       expect(wrapper.get('[data-testid="reference-stub"]').attributes('data-hide-header')).toBe('true');
       await wrapper.get('[data-testid="mobile-team-reference-viewer"] [data-testid="mobile-screen-back"]').trigger('click');

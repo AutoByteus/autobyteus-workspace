@@ -1,0 +1,13 @@
+# IMP-06
+# Command: pnpm -C autobyteus-server-ts test --run (unit, integration, architecture)
+# Commit: 0629b5c631
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+# Note: Excerpt. 1 failure: org-units-remote-files-and-renewal (SR-016 of 587), a non-canonical TMPDIR; passes 4/4 with TMPDIR="$(cd "$TMPDIR" && pwd -P)". FU-002.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it
+Error: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-first-work-pu5CNm/agent_teams/test-root/agent-worker is not inside /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T.
+ Test Files  1 failed | 1070 passed | 5 skipped (1076)
+      Tests  1 failed | 8898 passed | 9 skipped (8908)

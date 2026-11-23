@@ -1,0 +1,24 @@
+# DEL-09: org-units-remote-files-and-renewal.test.ts (SR-016, autobyteus-587) alone, after DEL-06 failed it in the whole unit run | commit 6472d9199c | 2026-11-23T07:28:04Z
+# The ticket changes neither this file nor src/remote-collaboration (git diff --name-only 1956c232c8 HEAD); FU-002 of this ticket records the cause on the base 1956c232c8.
+TMPDIR as in DEL-06: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ (a link: /var is /private/var on macOS)
+canonical TMPDIR:    /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T
+--- run 1: the TMPDIR of DEL-06
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016: the container is an active root that links no run on a peer > registered in the active root directory, it answers remoteNodeOf null and hosts no agent; a unit's agent is placed in its own run 1ms
+ × tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it 60ms
+   → /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-first-work-M9Gsrj/agent_teams/test-root/agent-worker is not inside /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T.
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > an agent unit (CRR-009 CR-009): its own standalone root places it in agents/<runId>/received_files/<sender>/<name>; the log line names it 36ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (599): an Org unit whose saved runtime session is gone is renewed; its first input begins with the hand-over notice > an agent unit (its own run file names its container) and a Team unit's member each renew from their journals 267ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-first-work-M9Gsrj/agent_teams/test-root/agent-worker is not inside /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T.
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+--- run 2: the canonical TMPDIR
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016: the container is an active root that links no run on a peer > registered in the active root directory, it answers remoteNodeOf null and hosts no agent; a unit's agent is placed in its own run 1ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it 69ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > an agent unit (CRR-009 CR-009): its own standalone root places it in agents/<runId>/received_files/<sender>/<name>; the log line names it 37ms
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (599): an Org unit whose saved runtime session is gone is renewed; its first input begins with the hand-over notice > an agent unit (its own run file names its container) and a Team unit's member each renew from their journals 262ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+--- run 3: the canonical TMPDIR again
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

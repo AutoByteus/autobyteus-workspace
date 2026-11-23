@@ -54,7 +54,7 @@ suite("AC-007: a closed run's earlier attachments still open (built server, scri
   }, 60_000);
 
   const referenceUrl = (s: BuiltStudio, kind: Kind, rootId: string, messageId: string, file: string) =>
-    `${s.url}/rest/${kind === "agent" ? "agent-collaborations" : "agent-org-runs"}/${encodeURIComponent(rootId)}/communication/messages/`
+    `${s.url}/rest/collaboration-messages/${kind === "agent" ? "agent" : "agent_org"}/${encodeURIComponent(rootId)}/messages/`
     + `${encodeURIComponent(messageId)}/references/${referenceIdOf(messageId, file)}/content`;
   // autobyteus-461 rule 2: a delegated run's own context file is read by its own identity (`/rest/runs/:runId/…`).
   const contextFileUrl = (s: BuiltStudio, _kind: Kind, _rootId: string, agentRunId: string, storedFilename: string) =>

@@ -1,0 +1,87 @@
+{
+  "startedAt": "2026-11-23T06:45:28.044Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 63423,
+      "nodeId": "srv_OtAJ0xllnevvULFlfXldDpSCInWaza-I"
+    }
+  },
+  "runs": {
+    "pm": "project_task_manager_d68814d3577349488bd93005e6c7012a",
+    "team": "crew_34dcfbc150b841489ebb8a9cada68119",
+    "lead": "worker_1fb98881cc0c4d169721de27867f0761",
+    "agent": "worker_7929e492c8bc406a9a834b376edf6873"
+  },
+  "cases": {
+    "R615-01": {
+      "result": "Pass",
+      "link": "/rest/collaboration-messages/agent_team/crew_34dcfbc150b841489ebb8a9cada68119/messages/collabmsg_uqxDUyEiMC0K6cUXpj9rnxVVjpcOi-NJ/references/d0e7c0a90ed9ec4d43cd218c7b7e7e20a5f37c69facb0d12cac237b29404aec1/content"
+    },
+    "R615-02": {
+      "result": "Pass"
+    },
+    "R615-03": {
+      "result": "Pass",
+      "openedUrl": "<node>/rest/runs/worker_7929e492c8bc406a9a834b376edf6873/context-files/ctx_c3f720c5959f__ctx-615.md",
+      "contextFileRequests": []
+    }
+  },
+  "browserErrors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "treeRows": [
+    {
+      "test": "workspace-team-transient-execution-row",
+      "kind": "agent_team",
+      "team": "project_task_manager_d68814d3577349488bd93005e6c7012a",
+      "agent": null,
+      "address": "/crew",
+      "hidden": null,
+      "expanded": "false",
+      "tree": "project_task_manager_d68814d3577349488bd93005e6c7012a"
+    },
+    {
+      "test": "workspace-team-transient-disclosure",
+      "kind": null,
+      "team": "project_task_manager_d68814d3577349488bd93005e6c7012a",
+      "agent": null,
+      "address": "/crew",
+      "hidden": null,
+      "expanded": "false",
+      "tree": "project_task_manager_d68814d3577349488bd93005e6c7012a"
+    },
+    {
+      "test": "workspace-team-transient-execution-row",
+      "kind": "agent",
+      "team": "project_task_manager_d68814d3577349488bd93005e6c7012a",
+      "agent": "worker_7929e492c8bc406a9a834b376edf6873",
+      "address": "/worker",
+      "hidden": null,
+      "expanded": null,
+      "tree": "project_task_manager_d68814d3577349488bd93005e6c7012a"
+    }
+  ],
+  "steps": [
+    {
+      "selected": "worker_1fb98881cc0c4d169721de27867f0761",
+      "url": "/chat?id=project_task_manager_d68814d3577349488bd93005e6c7012a"
+    },
+    {
+      "selected": "worker_7929e492c8bc406a9a834b376edf6873",
+      "url": "/chat?id=project_task_manager_d68814d3577349488bd93005e6c7012a"
+    }
+  ],
+  "requests": [
+    "<node>/rest/collaboration-messages/agent_team/crew_34dcfbc150b841489ebb8a9cada68119/messages/collabmsg_uqxDUyEiMC0K6cUXpj9rnxVVjpcOi-NJ/references/d0e7c0a90ed9ec4d43cd218c7b7e7e20a5f37c69facb0d12cac237b29404aec1/content",
+    "<node>/rest/collaboration-messages/agent_team/crew_34dcfbc150b841489ebb8a9cada68119/messages/collabmsg_uqxDUyEiMC0K6cUXpj9rnxVVjpcOi-NJ/references/e14b6c4d30b88dfd5e7a9cb4169f3b614b82ab21384e327b42f31c661db744ae/content"
+  ],
+  "finishedAt": "2026-11-23T06:45:51.144Z"
+}

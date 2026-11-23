@@ -19,9 +19,8 @@ vi.mock("../../../../src/run-history/services/run-file-change-projection-service
 
 const { registerFileRoutes } = await import("../../../../src/api/rest/files.js");
 const { registerRunFileChangeRoutes } = await import("../../../../src/api/rest/run-file-changes.js");
-const { registerTeamCommunicationRoutes } = await import("../../../../src/api/rest/team-communication.js");
-const { registerAgentOrgReferenceRoutes } = await import("../../../../src/api/rest/agent-org-references.js");
-const { registerAgentCollaborationReferenceRoutes } = await import("../../../../src/api/rest/agent-collaboration-references.js");
+const { registerCollaborationMessageReferenceRoutes } = await import("../../../../src/api/rest/collaboration-message-references.js");
+const { setProcessMessageReferenceContentReader } = await import("../../../../src/run-history/services/message-reference-content-reader.js");
 
 const FILES = [
   { name: "x.html", mime: "text/html", body: "<!doctype html><script>fetch('/graphql',{method:'POST'})</script>" },
@@ -32,6 +31,7 @@ const FILES = [
 describe("user-file routes F3, F9–F15", () => {
   let app: FastifyInstance;
   let root: string;
+  let releaseReader: () => void = () => undefined;
   const fileOf = (url: string) => FILES.find((file) => url.includes(file.name))!;
   const pathOf = (url: string) => path.join(root, "docs", fileOf(url).name);
   const resolvedEntry = (url: string) => ({
@@ -58,19 +58,14 @@ describe("user-file routes F3, F9–F15", () => {
       teamMemberViews: { resolveFileChangeEntry: async () => resolvedEntry(currentUrl) } as never,
       agentOrgMemberViews: { resolveFileChangeEntry: async () => resolvedEntry(currentUrl) } as never,
     });
-    await registerTeamCommunicationRoutes(app, {
-      contentService: { resolveContent: async () => referenceContent(currentUrl) } as never,
-    });
-    await registerAgentOrgReferenceRoutes(app, {
-      contentService: { resolveCommunication: async () => referenceContent(currentUrl) } as never,
-    });
-    await registerAgentCollaborationReferenceRoutes(app, {
-      contentService: { resolveCommunication: async () => referenceContent(currentUrl) } as never,
-    });
+    // One route for every root kind's message references (autobyteus-615), through the process reader.
+    releaseReader = setProcessMessageReferenceContentReader({ resolve: async () => referenceContent(currentUrl) } as never);
+    await registerCollaborationMessageReferenceRoutes(app);
     await app.ready();
   });
 
   afterAll(async () => {
+    releaseReader();
     await app.close();
     fs.rmSync(root, { recursive: true, force: true });
   });
@@ -80,9 +75,9 @@ describe("user-file routes F3, F9–F15", () => {
     ["F9 run file change", (name) => `/runs/r1/file-change-content?path=${name}`],
     ["F10 team member file change", (name) => `/team-runs/t1/agent-runs/a1/file-change-content?path=${name}`],
     ["F11 org member file change", (name) => `/agent-org-runs/o1/agent-runs/a1/file-change-content?path=${name}&memberAddress=m`],
-    ["F13 team message reference", (name) => `/team-runs/t1/team-communication/messages/m1/references/${name}/content`],
-    ["F14 org message reference", (name) => `/agent-org-runs/o1/communication/messages/m1/references/${name}/content`],
-    ["F15 collaboration message reference", (name) => `/agent-collaborations/h1/communication/messages/m1/references/${name}/content`],
+    ["F13 message reference, Team root", (name) => `/collaboration-messages/agent_team/t1/messages/m1/references/${name}/content`],
+    ["F14 message reference, Org root", (name) => `/collaboration-messages/agent_org/o1/messages/m1/references/${name}/content`],
+    ["F15 message reference, standalone root", (name) => `/collaboration-messages/agent/h1/messages/m1/references/${name}/content`],
   ];
 
   it.each(routes)("%s: HTML, SVG and XML are sandboxed and not sniffed, body and type unchanged", async (_label, urlFor) => {

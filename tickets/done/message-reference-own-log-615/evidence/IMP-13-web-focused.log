@@ -1,0 +1,117 @@
+# IMP-13
+# Command: pnpm -C autobyteus-web exec vitest --run <the 7 specs this branch changed>
+# Commit: 0629b5c631
+# Environment: macOS (Darwin 25.5.0), worktree toolchain, synthetic data only
+# Date: 2026-11-23
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/views/__tests__/MobileViews.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts (3 tests) 4ms
+ ✓ services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts (3 tests) 4ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (6 tests) 21ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts (16 tests) 82ms
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > AC-001 a node file (autobyteus-436) opens full screen, read-only, fetched by its absolute path with the phone credential; ← closes it
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > AC-004 a missing node file and a folder say so; another failure says the preview could not be opened
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > AC-004 a missing node file and a folder say so; another failure says the preview could not be opened
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > AC-004 a missing node file and a folder say so; another failure says the preview could not be opened
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a node file that was not there offers Retry, which reads it again and opens it; a folder offers no Retry
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+stderr | components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a node file that was not there offers Retry, which reads it again and opens it; a folder offers no Retry
+Error fetching folder children: Error: Folder children response was missing.
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:27:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/fileExplorerTreeActions.ts:128:15)
+    at resolveWorkspaceForContext (/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts:142:9)
+
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts (17 tests) 164ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesPanel.spec.ts (14 tests) 231ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts (4 tests) 1855ms
+   ✓ Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list  852ms
+   ✓ Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows  798ms
+
+ Test Files  7 passed (7)
+      Tests  63 passed (63)
+   Start at  07:50:59
+   Duration  9.72s (transform 4.00s, setup 47.63s, collect 1.58s, tests 2.36s, environment 2.00s, prepare 1.28s)
+

@@ -3,7 +3,7 @@ import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceContextView } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import { projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective'
-import { projectParticipantMessageRows } from '~/services/collaborationMessages/participantMessageRows'
+import { messageReferenceContentPath, projectParticipantMessageRows } from '~/services/collaborationMessages/participantMessageRows'
 import { testTeamMessagesOf } from '~/test-support/currentTeamTestFixtures'
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService'
 
@@ -66,7 +66,8 @@ export const testCollaborationMessagesContextView = (
     hasMore: () => false,
     moreStatus: () => ({ state: 'idle', error: null }),
     loadMore: () => undefined,
+    // The owner's one link builder, by the key a Team root's own list is loaded with (autobyteus-615).
     referenceContentPath: (messageId, referenceId) =>
-      `team-runs/${view.getRootTeamRunId()}/team-communication/messages/${messageId}/references/${referenceId}/content`,
+      messageReferenceContentPath({ rootKind: 'agent_team', rootRunId: view.getRootTeamRunId() }, messageId, referenceId),
   }
 }

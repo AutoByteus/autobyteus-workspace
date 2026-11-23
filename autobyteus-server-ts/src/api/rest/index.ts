@@ -8,9 +8,7 @@ import { registerWorkspaceRoutes } from "./workspaces.js";
 import { registerNodeFileRoutes } from "./node-files.js";
 import { registerContextFileRoutes } from "./context-files.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
-import { registerTeamCommunicationRoutes } from "./team-communication.js";
-import { registerAgentOrgReferenceRoutes } from "./agent-org-references.js";
-import { registerAgentCollaborationReferenceRoutes } from "./agent-collaboration-references.js";
+import { registerCollaborationMessageReferenceRoutes } from "./collaboration-message-references.js";
 import { registerApplicationBundleRoutes } from "./application-bundles.js";
 import { registerApplicationBackendRoutes } from "./application-backends.js";
 import { registerApplicationAvailabilityRoutes } from "./application-availability.js";
@@ -53,9 +51,7 @@ export async function registerRestRoutes(
   await registerContextFileRoutes(app);
   await registerProjectTaskContextRoutes(app);
   await registerRunFileChangeRoutes(app);
-  await registerTeamCommunicationRoutes(app);
-  await registerAgentOrgReferenceRoutes(app);
-  await registerAgentCollaborationReferenceRoutes(app);
+  await registerCollaborationMessageReferenceRoutes(app);
   await registerApplicationBundleRoutes(app, dependencies.application.assets);
   await registerApplicationBackendRoutes(app, {
     gateway: dependencies.application.backend,

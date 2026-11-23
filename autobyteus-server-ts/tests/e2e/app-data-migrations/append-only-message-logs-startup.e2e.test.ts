@@ -327,21 +327,21 @@ describe("append-only message logs: the built server converts a faithful release
 
     // AC-008: every reference of every migrated message resolves by messageId + referenceId, in each family.
     for (const entry of released.hub) {
-      expect(await fetchText(first, `agent-collaborations/hub/communication/messages/${entry.messageId}/references/${rootReferenceId(entry.messageId, entry.referenceFiles[0]!)}/content`),
+      expect(await fetchText(first, `collaboration-messages/agent/hub/messages/${entry.messageId}/references/${rootReferenceId(entry.messageId, entry.referenceFiles[0]!)}/content`),
         `hub ${entry.messageId}`).toEqual({ status: 200, text: referenceText(entry.messageId) });
     }
     for (const entry of team) {
-      expect(await fetchText(first, `team-runs/team-r/team-communication/messages/${entry.messageId}/references/${entry.referenceIds[0]}/content`),
+      expect(await fetchText(first, `collaboration-messages/agent_team/team-r/messages/${entry.messageId}/references/${entry.referenceIds[0]}/content`),
         `team ${entry.messageId}`).toEqual({ status: 200, text: referenceText(entry.messageId) });
     }
     for (const [orgRunId, entries] of [["org-o", released["org-o"]], ["org-big", released["org-big"]]] as const) {
       for (const entry of entries) {
-        expect(await fetchText(first, `agent-org-runs/${orgRunId}/communication/messages/${entry.messageId}/references/${rootReferenceId(entry.messageId, entry.referenceFiles[0]!)}/content`),
+        expect(await fetchText(first, `collaboration-messages/agent_org/${orgRunId}/messages/${entry.messageId}/references/${rootReferenceId(entry.messageId, entry.referenceFiles[0]!)}/content`),
           `${orgRunId} ${entry.messageId}`).toEqual({ status: 200, text: referenceText(entry.messageId) });
       }
     }
     // An unknown reference stays "not found", as before.
-    expect((await fetchText(first, `agent-org-runs/org-o/communication/messages/m9/references/${"0".repeat(64)}/content`)).status).toBe(404);
+    expect((await fetchText(first, `collaboration-messages/agent_org/org-o/messages/m9/references/${"0".repeat(64)}/content`)).status).toBe(404);
     // A context file of a migrated task agent opens by its own run's link; the route through its hub is gone
     // (autobyteus-500 FU-020: the host-scoped owner kind and its route are removed).
     expect(await fetchText(first, "runs/c1-reviewer/context-files/ctx_notes__notes.txt")).toEqual({ status: 200, text: "context bytes" });
@@ -507,13 +507,13 @@ describe("append-only message logs: the built server converts a faithful release
     expect((await view.team(teamRunId)).map(({ referenceIds: _ids, ...entry }) => entry)).toEqual(byCreatedAt(released.team));
     expect(await view.org(orgRunId)).toEqual(byCreatedAt(released.org));
     const oldHub = released.hub.find((entry) => entry.content === "Old hub message.")!;
-    expect(await fetchText(first, `agent-collaborations/${hubId}/communication/messages/${oldHub.messageId}/references/${rootReferenceId(oldHub.messageId, oldHub.referenceFiles[0]!)}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent/${hubId}/messages/${oldHub.messageId}/references/${rootReferenceId(oldHub.messageId, oldHub.referenceFiles[0]!)}/content`))
       .toEqual({ status: 200, text: "reference old-hub\n" });
     const oldTeam = (await view.team(teamRunId)).find((entry) => entry.content === "Old team message.")!;
-    expect(await fetchText(first, `team-runs/${teamRunId}/team-communication/messages/${oldTeam.messageId}/references/${oldTeam.referenceIds[0]}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent_team/${teamRunId}/messages/${oldTeam.messageId}/references/${oldTeam.referenceIds[0]}/content`))
       .toEqual({ status: 200, text: "reference old-team\n" });
     const oldOrg = released.org.find((entry) => entry.content === "Old org message.")!;
-    expect(await fetchText(first, `agent-org-runs/${orgRunId}/communication/messages/${oldOrg.messageId}/references/${rootReferenceId(oldOrg.messageId, oldOrg.referenceFiles[0]!)}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent_org/${orgRunId}/messages/${oldOrg.messageId}/references/${rootReferenceId(oldOrg.messageId, oldOrg.referenceFiles[0]!)}/content`))
       .toEqual({ status: 200, text: "reference old-org\n" });
 
     // Hub (standalone family), resumed: its message to the migrated task agent is one new line in the helper's log and the hub's log.
@@ -530,7 +530,7 @@ describe("append-only message logs: the built server converts a faithful release
     const hubNew = hubAfter.at(-1)!;
     expect(helperAfter.at(-1)).toEqual(hubNew);
     expect(hubNew).toMatchObject({ senderAgentRunId: hubId, receiverAgentRunId: helperId, content: "New hub message.", referenceFiles: [hubReference] });
-    expect(await fetchText(first, `agent-collaborations/${hubId}/communication/messages/${hubNew.messageId}/references/${rootReferenceId(hubNew.messageId, hubReference)}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent/${hubId}/messages/${hubNew.messageId}/references/${rootReferenceId(hubNew.messageId, hubReference)}/content`))
       .toEqual({ status: 200, text: "reference new-hub\n" });
 
     // BEH-007: a team delegated from the resumed hub gets an empty append-only log; the hub's message to its coordinator is then in both logs.
@@ -559,7 +559,7 @@ describe("append-only message logs: the built server converts a faithful release
     const teamNew = teamAfter.at(-1)!;
     expect(teamNew).toMatchObject({ senderAgentRunId: teamMembers["/lead"], receiverAgentRunId: teamMembers["/mate"], content: "New team message.", referenceFiles: [teamReference] });
     const teamNewView = (await view.team(teamRunId)).find((entry) => entry.messageId === teamNew.messageId)!;
-    expect(await fetchText(first, `team-runs/${teamRunId}/team-communication/messages/${teamNew.messageId}/references/${teamNewView.referenceIds[0]}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent_team/${teamRunId}/messages/${teamNew.messageId}/references/${teamNewView.referenceIds[0]}/content`))
       .toEqual({ status: 200, text: "reference new-team\n" });
     team1.close();
 
@@ -589,7 +589,7 @@ describe("append-only message logs: the built server converts a faithful release
         expect(sha(await fs.readFile(path.join(memory, "agents", agent, file), "utf8")), `${agent} ${file} unchanged`).toBe(sha(converted[`agents/${agent}/${file}`]!));
       }
     }
-    expect(await fetchText(first, `agent-org-runs/${orgRunId}/communication/messages/${orgNew.messageId}/references/${rootReferenceId(orgNew.messageId, orgReference)}/content`))
+    expect(await fetchText(first, `collaboration-messages/agent_org/${orgRunId}/messages/${orgNew.messageId}/references/${rootReferenceId(orgNew.messageId, orgReference)}/content`))
       .toEqual({ status: 200, text: "reference new-org\n" });
     org1.close();
 

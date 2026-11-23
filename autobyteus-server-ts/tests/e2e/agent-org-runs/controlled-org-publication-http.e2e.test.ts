@@ -88,7 +88,7 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(communication).toMatchObject({ senderAgentRunId: run.runId, receiverAgentRunId: helperCopy.agentRunId });
     expect(communication.referenceFiles).toEqual([reference]);
     const referenceId = createHash('sha256').update(`${communication.messageId}\0${reference}`).digest('hex');
-    const referenceUrl = `/rest/agent-org-runs/${run.rootId}/communication/messages/${communication.messageId}/references/${referenceId}/content`;
+    const referenceUrl = `/rest/collaboration-messages/agent_org/${run.rootId}/messages/${communication.messageId}/references/${referenceId}/content`;
     const referenceResponse = await fetch(new URL(referenceUrl, fixture.url));
     expect(referenceResponse.status).toBe(200);
     expect(await referenceResponse.text()).toBe('REFERENCE-BYTES-7719\n');

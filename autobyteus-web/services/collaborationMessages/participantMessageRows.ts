@@ -32,6 +32,14 @@ export const projectParticipantMessageRows = (input: Readonly<{
   })]
 }).sort((left, right) => right.createdAt.localeCompare(left.createdAt) || left.messageId.localeCompare(right.messageId))
 
+/**
+ * The one link to a message's reference file (autobyteus-615): by the key its message list was loaded with, so the server
+ * reads the same view (`collaborationParticipantMessages`' root kind and run ID) and finds the message whichever run's log
+ * holds it.
+ */
+export const messageReferenceContentPath = (key: Pick<ParticipantMessagesKey, 'rootKind' | 'rootRunId'>, messageId: string, referenceId: string): string =>
+  `collaboration-messages/${encodeURIComponent(key.rootKind)}/${encodeURIComponent(key.rootRunId)}/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`
+
 const LOADED = Object.freeze({ state: 'loaded' as const, error: null })
 const MORE_IDLE = Object.freeze({ state: 'idle' as const, error: null })
 
@@ -68,7 +76,7 @@ export const participantMessagesView = (input: Readonly<{
   key: ParticipantMessagesKey
   isRemote: boolean
   identityOf(agentRunId: string): CollaborationMessageMemberIdentity | null
-}>): Pick<CollaborationMessagesContextView, 'listMessages' | 'messagesStatus' | 'loadMessages' | 'hasMore' | 'moreStatus' | 'loadMore'> => {
+}>): Pick<CollaborationMessagesContextView, 'listMessages' | 'messagesStatus' | 'loadMessages' | 'hasMore' | 'moreStatus' | 'loadMore' | 'referenceContentPath'> => {
   const owner = useCollaborationParticipantMessagesStore()
   const ownList = isOwnAgentList(input.key)
   return {
@@ -86,5 +94,6 @@ export const participantMessagesView = (input: Readonly<{
     hasMore: () => !input.isRemote && owner.hasMoreOf(input.key),
     moreStatus: () => input.isRemote ? MORE_IDLE : owner.moreStatusOf(input.key),
     loadMore: () => { if (!input.isRemote) owner.loadMore(input.key) },
+    referenceContentPath: (messageId: string, referenceId: string) => messageReferenceContentPath(input.key, messageId, referenceId),
   }
 }

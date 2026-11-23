@@ -14,7 +14,8 @@ const PROTECTED_REST_PREFIXES = [
   '/rest/runs/',
   '/rest/team-runs/',
   '/rest/run-file-changes/',
-  '/rest/team-communication/',
+  // Message reference files of every root kind (autobyteus-615).
+  '/rest/collaboration-messages/',
   '/rest/applications/',
   '/rest/application-bundles/',
 ];
