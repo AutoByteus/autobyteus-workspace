@@ -1,0 +1,748 @@
+# IMP-12
+# Command: The reader test with QR-001 broken (any reference ID matches: `messageReferenceId(messageId, candidate) === referenceId` replaced by `Boolean(referenceId)`); restored with git checkout
+# Commit: 0629b5c631 plus the temporary change
+# Environment: macOS (Darwin 25.5.0), worktree toolchain, synthetic data only
+# Date: 2026-11-23
+# Note: Fails as expected: 2 failed, the reference-not-on-the-message and the other-message-ID cases.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ❯ tests/unit/run-history/message-reference-content-reader.test.ts (10 tests | 2 failed) 23ms
+     × refuses a reference that is not on the message as REFERENCE_NOT_FOUND (AC-003) 8ms
+     × refuses a reference ID made from the file's path but another message (the ID names the message too) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/run-history/message-reference-content-reader.test.ts > MessageReferenceContentReader > refuses a reference that is not on the message as REFERENCE_NOT_FOUND (AC-003)
+AssertionError: promise resolved "{ …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-Mskf0N/plan.md",
++   "mimeType": "text/markdown",
++   "stream": ReadStream {
++     "_events": {
++       "close": undefined,
++       "data": undefined,
++       "end": undefined,
++       "error": undefined,
++       "readable": undefined,
++       Symbol(kConstruct): [Function bound onceWrapper],
++     },
++     "_eventsCount": 1,
++     "_maxListeners": undefined,
++     "_readableState": ReadableState {
++       "awaitDrainWriters": null,
++       "buffer": [],
++       "bufferIndex": 0,
++       "highWaterMark": 65536,
++       "length": 0,
++       "pipes": [],
++       Symbol(kState): 1052684,
++     },
++     "bytesRead": 0,
++     "end": Infinity,
++     "fd": null,
++     "flags": "r",
++     "mode": 438,
++     "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-Mskf0N/plan.md",
++     "pos": undefined,
++     "start": undefined,
++     Symbol(kFs): {
++       "Dir": [Function Dir],
++       "Dirent": [Function Dirent],
++       "F_OK": 0,
++       "FileReadStream": [Function ReadStream],
++       "FileWriteStream": [Function WriteStream],
++       "R_OK": 4,
++       "ReadStream": [Function ReadStream],
++       "Stats": [Function deprecated],
++       "W_OK": 2,
++       "WriteStream": [Function WriteStream],
++       "X_OK": 1,
++       "_toUnixTimestamp": [Function toUnixTimestamp],
++       "access": [Function access],
++       "accessSync": [Function accessSync],
++       "appendFile": [Function appendFile],
++       "appendFileSync": [Function appendFileSync],
++       "chmod": [Function chmod],
++       "chmodSync": [Function chmodSync],
++       "chown": [Function chown],
++       "chownSync": [Function chownSync],
++       "close": [Function close],
++       "closeSync": [Function closeSync],
++       "constants": {
++         "COPYFILE_EXCL": 1,
++         "COPYFILE_FICLONE": 2,
++         "COPYFILE_FICLONE_FORCE": 4,
++         "F_OK": 0,
++         "O_APPEND": 8,
++         "O_CREAT": 512,
++         "O_DIRECTORY": 1048576,
++         "O_DSYNC": 4194304,
++         "O_EXCL": 2048,
++         "O_NOCTTY": 131072,
++         "O_NOFOLLOW": 256,
++         "O_NONBLOCK": 4,
++         "O_RDONLY": 0,
++         "O_RDWR": 2,
++         "O_SYMLINK": 2097152,
++         "O_SYNC": 128,
++         "O_TRUNC": 1024,
++         "O_WRONLY": 1,
++         "R_OK": 4,
++         "S_IFBLK": 24576,
++         "S_IFCHR": 8192,
++         "S_IFDIR": 16384,
++         "S_IFIFO": 4096,
++         "S_IFLNK": 40960,
++         "S_IFMT": 61440,
++         "S_IFREG": 32768,
++         "S_IFSOCK": 49152,
++         "S_IRGRP": 32,
++         "S_IROTH": 4,
++         "S_IRUSR": 256,
++         "S_IRWXG": 56,
++         "S_IRWXO": 7,
++         "S_IRWXU": 448,
++         "S_IWGRP": 16,
++         "S_IWOTH": 2,
++         "S_IWUSR": 128,
++         "S_IXGRP": 8,
++         "S_IXOTH": 1,
++         "S_IXUSR": 64,
++         "UV_DIRENT_BLOCK": 7,
++         "UV_DIRENT_CHAR": 6,
++         "UV_DIRENT_DIR": 2,
++         "UV_DIRENT_FIFO": 4,
++         "UV_DIRENT_FILE": 1,
++         "UV_DIRENT_LINK": 3,
++         "UV_DIRENT_SOCKET": 5,
++         "UV_DIRENT_UNKNOWN": 0,
++         "UV_FS_COPYFILE_EXCL": 1,
++         "UV_FS_COPYFILE_FICLONE": 2,
++         "UV_FS_COPYFILE_FICLONE_FORCE": 4,
++         "UV_FS_O_FILEMAP": 0,
++         "UV_FS_SYMLINK_DIR": 1,
++         "UV_FS_SYMLINK_JUNCTION": 2,
++         "W_OK": 2,
++         "X_OK": 1,
++       },
++       "copyFile": [Function copyFile],
++       "copyFileSync": [Function copyFileSync],
++       "cp": [Function cp],
++       "cpSync": [Function cpSync],
++       "createReadStream": [Function createReadStream],
++       "createWriteStream": [Function createWriteStream],
++       "exists": [Function exists],
++       "existsSync": [Function existsSync],
++       "fchmod": [Function fchmod],
++       "fchmodSync": [Function fchmodSync],
++       "fchown": [Function fchown],
++       "fchownSync": [Function fchownSync],
++       "fdatasync": [Function fdatasync],
++       "fdatasyncSync": [Function fdatasyncSync],
++       "fstat": [Function fstat],
++       "fstatSync": [Function fstatSync],
++       "fsync": [Function fsync],
++       "fsyncSync": [Function fsyncSync],
++       "ftruncate": [Function ftruncate],
++       "ftruncateSync": [Function ftruncateSync],
++       "futimes": [Function futimes],
++       "futimesSync": [Function futimesSync],
++       "glob": [Function glob],
++       "globSync": [Function globSync],
++       "lchmod": [Function lchmod],
++       "lchmodSync": [Function lchmodSync],
++       "lchown": [Function lchown],
++       "lchownSync": [Function lchownSync],
++       "link": [Function link],
++       "linkSync": [Function linkSync],
++       "lstat": [Function lstat],
++       "lstatSync": [Function lstatSync],
++       "lutimes": [Function lutimes],
++       "lutimesSync": [Function lutimesSync],
++       "mkdir": [Function mkdir],
++       "mkdirSync": [Function mkdirSync],
++       "mkdtemp": [Function mkdtemp],
++       "mkdtempSync": [Function mkdtempSync],
++       "open": [Function open],
++       "openAsBlob": [Function openAsBlob],
++       "openSync": [Function openSync],
++       "opendir": [Function opendir],
++       "opendirSync": [Function opendirSync],
++       "promises": {
++         "access": [Function access],
++         "appendFile": [Function appendFile],
++         "chmod": [Function chmod],
++         "chown": [Function chown],
++         "constants": {
++           "COPYFILE_EXCL": 1,
++           "COPYFILE_FICLONE": 2,
++           "COPYFILE_FICLONE_FORCE": 4,
++           "F_OK": 0,
++           "O_APPEND": 8,
++           "O_CREAT": 512,
++           "O_DIRECTORY": 1048576,
++           "O_DSYNC": 4194304,
++           "O_EXCL": 2048,
++           "O_NOCTTY": 131072,
++           "O_NOFOLLOW": 256,
++           "O_NONBLOCK": 4,
++           "O_RDONLY": 0,
++           "O_RDWR": 2,
++           "O_SYMLINK": 2097152,
++           "O_SYNC": 128,
++           "O_TRUNC": 1024,
++           "O_WRONLY": 1,
++           "R_OK": 4,
++           "S_IFBLK": 24576,
++           "S_IFCHR": 8192,
++           "S_IFDIR": 16384,
++           "S_IFIFO": 4096,
++           "S_IFLNK": 40960,
++           "S_IFMT": 61440,
++           "S_IFREG": 32768,
++           "S_IFSOCK": 49152,
++           "S_IRGRP": 32,
++           "S_IROTH": 4,
++           "S_IRUSR": 256,
++           "S_IRWXG": 56,
++           "S_IRWXO": 7,
++           "S_IRWXU": 448,
++           "S_IWGRP": 16,
++           "S_IWOTH": 2,
++           "S_IWUSR": 128,
++           "S_IXGRP": 8,
++           "S_IXOTH": 1,
++           "S_IXUSR": 64,
++           "UV_DIRENT_BLOCK": 7,
++           "UV_DIRENT_CHAR": 6,
++           "UV_DIRENT_DIR": 2,
++           "UV_DIRENT_FIFO": 4,
++           "UV_DIRENT_FILE": 1,
++           "UV_DIRENT_LINK": 3,
++           "UV_DIRENT_SOCKET": 5,
++           "UV_DIRENT_UNKNOWN": 0,
++           "UV_FS_COPYFILE_EXCL": 1,
++           "UV_FS_COPYFILE_FICLONE": 2,
++           "UV_FS_COPYFILE_FICLONE_FORCE": 4,
++           "UV_FS_O_FILEMAP": 0,
++           "UV_FS_SYMLINK_DIR": 1,
++           "UV_FS_SYMLINK_JUNCTION": 2,
++           "W_OK": 2,
++           "X_OK": 1,
++         },
++         "copyFile": [Function copyFile],
++         "cp": [Function cp],
++         "glob": [Function glob],
++         "lchmod": [Function lchmod],
++         "lchown": [Function lchown],
++         "link": [Function link],
++         "lstat": [Function lstat],
++         "lutimes": [Function lutimes],
++         "mkdir": [Function mkdir],
++         "mkdtemp": [Function mkdtemp],
++         "open": [Function open],
++         "opendir": [Function opendir],
++         "readFile": [Function readFile],
++         "readdir": [Function readdir],
++         "readlink": [Function readlink],
++         "realpath": [Function realpath],
++         "rename": [Function rename],
++         "rm": [Function rm],
++         "rmdir": [Function rmdir],
++         "stat": [Function stat],
++         "statfs": [Function statfs],
++         "symlink": [Function symlink],
++         "truncate": [Function truncate],
++         "unlink": [Function unlink],
++         "utimes": [Function utimes],
++         "watch": [Function watch],
++         "writeFile": [Function writeFile],
++       },
++       "read": [Function read],
++       "readFile": [Function readFile],
++       "readFileSync": [Function readFileSync],
++       "readSync": [Function readSync],
++       "readdir": [Function readdir],
++       "readdirSync": [Function readdirSync],
++       "readlink": [Function readlink],
++       "readlinkSync": [Function readlinkSync],
++       "readv": [Function readv],
++       "readvSync": [Function readvSync],
++       "realpath": [Function realpath],
++       "realpathSync": [Function realpathSync],
++       "rename": [Function rename],
++       "renameSync": [Function renameSync],
++       "rm": [Function rm],
++       "rmSync": [Function rmSync],
++       "rmdir": [Function rmdir],
++       "rmdirSync": [Function rmdirSync],
++       "stat": [Function stat],
++       "statSync": [Function statSync],
++       "statfs": [Function statfs],
++       "statfsSync": [Function statfsSync],
++       "symlink": [Function symlink],
++       "symlinkSync": [Function symlinkSync],
++       "truncate": [Function truncate],
++       "truncateSync": [Function truncateSync],
++       "unlink": [Function unlink],
++       "unlinkSync": [Function unlinkSync],
++       "unwatchFile": [Function unwatchFile],
++       "utimes": [Function utimes],
++       "utimesSync": [Function utimesSync],
++       "watch": [Function watch],
++       "watchFile": [Function watchFile],
++       "write": [Function write],
++       "writeFile": [Function writeFile],
++       "writeFileSync": [Function writeFileSync],
++       "writeSync": [Function writeSync],
++       "writev": [Function writev],
++       "writevSync": [Function writevSync],
++     },
++     Symbol(kIsPerformingIO): false,
++     Symbol(shapeMode): true,
++     Symbol(kCapture): false,
++   },
+  }
+
+ ❯ tests/unit/run-history/message-reference-content-reader.test.ts:81:60
+     79|       // A run outside the host's subtree: its messages are not the ho…
+     80|       stranger: { messages: [message("m-elsewhere", "x", "y", [other])…
+     81|     await expect(resolve("agent", "host", messageId, other)).rejects.t…
+       |                                                            ^
+     82|   });
+     83|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/run-history/message-reference-content-reader.test.ts > MessageReferenceContentReader > refuses a reference ID made from the file's path but another message (the ID names the message too)
+AssertionError: promise resolved "{ …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-KdSi96/plan.md",
++   "mimeType": "text/markdown",
++   "stream": ReadStream {
++     "_events": {
++       "close": undefined,
++       "data": undefined,
++       "end": undefined,
++       "error": undefined,
++       "readable": undefined,
++       Symbol(kConstruct): [Function bound onceWrapper],
++     },
++     "_eventsCount": 1,
++     "_maxListeners": undefined,
++     "_readableState": ReadableState {
++       "awaitDrainWriters": null,
++       "buffer": [],
++       "bufferIndex": 0,
++       "highWaterMark": 65536,
++       "length": 0,
++       "pipes": [],
++       Symbol(kState): 1052684,
++     },
++     "bytesRead": 0,
++     "end": Infinity,
++     "fd": null,
++     "flags": "r",
++     "mode": 438,
++     "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-KdSi96/plan.md",
++     "pos": undefined,
++     "start": undefined,
++     Symbol(kFs): {
++       "Dir": [Function Dir],
++       "Dirent": [Function Dirent],
++       "F_OK": 0,
++       "FileReadStream": [Function ReadStream],
++       "FileWriteStream": [Function WriteStream],
++       "R_OK": 4,
++       "ReadStream": [Function ReadStream],
++       "Stats": [Function deprecated],
++       "W_OK": 2,
++       "WriteStream": [Function WriteStream],
++       "X_OK": 1,
++       "_toUnixTimestamp": [Function toUnixTimestamp],
++       "access": [Function access],
++       "accessSync": [Function accessSync],
++       "appendFile": [Function appendFile],
++       "appendFileSync": [Function appendFileSync],
++       "chmod": [Function chmod],
++       "chmodSync": [Function chmodSync],
++       "chown": [Function chown],
++       "chownSync": [Function chownSync],
++       "close": [Function close],
++       "closeSync": [Function closeSync],
++       "constants": {
++         "COPYFILE_EXCL": 1,
++         "COPYFILE_FICLONE": 2,
++         "COPYFILE_FICLONE_FORCE": 4,
++         "F_OK": 0,
++         "O_APPEND": 8,
++         "O_CREAT": 512,
++         "O_DIRECTORY": 1048576,
++         "O_DSYNC": 4194304,
++         "O_EXCL": 2048,
++         "O_NOCTTY": 131072,
++         "O_NOFOLLOW": 256,
++         "O_NONBLOCK": 4,
++         "O_RDONLY": 0,
++         "O_RDWR": 2,
++         "O_SYMLINK": 2097152,
++         "O_SYNC": 128,
++         "O_TRUNC": 1024,
++         "O_WRONLY": 1,
++         "R_OK": 4,
++         "S_IFBLK": 24576,
++         "S_IFCHR": 8192,
++         "S_IFDIR": 16384,
++         "S_IFIFO": 4096,
++         "S_IFLNK": 40960,
++         "S_IFMT": 61440,
++         "S_IFREG": 32768,
++         "S_IFSOCK": 49152,
++         "S_IRGRP": 32,
++         "S_IROTH": 4,
++         "S_IRUSR": 256,
++         "S_IRWXG": 56,
++         "S_IRWXO": 7,
++         "S_IRWXU": 448,
++         "S_IWGRP": 16,
++         "S_IWOTH": 2,
++         "S_IWUSR": 128,
++         "S_IXGRP": 8,
++         "S_IXOTH": 1,
++         "S_IXUSR": 64,
++         "UV_DIRENT_BLOCK": 7,
++         "UV_DIRENT_CHAR": 6,
++         "UV_DIRENT_DIR": 2,
++         "UV_DIRENT_FIFO": 4,
++         "UV_DIRENT_FILE": 1,
++         "UV_DIRENT_LINK": 3,
++         "UV_DIRENT_SOCKET": 5,
++         "UV_DIRENT_UNKNOWN": 0,
++         "UV_FS_COPYFILE_EXCL": 1,
++         "UV_FS_COPYFILE_FICLONE": 2,
++         "UV_FS_COPYFILE_FICLONE_FORCE": 4,
++         "UV_FS_O_FILEMAP": 0,
++         "UV_FS_SYMLINK_DIR": 1,
++         "UV_FS_SYMLINK_JUNCTION": 2,
++         "W_OK": 2,
++         "X_OK": 1,
++       },
++       "copyFile": [Function copyFile],
++       "copyFileSync": [Function copyFileSync],
++       "cp": [Function cp],
++       "cpSync": [Function cpSync],
++       "createReadStream": [Function createReadStream],
++       "createWriteStream": [Function createWriteStream],
++       "exists": [Function exists],
++       "existsSync": [Function existsSync],
++       "fchmod": [Function fchmod],
++       "fchmodSync": [Function fchmodSync],
++       "fchown": [Function fchown],
++       "fchownSync": [Function fchownSync],
++       "fdatasync": [Function fdatasync],
++       "fdatasyncSync": [Function fdatasyncSync],
++       "fstat": [Function fstat],
++       "fstatSync": [Function fstatSync],
++       "fsync": [Function fsync],
++       "fsyncSync": [Function fsyncSync],
++       "ftruncate": [Function ftruncate],
++       "ftruncateSync": [Function ftruncateSync],
++       "futimes": [Function futimes],
++       "futimesSync": [Function futimesSync],
++       "glob": [Function glob],
++       "globSync": [Function globSync],
++       "lchmod": [Function lchmod],
++       "lchmodSync": [Function lchmodSync],
++       "lchown": [Function lchown],
++       "lchownSync": [Function lchownSync],
++       "link": [Function link],
++       "linkSync": [Function linkSync],
++       "lstat": [Function lstat],
++       "lstatSync": [Function lstatSync],
++       "lutimes": [Function lutimes],
++       "lutimesSync": [Function lutimesSync],
++       "mkdir": [Function mkdir],
++       "mkdirSync": [Function mkdirSync],
++       "mkdtemp": [Function mkdtemp],
++       "mkdtempSync": [Function mkdtempSync],
++       "open": [Function open],
++       "openAsBlob": [Function openAsBlob],
++       "openSync": [Function openSync],
++       "opendir": [Function opendir],
++       "opendirSync": [Function opendirSync],
++       "promises": {
++         "access": [Function access],
++         "appendFile": [Function appendFile],
++         "chmod": [Function chmod],
++         "chown": [Function chown],
++         "constants": {
++           "COPYFILE_EXCL": 1,
++           "COPYFILE_FICLONE": 2,
++           "COPYFILE_FICLONE_FORCE": 4,
++           "F_OK": 0,
++           "O_APPEND": 8,
++           "O_CREAT": 512,
++           "O_DIRECTORY": 1048576,
++           "O_DSYNC": 4194304,
++           "O_EXCL": 2048,
++           "O_NOCTTY": 131072,
++           "O_NOFOLLOW": 256,
++           "O_NONBLOCK": 4,
++           "O_RDONLY": 0,
++           "O_RDWR": 2,
++           "O_SYMLINK": 2097152,
++           "O_SYNC": 128,
++           "O_TRUNC": 1024,
++           "O_WRONLY": 1,
++           "R_OK": 4,
++           "S_IFBLK": 24576,
++           "S_IFCHR": 8192,
++           "S_IFDIR": 16384,
++           "S_IFIFO": 4096,
++           "S_IFLNK": 40960,
++           "S_IFMT": 61440,
++           "S_IFREG": 32768,
++           "S_IFSOCK": 49152,
++           "S_IRGRP": 32,
++           "S_IROTH": 4,
++           "S_IRUSR": 256,
++           "S_IRWXG": 56,
++           "S_IRWXO": 7,
++           "S_IRWXU": 448,
++           "S_IWGRP": 16,
++           "S_IWOTH": 2,
++           "S_IWUSR": 128,
++           "S_IXGRP": 8,
++           "S_IXOTH": 1,
++           "S_IXUSR": 64,
++           "UV_DIRENT_BLOCK": 7,
++           "UV_DIRENT_CHAR": 6,
++           "UV_DIRENT_DIR": 2,
++           "UV_DIRENT_FIFO": 4,
++           "UV_DIRENT_FILE": 1,
++           "UV_DIRENT_LINK": 3,
++           "UV_DIRENT_SOCKET": 5,
++           "UV_DIRENT_UNKNOWN": 0,
++           "UV_FS_COPYFILE_EXCL": 1,
++           "UV_FS_COPYFILE_FICLONE": 2,
++           "UV_FS_COPYFILE_FICLONE_FORCE": 4,
++           "UV_FS_O_FILEMAP": 0,
++           "UV_FS_SYMLINK_DIR": 1,
++           "UV_FS_SYMLINK_JUNCTION": 2,
++           "W_OK": 2,
++           "X_OK": 1,
++         },
++         "copyFile": [Function copyFile],
++         "cp": [Function cp],
++         "glob": [Function glob],
++         "lchmod": [Function lchmod],
++         "lchown": [Function lchown],
++         "link": [Function link],
++         "lstat": [Function lstat],
++         "lutimes": [Function lutimes],
++         "mkdir": [Function mkdir],
++         "mkdtemp": [Function mkdtemp],
++         "open": [Function open],
++         "opendir": [Function opendir],
++         "readFile": [Function readFile],
++         "readdir": [Function readdir],
++         "readlink": [Function readlink],
++         "realpath": [Function realpath],
++         "rename": [Function rename],
++         "rm": [Function rm],
++         "rmdir": [Function rmdir],
++         "stat": [Function stat],
++         "statfs": [Function statfs],
++         "symlink": [Function symlink],
++         "truncate": [Function truncate],
++         "unlink": [Function unlink],
++         "utimes": [Function utimes],
++         "watch": [Function watch],
++         "writeFile": [Function writeFile],
++       },
++       "read": [Function read],
++       "readFile": [Function readFile],
++       "readFileSync": [Function readFileSync],
++       "readSync": [Function readSync],
++       "readdir": [Function readdir],
++       "readdirSync": [Function readdirSync],
++       "readlink": [Function readlink],
++       "readlinkSync": [Function readlinkSync],
++       "readv": [Function readv],
++       "readvSync": [Function readvSync],
++       "realpath": [Function realpath],
++       "realpathSync": [Function realpathSync],
++       "rename": [Function rename],
++       "renameSync": [Function renameSync],
++       "rm": [Function rm],
++       "rmSync": [Function rmSync],
++       "rmdir": [Function rmdir],
++       "rmdirSync": [Function rmdirSync],
++       "stat": [Function stat],
++       "statSync": [Function statSync],
++       "statfs": [Function statfs],
++       "statfsSync": [Function statfsSync],
++       "symlink": [Function symlink],
++       "symlinkSync": [Function symlinkSync],
++       "truncate": [Function truncate],
++       "truncateSync": [Function truncateSync],
++       "unlink": [Function unlink],
++       "unlinkSync": [Function unlinkSync],
++       "unwatchFile": [Function unwatchFile],
++       "utimes": [Function utimes],
++       "utimesSync": [Function utimesSync],
++       "watch": [Function watch],
++       "watchFile": [Function watchFile],
++       "write": [Function write],
++       "writeFile": [Function writeFile],
++       "writeFileSync": [Function writeFileSync],
++       "writeSync": [Function writeSync],
++       "writev": [Function writev],
++       "writevSync": [Function writevSync],
++     },
++     Symbol(kIsPerformingIO): false,
++     Symbol(shapeMode): true,
++     Symbol(kCapture): false,
++   },
+  }
+
+ ❯ tests/unit/run-history/message-reference-content-reader.test.ts:87:146
+     85|     const plan = file("plan.md");
+     86|     logs = { host: { messages: [message("m-own", "manager", "lead", [p…
+     87|     await expect(reader().resolve({ rootKind: "agent", rootRunId: "hos…
+       |                                                                                                                                                  ^
+     88|       .rejects.toMatchObject({ code: "REFERENCE_NOT_FOUND" });
+     89|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-Mskf0N/plan.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-Mskf0N/plan.md' }
+This error originated in "tests/unit/run-history/message-reference-content-reader.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-KdSi96/plan.md'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'open', path: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/615-reference-reader-KdSi96/plan.md' }
+This error originated in "tests/unit/run-history/message-reference-content-reader.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+     Errors  2 errors
+   Start at  07:50:51
+   Duration  552ms (transform 60ms, setup 55ms, import 42ms, tests 23ms, environment 0ms)
+

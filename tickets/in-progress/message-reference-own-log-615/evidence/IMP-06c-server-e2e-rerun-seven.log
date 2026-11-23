@@ -1,0 +1,746 @@
+# IMP-06c
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare; then vitest --run on the 7 failing E2E files
+# Commit: 0629b5c631
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+# Note: 4 pass; the 3 left fail as on the base (IMP-06d).
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 4303ms
+     ✓ reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart  4303ms
+stdout | tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+collaborators: agent-host tree file kept: true
+
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test | 1 failed) 2425ms
+     × converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing 2424ms
+ ❯ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test | 1 failed) 1966ms
+     × opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field 1965ms
+(node:15178) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Node access: local control socket not opened. The node's local control socket path is 125 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Agent Definition created successfully with ID: runtime-count-agent
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Created and registered workspace ID: agent_ws_b498a75e049062a45ea11da611447554e1429933d90c0f33ab3210851a3b1874
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Reusing registered workspace ID: agent_ws_b498a75e049062a45ea11da611447554e1429933d90c0f33ab3210851a3b1874
+
+stderr | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/memory/agents/runtime_count_agent_6d9281d071c3478cb5f333e75c1b0c1e/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Created and registered workspace ID: agent_ws_412e046bf45f9a4b6d7565cf8d116a5d46aecca05e2405fa18ce9f373ebfd41e
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Reusing registered workspace ID: agent_ws_412e046bf45f9a4b6d7565cf8d116a5d46aecca05e2405fa18ce9f373ebfd41e
+
+stderr | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/memory/agent_teams/brief_studio_team_23d98836c5a34f8ba2e045bbf8e19aca/brief_studio_researcher_ba82f6408e0c4e219f6e7afac22c9e7d/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Reusing registered workspace ID: agent_ws_b498a75e049062a45ea11da611447554e1429933d90c0f33ab3210851a3b1874
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/workspace.
+
+stdout | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Reusing registered workspace ID: agent_ws_b498a75e049062a45ea11da611447554e1429933d90c0f33ab3210851a3b1874
+
+stderr | tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-agents-e2e-nPkV0p/data/memory/agents/runtime_count_agent_215ac9bd44f1454da9f3cf64d098f332/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8984ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  820ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1605ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2487ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2233ms
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:28261) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-FTHZkm
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-FTHZkm/.env
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+Initialized server settings service with 35 predefined settings
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests | 1 failed) 414ms
+     × lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003) 23ms
+     ✓ lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011) 10ms
+     ✓ opens team member memory for a configured member; a run it delegated to, unknown and non-admitted roots return empty views (AC-006, AC-011) 7ms
+     ✓ skips a team tree corrupted after admission with a warning while other roots still list (AC-003) 29ms
+     ✓ lists org definitions with member memory, using the history index name (AC-007) 10ms
+     ✓ lists org runs with address-path labels and own run IDs, its own members only, searches and pages (AC-008, AC-010, AC-011, AC-014) 14ms
+     ✓ opens org member memory for a team-hosted member; runs it delegated to and unknown members get an empty view (AC-009, AC-011, AC-014) 5ms
+     ✓ serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate) 24ms
+(node:28576) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Node access: local control socket not opened. The node's local control socket path is 129 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-01 an ACTIVE application stays usable after a package reload (AC-001)
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+Created and registered workspace ID: agent_ws_d1aafdb8f54d76bd25563fa70b758dbe4122ce4dd50eeb58567d86a6d6a5d9b1
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+Reusing registered workspace ID: agent_ws_d1aafdb8f54d76bd25563fa70b758dbe4122ce4dd50eeb58567d86a6d6a5d9b1
+
+stderr | tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/application-reload-repair-e2e-5RFjFr/data/memory/agent_teams/brief_studio_team_8b7e16824b4747a8b9e37b03d62d9726/brief_studio_researcher_375e13e56f3c4bf899e12bc4a1197b6a/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 6104ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1300ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  609ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  889ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1033ms
+     ✓ RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)  1348ms
+(node:37147) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Created and registered workspace ID: agent_ws_6a28c01b2b1107a0488e6ec59ae2bf5837f14cf56a494d796290344cbf461f5d
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/applications/bundle-app__brief-studio__beea87b3232ab05623c29de7d473675a0cd869127a242300ecc182555d83817d/runtime.
+
+stdout | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Reusing registered workspace ID: agent_ws_6a28c01b2b1107a0488e6ec59ae2bf5837f14cf56a494d796290344cbf461f5d
+
+stderr | tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs) > IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-app-codex-e2e-lQR61P/data/memory/agent_teams/brief_studio_team_58b7fb686e5143ff9d78ecbbe62a9ecc/brief_studio_researcher_38e3d1066e9440818139054f7fc7e863/raw_traces_manifest.json
+
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 6687ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1162ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  434ms
+     ✓ IC-03 the launched bundled agent has its semantic memory, its episodic catalog and its Memory page folder under one shortened name, and its run is told both folders (autobyteus-554 AC-013)  4591ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "locations": [
+      {
+        "column": 20,
+        "line": 1,
+      },
+    ],
+    "message": "AgentOrg package is not admitted.",
+    "path": [
+      "getAgentOrgRunConfig",
+    ],
+  },
+]
+
+ ❯ Object.gql tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts:183:54
+    181|     const response = await fetch(`${origin}/graphql`, { method: "POST"…
+    182|     const body = await response.json() as { data?: any; errors?: Array…
+    183|     expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
+       |                                                      ^
+    184|     return body.data;
+    185|   };
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts:296:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:240:19
+    238|     // Admitted roots by definition. A delegated run is a run of its o…
+    239|     // `isTaskTeam` / `startedByAgentName` stay removed); its memory d…
+    240|     expect(total).toBe(1);
+       |                   ^
+    241|     expect(entries).toEqual([{
+    242|       teamDefinitionId: "gql-writing-team",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:48:17
+     46|
+     47| const stableError = (code) => {
+     48|   const error = new Error(code);
+       |                 ^
+     49|   error.code = code;
+     50|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:354:11
+ ❯ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts:245:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 4 passed (7)
+      Tests  3 failed | 20 passed (23)
+   Start at  07:24:05
+   Duration  44.08s (transform 6.01s, setup 175ms, import 12.13s, tests 30.88s, environment 0ms)
+

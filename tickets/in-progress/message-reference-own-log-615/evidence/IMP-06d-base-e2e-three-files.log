@@ -1,0 +1,210 @@
+# IMP-06d
+# Command: A temporary worktree at the base: install, prebuild, build, test:integration:prepare, vitest --run on the 3 files (worktree removed after)
+# Commit: 1956c232c8 (base)
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+# Note: The same 3 failures on the base: FU-003.
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /private/tmp/615-base/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/615-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+collaborators: agent-host tree file kept: true
+
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test | 1 failed) 2723ms
+     × converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing 2722ms
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:87760) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /private/tmp/615-base/autobyteus-server-ts
+App data directory: /private/tmp/615-base/autobyteus-server-ts
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-AVQ5i4
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-AVQ5i4/.env
+
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+Initialized server settings service with 35 predefined settings
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests | 1 failed) 453ms
+     × lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003) 40ms
+     ✓ lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011) 10ms
+     ✓ opens team member memory for a configured member; a run it delegated to, unknown and non-admitted roots return empty views (AC-006, AC-011) 5ms
+     ✓ skips a team tree corrupted after admission with a warning while other roots still list (AC-003) 32ms
+     ✓ lists org definitions with member memory, using the history index name (AC-007) 21ms
+     ✓ lists org runs with address-path labels and own run IDs, its own members only, searches and pages (AC-008, AC-010, AC-011, AC-014) 13ms
+     ✓ opens org member memory for a team-hosted member; runs it delegated to and unknown members get an empty view (AC-009, AC-011, AC-014) 3ms
+     ✓ serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate) 26ms
+ ❯ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test | 1 failed) 1853ms
+     × opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field 1853ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "locations": [
+      {
+        "column": 20,
+        "line": 1,
+      },
+    ],
+    "message": "AgentOrg package is not admitted.",
+    "path": [
+      "getAgentOrgRunConfig",
+    ],
+  },
+]
+
+ ❯ Object.gql tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts:183:54
+    181|     const response = await fetch(`${origin}/graphql`, { method: "POST"…
+    182|     const body = await response.json() as { data?: any; errors?: Array…
+    183|     expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
+       |                                                      ^
+    184|     return body.data;
+    185|   };
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts:296:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:240:19
+    238|     // Admitted roots by definition. A delegated run is a run of its o…
+    239|     // `isTaskTeam` / `startedByAgentName` stay removed); its memory d…
+    240|     expect(total).toBe(1);
+       |                   ^
+    241|     expect(entries).toEqual([{
+    242|       teamDefinitionId: "gql-writing-team",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts > run history stored with the removed skillAccessMode through the running server > opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:48:17
+     46|
+     47| const stableError = (code) => {
+     48|   const error = new Error(code);
+       |                 ^
+     49|   error.code = code;
+     50|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:354:11
+ ❯ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts:245:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 7 passed (10)
+   Start at  07:26:37
+   Duration  12.02s (transform 4.26s, setup 91ms, import 5.72s, tests 5.03s, environment 0ms)
+

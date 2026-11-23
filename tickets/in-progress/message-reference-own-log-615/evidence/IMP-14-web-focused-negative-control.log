@@ -1,0 +1,132 @@
+# IMP-14
+# Command: The link specs with the builder's root kind fixed to agent_team (`${encodeURIComponent(key.rootKind)}` replaced by `agent_team`); restored with git checkout
+# Commit: 0629b5c631 plus the temporary change
+# Environment: macOS (Darwin 25.5.0), worktree toolchain, synthetic data only
+# Date: 2026-11-23
+# Note: Fails as expected: 4 failed, the delegated agent, standalone host and Org links.
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts (3 tests | 1 failed) 7ms
+   ✓ teamCollaborationMessagesView reference links > links a Team's own member's reference through the Team run 2ms
+   ✓ teamCollaborationMessagesView reference links > links a delegated task team member's reference through its own team run (the observed case) 1ms
+   × teamCollaborationMessagesView reference links > links a delegated task agent's reference through its own run 3ms
+     → expected 'collaboration-messages/agent_team/tas…' to be 'collaboration-messages/agent/task-age…' // Object.is equality
+ ❯ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (6 tests | 1 failed) 24ms
+   ✓ AgentRunCollaborationContext > is its host's view: it holds the host and the agents of the runs in its tree, by the tree 2ms
+   × AgentRunCollaborationContext > gives the host and each delegated run a Team-tab perspective with counterparts named from the tree, loaded when shown 7ms
+     → expected 'collaboration-messages/agent_team/hos…' to be 'collaboration-messages/agent/host-run…' // Object.is equality
+   ✓ AgentRunCollaborationContext > applies sequenced events: messages to the Team tab lists, the tree's changes to its rows, and refuses a gap 11ms
+   ✓ AgentRunCollaborationContext > autobyteus-461 SR-084 (AC-011): a tree change that removes rows re-loads the Team tab lists naming an agent no longer held 1ms
+   ✓ AgentRunCollaborationContext > refuses a message an agent sent to itself; a stop of its own agent keeps the stream (SR-045) 1ms
+   ✓ AgentRunCollaborationContext > a stored view (no live sequence) takes no events 1ms
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts (4 tests | 2 failed) 1779ms
+   ✓ Collaboration messages on a large Agent Org root > projects once and hashes only the displayed preview on mount and on a member switch (42,000 references) 133ms
+   × Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list 804ms
+     → expected 'collaboration-messages/agent_team/org…' to be 'collaboration-messages/agent_org/org-…' // Object.is equality
+   × Collaboration messages on a large Agent Org root > links a reference of a run the Org delegated through that run, as its list is loaded (autobyteus-615) 47ms
+     → expected 'collaboration-messages/agent_team/tas…' to be 'collaboration-messages/agent/task-age…' // Object.is equality
+   ✓ Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows  793ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts > AgentRunCollaborationContext > gives the host and each delegated run a Team-tab perspective with counterparts named from the tree, loaded when shown
+AssertionError: expected 'collaboration-messages/agent_team/hos…' to be 'collaboration-messages/agent/host-run…' // Object.is equality
+
+Expected: "collaboration-messages/agent/host-run/messages/m1/references/r1/content"
+Received: "collaboration-messages/agent_team/host-run/messages/m1/references/r1/content"
+
+ ❯ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts:68:51
+     66|     // autobyteus-615: each list's reference link is built from the ke…
+     67|     // the run's own agent by the run; a delegated task agent by its o…
+     68|     expect(host.referenceContentPath('m1', 'r1')).toBe('collaboration-…
+       |                                                   ^
+     69|     expect(context.messagesView('cua-run').referenceContentPath('m1', …
+     70|     expect(context.messagesView('pp-run').referenceContentPath('m/1', …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts > teamCollaborationMessagesView reference links > links a delegated task agent's reference through its own run
+AssertionError: expected 'collaboration-messages/agent_team/tas…' to be 'collaboration-messages/agent/task-age…' // Object.is equality
+
+Expected: "collaboration-messages/agent/task-agent/messages/m1/references/r1/content"
+Received: "collaboration-messages/agent_team/task-agent/messages/m1/references/r1/content"
+
+ ❯ services/teamExecution/__tests__/teamCollaborationMessagesViewReferences.spec.ts:26:51
+     24|   it("links a delegated task agent's reference through its own run", (…
+     25|     const view = teamCollaborationMessagesView(team(), { subject: { ki…
+     26|     expect(view.referenceContentPath('m1', 'r1')).toBe('collaboration-…
+       |                                                   ^
+     27|   })
+     28| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list
+AssertionError: expected 'collaboration-messages/agent_team/org…' to be 'collaboration-messages/agent_org/org-…' // Object.is equality
+
+Expected: "collaboration-messages/agent_org/org-run/messages/message-14/references/6eaea03dc951fd552762e2b1c52506970b76e24c5aa9d43f88ad29a609f86b37/content"
+Received: "collaboration-messages/agent_team/org-run/messages/message-14/references/6eaea03dc951fd552762e2b1c52506970b76e24c5aa9d43f88ad29a609f86b37/content"
+
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts:158:66
+    156|     await rows[REFS_PER_MESSAGE - 1].trigger('click')
+    157|     const lastPath = `/repo/m${HISTORY_MESSAGES}/file-${REFS_PER_MESSA…
+    158|     expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(
+       |                                                                  ^
+    159|       `collaboration-messages/agent_org/org-run/messages/message-${HIS…
+    160|     expect(counters.hashes).toBe(0) // already derived for the rendere…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > links a reference of a run the Org delegated through that run, as its list is loaded (autobyteus-615)
+AssertionError: expected 'collaboration-messages/agent_team/tas…' to be 'collaboration-messages/agent/task-age…' // Object.is equality
+
+Expected: "collaboration-messages/agent/task-agent/messages/m1/references/r1/content"
+Received: "collaboration-messages/agent_team/task-agent/messages/m1/references/r1/content"
+
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts:174:42
+    172|       .referenceContentPath('m1', 'r1')).toBe('collaboration-messages/…
+    173|     expect(org().delegatedRunMessagesView({ kind: 'agent', agentRunId:…
+    174|       .referenceContentPath('m1', 'r1')).toBe('collaboration-messages/…
+       |                                          ^
+    175|   })
+    176| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  4 failed | 9 passed (13)
+   Start at  07:51:19
+   Duration  7.92s (transform 3.49s, setup 16.14s, collect 416ms, tests 1.81s, environment 443ms, prepare 401ms)
+

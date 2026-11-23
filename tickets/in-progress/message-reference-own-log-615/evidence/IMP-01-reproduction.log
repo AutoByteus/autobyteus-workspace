@@ -1,0 +1,9 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts exec vitest --run tests/unit/tmp-615-reproduction.test.ts (temporary test, removed after)
+# Commit: 1956c232c8 (base, before the change)
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+# Note: The temporary test asserted the shipped behavior: a reference of a message stored in a delegated team's own log, asked through the root's route, is REFERENCE_NOT_FOUND. It passed on the base, which reproduces the bug.
+
+ ✓ tests/unit/tmp-615-reproduction.test.ts > today: a reference of a message in a delegated team's own log > is REFERENCE_NOT_FOUND through the root's route 3ms
+      Tests  1 passed (1)

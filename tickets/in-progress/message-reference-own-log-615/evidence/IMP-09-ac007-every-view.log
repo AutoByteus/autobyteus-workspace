@@ -1,0 +1,118 @@
+# IMP-09
+# Command: pnpm -C autobyteus-server-ts build; RUN_AGY_FAILURE_E2E=1 pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/projects/message-references-every-view.e2e.test.ts
+# Commit: 0629b5c631
+# Environment: macOS (Darwin 25.5.0), Node from the worktree toolchain, synthetic data in temporary folders; no real server or ~/.autobyteus
+# Date: 2026-11-23
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:97473) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/message-references-every-view.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/projects/message-references-every-view.e2e.test.ts > AC-007: every reference listed in every view opens (built server, scripted AGY) > MRV-1 standalone, Team and Org roots with a delegated task agent and task team: each view's every reference answers its bytes
+MRV-1 opened 21 references in 12 views: [{"view":"agent root: Manager","messageId":"collabmsg_IaybcrL0iLYtzvU4C-C-CcxFjBbFVZLe","file":"agent-agent-answer-6814eb.md"},{"view":"agent root: Manager","messageId":"collabmsg_fJDrzAKu3k8josnYgJam09nRktkCXcU5","file":"agent-to-lead-6814eb.md"},{"view":"agent root: Manager","messageId":"collabmsg_L2LYLW-gYISJD517LQyM7wiDzD2DCwpG","file":"agent-to-agent-6814eb.md"},{"view":"agent: task agent","messageId":"collabmsg_IaybcrL0iLYtzvU4C-C-CcxFjBbFVZLe","file":"agent-agent-answer-6814eb.md"},{"view":"agent: task agent","messageId":"collabmsg_L2LYLW-gYISJD517LQyM7wiDzD2DCwpG","file":"agent-to-agent-6814eb.md"},{"view":"agent: task team lead","messageId":"collabmsg_qZWWiAYBPpiE_Ekv3L0EyPHka_YJcmCz","file":"agent-inside-team-6814eb.md"},{"view":"agent: task team member","messageId":"collabmsg_qZWWiAYBPpiE_Ekv3L0EyPHka_YJcmCz","file":"agent-inside-team-6814eb.md"},{"view":"team root: Manager","messageId":"collabmsg_0KuD2Gce7-zdV_0B-_M7eRs7G6cQLjqh","file":"team-agent-answer-6814eb.md"},{"view":"team root: Manager","messageId":"collabmsg_oP--kXhiBVXNlqThw6llZNTENx6m_yr4","file":"team-to-lead-6814eb.md"},{"view":"team root: Manager","messageId":"collabmsg_9Hmx5qvtfB6zXmV_SfHWyEV48A5zmIUm","file":"team-to-agent-6814eb.md"},{"view":"team: task agent","messageId":"collabmsg_0KuD2Gce7-zdV_0B-_M7eRs7G6cQLjqh","file":"team-agent-answer-6814eb.md"},{"view":"team: task agent","messageId":"collabmsg_9Hmx5qvtfB6zXmV_SfHWyEV48A5zmIUm","file":"team-to-agent-6814eb.md"},{"view":"team: task team lead","messageId":"collabmsg_SoM492IiuRgaH3rok7xIWngUxb7_KzLO","file":"team-inside-team-6814eb.md"},{"view":"team: task team member","messageId":"collabmsg_SoM492IiuRgaH3rok7xIWngUxb7_KzLO","file":"team-inside-team-6814eb.md"},{"view":"org root: Manager","messageId":"collabmsg_WzEQzs8N_uvKL8kAP4Deld6K6VLEkKFW","file":"org-agent-answer-6814eb.md"},{"view":"org root: Manager","messageId":"collabmsg_Q22f_aGPQ9H-wfRtiramgReXuAVZYVIC","file":"org-to-lead-6814eb.md"},{"view":"org root: Manager","messageId":"collabmsg_ZYjDetbkq1iitWrQZGWanlbUlK9D_lWE","file":"org-to-agent-6814eb.md"},{"view":"org: task agent","messageId":"collabmsg_WzEQzs8N_uvKL8kAP4Deld6K6VLEkKFW","file":"org-agent-answer-6814eb.md"},{"view":"org: task agent","messageId":"collabmsg_ZYjDetbkq1iitWrQZGWanlbUlK9D_lWE","file":"org-to-agent-6814eb.md"},{"view":"org: task team lead","messageId":"collabmsg_KI9lst5BOAJzrnsmnbXKESW64au85r-H","file":"org-inside-team-6814eb.md"},{"view":"org: task team member","messageId":"collabmsg_KI9lst5BOAJzrnsmnbXKESW64au85r-H","file":"org-inside-team-6814eb.md"}]
+MRV-1 listed in: {"agent-agent-answer-6814eb.md":["agent root: Manager","agent: task agent"],"agent-to-lead-6814eb.md":["agent root: Manager"],"agent-to-agent-6814eb.md":["agent root: Manager","agent: task agent"],"agent-inside-team-6814eb.md":["agent: task team lead","agent: task team member"],"team-agent-answer-6814eb.md":["team root: Manager","team: task agent"],"team-to-lead-6814eb.md":["team root: Manager"],"team-to-agent-6814eb.md":["team root: Manager","team: task agent"],"team-inside-team-6814eb.md":["team: task team lead","team: task team member"],"org-agent-answer-6814eb.md":["org root: Manager","org: task agent"],"org-to-lead-6814eb.md":["org root: Manager"],"org-to-agent-6814eb.md":["org root: Manager","org: task agent"],"org-inside-team-6814eb.md":["org: task team lead","org: task team member"]}
+
+ ✓ tests/e2e/projects/message-references-every-view.e2e.test.ts (1 test) 11054ms
+     ✓ MRV-1 standalone, Team and Org roots with a delegated task agent and task team: each view's every reference answers its bytes  11036ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  06:45:49
+   Duration  20.14s (transform 6.30s, setup 57ms, import 8.58s, tests 11.05s, environment 0ms)
+
