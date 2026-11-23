@@ -73,7 +73,7 @@
   - compaction placement by time is kept, now on one clock (D-3; FU-001 resolved);
   - the stored traces and their writer (old and new runs read the same way);
   - live handlers (live order is already right once the window keeps it).
-- Follow-ups: FU-001.
+- Follow-ups: none open (FU-001 resolved in this ticket by REQ-004 / D-3).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -149,7 +149,7 @@
 | SCN-001 (sender, live) | Send; optimistic You pushed; notice and reply appended into a new AI message | Conversation array | Rows in array order | Yes |
 | SCN-002 (non-sender, live) | Echo (`MEMBER_INPUT_MESSAGE`) pushed; notice published after forwarding, so after it | Array | Rows | Yes (the echo is published right after admission, `configured-agent-execution-handle.ts:150-161`; the notice at settle, after forwarding) |
 | SCN-003 (reload) | Projection entries `[u, n, a]` → web builder `[You, AI(notice), AI(reply)]` | Entries | Rows | Yes (D-2) |
-| SCN-004 (compaction) | Compaction merged before the first later message | Activity time, message times | Rows | Yes, as today; mixed clocks: FU-001 |
+| SCN-004 (compaction) | Compaction merged before the first later message | Activity time, message times | Rows | Yes; with D-3 every time compared is the server's |
 | Preserved (585) | A notice segment becomes its own row | Segments in order | Notice row | Yes |
 
 - Checks run:
@@ -250,7 +250,7 @@ The shape avoided: re-stamping live messages with a common clock, or overwriting
 
 ## Key Tradeoffs
 
-- Compaction placement still uses time (DEC-003, FU-001).
+- Compaction placement still uses time (DEC-003), now on one clock, the server's (D-3), which resolved FU-001.
 - D-2 uses two node times of the same turn to recognize a preface. They are the same clock, and the order of receipt before dispatch is guaranteed by the code path.
 
 ## Risks

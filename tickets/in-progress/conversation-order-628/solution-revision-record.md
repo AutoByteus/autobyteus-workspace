@@ -55,3 +55,5 @@
 - Approval: REQ-004 by the user (SR-004); the SR-005 edits are editorial.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review.
 - Design case: docs/design-cases.md Case 2 (one entry form traced, others left open).
+
+Review note: ARCH-REV-002 passed SR-005 (2026-11-23). The reviewer routed it to `/implementation_engineer`. N-3 (stale FU-001 mentions in design-spec.md) is fixed editorially; N-1 and N-2 are for implementation.
