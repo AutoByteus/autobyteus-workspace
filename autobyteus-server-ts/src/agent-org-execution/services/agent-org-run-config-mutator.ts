@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import { applySelectionToConfiguredMember } from "../../run-history/domain/runtime-selection-rule.js";
 import type {
@@ -19,6 +20,8 @@ export type AgentOrgRunSelectionTarget = Readonly<{
   launchConfiguration: AgentLaunchConfiguration;
   /** The member's pending switch before this save (a default scope has none). */
   pendingRuntimeSwitch?: PendingRuntimeSwitch;
+  /** The decided continuation (REQ-003), normalized in after validation; a default scope never reads it. */
+  continuation?: RunContinuation;
 }>;
 
 export class AgentOrgRunConfigNotFound extends Error {}
@@ -100,24 +103,27 @@ const replaceLaunchConfiguration = (
 
 const patchAgent = (
   agent: ConfiguredAgentExecutionNode,
-  patches: ReadonlyMap<string, AgentOrgRunSelectionPatch>,
+  targets: ReadonlyMap<string, AgentOrgRunSelectionTarget>,
   newSwitchId: () => string,
 ): ConfiguredAgentExecutionNode => {
-  const patch = patches.get(agent.address);
-  return patch ? applySelectionToConfiguredMember(agent, patch, newSwitchId()) : agent;
+  const target = targets.get(agent.address);
+  if (!target) return agent;
+  const { patch, continuation } = target;
+  if (!continuation) throw new Error(`Configured AgentOrg scope '${patch.scopeAddress}' has no decided continuation.`);
+  return applySelectionToConfiguredMember(agent, { ...patch, continuation }, newSwitchId());
 };
 
 const patchMember = (
   member: ConfiguredExecutionNode,
-  patches: ReadonlyMap<string, AgentOrgRunSelectionPatch>,
+  targets: ReadonlyMap<string, AgentOrgRunSelectionTarget>,
   newSwitchId: () => string,
 ): ConfiguredExecutionNode => {
-  if ("agentRunId" in member) return patchAgent(member, patches, newSwitchId);
-  const patch = patches.get(member.address);
+  if ("agentRunId" in member) return patchAgent(member, targets, newSwitchId);
+  const patch = targets.get(member.address)?.patch;
   const team: ConfiguredTeamExecutionNode = {
     ...member,
     ...(patch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(member.defaultLaunchConfiguration, patch) } : {}),
-    members: member.members.map((agent) => patchAgent(agent, patches, newSwitchId)),
+    members: member.members.map((agent) => patchAgent(agent, targets, newSwitchId)),
   };
   return team;
 };
@@ -132,14 +138,14 @@ export const applyAgentOrgRunSelectionPatches = (
   targets: readonly AgentOrgRunSelectionTarget[],
   newSwitchId: () => string = randomUUID,
 ): AgentOrgRunExecutionTreeFile => {
-  const patches = new Map(targets.map(({ patch }) => [patch.scopeAddress, patch]));
-  const rootPatch = patches.get("/");
+  const targetByAddress = new Map(targets.map((target) => [target.patch.scopeAddress, target]));
+  const rootPatch = targetByAddress.get("/")?.patch;
   return {
     ...tree,
     rootOrg: {
       ...tree.rootOrg,
       ...(rootPatch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(tree.rootOrg.defaultLaunchConfiguration, rootPatch) } : {}),
-      members: tree.rootOrg.members.map((member) => patchMember(member, patches, newSwitchId)),
+      members: tree.rootOrg.members.map((member) => patchMember(member, targetByAddress, newSwitchId)),
     },
   };
 };

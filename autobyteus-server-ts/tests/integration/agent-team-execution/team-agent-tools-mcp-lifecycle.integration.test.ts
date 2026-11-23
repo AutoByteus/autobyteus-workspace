@@ -205,6 +205,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
           validate: vi.fn(async ({ selection }) => ({
             kind: "valid" as const,
             selection,
+            continuation: "same_session" as const,
           })),
         },
       });

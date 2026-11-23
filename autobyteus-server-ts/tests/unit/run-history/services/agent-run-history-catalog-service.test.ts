@@ -198,7 +198,7 @@ describe("AgentRunHistoryCatalogService", () => {
       const { service, file } = await switchedRun();
       const committed = await service.commitRunRuntimeSwitch({
         runId: "run-1", switchId: pending.switchId,
-        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null },
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null, continuation: "hand_over" },
       });
       expect(committed.kind).toBe("committed");
       expect(await readFile(file)).toMatchObject({
@@ -211,7 +211,7 @@ describe("AgentRunHistoryCatalogService", () => {
     it("the activation commit clears the pending switch in the same write that sets the session, and the run is reactivated in the history", async () => {
       const { service, file } = await switchedRun();
       await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
-        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null, continuation: "hand_over" } });
       await service.recordRunTerminated({ runId: "run-1", terminatedAt: "2026-03-26T11:00:00.000Z" });
 
       const started = await service.recordRunStarted({
@@ -230,7 +230,7 @@ describe("AgentRunHistoryCatalogService", () => {
     it("without the flag the pending switch stays (an ordinary start never removes it)", async () => {
       const { service, file } = await switchedRun();
       await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
-        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null, continuation: "hand_over" } });
       await service.recordRunStarted({ runId: "run-1", platformAgentRunId: "thread-9" });
       expect((await readFile(file)).pendingRuntimeSwitch).toMatchObject({ switchId: pending.switchId });
     });

@@ -84,10 +84,12 @@ export class AgentOrgRunService {
     const patches = resolveAgentOrgTeamWorkspacePatches(canonical.executionTree, teamWorkspacePatches)
       .map(patch => ({ ...patch, workspaceRootPath: canonicalizeWorkspaceRootPath(patch.workspaceRootPath) }));
     const scopes = listAgentOrgRunSelectionScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
-    const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ launchConfiguration }) => ({
+    const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ scopeKind, launchConfiguration }) => ({
       runtimeKind: launchConfiguration.runtimeKind,
       currentModelIdentifier: launchConfiguration.llmModelIdentifier,
       workspaceRootPath: launchConfiguration.workspaceRootPath ?? process.cwd(),
+      // A configured Agent can hand over; the Org's and a mounted Team's own default scopes have no session (DEC-007).
+      handOver: scopeKind === "CONFIGURED_AGENT" ? "available" : "no_session",
     })));
     if (options.length !== scopes.length) throw new Error("Model options returned an incomplete AgentOrg scope result.");
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
@@ -159,6 +161,8 @@ export class AgentOrgRunService {
         runtimeKind: configuration.runtimeKind,
         currentModelIdentifier: configuration.llmModelIdentifier,
         workspaceRootPath: configuration.workspaceRootPath!,
+        // A new AgentOrg's launch has no session yet to continue (AR-002, autobyteus-53).
+        handOver: "no_session",
       },
       selection: {
         llmModelIdentifier: configuration.llmModelIdentifier,

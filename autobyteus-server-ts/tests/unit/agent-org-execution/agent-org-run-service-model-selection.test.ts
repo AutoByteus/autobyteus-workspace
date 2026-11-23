@@ -133,7 +133,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     const h = harness();
     vi.spyOn(h.validator, "validateMany").mockResolvedValue([{ kind: "valid", selection: {
       llmModelIdentifier: "root-model", llmConfig: null,
-    } }]);
+    }, continuation: "same_session" }]);
     await expect(h.service.create(command())).rejects.toThrow(
       "Invalid configuration for '/team': Model validation returned an incomplete result.",
     );

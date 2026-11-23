@@ -1,4 +1,5 @@
 import { isPeerStarted, type AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import type { RunHandOver } from "../../llm-management/domain/run-model-selection.js";
 
 /**
  * A standalone run is collaboration-eligible (it can delegate) unless it is application-owned or system-owned (autobyteus-32 AR-001: the
@@ -14,3 +15,12 @@ export const isCollaborationEligibleStandaloneRun = (metadata: AgentRunMetadata)
  */
 export const canSwitchRuntime = (metadata: AgentRunMetadata): boolean =>
   isCollaborationEligibleStandaloneRun(metadata) && !isPeerStarted(metadata) && Boolean(metadata.startedAt);
+
+/**
+ * A stopped standalone run's hand-over capability (autobyteus-53, DEC-006): `available` when it can switch its agent
+ * runtime (`canSwitchRuntime`), so a native capacity mismatch hands over instead of being refused; `no_session` when
+ * it was never started (nothing to continue, DEC-007); otherwise `unavailable` (application/system-owned or
+ * peer-started), which keeps today's refusal.
+ */
+export const stoppedRunHandOver = (metadata: AgentRunMetadata): RunHandOver =>
+  canSwitchRuntime(metadata) ? "available" : !metadata.startedAt ? "no_session" : "unavailable";

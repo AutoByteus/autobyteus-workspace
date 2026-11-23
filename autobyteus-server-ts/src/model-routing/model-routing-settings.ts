@@ -136,7 +136,9 @@ export class ModelRoutingSettings {
     const checked = { runtimeKind: runtime[1], llmModelIdentifier: model[1], llmConfig: launch.llmConfig };
     const result = await this.dependencies.validator.validate({
       context: { runtimeKind: checked.runtimeKind as RuntimeKind, currentModelIdentifier: checked.llmModelIdentifier,
-        workspaceRootPath: this.dependencies.workspaceRootPath() },
+        workspaceRootPath: this.dependencies.workspaceRootPath(),
+        // The Model Router's own launch has no session to continue (AR-002, autobyteus-53).
+        handOver: "no_session" },
       selection: { llmModelIdentifier: checked.llmModelIdentifier, llmConfig: checked.llmConfig },
     });
     if (result.kind !== "valid") throw new Error(refusalOf(checked, result));

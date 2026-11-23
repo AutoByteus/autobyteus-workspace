@@ -1,6 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
 import type { PendingRuntimeSwitch, RunProviderBinding } from "../store/agent-run-metadata-types.js";
 import type { ConfiguredAgentExecutionNode } from "./run-execution-tree-shared-records.js";
 
@@ -9,6 +10,8 @@ import type { ConfiguredAgentExecutionNode } from "./run-execution-tree-shared-r
  * autobyteus-348 for Team members, Org members and delegated copies): what a settings save does to the binding
  * (`applyRuntimeSelection`) and what the activation's durable commit does to it (`commitRuntimeSwitch`). Pure: each
  * record kind adapts its own fields to a `RuntimeBindingState` and back, and finds its own records and writes them.
+ * Since autobyteus-53 the save states only the continuation (`RuntimeSelection.continuation`, decided by
+ * `RunModelSelectionService`); this rule applies it instead of inferring it from whether the agent runtime differs.
  */
 
 /** A record's binding and its pending switch, whatever fields the record keeps them in. */
@@ -17,11 +20,12 @@ export type RuntimeBindingState = Readonly<{
   pendingRuntimeSwitch?: PendingRuntimeSwitch;
 }>;
 
-/** The agent runtime, model and model settings a record is saved with (already validated for that runtime). */
+/** The agent runtime, model and model settings a record is saved with (already validated for that runtime), and how it continues. */
 export type RuntimeSelection = Readonly<{
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
+  continuation: RunContinuation;
 }>;
 
 const withoutPending = (state: RuntimeBindingState): Omit<RuntimeBindingState, "pendingRuntimeSwitch"> => {
@@ -30,12 +34,14 @@ const withoutPending = (state: RuntimeBindingState): Omit<RuntimeBindingState, "
 };
 
 /**
- * A settings save of a stopped record:
- * - the previous agent runtime again while a switch is pending: the undo. The original session ID comes back, the pending
- *   switch is cleared, and the model and settings chosen in this save are kept;
- * - the record's current agent runtime: a model-only edit (a pending switch stays);
- * - another agent runtime: a switch. The new binding replaces the old with no session ID, and the first previous binding
- *   and switch ID are kept when a switch is already pending.
+ * A settings save of a stopped record, applying the decided continuation (autobyteus-53 REQ-003/REQ-004):
+ * - `same_session`: the session the record last ran on goes on — the pending switch's `from` while one is pending (the
+ *   undo, or a re-edit that resumed it; the pending switch is cleared), otherwise the record's own binding (a plain
+ *   model-only edit). The session's agent runtime, and its session ID, are kept; only the model and its settings change.
+ *   The rule throws if `selection.runtimeKind` is not that session's own runtime: a save can continue only its own
+ *   session, never invent one on another agent runtime (a wiring mistake must fail loudly, never silently).
+ * - `hand_over`: a switch (same agent runtime or another). The new binding replaces the old with no session ID, and the
+ *   first previous binding and switch ID are kept when a switch is already pending (the pending switch's `from`, e.g. AC-006).
  * `switchId` is the identity of a NEW switch; it is ignored when a switch is already pending (that one keeps its own).
  */
 export const applyRuntimeSelection = (
@@ -45,18 +51,19 @@ export const applyRuntimeSelection = (
 ): RuntimeBindingState => {
   const llmConfig = selection.llmConfig ? structuredClone(selection.llmConfig) : null;
   const pending = state.pendingRuntimeSwitch;
-  if (pending && selection.runtimeKind === pending.from.runtimeKind) {
+  if (selection.continuation === "same_session") {
+    const session = pending ? pending.from : state.binding;
+    if (selection.runtimeKind !== session.runtimeKind) {
+      throw new Error("A session continues only on its own agent runtime.");
+    }
     return {
       binding: {
-        runtimeKind: pending.from.runtimeKind,
+        runtimeKind: session.runtimeKind,
         llmModelIdentifier: selection.llmModelIdentifier,
         llmConfig,
-        platformAgentRunId: pending.from.platformAgentRunId,
+        platformAgentRunId: session.platformAgentRunId,
       },
     };
-  }
-  if (selection.runtimeKind === state.binding.runtimeKind) {
-    return { ...state, binding: { ...state.binding, llmModelIdentifier: selection.llmModelIdentifier, llmConfig } };
   }
   return {
     binding: {
