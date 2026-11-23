@@ -4,6 +4,8 @@ Real design mistakes from this project's reviews: what the design said, the fix 
 
 When the Solution Designer fixes a design mistake that the design principles describe, it adds a case here in the same shape: ticket and finding, what the design said, the fix, why it mattered, and how to notice it. When a new mistake repeats an existing case, add its ticket to that case instead of a new entry.
 
+A case takes the next free number when its ticket merges, not when it is written: tickets written in parallel may have picked the same one. If two cases share a number, renumber the later-merged one to the next free number and name its old number under the heading ("Cited as Case N in …'s records"), so the ticket records that cite it can still be followed.
+
 ### Case 1: One Sequence, Two Owners (autobyteus-191, AR-005; autobyteus-464)
 
 Principles 2 and 13.
@@ -361,7 +363,22 @@ Principle 1 (confirm the premise the design rests on); DESIGN.md rule 5 (bounded
 - **Why it mattered:** a one-architecture runtime fix had become a change to how every desktop target is packaged, with effects nobody had measured.
 - **Notice it by:** a fix whose mechanism is "upgrade X to the next major version" when the defect is narrow. Before choosing it, measure the upgrade alone against the current output (one build, diff the package), or find the narrowest lever on the current version first; a risk row is not a measurement.
 
-### Case 26: A New Kind In A Union Without Its Consumers (autobyteus-599, ARCH-REV-001 AR-001)
+### Case 28: One Fact Derived In Four Places, And A Refactor Updated One (autobyteus-461 → autobyteus-615)
+
+Principle 11 (each fact is derived by one owner) and Principle 1 (trace every kind and form).
+
+- **The design said:** autobyteus-461 moved each delegated run's messages into its own log and composed the view of run X from X's own log plus the logs of the open runs below it (SR-072). The Messages tab's list was moved to that composition. The reference files of those messages were "expected to open, not proven by any case".
+- **What the code does:** "the messages of the view of run X" was also derived by three server reference readers, each reading one log, and by three hand-written web links pointing at the root run. A delegated run's message, and a root's message stored in a delegated run's log, were listed but their reference answered 404. The viewer called that "file deleted or moved". The founder's server log held 90 such 404s in one day.
+- **The fix (SR-001):**
+  - One server owner, `RunViewMessagesReader`, is used by the message page and by one reference reader, behind one route with the page's identity `(rootKind, rootRunId)`.
+  - One web owner, `participantMessagesView`, builds the link from the same key.
+  - The viewer reads the refusal's code.
+- **Why it mattered:** nearly every reference the founder clicked failed, because every SE ticket runs as a delegated task team, and the error message blamed the files.
+- **Notice it by:** a refactor that changes where some data lives. List every reader of that data, including a reader of "something belonging to it" (its attachments, its counts, its links), not only the main list. Two readers of one fact that take different identities (one a composed view, one a single log) will disagree after the next change. An expectation written as "expected to work" without a case is a gap to close in the same ticket.
+
+### Case 29: A New Kind In A Union Without Its Consumers (autobyteus-599, ARCH-REV-001 AR-001)
+
+Cited as Case 26 in autobyteus-599's records (renumbered by autobyteus-619: 591's Case 26 was merged first).
 
 Principle 11 (derived consumers of a changed structure).
 
@@ -379,7 +396,9 @@ Principle 11 (derived consumers of a changed structure).
 
 - **Again in autobyteus-609 (CRR-002):** the design added the `interrupted` status to the cards and listed every consumer, but traced only the live producer. For a stored run, the node's replay turns every stored error into `error`, and the web re-derives the conversation card's status from the error text, so a stopped call read "Failed" after a reload. Fix (SR-004): one node rule decides "this stored result is an interruption" from what each writer stores, and the conversation entry carries the node's status. Lesson: for a new value, trace every producer too: live and stored, for each runtime.
 
-### Case 27: A Capability That Needs Two Collaborators, Wired In Only One Composition (autobyteus-599, CRR-001 CR-002)
+### Case 30: A Capability That Needs Two Collaborators, Wired In Only One Composition (autobyteus-599, CRR-001 CR-002)
+
+Cited as Case 27 in autobyteus-599's records (renumbered by autobyteus-619: autobyteus-28's Case 27 was merged first).
 
 Principle 1 (several kinds: trace each composition root) and Principle 16 (one composition root, visible dependencies).
 
@@ -390,16 +409,3 @@ Principle 1 (several kinds: trace each composition root) and Principle 16 (one c
 - **The fix (SR-003):** a Compositions table, with the rule that every composition that runs external-runtime agents wires both parts or offers no renewal. All three now wire both, and each composition gets a test that the notice arrives after a renewal.
 - **Why it mattered:** a renewal without the notice looks like success but hands the user an agent with no memory of the work.
 - **Notice it by:** a design that reuses a mechanism "unchanged" when that mechanism is assembled in a composition root. List every composition root that builds the owners involved: studio, application scope, standalone host, tests' harnesses. Check each wires every collaborator the behavior needs. A default lookup (`getDefault…()`) can make one part work where the other is missing.
-
-### Case 28: One Fact Derived In Four Places, And A Refactor Updated One (autobyteus-461 → autobyteus-615)
-
-Principle 11 (each fact is derived by one owner) and Principle 1 (trace every kind and form).
-
-- **The design said:** autobyteus-461 moved each delegated run's messages into its own log and composed the view of run X from X's own log plus the logs of the open runs below it (SR-072). The Messages tab's list was moved to that composition. The reference files of those messages were "expected to open, not proven by any case".
-- **What the code does:** "the messages of the view of run X" was also derived by three server reference readers, each reading one log, and by three hand-written web links pointing at the root run. A delegated run's message, and a root's message stored in a delegated run's log, were listed but their reference answered 404. The viewer called that "file deleted or moved". The founder's server log held 90 such 404s in one day.
-- **The fix (SR-001):**
-  - One server owner, `RunViewMessagesReader`, is used by the message page and by one reference reader, behind one route with the page's identity `(rootKind, rootRunId)`.
-  - One web owner, `participantMessagesView`, builds the link from the same key.
-  - The viewer reads the refusal's code.
-- **Why it mattered:** nearly every reference the founder clicked failed, because every SE ticket runs as a delegated task team, and the error message blamed the files.
-- **Notice it by:** a refactor that changes where some data lives. List every reader of that data, including a reader of "something belonging to it" (its attachments, its counts, its links), not only the main list. Two readers of one fact that take different identities (one a composed view, one a single log) will disagree after the next change. An expectation written as "expected to work" without a case is a gap to close in the same ticket.

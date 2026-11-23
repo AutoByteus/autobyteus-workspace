@@ -1,0 +1,15 @@
+# IMP-10
+# Command: pnpm -C autobyteus-server-ts exec vitest --run tests/unit/e2e-helpers/restore-by-member-message.test.ts, with the new helper and then the base helper (git checkout, restored)
+# Commit: the working tree committed as 36102a28f3 / base helper
+# Environment: macOS (Darwin 25.5.0); unit isolation; synthetic data in temporary folders
+# Date: 2026-11-23
+# Note: The base helper resolves before the acknowledgement: "expected false to be true".
+
+## helper-unit-green.log
+      Tests  3 passed (3)
+## helper-unit-base.log
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/e2e-helpers/restore-by-member-message.test.ts > restoreByMemberMessage waits until the server has handled its message (autobyteus-619 REQ-003) > an Org: resolves only after the acknowledgement of its own command, not when the run is active and live
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/e2e-helpers/restore-by-member-message.test.ts > restoreByMemberMessage waits until the server has handled its message (autobyteus-619 REQ-003) > an Org: a rejected acknowledgement of a run that stayed stopped is a refusal
+      Tests  2 failed | 1 passed (3)

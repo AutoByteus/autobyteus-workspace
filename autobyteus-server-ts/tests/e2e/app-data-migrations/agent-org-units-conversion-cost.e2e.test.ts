@@ -3,11 +3,11 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { DatabaseSync } from "node:sqlite";
 import { spawn, type ChildProcess } from "node:child_process";
 import { afterAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { faithfulUpgradeLedger, migrationsFrom } from "./helpers/faithful-upgrade-ledger.js";
 import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
 
 /**
@@ -85,13 +85,16 @@ suite("SR-018 cost of the Org conversion on the built server's startup (syntheti
     const memory = path.join(root, "memory");
     for (const dir of [path.join(root, "home"), path.join(root, "db"), memory]) await fsp.mkdir(dir, { recursive: true });
     await fsp.writeFile(path.join(root, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
-    let server = await start("first start (ledger)");
-    const recorded = ((await server.graphql("{getAppDataMigrations{migrationId}}")).getAppDataMigrations as Rec[]).map((entry) => String(entry.migrationId));
-    await stop();
-    const neverRan = recorded.slice(recorded.indexOf(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID));
-    const db = new DatabaseSync(path.join(root, "db", "production.db"));
-    for (const id of neverRan) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
-    db.close();
+    const { neverRan } = await faithfulUpgradeLedger({
+      databaseFile: path.join(root, "db", "production.db"),
+      firstStart: async () => {
+        const fresh = await start("first start (ledger)");
+        const ids = ((await fresh.graphql("{getAppDataMigrations{migrationId}}")).getAppDataMigrations as Rec[]).map((entry) => String(entry.migrationId));
+        await stop();
+        return ids;
+      },
+      neverRan: migrationsFrom(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID),
+    });
 
     const writtenStarted = Date.now();
     let bytes = 0;
@@ -163,7 +166,7 @@ suite("SR-018 cost of the Org conversion on the built server's startup (syntheti
     }
     const writtenMs = Date.now() - writtenStarted;
 
-    server = await start("upgrade start");
+    let server = await start("upgrade start");
     const first = ((await server.graphql("{getAppDataMigrations{migrationId status summary startedAt completedAt}}")).getAppDataMigrations as Rec[])
       .filter((entry) => neverRan.includes(String(entry.migrationId)));
     const firstReadyMs = server.readyMs;

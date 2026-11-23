@@ -44,7 +44,7 @@ export interface CollaborationRootMemorySource {
   /** Used in skip/failure warnings, for example "team run". */
   readonly familyLabel: string;
   listRootRunIds(): Promise<string[]>;
-  /** Reads one root's tree exactly once. `null` when missing or without members; throws when invalid. */
+  /** Reads one root's tree exactly once. `null` when missing, without members, or not a root of this family; throws when invalid. */
   readRoot(rootRunId: string): Promise<CollaborationRootMemoryRecord | null>;
   readCatalogEntries(): Promise<ReadonlyMap<string, CollaborationRootCatalogEntry>>;
 }

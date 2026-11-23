@@ -1,0 +1,56 @@
+# IMP-16 (IR-002, the delivery Local Fix)
+# Command: env -i PATH="$PATH" HOME=<fresh temp, resolved> TMPDIR="$TMPDIR" USER="$USER" pnpm -C autobyteus-server-ts exec vitest --run
+#   tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts --disableConsoleIntercept; then the same environment over
+#   tests/e2e/run-history, collaborators-to-delegated-runs-startup and append-only-message-logs-startup; then pnpm -C autobyteus-server-ts typecheck
+# Commit: the merged state 43e24e1086 plus the fix (committed with this file); dist built by delivery at 13:00 from the merge 540d5c0f6e (no src change since)
+# Environment: macOS (Darwin 25.5.0), clean environment, synthetic data only
+# Date: 2026-11-23
+# Note: The control is delivery's DEL-08-server-e2e-whole.log / DEL-05: the old assertion on this merged state, "expected [ …(48) ] to deeply equal [ …(72) ]".
+
+## the file alone
+removed-skill-access-mode: the migrations that ran on the start under test
+20261122_agent_org_units_own_runs_v1 SUCCEEDED
+20261122_agent_org_units_after_org_flat_team_families_v1 SUCCEEDED
+20261122_agent_org_units_after_run_history_index_v2 SUCCEEDED
+20261122_agent_org_units_after_append_only_message_logs_v1 SUCCEEDED
+20261122_agent_org_units_after_delegated_runs_own_runs_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_task_agent_own_run_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_own_file_complete_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_append_only_logs_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_team_run_execution_tree_v2 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_org_flat_team_families_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_collaborators_to_delegated_runs_v1 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_team_run_history_index_v2 SUCCEEDED
+20261122_agent_org_units_after_preserved_items_after_remove_skill_improvement_data SUCCEEDED
+20261122_agent_org_units_after_raw_trace_rotation_layout SUCCEEDED
+20261122_agent_org_units_after_team_communication_projection_addresses SUCCEEDED
+20261122_agent_org_units_after_raw_trace_active_file_name SUCCEEDED
+20261122_agent_org_units_after_delegated_run_own_attachment_links SUCCEEDED
+20261122_agent_org_units_after_delegated_run_own_attachment_links_after_task_agent_own_run SUCCEEDED
+20261122_agent_org_units_after_agent_org_history_first_message_summary_v1 SUCCEEDED
+20261122_agent_org_units_after_team_context_file_execution_locators_v1 SUCCEEDED
+20261122_agent_org_units_after_collaborators_to_delegated_runs_v1 SUCCEEDED
+20261122_agent_org_units_after_task_agent_own_run_v1 SUCCEEDED
+20261122_agent_org_units_after_delegated_copy_own_file_complete_v1 SUCCEEDED
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+## run-history and the ledger users
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 20720ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (5 tests) 15351ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 7549ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 6384ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 3922ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 719ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 217ms
+ ↓ tests/e2e/run-history/history-list-read-timing.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/run-history/large-run-activation-timing.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests | 2 skipped)
+ Test Files  7 passed | 4 skipped (11)
+      Tests  26 passed | 7 skipped (33)
+## typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.0s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 29.1s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

@@ -233,3 +233,42 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
     ]);
   });
 });
+
+describe("TeamMemoryExplorerService lists team roots only: a Team unit of an Org stays under its Org (autobyteus-619 REQ-002)", () => {
+  let memoryDir: string;
+
+  /** A stored Team run with memory; `containedIn` makes it a Team unit of an Org (autobyteus-29). */
+  const writeTeamRun = async (runId: string, definitionId: string, containedIn?: { orgRunId: string; address: string }) => {
+    const tree = testExecutionTree({ rootTeamRunId: runId, rootTeamDefinitionId: definitionId, teamDefinitionName: definitionId,
+      coordinatorAddress: "/lead", createdAt: "2026-11-22T00:00:00.000Z", children: [testAgentNode("/lead", { agentRunId: `${runId}-lead` })] });
+    const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(packageDir, (containedIn ? { ...tree, containedIn } : tree) as never);
+    await new TeamCommunicationStore().write(packageDir, { schemaVersion: 1, rootTeamRunId: runId, messages: [] });
+    await touch(path.join(packageDir, `${runId}-lead`, "raw_traces_active.jsonl"), Date.parse("2026-11-22T01:00:00.000Z"));
+  };
+
+  beforeEach(async () => {
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-roots-"));
+    await writeTeamRun("writing-root", "writing-team");
+    // The same definition as a standalone root and as a unit, and a definition used only as a unit.
+    await writeTeamRun("writing-unit", "writing-team", { orgRunId: "org-1", address: "/writing" });
+    await writeTeamRun("engineering-unit", "engineering-team", { orgRunId: "org-1", address: "/engineering" });
+    const readiness = new RootRunPackageReadinessIndex(memoryDir);
+    await readiness.rebuild();
+    expect([...readiness.listAdmitted("agent_team")].sort(), "the units are stored Team runs of their own").toEqual(["engineering-unit", "writing-root", "writing-unit"]);
+  });
+
+  afterEach(async () => {
+    resetTeamRunHistoryCatalogState(memoryDir);
+    resetRootRunPackageReadinessIndex(memoryDir);
+    await fs.rm(memoryDir, { recursive: true, force: true });
+  });
+
+  it("leaves the units out of the team cards and of a definition's runs", async () => {
+    const service = new TeamMemoryExplorerService(memoryDir, { definitions: noDefinitions });
+    const teams = await service.listAgentTeamsWithMemory();
+    expect(teams.entries.map((entry) => [entry.teamDefinitionId, entry.teamRunCount])).toEqual([["writing-team", 1]]);
+    expect((await service.listAgentTeamRunsWithMemory("writing-team")).entries.map((entry) => entry.teamRunId)).toEqual(["writing-root"]);
+    expect((await service.listAgentTeamRunsWithMemory("engineering-team")).entries).toEqual([]);
+  });
+});

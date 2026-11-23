@@ -22,7 +22,10 @@ const STORED_HISTORY_MANAGER = Object.freeze({
   }),
 });
 
-/** Reads stored root team runs for the memory catalog: one tree read per root, every agent execution in it. */
+/**
+ * Reads stored root team runs for the memory catalog: one tree read per root, every agent execution in it. A delegated Team
+ * run is a root (autobyteus-461); a Team unit of an Org is not.
+ */
 export class TeamRootMemorySource implements CollaborationRootMemorySource {
   readonly familyLabel = "team run";
   private readonly locations: TeamLocations;
@@ -45,7 +48,9 @@ export class TeamRootMemorySource implements CollaborationRootMemorySource {
   async readRoot(rootRunId: string): Promise<CollaborationRootMemoryRecord | null> {
     const located = await this.locations.listAgents({ rootTeamRunId: rootRunId });
     const tree = located[0]?.tree;
-    if (!tree) return null;
+    // A Team unit of an Org (autobyteus-29) is a Team run of its own but not a team root: the Memory page shows it under its
+    // Org (autobyteus-619 REQ-002). Decided by its tree's own field, not by a failed lookup of the Org.
+    if (!tree || tree.containedIn) return null;
     return {
       rootRunId,
       definitionId: tree.rootTeam.teamDefinitionId.trim(),

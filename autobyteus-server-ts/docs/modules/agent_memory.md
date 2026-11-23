@@ -508,6 +508,10 @@ The explorer GraphQL surface is:
 - `listAgentOrgsWithMemory(source, search, page, pageSize)`
 - `listAgentOrgRunsWithMemory(orgDefinitionId, source, search, page, pageSize)`
 
+The team lists (`listAgentTeamsWithMemory`, `listAgentTeamRunsWithMemory`) hold team roots only: a Team unit of an Org is a team run of its own
+but not a root (its tree carries `containedIn`), so `TeamRootMemorySource` leaves it out and the Memory page shows it under its Org through the
+org lists (autobyteus-619).
+
 All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: the cards, one agent's episodes, or a team's or org's runs and member targets (including task agents and task-team members).
 
 `listMemoryGroupMembers` returns a team's or org's members as `MemoryGroupMember` (`kind: AGENT | TEAM`, `id`, `name`,

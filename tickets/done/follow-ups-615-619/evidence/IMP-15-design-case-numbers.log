@@ -1,0 +1,16 @@
+# IMP-15
+# Command: grep '^### Case' docs/design-cases.md | sed -E 's/### Case ([0-9]+):.*/\1/' | sort -n | uniq -d (duplicates; empty is the pass), then the headings
+# Commit: 36102a28f3
+# Environment: macOS; repository file
+# Date: 2026-11-23
+
+## duplicates:
+## headings 25-30:
+336:### Case 25: "The Latest File" Taken By Position, Not At The Moment It Is Read (autobyteus-316 → autobyteus-583, PRB-001)
+346:### Case 26: "As Locally" Read From One Path (autobyteus-591, CRR-002)
+356:### Case 27: A Dependency's Major Upgrade As The Vehicle For A Narrow Fix (autobyteus-28, IR-001)
+366:### Case 28: One Fact Derived In Four Places, And A Refactor Updated One (autobyteus-461 → autobyteus-615)
+379:### Case 29: A New Kind In A Union Without Its Consumers (autobyteus-599, ARCH-REV-001 AR-001)
+381:Cited as Case 26 in autobyteus-599's records (renumbered by autobyteus-619: 591's Case 26 was merged first).
+399:### Case 30: A Capability That Needs Two Collaborators, Wired In Only One Composition (autobyteus-599, CRR-001 CR-002)
+401:Cited as Case 27 in autobyteus-599's records (renumbered by autobyteus-619: autobyteus-28's Case 27 was merged first).

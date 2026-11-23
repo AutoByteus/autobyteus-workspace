@@ -21,6 +21,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/curr
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { readRunTree } from "../helpers/run-tree-delegated.js";
+import { faithfulUpgradeLedger, migrationsFrom, migrationsOfStartUnderTest } from "./helpers/faithful-upgrade-ledger.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -200,6 +201,18 @@ describe("collaborators → delegated runs: the built server upgrades released a
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "collaborators-startup-e2e-")); roots.push(root);
     await fs.mkdir(path.join(root, "home")); await fs.mkdir(path.join(root, "workspace"));
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    // A faithful upgrade (autobyteus-619): the install of the release before this migration has recorded every earlier one;
+    // this migration and every later one never ran there.
+    const ledger = await faithfulUpgradeLedger({
+      databaseFile: path.join(root, "db", "production.db"),
+      firstStart: async () => {
+        const fresh = await studio(root);
+        const ids = (await fresh.gql("{getAppDataMigrations{migrationId}}")).getAppDataMigrations.map((m: { migrationId: string }) => m.migrationId);
+        await fresh.stop();
+        return ids;
+      },
+      neverRan: migrationsFrom(MIGRATION_ID),
+    });
     const dirs = await seed(root);
     const memory = path.join(root, "memory");
     const before = await state(memory);
@@ -207,19 +220,20 @@ describe("collaborators → delegated runs: the built server upgrades released a
 
     // First start: the migration runs before the server serves.
     const first = await studio(root);
+    const ran = (await first.gql("{getAppDataMigrations{migrationId status attempts}}")).getAppDataMigrations;
+    console.log(`collaborators: the migrations that ran on the start under test\n${migrationsOfStartUnderTest(ledger, ran)}`);
     const migration = await first.migration();
     expect(migration, JSON.stringify(migration)).toMatchObject({ status: "SUCCEEDED", requiredOnStartup: true });
     expect(JSON.stringify(migration.summary)).toContain("3");
-    // task-agent-own-run runs last in the same start and moves the converted delegated runs. This fresh ledger also runs the
-    // released `20260701` projection migration over the team root's current message log, which it rewrites into a shape
-    // the current reader rejects: task-agent-own-run reports that log as a preserved warning and moves the task agents.
+    // task-agent-own-run runs later in the same start and moves the converted delegated runs. On this faithful ledger no
+    // released migration reruns (autobyteus-619: before, an empty ledger reran `20260701` over the team root's current log,
+    // which left that log unreadable and task-agent-own-run with a preserved warning), so it succeeds cleanly.
     const ownRun = (await first.gql("{getAppDataMigrations{migrationId status summary errorMessage logPath}}"))
       .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
-    expect(ownRun, JSON.stringify(ownRun)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS" });
+    expect(ownRun, JSON.stringify(ownRun)).toMatchObject({ status: "SUCCEEDED" });
     const ownRunLog = await fs.readFile(ownRun.logPath, "utf8");
     expect(ownRunLog).toContain("agent_team:team-root");
-    expect(ownRunLog).toContain("PRESERVED_UNREADABLE_LOG");
-    expect(ownRunLog).not.toMatch(/FAILED_OPERATION|WAITING_FOR_PREDECESSOR/);
+    expect(ownRunLog).not.toMatch(/FAILED_OPERATION|WAITING_FOR_PREDECESSOR|PRESERVED_UNREADABLE_LOG/);
     expect(await first.health()).toBe(200);
 
     // Collaborators-v1 changed only the three trees; then task-agent-own-run (registered last, same start) moved every
@@ -298,23 +312,14 @@ describe("collaborators → delegated runs: the built server upgrades released a
     expect(JSON.stringify(await readRunTree(first.gql, "agent_org", "org-root"))).not.toContain("org-designer");
     await first.stop();
 
-    // Second start: nothing changes (idempotent), the migration stays done. The one new file is the standalone run history
-    // index: this fresh ledger retries the released `20260521_run_history_index_v2` migration (it failed on the first start
-    // because `agent-host` has no run metadata), and the retry now indexes the task agents' own run metadata. Those rows are
-    // not standalone runs, so the history never lists them (the readiness index admits no task agent).
+    // Second start: nothing changes (idempotent), the migration stays done. On a faithful ledger no released migration is
+    // left to retry (autobyteus-619: an empty ledger retried `20260521_run_history_index_v2` here and rewrote the index), so
+    // every file keeps its bytes.
     const second = await studio(root);
     expect((await second.migration()).status).toBe("SUCCEEDED");
     const again = await state(memory);
     expect(again.trees).toEqual(after.trees);
-    // autobyteus-461: the first start already wrote the index (461's history rows, step 8); the retried released index
-    // migration keeps that file as a backup (same bytes) and writes the index anew.
-    const isIndex = (file: string) => file === "run_history_index.json" || file.startsWith("run_history_index.json.backup-");
-    const { ["run_history_index.json"]: retriedIndex } = again.others;
-    expect(retriedIndex, "the retried released index migration wrote the index").toBeTruthy();
-    const backups = Object.entries(again.others).filter(([file]) => file.startsWith("run_history_index.json.backup-")).map(([, hash]) => hash);
-    if (after.others["run_history_index.json"]) expect([retriedIndex, ...backups], "the first start's index is kept").toContain(after.others["run_history_index.json"]);
-    const without = (others: Record<string, string>) => Object.fromEntries(Object.entries(others).filter(([file]) => !isIndex(file)));
-    expect(without(again.others)).toEqual(without(after.others));
+    expect(again.others).toEqual(after.others);
     // 461 TC-9 / DS-11: a converted collaborator has no Task record (469 DEC-008), so it is a run of its own: a top-level row.
     const history = await second.gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}");
     const listed = objectsIn(history).flatMap((record) => typeof record["runId"] === "string" ? [record["runId"]] : []);

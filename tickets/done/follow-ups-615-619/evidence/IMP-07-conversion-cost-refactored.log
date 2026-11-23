@@ -1,0 +1,12 @@
+# IMP-07
+# Command: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_ORG_CONVERSION_COST_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts --no-watch
+# Commit: the working tree committed as 36102a28f3
+# Environment: macOS (Darwin 25.5.0); clean environment; synthetic data in temporary folders
+# Date: 2026-11-23
+# Note: The first run of the refactor failed on a dropped variable (ReferenceError: neverRan); fixed before this run and before the commit.
+
+## cost.log
+ ✓ tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts (1 test) 13385ms
+     ✓ COST-01: the conversion and its node pass on a heavy synthetic node; a second start as the control  13118ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

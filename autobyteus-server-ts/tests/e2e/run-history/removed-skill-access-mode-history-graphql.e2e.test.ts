@@ -21,6 +21,8 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-units-own-runs-v1/agent-org-units-own-runs-v1-app-data-migration.js";
+import { faithfulUpgradeLedger, migrationsFrom, migrationsOfStartUnderTest } from "../app-data-migrations/helpers/faithful-upgrade-ledger.js";
 
 /**
  * Run history written before the run-level skill access mode was removed still stores
@@ -32,6 +34,8 @@ type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
 type Json = Record<string, unknown>;
 
 const STORED_MODES = ["PRELOADED_ONLY", "NONE"] as const;
+/** The migrations every released build registers (the release record). */
+const RELEASED_MIGRATION_ORDER = JSON.parse(fs.readFileSync(new URL("../../../src/app-data-migrations/released-migration-order.json", import.meta.url), "utf8")) as string[];
 const REMOVED_FIELD = /skill_?access_?mode/i;
 
 const ownedServers = new Set<RunningTestServer>();
@@ -152,17 +156,43 @@ describe("run history stored with the removed skillAccessMode through the runnin
     const isolatedHome = path.join(runtimeRoot, "isolated-home");
     fs.mkdirSync(isolatedHome, { recursive: true, mode: 0o700 });
     ownedTargets.push({ runtimeRoot, database });
+    const start = async () => {
+      const started = await startBuiltTestServer({
+        runtimeRoot,
+        databaseUrlOverride: database.databaseUrl,
+        environment: createSanitizedTestEnvironment({ HOME: isolatedHome }),
+      });
+      ownedServers.add(started);
+      return started;
+    };
+    type Migration = { migrationId: string; status: string; attempts: number };
+    const migrations = async (url: string) =>
+      (await executeGraphql<{ getAppDataMigrations: Migration[] }>(url, "{getAppDataMigrations{migrationId status attempts}}")).getAppDataMigrations;
+    // A faithful upgrade (autobyteus-619): the stored history is that of the release before autobyteus-29. The Org is still in
+    // the released shape that 29's startup conversion converts (slice 5), so that conversion and every later migration never
+    // ran; every migration released before it did.
+    const ledger = await faithfulUpgradeLedger({
+      databaseFile: database.databasePath,
+      firstStart: async () => {
+        const fresh = await start();
+        const ids = (await migrations(fresh.serverUrl)).map((migration) => migration.migrationId);
+        await fresh.stop();
+        ownedServers.delete(fresh);
+        return ids;
+      },
+      neverRan: migrationsFrom(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID),
+    });
+    // The release record keeps growing; the modeled install ran the released migrations up to 29's conversion.
+    expect(RELEASED_MIGRATION_ORDER, "29's conversion is released").toContain(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID);
+    expect(ledger.registered.filter((id) => !ledger.neverRan.includes(id)), "the modeled release ran exactly the migrations released before 29's conversion")
+      .toEqual(RELEASED_MIGRATION_ORDER.slice(0, RELEASED_MIGRATION_ORDER.indexOf(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID)));
     const seeded = [];
     for (const mode of STORED_MODES) {
       seeded.push({ mode, ...await seedStoredHistory(path.join(runtimeRoot, "memory"), mode) });
     }
 
-    const server = await startBuiltTestServer({
-      runtimeRoot,
-      databaseUrlOverride: database.databaseUrl,
-      environment: createSanitizedTestEnvironment({ HOME: isolatedHome }),
-    });
-    ownedServers.add(server);
+    const server = await start();
+    console.log(`removed-skill-access-mode: the migrations that ran on the start under test\n${migrationsOfStartUnderTest(ledger, await migrations(server.serverUrl))}`);
 
     const schema = await executeGraphql<{
       __schema: {

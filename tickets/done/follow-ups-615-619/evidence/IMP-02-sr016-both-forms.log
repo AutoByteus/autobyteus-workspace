@@ -1,0 +1,12 @@
+# IMP-02
+# Command: The same test with TMPDIR=/var/folders/… (link form), then TMPDIR="$(cd "$TMPDIR" && pwd -P)/" (real path)
+# Commit: the working tree committed as 36102a28f3
+# Environment: macOS (Darwin 25.5.0); unit isolation; synthetic data in temporary folders
+# Date: 2026-11-23
+
+## sr016-link.log
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+## sr016-real.log
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

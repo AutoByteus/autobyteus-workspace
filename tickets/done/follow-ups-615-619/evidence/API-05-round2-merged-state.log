@@ -1,0 +1,29 @@
+# API-05 round 2: fresh build of the merged state, then the fixed file, round 1's set and the release-record tests, env -i | commit 35d8134148 | 2026-11-23T12:09:08Z | load { 6.12 8.24 9.81 }
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit 0
+## the fixed file alone
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 4490ms
+     ✓ opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field  4489ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+## round 1's set (ungated)
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 76532ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 21247ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 17268ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (5 tests) 16080ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 6578ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 4376ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 471ms
+ Test Files  7 passed (7)
+      Tests  28 passed (28)
+## round 1's gated users, with their gates
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 2787ms
+ ✓ tests/e2e/app-data-migrations/agent-org-units-conversion-cost.e2e.test.ts (1 test) 13490ms
+ ✓ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (4 tests) 206053ms
+ Test Files  3 passed (3)
+      Tests  6 passed (6)
+## the release-record tests
+ ✓ tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts (6 tests) 4ms
+ ↓ tests/release/record-released-migration-order.test.ts (1 test | 1 skipped)
+ Test Files  1 passed | 1 skipped (2)
+      Tests  6 passed | 1 skipped (7)

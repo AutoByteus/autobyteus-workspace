@@ -1,0 +1,12 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts exec vitest --run tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts (TMPDIR=/var/folders/…, the link form)
+# Commit: dad158474c (base test)
+# Environment: macOS (Darwin 25.5.0); unit isolation; synthetic data in temporary folders
+# Date: 2026-11-23
+# Note: Reproduction: fails as reported ("… is not inside /private/var/…").
+
+## sr016-base-link.log
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts > SR-016 (587): a file from another node to an Org unit lands in the receiving agent's own folder > by run ID: the Team unit's root places it under the member's folder, received_files/<sender>/<name>; the log line names it
+Error: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-first-work-j1MSTH/agent_teams/test-root/agent-worker is not inside /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T.
+      Tests  1 failed | 3 passed (4)

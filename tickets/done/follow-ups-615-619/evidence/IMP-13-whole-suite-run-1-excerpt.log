@@ -1,0 +1,62 @@
+# IMP-13
+# Command: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts test --run (the whole server suite: unit, integration, architecture, E2E; first whole run)
+# Commit: 36102a28f3 (server built from it)
+# Environment: macOS (Darwin 25.5.0), clean environment, synthetic data only
+# Date: 2026-11-23
+# Note: Excerpt (the full log is 1+ MB, not committed). 20 failures in 9 files, all the Brief Studio package missing from this
+#   worktree ("ENOENT … applications/brief-studio/dist/importable-package/…"); they pass after test:integration:prepare (IMP-13b).
+#   The ticket's files pass, scoped-org-history-graphql among them (whole run 1 of 2 for AC-003).
+
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 416ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 20661ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 6285ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 4377ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 3968ms
+ ✓ tests/unit/e2e-helpers/restore-by-member-message.test.ts (3 tests) 1447ms
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-Robt03/restart-resume/restart-reminders.json.35307.1795428825892.14d36076f221a.tmp' -> '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-Robt03/restart-resume/restart-reminders.json'
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-Wn8pLV/restart-resume/restart-reminders.json.35307.1795428825942.25dc25216d35d.tmp' -> '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-Wn8pLV/restart-resume/restart-reminders.json'
+Restart reminders could not be saved after a delivery: Error: ENOENT: no such file or directory, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-spY6Ur/restart-resume/restart-reminders.json.35307.1795428826086.e647817ba367f.tmp' -> '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-resumer-spY6Ur/restart-resume/restart-reminders.json'
+Terminal connection rejected: Error: ENOENT: no such file or directory, stat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-qxYyE4/missing'
+ ✓ tests/unit/agent-memory/team-memory-explorer-service.test.ts (8 tests) 468ms
+Remote Access: last-seen of paired device device_7b51573b0e37ad3fc2fa2bc65c1fc97b was not saved: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-8d0zXO/remote-access/paired-devices.json.77843.1795428941640.1c948f16d9283.tmp'
+ ✓ tests/unit/agent-org-execution/container/org-units-remote-files-and-renewal.test.ts (4 tests) 340ms
+Terminal connection rejected: Error: ENOENT: no such file or directory, stat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-dHaA7O/missing'
+Memory Sync staging sweep failed: Error: ENOENT: no such file or directory, scandir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-ingestion-sweep-TIfmWY/memory-sync-staging/source-b'
+ FAIL  tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+ FAIL  tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+⎯⎯⎯⎯⎯⎯ Failed Tests 20 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+ FAIL  tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts > Brief Studio production application Agent Tool through MCP > lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation
+AssertionError: promise rejected "Error: ENOENT: no such file or directory,… { …(4) }" instead of resolving
+Caused by: Error: ENOENT: no such file or directory, stat '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package'
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json'
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json'
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged role prompts with context-first validation and publication ordering
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md'
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch reinforcement without replacing role-local ownership
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md'
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package'
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package'
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/follow-ups-615-619/applications/brief-studio/dist/importable-package'
+ Test Files  9 failed | 1282 passed | 192 skipped (1483)
+      Tests  20 failed | 9976 passed | 877 skipped (10873)
