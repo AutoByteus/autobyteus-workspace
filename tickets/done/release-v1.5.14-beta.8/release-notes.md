@@ -4,7 +4,7 @@
 - **Saved organization runs are converted on the first start, once, and this cannot be undone.** Nothing to do before upgrading: your saved organization runs keep their conversations, messages, memory, Tasks and history, and the files an organization's agent received from another node, or attached to messages and Tasks, still open from where they now are. After upgrading, do not install an older version; if you need to go back, contact support instead.
 - **Paired nodes: upgrade both.** A node on an older version refuses the new team-membership update between nodes; the other node then catches up the next time it reads that team's status.
 - **Docker nodes:** this release's server image is still system level 2, as the previous beta. A node that is still on a level-1 image (for example the stable 1.5.13) must be recreated once before it takes this beta: run `autobyteus-docker upgrade --all --tag beta`. A node already on the previous beta updates in place.
-- **iPhone and iPad: update AutoByteus from TestFlight** to the new build, version 1.5.14 (build <IOS_BUILD>). It is a TestFlight beta only; nothing is sent for App Store review.
+- **iPhone and iPad: update AutoByteus from TestFlight** to the new build, version 1.5.14 (build 354). It is a TestFlight beta only; nothing is sent for App Store review.
 - **Desktop:** with **Settings > Updates > Receive beta updates** on, the app updates itself to this beta.
 
 ## What's new
