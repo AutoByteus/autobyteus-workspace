@@ -12,7 +12,7 @@ Ticket: autobyteus-619 (follow-ups-615-619). Worktree `/Users/normy/autobyteus_o
 - Supplemental task artifacts: `follow-ups.md` (FU-001 the Solution Designer's; FU-002 and FU-003 added here)
 - Design review report: `N/A — not applicable` (not selected)
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence, when applicable: the delivery engineer's merged-state run, checkpoint `43e24e1086`, `evidence/DEL-05-changed-files-ungated.log` and `evidence/DEL-08-server-e2e-whole.log` (IR-002)
 
 ## Current Implementation Summary
 
@@ -24,17 +24,18 @@ Ticket: autobyteus-619 (follow-ups-615-619). Worktree `/Users/normy/autobyteus_o
   - The two failing files use it: collaborators-to-delegated-runs, never ran from `20261015_collaborators_to_delegated_runs_v1`; removed-skillAccessMode, never ran from 29's `20261122_agent_org_units_own_runs_v1`, with the modeled release asserted against `released-migration-order.json`. So do the two files that had the pattern inline (append-only message logs, the Org conversion cost).
 - **I-2:** `restoreByMemberMessage` waits for the Org's `AGENT_COMMAND_ACK` of its own `command_id`, which the server sends after posting the message and recording the summary. A Team's wait is unchanged, because the Team stream sends no acknowledgement for an accepted message (Deviations; FU-002).
 - **I-3:** SR-016 gives the received-files store `memoryDir: os.tmpdir()`, the same form as its agent folders.
+- **IR-002 (a delivery Local Fix):** after delivery merged v1.5.14-beta.8, the release record also holds autobyteus-29's conversion and its follow-ups. So the removed-skillAccessMode test now compares the ledger with the migrations released **before** 29's conversion, because the modeled install is the release before 29. No other changed file compares with the release record.
 - **I-4:** 599's Case 26 and Case 27 become Case 29 and Case 30, in number order. Each says which number 599's records cite. A note says to take the next free number at merge.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, a delivery Local Fix; IR-001 is the initial baseline)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001` (Pass, round 1)
+- Related delivery revision IDs: the delivery checkpoint `43e24e1086` (the merged-state run, DEL-05 and DEL-08)
+- Triggering finding IDs: the removed-skillAccessMode released-order assertion (DEL-05, DEL-08)
 
 ## Routing Classification (Mandatory)
 
@@ -164,6 +165,12 @@ Environment for every row: macOS (Darwin 25.5.0), the worktree's Node and pnpm, 
 | IMP-15 | Duplicate design case numbers | `36102a28f3` | file | `docs/design-cases.md` | BEH-005, AC-005 | Pass | `IMP-15-design-case-numbers.log` | an empty duplicate list; "Cited as Case 26 …", "Cited as Case 27 …" |
 
 - IMP-04 to IMP-06 ran from the agent shell. Those three files start the built server with an environment they build themselves, and they pass again in the clean whole runs (IMP-13, IMP-13b).
+- IR-002, the delivery Local Fix, on the merged state `43e24e1086` plus the fix:
+
+  | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | IMP-16 | the fixed file alone; `tests/e2e/run-history` plus the collaborators and append-only ledger files; typecheck | `43e24e1086` + IR-002 commit, dist from the merge | clean env, `USER` set | the removed-skillAccessMode assertion | BEH-001, AC-001 | Pass (control: delivery's DEL-08 shows the old assertion failing here) | `IMP-16-local-fix-released-order.log` | "Tests  1 passed (1)"; "26 passed \| 7 skipped (33)"; "(baseline 972 in 299 files)" |
+
 - Not run, and why: `agy-runtime-stop-recovery-live` needs a live AGY CLI; it is left to API/E2E.
 
 ## Frontend Rendered-Result Check (When Applicable)

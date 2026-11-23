@@ -168,9 +168,9 @@ describe("run history stored with the removed skillAccessMode through the runnin
     type Migration = { migrationId: string; status: string; attempts: number };
     const migrations = async (url: string) =>
       (await executeGraphql<{ getAppDataMigrations: Migration[] }>(url, "{getAppDataMigrations{migrationId status attempts}}")).getAppDataMigrations;
-    // A faithful upgrade (autobyteus-619): the stored history is the latest release's (every released migration ran on its
-    // install); the Org is still in the released shape that autobyteus-29's startup conversion converts (slice 5), so that
-    // conversion and every later migration never ran.
+    // A faithful upgrade (autobyteus-619): the stored history is that of the release before autobyteus-29. The Org is still in
+    // the released shape that 29's startup conversion converts (slice 5), so that conversion and every later migration never
+    // ran; every migration released before it did.
     const ledger = await faithfulUpgradeLedger({
       databaseFile: database.databasePath,
       firstStart: async () => {
@@ -182,8 +182,10 @@ describe("run history stored with the removed skillAccessMode through the runnin
       },
       neverRan: migrationsFrom(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID),
     });
-    expect(ledger.registered.filter((id) => !ledger.neverRan.includes(id)), "the modeled release ran exactly the released migrations")
-      .toEqual(RELEASED_MIGRATION_ORDER);
+    // The release record keeps growing; the modeled install ran the released migrations up to 29's conversion.
+    expect(RELEASED_MIGRATION_ORDER, "29's conversion is released").toContain(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID);
+    expect(ledger.registered.filter((id) => !ledger.neverRan.includes(id)), "the modeled release ran exactly the migrations released before 29's conversion")
+      .toEqual(RELEASED_MIGRATION_ORDER.slice(0, RELEASED_MIGRATION_ORDER.indexOf(AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID)));
     const seeded = [];
     for (const mode of STORED_MODES) {
       seeded.push({ mode, ...await seedStoredHistory(path.join(runtimeRoot, "memory"), mode) });
