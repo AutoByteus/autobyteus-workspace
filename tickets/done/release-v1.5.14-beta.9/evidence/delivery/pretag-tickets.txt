@@ -1,0 +1,14 @@
+# git log --merges --first-parent v1.5.14-beta.8..HEAD at 13575c21f8, 2026-11-23 (15 commits since v1.5.14-beta.8)
+9ea5bc6a24 Merge codex/follow-ups-615-619: the Memory page's team lists hold team roots only, faithful upgrade tests, two test fixes (autobyteus-619)
+
+# direct commits
+13575c21f8 docs(follow-ups-615-619): finalization record (autobyteus-619)
+390179a50f docs(release-v1.5.14-beta.8): released and verified (4/4 workflows, 27/27 assets, iOS 1.5.14 (354), Docker system level 2) (autobyteus-621)
+
+# release notes of the ticket: tickets/done/follow-ups-615-619/release-notes.md (no 'What you need to do' section)
+# app-data migrations, prisma, docker, workflows, scripts changed since beta.8:        0
+# non-ticket source files changed since beta.8:
+TESTING.md
+autobyteus-server-ts/docs/modules/agent_memory.md
+autobyteus-server-ts/src/agent-memory/services/collaboration-root-memory-catalog.ts
+autobyteus-server-ts/src/agent-memory/services/team-root-memory-source.ts

@@ -1,0 +1,5 @@
+# pnpm -C autobyteus-server-ts prebuild
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+prebuild-exit=0
