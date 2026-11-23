@@ -1,0 +1,5 @@
+HEAD 540d5c0f6e steps: 02 03 04 05 06 07 08 09
+12:20  up 1 day, 22:37, 9 users, load averages: 10.23 9.66 11.89
+vm.swapusage: total = 2048.00M  used = 854.31M  free = 1193.69M  (encrypted)
+  324   0.0  28000 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+AUTOBYTEUS_*/DATABASE_URL variables in the agent shell (names only; none is passed to a server run): 29
