@@ -8,7 +8,7 @@ import {
   type AgentRunEvent,
   type AgentRunStatusHint,
 } from "../../../agent-execution/domain/agent-run-event.js";
-import type { AgentPresentationEvent, AgentPresentationTokenUsageDetails } from "./agent-presentation-event.js";
+import type { AgentPresentationEvent, AgentPresentationTokenUsageDetails, UntimedAgentPresentationEvent } from "./agent-presentation-event.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import { backgroundTasksRunningOf, normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
 import { isAgentSegmentType } from "../../../agent-execution/domain/agent-segment.js";
@@ -93,7 +93,11 @@ const providerErrorEvidence = (payload: Record<string, unknown>) => ({
     : {}),
 });
 const statusHint = (event: AgentRunEvent): AgentRunStatusHint => event.statusHint ?? null;
-const correlated = <T extends AgentPresentationEvent>(event: T): Readonly<{ kind: "publish"; event: T }> =>
+type UntimedAdaptationResult =
+  | Readonly<{ kind: "publish"; event: UntimedAgentPresentationEvent }>
+  | Exclude<AgentRunPresentationAdaptationResult, { kind: "publish" }>;
+
+const correlated = <T extends UntimedAgentPresentationEvent>(event: T): Readonly<{ kind: "publish"; event: T }> =>
   Object.freeze({ kind: "publish", event: Object.freeze(event) });
 
 const fileChangePayloadKeys = [
@@ -263,7 +267,11 @@ export class AgentRunPresentationAdapter {
       return Object.freeze({ kind: "filtered_collaboration_duplicate" });
     }
     try {
-      return this.adaptKnown(event);
+      const result = this.adaptKnown(event);
+      if (result.kind !== "publish") return result;
+      // The run's one time for the event (autobyteus-628 D-3): every stream that shows it reads this.
+      if (event.occurredAt === undefined) throw new Error("the event has no occurredAt: its run did not deliver it");
+      return Object.freeze({ kind: "publish", event: Object.freeze({ ...result.event, occurredAt: event.occurredAt }) as AgentPresentationEvent });
     } catch (error) {
       return Object.freeze({
         kind: "rejected",
@@ -273,7 +281,7 @@ export class AgentRunPresentationAdapter {
     }
   }
 
-  private adaptKnown(event: AgentRunEvent): AgentRunPresentationAdaptationResult {
+  private adaptKnown(event: AgentRunEvent): UntimedAdaptationResult {
     const p = event.payload;
     const hint = statusHint(event);
     switch (event.eventType) {

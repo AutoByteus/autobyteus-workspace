@@ -22,6 +22,8 @@ describe("createUnsentInputFailureObserver", () => {
       runId: "member-run",
       payload: { code: "RUNTIME_SESSION_REOPEN_FAILED", message: "Couldn't give this run its new tools (x)." },
       statusHint: null,
+      // Published outside the run's delivery: it carries its own node time (autobyteus-628 D-3).
+      occurredAt: expect.any(Number),
     });
   });
 

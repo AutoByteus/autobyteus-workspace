@@ -10,7 +10,7 @@ import {
   asString,
   extractForwardedMessageAttachments,
   extractContentDelta,
-  extractTimestamp,
+  extractEventTime,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
@@ -156,7 +156,7 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       parts: [],
       sourceEvent: event.eventType,
-      ts: extractTimestamp(event.payload),
+      ts: extractEventTime(event),
     });
   }
 
@@ -174,7 +174,7 @@ export class RuntimeMemoryEventAccumulator {
       segment.parts.push(delta);
     }
     segment.sourceEvent = event.eventType;
-    segment.ts = segment.ts ?? extractTimestamp(event.payload);
+    segment.ts = segment.ts ?? extractEventTime(event);
     this.segments.set(key, segment);
   }
 
@@ -213,7 +213,7 @@ export class RuntimeMemoryEventAccumulator {
     }
     const turnId = extractTurnId(event.payload);
     if (!turnId) return;
-    this.writeAssistantTrace(turnId, content, event.eventType, extractTimestamp(event.payload));
+    this.writeAssistantTrace(turnId, content, event.eventType, extractEventTime(event));
   }
 
   private flushSegment(id: string, sourceEvent: string): void {
@@ -279,7 +279,7 @@ export class RuntimeMemoryEventAccumulator {
       // The notice's one id (autobyteus-526), so the conversation shows it once beside its live copy.
       messageId: asString(event.payload.message_id) ?? undefined,
       sourceEvent: event.eventType,
-      ts: extractTimestamp(event.payload),
+      ts: extractEventTime(event),
     });
   }
 

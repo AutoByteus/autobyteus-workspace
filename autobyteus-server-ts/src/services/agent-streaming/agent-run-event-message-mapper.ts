@@ -1,6 +1,7 @@
 import { compactionRecoveryBlockSchema, compactionRecoveryEventSchema, agentInputStateSchema } from "@autobyteus/agent-presentation-contracts";
 import {
   AgentRunEventType,
+  serverTimeOf,
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
@@ -75,8 +76,25 @@ const projectProviderErrorEvidence = (payload: Record<string, unknown>): Record<
     : {}),
 });
 
+/** The messages whose web reader creates or times a conversation row: each carries the node's `occurred_at` (D-3). */
+const TIMED_MESSAGE_TYPES: ReadonlySet<ServerMessageType> = new Set([
+  ServerMessageType.SEGMENT_START, ServerMessageType.SEGMENT_CONTENT,
+  ServerMessageType.TOOL_APPROVAL_REQUESTED, ServerMessageType.TOOL_APPROVED, ServerMessageType.TOOL_DENIED,
+  ServerMessageType.TOOL_EXECUTION_STARTED, ServerMessageType.TOOL_EXECUTION_SUCCEEDED,
+  ServerMessageType.TOOL_EXECUTION_FAILED, ServerMessageType.TOOL_EXECUTION_INTERRUPTED, ServerMessageType.TOOL_LOG,
+  ServerMessageType.SYSTEM_TASK_NOTIFICATION, ServerMessageType.INTER_AGENT_MESSAGE,
+  ServerMessageType.ERROR, ServerMessageType.COMPACTION_STATUS,
+]);
+
 export class AgentRunEventMessageMapper {
   map(event: AgentRunEvent): ServerMessage {
+    const message = this.mapPayload(event);
+    return TIMED_MESSAGE_TYPES.has(message.type)
+      ? new ServerMessage(message.type, { ...message.payload, occurred_at: serverTimeOf(event) })
+      : message;
+  }
+
+  private mapPayload(event: AgentRunEvent): ServerMessage {
     const payload = serializePayload(event.payload);
 
     switch (event.eventType) {

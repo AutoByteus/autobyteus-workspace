@@ -33,6 +33,13 @@ export const extractContentDelta = (payload: Record<string, unknown>): string | 
   asContentString(payload["text"]) ??
   asContentString(payload["message"]);
 
+/**
+ * A recorded event's trace time, epoch seconds (autobyteus-628 D-3): the run's `occurredAt`, the one time the streams show
+ * for the event too; an event without one (a producer that set its own payload time) keeps its payload's time.
+ */
+export const extractEventTime = (event: Readonly<{ payload: Record<string, unknown>; occurredAt?: number }>): number | null =>
+  event.occurredAt !== undefined ? event.occurredAt / 1000 : extractTimestamp(event.payload);
+
 export const extractTimestamp = (payload: Record<string, unknown>): number | null =>
   normalizeTimestampSeconds(payload["ts"]) ??
   normalizeTimestampSeconds(payload["timestamp"]) ??

@@ -70,6 +70,8 @@ export const createTeamFlatExecutionCallbacks = (input: {
             turnId: null,
           }),
           statusHint: "ERROR" as const,
+          // A refusal the Team builds itself, at its own time (autobyteus-628 D-3).
+          occurredAt: Date.now(),
         };
     input.publish({
       eventSourceType: TeamRunEventSourceType.AGENT,

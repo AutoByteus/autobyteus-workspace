@@ -217,12 +217,12 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   const conversations = state.conversations;
   const emit = (runId: string, eventType: AgentRunEventType, payload: Record<string, unknown>) => {
     if (eventType === AgentRunEventType.AGENT_STATUS) statuses.set(runId, String(payload.status));
-    listeners.get(runId)?.({ eventType, runId, payload, statusHint: null });
+    listeners.get(runId)?.({ eventType, runId, payload, statusHint: null, occurredAt: 1795452909697 });
   };
   const providerRun = (runId: string) => ({ runId, alive: true, isActive() { return this.alive; }, bindExecutionAdmissionFence: vi.fn(),
     subscribeToEvents: (listener: (event: unknown) => void) => {
       listeners.set(runId, listener);
-      listener({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status: "idle" }, statusHint: "IDLE" });
+      listener({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status: "idle" }, statusHint: "IDLE", occurredAt: 1795452909697 });
       return () => { if (listeners.get(runId) === listener) listeners.delete(runId); };
     },
     getStatusSnapshot: () => ({ status: statuses.get(runId) ?? "idle" }), getInputStateSnapshot: () => null,

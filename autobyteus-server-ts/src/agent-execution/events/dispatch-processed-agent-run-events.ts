@@ -1,7 +1,6 @@
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import type { AgentRunEvent } from "../domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../domain/agent-runtime-lifecycle-snapshot.js";
-import { dispatchRuntimeEvent } from "../backends/shared/runtime-event-dispatch.js";
 import type { AgentRunEventPipeline } from "./agent-run-event-pipeline.js";
 import { getDefaultAgentRunEventPipeline } from "./default-agent-run-event-pipeline.js";
 import { AgentRunEventDispatchQueue } from "./agent-run-event-dispatch-queue.js";
@@ -10,7 +9,8 @@ import type { AgentSegmentLifecycleState } from "./processors/segment-lifecycle/
 
 export const dispatchProcessedAgentRunEvents = async (input: {
   runContext: AgentRunContext<RuntimeAgentRunContext>;
-  listeners: Set<(event: AgentRunEvent) => void>;
+  /** Delivers one processed event to the run's listeners (the run stamps its time there). */
+  deliver: (event: AgentRunEvent) => void;
   events: readonly AgentRunEvent[];
   pipeline?: AgentRunEventPipeline;
   dispatchQueue: AgentRunEventDispatchQueue;
@@ -20,7 +20,6 @@ export const dispatchProcessedAgentRunEvents = async (input: {
   /** The run's running-background-task count now; set on the lifecycle state before the batch's statuses are built. */
   getBackgroundTasksRunning: () => number;
   onCanonicalEventsDispatched?: (events: readonly AgentRunEvent[]) => void;
-  onListenerError?: (error: unknown) => void;
 }): Promise<void> => {
   if (input.events.length === 0) {
     return;
@@ -39,13 +38,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
         runtimeLifecycleSnapshot,
       });
 
-      for (const event of finalEvents) {
-        dispatchRuntimeEvent({
-          listeners: input.listeners,
-          event,
-          onListenerError: input.onListenerError,
-        });
-      }
+      for (const event of finalEvents) input.deliver(event);
       input.onCanonicalEventsDispatched?.(finalEvents);
     },
   );

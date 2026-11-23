@@ -12,7 +12,7 @@ describe("AgentRunEventMessageMapper", () => {
       eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
       runId: "run-1",
       payload: { trace_id: "raw-system-id", content, ts: 12.5 },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(message).toEqual({
@@ -37,7 +37,7 @@ describe("AgentRunEventMessageMapper", () => {
         compacted_block_count: 2,
         compaction_model_identifier: "compaction-model",
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(message.type).toBe(ServerMessageType.COMPACTION_STATUS);
@@ -51,6 +51,8 @@ describe("AgentRunEventMessageMapper", () => {
       selected_block_count: 3,
       compacted_block_count: 2,
       compaction_model_identifier: "compaction-model",
+      // The run's time of the event (autobyteus-628 D-3).
+      occurred_at: "2026-11-23T16:55:09.697Z",
     });
   });
 
@@ -73,7 +75,7 @@ describe("AgentRunEventMessageMapper", () => {
         rotation_eligible: true,
         semantic_compaction: false,
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(message.type).toBe(ServerMessageType.COMPACTION_STATUS);
@@ -109,7 +111,7 @@ describe("AgentRunEventMessageMapper", () => {
         messageType: "handoff",
         referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(message.type).toBe(ServerMessageType.TEAM_COMMUNICATION_MESSAGE);
@@ -162,7 +164,7 @@ describe("AgentRunEventMessageMapper", () => {
         turn_id: "turn-segment-1",
         ...inputPayload,
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(message.type).toBe(messageType);
@@ -170,6 +172,8 @@ describe("AgentRunEventMessageMapper", () => {
       id: "seg-1",
       turn_id: "turn-segment-1",
       ...outputPayload,
+      // The run's time of the event, on the messages that create a row (autobyteus-628 D-3); not on SEGMENT_END.
+      ...(messageType === ServerMessageType.SEGMENT_END ? {} : { occurred_at: "2026-11-23T16:55:09.697Z" }),
     });
     expect(message.payload).not.toHaveProperty("turnId");
   });

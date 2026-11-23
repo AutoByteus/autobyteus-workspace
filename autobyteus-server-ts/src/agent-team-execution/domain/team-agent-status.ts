@@ -73,5 +73,6 @@ export const createTeamAgentStatusEvent = (snapshot: TeamAgentStatusSnapshot): T
     eventType: "AGENT_STATUS" as const,
     details: snapshot.details,
     statusHint: snapshot.statusHint,
+    occurredAt: Date.now(),
   }),
 });

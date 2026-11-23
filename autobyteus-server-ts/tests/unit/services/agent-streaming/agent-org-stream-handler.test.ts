@@ -19,7 +19,7 @@ const execution = createCollaborationMemberExecutionIdentity({
 const statuses = [{
   execution,
   details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null },
-  statusHint: "IDLE" as const,
+  statusHint: "IDLE" as const, occurredAt: 1795452909697,
 }];
 
 const orgPackage = () => {
@@ -39,7 +39,7 @@ const orgPackage = () => {
       agentRunId: member.agentRunId,
     }),
     details: { status: "idle" as const, backgroundTasksRunning: 0, trigger: null, errorMessage: null, recoverableBlock: null },
-    statusHint: "IDLE" as const,
+    statusHint: "IDLE" as const, occurredAt: 1795452909697,
   }));
   return { tree: executionTree, messages, inputStates: [], statuses: [...statuses, ...memberStatuses] };
 };
@@ -299,7 +299,7 @@ describe("AgentOrgStreamHandler", () => {
     const test = harness(); const client = connection();
     expect(await test.handler.connect(client.socket, orgRunId)).toBeTruthy();
     test.publisher.publish({ kind: "agent_presentation", execution, message: { type: "SEGMENT_CONTENT", payload: {
-      segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "last words",
+      segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "last words", occurred_at: "2026-11-23T16:55:09.697Z",
     } } });
     test.stop();
     for (let i = 0; i < 10; i += 1) await new Promise((resolve) => setTimeout(resolve, 0));
@@ -322,7 +322,7 @@ describe("AgentOrgStreamHandler", () => {
     vi.useFakeTimers();
     try {
       test.publisher.publish({ kind: "agent_presentation", execution, message: { type: "SEGMENT_CONTENT", payload: {
-        segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "unsent",
+        segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "unsent", occurred_at: "2026-11-23T16:55:09.697Z",
       } } });
       test.handler.disconnect(sessionId!);
       vi.advanceTimersByTime(2_000);

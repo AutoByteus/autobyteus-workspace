@@ -68,5 +68,7 @@ export const buildMemberInputPresentationEvent = (input: Readonly<{
       parentCommunicationMessageId,
     }),
     statusHint: null,
+    // The input's time is the node's receipt of it (autobyteus-628 D-3).
+    occurredAt: Date.parse(receivedAt),
   });
 };

@@ -45,7 +45,7 @@ describe("Team FILE_CHANGE admission", () => {
       eventType: AgentRunEventType.FILE_CHANGE,
       runId,
       payload: { ...payload },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     };
 
     const admitted = new TeamAgentEventAdapter(() => execution).adapt(event);
@@ -64,7 +64,7 @@ describe("Team FILE_CHANGE admission", () => {
         createdAt: payload.createdAt,
         updatedAt: payload.updatedAt,
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(projectTeamAgentEventMessage(execution, admitted.event, 7)).toEqual({

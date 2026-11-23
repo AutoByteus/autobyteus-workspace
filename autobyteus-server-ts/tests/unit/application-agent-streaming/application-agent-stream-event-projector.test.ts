@@ -12,7 +12,7 @@ const event = (eventType: AgentRunEventType, payload: Record<string, unknown> = 
   eventType,
   payload,
   runId: "physical-run-secret",
-  statusHint: null,
+  statusHint: null, occurredAt: 1795452909697,
 });
 
 describe("ApplicationAgentStreamEventProjector", () => {
@@ -107,7 +107,7 @@ describe("ApplicationAgentStreamEventProjector", () => {
   it("projects team terminal errors as the same message-only application variant", () => {
     const actual = projector.projectTeam({
       eventType: "ERROR",
-      statusHint: "ERROR",
+      statusHint: "ERROR", occurredAt: 1795452909697,
       details: {
         code: "AUTH_FAILED",
         message: "The provider rejected the request.",

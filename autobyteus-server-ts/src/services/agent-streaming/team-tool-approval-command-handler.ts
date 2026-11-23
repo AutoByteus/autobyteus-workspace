@@ -52,6 +52,7 @@ export const handleTeamToolApprovalCommand = async (input: {
         error_scope: null,
         error_effect: null,
         turn_id: null,
+        occurred_at: new Date().toISOString(),
       },
     }));
     return;
