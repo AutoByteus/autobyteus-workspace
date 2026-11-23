@@ -18,7 +18,14 @@ child.stdout.on("data", (c) => {
     const line = buf.slice(0, i); buf = buf.slice(i + 1);
     let m; try { m = JSON.parse(line); } catch { continue; }
     const send = () => child.stdin.write(JSON.stringify({ event: "user", message: { content: prompts[turn] } }) + "\n");
-    if (m.event === "init") { console.log("init.tools:", JSON.stringify(m.init && m.init.tools)); send(); }
+    if (m.event === "init") {
+      const names = fs.readFileSync(`${cap}/.agents/agents/${agent}/agent.md`, "utf8").match(/^tools: \[(.*)\]$/m)[1].split(", ");
+      const registry = m.init && m.init.tools;
+      console.log("agent.md tools:", names.join(","));
+      console.log("allowlist names missing from init.tools (the factory warns when non-empty):", JSON.stringify(names.filter((n) => !registry.includes(n))));
+      console.log("init.tools has read_file/write_file/edit_file:", JSON.stringify(["read_file", "write_file", "edit_file"].filter((n) => registry.includes(n))));
+      send();
+    }
     else if (m.event === "step_update" && m.step_update.step_type === "agent_response" && m.step_update.text_delta) answer += m.step_update.text_delta;
     else if (m.event === "step_update" && m.step_update.step_type === "tool" && m.step_update.state === "DONE") calls.push(`${m.step_update.tool_name} -> ${JSON.stringify(m.step_update.tool_info && m.step_update.tool_info.output)}`.slice(0, 200));
     else if (m.event === "result") {
