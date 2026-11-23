@@ -71,11 +71,11 @@ export function handleSegmentStart(
     if (!matchesStreamSegmentType(existingSegment, payload.segment_type)) return 'NONE';
     const changed = mergeSegmentStartMetadata(existingSegment, payload);
     if (isProjectableToolSegment(existingSegment)) {
-      upsertActivityFromToolSegment(context, payload.id, existingSegment);
+      upsertActivityFromToolSegment(context, payload.id, existingSegment, new Date(payload.occurred_at));
     }
     return changed ? 'PRESENTATION' : 'NONE';
   }
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, payload.occurred_at);
   const segment = createSegmentFromPayload(payload);
 
   setStreamSegmentIdentity(segment, payload.turn_id, payload.id, payload.segment_type);
@@ -83,7 +83,7 @@ export function handleSegmentStart(
 
   aiMessage.segments.push(segment);
   if (isProjectableToolSegment(segment)) {
-    upsertActivityFromToolSegment(context, payload.id, segment);
+    upsertActivityFromToolSegment(context, payload.id, segment, new Date(payload.occurred_at));
   }
   return 'STRUCTURAL';
 }
@@ -198,7 +198,7 @@ export function handleSegmentContent(
     return 'NONE';
   }
   if (!segment) {
-    segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type, context);
+    segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type, context, payload.occurred_at);
     segmentCreated = true;
   }
 
@@ -243,7 +243,8 @@ export function handleSegmentEnd(
     error: typeof payload.error === 'string' ? payload.error : null,
   });
   if (isProjectableToolSegment(segment)) {
-    upsertActivityFromToolSegment(context, payload.id, segment);
+    // SEGMENT_END carries no time of its own: an Activity row it creates takes its call's message time (the node's).
+    upsertActivityFromToolSegment(context, payload.id, segment, timeOfSegmentMessage(context, segment));
   }
   return JSON.stringify(segment) !== before ? 'STRUCTURAL' : 'NONE';
 }
@@ -251,7 +252,7 @@ export function handleSegmentEnd(
 /**
  * Find or create the current AI message for streaming content.
  */
-export function findOrCreateAIMessage(context: AgentContext): AIMessage {
+export function findOrCreateAIMessage(context: AgentContext, occurredAt: string): AIMessage {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   
   if (lastMessage?.type === 'ai' && !lastMessage.isComplete) {
@@ -261,7 +262,8 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
   const newMessage: AIMessage = {
     type: 'ai',
     text: '',
-    timestamp: new Date(),
+    // The node's time of the event that opened the message (autobyteus-628 D-3), never the viewer's clock.
+    timestamp: new Date(occurredAt),
     isComplete: false,
     segments: [],
   };
@@ -269,6 +271,13 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
   context.conversation.messages.push(newMessage);
 
   return newMessage;
+}
+
+/** The time of the agent message that holds `segment` (a time the node recorded). */
+export function timeOfSegmentMessage(context: AgentContext, segment: AIResponseSegment): Date {
+  const message = context.conversation.messages.find((item) => item.type === 'ai' && item.segments.includes(segment));
+  if (!message?.timestamp) throw new Error('A segment is shown only inside an agent message that has its time.');
+  return message.timestamp;
 }
 
 /**
@@ -352,8 +361,9 @@ function createSyntheticSegmentFromContent(
   turnId: string,
   segmentType: SegmentStartPayload['segment_type'],
   context: AgentContext,
+  occurredAt: string,
 ): AIResponseSegment {
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, occurredAt);
   const segment = createSegmentFromPayload({
     id: segmentId,
     segment_type: segmentType,

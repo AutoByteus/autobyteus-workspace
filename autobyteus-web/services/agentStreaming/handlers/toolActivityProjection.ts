@@ -106,6 +106,8 @@ export const upsertActivityFromToolSegment = (
   context: AgentContext,
   invocationId: string,
   segment: ProjectableToolSegment,
+  /** The node's time of the event; an Activity row created here takes it (autobyteus-628 D-3). */
+  at: Date,
   argumentsPayload: Record<string, any> = {},
 ): void => {
   const toolName = resolveToolName(segment);
@@ -128,7 +130,7 @@ export const upsertActivityFromToolSegment = (
       logs: [...segment.logs],
       result: segment.result,
       error: segment.error,
-      timestamp: new Date(),
+      timestamp: at,
     });
     return;
   }

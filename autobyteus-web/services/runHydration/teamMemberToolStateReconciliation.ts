@@ -57,9 +57,11 @@ const collect = (conversation: Conversation, activities: readonly RunActivity[])
     entries.set(id, [...(entries.get(id) ?? []), entry]);
   };
   for (const message of conversation.messages) {
-    if (message.type !== 'ai') continue;
+    // A message without a node time is a send that failed before reaching the node: it holds no tool call (D-3).
+    if (message.type !== 'ai' || !message.timestamp) continue;
+    const timestamp = message.timestamp;
     for (const segment of message.segments) if (isProjectableToolSegment(segment)) {
-      add({ segment, timestamp: message.timestamp }, segments, segment);
+      add({ segment, timestamp }, segments, segment);
     }
   }
   for (const activity of activities) if (activity.kind === 'tool') {

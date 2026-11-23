@@ -80,7 +80,7 @@ describe('named pending overlay, not accepted-echo attachment replacement', () =
     const other = { state: {}, conversation: build([{ ...base, messageId: 'A' }]) } as any;
     const payload = { run_instance_id: 'native', revision: 1, recoverableBlock: null, entries: [{
       sequence: 1, message_id: ' A ', dedupe_key: 'new', turn_id: 'turn', state: 'held' as const,
-      content: 'original pending text', sender_type: 'user' as const, file_attachments: [
+      content: 'original pending text', sender_type: 'user' as const, accepted_at: '2026-11-23T16:55:09.000Z', file_attachments: [
         { uri: '/a/report.txt', file_type: 'text', file_name: null },
         { uri: '/b/report.txt', file_type: 'text', file_name: 'Rich original name' },
         { uri: '/fill.txt', file_type: 'text', file_name: 'Explicit filled name' },

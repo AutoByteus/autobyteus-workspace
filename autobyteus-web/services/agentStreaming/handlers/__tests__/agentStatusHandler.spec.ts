@@ -98,7 +98,7 @@ describe('agentStatusHandler', () => {
   ])('preserves actual runtime text and prior completed work in the terminal error segment: %s', (message) => {
     const completedTool = { type: 'tool_call', invocationId: 'completed-tool', status: 'success', result: 'saved', logs: [] };
     mockContext.conversation.messages.push({ type: 'ai', segments: [completedTool], isComplete: false });
-    handleError({ message, code: 'AGY_TURN_ERROR', turn_id: 'turn-1', error_scope: 'turn', error_effect: 'terminal' }, mockContext);
+    handleError({ occurred_at: '2026-11-23T16:55:09.697Z', message, code: 'AGY_TURN_ERROR', turn_id: 'turn-1', error_scope: 'turn', error_effect: 'terminal' }, mockContext);
     expect(mockContext.conversation.messages[0].segments).toEqual([
       completedTool, { type: 'error', code: 'AGY_TURN_ERROR', message },
     ]);
@@ -182,7 +182,7 @@ describe('agentStatusHandler', () => {
     });
 
     it('stores a started compaction status with a friendly message', () => {
-      const payload: CompactionStatusPayload = {
+      const payload: CompactionStatusPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'started',
         turn_id: 'turn-1',
         selected_block_count: 3,
@@ -236,7 +236,7 @@ describe('agentStatusHandler', () => {
     });
 
     it('uses the failure error message when compaction fails', () => {
-      const payload: CompactionStatusPayload = {
+      const payload: CompactionStatusPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'failed',
         turn_id: 'turn-2',
         error_message: 'Compaction failed hard',
@@ -257,14 +257,14 @@ describe('agentStatusHandler', () => {
       const aiMsg = { type: 'ai', isComplete: false, segments: [{ type: 'text', content: 'before compaction' }] };
       mockContext.conversation.messages.push(aiMsg);
 
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'requested',
         compaction_operation_id: 'operation-split-1',
         requested_turn_id: 'turn-1',
       }, mockContext);
       expect(aiMsg.isComplete).toBe(false);
 
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'started',
         compaction_operation_id: 'operation-split-1',
         requested_turn_id: 'turn-1',
@@ -273,7 +273,7 @@ describe('agentStatusHandler', () => {
       expect(aiMsg.isComplete).toBe(false);
 
       aiMsg.isComplete = false;
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'completed',
         compaction_operation_id: 'operation-split-1',
         requested_turn_id: 'turn-1',
@@ -284,7 +284,7 @@ describe('agentStatusHandler', () => {
 
 
     it('normalizes provider compaction boundary status into a compaction activity', () => {
-      const payload: CompactionStatusPayload = {
+      const payload: CompactionStatusPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacted',
         turn_id: 'turn-provider',
@@ -313,7 +313,7 @@ describe('agentStatusHandler', () => {
     });
 
     it('uses provider operation identity across compacting and compacted boundary keys', () => {
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacting',
         turn_id: 'turn-claude',
@@ -324,7 +324,7 @@ describe('agentStatusHandler', () => {
         provider_event_id: 'operation-1',
       }, mockContext);
 
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacted',
         turn_id: 'turn-claude',
@@ -376,14 +376,14 @@ describe('agentStatusHandler', () => {
         turn_id: 'turn-claude',
         semantic_compaction: false,
       } as const;
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         ...base,
         status: 'compacting',
         source_surface: 'claude.status_compacting',
         boundary_key: 'claude:session-1:claude.status_compacting:operation-2:turn-claude',
         rotation_eligible: false,
       } as CompactionStatusPayload, mockContext);
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         ...base,
         status: 'failed',
         source_surface: 'claude.compaction_failed',
@@ -418,7 +418,7 @@ describe('agentStatusHandler', () => {
     it('shows each AGY checkpoint (completed only, no started phase) as its own completed row', () => {
       // Payload shape emitted by the server's AGY checkpoint mapping (one event per compaction).
       const agyCheckpoint = (stepIndex: number, turnId: string, durationMs: number) => ({
-        kind: 'provider_compaction_boundary',
+        kind: 'provider_compaction_boundary', occurred_at: '2026-11-23T16:55:09.697Z',
         runtime_kind: 'antigravity_cli',
         provider: 'antigravity',
         source_surface: 'antigravity.checkpoint',
@@ -475,13 +475,13 @@ describe('agentStatusHandler', () => {
         semantic_compaction: false,
         rotation_eligible: false,
       } as const;
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         ...base,
         status: 'compacting',
         source_surface: 'codex.context_compaction_started',
         boundary_key: 'codex:thread-1:item-1:started',
       } as CompactionStatusPayload, mockContext);
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         ...base,
         status: 'failed',
         source_surface: 'codex.context_compaction_abandoned',
@@ -511,7 +511,7 @@ describe('agentStatusHandler', () => {
     it('renders Grok automatic, abandoned and manual compactions as one row each', () => {
       // Payload shapes from the server's Grok builder (ACP converter pairs by operation id).
       const grok = (fields: Record<string, unknown>) => ({
-        kind: 'provider_compaction_boundary',
+        kind: 'provider_compaction_boundary', occurred_at: '2026-11-23T16:55:09.697Z',
         runtime_kind: 'grok_build',
         provider: 'grok',
         provider_session_id: 'session-1',
@@ -553,7 +553,7 @@ describe('agentStatusHandler', () => {
     });
 
     it('reuses a previous active provider row before falling back to a new boundary key', () => {
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacting',
         turn_id: 'turn-provider-active',
@@ -562,7 +562,7 @@ describe('agentStatusHandler', () => {
         boundary_key: 'status-boundary',
       }, mockContext);
 
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacted',
         turn_id: 'turn-provider-active',
@@ -587,14 +587,14 @@ describe('agentStatusHandler', () => {
     });
 
     it('does not merge provider boundaries into an active semantic compaction row', () => {
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         phase: 'requested',
         turn_id: 'turn-shared',
         compaction_operation_id: 'semantic-operation-1',
         requested_turn_id: 'turn-shared',
       }, mockContext);
 
-      handleCompactionStatus({
+      handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
         kind: 'provider_compaction_boundary',
         status: 'compacted',
         turn_id: 'turn-shared',
@@ -680,7 +680,7 @@ describe('agentStatusHandler', () => {
 
   describe('handleError', () => {
     it('adds error segment without owning send state', () => {
-      const payload: ErrorPayload = { code: 'TEST_ERR', message: 'Something went wrong', error_scope: null, error_effect: null, turn_id: null };
+      const payload: ErrorPayload = { occurred_at: '2026-11-23T16:55:09.697Z', code: 'TEST_ERR', message: 'Something went wrong', error_scope: null, error_effect: null, turn_id: null };
       handleError(payload, mockContext);
 
       const lastMsg = mockContext.conversation.messages[0];
@@ -702,7 +702,7 @@ describe('agentStatusHandler', () => {
         segments: [textSegment],
       });
 
-      handleError({ code: 'STREAM_ERROR', message: 'stream failed', error_scope: null, error_effect: null, turn_id: null }, mockContext);
+      handleError({ occurred_at: '2026-11-23T16:55:09.697Z', code: 'STREAM_ERROR', message: 'stream failed', error_scope: null, error_effect: null, turn_id: null }, mockContext);
 
       expect(getStreamSegmentIdentity(textSegment)?.presentationComplete).toBe(true);
       expect(mockContext.conversation.messages[0].isComplete).toBe(true);
@@ -724,7 +724,7 @@ describe('agentStatusHandler', () => {
       mockContext.conversation.messages.push(aiMsg);
       mockContext.__segmentsById = { 'inv-123': toolSegment };
 
-      const payload: ErrorPayload = {
+      const payload: ErrorPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'TOOL_ERROR',
         message: "Error executing tool 'read_file' (ID: inv-123): failed to read file",
         error_scope: null,
@@ -760,7 +760,7 @@ describe('agentStatusHandler', () => {
       const aiMsg = { type: 'ai', isComplete: false, segments: [toolSegment] };
       mockContext.conversation.messages.push(aiMsg);
 
-      const payload: ErrorPayload = {
+      const payload: ErrorPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'LLM_STREAM_ERROR',
         message: 'stream exploded',
         error_scope: null,

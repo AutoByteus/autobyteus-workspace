@@ -27,10 +27,10 @@ const hydrate = async () => {
 const segment = { segment_id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' as const }
 const start = (address: string, agentRunId: string): AgentOrgExecutionEventDto => ({
   kind: 'agent_presentation', member_address: address, agent_run_id: agentRunId,
-  message: { type: 'SEGMENT_START', payload: { ...segment, metadata: null } },
+  message: { type: 'SEGMENT_START', payload: { occurred_at: '2026-11-23T16:55:09.697Z', ...segment, metadata: null } },
 } as AgentOrgExecutionEventDto)
 const item = (address: string, agentRunId: string, delta: string) => ({
-  member_address: address, agent_run_id: agentRunId, message: { type: 'SEGMENT_CONTENT' as const, payload: { ...segment, delta } },
+  member_address: address, agent_run_id: agentRunId, message: { type: 'SEGMENT_CONTENT' as const, payload: { occurred_at: '2026-11-23T16:55:09.697Z', ...segment, delta } },
 })
 const batch = (...items: ReturnType<typeof item>[]): AgentOrgExecutionEventDto => ({ kind: 'agent_presentation_batch', items })
 const text = (context: AgentContext): string => context.conversation.messages

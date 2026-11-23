@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+import { refreshConversationUpdatedAt } from '~/utils/conversation/conversationRowTimes';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
 import type { RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
@@ -93,7 +94,8 @@ export const beginLocalUserSubmission = (
     type: 'user',
     ...options.identity,
     text: options.text,
-    timestamp: new Date(occurredAt),
+    // No time until the node confirms the send (its `received_at` or `accepted_at`): the app never stamps one itself.
+    timestamp: null,
     contextFilePaths: [...options.attachments],
     ...(options.mentions?.length ? { mentionNames: options.mentions.map((mention) => mention.name) } : {}),
   });
@@ -130,7 +132,7 @@ const showSubmittedMessage = (handle: LocalUserSubmissionHandle, occurredAt: str
     messages.push(handle.message);
   }
   commitRecentEventMonitorEffect(context, 'STRUCTURAL');
-  context.state.conversation.updatedAt = occurredAt;
+  refreshConversationUpdatedAt(context.state.conversation);
   context.requirement = '';
   context.contextFilePaths = [];
   context.requestedSkillNames = [];
@@ -161,7 +163,6 @@ export const finalizeLocalSubmissionAttachments = (
   handle.message.contextFilePaths = [...attachments];
   if (handle.held) return true;
   commitRecentEventMonitorEffect(handle.context, 'PRESENTATION');
-  handle.context.state.conversation.updatedAt = occurredAt;
   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
   return true;
 };
@@ -185,7 +186,7 @@ const returnDraft = (handle: LocalUserSubmissionHandle, error: MessageNotDeliver
     if (at >= 0) {
       context.state.conversation.messages.splice(at, 1);
       commitRecentEventMonitorEffect(context, 'STRUCTURAL');
-      context.state.conversation.updatedAt = nowIso();
+      refreshConversationUpdatedAt(context.state.conversation);
     }
   }
   // A held send never cleared the box; any other: only an empty box takes the draft back.
@@ -227,7 +228,8 @@ export const failLocalSubmission = (
   handle.context.state.conversation.messages.push({
     type: 'ai',
     text: 'Error Occurred',
-    timestamp: new Date(occurredAt),
+    // A failure the node never saw: it has no recorded time (autobyteus-628 D-3).
+    timestamp: null,
     isComplete: true,
     segments: [{
       type: 'error',
@@ -237,7 +239,6 @@ export const failLocalSubmission = (
     }],
   });
   commitRecentEventMonitorEffect(handle.context, 'STRUCTURAL');
-  handle.context.state.conversation.updatedAt = occurredAt;
   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
   return 'failed';
 };

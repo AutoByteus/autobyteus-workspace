@@ -411,7 +411,7 @@ describe('AgentOrgStreamingService', () => {
     socket.emit(snapshot)
     await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
     const event = { kind: 'agent_presentation_batch', items: [{ member_address: '/direct', agent_run_id: 'agent-run',
-      message: { type: 'SEGMENT_CONTENT', payload: { segment_id: 's-1', turn_id: 't-1', segment_type: 'text', delta: 'xy' } } }] }
+      message: { type: 'SEGMENT_CONTENT', payload: { occurred_at: '2026-11-23T16:55:09.697Z', segment_id: 's-1', turn_id: 't-1', segment_type: 'text', delta: 'xy' } } }] }
     socket.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
       root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5, change_sequence_through: 9, event,
     } })

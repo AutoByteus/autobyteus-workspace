@@ -52,7 +52,7 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   expect(stream.isReady).toBe(true)
   expect(team.view.getFocusedAgentRunId()).toBe('lead')
   const context = team.view.getAgentContext(subject)!
-  const approval = () => emit('TOOL_APPROVAL_REQUESTED', { change_sequence: ++sequence, agent_run_id: subject, invocation_id: INV,
+  const approval = () => emit('TOOL_APPROVAL_REQUESTED', { occurred_at: '2026-11-23T16:55:09.697Z', change_sequence: ++sequence, agent_run_id: subject, invocation_id: INV,
     tool_name: 'run_bash', turn_id: 'task-turn', arguments: { message: 'actual task result' } })
   const data = projection(); data.data.getTeamMemberRunProjection.agentRunId = subject
   io.query.mockResolvedValue(data)
@@ -97,7 +97,7 @@ it.each([
   ['TOOL_EXECUTION_INTERRUPTED', 'interrupted', { reason: 'stopped' }],
 ])('TASK-03: actual %s before selection is not downgraded by history', async (type, status, extra) => {
   const test = harness(); test.approval()
-  test.emit(type as string, { change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
+  test.emit(type as string, { occurred_at: '2026-11-23T16:55:09.697Z', change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
     tool_name: 'run_bash', turn_id: 'task-turn', ...(type === 'TOOL_APPROVED' ? {} : { arguments: null }), ...extra as object })
   expect((await test.select()).disposition).toBe('committed')
   expect(test.tools()[0]?.status).toBe(status)
@@ -160,7 +160,7 @@ it('TASK-04: configured Team member retains the same manual decision and context
 })
 it('TASK-03: auto task execution retains its actual terminal lifecycle without manufacturing manual controls', async () => {
   const test = harness(TASK, true)
-  for (const type of ['TOOL_EXECUTION_STARTED', 'TOOL_EXECUTION_SUCCEEDED']) test.emit(type, {
+  for (const type of ['TOOL_EXECUTION_STARTED', 'TOOL_EXECUTION_SUCCEEDED']) test.emit(type, { occurred_at: '2026-11-23T16:55:09.697Z',
     change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV, tool_name: 'run_bash',
     turn_id: 'auto-turn', arguments: { message: 'automatic result' }, ...(type.endsWith('SUCCEEDED') ? { result: 'submitted' } : {}),
   })
@@ -175,7 +175,7 @@ it('TASK-03: auto task execution retains its actual terminal lifecycle without m
 it('TASK-03: terminal event during the first fetch retries and cannot become pending again', async () => {
   const test = harness(); test.approval()
   io.query.mockImplementationOnce(async () => {
-    test.emit('TOOL_EXECUTION_SUCCEEDED', { change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
+    test.emit('TOOL_EXECUTION_SUCCEEDED', { occurred_at: '2026-11-23T16:55:09.697Z', change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
       tool_name: 'run_bash', turn_id: 'task-turn', arguments: null, result: 'submitted once' })
     return projection()
   })

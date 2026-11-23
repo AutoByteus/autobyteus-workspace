@@ -186,7 +186,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
 
     emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
-    emit(callbacks, 'SEGMENT_START', {
+    emit(callbacks, 'SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z',
       change_sequence: 2,
       agent_run_id: teacherRunId,
       segment_id: 'teacher-segment',
@@ -194,7 +194,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       segment_type: 'text',
       metadata: null,
     });
-    emit(callbacks, 'SEGMENT_CONTENT', {
+    emit(callbacks, 'SEGMENT_CONTENT', { occurred_at: '2026-11-23T16:55:09.697Z',
       change_sequence: 3,
       agent_run_id: teacherRunId,
       segment_id: 'teacher-segment',
@@ -218,7 +218,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
     const message = "Couldn't give this run its new tools (thread/resume refused). Send your message again to retry, or stop and resume the run.";
 
-    emit(callbacks, 'ERROR', {
+    emit(callbacks, 'ERROR', { occurred_at: '2026-11-23T16:55:09.697Z',
       change_sequence: 1,
       agent_run_id: teacherRunId,
       code: 'RUNTIME_SESSION_REOPEN_FAILED',
@@ -238,7 +238,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     admitReady(callbacks, team);
     const teacher = team.view.getAgentContext(teacherRunId)!;
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
-    const segment = (agentRunId: string) => ({ agent_run_id: agentRunId, segment_id: `${agentRunId}-segment`, turn_id: 'turn-1', segment_type: 'text' });
+    const segment = (agentRunId: string) => ({ agent_run_id: agentRunId, segment_id: `${agentRunId}-segment`, turn_id: 'turn-1', segment_type: 'text', occurred_at: '2026-11-23T16:55:09.697Z' });
     emit(callbacks, 'SEGMENT_START', { change_sequence: 1, ...segment(teacherRunId), metadata: null });
     emit(callbacks, 'SEGMENT_START', { change_sequence: 2, ...segment(taskStudentRunId), metadata: null });
     emit(callbacks, 'SEGMENT_CONTENT_BATCH', { change_sequence: 3, change_sequence_through: 8, items: [
@@ -319,7 +319,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
   it('routes successful tool execution through the browser owner for the exact AgentRun', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
-    emit(callbacks, 'TOOL_EXECUTION_SUCCEEDED', {
+    emit(callbacks, 'TOOL_EXECUTION_SUCCEEDED', { occurred_at: '2026-11-23T16:55:09.697Z',
       change_sequence: 1,
       agent_run_id: teacherRunId,
       invocation_id: 'call-1',

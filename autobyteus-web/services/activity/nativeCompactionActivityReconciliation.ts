@@ -15,8 +15,10 @@ export const isNativeCompactionActivity = (activity: RunActivity): activity is C
 
 export const stopNativeCompactionActivity = (activity: CompactionActivity, at: Date): CompactionActivity =>
   isNativeCompactionIdentity(activity) && isActiveCompactionPhase(activity.phase)
+    // The row keeps the node's time it was shown at; one never shown (stopped before it started) gets no viewer-clock
+    // time and stays unshown (autobyteus-628 D-3).
     ? { ...activity, phase: 'stopped', message: 'Stopped', updatedAt: at,
-        centerTimelineTimestamp: activity.centerTimelineTimestamp ?? at }
+        centerTimelineTimestamp: activity.centerTimelineTimestamp }
     : activity;
 
 // Projection covers saved facts, not native live status. Only preserve facts already held

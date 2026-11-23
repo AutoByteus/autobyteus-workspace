@@ -5,16 +5,11 @@ import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 import { isExecutableContextAttachment } from '~/utils/contextFiles/contextAttachmentSend';
 
-const toTimestamp = (value?: string | null): Date => {
-  if (!value) {
-    return new Date();
-  }
-
+/** A user message's time, as the node recorded it (autobyteus-628 D-3); null when it has none yet, never the viewer's clock. */
+const toServerTime = (value?: string | null): Date | null => {
+  if (!value) return null;
   const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return new Date();
-  }
-  return parsed;
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
 const findExistingMessageIndex = (
@@ -41,7 +36,7 @@ export const buildUserMessageFromProjectionPayload = (
   return {
     type: 'user',
     text: payload.content ?? '',
-    timestamp: toTimestamp(payload.received_at),
+    timestamp: toServerTime(payload.received_at),
     contextFilePaths,
     ...identity,
   };
@@ -113,6 +108,8 @@ export const upsertPendingUserMessage = (
   if (entry.sender_type !== 'user' || acceptedInputIdentityKey(identity) === null) return;
   const message = buildUserMessageFromProjectionPayload({
     content: entry.content, message_id: identity.messageId, dedupe_key: identity.dedupeKey,
+    // When the node admitted the input: the message's time on a stream with no echo of it (`/ws/agent`).
+    received_at: entry.accepted_at,
   });
   message.contextFilePaths = entry.file_attachments.map(file => hydrateContextAttachment({
     locator: file.uri, type: file.file_type, displayName: file.file_name,
@@ -145,7 +142,8 @@ const applyPendingUserMessage = (messages: Conversation['messages'], message: Us
       messageId: identity.messageId ?? existing.messageId,
       dedupeKey: identity.dedupeKey ?? existing.dedupeKey,
     }),
-    timestamp: existing.timestamp,
+    // A time already shown stays; an own send not yet confirmed (null) takes the node's (ARCH-REV-002 N-1).
+    timestamp: existing.timestamp ?? message.timestamp,
     contextFilePaths: mergePendingContextFiles(existing.contextFilePaths ?? [], message.contextFilePaths ?? []),
   };
 };

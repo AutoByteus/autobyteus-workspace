@@ -1,6 +1,8 @@
 import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 
 export interface CompactionStatusPayload {
+  /** The node's time of the compaction event (autobyteus-628 D-3): the compaction row's time. */
+  occurred_at: string;
   phase?: CompactionStatusPhase | null;
   kind?: string | null;
   status?: string | null;

@@ -17,14 +17,6 @@ const normalizeText = (value: unknown): string | null =>
 const normalizeNumber = (value: unknown): number | null =>
   typeof value === 'number' && Number.isFinite(value) ? value : null;
 
-const normalizeProviderTimestamp = (value: unknown): Date | null => {
-  const timestamp = normalizeNumber(value);
-  if (timestamp === null || timestamp <= 0) {
-    return null;
-  }
-  return new Date(timestamp > 10_000_000_000 ? timestamp : timestamp * 1000);
-};
-
 const normalizeProviderStatusToPhase = (status: unknown): CompactionStatusPhase | null => {
   const normalized = normalizeText(status)?.toLowerCase().replace(/[^a-z0-9]+/g, '_') ?? null;
   if (!normalized) {
@@ -192,11 +184,11 @@ export const projectCompactionStatusToActivity = (
   input: {
     runId: string;
     previousStatus: AgentCompactionStatus | null;
-    now?: Date;
   },
 ): { status: AgentCompactionStatus; activity: CompactionActivity } => {
   const phase = normalizeCompactionPhase(payload);
-  const now = input.now ?? normalizeProviderTimestamp(payload.provider_timestamp) ?? new Date();
+  // The node's time of the event (autobyteus-628 D-3, ARCH-REV-002 N-2): a provider's own timestamp is not the node's clock.
+  const now = new Date(payload.occurred_at);
   const activityId = resolveCompactionActivityId(input.runId, payload, input.previousStatus, now);
   const isProviderBoundary = isProviderCompactionPayload(payload);
   const errorMessage = normalizeText(payload.error_message);

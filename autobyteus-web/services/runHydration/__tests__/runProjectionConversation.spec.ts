@@ -229,7 +229,7 @@ describe('runProjectionConversation', () => {
     if (conversation.messages[1]?.type !== 'ai') {
       throw new Error('expected AI message');
     }
-    expect(conversation.messages[1].timestamp.toISOString()).toBe('1970-01-01T00:00:02.000Z');
+    expect(conversation.messages[1].timestamp?.toISOString()).toBe('1970-01-01T00:00:02.000Z');
     expect(conversation.messages[1].segments).toEqual([
       {
         type: 'think',
@@ -387,12 +387,12 @@ describe('runProjectionConversation', () => {
       type: 'user',
       text: 'You received a message from sender name: program_manager',
     });
-    expect(conversation.messages[0]?.timestamp.toISOString()).toBe('1970-01-01T00:01:40.000Z');
+    expect(conversation.messages[0]?.timestamp?.toISOString()).toBe('1970-01-01T00:01:40.000Z');
     expect(conversation.messages[1]).toMatchObject({
       type: 'ai',
       text: 'FRONTEND_PARENT_TO_SUBTEAM',
     });
-    expect(conversation.messages[1]?.timestamp.toISOString()).toBe('1970-01-01T00:01:41.000Z');
+    expect(conversation.messages[1]?.timestamp?.toISOString()).toBe('1970-01-01T00:01:41.000Z');
   });
 
   it('preserves repeated no-id no-timestamp projection rows', () => {

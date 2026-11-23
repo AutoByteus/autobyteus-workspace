@@ -4,7 +4,7 @@ import type { SegmentStartPayload } from '../messageTypes';
 
 describe('createSegmentFromPayload (media)', () => {
   it('creates a media segment from metadata', () => {
-    const payload: SegmentStartPayload = {
+    const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       id: 'seg-1',
       turn_id: 'turn-1',
       segment_type: 'media',
@@ -23,7 +23,7 @@ describe('createSegmentFromPayload (media)', () => {
   });
 
   it('defaults to image when media_type is invalid', () => {
-    const payload: SegmentStartPayload = {
+    const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       id: 'seg-2',
       turn_id: 'turn-1',
       segment_type: 'media',
@@ -44,7 +44,7 @@ describe('createSegmentFromPayload (media)', () => {
 
 describe('createSegmentFromPayload (tool_call arguments)', () => {
   it('parses tool_call metadata.arguments when it is serialized JSON', () => {
-    const payload: SegmentStartPayload = {
+    const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       id: 'tool-1',
       turn_id: 'turn-1',
       segment_type: 'tool_call',

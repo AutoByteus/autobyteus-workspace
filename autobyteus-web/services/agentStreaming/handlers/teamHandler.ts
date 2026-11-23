@@ -38,7 +38,7 @@ export function handleInterAgentMessage(
       return true;
     }
   }
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, payload.occurred_at);
   
   const segment: InterAgentMessageSegment = {
     type: 'inter_agent_message',

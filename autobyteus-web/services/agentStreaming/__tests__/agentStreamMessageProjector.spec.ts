@@ -37,7 +37,7 @@ describe('agent stream message projector', () => {
 
     const start = {
       type: 'SEGMENT_START',
-      payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
     } as any;
     dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', agentRunId: 'member-run-1', memberAddress: '/worker' });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
@@ -80,7 +80,8 @@ describe('agent stream message projector', () => {
 
       expect(context.state.currentStatus).toBe(AgentStatus.Idle);
       expect(context.conversation.messages[0]).toMatchObject({ isComplete: true });
-      expect(context.conversation.updatedAt).toBe('2026-08-09T10:15:30.000Z');
+      // The conversation's time is its latest row's server time, not the viewer's clock (autobyteus-628 D-3).
+      expect(context.conversation.updatedAt).toBe('2026-08-09T10:15:00.000Z');
       expect(effects.navigation).toEqual({
         kind: 'PRESENTATION',
         occurredAt: '2026-08-09T10:15:30.000Z',

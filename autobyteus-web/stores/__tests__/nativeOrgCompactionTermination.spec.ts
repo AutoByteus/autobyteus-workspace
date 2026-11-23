@@ -57,7 +57,7 @@ const seedMembers = (store: ReturnType<typeof useAgentOrgContextsStore>) => {
   const entries = store.contextFor('org-run')!.listAgentContextEntries()
   for (const { agentRunId, context } of entries) {
     context.state.inputProjection = { runInstanceId: `runtime-${agentRunId}`, revision: 1 }
-    handleCompactionStatus({phase:'started',compaction_operation_id:`op-${agentRunId}`,turn_id:'turn-4',raw_trace_count:9,compaction_model_identifier:'native-model'},context)
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',phase:'started',compaction_operation_id:`op-${agentRunId}`,turn_id:'turn-4',raw_trace_count:9,compaction_model_identifier:'native-model'},context)
   }
   return entries
 }
@@ -88,7 +88,7 @@ it('Org success reconciles every own Agent and Team member before real empty-nat
 it.each(['completed','failed'] as const)('Org retains actual %s and excludes external runtime while settling other members',async phase=>{
   const {store}=await open('/director');const entries=seedMembers(store)
   const first=entries[0],external=entries[1]
-  handleCompactionStatus({phase,compaction_operation_id:`op-${first.agentRunId}`,turn_id:'turn-4'},first.context)
+  handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',phase,compaction_operation_id:`op-${first.agentRunId}`,turn_id:'turn-4'},first.context)
   external.context.config.runtimeKind='codex_app_server'
   failInspection=true
   await expect(store.stopAndInspect('org-run')).rejects.toThrow('inspection unavailable')

@@ -399,10 +399,10 @@ export const buildConversationFromProjection = (
 
   flushPendingAIMessage();
 
-  const createdAt = messages.length ? messages[0].timestamp.toISOString() : new Date().toISOString();
-  const updatedAt = messages.length
-    ? messages[messages.length - 1].timestamp.toISOString()
-    : new Date().toISOString();
+  // Stored rows carry the node's time; a conversation with none takes now as its own time (it shows no row).
+  const times = messages.flatMap((message) => message.timestamp ? [message.timestamp.getTime()] : []);
+  const createdAt = new Date(times.length ? Math.min(...times) : Date.now()).toISOString();
+  const updatedAt = new Date(times.length ? Math.max(...times) : Date.now()).toISOString();
 
   const conversation: Conversation = {
     id: runId,

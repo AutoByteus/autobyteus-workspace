@@ -40,7 +40,7 @@ const liveTurn = (viewerOffsetMs: number, sender: boolean) => {
     received_at: NODE_RECEIVED, context_file_paths: [] } as never, context);
   // 300 ms later (node time) the platform notice and the reply arrive; the viewer stamps the new AI message with its clock.
   vi.setSystemTime(new Date(nodeMs + 300 + viewerOffsetMs));
-  handleSystemTaskNotification({ sender_id: 'system.skill_update_notifier', content: '[Platform notice — skill updated]', message_id: 'n1' }, context);
+  handleSystemTaskNotification({ occurred_at: '2026-11-23T16:55:09.697Z', sender_id: 'system.skill_update_notifier', content: '[Platform notice — skill updated]', message_id: 'n1' }, context);
   const ai = context.conversation.messages.at(-1) as any;
   ai.segments.push({ type: 'text', content: 'My recommendation stands. Shall I?' });
   return context.conversation;
