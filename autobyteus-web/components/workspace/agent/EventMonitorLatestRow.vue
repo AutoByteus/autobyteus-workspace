@@ -34,7 +34,7 @@ import SystemTaskNotificationSegment from '~/components/conversation/segments/Sy
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
 import type { RecentEventMonitorPresentationItem } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { getRecentEventMonitorMessageUsageText } from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
-import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 /** One row of the latest feed: an agent or user message with its usage line, a platform notice, or a compaction. */
 const props = defineProps<{
@@ -48,7 +48,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+  (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 
 const usageText = computed(() => (props.item.kind === 'message' ? getRecentEventMonitorMessageUsageText(props.item.message) : ''));
