@@ -10,7 +10,7 @@
 - Resolved base: `origin/personal` @ `1f761bc8db` (fetched 2026-11-23)
 - Finalization target: `origin/personal`
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile` (`/tmp/sd628-install.log`); workspace builds and `nuxt prepare` (`/tmp/sd628/prepare.log`)
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-003
 - Authorities read (requirements gate, 2026-11-23):
   - `SKILL.md` (updated 2026-11-23)
   - `references/requirements-engineering.md`
@@ -80,3 +80,13 @@ Run: `memory/agent_teams/software_engineering_team_0ca0b5062e034ffd86ec7e849e854
 | Path | Owner | Purpose | Related | Status |
 | --- | --- | --- | --- | --- |
 | `probes/clock-order-reproduction.spec.ts` (+ `.run.log`) | Solution Designer | Failing reproduction with the real web code | REQ-001, AC-001 | Evidence; implementation turns it into the real spec |
+
+## SR-003 correction: the real reload path (from implementation, 2026-11-23; Read, verified)
+
+- On the real read path the stored traces are sorted before the replay: `agent-memory/services/raw-trace-record-normalizer.ts:121-130` sorts by `ts`, then turn, then `seq`. It is reached through `AgentMemoryService.getChatRawTraceSnapshot`, which `LocalMemoryRunViewProjectionProvider` calls.
+- The temporary test above fed traces straight to `buildHistoricalReplayEvents` and skipped that sort, so "entries come out in stored order" does not hold for a real reload.
+- What implementation's test shows with the real writers and provider (`tests/unit/run-history/projection/preface-notice-order.test.ts`):
+  - The founder's external shape `[n .697, u .696]` already reloads as input → notice on the base, because of the `ts` sort.
+  - On the base, an external preface at an equal `ts` and every native preface (same ms, 1 ms or 250 ms apart) reload as notice → input.
+  - D-2 (SR-002 rule) makes all of them input → notice. The SR-001 time-only rule fails native at 1 ms and at 250 ms.
+- Effect on the decisions: none. D-1 is the founder's fix (live); D-2 stays, for native and equal-`ts` externals. The "Reload path" section's conclusion for the founder's run (reload right) stands, but for the reason above.

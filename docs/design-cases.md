@@ -303,6 +303,8 @@ Principle 1 (trace through the real dependency).
 - **Again in autobyteus-5 (F-API-02):** a signed update committed, and Electron’s relaunch call returned with the correct AppImage path. The real successor still could not mount the image on Ubuntu; opening those same bytes from the menu worked. DS-004 assigns explicit restart to the original desktop launcher after confirmed shutdown. The check is a spontaneous usable new window and server in the same profile—not a relaunch spy, a writer receipt or a later operator launch.
 - **Notice it by:** a premise measured in a stand-in for the real runtime (Chromium for Electron, a fake for a platform API, one OS version for a range), or a platform behaviour that changed at a version inside the supported range (here targetSdk 35 edge-to-edge). Run the premise in the real runtime, or mark it unproven and make the design hold either way.
 
+- **Again in autobyteus-628 (implementation, SR-003):** to learn how a run reloads, the Solution Designer fed stored traces straight to the replay builder in a temporary test. The real read path sorts the traces by time first (`raw-trace-record-normalizer.ts:121-130`). So "the reload keeps stored order" was a premise checked on a stand-in. The decisions held, but for a different reason. Lesson: run a premise through the real entry point (here the run-view provider), not the function you expect to matter.
+
 ### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)
 
 Principles 1 (several kinds) and 13 (one owner for a sequence).

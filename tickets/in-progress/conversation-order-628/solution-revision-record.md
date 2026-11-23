@@ -22,3 +22,10 @@
 - Change: D-2's rule now has two cases: (a) the time condition for external runtimes (one writer, `RuntimeMemoryEventAccumulator`), and (b) both traces with `sourceEvent "LLMUserMessageReadyEvent"` for native, whose processor writes a notice only as a preface. Writers stay unchanged.
 - Evidence: implementation's citations, verified by the Solution Designer (`memory-ingest-input-processor.ts:12,53-73` read).
 - Classification: unchanged, Medium / Low. Routing: back to implementation directly; no review rule applies to a Medium/Low design revision.
+
+## SR-003 (2026-11-23)
+
+- Trigger: implementation's factual correction. The real reload path sorts traces by `ts` (`raw-trace-record-normalizer.ts:121-130`), which the investigation's temporary test skipped.
+- Kind: evidence-only clarification. Requirements, design and classification are unchanged; the SR-002 rule stands.
+- Sections: investigation notes, "SR-003 correction".
+- Design case: docs/design-cases.md Case 21 (a premise checked on a stand-in path).
