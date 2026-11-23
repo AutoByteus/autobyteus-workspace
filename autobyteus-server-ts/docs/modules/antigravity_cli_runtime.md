@@ -201,8 +201,16 @@ it is not an unscoped provider-global tool endpoint.
 
 For **new** AGY capsules, the native custom-agent allowlist is exactly
 `view_file`, `write_to_file`, `replace_file_content`, `grep_search`, `list_dir`,
-`find_by_name`, `run_command`, and `generate_image`. This is an allowlist of
-model-exposed native names, not the CLI's broader `init.tools` registry.
+`find_by_name`, `run_command`, and `generate_image`. These are the CLI's own
+registry names: the `tools` of its start message lists them (agy 1.5.15), while
+the CLI shows the model `read_file`, `write_file` and `edit_file` for the first
+three. The allowlist therefore never names those three aliases: a list that
+names both a name and its alias does not start (`tool name conflict`;
+autobyteus-588). It is an allowlist of model-exposed native names, not the CLI's
+broader registry. When the start message carries a `tools` array and an allowlist
+name is not in it (a newer CLI renamed a tool), the factory logs one
+`AGY_CAPSULE_TOOL_NOT_IN_REGISTRY run=<id> names=<list>` warning; it never fails
+or delays the start.
 AGY-native collaboration/subagent/messaging and native `call_mcp_tool` are not
 granted in that frontmatter. Separately configured, run-scoped AutoByteus MCP
 remains available through its own authority; an MCP image tool is not proof of
