@@ -1,0 +1,4 @@
+# API-TC server typecheck — commit e6380c2acf — macOS, 2026-11-23 — pnpm -C autobyteus-server-ts typecheck
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 59.5s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

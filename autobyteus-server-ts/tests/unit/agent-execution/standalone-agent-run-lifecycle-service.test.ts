@@ -465,6 +465,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const validateModelConfig = vi.fn(async () => ({
       kind: "valid" as const,
       selection: { llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
+      continuation: "same_session" as const,
     }));
     const current = harness({
       metadataStates: [{ kind: "present", metadata: stopped }],
@@ -484,12 +485,12 @@ describe("StandaloneAgentRunLifecycleService", () => {
       editability: { editable: true },
     });
     expect(validateModelConfig).toHaveBeenCalledWith({
-      context: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, currentModelIdentifier: "haiku", workspaceRootPath: stopped.workspaceRootPath },
+      context: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, currentModelIdentifier: "haiku", workspaceRootPath: stopped.workspaceRootPath, handOver: "available" },
       selection: { llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
     });
     expect(commitRunRuntimeSwitch).toHaveBeenCalledWith({
       runId: RUN_ID,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "high" }, continuation: "same_session" },
       switchId: expect.stringMatching(/^[0-9a-f-]{36}$/),
     });
   });

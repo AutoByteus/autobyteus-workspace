@@ -8,6 +8,7 @@ import type {
 } from "../domain/team-run-execution-tree.js";
 import type { AgentLaunchConfiguration } from "../domain/team-run-config.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import { applySelectionToConfiguredMember } from "../../run-history/domain/runtime-selection-rule.js";
 
@@ -27,6 +28,8 @@ export type TeamRunSelectionTarget = Readonly<{
   launchConfiguration: AgentLaunchConfiguration;
   /** The member's pending switch before this save (a Team default scope has none). */
   pendingRuntimeSwitch?: PendingRuntimeSwitch;
+  /** The decided continuation (REQ-003), normalized in after validation; a Team default scope never reads it. */
+  continuation?: RunContinuation;
 }>;
 
 const findConfiguredNode = (
@@ -70,11 +73,14 @@ const replaceLaunchConfig = (
 
 const patchMembers = (
   members: readonly ConfiguredAgentExecutionNode[],
-  patchByAddress: ReadonlyMap<string, TeamRunSelectionPatch>,
+  targetByAddress: ReadonlyMap<string, TeamRunSelectionTarget>,
   newSwitchId: () => string,
 ): readonly ConfiguredAgentExecutionNode[] => members.map((member) => {
-  const patch = patchByAddress.get(member.address);
-  return patch ? applySelectionToConfiguredMember(member, patch, newSwitchId()) : member;
+  const target = targetByAddress.get(member.address);
+  if (!target) return member;
+  const { patch, continuation } = target;
+  if (!continuation) throw new Error(`Configured Team scope '${patch.scopeAddress}' has no decided continuation.`);
+  return applySelectionToConfiguredMember(member, { ...patch, continuation }, newSwitchId());
 });
 
 /**
@@ -86,8 +92,8 @@ export const applyTeamRunSelectionPatches = (
   targets: readonly TeamRunSelectionTarget[],
   newSwitchId: () => string = randomUUID,
 ): TeamRunExecutionTreeSnapshot => {
-  const patchByAddress = new Map(targets.map((target) => [target.patch.scopeAddress, target.patch]));
-  const rootPatch = patchByAddress.get("/");
+  const targetByAddress = new Map(targets.map((target) => [target.patch.scopeAddress, target]));
+  const rootPatch = targetByAddress.get("/")?.patch;
   const { defaultLaunchSource, ...root } = tree.rootTeam;
   const defaultLaunch = rootPatch ? replaceLaunchConfig(root.defaultLaunchConfiguration, rootPatch) : root.defaultLaunchConfiguration;
   const defaultChanged = !isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration);
@@ -101,7 +107,7 @@ export const applyTeamRunSelectionPatches = (
     // An edit of the Team's own launch becomes its own, recorded as one (design V-11).
     ...(defaultChanged ? { defaultLaunchSource: SETTINGS_LAUNCH_SOURCE } : (defaultLaunchSource ? { defaultLaunchSource } : {})),
     defaultLaunchConfiguration: defaultLaunch,
-    members: patchMembers(members, patchByAddress, newSwitchId),
+    members: patchMembers(members, targetByAddress, newSwitchId),
   };
   return { ...tree, rootTeam };
 };

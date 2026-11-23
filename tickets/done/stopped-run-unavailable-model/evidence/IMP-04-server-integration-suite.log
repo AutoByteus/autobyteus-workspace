@@ -1,0 +1,10 @@
+IMP-04 — Full server integration suite
+Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+Commit: 1f761bc8db8625709b4513108d293c6a964fcb4d (worktree HEAD; uncommitted source changes on top)
+Environment: macOS (Darwin 25.5.0)
+Date: 2026-11-23
+Check ID: IMP-04
+
+Key line:
+Test Files  92 passed | 21 skipped (113)
+     Tests  523 passed | 71 skipped (594)

@@ -182,7 +182,12 @@ Agent/Team identity. Missing or inconsistent ownership evidence fails closed;
 it never produces a false editable state or a General write.
 
 `updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
-carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
+carries `runtimeKind`. The run's own agent runtime is a model-only edit in the same session, except when
+the validated result's `continuation` is `hand_over` (an AutoByteus model with a smaller
+or unknown context window, or a saved model that is no longer offered): then it is a
+**model hand-over**, stored as a pending switch whose two sides have the same agent runtime
+and made real by the next message like a switch, with the marker "Model changed from … to …";
+another agent runtime is an **agent runtime
 switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The Team family
 (`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and a delegated run's row in its
 delegator's Settings (that run's own stopped save, through the same mutations) edit the same selection with the same rule

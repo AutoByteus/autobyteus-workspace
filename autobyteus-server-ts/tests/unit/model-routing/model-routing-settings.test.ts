@@ -54,10 +54,10 @@ describe("ModelRoutingSettings.setRouterLaunch: checked like any agent launch, t
   };
 
   it("AC-002: a valid launch is checked in the router's workspace and stored with the checked model settings", async () => {
-    const { settings, validator, written } = setup({ kind: "valid", selection: { llmModelIdentifier: "claude-sonnet-5-5", llmConfig: { thinking_level: "high" } } });
+    const { settings, validator, written } = setup({ kind: "valid", selection: { llmModelIdentifier: "claude-sonnet-5-5", llmConfig: { thinking_level: "high" } }, continuation: "same_session" });
     await settings.setRouterLaunch({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: " claude-sonnet-5-5 ", llmConfig: { thinking_level: "high" } });
     expect(validator.validate).toHaveBeenCalledExactlyOnceWith({
-      context: { runtimeKind: "claude_agent_sdk", currentModelIdentifier: "claude-sonnet-5-5", workspaceRootPath: "/data/internal-workspaces/autobyteus-model-router" },
+      context: { runtimeKind: "claude_agent_sdk", currentModelIdentifier: "claude-sonnet-5-5", workspaceRootPath: "/data/internal-workspaces/autobyteus-model-router", handOver: "no_session" },
       selection: { llmModelIdentifier: "claude-sonnet-5-5", llmConfig: { thinking_level: "high" } },
     });
     expect(written).toEqual([
@@ -68,7 +68,7 @@ describe("ModelRoutingSettings.setRouterLaunch: checked like any agent launch, t
   });
 
   it("no model settings (or an empty object) store an empty value", async () => {
-    const { settings, written } = setup({ kind: "valid", selection: { llmModelIdentifier: "gpt-sol", llmConfig: {} } });
+    const { settings, written } = setup({ kind: "valid", selection: { llmModelIdentifier: "gpt-sol", llmConfig: {} }, continuation: "same_session" });
     await settings.setRouterLaunch({ runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", llmConfig: null });
     expect(written.at(-1)).toEqual([MODEL_ROUTER_LLM_CONFIG_SETTING_KEY, ""]);
   });
@@ -89,7 +89,7 @@ describe("ModelRoutingSettings.setRouterLaunch: checked like any agent launch, t
   });
 
   it("an unknown runtime or an empty model is refused before the check", async () => {
-    const { settings, validator } = setup({ kind: "valid", selection: { llmModelIdentifier: "x", llmConfig: null } });
+    const { settings, validator } = setup({ kind: "valid", selection: { llmModelIdentifier: "x", llmConfig: null }, continuation: "same_session" });
     await expect(settings.setRouterLaunch({ runtimeKind: "nope", llmModelIdentifier: "x", llmConfig: null })).rejects.toThrow("The Model Router's runtime must be one of");
     await expect(settings.setRouterLaunch({ runtimeKind: "codex_app_server", llmModelIdentifier: " ", llmConfig: null })).rejects.toThrow("must not be empty");
     expect(validator.validate).not.toHaveBeenCalled();

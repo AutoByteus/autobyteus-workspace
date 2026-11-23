@@ -1,0 +1,6 @@
+# WEB-01 web tests of the run settings texts and the model config component — commit e6380c2acf — macOS — 2026-11-23
+ ✓ utils/__tests__/grokBuildRuntimePresentation.spec.ts (3 tests) 2ms
+ ✓ utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts (2 tests) 2ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 4ms
+ Test Files  3 passed (3)
+      Tests  8 passed (8)

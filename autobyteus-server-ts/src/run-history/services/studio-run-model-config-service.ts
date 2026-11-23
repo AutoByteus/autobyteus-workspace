@@ -9,6 +9,7 @@ import type { TeamRunSelectionPatch } from "../../agent-team-execution/services/
 import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { RunModelConfigUpdateResult } from "../domain/run-model-config.js";
 import type { StoppedRunSelectionInput } from "../../agent-execution/services/standalone-stopped-run-selection-updater.js";
+import { stoppedRunHandOver } from "../../agent-execution/services/standalone-agent-run-eligibility.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type {
   AgentRunResumeConfig,
@@ -66,9 +67,11 @@ export class StudioRunModelConfigService {
   }
 
   async agentRunModelOptions(agentRunId: string): Promise<RunModelOptions> {
-    const { metadataConfig: config } = await this.getAgentRunResumeConfig(agentRunId);
+    const canonical = await this.getAgentRunResumeConfig(agentRunId);
+    const { metadataConfig: config } = canonical;
     return this.dependencies.modelSelectionService.listOptions({ runtimeKind: config.runtimeKind,
-      currentModelIdentifier: config.llmModelIdentifier, workspaceRootPath: config.workspaceRootPath });
+      currentModelIdentifier: config.llmModelIdentifier, workspaceRootPath: config.workspaceRootPath,
+      handOver: stoppedRunHandOver(agentMetadata(canonical)) });
   }
 
   async teamRunModelOptions(teamRunId: string): Promise<Array<RunModelOptions & {
@@ -81,9 +84,11 @@ export class StudioRunModelConfigService {
     for (const member of tree.rootTeam.members) {
       scopes.push({ scopeKind: "CONFIGURED_AGENT", scopeAddress: member.address, config: member.launchConfiguration });
     }
-    const options = await this.dependencies.modelSelectionService.listOptionsMany(scopes.map(({ config }) => ({
+    const options = await this.dependencies.modelSelectionService.listOptionsMany(scopes.map(({ scopeKind, config }) => ({
       runtimeKind: config.runtimeKind, currentModelIdentifier: config.llmModelIdentifier,
       workspaceRootPath: config.workspaceRootPath ?? process.cwd(),
+      // A configured Agent can hand over; the Team's own default scope has no session to continue (DEC-007).
+      handOver: scopeKind === "CONFIGURED_AGENT" ? "available" : "no_session",
     })));
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }

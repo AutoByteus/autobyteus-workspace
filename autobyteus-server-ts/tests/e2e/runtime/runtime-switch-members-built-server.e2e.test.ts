@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { readOrgRunTree } from "../helpers/org-run-tree.js";
 
 // Agent runtime switch of a TEAM member and of ORG members (a direct Agent and an Agent of a mounted Team) on the BUILT server
 // (autobyteus-348: REQ-001..REQ-004, AC-001..AC-007; invariants I-3, I-5, I-7, I-8, I-10). The server is `dist/app.js` on a
@@ -134,7 +135,8 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
 
   const treeOf = async (file: string): Promise<Json> => JSON.parse(await fs.readFile(file, "utf8")) as Json;
   const teamTreeFile = (teamRunId: string) => memory("agent_teams", teamRunId, "team_run_execution_tree.json");
-  const orgTreeFile = (orgRunId: string) => memory("agent_orgs", orgRunId, "agent_org_run_execution_tree.json");
+  /** The Org's tree with each member's own pending switch (the Org's own file holds only its units; see helpers/org-run-tree.ts). */
+  const orgTree = (orgRunId: string): Promise<Json> => readOrgRunTree(gql, memory(), orgRunId);
   const teamMember = (tree: Json, address: string): Json => tree.rootTeam.members.find((member: Json) => member.address === address);
   const orgAgents = (tree: Json): Json[] => tree.rootOrg.members.flatMap((member: Json) => "agentRunId" in member ? [member] : member.members);
   const orgAgent = (tree: Json, address: string): Json => orgAgents(tree).find((member) => member.address === address)!;
@@ -415,12 +417,12 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
       agentOrgDefinitionId: orgId, rootConfiguration: nativeLaunch(workspace), agentOverrides: [] } })).createAgentOrgRun as Json;
     expect(created.success, created.message).toBe(true);
     const orgRunId = created.agentOrgRunId as string;
-    const startTree = await treeOf(orgTreeFile(orgRunId));
+    const startTree = await orgTree(orgRunId);
     const direct = orgAgent(startTree, "/direct").agentRunId as string;
     const worker = orgAgent(startTree, "/crew/worker").agentRunId as string;
     const lead = orgAgent(startTree, "/crew/lead").agentRunId as string;
     const socketPath = orgStream(orgRunId);
-    const dir = (runId: string) => findDir(memory("agent_orgs", orgRunId), runId)!;
+    const dir = (runId: string) => findDir(memory(), runId)!;
 
     await talk(socketPath, direct, "NATIVE-TURN-DIRECT: please say something.", "direct native turn");
     await talk(socketPath, worker, "NATIVE-TURN-WORKER: please say something.", "worker native turn");
@@ -430,12 +432,12 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
     const leadBefore = readFileSync(path.join(dir(lead), "raw_traces_active.jsonl"), "utf8");
 
     expect((await gql("mutation($id: String!) { terminateAgentOrgRun(agentOrgRunId: $id) { success } }", { id: orgRunId })).terminateAgentOrgRun.success).toBe(true);
-    const treeBefore = await treeOf(orgTreeFile(orgRunId));
+    const treeBefore = await orgTree(orgRunId);
     const saved = (await gql(`mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { success outcome message fieldErrors { path message } } }`, { input: {
       orgRunId, teamWorkspacePatches: [], selectionPatches: ["/direct", "/crew/worker"].map((scopeAddress) => ({
         scopeKind: "CONFIGURED_AGENT", scopeAddress, runtimeKind: AGY, llmModelIdentifier: AGY_MODEL, llmConfig: null })) } })).updateStoppedAgentOrgRunConfig as Json;
     expect(saved, JSON.stringify(saved)).toMatchObject({ success: true, outcome: "UPDATED" });
-    const pendingTree = await treeOf(orgTreeFile(orgRunId));
+    const pendingTree = await orgTree(orgRunId);
     for (const address of ["/direct", "/crew/worker"]) {
       expect(orgAgent(pendingTree, address)).toMatchObject({
         launchConfiguration: expect.objectContaining({ runtimeKind: AGY }), platformAgentRunId: null,
@@ -459,7 +461,7 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
       expect(records.filter((record) => record.sender_id === "system.runtime_handover"), `${address}: I-5`).toHaveLength(1);
       expect(echoed(dir(runId))[0]!.indexOf("[System: runtime hand-over]"), `${address}: the notice comes first`).toBe(0);
     }
-    const doneTree = await treeOf(orgTreeFile(orgRunId));
+    const doneTree = await orgTree(orgRunId);
     for (const address of ["/direct", "/crew/worker"]) {
       expect(Object.hasOwn(orgAgent(doneTree, address), "pendingRuntimeSwitch"), `${address}: pending cleared`).toBe(false);
       expect(orgAgent(doneTree, address).platformAgentRunId, `${address}: session set`).toEqual(expect.any(String));
