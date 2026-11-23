@@ -1,0 +1,33 @@
+# IMP-08 (D-3) the whole web and server unit suites, both typechecks, the three web guards, the contract dist check, the tracked-imports guard
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run ; cd autobyteus-server-ts && pnpm test:unit ;
+#          pnpm -C autobyteus-web typecheck ; pnpm -C autobyteus-server-ts typecheck ; the three guards ; pnpm check:contract-dist ;
+#          pnpm -C autobyteus-server-ts exec vitest run tests/architecture/tracked-imports.test.ts     (one at a time)
+# commit: tree = 87d7321915 (run before committing; same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Pass. Fixtures that build timed frames gained occurred_at (accepted_at on input entries); specs that asserted
+#   updatedAt or a navigation time equal to the viewer's clock were rewritten to the approved behavior (DESIGN.md rule 11).
+
+## web unit suite
+ Test Files  803 passed (803)
+      Tests  6123 passed | 2 skipped (6125)
+
+## server unit suite
+ Test Files  1074 passed | 5 skipped (1079)
+      Tests  8924 passed | 9 skipped (8933)
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## server typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## contract dist
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.
