@@ -92,8 +92,8 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
   | Structure | Decision |
   | --- | --- |
   | New `isInterruptedToolResult` (node) | Producers that read it: the replay's `createToolEvent` (both call sites) and the work journal's `interruptedFromError` (its outputs unchanged). The sequencer takes its `Tool execution interrupted.` text from the same file. |
-  | `HistoricalReplayToolEvent.status` can now be `interrupted` for a stored run | Activities builder: passes it on. Page projection `statusKey`: `interrupted` (SR-001 D-D). Conversation transformer: `interrupted` is not pending, so `tool_call`, and the entry now carries `toolStatus`. Codex and Claude view providers: unchanged (their own statuses). `recent-run-projection-policy.ts` and `run-projection-utils.ts`: implementation lists each status read and decides each (Case 26). |
-  | Conversation tool entry gains `toolStatus` (JSON wire) | Web `runProjectionConversation.ts` `buildToolSegments` takes `status` from `toolStatus`, and `inferToolStatus` is removed. Org hydration (`agentOrgContextHydration.ts`) and the stored-state loader go through `buildConversationFromProjection` and need no change. Team member reconciliation (`teamMemberToolStateReconciliation.ts`): implementation checks it reads segments, not entries. Codex provider entries also carry `toolStatus` (their own mapped status). |
+  | `HistoricalReplayToolEvent.status` can now be `interrupted` for a stored run | Activities builder: passes it on. Page projection `statusKey`: `interrupted` (SR-001 D-D). Conversation transformer: `interrupted` is not pending, so `tool_call`, and the entry now carries `toolStatus`. Codex and Claude view providers: not on the read path (N-4); the Codex one is removed (SR-005), the Claude one is FU-009. `recent-run-projection-policy.ts` and `run-projection-utils.ts`: implementation lists each status read and decides each (Case 26). |
+  | Conversation tool entry gains `toolStatus` (JSON wire) | Web `runProjectionConversation.ts` `buildToolSegments` takes `status` from `toolStatus`, and `inferToolStatus` is removed. Org hydration (`agentOrgContextHydration.ts`) and the stored-state loader go through `buildConversationFromProjection` and need no change. Team member reconciliation (`teamMemberToolStateReconciliation.ts`): implementation checks it reads segments, not entries. (The Codex provider is removed in SR-005, so it needs no `toolStatus`.) |
 
 - Deliberately left alone:
   - the summary rules (order, the `cd` rule);
@@ -103,7 +103,7 @@ Ten bounded fixes, D-A … D-J below. Each uses its existing owner. Two consolid
   - the workspace registry format;
   - `relative-link` handling in `MarkdownPreviewer` (576);
   - which hop lost MSP-59's update (FU-001).
-- Follow-ups: FU-001 … FU-004, FU-008 (Codex read-back of a stopped call).
+- Follow-ups: FU-001 … FU-004, FU-009 (the unused Claude view provider). FU-008 was withdrawn in SR-005.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -421,7 +421,7 @@ export const isInterruptedToolResult = (result: { sourceEvent?: string | null; e
 
 **Persisted data.** Not Affected: read-side only. Traces stored before the change carry the same `sourceEvent` and error, so they read the same way.
 
-**Out of scope.** Codex runs are read from Codex's thread files, whose tool statuses have no interruption (DEC-010, FU-008).
+**Codex (SR-005).** Covered: Codex's history is read through the same local replay, and its interrupts are stored by the sequencer (DEC-010). SR-004's exclusion was wrong (ARCH-REV-003 N-3).
 
 **Tests.**
 - Node unit (replay): an interrupted result written by the sequencer (both source events), one written by native (`AgentTurnInterruptedEvent`, error `user_interrupt` and another reason), an error-only record, and an ordinary failure (stays `error`) and a denial (stays `denied`).
@@ -430,3 +430,11 @@ export const isInterruptedToolResult = (result: { sourceEvent?: string | null; e
 - Web: hydration takes `toolStatus`.
 - MSP-102 passes for the phone opened after the stop, the desktop reload and the earlier-trace card.
 - Source review: targeted, of the replay and the shared rule (CRR-002).
+
+## SR-005: Codex covered; the unused Codex view provider removed (ARCH-REV-003 N-3, N-4)
+
+- N-3: Codex read-back is covered by D-D2 (DEC-010 corrected). MSP-102 or a server unit case should include a Codex-recorded interrupt (a `TOOL_EXECUTION_INTERRUPTED` result written by the sequencer) if the probe's Codex fixture allows; the shared rule's unit test covers both source events either way.
+- N-4 (Principle 7, dead code in a touched file):
+  - `run-history/projection/providers/codex-run-view-projection-provider.ts` is imported only by its own test (`tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts`). The service uses only `LocalMemoryRunViewProjectionProvider` (`agent-run-view-projection-service.ts:42-54,84`), and D-A touched the file. Remove the file and its test. D-A's Codex rows (`:146-159,190`) go with it.
+  - Implementation then checks what only it imported (for example the Codex thread history normalizer and reader) and removes what becomes unreached. Each removal comes with its search evidence in the handoff; code still reached by a live path stays.
+  - `claude-run-view-projection-provider.ts` is also imported only by its own test, but this ticket does not touch it: FU-009.

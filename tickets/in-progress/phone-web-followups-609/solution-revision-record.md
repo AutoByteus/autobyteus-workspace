@@ -60,3 +60,11 @@ Review note: ARCH-REV-002 passed SR-002 (2026-11-22, `design-review-report.md`).
 - Routing: implementation, then a targeted source review of the replay and the shared rule, then API/E2E (MSP-102, the whole phone probe, the server suites, the fresh-start build), as CRR-002 lists.
 - Design case: docs/design-cases.md Case 26, "again in autobyteus-609".
 - Remaining gaps: FU-001 … FU-004, FU-008.
+
+## SR-005 (2026-11-23)
+
+- Trigger: ARCH-REV-003 (Pass of SR-004), with two non-blocking items: N-3 (DEC-010's basis was false) and N-4 (dead view providers).
+- Kind: requirements correction (AC-D widened back to every runtime, DEC-010 corrected) and a design addition (remove the dead Codex view provider, a file D-A touched). The routing is unchanged: the Pass stands, and the design adds only a removal.
+- Affected IDs: AC-D, DEC-010; design Change Scope, SR-005 section; FU-008 withdrawn, FU-009 new.
+- Approval: Solution Designer within the direction (the corrected AC-D is REQ-D's original scope); user informed.
+- Sent to `/implementation_engineer` directly, as the reviewer had already handed off SR-004.
