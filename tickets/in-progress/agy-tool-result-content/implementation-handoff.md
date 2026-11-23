@@ -65,7 +65,7 @@ Antigravity's stream reports a finished read/search step as a size summary (or n
 
 ## Known Risks
 
-- D-3 measurement (live agy 1.5.15, 123 steps: `read_file` ×~, `run_command`, `write_file`, `edit_file`): the row was readable at the DONE event for 122, for 1 within 5 ms. The bounded re-read (5 attempts × 40 ms, only for "row not found", abortable) was therefore added; the miss rate is well below the 5% escalation line.
+- D-3 measurement (live agy 1.5.15, 123 steps: `read_file`, `run_command`, `write_file`, `edit_file`): the row was readable at the DONE event for 122, for 1 within 5 ms. The bounded re-read (5 attempts × 40 ms, only for "row not found", abortable) was therefore added; the miss rate is well below the 5% escalation line.
 - The tool-name mismatch (above): with the real CLI, `grep_search`, `find_by_name` and `view_file` rows could not be captured; their handling is proven by synthetic rows shaped from the notes and by the scripted CLI only. Live `read_file`, `write_file`, `edit_file`, `run_command` rows were observed with the shapes the reader and renderer expect.
 - Behavior change that is intended but visible: for a recovered `write_file`/`edit_file`, the success confirmation is not shown in the journal (as for `write_to_file`), and `run_command` lines now say `→ exit N` for a non-zero exit code.
 - Raw-trace growth by the recovered text (cap 256 KiB per result).
