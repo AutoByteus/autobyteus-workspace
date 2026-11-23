@@ -22,6 +22,7 @@ import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeOpenTaskRecords
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { readRunTree } from "../helpers/run-tree-delegated.js";
+import { faithfulUpgradeLedger, migrationsFrom } from "./helpers/faithful-upgrade-ledger.js";
 
 // The startup migration `20261018_append_only_message_logs_v1` through the BUILT Studio server (`dist/app.js`, the server the
 // desktop app embeds) on a faithful upgrade, with the real migration runner, its SQLite ledger and the production registry order.
@@ -145,19 +146,21 @@ const faithfulRoot = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "append-only-logs-e2e-")); roots.push(root);
   await fs.mkdir(path.join(root, "home")); await fs.mkdir(path.join(root, "workspace", "refs"), { recursive: true });
   await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
-  const fresh = await studio(root);
-  const recorded = (await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[];
-  const ids = recorded.map((m) => String(m.migrationId));
-  expect(ids.indexOf(OWN_RUN), "own-run is registered before the conversion").toBeGreaterThanOrEqual(0);
-  expect(ids.indexOf(OURS), "own-run is registered before the conversion").toBeGreaterThan(ids.indexOf(OWN_RUN));
-  // Migrations registered after the conversion are newer than this install, so they never ran either.
-  const neverRan = [OWN_RUN, ...ids.slice(ids.indexOf(OURS))];
-  await fresh.stop();
-  const db = new DatabaseSync(path.join(root, "db", "production.db"));
-  for (const id of neverRan) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
-  const remaining = db.prepare("SELECT migration_id FROM app_data_migration_records").all() as Json[];
-  db.close();
-  expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - neverRan.length);
+  await faithfulUpgradeLedger({
+    databaseFile: path.join(root, "db", "production.db"),
+    firstStart: async () => {
+      const fresh = await studio(root);
+      const ids = ((await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[]).map((m) => String(m.migrationId));
+      await fresh.stop();
+      return ids;
+    },
+    neverRan: (ids) => {
+      expect(ids.indexOf(OWN_RUN), "own-run is registered before the conversion").toBeGreaterThanOrEqual(0);
+      expect(ids.indexOf(OURS), "own-run is registered before the conversion").toBeGreaterThan(ids.indexOf(OWN_RUN));
+      // Migrations registered after the conversion are newer than this install, so they never ran either.
+      return [OWN_RUN, ...migrationsFrom(OURS)(ids)];
+    },
+  });
 
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
