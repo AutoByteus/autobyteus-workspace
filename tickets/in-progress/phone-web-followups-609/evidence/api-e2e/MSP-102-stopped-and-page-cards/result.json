@@ -1,0 +1,126 @@
+{
+  "MSP-102": {
+    "result": "Fail",
+    "seconds": 75.6,
+    "error": "AC-D the phone's Activity row and its detail read \"Stopped\"; AC-D the stopped call's earlier-trace card shows the stop icon (the page answers statusKey interrupted)",
+    "details": {
+      "run": "fact_checker_098e71178b874dc7b2017e8d52d91e3e",
+      "fillers": 50,
+      "pageEvents": 110,
+      "loadedEarlierCount": 10,
+      "pageRequests": 1,
+      "live": {
+        "send_message_to": {
+          "name": "send_message_to",
+          "summary": "→ /release_notes_writer",
+          "stopped": false
+        },
+        "get_project_task": {
+          "name": "get_project_task",
+          "summary": "autobyteus-609",
+          "stopped": false
+        },
+        "run_command": {
+          "name": "run_command",
+          "summary": "ls -la docs",
+          "stopped": false
+        },
+        "view_file": {
+          "name": "view_file",
+          "summary": "docs/notes-609.md",
+          "stopped": false
+        }
+      },
+      "heldCard": {
+        "name": "run_command",
+        "summary": "sleep 600 # HOLD_TURN",
+        "stopped": true
+      },
+      "deskActivity": [
+        {
+          "name": "run_command",
+          "chip": "Success"
+        },
+        {
+          "name": "run_command",
+          "chip": "Stopped"
+        }
+      ],
+      "phoneRow": {
+        "status": "error",
+        "word": "Failed"
+      },
+      "phoneDetail": "Failed",
+      "api": {
+        "send_message_to": {
+          "kind": "tool_card",
+          "toolName": "send_message_to",
+          "statusKey": "success",
+          "summaryArgs": {
+            "recipient_address": "/release_notes_writer"
+          }
+        },
+        "get_project_task": {
+          "kind": "tool_card",
+          "toolName": "get_project_task",
+          "statusKey": "success",
+          "summaryArgs": {
+            "task_id": "autobyteus-609"
+          }
+        },
+        "run_command": {
+          "kind": "tool_card",
+          "toolName": "run_command",
+          "statusKey": "success",
+          "summaryArgs": {
+            "CommandLine": "cd /agy/probe-609 && ls -la docs"
+          }
+        },
+        "view_file": {
+          "kind": "tool_card",
+          "toolName": "view_file",
+          "statusKey": "success",
+          "summaryArgs": {
+            "AbsolutePath": "/agy/probe-609/docs/notes-609.md"
+          }
+        },
+        "held": {
+          "kind": "tool_card",
+          "toolName": "run_command",
+          "statusKey": "error",
+          "summaryArgs": {
+            "CommandLine": "sleep 600 # HOLD_TURN"
+          }
+        }
+      },
+      "browse": {
+        "send_message_to": {
+          "name": "send_message_to",
+          "summary": "→ /release_notes_writer",
+          "stopped": false
+        },
+        "get_project_task": {
+          "name": "get_project_task",
+          "summary": "autobyteus-609",
+          "stopped": false
+        },
+        "run_command": {
+          "name": "run_command",
+          "summary": "ls -la docs",
+          "stopped": false
+        },
+        "view_file": {
+          "name": "view_file",
+          "summary": "docs/notes-609.md",
+          "stopped": false
+        }
+      },
+      "browseHeld": {
+        "name": "run_command",
+        "summary": "sleep 600 # HOLD_TURN",
+        "stopped": false
+      }
+    }
+  },
+  "browserErrors": []
+}

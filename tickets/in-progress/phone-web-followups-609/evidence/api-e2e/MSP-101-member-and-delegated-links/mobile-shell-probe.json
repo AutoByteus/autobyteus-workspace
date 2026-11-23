@@ -1,0 +1,120 @@
+{
+  "startedAt": "2026-11-22T23:45:23.049Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 64069,
+      "nodeId": "srv_7iDpzX225NPZLKHMAy9zPs8_nHEscDva",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 64070,
+      "nodeId": "srv_C8ELUDif3RHUEX_H6pJFM9ScU4h20xou",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_8d7b8b3de1bd495fa9a8af4815d65a98",
+    "writerRun": "release_notes_writer_be131e92624747b2bb4ea4a0110c9138",
+    "squadRun": "docs_review_team_8d6bb2e64a0e492cb99a2b285c828c6d",
+    "reviewer": "release_notes_writer_bc6d36fdf79941bb87a791b373ab995e",
+    "memberDelegated": "fact_checker_3c2e4b5e5ba142df89c8b25c2171db38",
+    "remoteAgentRun": "publisher_9e9f121b7eee4e4a90bec9b485f9bb0b",
+    "remoteTeamRun": "studio_team_caa7a3ebae5e4bbe9565ef444a6e2fd7",
+    "plain": [
+      "fact_checker_81a20478c8dd4cd481011d412ca5a806",
+      "fact_checker_7cd0ca914f164cedbbb4bf2b7c38b623",
+      "fact_checker_a83c8ac8134a4817a0f3a6389301eed9"
+    ],
+    "org": "delivery_org_1f1880c6c1484d8ba21de78ff15b7794",
+    "orgPlanner": "release_notes_writer_6c44cbeb85484650962923fbab77c161",
+    "reviewOrg": "review_org_b11c440325f64effa6e23bea610da8b0",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_6d3611744261400cab2876b5a5f27050",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_873ca81bbb3444299608e9676926eb22",
+    "deliveryLead": "fact_checker_7c28e724757141fc9924cae9ae6f138b",
+    "deliveryMate": "release_notes_writer_7cfe317c76364094afd211b65496015f",
+    "leadDelegated": "changelog_helper_86b02b3ba443496093e7c972323f9526",
+    "approver": "approver_811d72b65a7e4bf1bd78281a16f38685",
+    "taskA": "launch-77a153-1",
+    "taskB": "launch-77a153-2"
+  },
+  "cases": {
+    "MSP-101": {
+      "result": "Pass",
+      "seconds": 11.4,
+      "team": "delivery_team_76d04a6c60864e609358dfeba74c28d0",
+      "mate": "release_notes_writer_9523065ed06a44a39090a56d9f2603fb",
+      "host": "project_task_manager_561d32d7e82a4ce5bcddbc7122ab0e9b",
+      "delegatedRun": "release_notes_writer_f904c33e312640d9891b9027c9062c79",
+      "folders": {
+        "mate": "<tmp>/tmp/mobile-shell-probe-bnn4DW/alpha/ws-609-mate",
+        "delegated": "<tmp>/tmp/mobile-shell-probe-bnn4DW/alpha/ws-609-host",
+        "host": "<tmp>/tmp/mobile-shell-probe-bnn4DW/alpha/ws-609-host"
+      },
+      "expected": {
+        "mate": "mate",
+        "delegated": "host"
+      },
+      "desktop": {
+        "mate": {
+          "own": "MATE-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        },
+        "delegated": {
+          "own": "HOST-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        }
+      },
+      "phone": {
+        "mate": {
+          "own": "MATE-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        },
+        "delegated": {
+          "own": "HOST-609-BODY",
+          "ownShown": true,
+          "othersShown": []
+        }
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "headingLinks": {
+    "filesRun": "fact_checker_2f60b8730a484957a2f8091558f05c41",
+    "host": "project_task_manager_59b6cfa8879147119af8683a70df55c6",
+    "talkRun": "release_notes_writer_045c5a6521f140368542b86822b8bece",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "summary": {
+    "cases": {
+      "MSP-101": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-22T23:46:22.849Z"
+}

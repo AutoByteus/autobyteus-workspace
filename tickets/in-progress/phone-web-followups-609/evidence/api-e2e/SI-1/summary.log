@@ -1,0 +1,8 @@
+ Test Files  91 passed | 21 skipped (112)
+      Tests  518 passed | 71 skipped (589)
+   Duration  173.57s (transform 8.70s, setup 2.39s, import 77.74s, tests 83.43s, environment 6ms)
+start 00:06:12
+server build exit 0
+prepare exit 0
+integration exit 0
+end 00:09:50
