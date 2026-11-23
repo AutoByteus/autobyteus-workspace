@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { readOrgRunTree } from "../helpers/org-run-tree.js";
 import { delegatedRunsTree, readRunTree } from "../helpers/run-tree-delegated.js";
 
 // Agent runtime switch of Org members and delegated copies beyond runtime-switch-members-built-server (autobyteus-348, API/E2E):
@@ -136,7 +137,8 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
   const launchOf = (runtimeKind: string, llmModelIdentifier: string, workspaceRootPath: string) => ({ runtimeKind, llmModelIdentifier, llmConfig: null, autoExecuteTools: true, workspaceRootPath });
 
   const treeOf = async (file: string): Promise<Json> => JSON.parse(await fs.readFile(file, "utf8")) as Json;
-  const orgTreeFile = (orgRunId: string) => memory("agent_orgs", orgRunId, "agent_org_run_execution_tree.json");
+  /** The Org's tree with each member's own pending switch (the Org's own file holds only its units; see helpers/org-run-tree.ts). */
+  const orgTree = (orgRunId: string): Promise<Json> => readOrgRunTree(gql, memory(), orgRunId);
   const orgAgents = (tree: Json): Json[] => tree.rootOrg.members.flatMap((member: Json) => "agentRunId" in member ? [member] : member.members);
   const orgAgent = (tree: Json, address: string): Json => orgAgents(tree).find((member) => member.address === address)!;
 
@@ -266,12 +268,12 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
       agentOrgDefinitionId: orgId, rootConfiguration: launchOf(AGY, AGY_MODEL, workspace), agentOverrides: [] } })).createAgentOrgRun as Json;
     expect(created.success, created.message).toBe(true);
     const orgRunId = created.agentOrgRunId as string;
-    const startTree = await treeOf(orgTreeFile(orgRunId));
+    const startTree = await orgTree(orgRunId);
     const direct = orgAgent(startTree, "/direct").agentRunId as string;
     const worker = orgAgent(startTree, "/crew/worker").agentRunId as string;
     const lead = orgAgent(startTree, "/crew/lead").agentRunId as string;
     const stream = orgStream(orgRunId);
-    const dir = (runId: string) => findDir(memory("agent_orgs", orgRunId), runId)!;
+    const dir = (runId: string) => findDir(memory(), runId)!;
 
     for (const [runId, label] of [[direct, "direct"], [worker, "worker"], [lead, "lead"]] as const) await talk(stream, runId, "ECHO_INPUT", `${label} antigravity turn`);
     const agyDirect = ids(active(dir(direct)));
@@ -285,7 +287,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
         { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/direct", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null },
         { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/crew/worker", runtimeKind: GROK, llmModelIdentifier: GROK_MODEL, llmConfig: null }] } })).updateStoppedAgentOrgRunConfig as Json;
     expect(saved, JSON.stringify(saved)).toMatchObject({ success: true, outcome: "UPDATED" });
-    const pendingTree = await treeOf(orgTreeFile(orgRunId));
+    const pendingTree = await orgTree(orgRunId);
     const keyOf = (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(pendingTree, address).pendingRuntimeSwitch.switchId}`;
     expect(orgAgent(pendingTree, "/direct")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: NATIVE }), platformAgentRunId: null });
     expect(orgAgent(pendingTree, "/crew/worker")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: GROK }), platformAgentRunId: null });
@@ -300,7 +302,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     expect(JSON.stringify(failed.acks), "the reason names the failing archive step").toContain("EISDIR");
     expect(activeText(dir(direct)), "the previous agent's file is byte-identical after the failure").toBe(directBefore);
     expect(completeSegments(dir(direct)), "no complete segment").toEqual([]);
-    const stillPending = orgAgent(await treeOf(orgTreeFile(orgRunId)), "/direct");
+    const stillPending = orgAgent(await orgTree(orgRunId), "/direct");
     expect(stillPending.pendingRuntimeSwitch, "the switch stays pending").toMatchObject({ switchId: orgAgent(pendingTree, "/direct").pendingRuntimeSwitch.switchId });
     expect(stillPending.platformAgentRunId).toBeNull();
     expect(activeText(dir(lead)), "an unrelated member did not move").toBe(leadBefore);
@@ -323,12 +325,13 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
       content: expect.stringMatching(/^Agent runtime changed from Antigravity CLI \(.+\) to Grok Build \(.+\)\.$/) });
     expect(markers(dir(worker)), "I-5 (Grok)").toHaveLength(1);
     expect(records.filter((record) => record.trace_type === "system_instruction"), "Grok's captured instructions are in the new file, once").toHaveLength(1);
-    const doneTree = await treeOf(orgTreeFile(orgRunId));
+    const doneTree = await orgTree(orgRunId);
     for (const address of ["/direct", "/crew/worker"]) {
       expect(Object.hasOwn(orgAgent(doneTree, address), "pendingRuntimeSwitch"), `${address}: pending cleared`).toBe(false);
     }
     // A native agent binds no external provider session (the commit carries `platformAgentRunId|null`); Grok binds its session.
-    expect(orgAgent(doneTree, "/direct").platformAgentRunId, "native member: no external session").toBeNull();
+    // A direct Agent of an Org keeps its own run record (a standalone run's): a native session's ID is the run's own ID.
+    expect(orgAgent(doneTree, "/direct").platformAgentRunId, "native member: the session is the run's own").toBe(direct);
     expect(orgAgent(doneTree, "/crew/worker").platformAgentRunId, "Grok member: session set").toEqual(expect.any(String));
     expect(orgAgent(doneTree, "/direct").launchConfiguration).toMatchObject({ runtimeKind: NATIVE });
     expect(orgAgent(doneTree, "/crew/worker").launchConfiguration).toMatchObject({ runtimeKind: GROK });

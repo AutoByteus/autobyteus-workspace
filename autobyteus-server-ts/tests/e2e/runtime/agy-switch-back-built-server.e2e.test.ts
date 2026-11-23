@@ -14,6 +14,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { readOrgRunTree } from "../helpers/org-run-tree.js";
 
 // Switching BACK to Antigravity on the BUILT server (switch-back-eexist, autobyteus-440, API/E2E): an Org member, a delegated copy and a
 // Team member each run on Antigravity, switch to native, then back to Antigravity. A second Antigravity era used to fail with
@@ -116,7 +117,8 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
   const launchOf = (runtimeKind: string, llmModelIdentifier: string, workspaceRootPath: string) => ({ runtimeKind, llmModelIdentifier, llmConfig: null, autoExecuteTools: true, workspaceRootPath });
 
   const treeOf = async (file: string): Promise<Json> => JSON.parse(await fs.readFile(file, "utf8")) as Json;
-  const orgTreeFile = (orgRunId: string) => memory("agent_orgs", orgRunId, "agent_org_run_execution_tree.json");
+  /** The Org's tree with each member's own pending switch (the Org's own file holds only its units; see helpers/org-run-tree.ts). */
+  const orgTree = (orgRunId: string): Promise<Json> => readOrgRunTree(gql, memory(), orgRunId);
   const orgAgents = (tree: Json): Json[] => tree.rootOrg.members.flatMap((member: Json) => "agentRunId" in member ? [member] : member.members);
   const orgAgent = (tree: Json, address: string): Json => orgAgents(tree).find((member) => member.address === address)!;
 
@@ -249,11 +251,11 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
       agentOrgDefinitionId: orgId, rootConfiguration: launchOf(AGY, AGY_MODEL, workspace), agentOverrides: [] } })).createAgentOrgRun as Json;
     expect(created.success, created.message).toBe(true);
     const orgRunId = created.agentOrgRunId as string;
-    const tree0 = await treeOf(orgTreeFile(orgRunId));
+    const tree0 = await orgTree(orgRunId);
     const direct = orgAgent(tree0, "/direct").agentRunId as string;
     const worker = orgAgent(tree0, "/crew/worker").agentRunId as string;
-    const dir = (runId: string) => findDir(memory("agent_orgs", orgRunId), runId)!;
-    const pendingKey = async (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(await treeOf(orgTreeFile(orgRunId)), address).pendingRuntimeSwitch.switchId}`;
+    const dir = (runId: string) => findDir(memory(), runId)!;
+    const pendingKey = async (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(await orgTree(orgRunId), address).pendingRuntimeSwitch.switchId}`;
 
     // era 1: Antigravity (the nested worker too, so a second member's capsule is replaced as well)
     for (const [runId, label] of [[direct, "direct"], [worker, "worker"]] as const) await talk(orgStream(orgRunId), runId, "ECHO_INPUT", `${label} era 1`);
@@ -291,7 +293,7 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     expect(JSON.stringify(failed.acks), "the user is told, and the reason is the archive step (not EEXIST)").toContain("EISDIR");
     expect(JSON.stringify(failed.acks)).not.toContain("EEXIST");
     expect(activeText(dir(direct)), "the previous agent's file is byte-identical after the failure").toBe(before);
-    expect(orgAgent(await treeOf(orgTreeFile(orgRunId)), "/direct").pendingRuntimeSwitch, "the switch stays pending").toMatchObject({ switchId: expect.any(String) });
+    expect(orgAgent(await orgTree(orgRunId), "/direct").pendingRuntimeSwitch, "the switch stays pending").toMatchObject({ switchId: expect.any(String) });
     await fs.rm(secondSegment, { recursive: true, force: true });
     await talk(stream, direct, "ECHO_INPUT", "direct era 3 retry");
     expect(switchSegment(dir(direct), key2.direct), "hop 2 I-7: exactly the native era").toEqual({ ids: era2.direct, runtimeKind: NATIVE });
@@ -307,7 +309,7 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     await talk(stream, worker, "ECHO_INPUT", "worker era 3");
     expect(switchSegment(dir(worker), key2.worker), "worker hop 2 I-7").toEqual({ ids: era2.worker, runtimeKind: NATIVE });
     expect(markers(dir(worker))).toHaveLength(1);
-    for (const address of ["/direct", "/crew/worker"]) expect(Object.hasOwn(orgAgent(await treeOf(orgTreeFile(orgRunId)), address), "pendingRuntimeSwitch"), `${address}: pending cleared`).toBe(false);
+    for (const address of ["/direct", "/crew/worker"]) expect(Object.hasOwn(orgAgent(await orgTree(orgRunId), address), "pendingRuntimeSwitch"), `${address}: pending cleared`).toBe(false);
   }, 900_000);
 
   it("SB-02: a delegated copy Antigravity -> native -> Antigravity", async () => {
