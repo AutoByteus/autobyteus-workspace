@@ -19,7 +19,7 @@
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001` → `CRR-002` (round 2, Targeted Delta Review, `Pass`; CR-001 resolved, the `container-config-trees.ts` fix accepted as this ticket; package routed to `/api_e2e_engineer`)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001`

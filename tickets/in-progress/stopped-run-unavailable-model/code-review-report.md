@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-unavailable-model/tickets/in-progress/stopped-run-unavailable-model/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: IR-001 handoff from `/implementation_engineer` (commit `14c28a91f9`, base `1f761bc8db`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the IR-002 delta `14c28a91f9..0c58796856` changes only the Org save path (`agent-org-run-manager.ts:234`, a new launch-only `previewAgentOrgLaunchConfigurations` in `agent-org-run-config-mutator.ts`), the Org container writer (`container-config-trees.ts`, two lines writing the node's `platformAgentRunId`), one new unit test file and one renamed rule test. That is CR-001's area. No shared interface, data shape or other save path changed. Round 1 evidence carries forward for the rest
+- Trigger: IR-002 local-fix handoff (CR-001) from `/implementation_engineer` (commit `0c58796856`). Round 1: IR-001, `14c28a91f9`
+- Prior Review Round Reviewed: 1 (CRR-001, `Fail`, CR-001)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E / Delivery records: N/A (implementation review)
 - Failing Scenario IDs / Commands / Evidence: N/A (see CR-001 for the reviewer-run reproduction)
 
@@ -34,6 +34,20 @@
 - Independent source review required by the classification: `Yes`
 - Classification evidence or correction required: none; the change stayed within the design's file mapping and owners.
 
+## Round 2 Delta Summary
+
+- **CR-001 resolved.**
+  - The pre-validation `proposed` tree now comes from `previewAgentOrgLaunchConfigurations`, which merges each patched scope's launch with the existing `replaceLaunchConfiguration` and touches no session or pending-switch state. It yields the same launch per scope that the switch rule would (the rule's configured-member write also takes the selection as the launch). It is used only to list the scopes to validate.
+  - The commit (`:276`) still goes through `applyAgentOrgRunSelectionPatches` with the decided continuation, and `patchAgent`'s throw still guards it.
+- **Second fix, `container-config-trees.ts` (`writeAgent`, `withLaunch`): accepted as this ticket.** The Org container writer kept the stored `platformAgentRunId` instead of the edited node's. A hand-over clears the session ID and an undo restores it, so the readback never matched `expected` and the save reported `PERSISTENCE_INDETERMINATE`. That blocks AC-008's "Save succeeds" for any Org member with a session, and it is the same Save path. Untouched nodes are composed from the same metadata on read, so they write nothing new.
+- **New test** `agent-org-run-manager-model-selection-save.test.ts` drives the real `AgentOrgRunManager` on real stored fixtures: a direct member's hand-over (session cleared on disk, `from` correct) and a mounted Team member's hand-over. The direct-member hand-over case also proves the writer fix.
+- **Reviewer checks:**
+  - The new test file passes 3/3.
+  - A temporary probe of a real equal-to-bigger edit (baseline `equal`, target `large`): `UPDATED`, the session kept on disk, nothing pending. It passed and was removed; `git status` is clean.
+  - The implementer's IMP-06 covers the typecheck, the build, the Org e2e (1/1), the full unit (8930) and integration (523) suites. The code those runs exercise has not changed since, so I did not rerun them.
+- **Non-blocking note (test):** the case "a direct member's equal/bigger native edit stays in the same session" saves the model the member already has (`large` → `large`), so it asserts the `UNCHANGED` no-op, not a same-session edit. My probe shows the behavior is correct. Tightening it is a two-line change: give the direct member `equal` as its baseline and expect `UPDATED`. API/E2E may take it with their coverage.
+- **The rule test rename (C-05) is done.**
+
 ## Review Scope
 
 - Changed implementation and behavior reviewed: the continuation decision (`RunModelSelectionService.continuationFor`), options listing, the DEC-005 reference model in `selectionContextFor`, `stoppedRunHandOver`, the rewritten `applyRuntimeSelection`, the standalone, Team and Org save paths, both options paths, the three `no_session` launch validators, the marker text (DEC-008/N-4), the standalone Save message, the locale strings and `GLOSSARY.md`.
@@ -43,7 +57,7 @@
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: `Yes`. The user's rule (DEC-003): equal or bigger verified capacity continues the session; smaller or unknown hands over; one reference model (DEC-005).
-- Design-spec behavior map verified against the implementation: `Yes`, except the Org member save path (CR-001).
+- Design-spec behavior map verified against the implementation: `Yes` (the Org member save path since round 2).
 - Design review report and round confirmed: ARCH-REV-002 `Pass`.
 - Behavior-basis status: `Confirmed`
 - Changed or newly discovered behavior: none.
@@ -51,11 +65,11 @@
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| BEH-001/002 | Confirmed (standalone, Team); broken for Org members (CR-001) | `optionsWithEvidence` lists every offered model unless `handOver === "unavailable"`; `continuationFor` returns `hand_over` for a mismatch when `available`; the updater forwards `continuation` to `commitRunRuntimeSwitch` | — |
-| BEH-006 | Confirmed (standalone, Team); broken for Org members (CR-001) | Same decision row | — |
+| BEH-001/002 | Confirmed (all surfaces; round 2) | `optionsWithEvidence` lists every offered model unless `handOver === "unavailable"`; `continuationFor` returns `hand_over` for a mismatch when `available`; the updater forwards `continuation` to `commitRunRuntimeSwitch` | — |
+| BEH-006 | Confirmed (all surfaces; round 2) | Same decision row | — |
 | BEH-005 | Confirmed | `continuationFor`: both verified and target ≥ reference → `same_session` | — |
-| BEH-003 | Confirmed for the rule; Org member saves broken (CR-001) | `selectionContextFor` reference = `pendingRuntimeSwitch.from` or the binding; `applyRuntimeSelection` two branches; the `same_session` runtime guard throws | — |
-| BEH-004 | Confirmed for the rule; Org member saves broken (CR-001) | External runtime → `same_session` | — |
+| BEH-003 | Confirmed (all surfaces; round 2) | `selectionContextFor` reference = `pendingRuntimeSwitch.from` or the binding; `applyRuntimeSelection` two branches; the `same_session` runtime guard throws | — |
+| BEH-004 | Confirmed (all surfaces; round 2) | External runtime → `same_session` | — |
 | DEC-006 | Confirmed | `stoppedRunHandOver`: `canSwitchRuntime` → `available`; never started → `no_session`; else `unavailable` → today's two refusals | — |
 | DEC-007 | Confirmed | Team/Org default scopes and the three launch validators pass `no_session` → `same_session`; default scopes use `replaceLaunchConfig`, not the switch rule | — |
 | DEC-008 / N-4 | Confirmed | `buildRuntimeSwitchBetween`: same runtime **and** a different model → "Model changed from … to …" | — |
@@ -85,7 +99,7 @@
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The continuation is an explicit input decided by `RunModelSelectionService`; the rule has two branches with no runtime-equality inference | — |
 | Implementation matches approved behavior-defining supplemental artifacts | Pass | The probe's native cases are permanent unit cases | — |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-001 for Org members breaks at the proposal step before validation (CR-001) | Fix CR-001 |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Round 2: the Org preview is launch-only; the switch rule runs once, after validation | — |
 | Ownership boundary preservation and clarity | Pass | Only the selection service compares capacities; save paths state `handOver` and forward `continuation`; the rule applies it | — |
 | Off-spine concern clarity | Pass | Capacity resolution and marker text stay off the main line | — |
 | Existing capability/subsystem reuse check | Pass | Reuses the pending-switch field, activation, recorder and notice | — |
@@ -104,19 +118,20 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | — | — |
 | Patch-on-patch complexity control | Pass | The old runtime branches are replaced, not extended | — |
 | Dead code removed in the touched files and modules (Core Principle 7) | Pass | The runtime-only branches and the "fresh because null" semantics are removed | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | No test exercises the Org manager's stopped save of a configured Agent, so IMP-02..04 could not catch CR-001. Otherwise AC-006 (a)-(d), RS-08, DEC-007, AC-009 and N-4 are asserted exactly | Add the Org member save test (CR-001) |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Round 2: the Org manager save is tested for a direct and a mounted-Team member hand-over. Non-blocking: its same-session case saves the unchanged model (see Round 2 Delta Summary) | Optional tightening |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | — | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Old-rule pins rewritten (REQ-008); AC-009 refusal kept | — |
-| API/E2E readiness for the next workflow stage | Fail | AC-008 (Org member) and the existing Org e2e fail | Fix CR-001 |
+| API/E2E readiness for the next workflow stage | Pass | Round 2: the Org e2e passes (IMP-06) | — |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines Before (base) | After | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `agent-org-execution/services/agent-org-run-manager.ts` | ~362 | 365 | Pass | Pass | Pass | Pass | CR-001 (behavior) | Fix CR-001 |
+| `agent-org-execution/services/agent-org-run-manager.ts` | ~362 | 366 | Pass | Pass | Pass | Pass | CR-001 resolved | — |
 | `agent-org-execution/services/agent-org-run-service.ts` | ~320 | 324 | Pass | Pass | Pass | Pass | — | — |
 | `llm-management/services/run-model-selection-service.ts` | ~175 | 195 | Pass | Pass | Pass | Pass | — | — |
-| `agent-org-execution/services/agent-org-run-config-mutator.ts` | ~165 | 175 | Pass | Pass | Pass | Pass | CR-001 (throw site) | — |
+| `agent-org-execution/services/agent-org-run-config-mutator.ts` | ~165 | ~205 | Pass | Pass | Pass | Pass | — | — |
+| `agent-org-execution/container/container-config-trees.ts` | ~70 | ~71 | Pass | Pass | Pass | Pass | — | — |
 | Other changed `src` files | < 210 | < 210 | Pass | Pass | Pass | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -146,25 +161,27 @@ None. ARCH-REV-002 premises are unchanged.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 8.8
+- Overall score (`/10`): 9.4
 - Score calculation note: simple average; the decision follows CR-001.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.8 | DS-001 is clear for standalone and Team | The Org path's pre-validation proposal goes through the switch rule, which now needs a decided continuation | Build the validation inputs without the switch rule |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | DS-001 is clear on every surface; the Org preview is launch-only and the rule runs once, after validation | — | — |
 | `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | One decision owner, one rule, callers state capability only | — | — |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Required `handOver`; `continuation` only on the valid result; GraphQL unchanged | Target-level `continuation?` is optional with a runtime throw, which is how CR-001 surfaced at run time rather than compile time | Keep the throw; make every caller that reaches the rule have a decided continuation |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Required `handOver`; `continuation` only on the valid result; GraphQL unchanged; the preview and the commit are separate functions | Target-level `continuation?` stays optional with a runtime guard (the design's implementer's choice) | — |
 | `4` | `Separation of Concerns and File Placement` | 9.4 | Changes in the mapped owners | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Two tight unions, one meaning each | — | — |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Clear doc comments tied to REQ/DEC IDs; glossary updated | One misleading test title (C-05) | Rename when touched |
-| `7` | `API/E2E Readiness` | 7.5 | Standalone and Team ready | Org member Save fails; the existing Org e2e fails | Fix CR-001 and rerun that e2e |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.0 | Rule, decision table, reference model, marker and messages correct and tested | Every Org member model save fails (CR-001), a regression of preserved BEH-003/BEH-004 for Org members and a miss of AC-008 | Fix CR-001 with a test |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Clear doc comments; glossary updated; C-05 renamed | The new Org test's same-session case is named for an edit it does not make | Optional tightening |
+| `7` | `API/E2E Readiness` | 9.3 | Every save path works; the Org e2e passes | AC-002/AC-008 end to end remain for API/E2E | — |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | CR-001 fixed; the Org writer now persists the session ID a hand-over or undo sets; reviewer probe confirms a same-session Org edit | Native→native and Team-member hand-over end to end not yet run | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No wrappers; direct use of stored data | — | — |
 | `10` | `Cleanup Completeness` | 9.4 | Old branches and refusals removed | — | — |
 
 ## Findings
 
-### CR-001 — Every Org member model save fails: the pre-validation proposal applies targets without a continuation (High, Local Fix)
+### CR-001 — Every Org member model save fails: the pre-validation proposal applies targets without a continuation (High, Local Fix) — **Resolved (round 2, `0c58796856`)**
+
+- Resolution: the pre-validation proposal uses the launch-only `previewAgentOrgLaunchConfigurations`; the commit keeps the switch rule and its guard; the Org container writer now writes the edited node's session ID; the new manager-level test covers a direct and a mounted-Team member hand-over. Verified by code reading, the new test (3/3) and a reviewer probe of a same-session edit.
 
 - Affected behavior: REQ-005 / AC-008 (Org members), and preserved BEH-003/BEH-004 for Org members (any stopped Org member's model or runtime edit since autobyteus-348).
 - Where: `autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts:234`
@@ -180,7 +197,7 @@ None. ARCH-REV-002 premises are unchanged.
   3. Add a unit test of `AgentOrgRunManager`'s stopped save for an Org member: a native member on a gone or smaller model saves with a pending same-runtime hand-over (`from` = the old binding), and a member's equal-or-bigger native edit stays in the same session. Include a member inside a mounted Team.
   4. Rerun the server typecheck, the affected unit suites, `pnpm -C autobyteus-server-ts build` and `stopped-org-workspace-graphql.e2e.test.ts`. Update the handoff and the implementation revision record (IR-002).
 
-Non-blocking note: the test title at `runtime-selection-rule.test.ts:52` describes both halves as `same_session`, but the second half is a `hand_over` edit while a switch is pending (C-05).
+Round 1 non-blocking note (C-05, the rule test title) is resolved in round 2.
 
 ## Follow-ups
 
@@ -188,26 +205,26 @@ Non-blocking note: the test title at `runtime-selection-rule.test.ts:52` describ
 
 ## Classification
 
-- `Local Fix` (implementation): one bounded defect in the Org save path plus its missing test. The design and requirements stand.
+- Round 2: N/A (Pass). Round 1 was `Local Fix` for CR-001, now resolved.
 
 ## Recommended Recipient
 
-- `/implementation_engineer`
-- Routing note: after the fix, a targeted delta source review, then API/E2E.
+- `/api_e2e_engineer` (primary). Informational pass notice to `/implementation_engineer`.
 
 ## Residual Risks
 
 - Carried from the design review: the native→native hand-over (AC-002) and the Team-member case (AC-008) are proven end to end only by the planned built-server E2E.
 - The other built-server e2e suites were not rerun by this review; API/E2E owns that (AC-007).
-- `autobyteus-server-ts/dist` in the worktree was rebuilt by this review at `14c28a91f9` (untracked build output).
+- `autobyteus-server-ts/dist` was rebuilt in round 1 by this review and again by the implementer at `0c58796856` (IMP-06); API/E2E should rebuild if the code changes.
+- The new Org test's same-session case asserts the `UNCHANGED` no-op only (non-blocking; see Round 2 Delta Summary).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 1, Full Review)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 8.8 / 88; Runtime Correctness 7.0, API/E2E Readiness 7.5, Data-Flow Spine 8.8
+- Score Summary: 9.4 / 94; every category at least 9.3
 - Failure Origin: N/A
-- Recommended Recipient: `/implementation_engineer`
-- Notes: the rule, the decision table, the reference model, the standalone and Team paths, the options paths, the launch validators and the marker text match SR-006 and are well tested. One blocking defect: every Org member model save throws (CR-001).
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: CR-001 is resolved, with the Org container writer's session-ID fix accepted as this ticket. Ready for API/E2E: AC-002 (native→native hand-over with the fake LM Studio endpoint), AC-008 (a Team member and an Org member; a Team default row on a gone model), and the existing switch E2Es unchanged (AC-007).
