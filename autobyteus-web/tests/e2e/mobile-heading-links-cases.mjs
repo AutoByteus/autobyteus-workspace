@@ -137,7 +137,12 @@ export const runHeadingLinksCases = async (probe) => {
     const browserLine = (text, sourceUrl = '') => {
       const line = redact(`${label} console: ${text}`);
       const favicon = /: Failed to load resource: the server responded with a status of 40[14] \((Unauthorized|Not Found)\)$/.test(line) && sourceUrl.startsWith(origin) && new URL(sourceUrl).pathname === '/favicon.ico';
-      evidence.browserErrors.push({ case: currentCase, line, known: favicon, ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}) });
+      // MSP-100 opens a run-relative link to a missing file on purpose (autobyteus-609 AC-H2): the node refuses it with a
+      // GraphQL error (autobyteus-579 I-1), which the web logs before it shows the viewer's error state.
+      const missingFile = currentCase === 'MSP-100' && /: Failed to fetch file content ApolloError: File not found: /.test(line);
+      evidence.browserErrors.push({ case: currentCase, line, known: favicon || missingFile,
+        ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}),
+        ...(missingFile ? { cause: 'the missing file MSP-100 opens on purpose' } : {}) });
     };
     page.on('console', message => { if (message.type() === 'error') browserLine(message.text(), message.location()?.url ?? ''); });
     page.on('pageerror', error => browserLine(`pageerror ${error.message}`));
@@ -499,8 +504,9 @@ export const runHeadingLinksCases = async (probe) => {
         [details.phone.notes.opened && details.phone.clip.opened, 'AC-H1 on the phone a run-relative link opens that file of the run\'s folder in the viewer'],
         [details.desktop.up.status.includes(FAILED) && !details.desktop.up.outsideShown, 'AC-H2 on the desktop a link out of the run\'s folder opens nothing and says it could not be opened'],
         [details.phone.up.status.includes(FAILED) && !details.phone.up.viewerOpened && !details.phone.up.outsideShown, 'AC-H2 on the phone a link out of the run\'s folder opens nothing and says it could not be opened'],
-        // The viewer's existing not-found state (its raw text, with the node's path, predates this ticket: FU-005).
-        [/File not found/.test(details.desktop.gone.viewer) && details.phone.gone.viewerOpened && /File not found/.test(details.phone.gone.viewer),
+        // The viewer's existing error state for a file that cannot be read (autobyteus-579 I-1: the desktop shows the node's
+        // message, "File not found: <path>"; the phone's viewer says it could not open the file, with Retry).
+        [/File not found/.test(details.desktop.gone.viewer) && details.phone.gone.viewerOpened && /Couldn.t open this file/.test(details.phone.gone.viewer),
           'AC-H2 a missing file opens the viewer\'s existing not-found state, on the desktop and the phone'],
       ].filter(([ok]) => !ok).map(([, text]) => text);
       assert(failures.length === 0, failures.join('; '), details);

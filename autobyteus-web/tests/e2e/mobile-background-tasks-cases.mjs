@@ -16,7 +16,7 @@
 //                  "exit code 1".)
 //   MSP-78 autobyteus-517 AC-002  A task that ended (code 1) before the phone opened the run's Activity is still listed
 //                  there (the Antigravity view keeps ended tasks): Failed, with the line "exit code 1".
-//   MSP-99 autobyteus-609 AC-I  A task's end update is lost: the phone's socket for the run swallows every
+//   MSP-104 autobyteus-609 AC-I  A task's end update is lost: the phone's socket for the run swallows every
 //                  BACKGROUND_TASK_UPDATED frame before the app reads it (the page's WebSocket wrapped before the run is
 //                  opened). The run is terminated
 //                  while its task runs and Activity is open: within 10 s the row reads Stopped and "Stopped: the run
@@ -182,7 +182,7 @@ export const runBackgroundTaskCases = async (probe) => {
     await page.goBack();
     return details;
   });
-  await runCase('MSP-99', async () => {
+  await runCase('MSP-104', async () => {
     const lostRun = await createRun();
     const tasks = await startTask(lostRun, 120, 0, 'BG-609-LOST');
     const task = tasks.find(entry => entry.status === 'running');
@@ -229,7 +229,7 @@ export const runBackgroundTaskCases = async (probe) => {
     await sleep(1_500);
     const ended = await phoneRows();
     const nodeAfterStop = await nodeTasks(lostRun);
-    await shot(page, 'MSP-99-activity-end-lost');
+    await shot(page, 'MSP-104-activity-end-lost');
     const droppedUpdates = await droppedNow();
     const details = { lostRun, task, terminated, listed, ended, shownStoppedAfterMs, droppedUpdates, droppedBeforeStop, nodeAfterStop };
     assert(listed.length === 1 && listed[0].status === 'running', 'the task is listed running before the run stops', details);
