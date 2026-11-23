@@ -1,0 +1,14 @@
+# Case: API-02
+# Command: same command with autobyteus-server-ts/src checked out from 7cc04d768c (the docs commit before the code), then restored (git checkout HEAD, status clean)
+# Commit: dbfae1e493 (code = 7069972efe; the new live e2e file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, private HOME, scripted Antigravity CLI, host load average 39-45
+# Date: 2026-11-23
+
+     × E-002b records the full arguments of a step of a two-call planner response by its position 907ms
+     × NR-01 FULL: real content in the success event and the raw trace; the journal shows cat -n lines without timestamps 278ms
+     × NR-02 PARALLEL: the three calls of one planner response each get their own arguments and row 196ms
+     × NR-03 NO_TRANSCRIPT: the stream's result stays, one warning names the reason, the journal keeps `content not recorded` 241ms
+     × NR-03 GAP: the stream's result stays, one warning names the reason, the journal keeps `content not recorded` 244ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  5 failed | 3 passed (8)

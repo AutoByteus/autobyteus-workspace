@@ -26,7 +26,11 @@
     "find_by_name": "Command",
     "list_dir": "Command",
     "write_to_file": "Write file",
-    "replace_file_content": "Edit file"
+    "replace_file_content": "Edit file",
+    "write_file": "Write file",
+    "edit_file": "Edit file",
+    "read_url_content": "Command",
+    "search_web": "Search web"
   },
   "grok_build": {
     "run_bash": "Command",

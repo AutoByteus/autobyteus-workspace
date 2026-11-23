@@ -1,0 +1,12 @@
+# Case: API-04
+# Command: vitest run agy-linked-skills-transport, agy-failure-transport, agy-mcp-tool-call-transport, agy-native-tool-arguments-transport, projects/delegated-copy-model-change (after the fixture default change); unit Antigravity folder; pnpm typecheck
+# Commit: b55965acf0 (code = 0f74222c52; the new e2e file and the fixture default are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, BUILT server (pnpm build exit 0), test-owned data root and database, private HOME, scripted Antigravity CLI
+# Date: 2026-11-24
+
+ Test Files  5 passed (5)
+      Tests  50 passed | 1 skipped (51)
+AGY_CAPSULE_TOOL_NOT_IN_REGISTRY lines in that output: 0
+unit: Test Files  25 passed | 4 skipped (29); Tests  395 passed | 6 skipped (401)
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

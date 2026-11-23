@@ -59,7 +59,6 @@ describe("AGY call-specific typed native arguments", () => {
     ["array args", planner(5, [actual])],
     ["string args", planner(5, JSON.stringify(actual))],
     ["absent args", planner(5, undefined)],
-    ["multi-call", { ...planner(5, actual), tool_calls: [{ name: lookup.toolName, args: actual }, { name: lookup.toolName, args: actual }] }],
     ["no call", { ...planner(5, actual), tool_calls: [] }],
     ["wrong index type", { ...planner(5, actual), step_index: "5" }],
   ])("declines %s candidate", async (_label, candidate) => {

@@ -1,0 +1,11 @@
+# Case: API-03b (live mutation)
+# Command: autobyteus-server-ts/src checked out from 7cc04d768c, pnpm build, the live file with -t "LN-01|LN-04"; then restored and rebuilt
+# Commit: dbfae1e493 + base src; Environment: as API-03
+# Date: 2026-11-23
+
+     × LN-01: a ranged read_file records the lines read; the journal shows them as cat -n lines 6162ms
+     × LN-04: run_command with a non-zero exit code shows the exit code as the outcome 10565ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: not the whole-file size summary: expected '40 lines, 1462 bytes' not to match /^\d+ lines, \d+ bytes$/
+AssertionError: expected '# Work Journal — run atrc_live_25611a…' to match /Command: sh -c [^\n]*exit 3[^\n]* → e…/
+      Tests  2 failed | 2 skipped (4)

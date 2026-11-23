@@ -1,0 +1,701 @@
+# IMP-01 live timing of the transcript row at DONE (D-3). Check ID IMP-01. Commit 7069972efe (probe only; no source involved). Date 2026-11-23.
+# Environment: real agy 1.5.15 on this Mac, scratch folders /tmp/atrc-live (synthetic files only); adds small synthetic conversations to the local agy history.
+# Command: node /tmp/atrc-live/probe.mjs (copy: IMP-01-live-timing-probe.mjs); five runs, aggregated below.
+# Result: 123 live tool steps (read_file, run_command, write_file, edit_file): the step's row was readable at the DONE event for 122, and for 1 within 5 ms. Stream results: read_file "N lines, N bytes", write_file/edit_file null.
+
+## probe.out
+{
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 19,
+  "missingAtDone": 1,
+  "lagsMs": [
+    5
+  ],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 1
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:06:57+01:00",
+        "Completed At: 2026-11-23T17:06:59+01:00",
+        "Created At: 2026-11-23T17:06:57+01:00",
+        "Completed At: 2026-11-23T17:06:59+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:07:15+01:00",
+        "Completed At: 2026-11-23T17:07:16+01:00",
+        "Created At: 2026-11-23T17:07:15+01:00",
+        "Completed At: 2026-11-23T17:07:16+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+{
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 19,
+  "missingAtDone": 1,
+  "lagsMs": [
+    5
+  ],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 1
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:06:57+01:00",
+        "Completed At: 2026-11-23T17:06:59+01:00",
+        "Created At: 2026-11-23T17:06:57+01:00",
+        "Completed At: 2026-11-23T17:06:59+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:07:15+01:00",
+        "Completed At: 2026-11-23T17:07:16+01:00",
+        "Created At: 2026-11-23T17:07:15+01:00",
+        "Completed At: 2026-11-23T17:07:16+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+
+## probe2.out
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 9,
+    "system_message": 1
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:08:08+01:00",
+        "Completed At: 2026-11-23T17:08:10+01:00",
+        "Created At: 2026-11-23T17:08:08+01:00",
+        "Completed At: 2026-11-23T17:08:10+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:08:22+01:00",
+        "Completed At: 2026-11-23T17:08:23+01:00",
+        "Created At: 2026-11-23T17:08:22+01:00",
+        "Completed At: 2026-11-23T17:08:23+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 9,
+    "system_message": 1
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:08:08+01:00",
+        "Completed At: 2026-11-23T17:08:10+01:00",
+        "Created At: 2026-11-23T17:08:08+01:00",
+        "Completed At: 2026-11-23T17:08:10+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:08:22+01:00",
+        "Completed At: 2026-11-23T17:08:23+01:00",
+        "Created At: 2026-11-23T17:08:22+01:00",
+        "Completed At: 2026-11-23T17:08:23+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+
+## probe3.out
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 9,
+    "system_message": 1
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:09:04+01:00",
+        "Completed At: 2026-11-23T17:09:06+01:00",
+        "Created At: 2026-11-23T17:09:04+01:00",
+        "Completed At: 2026-11-23T17:09:06+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:09:19+01:00",
+        "Completed At: 2026-11-23T17:09:20+01:00",
+        "Created At: 2026-11-23T17:09:19+01:00",
+        "Completed At: 2026-11-23T17:09:20+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 9,
+    "system_message": 1
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:09:04+01:00",
+        "Completed At: 2026-11-23T17:09:06+01:00",
+        "Created At: 2026-11-23T17:09:04+01:00",
+        "Completed At: 2026-11-23T17:09:06+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:09:19+01:00",
+        "Completed At: 2026-11-23T17:09:20+01:00",
+        "Created At: 2026-11-23T17:09:19+01:00",
+        "Completed At: 2026-11-23T17:09:20+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+
+## probe4.out
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 10
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:10:20+01:00",
+        "Completed At: 2026-11-23T17:10:22+01:00",
+        "Created At: 2026-11-23T17:10:20+01:00",
+        "Completed At: 2026-11-23T17:10:22+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:10:50+01:00",
+        "Completed At: 2026-11-23T17:10:51+01:00",
+        "Created At: 2026-11-23T17:10:50+01:00",
+        "Completed At: 2026-11-23T17:10:51+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 10
+  },
+  "conv": "(not recorded)",
+  "total": 20,
+  "presentAtDone": 20,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 18,
+      "present": 18
+    },
+    "run_command": {
+      "n": 2,
+      "present": 2
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:10:20+01:00",
+        "Completed At: 2026-11-23T17:10:22+01:00",
+        "Created At: 2026-11-23T17:10:20+01:00",
+        "Completed At: 2026-11-23T17:10:22+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:10:50+01:00",
+        "Completed At: 2026-11-23T17:10:51+01:00",
+        "Created At: 2026-11-23T17:10:50+01:00",
+        "Completed At: 2026-11-23T17:10:51+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "f01.txt\tf03.txt\tf05.txt\tf07.txt\tf09.txt\tf11.txt\tf13.txt\tf15.txt\r"
+      ],
+      "bytes": 331
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ]
+  }
+}
+
+## probe5.out
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 13
+  },
+  "conv": "(not recorded)",
+  "total": 43,
+  "presentAtDone": 43,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 28,
+      "present": 28
+    },
+    "run_command": {
+      "n": 9,
+      "present": 9
+    },
+    "write_file": {
+      "n": 3,
+      "present": 3
+    },
+    "edit_file": {
+      "n": 3,
+      "present": 3
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:00+01:00",
+        "Completed At: 2026-11-23T17:12:02+01:00",
+        "Created At: 2026-11-23T17:12:00+01:00",
+        "Completed At: 2026-11-23T17:12:02+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:09+01:00",
+        "Completed At: 2026-11-23T17:12:11+01:00",
+        "Created At: 2026-11-23T17:12:09+01:00",
+        "Completed At: 2026-11-23T17:12:11+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "7:line 7 of file f01 NEEDLE\r"
+      ],
+      "bytes": 354
+    },
+    "write_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:17+01:00",
+        "Completed At: 2026-11-23T17:12:19+01:00",
+        "Created At: 2026-11-23T17:12:17+01:00",
+        "Completed At: 2026-11-23T17:12:19+01:00",
+        "Created file."
+      ],
+      "bytes": 169
+    },
+    "edit_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:23+01:00",
+        "Completed At: 2026-11-23T17:12:25+01:00",
+        "Created At: 2026-11-23T17:12:23+01:00",
+        "Completed At: 2026-11-23T17:12:25+01:00",
+        "Made 3 replacements in /tmp/atrc-live/ws/new1.txt starting at line 1 ("
+      ],
+      "bytes": 239
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ],
+    "write_file": [
+      "null"
+    ],
+    "edit_file": [
+      "null"
+    ]
+  }
+}
+{
+  "otherStepTypes": {
+    "user_input": 6,
+    "agent_response": 13
+  },
+  "conv": "(not recorded)",
+  "total": 43,
+  "presentAtDone": 43,
+  "missingAtDone": 0,
+  "lagsMs": [],
+  "byTool": {
+    "read_file": {
+      "n": 28,
+      "present": 28
+    },
+    "run_command": {
+      "n": 9,
+      "present": 9
+    },
+    "write_file": {
+      "n": 3,
+      "present": 3
+    },
+    "edit_file": {
+      "n": 3,
+      "present": 3
+    }
+  },
+  "shapes": {
+    "read_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:00+01:00",
+        "Completed At: 2026-11-23T17:12:02+01:00",
+        "Created At: 2026-11-23T17:12:00+01:00",
+        "Completed At: 2026-11-23T17:12:02+01:00",
+        "Showing lines 2-6 of 40",
+        "2: line 2 of file f01",
+        "3: line 3 of file f01",
+        "4: line 4 of file f01"
+      ],
+      "bytes": 289
+    },
+    "run_command": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:09+01:00",
+        "Completed At: 2026-11-23T17:12:11+01:00",
+        "Created At: 2026-11-23T17:12:09+01:00",
+        "Completed At: 2026-11-23T17:12:11+01:00",
+        "Command exited with code 0.",
+        "",
+        "Command output:",
+        "7:line 7 of file f01 NEEDLE\r"
+      ],
+      "bytes": 354
+    },
+    "write_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:17+01:00",
+        "Completed At: 2026-11-23T17:12:19+01:00",
+        "Created At: 2026-11-23T17:12:17+01:00",
+        "Completed At: 2026-11-23T17:12:19+01:00",
+        "Created file."
+      ],
+      "bytes": 169
+    },
+    "edit_file": {
+      "type": "GENERIC",
+      "status": "DONE",
+      "head": [
+        "Created At: 2026-11-23T17:12:23+01:00",
+        "Completed At: 2026-11-23T17:12:25+01:00",
+        "Created At: 2026-11-23T17:12:23+01:00",
+        "Completed At: 2026-11-23T17:12:25+01:00",
+        "Made 3 replacements in /tmp/atrc-live/ws/new1.txt starting at line 1 ("
+      ],
+      "bytes": 239
+    }
+  },
+  "streamOutputs": {
+    "read_file": [
+      "\"N lines, N bytes\""
+    ],
+    "run_command": [
+      "\"Created At: N-N-NTN:N:N+N:N\\nCompleted At: N-N"
+    ],
+    "write_file": [
+      "null"
+    ],
+    "edit_file": [
+      "null"
+    ]
+  }
+}
+

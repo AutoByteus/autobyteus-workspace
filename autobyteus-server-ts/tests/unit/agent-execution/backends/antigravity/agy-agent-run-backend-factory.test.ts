@@ -1,3 +1,4 @@
+import { AGY_NATIVE_TOOL_NAMES } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -170,6 +171,34 @@ describe("AGY backend capability admission and preserved bindings", () => {
     expect(await fs.readFile(manifestPath, "utf8")).toBe(manifest);
     expect(await fs.readFile(agentPath, "utf8")).toBe(markdown);
     await restored.terminate();
+  });
+
+  describe("the allowlist against the CLI's own tool registry (autobyteus-588)", () => {
+    const REGISTRY = [...AGY_NATIVE_TOOL_NAMES, "manage_task", "search_web", "schedule"];
+    const unregistered = (warn: { mock: { calls: unknown[][] } }) =>
+      warn.mock.calls.map(([message]) => String(message)).filter((message) => message.startsWith("AGY_CAPSULE_TOOL_NOT_IN_REGISTRY"));
+    const startAndStop = async () => {
+      const backend = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+      await backend.terminate();
+    };
+
+    it("AC-002: a name of the allowlist missing from the start message's registry logs one warning naming it; the start still completes", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      initOverride = { tools: REGISTRY.filter((name) => name !== "find_by_name" && name !== "list_dir") };
+      await startAndStop();
+      expect(unregistered(warn)).toEqual(["AGY_CAPSULE_TOOL_NOT_IN_REGISTRY run=run names=list_dir,find_by_name"]);
+    });
+
+    it("AC-002: a registry that holds every name, or no registry field at all, logs nothing", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      initOverride = { tools: REGISTRY };
+      await startAndStop();
+      initOverride = {};
+      await startAndStop();
+      initOverride = { tools: "not-an-array" };
+      await startAndStop();
+      expect(unregistered(warn)).toEqual([]);
+    });
   });
 
   it("always launches and restores with auto-approve, even when the run config stores it off", async () => {
