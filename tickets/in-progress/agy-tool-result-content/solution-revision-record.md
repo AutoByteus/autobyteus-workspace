@@ -17,3 +17,7 @@
 - Classification unchanged: Medium / Low (the arguments reader is reworked onto a shared helper; its single-call behavior is preserved and tested).
 - Not covered, by decision: backfilling stored raw traces (the founder's option; needs approval and a backup); autobyteus-183 (Codex/Grok).
 - Next action: implementation (direct route); the first handoff (SR-001) is extended, not replaced.
+
+### SR-003 — Evidence decision DEC-10 (2026-11-23)
+- Trigger: the API/E2E engineer's request: no real `grep_search`, `find_by_name` or `view_file` row can be produced by agy 1.5.15 (the tools are no longer offered).
+- Decision: `Accepted Unverified Risk` for AC-002 and the grep/find part of AC-012, on the unit, scripted and stored-shape evidence; the real-CLI read results (243 live steps) are proven. Neither the requirements nor the design change. Decided by the Solution Designer within the direction; the founder informed.
