@@ -39,7 +39,7 @@ Ticket: autobyteus-615 (message-reference-own-log-615). Worktree `/Users/normy/a
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Pass, no findings; `code-review-report.md`; the code reviewer notified `/api_e2e_engineer`)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
