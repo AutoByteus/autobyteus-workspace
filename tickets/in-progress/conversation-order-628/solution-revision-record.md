@@ -64,3 +64,5 @@ Review note: ARCH-REV-002 passed SR-005 (2026-11-23). The reviewer routed it to 
 - Design: the external user trace's `ts` is its admission time `acceptedAt`, carried on `AgentRunUserMessageForwardedPayload`. Admission precedes the preface's dispatch, so `u.ts < n.ts` by construction.
 - Requirements: unchanged. Classification: unchanged, `Large` / `High`. Routing: architecture review (a revised Large/High package); implementation applies it after the pass.
 - Follow-ups added: FU-002 (Org member and root-view probe cases failing on base), FU-003 (base server e2e failures), plus a note on the runtime e2e packages.
+
+Review note: ARCH-REV-003 passed SR-006 (2026-11-23). The reviewer routed it to `/implementation_engineer`. N-5 (D-2's own-turn sentences) is fixed editorially; N-4 (remove `forwardedAt` once unread) is for implementation.

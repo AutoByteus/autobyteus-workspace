@@ -126,13 +126,13 @@
     - One writer, `RuntimeMemoryEventAccumulator`, stores the user at `forwardedAt` (`runtime-memory-event-accumulator.ts:74-95`, `sourceEvent "AgentRun.postUserMessage"`).
     - It stores the notice from the event published at `settle`, after forwarding (`agent-run-input-preface-dispatch.ts:85-99`, `sourceEvent SYSTEM_TASK_NOTIFICATION`).
     - Their stored order can be `[n, u]` (the founder's) or `[u, n]`; only `[n, u]` moves.
-    - Their own-turn notices (restart resume, background task, team change) come through the same writer with a later user, so they are not moved.
+    - Their own-turn notices (restart resume, background task, team change) come through the same writer. With SR-006 the user trace's `ts` is its admission: a message admitted after the notice stays after it, and a message admitted before the notice but appended into that turn moves before it, which is the order live shows (ARCH-REV-003 N-5).
   - (b) both traces have `sourceEvent "LLMUserMessageReadyEvent"`: **native**.
     - `MemoryIngestInputProcessor` (`autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts:53-73`) writes a `system_task_notification` only for a preface, notice first, then the user.
     - Each write stamps its own `Date.now()` (`memory-manager.ts:437`, `raw-trace-ingestion.ts:155`), so the time condition would hold only when both writes fall in the same millisecond.
   - Writers stay unchanged: read-side only, so old and new runs read the same way.
   - Both times are the node's: the user message's receipt and the notice's write at dispatch, and dispatch follows receipt.
-  - A notice that started its own turn (a restart reminder, a task notice) is followed, if at all, by a user message received later, so it is not moved.
+  - A notice that started its own turn (a restart reminder, a task notice) stays first unless a user message admitted before it is appended into that turn; then the message comes first, as live shows (SR-006, ARCH-REV-003 N-5).
 - **Examples:**
   - Founder (stored): `[n seq1 ts .697, u seq2 ts .696, a seq3]` → events `[u, n, a]`.
   - A notice turn with a message appended later: `[n seq1 ts 10.0, u seq2 ts 12.4, a seq3]` → unchanged `[n, u, a]`.
