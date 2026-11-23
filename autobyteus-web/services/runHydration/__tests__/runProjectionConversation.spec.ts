@@ -30,14 +30,14 @@ describe('runProjectionConversation', () => {
     expect(segments).toEqual([{ type: 'system_task_notification', senderId: 'system.restart_resume', content: 'Restarted.', messageId: null }]);
   });
 
-  it('rehydrates an AGY provider ERROR denial without making other errors denied', () => {
+  it('rehydrates an AGY provider ERROR denial without making other errors denied (the node decides, autobyteus-609 D-D2)', () => {
     const conversation = buildConversationFromProjection('run-denied', [
       { kind: 'tool_call', invocationId: 'agy-denied', toolName: 'run_command',
-        toolResult: { status: 'denied', provider_state: 'ERROR' }, toolError: 'permission denied', ts: 1 },
+        toolResult: { status: 'denied', provider_state: 'ERROR' }, toolError: 'permission denied', toolStatus: 'denied', ts: 1 },
       { kind: 'tool_call', invocationId: 'agy-done-denied', toolName: 'run_command',
-        toolResult: { status: 'denied', provider_state: 'DONE' }, toolError: 'permission denied', ts: 2 },
+        toolResult: { status: 'denied', provider_state: 'DONE' }, toolError: 'permission denied', toolStatus: 'denied', ts: 2 },
       { kind: 'tool_call', invocationId: 'other-error', toolName: 'run_bash',
-        toolResult: null, toolError: 'failed', ts: 3 },
+        toolResult: null, toolError: 'failed', toolStatus: 'error', ts: 3 },
     ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-low' });
     const statuses = conversation.messages.flatMap((message) => message.type === 'ai'
       ? message.segments.filter((segment) => segment.type === 'tool_call').map((segment) => segment.status)
@@ -45,12 +45,28 @@ describe('runProjectionConversation', () => {
     expect(statuses).toEqual(['denied', 'denied', 'error']);
   });
 
+  it('autobyteus-609 D-D2: a call the user stopped hydrates as the node\'s "interrupted", not as a failure; a status the node did not send is not re-derived', () => {
+    const conversation = buildConversationFromProjection('run-stopped', [
+      { kind: 'tool_call', invocationId: 'stopped', toolName: 'run_bash',
+        toolResult: null, toolError: 'Tool execution interrupted.', toolStatus: 'interrupted', ts: 1 },
+      { kind: 'tool_call', invocationId: 'no-status', toolName: 'run_bash', toolResult: null, toolError: 'failed', ts: 2 },
+      { kind: 'tool_call', invocationId: 'unknown-status', toolName: 'run_bash', toolResult: 'x', toolStatus: 'weird', ts: 3 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'm' });
+    const tools = conversation.messages.flatMap((message) => message.type === 'ai'
+      ? message.segments.filter((segment) => segment.type === 'tool_call') : []);
+    expect(tools.map((segment) => [segment.invocationId, segment.status, segment.error])).toEqual([
+      ['stopped', 'interrupted', 'Tool execution interrupted.'],
+      ['no-status', 'parsed', 'failed'],
+      ['unknown-status', 'parsed', null],
+    ]);
+  });
+
   it('rehydrates an AGY daemon tool closed as a background task as a succeeded card with its result', () => {
     const toolResult = { provider_state: 'RUNNING',
       output: 'Started as a background task; still running when the turn ended.' };
     const conversation = buildConversationFromProjection('run-agy-daemon', [
       { kind: 'tool_call', invocationId: 'agy-daemon', toolName: 'run_command',
-        toolArgs: { CommandLine: 'pnpm dev', IsDaemon: true }, toolResult, toolError: null, ts: 1 },
+        toolArgs: { CommandLine: 'pnpm dev', IsDaemon: true }, toolResult, toolError: null, toolStatus: 'success', ts: 1 },
     ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-high' });
     const tools = conversation.messages.flatMap((message) => message.type === 'ai'
       ? message.segments.filter((segment) => segment.type === 'tool_call') : []);
@@ -73,6 +89,7 @@ describe('runProjectionConversation', () => {
           toolName: 'search_web',
           toolArgs: { query: 'AutoByteus' },
           toolResult: { status: 'completed' },
+          toolStatus: 'success',
           ts: 2,
         },
         {
@@ -115,6 +132,7 @@ describe('runProjectionConversation', () => {
           toolName: 'run_bash',
           toolArgs: { command: 'sleep 1' },
           toolResult: { stdout: 'done\n' },
+          toolStatus: 'success',
           ts: 1,
         },
         {
@@ -180,6 +198,7 @@ describe('runProjectionConversation', () => {
           toolName: 'run_bash',
           toolArgs: { command: 'pwd' },
           toolResult: { output: '/tmp/workspace\n' },
+          toolStatus: 'success',
           ts: 3,
         },
         {

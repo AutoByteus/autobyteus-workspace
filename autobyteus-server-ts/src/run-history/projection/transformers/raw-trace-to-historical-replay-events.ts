@@ -3,6 +3,7 @@ import { ToolInteraction, ToolInteractionStatus } from "autobyteus-ts/memory/mod
 import { buildToolInteractions } from "autobyteus-ts/memory/tool-interaction-builder.js";
 import type { ToolCallContext } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import type { MemoryTraceEvent, MemoryTurnTraceEvent } from "../../../agent-memory/domain/models.js";
+import { isInterruptedToolResult } from "../../../agent-memory/domain/tool-result-interruption.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
 import {
   buildReplayTurnGroupId,
@@ -88,6 +89,9 @@ const createToolEvent = (
     status: asRecord(interaction.result)?.status === "denied" &&
       ["ERROR", "DONE"].includes(String(asRecord(interaction.result)?.provider_state))
       ? "denied"
+      // A stored result of a call the user stopped (autobyteus-609 D-D2): "Stopped" read back, as it reads live.
+      : terminal && isInterruptedToolResult({ sourceEvent: terminal.sourceEvent, error: interaction.error })
+      ? "interrupted"
       : interaction.status === ToolInteractionStatus.ERROR
       ? "error"
       : interaction.status === ToolInteractionStatus.SUCCESS ? "success" : "parsed",

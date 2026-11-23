@@ -36,6 +36,8 @@ export interface RunProjectionConversationEntry {
   toolArgs?: Record<string, unknown> | null;
   toolResult?: unknown | null;
   toolError?: string | null;
+  /** A tool entry's status as the replay decided it (autobyteus-609 D-D2): the web shows it, it does not re-derive it. */
+  toolStatus?: RunProjectionActivityStatus;
   media?: Record<string, string[]> | null;
   fileAttachments?: readonly ContextFileReference[];
   messageId?: string;
