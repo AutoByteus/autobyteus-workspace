@@ -17,7 +17,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { shownText } from "../helpers/agent-stream-frames.js";
 
 // Native model hand-over of a stopped run on the BUILT server (autobyteus-53 `stopped-run-unavailable-model`: REQ-001..REQ-006,
-// AC-001..AC-003, AC-006 (a)-(d), AC-008; DEC-003, DEC-005, DEC-007, DEC-008, DEC-009). The server is `dist/app.js` on a test-owned
+// AC-001..AC-003, AC-006 (a)-(d), AC-008, AC-010 (the Save message); DEC-003, DEC-005, DEC-007, DEC-008, DEC-009). The server is `dist/app.js` on a test-owned
 // data root with a private HOME and database. Only models are scripted: the native runtime talks to a test-owned HTTP endpoint that
 // answers LM Studio's model list (each model with its own context window; a model can be REMOVED, as LM Studio does when a user
 // deletes it) and its chat completions, and records every request body. Antigravity is the scripted CLI
@@ -305,6 +305,8 @@ describe.runIf(ENABLED)("native model hand-over of a stopped run on the built se
 
     const saved = await save(runId, NATIVE, model["mh-small"]!);
     expect(saved, JSON.stringify(saved)).toMatchObject({ success: true, outcome: "UPDATED", canonicalSelection: { runtimeKind: NATIVE, llmModelIdentifier: model["mh-small"] } });
+    // AC-010: the Save message tells the user what happens next.
+    expect(saved.message).toBe("Model saved. Your next message starts a fresh session on the new model, which continues from the work journal.");
     const pending = await metadata(runId);
     expect(pending).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: model["mh-small"], platformAgentRunId: null,
       pendingRuntimeSwitch: { switchId: expect.any(String), from: expect.objectContaining({ runtimeKind: NATIVE, llmModelIdentifier: model["mh-gone-solo"], platformAgentRunId: original.platformAgentRunId }) } });
