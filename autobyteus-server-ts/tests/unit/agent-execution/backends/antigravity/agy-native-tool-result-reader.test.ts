@@ -43,6 +43,13 @@ describe("readAgyNativeToolResult", () => {
     expect(await read({ stepIndex: 3, toolName: "grep_search" })).toEqual({ text: "second result" });
   });
 
+  it("AC-013: a batch whose earlier siblings are not written yet is identified by position and name", async () => {
+    write([planner(1, ["write_file", "edit_file", "grep_search"]), generic(3, "second only"), generic(4, "third")]);
+    expect(await read({ stepIndex: 4, toolName: "grep_search" })).toEqual({ text: "third" });
+    expect(await read({ stepIndex: 3, toolName: "edit_file" })).toEqual({ text: "second only" });
+    expect(await read({ stepIndex: 2, toolName: "write_file" })).toEqual({ reason: "ROW_NOT_FOUND" });
+  });
+
   it("AC-004: a name that is not the one at that position is not guessed (the other call's text is never taken)", async () => {
     write([planner(1, ["read_file", "grep_search"]), generic(2, "first result"), generic(3, "second result")]);
     expect(await read({ stepIndex: 3, toolName: "read_file" })).toEqual({ reason: "ROW_NOT_CORROBORATED" });
@@ -163,8 +170,10 @@ describe("readAgyNativeToolResult", () => {
     const filler = Array.from({ length: 400 }, (_, index) => ({ ...generic(1000 + index, "x".repeat(2000)), step_index: 1000 + index }));
     write([...filler.map((row, index) => ({ ...row, step_index: index })), planner(400, ["read_file"]), generic(401, "the row")]);
     expect(await read({ stepIndex: 401, toolName: "read_file" })).toEqual({ text: "the row" });
-    // Rows the batch's planner has below it may even be unreadable: they are not visited.
-    fs.writeFileSync(file, `not json\n${JSON.stringify(planner(400, ["read_file"]))}\n${JSON.stringify(generic(401, "the row"))}\n`);
+    // Below the planner row only the one older row is read (it proves no duplicate index); rows further down are not visited.
+    fs.writeFileSync(file, `not json\n${JSON.stringify(generic(0, "older"))}\n${JSON.stringify(planner(400, ["read_file"]))}\n${JSON.stringify(generic(401, "the row"))}\n`);
     expect(await read({ stepIndex: 401, toolName: "read_file" })).toEqual({ text: "the row" });
+    fs.writeFileSync(file, `${JSON.stringify(generic(400, "same index"))}\n${JSON.stringify(planner(400, ["read_file"]))}\n${JSON.stringify(generic(401, "the row"))}\n`);
+    expect(await read({ stepIndex: 401, toolName: "read_file" })).toEqual({ reason: "ROW_NOT_CORROBORATED" });
   });
 });

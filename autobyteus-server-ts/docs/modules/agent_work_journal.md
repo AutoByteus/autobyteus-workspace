@@ -175,7 +175,8 @@ Markdown. No clock and no filesystem; times come from the records.
 - **Antigravity timestamp header:** Antigravity starts a result with `Created At: …` / `Completed At: …` lines. They are not output: the
   journal drops them from results (and from a spilled output's preview); the raw trace keeps the text as recorded. Since the backend now
   records the transcript's real text for read and search results, a read shows its numbered lines and `grep_search` / `find_by_name`
-  show their matches (autobyteus-377; renderer revision 5).
+  show their matches (autobyteus-377; renderer revision 5). A `run_command` result of the form `Command exited with code N.` / `Command output:` /
+  output shows the output alone, with `→ ok` for 0 and `→ exit N` otherwise; another wording stays as recorded.
 
 ## Vocabulary
 
@@ -206,6 +207,8 @@ Outcomes: `ok` (`ok (note)`), `delivered` (a message the platform accepted), `ex
 | Codex | `js`, `js_reset`, `js_add_node_module_dir` | `Run JavaScript: <title>`, `Reset JavaScript environment`, `Add JavaScript module folder: <path>` |
 | Codex | `speak` | `Speak: "<text>"` (`(not played)`) |
 | Antigravity | `Bash` | `Command: <command>` |
+| Antigravity | `write_file {Path, Content, Append}` (current name of `write_to_file`) and `edit_file {Path, Target, Replacement}` (of `replace_file_content`) | `Write file: <path> (<n> lines)` with the content; `Edit file: <path> (+a −b)` with the diff |
+| Antigravity | `read_url_content {Url}`, `search_web {query}` | `Command: curl <url>`, `Search web: "<query>"` |
 | Antigravity | `view_file {AbsolutePath}` and `read_file {Path}` (the current name), with `StartLine`/`EndLine` and `ContentOffset` | `Command: cat <path>` or `Command: sed -n 'a,bp' <path>`; a result with content shows its lines in the `cat -n` layout (the CLI's `Showing lines …`, `File Path:`, `Total …` and line-number sentence are dropped); a size-only result reads `(content not recorded: N lines, M bytes)` |
 | AutoByteus | `run_bash` with `run_in_background` | `Command: <command> (background) → started pid <pid>` |
 | AutoByteus | `start_background_process`, `get_process_output`, `stop_background_process` (retired in autobyteus-338; recorded calls in existing journals) | `Command: <command> (background)`, `Read output of background task <pid>`, `Stop background task <pid>` |

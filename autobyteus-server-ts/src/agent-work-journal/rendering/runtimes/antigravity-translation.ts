@@ -4,6 +4,7 @@ import {
   asInteger,
   asText,
   catCommand,
+  curlCommand,
   globList,
   isTrue,
   shellQuoted,
@@ -11,7 +12,7 @@ import {
   startEndRange,
   toCatNumberedLinesLoose,
 } from "../command-text.js";
-import { commandLine, convertedCommandLine, editFileLine, writeFileLine } from "../journal-actions.js";
+import { commandLine, convertedCommandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
 import { interruptedFromError, normalizeRecordedResult } from "../result-envelopes.js";
 import { diffTexts } from "../text-diff.js";
 import { isAntigravityMcpSchemaRead } from "./antigravity-mcp-schema-read.js";
@@ -69,11 +70,24 @@ const unwrapCall = (call: RecordedCall): RecordedCall => {
   return { name: call.name, args: withoutNotes(call.args) };
 };
 
+/** AGY's `run_command` result: its exit code and the output after a label (autobyteus-377). Another wording is shown as recorded. */
+const RUN_COMMAND_RESULT = /^Command exited with code (-?\d+)\.\n+Command output:\n?([\s\S]*)$/;
+
+/** The exit code as the outcome (`ok` for 0), with the command's output alone. */
+const withExitCode = (result: NormalizedToolResult | null): NormalizedToolResult | null => {
+  if (!result || result.outcome.kind !== "ok" || result.output === null) return result;
+  const match = RUN_COMMAND_RESULT.exec(result.output);
+  if (!match) return result;
+  const code = Number(match[1]);
+  const output = match[2]!.trimEnd();
+  return { outcome: code === 0 ? result.outcome : { kind: "exit", code }, output: output.length ? output : null };
+};
+
 const runCommand: BuiltInConverter = (call, result) => {
   const cwd = asText(call.args.Cwd);
   const background = isTrue(call.args.IsDaemon) || isTrue(call.args.RunPersistent);
   return commandLine(asText(call.args.CommandLine), [...(cwd ? [`in ${cwd}`] : []), ...(background ? ["background"] : [])],
-    normalized(result));
+    withExitCode(normalized(result)));
 };
 
 /** AGY's own lines before the numbered file lines of a read (autobyteus-377). */
@@ -143,6 +157,14 @@ const writeToFile: BuiltInConverter = (call, result) => writeFileLine(
   normalized(result),
 );
 
+/** The current CLI's `write_file {Path, Content, Append}`. */
+const writeFile: BuiltInConverter = (call, result) => writeFileLine(
+  asText(call.args.Path),
+  typeof call.args.Content === "string" ? call.args.Content : null,
+  isTrue(call.args.Append) ? ["append"] : [],
+  normalized(result),
+);
+
 const replaceFileContent: BuiltInConverter = (call, result) => editFileLine(
   asText(call.args.TargetFile),
   typeof call.args.TargetContent === "string" && typeof call.args.ReplacementContent === "string"
@@ -151,6 +173,24 @@ const replaceFileContent: BuiltInConverter = (call, result) => editFileLine(
   [],
   normalized(result),
 );
+
+/** The current CLI's `edit_file {Path, Target, Replacement}`. */
+const editFile: BuiltInConverter = (call, result) => editFileLine(
+  asText(call.args.Path),
+  typeof call.args.Target === "string" && typeof call.args.Replacement === "string"
+    ? diffTexts(call.args.Target, call.args.Replacement)
+    : null,
+  [],
+  normalized(result),
+);
+
+const readUrlContent: BuiltInConverter = (call, result) =>
+  convertedCommandLine(curlCommand(asText(call.args.Url)), normalized(result));
+
+const searchWeb: BuiltInConverter = (call, result) => {
+  const query = asText(call.args.query);
+  return searchWebLine(query ? [query] : [], normalized(result));
+};
 
 /** A shell tool recorded under the name `Bash`: the same command line as `run_command`. */
 const bash: BuiltInConverter = (call, result) => commandLine(asText(call.args.command), [], normalized(result));
@@ -173,6 +213,10 @@ export const antigravityTranslation: RuntimeTranslation = Object.freeze({
     ["list_dir", listDir],
     ["write_to_file", writeToFile],
     ["replace_file_content", replaceFileContent],
+    ["write_file", writeFile],
+    ["edit_file", editFile],
+    ["read_url_content", readUrlContent],
+    ["search_web", searchWeb],
     ["Bash", bash],
   ]),
   normalizeResult: normalizeAgyResult,

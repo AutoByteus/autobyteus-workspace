@@ -73,12 +73,71 @@ describe("the timestamp header is not output (AC-010)", () => {
   });
 });
 
-describe("write and edit results (AC-010 of SR-001; see D-7 for SR-002)", () => {
+describe("write and edit results keep their lines (AC-010 of SR-001)", () => {
   it("a recovered 'Created file.' or edit confirmation does not add output to the write and edit lines", () => {
     const written = lines("write_to_file", { TargetFile: "/w/new.txt", CodeContent: "one\ntwo\n" }, done(`${HEADER}Created file.`));
     expect(written).toEqual(lines("write_to_file", { TargetFile: "/w/new.txt", CodeContent: "one\ntwo\n" }, done(null)));
     const edited = lines("replace_file_content", { TargetFile: "/w/a.txt", TargetContent: "a\n", ReplacementContent: "b\n" },
       done(`${HEADER}Made 1 replacements in /w/a.txt starting at line 1`));
     expect(edited).toEqual(lines("replace_file_content", { TargetFile: "/w/a.txt", TargetContent: "a\n", ReplacementContent: "b\n" }, done(null)));
+  });
+});
+
+describe("the current tool names read like their older equivalents (AC-014)", () => {
+  it("write_file is a Write file line like write_to_file, with Append, and its confirmation is not shown", () => {
+    expect(lines("write_file", { Path: "/w/new.txt", Content: "one\ntwo\n" }, done(`${HEADER}Created file.`))).toEqual(
+      lines("write_to_file", { TargetFile: "/w/new.txt", CodeContent: "one\ntwo\n" }, done(null)));
+    expect(lines("write_file", { Path: "/w/new.txt", Content: "one\ntwo\n" }, done(null))[0]).toBe("Write file: /w/new.txt (2 lines) → ok");
+    expect(lines("write_file", { Path: "/w/new.txt", Content: "x", Append: true }, done(null))[0]).toBe("Write file: /w/new.txt (1 lines) (append) → ok");
+    expect(lines("write_file", { Path: "/w/new.txt" }, done(null))[0]).toBe("Write file: /w/new.txt (content not recorded) → ok");
+  });
+
+  it("edit_file is an Edit file line with the diff like replace_file_content", () => {
+    const edit = lines("edit_file", { Path: "/w/a.txt", Target: "old line\n", Replacement: "new line\n" }, done(`${HEADER}Made 1 replacements in /w/a.txt`));
+    expect(edit).toEqual(lines("replace_file_content", { TargetFile: "/w/a.txt", TargetContent: "old line\n", ReplacementContent: "new line\n" }, done(null)));
+    expect(edit[0]).toMatch(/^Edit file: \/w\/a\.txt \(\+1 −1\) → ok$/);
+    expect(lines("edit_file", { Path: "/w/a.txt" }, done(null))[0]).toBe("Edit file: /w/a.txt (change not recorded) → ok");
+  });
+
+  it("a failed write or edit keeps its text", () => {
+    expect(lines("write_file", { Path: "/w/new.txt", Content: "x" }, { provider_state: "ERROR", output: null }, "permission denied")[0])
+      .toContain("failed: permission denied");
+    expect(lines("edit_file", { Path: "/w/a.txt", Target: "a", Replacement: "b" }, { provider_state: "ERROR", output: null }, "target not found")[0])
+      .toContain("failed: target not found");
+  });
+
+  it("read_url_content is the curl line and search_web the Search web line", () => {
+    expect(lines("read_url_content", { Url: "https://example.com/page" }, done(`${HEADER}page text`))).toEqual([
+      "Command: curl https://example.com/page → ok", "           page text"]);
+    expect(lines("read_url_content", {}, done("x"))[0]).toBe("Command: curl (URL not recorded) → ok");
+    expect(lines("search_web", { query: "example topic" }, done(`${HEADER}result one`))).toEqual([
+      'Search web: "example topic" → ok', "           result one"]);
+    expect(lines("search_web", {}, done("x"))[0]).toBe("Search web: (query not recorded) → ok");
+  });
+});
+
+describe("run_command shows its exit code as the outcome (AC-015)", () => {
+  const wrapped = (code: number, output = "") => `${HEADER}Command exited with code ${code}.\n\nCommand output:\n${output}`;
+  it("exit 0 with output is ok and shows only the output", () => {
+    expect(lines("run_command", { CommandLine: "echo hi" }, done(wrapped(0, "hi\nthere\n")))).toEqual(["Command: echo hi → ok", "           hi", "           there"]);
+  });
+  it("exit 2 with output is the exit outcome", () => {
+    expect(lines("run_command", { CommandLine: "false" }, done(wrapped(2, "boom\n")))).toEqual(["Command: false → exit 2", "           boom"]);
+  });
+  it("no output has no output lines; CRLF endings read the same", () => {
+    expect(lines("run_command", { CommandLine: "true" }, done(wrapped(0)))).toEqual(["Command: true → ok"]);
+    expect(lines("run_command", { CommandLine: "true" }, done(wrapped(1, "e\n").replace(/\n/g, "\r\n")))).toEqual(["Command: true → exit 1", "           e"]);
+  });
+  it("another wording, a failed record and a background command stay as recorded", () => {
+    expect(lines("run_command", { CommandLine: "x" }, done("Command exited with code 0 and more text")).join("\n")).toContain("Command exited with code 0 and more text");
+    expect(lines("run_command", { CommandLine: "x" }, done("Command exited with code 3.\nOutput follows")).join("\n")).toContain("Command exited with code 3.");
+    expect(lines("run_command", { CommandLine: "x" }, { provider_state: "ERROR", output: null }, "tool failed")[0]).toContain("failed: tool failed");
+    expect(lines("run_command", { CommandLine: "sleep 60", IsDaemon: true }, done(`${HEADER}Background command started with id abc`))).toEqual([
+      "Command: sleep 60 (background) → ok", "           Background command started with id abc"]);
+  });
+  it("a spilled long output still shows its preview, then the marker", () => {
+    const spill = "/home/user/.gemini/antigravity-cli/brain/abc/.system_generated/steps/12/output.txt";
+    const text = `The tool's output was truncated due to being too long. You can find the full output in a file at file://${spill}\n\nHere is a preview with the middle of the output truncated:\n${HEADER}Command exited with code 0.\n\nCommand output:\na\nb`;
+    expect(lines("run_command", { CommandLine: "ls" }, done(text)).join("\n")).toContain(`…[full output was saved outside the raw trace: ${spill}]`);
   });
 });

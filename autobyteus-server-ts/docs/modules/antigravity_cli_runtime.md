@@ -232,9 +232,16 @@ do not invent an exit code.
 For newly recorded native tool calls, the backend resolves actual typed inputs
 before the first canonical `TOOL_EXECUTION_STARTED`. The optional source is the
 bound conversation's `.system_generated/logs/transcript_full.jsonl`, an
-undocumented AGY-internal file. Recognition requires an adjacent `step_index - 1`
-DONE MODEL PLANNER_RESPONSE containing exactly one same-name call with object
-`args`, an ordered unambiguous step range, and typed agreement with every stream
+undocumented AGY-internal file. One shared helper (`identifyAgyToolCall`,
+`stream/agy-transcript-step.ts`) identifies the step for both the arguments and
+the results reader: the planner row is the nearest `PLANNER_RESPONSE` MODEL DONE
+row below the step, the step's position in its batch is
+`step_index − planner_index − 1`, and the planner's `tool_calls[position]` must
+carry the step's tool name. A single call is position 0; parallel calls (several
+calls of one planner response, whose sibling rows may not be written yet) are
+identified the same way. The rows that are present between the planner and the
+step must be MODEL `GENERIC` rows, and indices must strictly decrease without
+duplicates. The arguments additionally need typed agreement with every stream
 summary field. Only `run_command.CommandLine` has an evidenced lossy-summary
 exception: a nonempty literal prefix plus Unicode ellipsis may corroborate a
 strictly longer full command from that exact record. No missing suffix is guessed.

@@ -121,6 +121,8 @@ suite("AGY native tool results: recovered from the transcript, in the run record
   it("NR-01 FULL: real content in the success event and the raw trace; the journal shows cat -n lines without timestamps", async () => {
     const run = await runTurn("FULL");
     const expected = calls().map((call) => ({ tool: call.name, output: call.name === "run_command" ? call.streamOutput : call.content }));
+    // The first observation of each step records the full arguments of its call.
+    expect(run.messages.filter((m) => m.type === "TOOL_EXECUTION_STARTED").map((m) => m.payload["arguments"])).toEqual(calls().map((c) => c.args));
     expect(run.results().map(({ tool, result }) => ({ tool, output: result.output }))).toEqual(expected);
     const rawResults = (await run.raw()).filter((r) => r["trace_type"] === "tool_result");
     expect(rawResults.map((r) => (r["tool_result"] as { output: unknown }).output)).toEqual(expected.map((e) => e.output));
@@ -132,16 +134,23 @@ suite("AGY native tool results: recovered from the transcript, in the run record
     expect(text).toContain(cat(1, "first line"));
     expect(text).toContain(`${file()}:third line`);
     expect(text).toContain("STREAM_RESULT");
-    // `write_file` has no journal converter (only the older `write_to_file` has): its generic line now carries the CLI's confirmation.
-    expect(text).toMatch(/Tool: write_file Path="[^"]+new\.txt" Content="x" → ok\n\s+Created file\./);
-    for (const absent of ["Created At:", "Completed At:", "Showing lines", "Total Lines:", "content not recorded", "ROW_MUST_NOT_BE_USED"])
+    // The current tool names read like the older ones; the CLI's own confirmations and its exit-code wrapper are not shown.
+    expect(text).toMatch(/Write file: [^\n]+new\.txt \(2 lines\) → ok\n\s+first\n\s+second/);
+    expect(text).toMatch(/Edit file: [^\n]+result\.txt \(\+1 −1\) → ok\n\s+-second line\n\s+\+2nd line/);
+    expect(text).toContain("Command: echo STREAM_RESULT → exit 2");
+    for (const absent of ["Created At:", "Completed At:", "Showing lines", "Total Lines:", "content not recorded", "ROW_MUST_NOT_BE_USED", "Created file.", "Made 1 replacements", "Command exited", "Command output:", "Tool: "])
       expect(text, absent).not.toContain(absent);
     expect(warn.mock.calls.filter(([message]) => String(message).startsWith("AGY_TOOL_RESULT_UNRECOVERED"))).toEqual([]);
   }, 60_000);
 
-  it("NR-02 PARALLEL: the two calls of one planner response each get their own row", async () => {
+  it("NR-02 PARALLEL: the three calls of one planner response each get their own arguments and row", async () => {
     const run = await runTurn("PARALLEL");
-    expect(run.results().map(({ tool, result }) => ({ tool, output: result.output }))).toEqual(calls().slice(0, 2).map((c) => ({ tool: c.name, output: c.content })));
+    const batch = calls().filter(({ name }) => ["write_file", "edit_file", "grep_search"].includes(name));
+    expect(run.messages.filter((m) => m.type === "TOOL_EXECUTION_STARTED").map((m) => m.payload["arguments"])).toEqual(batch.map((c) => c.args));
+    expect(run.results().map(({ tool, result }) => ({ tool, output: result.output }))).toEqual(batch.map((c) => ({ tool: c.name, output: c.content })));
+    const text = await run.journal("Edit file:");
+    expect(text).toMatch(/Write file: [^\n]+new\.txt \(2 lines\)/);
+    expect(text).toMatch(/Edit file: [^\n]+result\.txt \(\+1 −1\)/);
     expect(warn.mock.calls.filter(([message]) => String(message).startsWith("AGY_TOOL_RESULT_UNRECOVERED"))).toEqual([]);
   }, 60_000);
 
