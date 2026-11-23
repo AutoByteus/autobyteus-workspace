@@ -1,0 +1,45 @@
+# IMP-02 (D-2, SR-002, AC-003) a preface notice reads back after its input, per writer: base, the SR-001 time-only rule, the fix
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose tests/unit/run-history/projection/preface-notice-order.test.ts
+#          (with raw-trace-to-historical-replay-events.ts from the base; with the rule's native clause removed; then the
+#          fix; the file restored after each)
+# commit: base file; 1c6f493625 (fix)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Pass with the fix (8 of 8). The test drives the real writers (the accumulator for external runtimes; the native
+#         MemoryManager in MemoryIngestInputProcessor's order, clock set by fake timers) and reads back through
+#         LocalMemoryRunViewProjectionProvider.
+# Finding (sent to the Solution Designer): the read path sorts traces by ts, then turn, then seq
+# (raw-trace-record-normalizer.ts:121-130), so the founder's external shape [n .697, u .696] already reads input
+# first on the base. D-2 is needed for native (every case) and for external runtimes at an equal ts.
+
+## base (no rule)
+ ok   external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 8ms
+ FAIL external, the notice stored first with the same time as its input (the read path's time sort keeps the stored order at a tie): input, notice, reply 7ms
+ ok   external, already stored input first (the notice's publication came after the input's write): unchanged 4ms
+ ok   external, a notice that opened its own turn and an input appended to that turn later: unchanged 3ms
+ FAIL native AutoByteus: the notice and its input written one after the other > in the same millisecond: input, notice, reply 5ms
+ FAIL native AutoByteus: the notice and its input written one after the other > a millisecond apart: input, notice, reply 5ms
+ FAIL native AutoByteus: the notice and its input written one after the other > far apart (a slow write): input, notice, reply 3ms
+ ok   native AutoByteus: the notice and its input written one after the other > a native notice written under another source event (not a preface) keeps its place 3ms
+      Tests  4 failed | 4 passed (8)
+
+## SR-001's time-only rule (native clause removed; this run predates the external equal-ts case, 7 cases): native fails when the writes are 1 ms or more apart
+ ok   external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 10ms
+ ok   external, already stored input first (the notice's publication came after the input's write): unchanged 3ms
+ ok   external, a notice that opened its own turn and an input appended to that turn later: unchanged 4ms
+ ok   native AutoByteus: the notice and its input written one after the other > in the same millisecond: input, notice, reply 6ms
+ FAIL native AutoByteus: the notice and its input written one after the other > a millisecond apart: input, notice, reply 10ms
+ FAIL native AutoByteus: the notice and its input written one after the other > far apart (a slow write): input, notice, reply 6ms
+ ok   native AutoByteus: the notice and its input written one after the other > a native notice written under another source event (not a preface) keeps its place 3ms
+      Tests  2 failed | 5 passed (7)
+
+## fix (1c6f493625, SR-002)
+ ok   external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 8ms
+ ok   external, the notice stored first with the same time as its input (the read path's time sort keeps the stored order at a tie): input, notice, reply 4ms
+ ok   external, already stored input first (the notice's publication came after the input's write): unchanged 5ms
+ ok   external, a notice that opened its own turn and an input appended to that turn later: unchanged 16ms
+ ok   native AutoByteus: the notice and its input written one after the other > in the same millisecond: input, notice, reply 10ms
+ ok   native AutoByteus: the notice and its input written one after the other > a millisecond apart: input, notice, reply 6ms
+ ok   native AutoByteus: the notice and its input written one after the other > far apart (a slow write): input, notice, reply 4ms
+ ok   native AutoByteus: the notice and its input written one after the other > a native notice written under another source event (not a preface) keeps its place 3ms
+      Tests  8 passed (8)

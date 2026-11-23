@@ -1,0 +1,35 @@
+# IMP-01 (D-1, AC-001, AC-002, AC-004) the conversation window keeps the conversation's order: base, then the fix
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run --reporter=verbose services/eventMonitor/__tests__/recentEventMonitorWindow.clockOrder.spec.ts
+#          (first with recentEventMonitorWindow.ts from the base 1f761bc8db, then the fix; the file restored after)
+# commit: base window file + the new spec; d67b58c740 (fix)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Reproduced, then fixed. The base fails exactly the viewer-behind cases (4 of 9); the fix passes all 9. The
+#         equal-clock compaction case passes on both: the tie rule is unchanged.
+# The spec starts from the Solution Designer's reproduction (probes/clock-order-reproduction.spec.ts) and drives the real
+# live handlers (handleMemberInputMessage with the node's received_at, handleSystemTaskNotification) with the viewer's
+# clock set by fake timers.
+
+## base window
+ ok   the sender, the same clock: previous reply, You, the notice, the reply 3ms
+ FAIL the sender, the viewer 1 s behind the node (the founder's screenshots): previous reply, You, the notice, the reply 4ms
+ FAIL the sender, the viewer 2 s behind: previous reply, You, the notice, the reply 1ms
+ ok   the sender, the viewer 2 s ahead: previous reply, You, the notice, the reply 0ms
+ ok   a viewer that only receives the echo (another window, a Team member), the same clock: the same order 0ms
+ FAIL a viewer that only receives the echo (another window, a Team member), the viewer 2 s behind: the same order 1ms
+ ok   a viewer that only receives the echo (another window, a Team member), the viewer 2 s ahead: the same order 0ms
+ ok   a compaction between two turns (equal clocks) sits between them, as before; at an equal time the message comes first 0ms
+ FAIL with the viewer behind, a compaction never reorders the messages, wherever it lands 1ms
+      Tests  4 failed | 5 passed (9)
+
+## fix (d67b58c740)
+ ok   the sender, the same clock: previous reply, You, the notice, the reply 2ms
+ ok   the sender, the viewer 1 s behind the node (the founder's screenshots): previous reply, You, the notice, the reply 1ms
+ ok   the sender, the viewer 2 s behind: previous reply, You, the notice, the reply 0ms
+ ok   the sender, the viewer 2 s ahead: previous reply, You, the notice, the reply 0ms
+ ok   a viewer that only receives the echo (another window, a Team member), the same clock: the same order 0ms
+ ok   a viewer that only receives the echo (another window, a Team member), the viewer 2 s behind: the same order 0ms
+ ok   a viewer that only receives the echo (another window, a Team member), the viewer 2 s ahead: the same order 0ms
+ ok   a compaction between two turns (equal clocks) sits between them, as before; at an equal time the message comes first 0ms
+ ok   with the viewer behind, a compaction never reorders the messages, wherever it lands 1ms
+      Tests  9 passed (9)
