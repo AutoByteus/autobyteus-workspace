@@ -248,10 +248,30 @@ Stop, termination and process close abort a pending lookup; the backend checks
 the same live turn again before publishing. Native STARTED, terminal and
 background-close events reuse the first captured input snapshot.
 
+The stream gives the result of a finished native read or search step as a size
+summary (`12 lines, 340 bytes`) or nothing; the step's real text is its row in the
+same transcript. For a `DONE` native step (not `call_mcp_tool`, not
+`generate_image`, no explicit error) whose stream result is such a summary or
+absent, the backend asks `agy-native-tool-result-reader.ts` for that row after the
+arguments lookup and uses its `content` as the success output (`read_file`,
+`view_file`, `grep_search`, `find_by_name`, and the confirmations of `write_file`
+and `edit_file`). The row is accepted only when it is a `MODEL`/`GENERIC`/`DONE`
+row of that step, directly below it are only the same batch's `GENERIC` rows and
+then the `PLANNER_RESPONSE` row whose call at that position has the same tool
+name (parallel calls form one such batch). A row not yet written is read again up
+to 5 times, 40 ms apart (live measurement: 122 of 123 steps had it at once, one
+within 5 ms). Text over 256 KiB is cut at a character boundary and says how many
+bytes were not recorded. A miss keeps the stream's result and logs
+`AGY_TOOL_RESULT_UNRECOVERED run=<id> step=<n> tool=<name> reason=<reason>`
+(`INVALID_IDENTITY`, `TRANSCRIPT_UNREADABLE`, `ROW_NOT_FOUND`,
+`ROW_NOT_CORROBORATED`). The lookup is aborted with the arguments lookup on
+interrupt, termination and process close. MCP results, `run_command` (whose
+stream result is already text) and stored traces are not touched.
+
 The ordinary recorder and history readers preserve those arguments on reopen,
 including future calls after a run resumes, without needing the native source
 again. Previously saved summary-only calls remain unchanged; there is no
-historical backfill, tool replay, result/diff recovery or provider-format support
+historical backfill (of arguments or results), tool replay, diff recovery or provider-format support
 promise across future AGY releases. MCP projection and native-image result
 resolution remain separate and unchanged.
 

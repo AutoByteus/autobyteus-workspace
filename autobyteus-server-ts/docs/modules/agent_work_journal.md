@@ -172,6 +172,11 @@ Markdown. No clock and no filesystem; times come from the records.
   text) has none. Any other wording stays as recorded. The later read of that file is an ordinary read: nothing is hidden or linked
   (autobyteus-561).
 
+- **Antigravity timestamp header:** Antigravity starts a result with `Created At: …` / `Completed At: …` lines. They are not output: the
+  journal drops them from results (and from a spilled output's preview); the raw trace keeps the text as recorded. Since the backend now
+  records the transcript's real text for read and search results, a read shows its numbered lines and `grep_search` / `find_by_name`
+  show their matches (autobyteus-377; renderer revision 5).
+
 ## Vocabulary
 
 The journal reads the same whichever runtime produced it. Each line is `[HH:MM:SS] <action> → <outcome>`.
@@ -201,7 +206,7 @@ Outcomes: `ok` (`ok (note)`), `delivered` (a message the platform accepted), `ex
 | Codex | `js`, `js_reset`, `js_add_node_module_dir` | `Run JavaScript: <title>`, `Reset JavaScript environment`, `Add JavaScript module folder: <path>` |
 | Codex | `speak` | `Speak: "<text>"` (`(not played)`) |
 | Antigravity | `Bash` | `Command: <command>` |
-| Antigravity | `view_file {AbsolutePath}` and `read_file {Path}` (the current name), with `StartLine`/`EndLine` and `ContentOffset` | `Command: cat <path>` or `Command: sed -n 'a,bp' <path>`; a size-only result reads `(content not recorded: N lines, M bytes)` |
+| Antigravity | `view_file {AbsolutePath}` and `read_file {Path}` (the current name), with `StartLine`/`EndLine` and `ContentOffset` | `Command: cat <path>` or `Command: sed -n 'a,bp' <path>`; a result with content shows its lines in the `cat -n` layout (the CLI's `Showing lines …`, `File Path:`, `Total …` and line-number sentence are dropped); a size-only result reads `(content not recorded: N lines, M bytes)` |
 | AutoByteus | `run_bash` with `run_in_background` | `Command: <command> (background) → started pid <pid>` |
 | AutoByteus | `start_background_process`, `get_process_output`, `stop_background_process` (retired in autobyteus-338; recorded calls in existing journals) | `Command: <command> (background)`, `Read output of background task <pid>`, `Stop background task <pid>` |
 | AutoByteus | `replace_in_file` | `Edit file: <path> (+a −r)` |

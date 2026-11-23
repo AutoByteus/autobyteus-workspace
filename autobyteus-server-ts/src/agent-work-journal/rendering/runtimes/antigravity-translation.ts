@@ -9,6 +9,7 @@ import {
   shellQuoted,
   shellWord,
   startEndRange,
+  toCatNumberedLinesLoose,
 } from "../command-text.js";
 import { commandLine, convertedCommandLine, editFileLine, writeFileLine } from "../journal-actions.js";
 import { interruptedFromError, normalizeRecordedResult } from "../result-envelopes.js";
@@ -35,9 +36,14 @@ const SIZE_ONLY = /^(\d+) lines, (\d+) bytes$/;
  */
 const SPILLED_OUTPUT = /^The tool's output was truncated due to being too long\. You can find the full output in a file at file:\/\/([^\n]+)\n+Here is a preview with the middle of the output truncated:\n?([\s\S]*)$/;
 
+/** The timestamp lines AGY puts first in a result (autobyteus-377); they are not the tool's output. The raw trace keeps them. */
+const AGY_RESULT_HEADER = /^(?:(?:Created At|Completed At):[^\n]*\n)+\n?/;
+const withoutHeader = (text: string): string => text.replace(AGY_RESULT_HEADER, "");
+
 /** The preview, then the marker every runtime's spill gets (Claude's `PERSISTED_OUTPUT` has the same words, with a size AGY does not give). */
-const normalizeAgyText = (text: string): string => text
-  .replace(SPILLED_OUTPUT, (_match, path: string, preview: string) => `${preview.trimEnd()}\n…[full output was saved outside the raw trace: ${path.trim()}]`)
+const normalizeAgyText = (text: string): string => withoutHeader(text)
+  .replace(SPILLED_OUTPUT, (_match, path: string, preview: string) =>
+    `${withoutHeader(preview).trimEnd()}\n…[full output was saved outside the raw trace: ${path.trim()}]`)
   .replace(TRUNCATED, (_match, count: string) => `…[${count} lines not recorded]`);
 
 const normalizeAgyResult = (result: RecordedResult): NormalizedToolResult => normalizeRecordedResult(result, {
@@ -70,9 +76,20 @@ const runCommand: BuiltInConverter = (call, result) => {
     normalized(result));
 };
 
+/** AGY's own lines before the numbered file lines of a read (autobyteus-377). */
+const READ_WRAPPER_LINE = /^(?:Showing lines\b.*|File Path:.*|Total Lines:.*|Total Bytes:.*|The following code has been modified to include a line number.*|\s*)$/;
+
+/** The numbered lines of a read in the common `cat -n` layout, without AGY's wrapper lines. */
+const readLines = (output: string): string => {
+  const lines = output.split("\n");
+  let first = 0;
+  while (first < lines.length && READ_WRAPPER_LINE.test(lines[first]!)) first += 1;
+  return toCatNumberedLinesLoose(lines.slice(first)).join("\n");
+};
+
 /**
- * AGY usually records only the size of a read: the line says the content was not recorded. The file read is `view_file {AbsolutePath}`
- * in older records and `read_file {Path}` in current ones (autobyteus-561).
+ * The file read is `view_file {AbsolutePath}` in older records and `read_file {Path}` in current ones (autobyteus-561). A record that
+ * holds the content shows its lines; a record that holds only the size says the content was not recorded (autobyteus-377).
  */
 const readFile: BuiltInConverter = (call, result) => {
   const offset = asInteger(call.args.ContentOffset);
@@ -80,9 +97,9 @@ const readFile: BuiltInConverter = (call, result) => {
     startEndRange(call.args.StartLine, call.args.EndLine)) + (offset !== null ? ` (from byte ${offset})` : "");
   const read = normalized(result);
   const sizeOnly = read?.outcome.kind === "ok" && read.output !== null ? SIZE_ONLY.exec(read.output.trim()) : null;
-  return convertedCommandLine(command, sizeOnly
-    ? { outcome: okWith(`content not recorded: ${sizeOnly[1]} lines, ${sizeOnly[2]} bytes`), output: null }
-    : read);
+  if (sizeOnly) return convertedCommandLine(command,
+    { outcome: okWith(`content not recorded: ${sizeOnly[1]} lines, ${sizeOnly[2]} bytes`), output: null });
+  return convertedCommandLine(command, read && read.output !== null ? { ...read, output: readLines(read.output) } : read);
 };
 
 const includeOptions = (value: unknown): string[] => globList(value).map((glob) => glob.startsWith("!")
