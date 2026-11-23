@@ -27,6 +27,8 @@
 | BEH-002 | System | SCN-002 | `grep_search` and `find_by_name` results are often empty | The result is the matches or found paths the CLI gave the model | As above | F-02 |
 | BEH-003 | System | SCN-003 | A tool result the stream already carries (`run_command`, `list_dir`, MCP calls) is recorded as sent | Unchanged | The 560 omission, the 561 spill marker, MCP projection | F-02 |
 | BEH-004 | System | SCN-004 | Not applicable (no recovery exists) | When the CLI's persisted result is missing, unreadable, not corroborated or too large to take whole, the stream's result (or its bounded head) is recorded; the turn continues; one warning names the run, step and reason | Turn flow, tool lifecycle events | F-05, F-08 |
+| BEH-006 | System | SCN-006 | Arguments of parallel calls are the stream's summary (`write_file`: `Path` only) | The full arguments | Single-call recovery, its strictness | F-12, F-13 |
+| BEH-007 | System | SCN-005 | `write_file`, `edit_file` are generic lines with a path; `run_command` shows the CLI's wrapper | The same lines as the older tool names; the exit code as the outcome | Other tools' lines | F-12, F-15 |
 | BEH-005 | System | SCN-005 | The journal shows a ranged read as "content not recorded: <file size>" | The journal shows the lines read, in the `cat -n` layout other runtimes use, without Antigravity's header and wrapper lines; a record that still holds only the size keeps its line | Journal vocabulary (331); other runtimes | F-09 |
 
 ## Stakeholders, Actors, And Outcomes
@@ -41,10 +43,11 @@
 | ID | Use Case | Scenarios |
 | --- | --- | --- |
 | UC-001 | The Antigravity backend records the persisted result of native tool steps whose stream result is a size summary or empty | SCN-001…004 |
-| UC-002 | The Antigravity translation renders the recorded lines | SCN-005 |
+| UC-002 | The Antigravity translation renders the recorded lines, the current tool names and the exit code | SCN-005 |
+| UC-003 | The Antigravity backend records the full arguments of parallel calls | SCN-006 |
 
 ### Out Of Scope
-Raw traces already stored (no migration); other runtimes; MCP tool results; `run_command`'s exit code and the wrapper lines beyond the timestamp header (561's FU-1 remainder; autobyteus-183: exit code and file-change kind for Codex/Grok); native tool arguments of parallel calls (follow-up FU-2); the ACP move (autobyteus-386); the Activity tab's presentation; the CLI.
+Raw traces already stored (no migration); other runtimes; MCP tool results; `run_command`'s exit code and the wrapper lines beyond the timestamp header (561's FU-1 remainder; autobyteus-183: exit code and file-change kind for Codex/Grok); the ACP move (autobyteus-386); the Activity tab's presentation; the CLI.
 
 ### Non-Goals
 Recording content the CLI did not give the model; reconstructing results from the files on disk (they may have changed); a retry loop for a missing row beyond what the measurement (D-3) shows is needed.
@@ -69,6 +72,9 @@ As the template.
 | REQ-005 | The Work Journal shows a recovered `read_file`/`view_file` result as the lines read in the `cat -n` layout, drops Antigravity's `Created At`/`Completed At` header and its `Showing lines…`/`File Path`/`Total…`/numbering-sentence wrapper from the shown output, and keeps the range in the command (`sed -n 'a,bp'`); a record that holds only the size keeps today's line. | BEH-005 | High | F-09 | Pattern exists (AutoByteus, Claude) | DEC-5 |
 | REQ-006 | The journal drops the leading `Created At`/`Completed At` header lines of every Antigravity result text. | BEH-005 | Medium | The recovered text carries the header twice; `run_command` previews carry it once (561 FU-1 part) | Read | DEC-5 |
 | REQ-007 | `WORK_JOURNAL_RENDERER_REVISION` is raised (4 → 5). | BEH-005 | Medium | 331/560/561 precedent | Read | DEC-6 |
+| REQ-009 | The recorded **arguments** of a native tool step are the CLI's full arguments also when the step is one of several parallel calls of one planner response (identified by position and tool name, as REQ-002), under the same corroboration against the stream's summary as today; a miss keeps the stream's summary. | BEH-006 | High | F-12, F-13: `write_file` content and `edit_file` target/replacement are not recorded for most writes | Reproduced shapes, measured | The founder (2026-11-23), DEC-8 |
+| REQ-010 | The journal renders Antigravity's current tool names like their older equivalents: `write_file {Path, Content, Append}` as `Write file`, `edit_file {Path, Target, Replacement}` as `Edit file` with the diff, `read_url_content {Url}` as the `curl` line, `search_web {query}` as `Search web`. | BEH-007 | High | F-12 | Converters exist (`writeFileLine`, `editFileLine`, `curlCommand`, `searchWebLine`) | DEC-9 |
+| REQ-011 | The journal shows an Antigravity `run_command` result by its exit code: `Command exited with code N.` and `Command output:` are not shown; the outcome is `ok` for 0 and the exit code otherwise; a result in another wording is shown as recorded. | BEH-007 | Medium | F-15; completes 561's follow-up FU-1 | Pattern exists (Claude `exit` outcome) | DEC-9 |
 | REQ-008 | Raw traces already stored are not changed; no migration. | BEH-001…005 | High | The Task: no stored-data change without approval and a backup | Read | DEC-6 |
 
 ## Acceptance Criteria
@@ -86,6 +92,9 @@ As the template.
 | AC-009 | REQ-005 | SCN-005 | Journal render of an old record: size-only result | `… → ok (content not recorded: N lines, M bytes)` as today | Renderer unit test |
 | AC-010 | REQ-006 | SCN-005 | Journal render of a `run_command` result with the header | The two header lines are gone; the rest is as before | Renderer unit test; the 561 spill and wrapper tests adapted |
 | AC-011 | REQ-007, 008 | SCN-001 | A closed journal written by revision 4 on a synthetic run | Rendered again by revision 5; the raw file byte-identical | Service test (as 560/561) |
+| AC-013 | REQ-009 | SCN-006 | A transcript with a 3-call planner response (`write_file`, `edit_file`, `grep_search`); the stream summaries of the three steps; the sibling rows present, absent, or partly written | Each step's recorded arguments are its own call's full arguments; a name that does not match at the position keeps the summary; the single-call cases of the existing reader still pass | Reader unit tests (the existing arguments tests stay green) |
+| AC-014 | REQ-010 | SCN-005 | Journal render of `write_file` (with `Append`), `edit_file` (Target/Replacement), `read_url_content`, `search_web` | `Write file: <path> (N lines)` with content; `Edit file: <path> (+a −b)` with the diff; `Command: curl <url>`; `Search web: "…"`; a failed call keeps its text | Renderer unit tests |
+| AC-015 | REQ-011 | SCN-005 | `run_command` results: exit 0 with output, exit 2 with output, no output, another wording, a background command | `→ ok` or `→ exit 2` with the output only; unmatched wording unchanged | Renderer unit tests; the 561 spill tests adapt |
 | AC-012 | REQ-001 | SCN-001 | The real `agy` CLI, one live run on a synthetic file (read a range; grep; find) | The recorded results hold the lines/matches; the lag of the row after DONE is measured on at least 50 live steps and reported | Executed by API/E2E (live gate); evidence in the report |
 
 ## Relevant Scenarios And Journeys
@@ -96,6 +105,7 @@ As the template.
 | SCN-002 | System | Antigravity agent | Search | `grep_search`, `find_by_name` | Same | search | Matches recorded | Supported Normal Scenario (measured F-02) |
 | SCN-003 | System | Antigravity agent | A tool whose result the stream carries | `run_command`, `list_dir`, MCP | Same | call | Unchanged | Supported Normal Scenario |
 | SCN-004 | System | Platform | The CLI's persisted result is unusable | Missing/changed layout | Same | read | Summary kept, warning | Supported Explicit Edge Scenario (the layout is undocumented, F-05, U-3) |
+| SCN-006 | System | Antigravity agent | Several tools in one response | A parallel batch | An Antigravity run | call ×N | Each call's own arguments and result | Supported Normal Scenario (measured F-13: most writes of one agent) |
 | SCN-005 | System | A reader of the journal | See what was read | Journal render | A recorded result | render | Lines shown | Supported Normal Scenario |
 
 ## UI, Interaction, And Experience Requirements
@@ -134,6 +144,8 @@ N/A — not applicable (the Activity tab shows the recorded `result` unchanged i
 | DEC-4 | How strict, how safe? | Identify by index only, or by position and name; fail how? | Position and name (a wrong row would silently attach another step's content to a call); every miss keeps the stream result and logs one warning: the recorded result is never worse than today | Solution Designer | Decided |
 | DEC-5 | Where is the header dropped? | In the recorded text, or in the journal | The raw trace keeps the CLI's text verbatim (it is evidence); the journal drops the plumbing (one rule in the Antigravity normalizer, which also removes the timestamp header from `run_command` previews: a part of 561's FU-1) | Solution Designer | Decided |
 | DEC-6 | Revision and stored data | Bump or not; migrate | Bump 4 → 5 (the documented cache key; one re-render; only changed files re-indexed); no migration, the raw traces are not changed | Solution Designer | Decided |
+| DEC-8 | Fix the arguments of parallel calls here? | Separate follow-up (as first designed) or in this ticket | In this ticket: the founder asked for all Antigravity tool problems (2026-11-23); F-13 shows it is how most writes of a batching agent are lost; the same identification serves results and arguments, so one shared helper replaces two ad-hoc ones (principle 11) | Solution Designer, on the founder's request | Decided |
+| DEC-9 | Table entries and the exit code here? | Follow-ups FU-2 or in this ticket | In this ticket for the same reason: they are the journal half of the same recording gap (current tool names; the CLI's wrapper) and small | Solution Designer, on the founder's request | Decided |
 | DEC-7 | One ticket or two with autobyteus-183? | 183: exit code and file-change kind that Codex and Grok report; here: result text of Antigravity reads | Two: different runtimes, different fields; 183 stays its own Task | Solution Designer | Decided |
 
 ## Traceability
