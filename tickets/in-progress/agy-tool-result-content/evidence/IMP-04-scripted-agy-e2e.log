@@ -1,0 +1,34 @@
+# IMP-04 scripted-AGY built-server e2e. Command: env -i PATH HOME=<fresh temp> RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs npx vitest run <tests/e2e/runtime/*agy*> work-journal-neutral-vocabulary-scripted-agy. Commit 7069972efe. macOS 25.5 (darwin arm64), node v22.21.1, pnpm. 2026-11-23. Excerpt.
+ ↓ tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 8382ms
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts (3 tests | 1 skipped) 12317ms
+ ↓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 78039ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2436ms
+ ↓ tests/e2e/runtime/agy-background-task-live.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 2099ms
+ ↓ tests/e2e/runtime/agy-switch-back-live.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 9442ms
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5838ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 961ms
+ ↓ tests/e2e/runtime/agy-context-files-live.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 24917ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 11894ms
+ ✓ tests/e2e/runtime/work-journal-agy-schema-reads-scripted-agy.e2e.test.ts (1 test) 904ms
+ ✓ tests/e2e/runtime/agy-native-tool-result-content-scripted-agy.e2e.test.ts (4 tests) 1819ms
+ ✓ tests/e2e/runtime/work-journal-agy-read-file-spill-scripted-agy.e2e.test.ts (1 test) 648ms
+ ↓ tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2567ms
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 1437ms
+ ↓ tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 1488ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 723ms
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 617ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 1131ms
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 2070ms
+ Test Files  20 passed | 11 skipped (31)
+      Tests  74 passed | 33 skipped (107)
