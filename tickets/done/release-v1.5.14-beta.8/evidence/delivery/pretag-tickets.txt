@@ -1,0 +1,28 @@
+# git log --merges --first-parent v1.5.14-beta.7..HEAD at dad158474c, 2026-11-23 (216 commits since v1.5.14-beta.7)
+634e14a9be Merge codex/message-reference-own-log-615: a message's reference file opens from the view its list was read from (autobyteus-615)
+042e0517d2 Merge phone-web-followups-609 (absorbs autobyteus-575): a tool call the user stopped reads Stopped with a stop icon on every surface, live and read back from the node, on every runtime, from one node rule over what the writers already store; relativ
+dc9df13941 Merge org-teams-follow-definition (an Org run is a container of runs: each mounted Team is a Team run of its own and each Org agent an agent run of its own; Teams inside an Org follow their Team definition and the Org follows its Org definition (new
+19eecddbc8 Merge restart-notice-continue (every platform notice is its own light, labelled row in the conversation, never inside the agent's message, on desktop and phone; the phone shows the agent's name again after it) (autobyteus-585)
+de85b8ebc0 Merge codex/small-follow-ups-579: the file viewer's refusals, busy-host test limits, TESTING.md's Claude home (autobyteus-579)
+e564a7ebd8 Merge codex/stale-runtime-session-recovery-599: a lost runtime session is renewed from the work journal (autobyteus-599)
+d57433289c Merge phone-activity-details (absorbs autobyteus-586): the phone's Activity rows show each tool call's shared summary (its command, file, query, recipient or Task) and a status that never relies on color alone, a tap opens the call's details full sc
+c399ef6c16 Merge grok-release-smoke-551: Grok starts under load (90 s start-up bound), offers the models xAI announces (3 s wait for the refreshed list), and sees its workspace skills (run-only workspace trust) (autobyteus-551)
+dcb855728c Merge branch 'codex/team-interrupt-ack-602' into personal
+
+# ticket folder and release notes (sections collected: 'What you need to do' of message-reference-own-log-615 and org-teams-follow-definition)
+message-reference-own-log-615: tickets/done/message-reference-own-log-615/release-notes.md
+phone-web-followups-609: tickets/done/phone-web-followups-609/release-notes.md
+org-teams-follow-definition: tickets/done/org-teams-follow-definition/release-notes.md
+restart-notice-continue: tickets/done/restart-notice-continue/release-notes.md
+small-follow-ups-579: tickets/done/small-follow-ups-579/release-notes.md
+stale-runtime-session-recovery: tickets/done/stale-runtime-session-recovery/release-notes.md
+phone-activity-details: tickets/done/phone-activity-details/release-notes.md
+grok-release-smoke-551: tickets/done/grok-release-smoke-551/release-notes.md
+team-interrupt-ack-602: no release-notes.md (test-only ticket)
+
+# app-data migrations added since v1.5.14-beta.7
+ .../org-unit-targets.ts                            | 151 ++++++++++++
+ .../released-org-tree-v1.ts                        | 160 +++++++++++++
+ 9 files changed, 1196 insertions(+), 1 deletion(-)
+
+# prisma schema / docker system-level changes since v1.5.14-beta.7:        0
