@@ -11,15 +11,16 @@
 - Architecture Review Revision Record: `architecture-review-revision-record.md` (untracked, as above)
 - Implementation Handoff: `implementation-handoff.md` (IR-001; IMP-01…IMP-10; Downstream Coverage Hints)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-001, Full Review, Pass, no findings)
+- Code Review Report: `code-review-report.md` (round 1 CRR-001 Pass; CRR-002 failure-origin: Design Impact; CRR-003 Full Re-Audit Pass, F-1 resolved)
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
 - Trigger: `/code_reviewer`, CRR-001 Pass; branch `codex/phone-web-followups-609` at `255a0b0ada` (origin has `c9d184ce80`), base `origin/personal` `f2c0d2a902`; Large / High
-- Prior Investigation Reviewed: None (first round)
+- Prior Investigation Reviewed: round 1 of this file (API-REV-001, Fail F-1)
+- Trigger (round 2): `/code_reviewer`, CRR-003 Pass on IR-002 (`70f3d8d410` D-D2: one node rule `agent-memory/domain/tool-result-interruption.ts` read by the replay and the work journal; conversation entries carry the replay's `toolStatus`; Team member reconciliation accepts a read-back `interrupted`. `e78a539dfe` SR-005: the unused Codex run view provider, thread history reader and normalizer removed); tree `9a4777b0eb`
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -131,12 +132,24 @@ Ten items (REQ-A…REQ-J, AC-A…AC-J):
 
 - Test progress log needed: `Yes` (`api-e2e-test-progress.md`)
 
+### Round 2 delta
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| R2-MSP-102 | AC-D, AC-E | as round 1 | Durable | `--cases=MSP-102,MSP-103` | F-1's acceptance |
+| MSP-103 | AC-D (D-D2) | a Team member's call stopped from the phone while the desktop's Team stream is live; the desktop opens the member (the member loader reconciles live and read-back state, the code D-D2 changed); the phone reloaded (read back) | Durable | same run | D-D2 changed the reconciliation; a member path was not covered by a probe |
+| R2-SI-1, R2-SE-1 | regression | whole server integration and E2E | Existing Test | as round 1 | node code changed; three Codex files and their tests removed |
+| R2-WS-1 | regression | whole phone probe | Existing Test | as round 1 | web hydration changed |
+| FS-1 | build inputs | fresh-start build on my final commit | Existing Test | as planned | IMP-16 ran on `e78a539dfe`; my test changes are compiled by the typechecks |
+| U-1 | unit | Reused: IMP-12 | Reused | — | no code change after `e78a539dfe` except my test files |
+
 ## Durable Coverage To Add
 
 | Case ID | Planned Test Path | Why Durable Coverage Is Needed |
 | --- | --- | --- |
 | MSP-101 | `autobyteus-web/tests/e2e/mobile-heading-links-cases.mjs` | "that run's own folder" for a Team member and a delegated run, on desktop and phone |
 | MSP-102 | `autobyteus-web/tests/e2e/desktop-stopped-call-trace-cases.mjs` (new; registered in `mobile-shell-probe.mjs`) | "Stopped" on every surface after a real user Stop, and earlier-trace page cards against live cards on a real stored trace |
+| MSP-103 (round 2) | same file | a Team member's stopped call: live on the phone, reconciled on the desktop, read back on the phone |
 | FX-1 | `agy-failure-cli.mjs` `AGENT_TOOL_STEPS` and its routing test | the tool steps MSP-102 needs |
 
 ## Durable Coverage To Update

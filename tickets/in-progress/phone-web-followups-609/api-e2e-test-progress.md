@@ -20,3 +20,14 @@
 | 2026-11-23 01:13 | WS-1 | Started | — | whole phone probe → /tmp/api609/ws-1 |
 | 2026-11-23 01:34 | WS-1 | Completed | Fail | 100 cases, 98 Pass (started 00:46, the row above has the wrong time); MSP-102 (F-1), MSP-61 (FU-006, base); unknown browser errors 0; MSP-98 skipped (gate) |
 | 2026-11-23 01:37 | FX-1 | Checkpoint | Pass | server typecheck `1000 in 313 files (baseline 1000 in 313 files)` |
+| 2026-11-23 02:55 | — | Checkpoint | — | Round 2 (CRR-003 on IR-002, tree `9a4777b0eb`): server build, phone bundle (exit 0) |
+| 2026-11-23 03:00 | R2-MSP-102, MSP-103 | Completed | MSP-102 Pass; MSP-103 Fail (harness) | MSP-102: phone `interrupted`/`Stopped`, page card stop icon, page `statusKey: interrupted`. MSP-103 failed after the phone reload (my wait) |
+| 2026-11-23 03:30 | MSP-103 | Completed | Pass | after four harness fixes (the reload reopens `?row=<member>&screen=activity`): phone live Stopped; desktop member card stop icon, Activity Stopped, no conflict; phone read back Stopped; stored `interrupted` |
+| 2026-11-23 03:31 | R2-SI-1, R2-SE-1 | Started | — | `test:integration:prepare`, `test:integration`, `pnpm test:e2e` → /tmp/api609/r2-* |
+| 2026-11-23 03:29 | R2-SI-1, R2-SE-1 | Completed | Pass; Fail (outside) | integration 91 passed / 21 skipped; e2e 126 passed, the same 2 base failures (FU-007) |
+| 2026-11-23 04:17 | R2-WS-1 (1st) | Completed | Fail | 101 cases, 99 Pass: MSP-14 `the task agent is listed before` (new), MSP-61 (FU-006) |
+| 2026-11-23 04:30 | R2-MSP-14 | Completed | — | with MSP-103 before: Fail; without: Pass → MSP-103 disturbs MSP-14 |
+| 2026-11-23 05:24 | R2-WS-1 (2nd) | Completed | Fail | first fix (list reload in MSP-103, Show older in MSP-14): MSP-14 still Fail. Cause: MSP-103 reloaded the shared phone (unfolded rows lost); two debug logs that held a used pairing URL deleted |
+| 2026-11-23 06:13 | R2-WS-1 (3rd) | Completed | Pass for this ticket | MSP-103 reads back through a second phone; MSP-14 reverted: 101 cases, 100 Pass (MSP-61 FU-006); unknown browser errors 0 |
+| 2026-11-23 06:15 | FS-1 | Started | — | fresh clone of `3d49a60c82` → <tmp>/fs-1.log |
+| 2026-11-23 06:20 | FS-1 | Completed | Pass | fresh clone of `3d49a60c82`: install, mac build (typecheck 86 in 36 at baseline), DMG; Prisma and terminal runtime ok; no staging folder |

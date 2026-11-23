@@ -1,0 +1,5 @@
+      Tests  2 failed | 573 passed | 759 skipped (1334)
+   Duration  1143.64s (transform 14.85s, setup 5.94s, import 336.48s, tests 776.37s, environment 15ms)
+ FAIL  tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts > Removal of the retired built-in agents on startup (built Studio) > RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical
+ FAIL  tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open
+ Test Files  2 failed | 126 passed | 160 skipped (288)

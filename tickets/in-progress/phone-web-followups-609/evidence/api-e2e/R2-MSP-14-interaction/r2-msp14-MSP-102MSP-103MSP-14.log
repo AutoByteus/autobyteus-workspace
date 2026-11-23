@@ -1,0 +1,3 @@
+[mobile-shell] MSP-102 Pass
+[mobile-shell] MSP-103 Pass
+[mobile-shell] MSP-14 Fail: locator.waitFor: Timeout 20000ms exceeded.
