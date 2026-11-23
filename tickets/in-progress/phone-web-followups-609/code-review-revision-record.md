@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001, F-1 / MSP-102) | Pass | Fail — Design Impact | F-1 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002: D-D2, SR-005) | Fail — Design Impact | Pass | F-1 (resolved) |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-002) | Pass (CRR-003, source) | Pass | None |
 
 ## Revision Entries
 
@@ -110,3 +111,34 @@ None.
 - Material score or classification changes: Runtime Correctness 8.6 → 9.4; Cleanup 9.4 → 9.5; no classification
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: FU-003, FU-005…FU-007, FU-009, FU-010; docs naming the removed Codex files (docs sync)
+
+### CRR-004 — Proportional test-code review after API/E2E round 2: Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); MSP-91, MSP-101, MSP-102, MSP-103
+- Relevant solution revision IDs: SR-004, SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003, source review)
+- Current authoritative result: Pass
+- What changed in the review result and why: reviewed five test files:
+  - `desktop-stopped-call-trace-cases.mjs` (added: MSP-102, MSP-103);
+  - MSP-101 in `mobile-heading-links-cases.mjs`;
+  - MSP-91's AC-J assertions in `mobile-file-open-cases.mjs`;
+  - the probe registration;
+  - the AGY fixture's `AGENT_TOOL_STEPS` with its routing test.
+  They enter through the user's own Stop presses and real navigation, read live and read-back state on each AC-D surface, prove that the earlier-trace page was requested, and assert that the reconciliation conflict is gone. MSP-14's interaction was diagnosed and fixed without changing MSP-14. No findings.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: native and Codex stopped calls proven at writer level only; FU-006, FU-007, FU-010
