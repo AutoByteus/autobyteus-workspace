@@ -27,8 +27,9 @@
 //   MSP-99 autobyteus-585 AC-005  A platform notice is its own row on the phone, never in the agent's message. A native run
 //                  starts a short background build (a tool card and a reply); the build ends and the notice wakes it (the
 //                  founder's shape: agent row, notice, agent row, the agent after it with its avatar and name again).
-//                  Then a long build runs and delta restarts: the restart reminder is its own row after the agent's
-//                  long-build turn, before the phone's next message. Live and after a reload: each notice row is
+//                  Then a long build runs and delta restarts: the restart reminder comes with the phone's next message,
+//                  so it is its own row right after that message and before the reply (autobyteus-628 REQ-002; before
+//                  628 it showed before the message). Live and after a reload: each notice row is
 //                  `data-speaker="system"`, labelled "Background tasks finished" / "Application restarted" as its speaker
 //                  line, with an icon and no agent avatar or name, no `[Platform notice — …]` line in its body, no colored
 //                  panel, and no agent row holds a notice.
@@ -317,10 +318,10 @@ export const runRestoredRunCases = async (probe) => {
       });
     });
     /**
-     * The notice row labelled `label` stands alone after the agent's row that holds `beforeText`; the row after it is
+     * The notice row labelled `label` stands alone after `beforeSpeaker`'s row that holds `beforeText`; the row after it is
      * `afterSpeaker`'s with `afterText`, and an agent row there shows its avatar and name again.
      */
-    const noticeRowRight = (rows, label, beforeText, afterSpeaker, afterText) => {
+    const noticeRowRight = (rows, label, beforeSpeaker, beforeText, afterSpeaker, afterText) => {
       const at = rows.findIndex(row => row.notice?.ariaLabel === label);
       const [before, notice, after] = [rows[at - 1], rows[at], rows[at + 1]];
       const agentName = rows.find(row => row.speaker === 'agent' && row.speakerShown)?.speakerText ?? null;
@@ -332,7 +333,7 @@ export const runRestoredRunCases = async (probe) => {
           iconNoAgentAvatar: notice?.notice.icon === true && notice?.avatarImageOrInitials === false && Boolean(agentName) && !notice?.text.includes(agentName),
           noHeaderLine: !notice?.notice.body.includes('[Platform notice'),
           noColoredPanel: ['rgba(0, 0, 0, 0)', 'transparent'].includes(notice?.notice.background),
-          beforeIsAgent: before?.speaker === 'agent',
+          beforeSpeaker: before?.speaker === beforeSpeaker,
           beforeHasNoNotice: !before?.text.includes('[Platform notice') && before?.notice === null,
           beforeText: before?.text.includes(beforeText) ?? false,
           afterSpeaker: after?.speaker === afterSpeaker,
@@ -356,7 +357,7 @@ export const runRestoredRunCases = async (probe) => {
         await send('CASE:MSP-99 Start the short build in the background.');
         await waitFor('MSP99_NOTED on the phone', async () => (await conversation()).includes('MSP99_NOTED'), 120_000);
         await sleep(2_000);
-        const wakeLive = noticeRowRight(await phoneRows(), 'Background tasks finished', 'MSP99_STARTED', 'agent', 'MSP99_NOTED');
+        const wakeLive = noticeRowRight(await phoneRows(), 'Background tasks finished', 'agent', 'MSP99_STARTED', 'agent', 'MSP99_NOTED');
         await page.screenshot({ path: path.join(outputDir, 'MSP-99-wake-notice-live.png') }).catch(() => undefined);
 
         model.steps.push({ toolCalls: [build] }, { text: 'MSP99_BUILDING' }, { text: 'MSP99_AFTER_RESTART' });
@@ -368,7 +369,7 @@ export const runRestoredRunCases = async (probe) => {
         await send('CASE:MSP-99 And now?');
         await waitFor('MSP99_AFTER_RESTART on the phone', async () => (await conversation()).includes('MSP99_AFTER_RESTART'), 120_000);
         await sleep(2_000);
-        const restartLive = noticeRowRight(await phoneRows(), 'Application restarted', 'setInterval', 'user', 'And now?');
+        const restartLive = noticeRowRight(await phoneRows(), 'Application restarted', 'user', 'And now?', 'agent', 'MSP99_AFTER_RESTART');
         await page.screenshot({ path: path.join(outputDir, 'MSP-99-restart-notice-live.png') }).catch(() => undefined);
 
         await page.reload({ waitUntil: 'domcontentloaded' });
@@ -376,8 +377,8 @@ export const runRestoredRunCases = async (probe) => {
         await waitFor('the conversation loaded after the reload', async () => (await conversation()).includes('MSP99_AFTER_RESTART'), 60_000);
         await sleep(2_000);
         const reloadedRows = await phoneRows();
-        const wakeReloaded = noticeRowRight(reloadedRows, 'Background tasks finished', 'MSP99_STARTED', 'agent', 'MSP99_NOTED');
-        const restartReloaded = noticeRowRight(reloadedRows, 'Application restarted', 'setInterval', 'user', 'And now?');
+        const wakeReloaded = noticeRowRight(reloadedRows, 'Background tasks finished', 'agent', 'MSP99_STARTED', 'agent', 'MSP99_NOTED');
+        const restartReloaded = noticeRowRight(reloadedRows, 'Application restarted', 'user', 'And now?', 'agent', 'MSP99_AFTER_RESTART');
         await page.locator('[data-testid="system-task-notification-segment"][aria-label="Background tasks finished"]').scrollIntoViewIfNeeded().catch(() => undefined);
         await page.screenshot({ path: path.join(outputDir, 'MSP-99-wake-notice-after-reload.png') }).catch(() => undefined);
         const facts = { runId, wakeLive, restartLive, wakeReloaded, restartReloaded, rowsAfterReload: reloadedRows.map(row => [row.speaker, row.text.slice(0, 120)]) };
