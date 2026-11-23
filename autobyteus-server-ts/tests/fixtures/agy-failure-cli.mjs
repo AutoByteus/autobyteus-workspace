@@ -87,8 +87,12 @@ if (arg === "--version") {
   };
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
   const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
+  // `init.tools` is the CLI's tool registry. Default: the eight names of the capsule allowlist (as agy 1.5.15 lists them), so the server's
+  // AGY_CAPSULE_TOOL_NOT_IN_REGISTRY warning stays quiet. AGY_FAKE_INIT_TOOLS: a JSON array to emit instead, or `ABSENT` for no field (autobyteus-588).
+  const registry = process.env.AGY_FAKE_INIT_TOOLS ?? JSON.stringify(["view_file", "write_to_file", "replace_file_content", "grep_search",
+    "list_dir", "find_by_name", "run_command", "generate_image"]);
   emit({ event: "init", conversation_id, init: { agent: argValue("--agent"),
-    model: argValue("--model"), cwd: process.cwd(), permission_mode, tools: [] } });
+    model: argValue("--model"), cwd: process.cwd(), permission_mode, ...(registry === "ABSENT" ? {} : { tools: JSON.parse(registry) }) } });
   // AGY never reports DONE for a daemon step; later steps and result still arrive (AGY 1.2.12, probe P1).
   let turns = 0;
   const daemonStep = (step_index) => emit({ event: "step_update", step_update: { conversation_id, step_index,

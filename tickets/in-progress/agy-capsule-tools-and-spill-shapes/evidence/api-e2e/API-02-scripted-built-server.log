@@ -1,0 +1,12 @@
+# Case: API-02
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/agy-capsule-tool-registry.e2e.test.ts --no-watch
+# Commit: b55965acf0 (code 0f74222c52 + the test file and fixture default of this round)
+# Environment: macOS arm64, Node v22.23.1, built server, private HOME, scripted Antigravity CLI
+# Date: 2026-11-24
+
+ ✓ tests/e2e/runtime/agy-capsule-tool-registry.e2e.test.ts (4 tests | 1 skipped) 11966ms
+     ✓ CR-01 a registry that lacks one allowlist name: one warning naming it, and the run answers  4925ms
+     ✓ CR-02 a registry that lists every allowlist name: no warning, and the run answers  3499ms
+     ✓ CR-03 an init message with no tools field: no warning, and the run answers  3541ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 1 skipped (4)
