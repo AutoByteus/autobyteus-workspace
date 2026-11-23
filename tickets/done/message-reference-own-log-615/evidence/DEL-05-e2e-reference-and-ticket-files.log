@@ -1,0 +1,590 @@
+# DEL-05-e2e-reference-and-ticket-files | commit 6472d9199c | 2026-11-23T07:06:50Z | load { 17.85 16.30 14.28 }
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:99903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts[2m > [22mappend-only message logs: the built server converts a faithful released install at startup[2m > [22mAOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing[33m 8268[2mms[22m[39m
+ [32m✓[39m tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts[2m > [22mappend-only message logs: the built server converts a faithful released install at startup[2m > [22mAOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message[33m 12653[2mms[22m[39m
+(node:8739) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/message-references-every-view.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/projects/message-references-every-view.e2e.test.ts[2m > [22m[2mAC-007: every reference listed in every view opens (built server, scripted AGY)[2m > [22m[2mMRV-1 standalone, Team and Org roots with a delegated task agent and task team: each view's every reference answers its bytes
+[22m[39mMRV-1 opened 21 references in 12 views: [{"view":"agent root: Manager","messageId":"collabmsg_dVo-dwe3HkdcSwYSmmzH-LB33bo_QwzR","file":"agent-agent-answer-adbc64.md"},{"view":"agent root: Manager","messageId":"collabmsg_HKk9EEtbB1Nfe6O3DAXSqrjm3ABCpKeK","file":"agent-to-lead-adbc64.md"},{"view":"agent root: Manager","messageId":"collabmsg_nPrkaO7IUD7yIp7VsL0UcoY-7k2tcSTp","file":"agent-to-agent-adbc64.md"},{"view":"agent: task agent","messageId":"collabmsg_dVo-dwe3HkdcSwYSmmzH-LB33bo_QwzR","file":"agent-agent-answer-adbc64.md"},{"view":"agent: task agent","messageId":"collabmsg_nPrkaO7IUD7yIp7VsL0UcoY-7k2tcSTp","file":"agent-to-agent-adbc64.md"},{"view":"agent: task team lead","messageId":"collabmsg_1bgRpVzH66iZeITML7O7L2BdZG6qrKFl","file":"agent-inside-team-adbc64.md"},{"view":"agent: task team member","messageId":"collabmsg_1bgRpVzH66iZeITML7O7L2BdZG6qrKFl","file":"agent-inside-team-adbc64.md"},{"view":"team root: Manager","messageId":"collabmsg_Ske7by9BjqUP-gORQpc9xCNdM8dwKCnh","file":"team-agent-answer-adbc64.md"},{"view":"team root: Manager","messageId":"collabmsg_Jjcx31I1n7mPR8sDo6AkjtnmCI4r6Peu","file":"team-to-lead-adbc64.md"},{"view":"team root: Manager","messageId":"collabmsg_mMzWu7MencKyn0nLVQU6CvgeWnlwqbfa","file":"team-to-agent-adbc64.md"},{"view":"team: task agent","messageId":"collabmsg_Ske7by9BjqUP-gORQpc9xCNdM8dwKCnh","file":"team-agent-answer-adbc64.md"},{"view":"team: task agent","messageId":"collabmsg_mMzWu7MencKyn0nLVQU6CvgeWnlwqbfa","file":"team-to-agent-adbc64.md"},{"view":"team: task team lead","messageId":"collabmsg_g_j5dwGaS6tHkgSMYnmfEkT3nU1OY6Zf","file":"team-inside-team-adbc64.md"},{"view":"team: task team member","messageId":"collabmsg_g_j5dwGaS6tHkgSMYnmfEkT3nU1OY6Zf","file":"team-inside-team-adbc64.md"},{"view":"org root: Manager","messageId":"collabmsg_d6NjDN8uZZxB731P0TkieVJmNhQ-Y4yU","file":"org-agent-answer-adbc64.md"},{"view":"org root: Manager","messageId":"collabmsg_GgjYUkUa_NlgohiDG5JrNyRPEY4terf0","file":"org-to-lead-adbc64.md"},{"view":"org root: Manager","messageId":"collabmsg_p_5unmCzx1EYQ6nKyNaBU3lUxCuZigfH","file":"org-to-agent-adbc64.md"},{"view":"org: task agent","messageId":"collabmsg_d6NjDN8uZZxB731P0TkieVJmNhQ-Y4yU","file":"org-agent-answer-adbc64.md"},{"view":"org: task agent","messageId":"collabmsg_p_5unmCzx1EYQ6nKyNaBU3lUxCuZigfH","file":"org-to-agent-adbc64.md"},{"view":"org: task team lead","messageId":"collabmsg_e5YpA786K1zQeFC3cAcIMqK9lwqwv5sS","file":"org-inside-team-adbc64.md"},{"view":"org: task team member","messageId":"collabmsg_e5YpA786K1zQeFC3cAcIMqK9lwqwv5sS","file":"org-inside-team-adbc64.md"}]
+MRV-1 listed in: {"agent-agent-answer-adbc64.md":["agent root: Manager","agent: task agent"],"agent-to-lead-adbc64.md":["agent root: Manager"],"agent-to-agent-adbc64.md":["agent root: Manager","agent: task agent"],"agent-inside-team-adbc64.md":["agent: task team lead","agent: task team member"],"team-agent-answer-adbc64.md":["team root: Manager","team: task agent"],"team-to-lead-adbc64.md":["team root: Manager"],"team-to-agent-adbc64.md":["team root: Manager","team: task agent"],"team-inside-team-adbc64.md":["team: task team lead","team: task team member"],"org-agent-answer-adbc64.md":["org root: Manager","org: task agent"],"org-to-lead-adbc64.md":["org root: Manager"],"org-to-agent-adbc64.md":["org root: Manager","org: task agent"],"org-inside-team-adbc64.md":["org: task team lead","org: task team member"]}
+
+ [32m✓[39m tests/e2e/projects/message-references-every-view.e2e.test.ts[2m > [22mAC-007: every reference listed in every view opens (built server, scripted AGY)[2m > [22mMRV-1 standalone, Team and Org roots with a delegated task agent and task team: each view's every reference answers its bytes[33m 10528[2mms[22m[39m
+(node:16446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/closed-run-attachments.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/projects/closed-run-attachments.e2e.test.ts[2m > [22m[2mAC-007: a closed run's earlier attachments still open (built server, scripted AGY, real restart)[2m > [22m[2mCRA-1 a reference of a message with the closed run opens through the top run (also after a restart); the run's context file opens again once its Task is reopened
+[22m[39mCRA-1 observed (not asserted): {"agentContextFileWhileClosed":200,"orgContextFileWhileClosed":200}
+
+ [32m✓[39m tests/e2e/projects/closed-run-attachments.e2e.test.ts[2m > [22mAC-007: a closed run's earlier attachments still open (built server, scripted AGY, real restart)[2m > [22mCRA-1 a reference of a message with the closed run opens through the top run (also after a restart); the run's context file opens again once its Task is reopened[33m 9264[2mms[22m[39m
+(node:20601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 118 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-delegation-api-surface-e2e-8carxO/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22m[2mTask delegation public API surface on the running studio server
+[22m[39mRegistered required tool unit: Search Tools
+
+ [32m✓[39m tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22mTask delegation public API surface on the running studio server[2m > [22mserves no task-delegation query or task record type over GraphQL[32m 27[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22mTask delegation public API surface on the running studio server[2m > [22mregisters no task reference-content REST route for Team or Org roots[32m 3[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts[2m > [22mTask delegation public API surface on the running studio server[2m > [22mlists delegate_task as the only task-delegation tool in the LOCAL tool catalog[32m 3[2mms[22m[39m
+(node:21651) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/message-reference-own-log-615/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory
+============================================================
+Initialized server settings service with 35 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Successfully registered tool definition: 'list_running_agents'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgent Definition created successfully with ID: agy-runtime-error-528653f4-5b84-4b25-bb9f-946735ac4ef1
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgent Team Definition created successfully with ID: agy-error-team-185fa040-2355-4545-8ec4-63729ce7a347
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreated and registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mAgent Definition created successfully with ID: publication-helper-4c2e0ed1-4108-4fe5-87d1-f32c69b7db43
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mAGY compaction detection off for run agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agent_teams/agy_error_team_185fa040_2355_4545_8ec4_63729ce7a_a664c994355a4fb484b47c858ef69ef2/agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agent_teams/agy_error_team_185fa040_2355_4545_8ec4_63729ce7a_a664c994355a4fb484b47c858ef69ef2/agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mAGY compaction detection off for run publication_helper_4c2e0ed1_4108_4fe5_87d1_f32c6_99fd4e488bb1466ca606b29b75bbd1cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agents/publication_helper_4c2e0ed1_4108_4fe5_87d1_f32c6_99fd4e488bb1466ca606b29b75bbd1cf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mAGY compaction detection off for run agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_4a370865cfc7407dac036ba17d9cad8d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agents/agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_4a370865cfc7407dac036ba17d9cad8d/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agent_teams/agy_error_team_185fa040_2355_4545_8ec4_63729ce7a_a664c994355a4fb484b47c858ef69ef2/agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agents/publication_helper_4c2e0ed1_4108_4fe5_87d1_f32c6_99fd4e488bb1466ca606b29b75bbd1cf/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mA run view could not switch modes: [
+  {
+    "code": "custom",
+    "message": "AgentOrg status identity mismatch.",
+    "path": []
+  },
+  {
+    "code": "custom",
+    "message": "AgentOrg status identity mismatch.",
+    "path": []
+  }
+]
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agents/publication_helper_4c2e0ed1_4108_4fe5_87d1_f32c6_99fd4e488bb1466ca606b29b75bbd1cf/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/workspace.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mReusing registered workspace ID: agent_ws_4e17d238ac3ef444094d0325669c4bb8f6c3298f0c8670bd39ec9e432219b5b8
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mAGY compaction detection off for run agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-YjlleC/memory/agent_teams/agy_error_team_185fa040_2355_4545_8ec4_63729ce7a_a664c994355a4fb484b47c858ef69ef2/agy_runtime_error_528653f4_5b84_4b25_bb9f_946735_e80f5563472d422ea5684e64a68fed84/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries[2m > [22m[2mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore
+[22m[39mA run view could not switch modes: [
+  {
+    "code": "custom",
+    "message": "AgentOrg status identity mismatch.",
+    "path": []
+  },
+  {
+    "code": "custom",
+    "message": "AgentOrg status identity mismatch.",
+    "path": []
+  }
+]
+
+ [32m✓[39m tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22mcontrolled agent drives Org publication through real public boundaries[2m > [22mkeeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore[33m 2013[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgent Team Definition with ID agy-error-team-185fa040-2355-4545-8ec4-63729ce7a347 deleted successfully.
+
+[90mstdout[2m | tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts[2m > [22m[2mcontrolled agent drives Org publication through real public boundaries
+[22m[39mAgent Definition with ID agy-runtime-error-528653f4-5b84-4b25-bb9f-946735ac4ef1 deleted successfully.
+
+(node:21865) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-org-runs/org-container-package.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-01 (AC-001, REQ-001, REQ-006): started from the package, the Org is a container of an agent run and a Team run; members Offline; units are not top-level runs[32m 20[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-02 (AC-003, REQ-003): the concierge hands off to /team/writer and the writer hands back to /concierge; both logs; once each in the Org view[33m 675[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-03 (AC-002, REQ-002): team-config.json gains a member: the Team unit follows; the Org shows it Offline at its Org address; the lead is told[33m 1439[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-04 (AC-002, AC-004): a reviewer removed mid-turn is Leaving, refused by its Org address, its Org rule is left out; its send lands; then it is released[33m 1943[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-05 (AC-004): the reviewer is added back: the same run continues its conversation; the Org rule is back and the concierge is told[33m 1429[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-06 (DEC-006, REQ-005): a unit the user stopped alone is woken by another unit's message, and by the user's message in the Org view[33m 699[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-07 (S-09, CR-005): a Team unit member's closed delegation: another unit is refused as closed; back to TODO, the assigner's message continues it[33m 903[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-10 (AC-005, REQ-005): Stop the Org; a Team change while stopped is applied on reopen; again across a server restart[33m 2798[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-12 (AC-005, AC-002): a Team-unit member that took a hand-off from another unit is removed; the stopped Org reopens and its Team unit is restored with the hand-off kept[33m 2185[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-13 (REQ-009 with DEC-005/REQ-004): an org-config.json edit is followed while an Org rule names the removed /team/writer (that rule is only left out)[33m 3641[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-08 (AC-008, REQ-009): org-config.json mounts a second Team and adds an agent: new unit runs, Offline; the concierge is told who joined[33m 1211[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mAn Org of a package is a container whose units follow their definitions (built server, scripted AGY, package files edited)[2m > [22mOC-09 (AC-008, REQ-009): org-config.json unmounts /team while its lead is mid-turn and removes the scribe: leaving former unit, refused by name; the send lands; released[33m 1575[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mA pre-change Org run converted at startup opens and its Team unit follows its definition (built server, hand-built released fixture)[2m > [22mOC-11 (AC-006, REQ-007): a released Org run is converted at startup; it opens with its message; its Team unit then follows a team-config.json edit[33m 5225[2mms[22m[39m
+ [32m✓[39m tests/e2e/agent-org-runs/org-container-package.e2e.test.ts[2m > [22mA released Org with cross-node files is converted at startup with its stored paths moved (built server, hand-built beta.7 fixture)[2m > [22mOC-14 (AC-006, SR-017/SR-018): every typed path names the moved folder; the Org, Team and agent routes serve the files; prose and foreign paths stay; a second start changes nothing[33m 5283[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m22 passed[39m[22m[90m (22)[39m
+[2m   Start at [22m 08:06:51
+[2m   Duration [22m 90.72s[2m (transform 6.41s, setup 154ms, import 14.87s, tests 74.86s, environment 0ms)[22m
+
+exit 0

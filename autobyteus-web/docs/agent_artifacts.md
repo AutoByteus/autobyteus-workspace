@@ -121,8 +121,11 @@ Rules:
   are not linkified.
 - One durable team-level projection is stored at
   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`.
-- Reference content opens by message-owned identity:
-  `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+- Reference content opens by message-owned identity through the one route
+  `/rest/collaboration-messages/:rootKind/:rootRunId/messages/:messageId/references/:referenceId/content`
+  (autobyteus-615). The link is built in one place, `messageReferenceContentPath`
+  (`services/collaborationMessages/participantMessageRows.ts`), from the key the message list was loaded with, so
+  the node reads the same view the list came from; no context writes its own link.
 - The focused member sees sent/received message perspectives in the Team tab.
   The left list hierarchy is `Sent` / `Received` -> counterpart address label ->
   message -> reference file, without repeated `To` / `From` group prefixes.
@@ -196,7 +199,7 @@ flowchart LR
 | Member loader | `autobyteus-web/services/runHydration/memberLoader.ts` | Loads a Team member's, Org member's or hub copy's stored conversation, activities and files when it is opened; one generation per root, begun by every rebuild (autobyteus-358). |
 | Collaboration Messages section | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesSection.vue` | Computes the focused member's message rows once per view and passes them to the panel. Shared by Team, AgentOrg, and standalone Messages. |
 | Collaboration Messages panel | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue` | Renders compact sent/received message rows with a reference count, the bounded reference list (first 20 + Show all) under the selected message only, and Markdown message detail. |
-| Message reference viewer | `autobyteus-web/components/workspace/collaboration/CollaborationMessageReferenceViewer.vue` | Shows one reference file of the selected message (Team, AgentOrg and standalone Messages). Reads it through the message-owned content path it is given, on the bound node with the active credential: text as content, other types as an object URL; a 404 shows "reference unavailable". Owns Raw/Preview (Markdown, and HTML unless rich preview is disabled) and the local inline/maximized state; the phone hides its header. |
+| Message reference viewer | `autobyteus-web/components/workspace/collaboration/CollaborationMessageReferenceViewer.vue` | Shows one reference file of the selected message (Team, AgentOrg and standalone Messages). Reads it through the message-owned content path it is given, on the bound node with the active credential: text as content, other types as an object URL; a 404 shows "Reference file unavailable", with "This file's message could not be found in this conversation." when the node's code is `REFERENCE_NOT_FOUND` and "The file may have been deleted, moved, or become unreadable." otherwise. Owns Raw/Preview (Markdown, and HTML unless rich preview is disabled) and the local inline/maximized state; the phone hides its header. |
 | Mobile Messages screen | `autobyteus-web/components/mobile/views/MobileMessages.vue` | The phone's ⋮ → Messages screen, offered only for a member of a Team or Org. Renders the messages between the open member and the other members, loaded when the screen shows them, and exposes each structured reference file as a tappable phone row. |
 | Mobile reference wrapper | `autobyteus-web/components/mobile/views/MobileTeamReferenceViewer.vue` | Wraps `CollaborationMessageReferenceViewer` in a full-screen phone surface (a 48 px bar with ← and the name), passes message-owned identity through, and disables rich HTML preview for mobile. |
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |

@@ -185,7 +185,10 @@ message ID (CM-9); the run's view shows the messages of its own log.
   `/rest/agent-collaborations/…/context-files/…` routes are gone (autobyteus-500 FU-020); the stored
   links of that form are converted by `20261119_delegated_run_own_attachment_links` and its follow-up,
   with a backup of each rewritten trace file.
-- **Message references.** `/rest/agent-collaborations/:runId/communication/messages/:messageId/references/:referenceId/content`.
+- **Message references.** The one route
+  `/rest/collaboration-messages/agent/:runId/messages/:messageId/references/:referenceId/content` (autobyteus-615).
+  It reads the run's view (its own log composed with the logs of the runs it delegated to), so a message stored in a
+  delegated run's log opens too. The former `/rest/agent-collaborations/:runId/communication/...` route is removed.
 
 ## Native Compaction And Stop
 

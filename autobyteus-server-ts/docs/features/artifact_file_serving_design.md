@@ -112,8 +112,15 @@ the next event writes. Reads never wait for the event queue.
    [Teammate Delivery Path](../modules/agent_communication.md#teammate-delivery-path)).
 5. GraphQL exposes `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`: one participant's
    messages, which the Team tab loads when it is shown (autobyteus-358).
-6. Reference bytes are served by message-owned identity:
-   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+6. Reference bytes are served by message-owned identity of the view the list was read with, through one route for
+   every root kind (autobyteus-615):
+   `GET /rest/collaboration-messages/:rootKind/:rootRunId/messages/:messageId/references/:referenceId/content`
+   (`rootKind` is `agent`, `agent_team` or `agent_org`). `MessageReferenceContentReader` reads the view's messages
+   through `RunViewMessagesReader` (the same composition the participant page uses: the root's own log and the logs of
+   the runs it delegated to), finds the message, then the reference by `messageReferenceId`, and serves only a file
+   that message names. A message or reference the view does not hold is `REFERENCE_NOT_FOUND` (404), a file that is
+   missing or not a regular file `REFERENCE_CONTENT_UNAVAILABLE` (404), an unreadable one
+   `REFERENCE_CONTENT_FORBIDDEN` (403), and each answer carries `{ detail, code }`.
 
 There is no text-scanning fallback, no standalone Team Communication
 message-reference sidecar runtime event, no receiver-scoped reference route, and
@@ -128,8 +135,9 @@ intentionally omit the team projection fields consumed by this flow.
 | Run file-change projection | `src/services/run-file-changes/*` | Run-scoped metadata projection and path identity; live projections for attached runs only; process authority binding. |
 | Run file-change historical read | `src/run-history/services/run-file-change-projection-service.ts` | Active/historical run reads, including team-member run ids. |
 | Run file-change API | `src/api/graphql/types/run-file-changes.ts`, `src/api/rest/run-file-changes.ts` | List and preview Agent Artifacts. |
-| Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
-| Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
+| Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, and normalization. |
+| Participant messages API | `src/api/graphql/types/collaboration-participant-messages.ts` | Hydrate one participant's messages of a root's view. |
+| Message reference route | `src/api/rest/collaboration-message-references.ts`, `src/run-history/services/message-reference-content-reader.ts`, `src/run-history/services/run-view-messages-reader.ts` | The one reference-content route, its reader, and the one reader of a view's messages that the page shares with it. |
 | Mixed team member event bridge | `src/agent-team-execution/backends/mixed/**` plus runtime AgentRun event converters | Converts/enriches member runtime events once before team fan-out. |
 | Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with the member's `agent_run_id` before WebSocket fan-out. |
 
