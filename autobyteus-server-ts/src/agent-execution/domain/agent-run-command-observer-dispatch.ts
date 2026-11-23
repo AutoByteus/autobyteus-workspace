@@ -13,6 +13,7 @@ export const dispatchUserMessageForwarded = (input: {
   platformAgentRunId: string | null;
   message: AgentInputUserMessage;
   turnId: string | null;
+  acceptedAt: string;
   onError(error: unknown): void;
 }): void => {
   if (!input.observers.length) return;
@@ -28,7 +29,7 @@ export const dispatchUserMessageForwarded = (input: {
     platformAgentRunId: input.platformAgentRunId,
     message: input.message,
     result,
-    forwardedAt: new Date(),
+    acceptedAt: new Date(input.acceptedAt),
   };
   for (const observer of input.observers) {
     try {
@@ -45,6 +46,6 @@ export const composeAgentRunInputObserver = (input: {
   lifecycleObserver?: import('../input/agent-run-input-contract.js').AgentRunInputLifecycleObserver;
 }) => (fact: import('../input/agent-run-input-contract.js').AgentRunInputLifecycle): void => {
   if (fact.kind === 'forwarded') dispatchUserMessageForwarded({ ...input, platformAgentRunId: input.platformAgentRunId(),
-    turnId: fact.turnId, onError: error => console.warn(`[AgentRun] command observer failed for '${input.runId}': ${String(error)}`) });
+    turnId: fact.turnId, acceptedAt: fact.acceptedAt, onError: error => console.warn(`[AgentRun] command observer failed for '${input.runId}': ${String(error)}`) });
   input.lifecycleObserver?.(fact);
 };

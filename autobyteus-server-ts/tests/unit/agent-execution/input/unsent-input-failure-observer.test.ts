@@ -30,7 +30,7 @@ describe("createUnsentInputFailureObserver", () => {
   it("publishes nothing for an input that failed after it was forwarded", () => {
     const { publish, observe } = setup();
     observe({ kind: "admitted" });
-    observe({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" });
+    observe({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: "turn-1" });
     observe({ kind: "failed", code: "RUNTIME_TURN_FAILED", message: "rate limited", turnId: "turn-1" });
     observe({ kind: "failed", code: "AGENT_RUN_INPUT_PROVIDER_PROTOCOL_VIOLATION", message: "conflict", turnId: "turn-1" });
     expect(publish).not.toHaveBeenCalled();

@@ -85,16 +85,16 @@ describe("restartNoticeLifecycleObserver (SR-005: one display for every place)",
     const observer = restartNoticeLifecycleObserver(() => ({ runId: "worker-1", publishEvent }), message);
     observer({ kind: "admitted" });
     expect(publishEvent).not.toHaveBeenCalled();
-    observer({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-7" });
+    observer({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: "turn-7" });
     expect(publishEvent).toHaveBeenCalledExactlyOnceWith({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "worker-1",
       statusHint: null, payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "notice text", message_id: "restart-resume:t:worker-1", turn_id: "turn-7" } });
   });
 
   it("publishes nothing when the run is not there, and never throws for a failed publication", async () => {
     const x = { content: "x", metadata: {} };
-    expect(() => restartNoticeLifecycleObserver(() => null, x)({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    expect(() => restartNoticeLifecycleObserver(() => null, x)({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: null })).not.toThrow();
     const failing = { runId: "r", publishEvent: vi.fn(async () => { throw new Error("closed"); }) };
-    expect(() => restartNoticeLifecycleObserver(() => failing, x)({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    expect(() => restartNoticeLifecycleObserver(() => failing, x)({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: null })).not.toThrow();
     await Promise.resolve();
     expect(failing.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "x", message_id: null } }));
   });
@@ -112,7 +112,7 @@ describe("restart notice in a run's memory", () => {
     const notice = buildRestartNotice({ agentRunId: "host-1", facts: facts(), resumedDelegated: [] });
     accumulator.recordRunEvent({ eventType: AgentRunEventType.TURN_STARTED, runId: "host-1", payload: { turn_id: "turn-9" }, statusHint: null });
     accumulator.recordForwardedUserMessage({ runId: "host-1", runtimeKind: "codex_app_server" as never, config: {} as never,
-      platformAgentRunId: null, message: notice, result: { accepted: true, turnId: "turn-9" }, forwardedAt: new Date() });
+      platformAgentRunId: null, message: notice, result: { accepted: true, turnId: "turn-9" }, acceptedAt: new Date() });
     accumulator.recordRunEvent({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "host-1", statusHint: null,
       payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: notice.content, turn_id: "turn-9" } });
 

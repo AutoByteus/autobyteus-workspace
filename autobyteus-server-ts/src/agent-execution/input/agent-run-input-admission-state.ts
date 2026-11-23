@@ -259,6 +259,7 @@ export class AgentRunInputAdmissionState {
       kind: "forwarded",
       dispatchKind: claim.dispatch.kind,
       turnId: entry.associatedTurnId,
+      acceptedAt: entry.acceptedAt,
     });
     if (entry.associatedTurnId) {
       safeNotify(entry.observer, {

@@ -25,7 +25,7 @@ const fakeAgent = (sessions: ModelRoutingSessions, behaviour: Behaviour = "answe
       posted.push({ requestId, text: message.content, senderId: message.metadata.sender_id, metadata: message.metadata });
       setIdle(false);
       queueMicrotask(() => {
-        options.lifecycleObserver?.({ kind: "forwarded", dispatchKind: "start_turn", turnId: `turn_${posted.length}` });
+        options.lifecycleObserver?.({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: `turn_${posted.length}` });
         if (behaviour === "answer") {
           sessions.submit(requestId, validChoices());
           options.lifecycleObserver?.({ kind: "completed", turnId: `turn_${posted.length}` });
@@ -191,7 +191,7 @@ describe("ModelRouter with the real ModelRouterAgent: a failed router turn (CRR-
             posted.push(`${attempt}:${requestId}`);
             queueMicrotask(() => {
               emit({ eventType: "AGENT_STATUS", payload: { status: "running" } });
-              options.lifecycleObserver?.({ kind: "forwarded", dispatchKind: "start_turn", turnId: `turn_${attempt}` });
+              options.lifecycleObserver?.({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: `turn_${attempt}` });
               if (attempt === 1) {
                 emit({ eventType: "AGENT_STATUS", payload: { status: "error" } });
                 active = false;

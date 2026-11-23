@@ -95,7 +95,7 @@ describe("AgentRunCommandCoordinator", () => {
     );
 
     run.emit("msg-1", {
-      kind: "forwarded",
+      kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z",
       dispatchKind: "start_turn",
       turnId: null,
     });

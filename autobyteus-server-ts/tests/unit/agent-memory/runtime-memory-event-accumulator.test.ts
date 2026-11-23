@@ -622,7 +622,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       platformAgentRunId: "session-1",
       message,
       result: { accepted: true, turnId },
-      forwardedAt: new Date(1000),
+      acceptedAt: new Date(1000),
     });
     forward(new AgentInputUserMessage("From the researcher", SenderType.AGENT, null, {
       input_origin: "inter_agent_delivery", sender_agent_id: "run-researcher",
@@ -650,7 +650,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       platformAgentRunId: "session-1",
       message: new AgentInputUserMessage("hello after lifecycle"),
       result: { accepted: true, turnId: null },
-      forwardedAt: new Date(1000),
+      acceptedAt: new Date(1000),
     });
 
     expect(readView(memoryDir).rawTraces).toEqual([]);

@@ -118,5 +118,5 @@ const forwarded = (message: AgentInputUserMessage, turnId: string): AgentRunUser
   platformAgentRunId: null,
   message,
   result: { accepted: true, turnId },
-  forwardedAt: new Date(),
+  acceptedAt: new Date(),
 });

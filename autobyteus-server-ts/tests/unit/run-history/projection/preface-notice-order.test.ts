@@ -58,10 +58,10 @@ const externalWriter = (memoryDir: string) => {
       eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "run-1", statusHint: null,
       payload: { sender_id: senderId, content, message_id: `notice-${ts}`, turn_id: turnId, ts },
     }),
-    input: (turnId: string, content: string, forwardedAtSeconds: number) => accumulator.recordForwardedUserMessage({
+    input: (turnId: string, content: string, acceptedAtSeconds: number) => accumulator.recordForwardedUserMessage({
       runId: "run-1", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, config: {} as never, platformAgentRunId: null,
-      message: new AgentInputUserMessage(content, SenderType.USER, null, { message_id: `msg-${forwardedAtSeconds}` }),
-      result: { accepted: true, turnId } as never, forwardedAt: new Date(forwardedAtSeconds * 1000),
+      message: new AgentInputUserMessage(content, SenderType.USER, null, { message_id: `msg-${acceptedAtSeconds}` }),
+      result: { accepted: true, turnId } as never, acceptedAt: new Date(acceptedAtSeconds * 1000),
     }),
     reply: (turnId: string, content: string, ts: number) =>
       writer.appendRawTrace({ traceType: "assistant", turnId, content, sourceEvent: "SEGMENT_END", ts }),
@@ -110,6 +110,19 @@ describe("a preface notice reads back after the input it came with (autobyteus-6
 
     expect((await readBack(memoryDir, RuntimeKind.CODEX_APP_SERVER)).conversation)
       .toEqual(["user:question", "notice:skill updated", "assistant:answer"]);
+  });
+
+  it("external, an input admitted before a notice opened its own turn, then appended into that turn: input first, as it showed live (SR-006, ARCH-REV-003 N-5)", async () => {
+    const memoryDir = await newMemoryDir();
+    const run = externalWriter(memoryDir);
+    // The message waited in the queue (admitted at 9.0, shown then); the restart notice opened turn-1 at 10.0 and the
+    // queued message was appended into it, so it is stored after the notice but at its admission time.
+    run.notice("turn-1", RESTART_RESUME_NOTICE_SENDER_ID, "the node restarted", 10.0);
+    run.input("turn-1", "queued while it worked", 9.0);
+    run.reply("turn-1", "on it", 13.0);
+
+    expect((await readBack(memoryDir, RuntimeKind.CODEX_APP_SERVER)).conversation)
+      .toEqual(["user:queued while it worked", "notice:the node restarted", "assistant:on it"]);
   });
 
   it("external, a notice that opened its own turn and an input appended to that turn later: unchanged", async () => {

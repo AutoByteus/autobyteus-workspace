@@ -84,7 +84,8 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       content: payload.message.content,
       sourceEvent: "AgentRun.postUserMessage",
-      ts: payload.forwardedAt.getTime() / 1000,
+      // The input's admission time, the node's time of the message (autobyteus-628 SR-006).
+      ts: payload.acceptedAt.getTime() / 1000,
       media,
       fileAttachments,
       senderId: resolveInterAgentSenderId(payload.message.metadata),
