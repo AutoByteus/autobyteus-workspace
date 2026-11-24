@@ -1,0 +1,28 @@
+# pretag-release-smoke-run1: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault python3 scripts/release_smoke.py at fab18b2068; no load imposed
+# start 2026-11-24T09:24:32Z; grok log offset 4891073; load before: 93.73 49.38 26.28; fseventsd 0.1%
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 27th, 2026 7:43 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a20cdf-9bef-7722-a94e-b122fa9bc45a","occ
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 27th, 2026 7:43 AM.","occurred_at":"2026-11-24T09:25:17.649Z","error_scope":"turn","error_effect":"terminal","turn_id":"0
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 27th, 2026 7:43 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a20cdf-ba71-7be2-b359-1f67a4106dab","occ
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    fab18b206863e27d8e219d19bedc44c7f2240bd0
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 90s, antigravity 22s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-_39dmnci
+# smoke exit: 1; end 2026-11-24T09:26:36Z; load after: 62.38 52.01 30.49

@@ -1,0 +1,8 @@
+# Codex waiver — STABLE v1.5.14 (autobyteus-635), 2026-11-24
+
+- Blocker from `/delivery_engineer` to `/solution_designer` (2026-11-24): the release smoke on `fab18b2068` exited 1, 10 of 13 PASS. Codex 0/3, each with "You've hit your usage limit … try again at Nov 27th, 2026 7:43 AM" (`evidence/delivery/pretag-release-smoke-run1.log`, `pretag-release-smoke-run1-live.log`). Claude 3/3, Grok 3/3, Antigravity 2/2, AutoByteus 2/2. No other failure. No tag, commit or push made.
+- Waiver authority: the standing rule covers Grok usage limits only; the Task's strict gate says Codex is not pre-waived and asks the founder directly for an explicit verbatim waiver.
+- Facts put before the founder (in the blocker message and the delivery engineer's status): Codex was last smoke-tested on beta.9's commit (3/3) and waived for beta.10; one Codex source file changed since beta.10 (the "latest Codex version" check now passes the node's GitHub token reader; not the run path); shared code every runtime uses also changed (conversation order and node-stamped times; run-model-selection and runtime-switch); Claude and Grok runs through that code passed.
+- **The founder's answer, verbatim, given directly to the delivery engineer in its conversation on 2026-11-24: "Waive codex I trust it works"**
+- Decision: Codex waived for **STABLE v1.5.14 only**, on the founder's word. The reason, as the founder gave it, is his trust that Codex works; the refusal was a usage-limit refusal only (no other failure), and the limit runs until Nov 27, 2026 7:43 AM.
+- Recommendation, not a decision: run the full release smoke with Codex after the limit resets and note the result in the next release's report; Codex stays untested on the merged v1.5.14 until then.

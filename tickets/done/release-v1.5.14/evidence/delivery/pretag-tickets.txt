@@ -1,0 +1,21 @@
+# git log --merges --first-parent v1.5.14-beta.10..HEAD at fab18b2068, 2026-11-24 (70 commits since v1.5.14-beta.10; 1110 since v1.5.13)
+d4d399418b Merge private-github-packages-627: agent packages and skill sources can be private GitHub repositories, imported and updated with the node's GitHub token (sent only to GitHub, only after Gi
+98ae80dcff merge(conversation-order-628): the conversation keeps its own order and every row time is the node's (autobyteus-628)
+
+# direct commits since beta.10
+fab18b2068 docs(delivery): record private-github-packages-627 finalization on personal, no release (autobyteus-627, DR-001)
+c2f21f18ba docs(conversation-order-628): record the finalization (autobyteus-628)
+2a8d5bf8c3 docs(stopped-run-unavailable-model): record verification (AC-011 waived), release decision and finalization (autobyteus-53)
+e3cf5454a4 docs(release-v1.5.14-beta.10): released and verified (4/4 workflows, 27/27 assets, iOS 1.5.14 (356), Docker system level 2; Codex
+
+# app-data migrations, prisma, docker, workflows, scripts changed since beta.10:        0 files
+# RELEASE.md changed since beta.10:        0 files
+# docker mentions in changed non-ticket paths: autobyteus-server-ts/tests/e2e/integrations/github-private-repository-docker-node.e2e.test.ts 
+# Codex-named files changed since beta.10 (non-ticket):
+autobyteus-server-ts/src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.ts
+autobyteus-server-ts/tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts
+autobyteus-server-ts/tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-compaction-abandon.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts
+
+# the stable notes (release-notes.md) collect the notes of the tickets merged since v1.5.13: tickets/done/*/release-notes.md added since v1.5.13
