@@ -79,3 +79,5 @@ Review note: ARCH-REV-003 passed SR-006 (2026-11-23). The reviewer routed it to 
 - Design case: docs/design-cases.md Case 3 (a reader of derived data left out: the stored order derived from trace `ts`).
 
 Review note: ARCH-REV-004 passed SR-007 (2026-11-24). The reviewer routed it to `/implementation_engineer`. N-6 (keep payload times node-local, with a comment at `extractTimestamp`) is for implementation.
+
+Decision note (2026-11-24): DEC-005. The user delegated the choice; one server timestamp per event is FU-004, and this ticket ships as designed. No change to requirements, design or routing.
