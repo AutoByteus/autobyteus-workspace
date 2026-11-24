@@ -1,6 +1,6 @@
 // Test-only Node preload (autobyteus-627): emulate GitHub for one private repository and the token check, never
 // GraphQL, filesystem owners or the renderer. Activated only in the browser probe's owned backend via --import and a
-// private control file ({ accepted, archive, revision }). Requests are recorded without any credential value.
+// private control file ({ accepted, archive, revision, archives? }). Requests are recorded without any credential value.
 import fs from 'node:fs';
 import path from 'node:path';
 const control = process.env.GITHUB_PRIVATE_PROBE_CONTROL;
@@ -28,6 +28,9 @@ globalThis.fetch = async (input, init) => {
     return Response.json({ owner: { login: 'probe-org' }, name: 'private-pack', default_branch: 'main', html_url: `https://github.com/${REPOSITORY}`, private: true });
   }
   if (url === `https://api.github.com/repos/${REPOSITORY}/branches/main`) return Response.json({ commit: { sha: state.revision } });
-  if (url === `https://codeload.github.com/${REPOSITORY}/tar.gz/${state.revision}`) return new Response(fs.readFileSync(state.archive));
+  // Any published commit's archive (`archives`: revision → file), as GitHub serves every commit; `archive` is `revision`'s.
+  const codeload = new RegExp(`^https://codeload\\.github\\.com/${REPOSITORY}/tar\\.gz/([0-9a-f]{40})$`).exec(url);
+  const archive = codeload ? (state.archives?.[codeload[1]] ?? (codeload[1] === state.revision ? state.archive : null)) : null;
+  if (archive) return new Response(fs.readFileSync(archive));
   throw new Error(`Unexpected fixture request ${url}`);
 };
