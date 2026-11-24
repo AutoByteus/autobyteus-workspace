@@ -31,7 +31,7 @@ export async function registerCollaborationMessageReferenceRoutes(app: FastifyIn
       try {
         const content = await getMessageReferenceContentReader().resolve({ rootKind: rootKind.data, rootRunId, messageId, referenceId });
         reply.header("cache-control", "no-store");
-        return sendUserFile(reply, { mimeType: content.mimeType, body: content.stream, size: null });
+        return sendUserFile(reply, { kind: "stream", mimeType: content.mimeType, body: content.stream, size: null }, request);
       } catch (error) {
         if (error instanceof MessageReferenceContentError) {
           return reply.code(STATUS[error.code]).send({ detail: error.message, code: error.code });

@@ -4,11 +4,8 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { NodeFileReader, type OpenedNodeFile } from "../../../src/node-files/node-file-reader.js";
 
-const readAll = async (opened: OpenedNodeFile): Promise<string> => {
-  const chunks: Buffer[] = [];
-  for await (const chunk of opened.stream as AsyncIterable<Buffer>) chunks.push(Buffer.from(chunk));
-  return Buffer.concat(chunks).toString("utf8");
-};
+/** What the reply reads: the checked real path (autobyteus-574 D-1 reads it by range). */
+const readAll = async (opened: OpenedNodeFile): Promise<string> => fs.readFile(opened.realPath, "utf8");
 
 describe("NodeFileReader (autobyteus-436)", () => {
   let root: string;
@@ -26,13 +23,15 @@ describe("NodeFileReader (autobyteus-436)", () => {
     await fs.rm(root, { recursive: true, force: true });
   });
 
-  it("NAS-39 opens a regular file by absolute path, read-only, with its type, streamed", async () => {
+  it("NAS-39 checks a regular file by absolute path, read-only, with its type and version", async () => {
     const opened = await reader.open(path.join(root, "folder", "notes.md"));
     expect(opened.ok).toBe(true);
     if (!opened.ok) return;
     expect(opened.mimeType).toBe("text/markdown");
     // autobyteus-572 D-5: its length, from the opened handle, for the reply's Content-Length.
     expect(opened.size).toBe(Buffer.byteLength("# Notes\n"));
+    // autobyteus-574 D-1: with its modification time, the file's version (the reply's ETag).
+    expect(opened.modifiedMs).toBe((await fs.stat(path.join(root, "folder", "notes.md"))).mtimeMs);
     expect(await readAll(opened)).toBe("# Notes\n");
   });
 

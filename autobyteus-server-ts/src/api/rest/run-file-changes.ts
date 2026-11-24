@@ -39,7 +39,7 @@ const sendFileChangeContent = (reply: FastifyReply, resolved: ResolvedRunFileCha
 
   const mimeType = (lookupMime(absolutePath!) || (entry.type === "file" ? "text/plain" : "application/octet-stream")).toString();
   reply.header("cache-control", "no-store");
-  return sendUserFile(reply, { mimeType, body: fs.createReadStream(absolutePath!), size: stat.size });
+  return sendUserFile(reply, { kind: "file", mimeType, path: absolutePath!, size: stat.size, modifiedMs: stat.mtimeMs }, reply.request);
 };
 
 /** A member read whose agent is not in the named owner answers "not found"; other errors propagate. */

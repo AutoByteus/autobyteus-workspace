@@ -154,6 +154,35 @@ describe("REST workspaces routes", () => {
       }
     });
 
+    // autobyteus-574 D-1 (AC-005): both workspace routes (the viewer's content and the static preview) serve a file by
+    // range with its version; every client revalidates (no-cache), so a file rewritten by an agent is never shown stale.
+    it("serves ranges with an ETag and no-cache on both routes; a rewritten file answers its new bytes, not 304", async () => {
+      const app = fastify();
+      await registerWorkspaceRoutes(app);
+      try {
+        for (const url of ["/workspaces/ws1/static/site/style.css", `/workspaces/ws1/content?path=${encodeURIComponent("site/style.css")}`]) {
+          fs.writeFileSync(path.join(root, "site", "style.css"), "h1 { color: teal; }");
+          const ranged = await app.inject({ method: "GET", url, headers: { range: "bytes=0-1" } });
+          expect(ranged.statusCode, url).toBe(206);
+          expect(ranged.body, url).toBe("h1");
+          expect(ranged.headers["content-range"], url).toBe("bytes 0-1/19");
+          expect(ranged.headers["cache-control"], url).toBe("no-cache");
+          expect(ranged.headers["last-modified"], url).toBeUndefined();
+          const etag = String(ranged.headers.etag);
+          expect((await app.inject({ method: "GET", url, headers: { "if-none-match": etag } })).statusCode, url).toBe(304);
+
+          fs.writeFileSync(path.join(root, "site", "style.css"), "h1 { color: crimson; }");
+          fs.utimesSync(path.join(root, "site", "style.css"), new Date(), new Date(Date.now() + 10_000));
+          const reopened = await app.inject({ method: "GET", url, headers: { "if-none-match": etag } });
+          expect(reopened.statusCode, url).toBe(200);
+          expect(reopened.body, url).toBe("h1 { color: crimson; }");
+          expect(reopened.headers.etag, url).not.toBe(etag);
+        }
+      } finally {
+        await app.close();
+      }
+    });
+
     it("leaves error replies without the sandbox header", async () => {
       const app = fastify();
       await registerWorkspaceRoutes(app);

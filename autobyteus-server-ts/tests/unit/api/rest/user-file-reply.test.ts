@@ -12,9 +12,9 @@ describe("sendUserFile", () => {
     ["x.pdf", "application/pdf", "%PDF-1.4\n"],
   ])("serves %s with its type, the body unchanged, sandbox allow-scripts and nosniff", async (_name, mimeType, content) => {
     const app = fastify();
-    app.get("/file", async (_request, reply) => {
+    app.get("/file", async (request, reply) => {
       reply.header("cache-control", "no-store");
-      return sendUserFile(reply, { mimeType, body: Readable.from([Buffer.from(content)]), size: null });
+      return sendUserFile(reply, { kind: "stream", mimeType, body: Readable.from([Buffer.from(content)]), size: null }, request);
     });
     try {
       const response = await app.inject({ method: "GET", url: "/file" });
@@ -35,8 +35,8 @@ describe("sendUserFile", () => {
     [null, undefined],
   ] as const)("declares size %s as Content-Length %s", async (size, header) => {
     const app = fastify();
-    app.get("/file", async (_request, reply) =>
-      sendUserFile(reply, { mimeType: "video/mp4", body: Readable.from([Buffer.from("0123456")]), size }));
+    app.get("/file", async (request, reply) =>
+      sendUserFile(reply, { kind: "stream", mimeType: "video/mp4", body: Readable.from([Buffer.from("0123456")]), size }, request));
     try {
       const response = await app.inject({ method: "GET", url: "/file" });
       expect(response.statusCode).toBe(200);
