@@ -1,0 +1,6 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAScrubBackThenPauseAndResume]' started.
+MARK scrub-back 1795530835633
+MARK scrub-back-done 1795530837139
+MARK pause 1795530844068
+MARK resume 1795530846680
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAScrubBackThenPauseAndResume]' passed (37.681 seconds).

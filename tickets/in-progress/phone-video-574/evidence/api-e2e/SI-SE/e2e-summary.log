@@ -1,0 +1,18 @@
+Error in createAgentRun: AgentCreationError: Grok Build: Authentication required: no auth method id provided
+Terminal connection rejected: Error: ENOENT: no such file or directory, stat '/tmp/api574/tmp/autobyteus-terminal-e2e-NynDTp/missing'
+Error updating agent team definition: CollaborationContractError: Team-local endpoint '/missing' was not found.
+Error creating agent team definition: Error: Coordinator member name must match one of nodes.memberName values.
+Error in createAgentRun: WorkspacePathRefusedError: No folder exists at the workspace path. (/private/tmp/api574/tmp/workspace-path-refusal-run-MfFQnO/deleted-project)
+Error deleting agent definition with ID team-local-agent:team_team_local_agent_1795540370897_30eaf3b487f23:agent_team_local_agent_1795540370897_30eaf3b487f23: Error: Deleting non-shared agent definitions is not supported.
+Error updating server setting 'AUTOBYTEUS_STREAM_PARSER'
+ FAIL  tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts > Removal of the retired built-in agents on startup (built Studio) > RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical
+Error: Unknown system error -102: Unknown system error -102, open '/tmp/api574/tmp/remove-retired-built-ins-startup-e2e-tdxgQN/node-access/local-control.sock'
+ FAIL  tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open
+Error: Unknown system error -102: Unknown system error -102, open '/tmp/api574/tmp/remove-skill-improvement-startup-e2e-rv1UZ2/node-access/local-control.sock'
+ FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)
+Error: ENOENT: no such file or directory, open '/tmp/api574/tmp/task-agent-own-run-e2e-les2fF/memory/episodic/index.md.33338e33f11c.tmp'
+ FAIL  tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+AssertionError: expected 'printf "__AB_TERMINAL_HOME_OK__:%s\n"…' to contain '__AB_TERMINAL_HOME_OK__:/tmp/api574/h…'
+ Test Files  4 failed | 124 passed | 172 skipped (300)
+      Tests  4 failed | 571 passed | 808 skipped (1383)
+e2e exit=1

@@ -1,0 +1,34 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' started.
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.414 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' started.
+MARK tap 1795531396547
+MARK player 1795531398989
+MARK landscape 1795531398998
+MARK seek 1795531406507
+MARK seek-done 1795531407960
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795531412020
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.046 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' started.
+MARK skip 1795531427991
+POSITION after skip 18 seconds elapsed, 12 seconds remaining
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (22.156 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' started.
+MARK tap 1795531444442
+MARK player 1795531446811
+MARK back 1795531453839
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (19.581 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' started.
+MARK rewrite-while-open 1795531469904
+MARK rewrite-while-closed 1795531480863
+/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:109: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself] : XCTAssertFalse failed - the player does not open by itself after a rewrite
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' failed (38.053 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' started.
+/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:121: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp] : XCTAssertTrue failed - the node's More
+<unknown>:0: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp] : Failed to tap "start.row.more" Button: No matches found for Elements matching predicate '"start.row.more" IN identifiers' from input {(
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' failed (28.296 seconds).
+	 Executed 6 tests, with 3 failures (0 unexpected) in 137.546 (137.553) seconds
+	 Executed 6 tests, with 3 failures (0 unexpected) in 137.546 (137.555) seconds
+	 Executed 6 tests, with 3 failures (0 unexpected) in 137.546 (137.556) seconds

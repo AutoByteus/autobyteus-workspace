@@ -1,0 +1,11 @@
+scrub-control.log:SCRUB-CONTROL file before seek: frames=118 clock+3.95 last=3.91
+scrub-control.log:SCRUB-CONTROL file after precise seek: frames=120 clock+4.01 last=18.97
+scrub-control.log:SCRUB-CONTROL loader before seek: frames=86 clock+2.88 last=2.84
+scrub-control.log:SCRUB-CONTROL loader after default seek: frames=105 clock+3.51 last=17.47
+scrub-control.log:SCRUB-CONTROL loader before seek: frames=87 clock+2.90 last=2.88
+scrub-control.log:SCRUB-CONTROL loader after precise seek: frames=96 clock+3.46 last=18.44
+scrub-control-2.log:SCRUB-CONTROL file before scrub: frames=118 last=3.91
+scrub-control-2.log:SCRUB-CONTROL file after scrub: frames=150 clock+4.99 last=19.97 status=1 error=nil
+scrub-control-2.log:SCRUB-CONTROL loader before scrub: frames=86 last=2.85
+scrub-control-2.log:SCRUB-CONTROL loader after scrub: frames=125 clock+4.18 last=19.14 status=1 error=nil
+scrub-control-2.log:SCRUB-CONTROL loader served: ["bytes=0-1:206:2", "bytes=0-1:206:2", "bytes=2-22884552:206:5701632", "bytes=6160384-22884552:206:327680", "bytes=5701634-5767167:206:65534", "bytes=5767168-5832703:206:65536", "bytes=5832704-5898239:206:65536", "bytes=5898240-5963775:206:65536", "bytes=5963776-6029311:206:65536", "bytes=6029312-6094847:206:65536", "bytes=6094848-6160383:206:65536"

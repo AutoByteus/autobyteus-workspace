@@ -1,0 +1,13 @@
+{
+ "label": "chat-wide-cold",
+ "tap": 1795540878377,
+ "tapToStart": 107,
+ "tapToDisplayed": 284,
+ "displayedToFirstVideoFrame": 293,
+ "tapToFirstVideoFrame": 577,
+ "recording": {
+  "blackAt": 2.707067,
+  "firstVideo": 2.999833
+ },
+ "playerError": false
+}

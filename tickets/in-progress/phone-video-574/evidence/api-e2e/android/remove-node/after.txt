@@ -1,0 +1,8 @@
+after Remove:
+92	cache/video-cache
+       0
+total 56
+drwxrwx--x 2 u0_a207 u0_a207  4096 2026-11-24 14:56 .
+drwx------ 9 u0_a207 u0_a207  4096 2026-11-24 15:16 ..
+-rw-rw---- 1 u0_a207 u0_a207 32768 2026-11-24 15:19 exoplayer_internal.db
+-rw-rw---- 1 u0_a207 u0_a207     0 2026-11-24 15:19 exoplayer_internal.db-journal
