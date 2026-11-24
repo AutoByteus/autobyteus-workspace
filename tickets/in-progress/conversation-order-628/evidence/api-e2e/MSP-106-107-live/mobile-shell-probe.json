@@ -1,0 +1,511 @@
+{
+  "startedAt": "2026-11-24T01:57:31.788Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 64165,
+      "nodeId": "srv_x4FEgGG9DbhvoXM4iSDojXIw5IQIOJ9N",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 64164,
+      "nodeId": "srv_AMk3aH7PTPvsnEIKFxTS27IG7xJlLtsO",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "nu": {
+      "port": 64340,
+      "nodeId": "srv_3K6m51Z87AkZzkuJCyGwPS183Wcj7jdS",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_0c3c9992bc9143e7b6ac9eb8834ac853",
+    "writerRun": "release_notes_writer_da153a367c12422d9a940f3c413451f0",
+    "squadRun": "docs_review_team_fd9887c5484a48c1accf8c7fd580ebff",
+    "reviewer": "release_notes_writer_4070efe1116b4a438b52daaa709a4aeb",
+    "memberDelegated": "fact_checker_cf0057e483fe4b7494fbdb0da57fe461",
+    "remoteAgentRun": "publisher_ec92bce7dc2e44859702339753781f63",
+    "remoteTeamRun": "studio_team_5f833e6a231246b38fb40196b0429982",
+    "plain": [
+      "fact_checker_3f8473787ad34225b4c54257005a8a1f",
+      "fact_checker_082fc8b27a414893b7cc3e6a6650a091",
+      "fact_checker_9e4b87f549cf48b5a0caa08cce7d9a0a"
+    ],
+    "org": "delivery_org_bf2f2fdf2e0f4bfab65b90a07f8ec42f",
+    "orgPlanner": "release_notes_writer_e38e2d39e4bd40d3ba1ca9b9010ae407",
+    "reviewOrg": "review_org_8b459f150d5e4c4da6bba58303245aee",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_d76b2bb0790147b68fa2d5e6873d17ed",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_0b6ddd28a0d74c53bb3be57985365f51",
+    "deliveryLead": "fact_checker_f333084d637c4a1b9e94bdbab328c719",
+    "deliveryMate": "release_notes_writer_aff4bdb623af4e7e87dfd5ff473c32f7",
+    "leadDelegated": "changelog_helper_f39801c118b54d0590b5e61c13b35969",
+    "approver": "approver_882fd5abb66d49fb80b0424172c7bfe7",
+    "taskA": "launch-34d1e0-1",
+    "taskB": "launch-34d1e0-2"
+  },
+  "cases": {
+    "MSP-106": {
+      "result": "Pass",
+      "seconds": 32.7,
+      "model": "haiku",
+      "team": "live_order_team_a51409848c024cc3acdfdfd498af2e00",
+      "lead": "live_order_lead_c73ba6ffec73433e90d95a8eff3b3380",
+      "rounds": [
+        {
+          "label": "MSP-106-behind-sends",
+          "offsetMs": -2000,
+          "clockOffsetMs": -2001,
+          "marker": "LIVE-628-c065f370",
+          "live": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Noted: list_project_tasks is now available, but I haven’t used it since you asked only for a one-sentence re"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Noted: list_project_tasks is now available, but I haven’t used it since you asked only for a one-sentence re"
+            },
+            "ok": true
+          },
+          "node": {
+            "at": 2,
+            "kinds": [
+              "message:user",
+              "system_task_notification",
+              "message:assistant"
+            ],
+            "user": 1795485497277,
+            "next": "system_task_notification",
+            "notice": 1795485497285,
+            "reply": 1795485497956
+          },
+          "afterSend": [
+            {
+              "type": "user",
+              "t": 1795485497279
+            },
+            {
+              "type": "ai",
+              "t": 1795485497285
+            }
+          ],
+          "liveTimes": {
+            "user": 1795485497279,
+            "reply": 1795485497285,
+            "nodeUser": 1795485497277,
+            "nodeNotice": 1795485497285,
+            "nodeReply": 1795485497956,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          },
+          "reopenedTimes": {
+            "user": 1795485497277,
+            "reply": 1795485497285,
+            "nodeUser": 1795485497277,
+            "nodeNotice": 1795485497285,
+            "nodeReply": 1795485497956,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          }
+        },
+        {
+          "label": "MSP-106-ahead-sends",
+          "offsetMs": 2000,
+          "clockOffsetMs": 2000,
+          "marker": "LIVE-628-4635d9b0",
+          "live": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Noted: list_project_tasks is now available, but I haven’t used it since you asked only for a one-sentence re"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated No longer available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Got it, and I’ll reply in one short sentence without using any tools."
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Noted: list_project_tasks is now available, but I haven’t used it since you asked only for a one-sentence re"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated No longer available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Got it, and I’ll reply in one short sentence without using any tools."
+            },
+            "ok": true
+          },
+          "node": {
+            "at": 5,
+            "kinds": [
+              "message:user",
+              "system_task_notification",
+              "message:assistant"
+            ],
+            "user": 1795485506423,
+            "next": "system_task_notification",
+            "notice": 1795485506429,
+            "reply": 1795485507083
+          },
+          "afterSend": [
+            {
+              "type": "user",
+              "t": 1795485506424
+            },
+            {
+              "type": "ai",
+              "t": 1795485506429
+            }
+          ],
+          "liveTimes": {
+            "user": 1795485506424,
+            "reply": 1795485506429,
+            "nodeUser": 1795485506423,
+            "nodeNotice": 1795485506429,
+            "nodeReply": 1795485507083,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          },
+          "reopenedTimes": {
+            "user": 1795485506423,
+            "reply": 1795485506429,
+            "nodeUser": 1795485506423,
+            "nodeNotice": 1795485506429,
+            "nodeReply": 1795485507083,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          }
+        },
+        {
+          "label": "MSP-106-behind-watches",
+          "offsetMs": -2000,
+          "clockOffsetMs": -2000,
+          "marker": "LIVE-628-4e88f557",
+          "live": {
+            "message": 8,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Got it, and I’ll reply in one short sentence without using any tools."
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead I can see list_project_tasks is available again, but your request was just a one-sentence reply, so I won’t "
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 8,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead Got it, and I’ll reply in one short sentence without using any tools."
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead I can see list_project_tasks is available again, but your request was just a one-sentence reply, so I won’t "
+            },
+            "ok": true
+          },
+          "node": {
+            "at": 8,
+            "kinds": [
+              "message:user",
+              "system_task_notification",
+              "message:assistant"
+            ],
+            "user": 1795485515949,
+            "next": "system_task_notification",
+            "notice": 1795485515964,
+            "reply": 1795485516698
+          },
+          "afterSend": null,
+          "liveTimes": {
+            "user": 1795485515955,
+            "reply": 1795485515964,
+            "nodeUser": 1795485515949,
+            "nodeNotice": 1795485515964,
+            "nodeReply": 1795485516698,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          },
+          "reopenedTimes": {
+            "user": 1795485515949,
+            "reply": 1795485515964,
+            "nodeUser": 1795485515949,
+            "nodeNotice": 1795485515964,
+            "nodeReply": 1795485516698,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          }
+        }
+      ]
+    },
+    "MSP-107": {
+      "result": "Pass",
+      "seconds": 23.4,
+      "model": "gpt-5.4-mini",
+      "run": "live_order_native_d1fc504acd814b0c8ff3bd6fa16ac22d",
+      "skill": "order-628-skill-c50ade",
+      "rounds": [
+        {
+          "label": "MSP-107-behind-sends",
+          "offsetMs": -2000,
+          "clockOffsetMs": -2000,
+          "marker": "NATIVE-628-34d5fac9",
+          "live": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Skill updated",
+              "text": "Skill updated Your skill package order-628-skill-c50ade has been updated (<tmp>/tmp/mobile-shell-probe-MGR"
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Skill updated",
+              "text": "Skill updated Your skill package order-628-skill-c50ade has been updated (<tmp>/tmp/mobile-shell-probe-MGR"
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "ok": true
+          },
+          "node": {
+            "at": 4,
+            "kinds": [
+              "message:user",
+              "system_task_notification",
+              "message:assistant"
+            ],
+            "user": 1795485528576,
+            "next": "system_task_notification",
+            "notice": 1795485528576,
+            "reply": 1795485529936
+          },
+          "afterSend": [
+            {
+              "type": "user",
+              "t": 1795485528573
+            },
+            {
+              "type": "ai",
+              "t": 1795485528577
+            }
+          ],
+          "liveTimes": {
+            "user": 1795485528573,
+            "reply": 1795485528577,
+            "nodeUser": 1795485528576,
+            "nodeNotice": 1795485528576,
+            "nodeReply": 1795485529936,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          },
+          "reopenedTimes": {
+            "user": 1795485528576,
+            "reply": 1795485528576,
+            "nodeUser": 1795485528576,
+            "nodeNotice": 1795485528576,
+            "nodeReply": 1795485529936,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          }
+        },
+        {
+          "label": "MSP-107-ahead-sends",
+          "offsetMs": 2000,
+          "clockOffsetMs": 1999,
+          "marker": "NATIVE-628-65316ab1",
+          "live": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Skill updated",
+              "text": "Skill updated Your skill package order-628-skill-c50ade has been updated (<tmp>/tmp/mobile-shell-probe-MGR"
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Skill updated",
+              "text": "Skill updated Your skill package order-628-skill-c50ade has been updated (<tmp>/tmp/mobile-shell-probe-MGR"
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "LO Live Order Native Live Order Native read_file · order-628-skill-c50ade/SKILL.md Hello!"
+            },
+            "ok": true
+          },
+          "node": {
+            "at": 9,
+            "kinds": [
+              "message:user",
+              "system_task_notification",
+              "message:assistant"
+            ],
+            "user": 1795485539229,
+            "next": "system_task_notification",
+            "notice": 1795485539228,
+            "reply": 1795485540629
+          },
+          "afterSend": [
+            {
+              "type": "user",
+              "t": 1795485539226
+            },
+            {
+              "type": "ai",
+              "t": 1795485539229
+            }
+          ],
+          "liveTimes": {
+            "user": 1795485539226,
+            "reply": 1795485539229,
+            "nodeUser": 1795485539229,
+            "nodeNotice": 1795485539228,
+            "nodeReply": 1795485540629,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          },
+          "reopenedTimes": {
+            "user": 1795485539229,
+            "reply": 1795485539228,
+            "nodeUser": 1795485539229,
+            "nodeNotice": 1795485539228,
+            "nodeReply": 1795485540629,
+            "userIsNodeTime": true,
+            "replyIsNodeTime": true
+          }
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-106": "Pass",
+      "MSP-107": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-24T01:59:08.122Z"
+}
