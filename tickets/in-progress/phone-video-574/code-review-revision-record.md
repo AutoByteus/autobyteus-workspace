@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1, F-2) | Pass | Fail: implementation Local Fix | CR-001, CR-002 (new) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001, CR-002 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass; test code `cf3d344ff4`) | Pass (CRR-003) | Pass | None |
+| CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-003 F-3) | Pass (CRR-003/004) | Fail: implementation Local Fix | CR-003 (new) |
 
 ## Revision Entries
 
@@ -138,3 +139,38 @@ None (first test review).
 - Material score or classification changes: N/A
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: R-1 and R-2 are confirmed and non-blocking. O-4 needs a scrubber check on a physical iPhone. The Android journeys have no durable driver (the coverage report says so).
+
+### CRR-005: failure-origin review of API-REV-003 (F-3): implementation Local Fix in the iOS loader
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/code-review-report.md` ("Round 4 Failure-Origin Finding")
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin). Product code is unchanged since `64a99bbcd2`. Re-read: `AuthorizedMediaLoader.swift`, `NativeVideoPlayer.start` and the `R3-O4` evidence.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (commit `ef3107bb3e`): F-3 (O-4 attributed, at delivery DR-001's request).
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-003; test review CRR-004)
+- Current authoritative result: Fail. The origin is implementation: CR-003, `Local Fix`.
+- What changed in the review result and why:
+  - API/E2E's controls isolate the freeze to the loader path, and rule out the data and starvation.
+  - `isEntireLengthAvailableOnDemand = true` makes the drag play on, and it is the correct declaration for a loader that serves any range.
+  - Held, not required: the cache is pushed to AVFoundation in one synchronous loop.
+  - Test-code note T-2: `pictureMoves` could false-pass while the controls are visible.
+- **Review gap I own:** in round 1, I did not check the loader's content-information declaration against its actual capability.
+- Supported product scenario / material-premise basis changes: S-1 (seek) now includes the platform's scrubber drag. O-4 is closed into CR-003.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-003) | Resolved | — | Unaffected |
+| CR-002 | Resolved (CRR-003) | Resolved | — | Unaffected |
+
+- New or remaining finding IDs: CR-003
+- Material score or classification changes: runtime correctness is below 9.2 until CR-003 is fixed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty:
+  - Simulator only. The fix should also settle the physical-device question, and a physical iPhone check stays recommended.
+  - R-1 and R-2 are unchanged.

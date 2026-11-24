@@ -2,7 +2,13 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 3, IR-002). Round 1 (CRR-001, Pass) was an implementation review and round 2 (CRR-002, Fail) a failure-origin review. Their sections below stay as recorded except where a later round updates them.
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 4, API-REV-003 F-3). The earlier rounds:
+  - round 1 (CRR-001, Pass): implementation review;
+  - round 2 (CRR-002, Fail): failure-origin review;
+  - round 3 (CRR-003, Pass): targeted delta review;
+  - CRR-004 (Pass): the test review, in `api-e2e-test-review-report.md`.
+
+  Their sections below stay as recorded except where a later round updates them.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/phone-video-574/requirements-doc.md` (SR-001; REQ-001…005, AC-001…006, DEC-001 (b) and DEC-002 (a) approved by the user)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (P1–P3)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001, SR-002)
@@ -16,8 +22,13 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: `3`
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: `4` (failure-origin). The entries for round 3 follow.
+- Round 4 scope and trigger:
+  - API/E2E round 3 (API-REV-003, commit `ef3107bb3e`, on top of delivery `ad813b4e6d`) failed with F-3. Delivery DR-001 had asked API/E2E to attribute O-4.
+  - Product code is unchanged since `64a99bbcd2`.
+  - Re-read: `AuthorizedMediaLoader.swift` (content information and cache serving), `NativeVideoPlayer.swift` (`start`), and the evidence in `evidence/api-e2e/R3-O4/`. That evidence comprises the strips, `loader-requests-during-scrub.txt`, `on-demand-runs.log`, `b-c-frames-and-bytes.log` and `picture-check.log`.
+  - Failing scenario: `NativeVideoRealNodeUITests.testAWideVideoFromTheChatLink`, which fails at line 49 (`pictureMoves`) on the clean tree.
 - Review Scope: `Targeted Delta Review`. Round 1 was a `Full Review`; round 2 was failure-origin.
 - Review Scope Evidence (round >1): the source delta `b0a2eeacc0..64a99bbcd2` is two fix commits:
   - `fb2357dc09`: `VideoPlayer.vue` and its spec;
@@ -264,6 +275,29 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
   - Apple's simulator log shows the request path, never the credential (a device redacts it).
 - **Not run by me:** the Android and iOS suites (IMP-03…06 evidence used).
 
+## Round 4 Failure-Origin Finding (CRR-005)
+
+### CR-003: an iOS scrubber drag freezes the picture of a node video, while the clock runs on (F-3)
+
+- **Severity:** Medium. AC-001's "a seek to the middle plays within 2 s" fails on iOS for the platform's own scrubber, the main way a user seeks. The skip buttons and precise seeks work.
+- **Where:** `autobyteus-ios/AutoByteusMobileCore/Video/AuthorizedMediaLoader.swift`, `resourceLoader(_:shouldWaitForLoadingOfRequestedResource:)`. The `contentInformationRequest` gets the content type, the length and `isByteRangeAccessSupported = true`, but not `isEntireLengthAvailableOnDemand`.
+- **Attribution (API/E2E controls, same simulator, stack and file).** It is the loader path:
+  - **The path decides.** Through the loader the picture stops (2/2, on both a first open and a cached video). A byte-identical plain file in the same screen plays on (2/2).
+  - **Not the data.** The frames are pixel-identical to the plain file's, and the served bytes and the cache are byte-identical to the file.
+  - **Not starvation.** AVFoundation sends no request during or after the scrub.
+  - **The flag flips it.** Setting `isEntireLengthAvailableOnDemand = true` makes the same drag play on (2/2), and a run without it in between froze again.
+- **Why the flag is correct and not a workaround:** this loader can serve any byte range at any time, from the cache or by a ranged fetch. That is exactly what the property declares (iOS 16+; the app targets iOS 17.0, so no availability check is needed). Without it, AVFoundation treats the resource as a progressive download, and its scrubbing path then stalls.
+- **Required action (Local Fix, implementation):**
+  1. Set `information.isEntireLengthAvailableOnDemand = true` beside `isByteRangeAccessSupported`, with a one-line reason.
+  2. Verify on your own simulator with the durable `NativeVideoRealNodeUITests.testAWideVideoFromTheChatLink` (its `pictureMoves` check). Run it on a first open and again with the video cached.
+  3. Re-run the Core suite (`AuthorizedMediaLoaderTests`, reopen 0 bytes).
+- **Consider, not required:** for a cached video, a to-end request is answered by pushing the whole file in one synchronous loop: 22.9 MB in 17 ms, per `loader-requests-during-scrub.txt`. A cancel cannot arrive until the loop ends, so a large cached video is handed to AVFoundation all at once. If you touch this area, serving the cache in bounded steps (re-entering `advance` through `queue.async`) lets a cancel in between. I held this for evidence (no memory measurement), so it is not part of the finding.
+- **Review gap:** round 1 read these content-information lines and did not compare their declaration with what the loader actually supports. The symptom shows only in an interactive scrub, which no review or unit test exercised. Recorded in CRR-005.
+
+### Test-code note for the next test review (T-2, non-blocking)
+
+`pictureMoves` compares two full-screen screenshots. If the player's controls are still showing, the moving time label alone makes them differ, which would be a false pass. On the defect it did fail (2/2), so the controls were hidden at this timing. Making it robust is cheap: compare a crop of the video's centre, or wait until the scrubber is gone or not hittable first. That is for API/E2E; I will review it after the next pass.
+
 ## Round 3 Delta Verification (CRR-003)
 
 | Finding | Fix | Verification |
@@ -276,6 +310,11 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 4, CRR-005). The failure origin is implementation: CR-003, `Local Fix` in the iOS loader.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Recommended Recipient: `/implementation_engineer`. After the fix: a targeted delta code review, then an API/E2E rerun (`testAWideVideoFromTheChatLink` on a first open and cached; the iOS journeys of round 2).
+- No requirement or design change is needed: the design's "AVPlayer with a key-adding resource loader" holds.
+- Round 3 result (CRR-003, superseded):
 - Review Decision: `Pass` (round 3, CRR-003). CR-001 and CR-002 are resolved.
 - Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Score Summary: 9.4 / 10. Runtime correctness is back to 9.3 now that both findings are fixed; the other categories are as in round 1.
