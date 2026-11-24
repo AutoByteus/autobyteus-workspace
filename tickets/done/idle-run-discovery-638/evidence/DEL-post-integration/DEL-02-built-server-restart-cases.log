@@ -1,0 +1,16 @@
+# Merged state 22dce6a27e, server dist rebuilt from it
+# Command (worktree root): env -i PATH HOME=<fresh temp> TMPDIR USER RUN_RUNNING_RUNS_E2E=1 RUNNING_RUNS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts --no-watch
+ ✓ tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts (4 tests) 72382ms
+     ✓ RUN-01: graceful restart: the idle Agent run and Team come back running, listed and reachable; the stopped run does not  12294ms
+     ✓ RUN-02: forced kill: the same from the live record  11554ms
+     ✓ RUN-03: a graceful stop during the restore loses no run: the record keeps all seven and the next start brings them back  26350ms
+     ✓ RUN-04: a kill during the restore: the same  22130ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  73.01s (transform 81ms, setup 80ms, import 52ms, tests 72.38s, environment 0ms)
+exit=0
+
+# RR-01 (AC-005): env -i … RUN_RESTART_REMINDER_E2E=1 … restart-reminder-built-server.e2e.test.ts --no-watch -t RR-01
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  18175ms
+      Tests  1 passed | 11 skipped (12)
+exit=0

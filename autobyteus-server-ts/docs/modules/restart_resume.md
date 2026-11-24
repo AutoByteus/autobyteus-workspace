@@ -205,4 +205,11 @@ it and `send_message_to` refused it, so other agents started duplicates.
   `running-run-restorer.test.ts` (including a stop and a crash during the restore),
   `tests/unit/agent-team-execution/team-root-ensure-agent-ready.test.ts`, and the built-server E2E
   `tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts` (`RUN_RUNNING_RUNS_E2E=1`: a graceful restart and a
-  kill, each with an Agent run and a Team run, found by `list_running_agents` and reached by `send_message_to`).
+  kill, each with an Agent run and a Team run, found by `list_running_agents` and reached by `send_message_to`, and a
+  stop and a kill in the middle of the restore). Gated suites with real runtimes and a node:
+  `running-runs-external-runtimes.e2e.test.ts` (scripted Antigravity with `RUN_AGY_FAILURE_E2E=1` and
+  `ANTIGRAVITY_CLI_COMMAND`; the real Claude CLI with `RUN_CLAUDE_E2E=1` and the test vault; Codex with `RUN_CODEX_E2E=1`,
+  whose conversation cases spend inference) and `running-runs-docker-node.e2e.test.ts` (`RUN_RUNNING_RUNS_DOCKER_E2E=1`
+  and `RUNNING_RUNS_DOCKER_SERVER_PACKAGE=<folder>`: a test-owned Docker node after `docker stop`/`start` and
+  `docker kill`/`start`); `restart-reminder-built-server.e2e.test.ts` RR-01 also checks that both runs are running again,
+  idle, before any input.

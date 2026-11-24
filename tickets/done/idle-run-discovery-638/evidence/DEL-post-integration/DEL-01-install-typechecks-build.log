@@ -1,0 +1,19 @@
+# Merged state 22dce6a27e (origin/personal 5c0db3a801 merged into codex/idle-run-discovery-638 at 6a3470019c; base 48 commits, phone video / file viewer wrap / byte-range file serving; no file both sides changed, no package.json or lockfile change)
+# pnpm install --frozen-lockfile
+Done in 1.3s using pnpm v10.28.2
+exit=0
+
+# pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.7s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 30.8s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+exit=0
+
+# pnpm -C autobyteus-web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit=0
+
+# pnpm -C autobyteus-server-ts build
+exit=0
