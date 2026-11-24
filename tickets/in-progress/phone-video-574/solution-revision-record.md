@@ -16,3 +16,13 @@
 - Design: D-1…D-7, with the data contract first and validated.
 - Classification: `Large` / `High`. Routing: architecture review.
 - Follow-ups: FU-001, FU-002.
+
+## SR-002 (2026-11-24)
+
+- Trigger: ARCH-REV-001 Fail.
+  - AR-001: no freshness rule, so a desktop or browser HTTP cache could show a rewritten file stale.
+  - N-1…N-4.
+- Design: file replies send `Cache-Control: no-cache` (routes with `no-store` keep it); `Last-Modified` is dropped (no reader); the HTTP caches are walked as derived consumers; redirects off the node's origin are refused by both players; a multi-range request gets 200; hashed cache file names; the iOS range cache's risk and tests are named.
+- Requirements: REQ-005 and AC-005 made precise (revalidation, multi-range, never stale). The intent is unchanged (the existing behavior already shows new bytes), so this is editorial within the approval.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review.
+- Design case: docs/design-cases.md Case 3 (an HTTP cache as a reader of a changed reply).

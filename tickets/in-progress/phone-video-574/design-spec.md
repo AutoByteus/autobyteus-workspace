@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (after ARCH-REV-001: freshness rule, no Last-Modified, desktop/browser readers, redirects, multi-range)
 - Approved requirements: `requirements-doc.md` SR-001. The user approved DEC-001 (b) and DEC-002 (a) on 2026-11-24; the other decisions are the Solution Designer's.
 - User approval of the design: not required (the contract is shown to the user with this design).
 - Design status: `Ready`
@@ -64,6 +64,10 @@ See the investigation notes ("Current behavior").
 - **In scope:** UC-001…UC-003. Files are listed in the Final File Responsibility Mapping.
 - **Derived consumers:**
   - `UserFileContent` (D-1): every caller listed above. Message references stay `stream` (no file path), so no Range there; noted as FU-001 if a phone video is ever served that way.
+  - **HTTP caches of the replies (SR-002):** the desktop puts these URLs straight into `img`, `video` and PDF elements (`fileExplorerContentActions.ts:261-264`); browsers do the same. With `Cache-Control: no-cache` and the `ETag`, the walk is:
+    - an agent rewrites a file, and the reopen gets 200 with the new bytes (new `ETag`);
+    - unchanged, the reopen gets 304 and reuses the copy.
+    - Today's behavior (no validator, no caching rule) shows new bytes too; it never sends a 304.
   - `ShellHello` (D-2): the web's `hello` readers and both apps' reply builders.
   - The `playVideo` message (D-2, D-5): both apps' message readers.
   - NA-8 text: the node access model doc.
@@ -80,8 +84,8 @@ See the investigation notes ("Current behavior").
 | --- | --- | --- | --- | --- | --- |
 | HTTP file reply (all `kind: 'file'` routes) | node → any client | `Accept-Ranges: bytes` | Ranges are served | `sendUserFile` | players |
 | | | `ETag: "<size>-<mtimeMs>"` (strong) | The file's version; it changes when the file changes | `sendUserFile` from `stat` | native caches (D-3, D-4) |
-| | | `Last-Modified` | The file's mtime | `sendUserFile` | — (HTTP convention, for `If-Modified-Since` clients) |
-| | | 206 + `Content-Range: bytes a-b/size` + `Content-Length` | The bytes of `Range: bytes=a-b`, `a-` or `-n` (one range) | `sendUserFile` | players |
+| | | `Cache-Control: no-cache` (SR-002; a route that sets `no-store` keeps `no-store`) | Revalidate on every use: a client may keep a copy, but asks each time; 304 when unchanged, new bytes when changed. Without it, Chromium treats a reply carrying a validator as fresh for a heuristic time and can show an old copy after an agent rewrites the file (ARCH-REV-001 AR-001) | `sendUserFile` | desktop and browser HTTP caches (the Electron window and any browser), the WebView cache |
+| | | 206 + `Content-Range: bytes a-b/size` + `Content-Length` | The bytes of `Range: bytes=a-b`, `a-` or `-n` (one range). A multi-range request (`a-b,c-d`) gets 200 with the whole file (N-2) | `sendUserFile` | players |
 | | | 416 + `Content-Range: bytes */size` | An unsatisfiable range | `sendUserFile` | — |
 | | | 304 for a matching `If-None-Match` | Unchanged | `sendUserFile` | — |
 | | | `If-Range` | A range only if the version still matches, else the whole file (200) | `sendUserFile` | native caches |
@@ -94,6 +98,8 @@ See the investigation notes ("Current behavior").
 - **Lifecycle:**
   - The `playVideo` credential lives in memory from the message until the player closes. It is never in an Intent's extras or a saved state (Android hands a random in-process token to the activity), never in a URL, never logged.
   - Cache entries are created on fetch, evicted by LRU, and deleted when their node is removed (D-7).
+  - **Keys as file names (N-4):** a key that becomes a file or directory name is hashed (SHA-256 hex); the readable key is never a path.
+  - **Redirects (N-1):** node file routes never redirect. Both players refuse any redirect off the node's origin (Android: a custom redirect check in the data source, or `allowCrossProtocolRedirects=false` plus an origin check; iOS: `URLSessionTaskDelegate willPerformHTTPRedirection` → `nil` when the origin differs), so the credential is never sent elsewhere. One unit case each.
 - **Examples:**
   - `{"type":"playVideo","url":"http://192.168.1.20:29695/rest/workspaces/agent_ws_ab12/content?path=demo%2Fplan.mp4","title":"plan.mp4","credential":"<redacted>"}`
   - Hello: `{"type":"shell","nodeCount":2,"deviceName":"Pixel 8","nodeName":"MacBook","videoPlayer":true}`
@@ -227,6 +233,7 @@ See the investigation notes ("Current behavior").
 - **iOS forced landscape.** `requestGeometryUpdate` (iOS 16+) for a wide video. Escalate if it is refused on the simulator.
 - **Media3 adds APK size** (about 1–2 MB).
 - **Cache disk use** is bounded to 500 MB; implementation checks the platforms' low-storage behavior.
+- **iOS range cache (N-3):** not prototyped. It is our own code (a sparse file plus a range map). Its tests are named in the file map: partial ranges, overlapping ranges, an evicted key, a changed `ETag`, a node delete, and a reopen that sends 0 bytes for cached ranges. It is AC-002 on iOS.
 
 ## Guidance For Implementation
 
