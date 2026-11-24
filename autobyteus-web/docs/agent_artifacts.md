@@ -235,6 +235,16 @@ phone-sized full-screen surface, but disables rich HTML preview so mobile
 reference files stay on authorized raw/Markdown/media/PDF/CSV/Excel loading
 paths rather than an unauthenticated static HTML preview path.
 
+A video or audio reference is not downloaded by the reference viewer
+(autobyteus-642 SR-003): it asks one byte of the reference route
+(`Range: bytes=0-0`, so a reference that is gone still shows the unavailable
+state) and gives `FileViewer` the route's own URL. The route answers by range
+with the file's version (`no-store`), so the desktop's `<video>`/`<audio>`
+element streams and seeks it, the phone apps play it in their own player
+(`playMedia`, named by the reference's path), and a phone browser downloads it
+itself, as for a Files video. Text, PDF and image references are read whole, as
+before.
+
 There are no task-owned reference previews; the former task reference route
 and `TeamTaskReferenceViewer` are removed.
 

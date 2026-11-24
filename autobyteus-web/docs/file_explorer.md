@@ -338,8 +338,12 @@ audio viewers play a file one of two ways, chosen by
 `useNativeMediaPlayback(kind).modeFor(url)` (autobyteus-574, autobyteus-642). In
 the Android and iOS apps, whose `hello` reply lists the file extensions their own
 player plays per kind (`mediaPlayer: { video, audio }`), a protected file of the
-open node whose extension is listed is `native`. The extension is that of the file
-the URL names: its `path` query for workspace and node files, else its path. The
+open node whose extension is listed is `native`. The extension is that of the
+file's name, which the caller gives (`modeFor(url, fileName)`, `play(url,
+fileName)`): `FileViewer` passes the file's path to `VideoPlayer` and
+`AudioPlayer` (`fileName`), and a chat media message the last segment of its own
+`/rest/files/<path>` URL. A URL need not name its file: a message reference's
+`…/references/<id>/content` does not (autobyteus-642 SR-004). The
 page loads nothing itself, the viewer shows the file's name and a **Play** button,
 and the app's own player (Media3, AVPlayer) streams the file by range with the key
 in a header, never in a URL (the shell bridge's `playMedia`: [Phone
