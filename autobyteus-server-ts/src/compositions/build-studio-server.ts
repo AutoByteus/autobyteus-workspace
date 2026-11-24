@@ -40,6 +40,7 @@ import { createStudioPackageServices } from "./studio-package-services.js";
 import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding, type LateRemoteCollaborationBinding } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeRunningAgents } from "./running-agents-composition.js";
+import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
 import { ClosedDelegations } from "../remote-collaboration/inbound/closed-delegations.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -340,7 +341,8 @@ export const buildStudioServer = async (input: {
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree, closedTasks: taskSide.closedTasks,
-      orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService, reminders: restartReminders });
+      orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService, reminders: restartReminders,
+      running: running.runningAgents, runFiles: new RunOwnAgentsReader(input.appConfig.getMemoryDir()) });
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig, taskSide,
       packages,

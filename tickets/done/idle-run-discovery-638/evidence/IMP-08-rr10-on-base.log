@@ -1,0 +1,152 @@
+# IMP-08 RR-10 of the restart-reminder E2E against the BASE build (autobyteus-638 FU-001)
+# Command: RUN_RESTART_REMINDER_E2E=1 RESTART_REMINDER_SERVER_DIR=/private/tmp/638-base-worktree/autobyteus-server-ts pnpm exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts -t RR-10 --no-watch (env -i, throwaway HOME; test file from this branch, unchanged for RR-10)
+# Server under test: a detached worktree of the base c1147c8917 (origin/personal at the ticket's start), pnpm install + build; removed after the run
+# Environment: Node v22.23.1, macOS 26.5.2; Date: 2026-11-24 21:41 CET
+# Result: RR-10 fails on the base with the same diff as on this branch (IMP-06): a pre-existing expectation from before autobyteus-628 D-2, not caused by this ticket (FU-001).
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ❯ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (12 tests | 1 failed | 11 skipped) 12803ms
+     ↓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing
+     ↓ RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop'
+     ↓ RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing
+     ↓ RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line
+     ↓ RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input
+     ↓ RR-12: update: a Team member idle with a background task is woken once with 'an update to' this release; its next input carries nothing (autobyteus-500 round 5, the member path of the merged restart resumer)
+     ↓ RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input
+     × RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526) 12723ms
+     ↓ RR-11: a run restored twice before the fix keeps its stored ids; its next turn continues after the highest (autobyteus-526 DEC-003)
+     ↓ RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input
+     ↓ RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input
+     ↓ RR-09 (live): a native agent killed while its build runs is told the build may still run untracked, and checks it
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts > Restart reminder across real restarts of the built server > RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)
+AssertionError: expected [ …(8) ] to deeply equal [ …(8) ]
+
+- Expected
++ Received
+
+  [
+    "user:Start the build in the background.",
+    "assistant:REPLY_ONE@turn_0001",
+-   "reminder",
+    "user:Start the build again.",
+-   "assistant:REPLY_TWO@turn_0002",
+    "reminder",
++   "assistant:REPLY_TWO@turn_0002",
+    "user:And now?",
++   "reminder",
+    "assistant:REPLY_THREE@turn_0003",
+  ]
+
+ ❯ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts:728:19
+    726|     // As the app loads it (inputs and notices carry no turn id there;…
+    727|     // once, in order, and each reply in its own turn, so a view group…
+    728|     expect(shown).toEqual(["user:Start the build in the background.", …
+       |                   ^
+    729|       "assistant:REPLY_TWO@turn_0002", "reminder", "user:And now?", "a…
+    730|   }, 600_000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  21:40:42
+   Duration  13.32s (transform 73ms, setup 54ms, import 59ms, tests 12.80s, environment 0ms)
+

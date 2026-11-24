@@ -1,0 +1,21 @@
+{
+  "caseId": "RUN-X-AGY-TERM",
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "signal": "SIGTERM",
+  "runId": "run_x_agy_term_51bc0e_a062f9825c584f34aab887c985579110",
+  "first": "OK",
+  "session": "19eb85dd-246d-45ce-9672-bd2b181ec891",
+  "sessionAfter": "19eb85dd-246d-45ce-9672-bd2b181ec891",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_agy_term_51bc0e_a062f9825c584f34aab887c985579110"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 1 brought back, 0 skipped, 0 failed",
+  "unchanged": true,
+  "answer": "OK"
+}

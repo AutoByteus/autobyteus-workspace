@@ -1,0 +1,39 @@
+{
+  "signal": "SIGKILL",
+  "agentRunId": "person_agent_32ddf975_5a2bf1b80b694822b6d1636f8d408c0e",
+  "team": {
+    "teamRunId": "running_runs_team_ef3c5f4e_a2ec5a2646b640f08906ba5f793bc8e6",
+    "coordinator": "team_lead_bee3a221_119cef2a628c4d55bac4de3636718077"
+  },
+  "stoppedRunId": "person_agent_8e46635c_74a6b9d7988342ceba88d24fcb526ec7",
+  "live": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_32ddf975_5a2bf1b80b694822b6d1636f8d408c0e"
+      },
+      {
+        "rootSubjectKind": "agent_team",
+        "rootRunId": "running_runs_team_ef3c5f4e_a2ec5a2646b640f08906ba5f793bc8e6"
+      }
+    ]
+  },
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_32ddf975_5a2bf1b80b694822b6d1636f8d408c0e"
+      },
+      {
+        "rootSubjectKind": "agent_team",
+        "rootRunId": "running_runs_team_ef3c5f4e_a2ec5a2646b640f08906ba5f793bc8e6"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 2 brought back, 0 skipped, 0 failed",
+  "listing": "{\"agents\":[{\"kind\":\"agent\",\"name\":\"person-agent-32ddf975\",\"address\":\"/person_agent_32ddf975\",\"agent_run_id\":\"person_agent_32ddf975_5a2bf1b80b694822b6d1636f8d408c0e\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/running-runs-e2e-fCEgPX/workspace\",\"state\":\"idle\",\"started_at\":\"2026-11-24T21:30:26.971Z\"},{\"kind\":\"agent_team\",\"name\":\"running-runs-team-ef3c5f4e\",\"address\":\"/running_runs_team_ef3c5f4e\",\"team_run_id\":\"running_runs_team_ef3c5f4e_a2ec5a2646b640f08906ba5f793bc8e6\",\"team_coordinator_agent_run_id\":\"team_lead_bee3a221_119cef2a628c4d55bac4de3636718077\",\"workspace\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/running-runs-e2e-fCEgPX/workspace\",\"state\":\"idle\",\"started_at\":\"2026-11-24T21:30:27.262Z\"}]}",
+  "callsBefore": {
+    "agent": 1,
+    "team": 1
+  }
+}

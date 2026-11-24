@@ -1,0 +1,25 @@
+{
+  "caseId": "RUN-X-CLAUDE-KILL",
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "signal": "SIGKILL",
+  "runId": "run_x_claude_kill_2b9070_140a78c49c614cd9a6ad8362c39bed84",
+  "first": "OK",
+  "session": "512f2966-6bb3-4e89-89b6-2bcd682ea526",
+  "sessionAfter": "512f2966-6bb3-4e89-89b6-2bcd682ea526",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_claude_kill_2b9070_140a78c49c614cd9a6ad8362c39bed84"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_claude_term_0cc4b7_22de32b0021a44e8aefc1fda2a9281d8"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 2 brought back, 0 skipped, 0 failed",
+  "unchanged": true,
+  "answer": "ORCHID-602969"
+}

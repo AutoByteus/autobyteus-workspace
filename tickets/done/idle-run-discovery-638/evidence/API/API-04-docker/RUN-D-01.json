@@ -1,0 +1,27 @@
+{
+  "first": "OK",
+  "stopRecord": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "docker_person_a4ce8c_aeb3662d47ef4fe6a3cff617492c36f6"
+      }
+    ]
+  },
+  "stopSummary": "Running runs after the restart: 1 brought back, 0 skipped, 0 failed",
+  "stopSession": "3df5fa1b-ee43-4041-92ca-f355be729f16",
+  "stopAnswer": "OK",
+  "killRecord": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "docker_person_a4ce8c_aeb3662d47ef4fe6a3cff617492c36f6"
+      }
+    ]
+  },
+  "killSummary": "Running runs after the restart: 1 brought back, 0 skipped, 0 failed",
+  "killSession": "3df5fa1b-ee43-4041-92ca-f355be729f16",
+  "killAnswer": "OK",
+  "runId": "docker_person_a4ce8c_aeb3662d47ef4fe6a3cff617492c36f6",
+  "session": "3df5fa1b-ee43-4041-92ca-f355be729f16"
+}
