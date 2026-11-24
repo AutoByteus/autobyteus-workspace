@@ -15,13 +15,15 @@ Ticket autobyteus-574 (phone-video-574, absorbs autobyteus-636). Worktree `<work
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/phone-video-574/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002` (CR-001 and CR-002, Local Fix). IR-001 is the baseline.
 - Related solution revision IDs: SR-001, SR-002.
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002.
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A. Reviewer notes applied: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
+- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (failure-origin: implementation).
+- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1, F-2).
+- Related delivery revision IDs: N/A.
+- Triggering finding IDs: CR-001 (F-1), CR-002 (F-2). In IR-001, the reviewer notes applied were: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
 
 What the change does:
 
@@ -185,6 +187,7 @@ Evidence is under `tickets/in-progress/phone-video-574/evidence/implementation/`
 | IMP-08 | fresh clone; `GRADLE_USER_HOME=<empty> ./gradlew --no-daemon clean :app:assembleDebug` | `8e666f6c78` | JDK 21, empty Gradle home | the Android build with Media3 from nothing | DESIGN.md rule 12 | Pass | `IMP-08-fresh-android-build.log` | `BUILD SUCCESSFUL` |
 | IMP-09 | build-only Android Release (`release-android.yml`, `publish_release=false`) and iOS Release (`release-ios.yml`, `publish_app_store_connect=false`) on the branch | `8e666f6c78` | GitHub Actions | the signed release build; the Xcode 27 build and tests | DESIGN.md rule 12 | Pass | `IMP-09-build-only-release-runs.log` | Android 45397185529 `success`; iOS 45397190773 `success` (Build And Test iOS App) |
 | IMP-10 | `pnpm test:unit`; server typecheck; clean-env `test:integration` and `vitest run tests/e2e` | `8e666f6c78` | macOS, Node 22, clean env | the whole server | AC-005, AC-006 | Pass | `IMP-10-server-suites.log` | unit `1085 passed`; integration `92 passed`; e2e `128 passed` |
+| IMP-11 | CR-001: the viewer specs on the fix and with `VideoPlayer.vue` stashed; web typecheck, guards, whole suite. CR-002: Android JVM tests on the fix and with `NodeVideoHttp.kt` stashed; build, androidTest compile, lint; iOS Core tests on the fix (with the video) and with `NodeVideoURL.swift` stashed | `fb2357dc09`, `6479a28f4b` | macOS, Node 22; JDK 21; Xcode 26.1.1, iOS 26.1 simulator | the viewer's auto-open; both apps' node-file-route rule (bridge, probe, every read) | UC-001, REQ-003, AC-003, CR-001, CR-002 | Pass (each new case red before the fix) | `IMP-11-cr001-cr002-local-fixes.log` | web `806 passed`; Android `total 129 tests, 0 failed`; iOS `passedTests 75` |
 
 - Not run, and why:
   - real devices (API/E2E);
