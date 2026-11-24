@@ -1,0 +1,79 @@
+# v1.5.14-beta.10 published state, 2026-11-24T04:47:24Z
+## workflow runs (final)
+Desktop Release run 45324022290: completed success, attempt 1
+Server Docker Release run 45324022279: completed success, attempt 1
+Android APK Release run 45324022271: completed success, attempt 1
+iOS App Store Connect Release run 45324022523: completed success, attempt 1
+## jobs of run 45324022290
+  Resolve Release Metadata: success
+  Build macOS Intel x64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Build Linux ARM64: success
+  Build macOS ARM64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+## jobs of run 45324022279
+  Resolve Release Metadata: success
+  Build Server Image (linux/amd64): success
+  Build Server Image (linux/arm64): success
+  Publish Server Image: success
+  Publish Server Package (linux/arm64): success
+  Publish Server Package (linux/amd64): success
+## jobs of run 45324022271
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+## jobs of run 45324022523
+  Resolve iOS Release Metadata: success
+  Build And Test iOS App: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## release
+prerelease true draft false tag v1.5.14-beta.10 target 2340344c855b5e1e4fc87de71e9b510ba8b098e8
+GitHub Latest: v1.5.13
+assets: 27
+2026-11-24T04:13:50Z	AutoByteus_personal_android-1.5.14-beta.10-release.apk
+2026-11-24T04:13:50Z	AutoByteus_personal_android-1.5.14-beta.10-release.apk.sha256
+2026-11-24T04:14:31Z	autobyteus-server-1.5.14-beta.10-linux-x64.tar.gz
+2026-11-24T04:14:36Z	autobyteus-server-1.5.14-beta.10-linux-x64.json
+2026-11-24T04:14:37Z	autobyteus-server-1.5.14-beta.10-linux-x64.json.sig
+2026-11-24T04:14:44Z	autobyteus-server-1.5.14-beta.10-linux-arm64.tar.gz
+2026-11-24T04:14:51Z	autobyteus-server-1.5.14-beta.10-linux-arm64.json
+2026-11-24T04:14:52Z	autobyteus-server-1.5.14-beta.10-linux-arm64.json.sig
+2026-11-24T04:32:03Z	AutoByteus_personal_linux-arm64-1.5.14-beta.10.AppImage.release.json.sig
+2026-11-24T04:32:03Z	AutoByteus_personal_linux-x64-1.5.14-beta.10.AppImage.release.json
+2026-11-24T04:32:04Z	AutoByteus_personal_linux-arm64-1.5.14-beta.10.AppImage
+2026-11-24T04:32:04Z	AutoByteus_personal_linux-arm64-1.5.14-beta.10.AppImage.release.json
+2026-11-24T04:32:04Z	AutoByteus_personal_linux-x64-1.5.14-beta.10.AppImage
+2026-11-24T04:32:04Z	AutoByteus_personal_linux-x64-1.5.14-beta.10.AppImage.release.json.sig
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-arm64-1.5.14-beta.10.dmg
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-arm64-1.5.14-beta.10.dmg.blockmap
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-arm64-1.5.14-beta.10.zip
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-arm64-1.5.14-beta.10.zip.blockmap
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-x64-1.5.14-beta.10.dmg
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-x64-1.5.14-beta.10.dmg.blockmap
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-x64-1.5.14-beta.10.zip
+2026-11-24T04:32:04Z	AutoByteus_personal_macos-x64-1.5.14-beta.10.zip.blockmap
+2026-11-24T04:32:04Z	AutoByteus_personal_windows-1.5.14-beta.10.exe
+2026-11-24T04:32:26Z	latest-linux-arm64.yml
+2026-11-24T04:32:26Z	latest-linux.yml
+2026-11-24T04:32:26Z	latest-mac.yml
+2026-11-24T04:32:26Z	latest.yml
+## docker (registry API)
+autobyteus/autobyteus-server:1.5.14-beta.10 -> sha256:0f283df89d410fea850bb80e4b24f7cf71871d5ed6688e4139937e4099920d7a
+autobyteus/autobyteus-server:beta -> sha256:0f283df89d410fea850bb80e4b24f7cf71871d5ed6688e4139937e4099920d7a
+autobyteus/autobyteus-server:latest -> sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de
+autobyteus/autobyteus-server:1.5.13 -> sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de
+autobyteus/autobyteus-server:1.5.14-beta.9 -> sha256:c9a6d199835db661c2388bef4578d7b9715c1a812f945646e0e5b7a732d0bb84
+  index entry linux/amd64 sha256:675be4a6c90d5121b48a2a5bf4d9eb7003a4e966bebe5a9c4afd374db559eebd
+  index entry linux/arm64 sha256:41ec65058c5ea9b9fd7000dfaca2f0dd574f35ba2057902371a5f2cf7a6db3c9
+## docker run log: system level and digests
+  Build Server Image (linux/amd64) | 2026-11-24T04:08:32.7010835Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/amd64) | 2026-11-24T04:10:56.6283900Z #46 11.82 Wrote server-package.json: 1.5.14-beta.10 linux-x64, Node modules 127, system level 2, 66 migrations
+  Build Server Image (linux/arm64) | 2026-11-24T04:07:50.5044182Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/arm64) | 2026-11-24T04:10:56.4243693Z #46 18.03 Wrote server-package.json: 1.5.14-beta.10 linux-arm64, Node modules 127, system level 2, 66 migrations
+  Publish Server Image | 2026-11-24T04:12:52.1964422Z The pushed ***/***-server:1.5.14-beta.10 index lists linux/amd64 sha256:675be4a6c90d5121b48a2a5bf4d9eb7003a4e966bebe5a9c4afd374db559eebd and linux/arm64 sha256:41ec65058c5ea9b9fd7000dfaca2f0dd574f35ba2057902371a5f2cf7a6db3c9.
+## released server package descriptions: systemLevel
+  x64 1.5.14-beta.10 systemLevel 2
+  arm64 1.5.14-beta.10 systemLevel 2

@@ -17,9 +17,14 @@
 
 ## Verification
 - From the evidence: AC-001..AC-010 proven (execution report's Acceptance-Criteria Proof; MH-final.log, mutation checks, the repaired switch suites, the merged-state rerun). The rendered Settings menu and help text were not rendered by any stage.
-- **User check (AC-011), on a beta:** a stopped native run on a model removed from LM Studio shows the offered models; Save succeeds with "Model saved. Your next message starts a fresh session…"; the next message shows "Model changed from … to …" and the run continues from the work journal. Also check the rendered Settings menu and the new help text (en, zh-CN).
+- **AC-011 (the user's check on a beta): waived by the user.** The user decided on 2026-11-24, in the Solution Designer conversation: "And no need I trusted API e2e engineer okay because I'm sure there's no need to because our software factory has 100% reliability no need its done". The API/E2E evidence (API-001 Pass, 95.3%) stands in for it. Not checked by anyone, and so not proven: the rendered Settings menu and the new help text (en, zh-CN), and a run on the user's own LM Studio. Everything else is proven by the built-server suites.
 - No accepted unverified-risk decisions (`DEC-*` evidence decisions): none.
 - Residual risks: a delegated copy's native hand-over is covered only by the existing copy suites and unit tests; the isolated desktop instance cannot use the scripted LM Studio endpoint.
+
+## Release
+- `No release` by this delivery: with the user's check waived, I cut no tag and the guide's default is no release. `release-notes.md` stays ready for a later stable.
+- The change is nevertheless in the beta **`v1.5.14-beta.10`** (GitHub pre-release, published 2026-11-24T04:13Z). It was cut by the separate release ticket `release-v1.5.14-beta.10` (autobyteus-629) from `personal`, after this ticket's merge `e5d878832b` (`git tag --contains` confirms it). That release's record says Codex was waived by the founder; its own report holds its pipelines and assets. I did not verify that release's pipelines.
+- My pre-tag smoke run on the merged state: Claude, Grok, Antigravity and AutoByteus passed; Codex failed on the account's usage limit (resets 2026-11-27), not on code.
 
 ## Follow-ups
 - FU-001 (not urgent): LM Studio models carry no verified capacity in the rule's catalog, so an LM Studio → LM Studio edit always hands over, even to an equal or bigger model. This meets the user's rule. The Solution Designer sends it.
