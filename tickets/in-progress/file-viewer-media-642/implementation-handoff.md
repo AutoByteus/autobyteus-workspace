@@ -17,12 +17,12 @@ Ticket autobyteus-642 (file-viewer-media-642, absorbs autobyteus-639). Worktree 
 
 - Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/file-viewer-media-642/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-002` (SR-003, SR-004). IR-001 is the baseline.
+- Current implementation revision ID: `IR-003` (CR-002, Local Fix). IR-001 is the baseline; IR-002 was SR-003 and SR-004.
 - Related solution revision IDs: SR-001…SR-004.
 - Related architecture-review revision IDs: ARCH-REV-001…ARCH-REV-004.
-- Related code-review revision IDs: CRR-001 (Fail, CR-001).
+- Related code-review revision IDs: CRR-001 (Fail, CR-001), CRR-002 (CR-001 and C-2 resolved; Fail, CR-002).
 - Related API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: CR-001, C-2, AR-002, N-6. In IR-001: N-4 and N-5 (N-1…N-3 were in SR-002); SR-004 replaces N-4's rule.
+- Triggering finding IDs: CR-002; in IR-002 CR-001, C-2, AR-002, N-6. In IR-001: N-4 and N-5 (N-1…N-3 were in SR-002); SR-004 replaces N-4's rule.
 
 What the change does:
 
@@ -115,6 +115,7 @@ What the change does:
 - **iOS's list is narrower than iOS 26 plays.** The iOS 26.1 simulator also lists Ogg, Opus and FLAC as playable. The app supports iOS 17 and REQ-002 keeps Ogg/Opus on the page path there, so the static list leaves them out. On iOS 26 those files play in the page.
   - A later change could build the list from `AVURLAsset.audiovisualTypes()` at run time. That is a product decision, not taken here.
 - **iOS audio controls hide while playing:** AVKit hides its own controls, as for a video, and a tap shows them. AVPlayerViewController has no public setting to keep them shown. Since IR-002 the screen shows an audio symbol and the name meanwhile (C-2). On Android they stay shown.
+- **A zero-byte media reference** answers the probe with 416 and shows the error state (CRR-002, held).
 - **The desktop's ranged reading of a reference** was not rendered in IR-002: the viewer gives the element the route URL, as Files does, and the route answers by range (IMP-01). API/E2E checks it on the built stack.
 - **The Android audio start time in the instrumented test** reads "playing after 3 ms": it counts from `ActivityScenario.launch` returning, which already waits for the screen. The video case's 1.0 s is measured the same way, as in 574. AC-002's "under 2 s" in the app is API/E2E's measure.
 - **`mkv` and `3gp` on Android** depend on the codecs inside them; the device decodes what it can. Media3 reads both containers.
@@ -171,6 +172,7 @@ What the change does:
 | IMP-10 | `mobile-shell-probe.mjs --cases=MSP-108,MSP-109,MSP-110` (618's cases); MSP-108 again with a temporary layout block | `4024239e07` | macOS, headless Chrome, probe-owned nodes | the Files tab, Monaco highlighting | UC-003, UC-004, AC-003, AC-004 (rendered) | Pass | `IMP-10-rendered-files-tab.log`, `IMP-10-*.png` | `"1440-default", "layout": "stacked", … "viewer": 450`; `"1280-panel-700-divider-dragged-right", "layout": "split", … "viewer": 400`; `mobile-shell probe: Pass` |
 
 | IMP-11 | IR-002 web: the reference viewer, composable, FileViewer and native viewer specs on the fix and with the six source files as at IR-001; the whole web suite; both typechecks; the web guards | `dc350be435` | macOS, Node 22 | `CollaborationMessageReferenceViewer`, `useNativeMediaPlayback`, `FileViewer`, the players, `MediaSegment` | UC-001, UC-002, SR-003, SR-004, N-6 | Pass (red before) | `IMP-11-ir002-web-reference-and-name.log` | red `Tests  8 failed \| 58 passed (66)`; `Tests  428 passed (428)`; first suite run `6 failed \| 801 passed` (missing contracts `dist/`, cause recorded), rerun `Test Files  6 passed (6)` |
+| IMP-13 | CR-002: the reference viewer spec's new case on the fix and on 26ebb05729's viewer; the collaboration, mobile and viewer folders; web typecheck | `36881a6734` | macOS, Node 22 | `CollaborationMessageReferenceViewer`'s reload watch | UC-001, UC-002, CR-002 | Pass (red before) | `IMP-13-cr002-reference-refetch.log` | red `expected { fetches: 3, mounts: 3 } to deeply equal { fetches: 1, mounts: 2 }`; `Tests  308 passed (308)` |
 | IMP-12 | IR-002 iOS: `NativeMediaPlayerUITests` against the fake node with `--video` and `--audio` | `fff1b0af0c` | Xcode 26.1.1, iOS 26.1 simulator (own) | `NativeMediaPlayerViewController.addAudioPlaceholder` | C-2, REQ-002 | Pass | `IMP-12-ir002-ios-audio-screen.log`, `IMP-12-audio-playing.png`, `IMP-12-audio-controls.png` | `testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed`; the symbol and the name in `IMP-12-audio-playing.png`; the scrubber in `IMP-12-audio-controls.png` |
 
 - Not run, and why:

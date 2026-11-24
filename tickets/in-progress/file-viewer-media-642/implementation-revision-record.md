@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, design-review-report.md round 2 (ARCH-REV-002); Solution Designer, design-spec.md SR-002 | N/A (N-4, N-5 applied) | `Initial Baseline` | SR-001, SR-002, ARCH-REV-001, ARCH-REV-002 | D-1…D-4 implemented and checked locally; ready for code review |
 | IR-002 | Code Reviewer, code-review-report.md CRR-001 (CR-001, C-2) via Solution Designer SR-003; Architecture Reviewer ARCH-REV-003 (AR-002) via SR-004; ARCH-REV-004 Pass | CR-001, C-2, AR-002, N-6 | `Requirement Gap` (resolved upstream; implemented here) | CRR-001, SR-003, SR-004, ARCH-REV-003, ARCH-REV-004 | Message references stream video and audio; the native player takes the file name from its caller; the iOS audio screen shows a symbol and the name |
+| IR-003 | Code Reviewer, code-review-report.md Round 2 Delta Review (CRR-002) | CR-002 | `Local Fix` | CRR-002 | The reference viewer reloads only when a reference changes by value; a native player no longer re-opens on a message update |
 
 ## Revision Entries
 
@@ -67,4 +68,28 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - The desktop's ranged reading of a reference was not rendered here: the viewer gives the element the route URL, as Files does (`useAuthorizedObjectUrl`), and API/E2E checks it on the built stack.
   - With iOS's controls shown, the app's Back bar sits over AVKit's top buttons, as for a video since 574.
+
+### IR-003 — The reference viewer reloads only when a reference changes by value
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/file-viewer-media-642/code-review-report.md`, "Round 2 Delta Review" (CRR-002).
+- Triggering finding IDs: CR-002.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002; CRR-002 Fail (CR-002); CR-001 and C-2 resolved.
+- Current authoritative result: fixed and checked; `Large` / `High`, back to code review for the delta.
+- Related solution and architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-002.
+- Related API/E2E and delivery revision IDs: N/A.
+- Why this implementation revision is recorded: the viewer's watch returned a new array, so it fired whenever the getter re-ran. A new reference object with equal values made it re-run.
+  - The phone's message list re-projects every reference as a new frozen object on each participant-message update. The viewer then refetched, unmounted and remounted `FileViewer`, and the remounted player in native mode called `playNatively()`.
+  - On Android a second player stacked on top; on both apps, after Back, the player popped up by itself.
+- Approved behavior or requirement IDs affected: UC-001, UC-002 (574's F-1 rule: the player opens on a tap or a first open, never by itself).
+- Implementation delta (`36881a6734`): `CollaborationMessageReferenceViewer.vue` watches its six sources as a multi-source watch: `contentPath`, `referenceId`, `path`, `type`, `updatedAt`, `refreshSignal`. Each is compared by value.
+  - This also ends the refetch of text, PDF and image references on every message update, and the desktop `<video>` restart.
+- Changed files or areas: that file and its spec (a new case, and a mount counter on the `FileViewer` stub).
+- Local validation and result: IMP-13.
+  - Red before: 3 probes and 3 mounts after two equal objects.
+  - Green: the equal objects change nothing; `updatedAt` and `refreshSignal` each reload.
+  - 31 files / 308 tests in the collaboration, mobile and viewer folders; web typecheck PASS.
+- Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
+- Remaining limitations or risks: the held notes stay held: a zero-byte media reference answers the probe with 416 and shows the error state; the iOS Back bar sits over AVKit's top buttons.
 
