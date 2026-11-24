@@ -1,0 +1,841 @@
+{
+  "startedAt": "2026-11-24T18:05:05.611Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 60247,
+      "nodeId": "srv_NMnOs9e1HxJ2mLWssseiN7JvvFG1uruz",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 60248,
+      "nodeId": "srv_abvQvMOl2dqjcLsHQWTNdwzWCY5MhMaZ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_7706410f3381421ba09088f6f02ee013",
+    "writerRun": "release_notes_writer_05bc1d3fca1d402fb30bf7f1148bfaaa",
+    "squadRun": "docs_review_team_9beb0d3cf0f843cfa2eec9ac95a18373",
+    "reviewer": "release_notes_writer_beb16949446448919cd572c2d1afa98f",
+    "memberDelegated": "fact_checker_c02ff47f45994a23b25b77a85b792b9f",
+    "remoteAgentRun": "publisher_fa7be8ed6220469dbc437ce0f0aafe91",
+    "remoteTeamRun": "studio_team_8dda1e0a78614f83b07bd816a53e3d7e",
+    "plain": [
+      "fact_checker_c7fcd8ba87634a3ca469ab1e0486e3ce",
+      "fact_checker_44f60e3de7ce404cb0461fbe39758dca",
+      "fact_checker_8c4a7bd3935f4132810c1ead11f39c20"
+    ],
+    "org": "delivery_org_e2e34591cd454c4fa1a4df1c2077a088",
+    "orgPlanner": "release_notes_writer_4e9c04f29409449595fee8aaa2c84f90",
+    "reviewOrg": "review_org_4d888afbcd814dde84a590d47e577684",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_828c458eda504b0daee04ac6c66ac078",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_6628fc306ff34f04b6c8ef8017a73c0e",
+    "deliveryLead": "fact_checker_a3d66da697304dfeb057e67805cbbd71",
+    "deliveryMate": "release_notes_writer_2b4bf9cca05d46e9a390ea17130d078b",
+    "leadDelegated": "changelog_helper_d0ab9308d611471481240869c0b6a558",
+    "approver": "approver_df3c90d24ec9405cb53d3559f15a7e05",
+    "taskA": "launch-065380-1",
+    "taskB": "launch-065380-2"
+  },
+  "cases": {
+    "MSP-108": {
+      "result": "Fail",
+      "seconds": 24.7,
+      "error": "desktop: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge; Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)",
+      "details": {
+        "summary": [
+          {
+            "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":3391,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"3\",\"right\":1478,\"start\":\"  - \\\"autobyteus-web\\\"\"},{\"number\":\"5\",\"right\":3205,\"start\":\"  \\\"@autobyteus/a-depende\"},{\"number\":\"6\",\"right\":1494,\"start\":\"onlyBuiltDependencies:\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 131,
+            "rows": 8,
+            "numberedRows": 8,
+            "wrapped": 0,
+            "past": 4
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":2150,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"5\",\"right\":1964,\"start\":\"  \\\"@autobyteus/a-depende\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 1372,
+            "rows": 8,
+            "numberedRows": 8,
+            "wrapped": 0,
+            "past": 2
+          },
+          {
+            "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":1494,\"start\":\"  \\\"compilerOptions\\\": {\"},{\"number\":\"3\",\"right\":1503,\"start\":\"    \\\"target\\\": \\\"ES2022\\\",\"},{\"number\":\"4\",\"right\":1520,\"start\":\"    \\\"module\\\": \\\"NodeNext\\\"\"},{\"number\":\"5\",\"right\":1469,\"start\":\"    \\\"strict\\\": true,\"},{\"number\":\"7\",\"right\":1730,\"start\":\"      \\\"@autobyteus/appli\"},{\"number\":\"8\",\"right\":3012,\"start\":\"        \\\"../autobyteus-a\"},{\"number\":\"13\",\"right\":1461,\"start\":\"    \\\"src/**/*.ts\\\",\"},{\"number\":\"14\",\"right\":1478,\"start\":\"    \\\"tests/**/*.ts\\\",\"},{\"number\":\"15\",\"right\":2084,\"start\":\"    \\\"scripts/a-folder-wi\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 131,
+            "rows": 18,
+            "numberedRows": 18,
+            "wrapped": 0,
+            "past": 9
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"8\",\"right\":1771,\"start\":\"        \\\"../autobyteus-a\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 1372,
+            "rows": 18,
+            "numberedRows": 18,
+            "wrapped": 0,
+            "past": 1
+          },
+          {
+            "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":3821,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":3138,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 131,
+            "rows": 5,
+            "numberedRows": 5,
+            "wrapped": 0,
+            "past": 2
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 1372,
+            "rows": 5,
+            "numberedRows": 5,
+            "wrapped": 0,
+            "past": 2
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+            "failures": [
+              "with wrap off, no line runs past the editor's edge"
+            ],
+            "editorWidth": 1372,
+            "rows": 7,
+            "numberedRows": 5,
+            "wrapped": 2,
+            "past": 0
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 1372,
+            "rows": 5,
+            "numberedRows": 5,
+            "wrapped": 0,
+            "past": 2
+          }
+        ],
+        "results": [
+          {
+            "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":3391,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"3\",\"right\":1478,\"start\":\"  - \\\"autobyteus-web\\\"\"},{\"number\":\"5\",\"right\":3205,\"start\":\"  \\\"@autobyteus/a-depende\"},{\"number\":\"6\",\"right\":1494,\"start\":\"onlyBuiltDependencies:\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 131,
+              "contentRight": 1426,
+              "rows": 8,
+              "numberedRows": 8,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+              ],
+              "past": [
+                {
+                  "number": "2",
+                  "right": 3391,
+                  "start": "  - \"applications/brief-"
+                },
+                {
+                  "number": "3",
+                  "right": 1478,
+                  "start": "  - \"autobyteus-web\""
+                },
+                {
+                  "number": "5",
+                  "right": 3205,
+                  "start": "  \"@autobyteus/a-depende"
+                },
+                {
+                  "number": "6",
+                  "right": 1494,
+                  "start": "onlyBuiltDependencies:"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":2150,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"5\",\"right\":1964,\"start\":\"  \\\"@autobyteus/a-depende\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 1372,
+              "contentRight": 1426,
+              "rows": 8,
+              "numberedRows": 8,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+              ],
+              "past": [
+                {
+                  "number": "2",
+                  "right": 2150,
+                  "start": "  - \"applications/brief-"
+                },
+                {
+                  "number": "5",
+                  "right": 1964,
+                  "start": "  \"@autobyteus/a-depende"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":1494,\"start\":\"  \\\"compilerOptions\\\": {\"},{\"number\":\"3\",\"right\":1503,\"start\":\"    \\\"target\\\": \\\"ES2022\\\",\"},{\"number\":\"4\",\"right\":1520,\"start\":\"    \\\"module\\\": \\\"NodeNext\\\"\"},{\"number\":\"5\",\"right\":1469,\"start\":\"    \\\"strict\\\": true,\"},{\"number\":\"7\",\"right\":1730,\"start\":\"      \\\"@autobyteus/appli\"},{\"number\":\"8\",\"right\":3012,\"start\":\"        \\\"../autobyteus-a\"},{\"number\":\"13\",\"right\":1461,\"start\":\"    \\\"src/**/*.ts\\\",\"},{\"number\":\"14\",\"right\":1478,\"start\":\"    \\\"tests/**/*.ts\\\",\"},{\"number\":\"15\",\"right\":2084,\"start\":\"    \\\"scripts/a-folder-wi\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 131,
+              "contentRight": 1426,
+              "rows": 18,
+              "numberedRows": 18,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18"
+              ],
+              "past": [
+                {
+                  "number": "2",
+                  "right": 1494,
+                  "start": "  \"compilerOptions\": {"
+                },
+                {
+                  "number": "3",
+                  "right": 1503,
+                  "start": "    \"target\": \"ES2022\","
+                },
+                {
+                  "number": "4",
+                  "right": 1520,
+                  "start": "    \"module\": \"NodeNext\""
+                },
+                {
+                  "number": "5",
+                  "right": 1469,
+                  "start": "    \"strict\": true,"
+                },
+                {
+                  "number": "7",
+                  "right": 1730,
+                  "start": "      \"@autobyteus/appli"
+                },
+                {
+                  "number": "8",
+                  "right": 3012,
+                  "start": "        \"../autobyteus-a"
+                },
+                {
+                  "number": "13",
+                  "right": 1461,
+                  "start": "    \"src/**/*.ts\","
+                },
+                {
+                  "number": "14",
+                  "right": 1478,
+                  "start": "    \"tests/**/*.ts\","
+                },
+                {
+                  "number": "15",
+                  "right": 2084,
+                  "start": "    \"scripts/a-folder-wi"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-panel-tsconfig.json.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"8\",\"right\":1771,\"start\":\"        \\\"../autobyteus-a\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 1372,
+              "contentRight": 1426,
+              "rows": 18,
+              "numberedRows": 18,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18"
+              ],
+              "past": [
+                {
+                  "number": "8",
+                  "right": 1771,
+                  "start": "        \"../autobyteus-a"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-maximized-tsconfig.json.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":3821,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":3138,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 131,
+              "contentRight": 1426,
+              "rows": 5,
+              "numberedRows": 5,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "past": [
+                {
+                  "number": "1",
+                  "right": 3821,
+                  "start": "DRAFT-618 This first par"
+                },
+                {
+                  "number": "3",
+                  "right": 3138,
+                  "start": "    An indented line, fo"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-panel-draft-v1.txt.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 1372,
+              "contentRight": 1426,
+              "rows": 5,
+              "numberedRows": 5,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "past": [
+                {
+                  "number": "1",
+                  "right": 2580,
+                  "start": "DRAFT-618 This first par"
+                },
+                {
+                  "number": "3",
+                  "right": 1897,
+                  "start": "    An indented line, fo"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+            "viewport": "1440x900",
+            "failures": [
+              "with wrap off, no line runs past the editor's edge"
+            ],
+            "measured": {
+              "editorWidth": 1372,
+              "contentRight": 1426,
+              "rows": 7,
+              "numberedRows": 5,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "past": [],
+              "wrapped": [
+                {
+                  "line": "1",
+                  "lineTextLeft": 68,
+                  "rowTextLeft": 68,
+                  "start": "narrow panel, and even p"
+                },
+                {
+                  "line": "3",
+                  "lineTextLeft": 102,
+                  "rowTextLeft": 102,
+                  "start": "    rows show whether th"
+                }
+              ],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off.png"
+          },
+          {
+            "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+            "viewport": "1440x900",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 1372,
+              "contentRight": 1426,
+              "rows": 5,
+              "numberedRows": 5,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "past": [
+                {
+                  "number": "1",
+                  "right": 2580,
+                  "start": "DRAFT-618 This first par"
+                },
+                {
+                  "number": "3",
+                  "right": 1897,
+                  "start": "    An indented line, fo"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again.png"
+          }
+        ]
+      }
+    },
+    "MSP-109": {
+      "result": "Fail",
+      "seconds": 5.5,
+      "error": "phone: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge, the page does not scroll sideways (AC-001)",
+      "details": {
+        "summary": [
+          {
+            "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":2150,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"5\",\"right\":1964,\"start\":\"  \\\"@autobyteus/a-depende\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 322,
+            "rows": 8,
+            "numberedRows": 8,
+            "wrapped": 0,
+            "past": 2
+          },
+          {
+            "name": "MSP-109-phone-390-tsconfig.json",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"7\",\"right\":489,\"start\":\"      \\\"@autobyteus/appli\"},{\"number\":\"8\",\"right\":1771,\"start\":\"        \\\"../autobyteus-a\"},{\"number\":\"15\",\"right\":843,\"start\":\"    \\\"scripts/a-folder-wi\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 322,
+            "rows": 18,
+            "numberedRows": 18,
+            "wrapped": 0,
+            "past": 3
+          },
+          {
+            "name": "MSP-109-phone-390-draft-v1.txt",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "editorWidth": 322,
+            "rows": 5,
+            "numberedRows": 5,
+            "wrapped": 0,
+            "past": 2
+          }
+        ],
+        "results": [
+          {
+            "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+            "viewport": "390x844",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"2\",\"right\":2150,\"start\":\"  - \\\"applications/brief-\"},{\"number\":\"5\",\"right\":1964,\"start\":\"  \\\"@autobyteus/a-depende\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 322,
+              "contentRight": 376,
+              "rows": 8,
+              "numberedRows": 8,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+              ],
+              "past": [
+                {
+                  "number": "2",
+                  "right": 2150,
+                  "start": "  - \"applications/brief-"
+                },
+                {
+                  "number": "5",
+                  "right": 1964,
+                  "start": "  \"@autobyteus/a-depende"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-109-phone-390-pnpm-workspace.yaml.png"
+          },
+          {
+            "name": "MSP-109-phone-390-tsconfig.json",
+            "viewport": "390x844",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"7\",\"right\":489,\"start\":\"      \\\"@autobyteus/appli\"},{\"number\":\"8\",\"right\":1771,\"start\":\"        \\\"../autobyteus-a\"},{\"number\":\"15\",\"right\":843,\"start\":\"    \\\"scripts/a-folder-wi\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 322,
+              "contentRight": 376,
+              "rows": 18,
+              "numberedRows": 18,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18"
+              ],
+              "past": [
+                {
+                  "number": "7",
+                  "right": 489,
+                  "start": "      \"@autobyteus/appli"
+                },
+                {
+                  "number": "8",
+                  "right": 1771,
+                  "start": "        \"../autobyteus-a"
+                },
+                {
+                  "number": "15",
+                  "right": 843,
+                  "start": "    \"scripts/a-folder-wi"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-109-phone-390-tsconfig.json.png"
+          },
+          {
+            "name": "MSP-109-phone-390-draft-v1.txt",
+            "viewport": "390x844",
+            "failures": [
+              "rows past the editor's edge: [{\"number\":\"1\",\"right\":2580,\"start\":\"DRAFT-618 This first par\"},{\"number\":\"3\",\"right\":1897,\"start\":\"    An indented line, fo\"}]",
+              "no line wraps"
+            ],
+            "measured": {
+              "editorWidth": 322,
+              "contentRight": 376,
+              "rows": 5,
+              "numberedRows": 5,
+              "lineNumbers": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "past": [
+                {
+                  "number": "1",
+                  "right": 2580,
+                  "start": "DRAFT-618 This first par"
+                },
+                {
+                  "number": "3",
+                  "right": 1897,
+                  "start": "    An indented line, fo"
+                }
+              ],
+              "wrapped": [],
+              "misindented": [],
+              "pageScrollsSideways": false
+            },
+            "screenshot": "MSP-109-phone-390-draft-v1.txt.png"
+          }
+        ]
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-109",
+      "label": "phone",
+      "url": "http://192.168.77.24:60247/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileWordWrap": {
+    "run": "fact_checker_880febec6f304517a2a4454a10735737",
+    "dir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-BGCnoO/alpha/workspace/word-wrap-618"
+  },
+  "summary": {
+    "cases": {
+      "MSP-108": "Fail",
+      "MSP-109": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-24T18:06:28.458Z"
+}

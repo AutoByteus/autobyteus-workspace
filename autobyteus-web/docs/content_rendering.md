@@ -201,6 +201,10 @@ The compact left navigation strip keeps the capability-gated Nodes entry and
 shape directly, matching the expanded navigation icon instead of relying on an
 unregistered icon name.
 
+## Text And Code Wrapping
+
+Text and code files open in `MonacoEditor.vue` with word wrap on (autobyteus-618), on the phone and on the desktop, so a long line never runs past the editor's edge. A wrapped row keeps the indentation of its line, and line numbers appear once per line. A caller's value still wins: `wordWrap` as a prop or in `options`. With none, the editor's context-menu action "Toggle Word Wrap" turns wrap off and on again for that editor; the choice is not remembered between files. Editing, saving, line numbers and highlighting do not depend on it. The one user of `MonacoEditor.vue` is `FileViewer`, so the Files tab, the phone Files screen and the reference and artifact viewers share the default.
+
 ## App-Wide Readability / Display Settings
 
 File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.

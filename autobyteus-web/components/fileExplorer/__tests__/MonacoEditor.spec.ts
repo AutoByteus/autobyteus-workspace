@@ -150,4 +150,43 @@ describe('MonacoEditor.vue', () => {
 
     expect(wrapper.find('.monaco-editor-container').exists()).toBe(true);
   });
+
+  /** Mounts the editor and waits for Monaco to be created; returns the "Toggle Word Wrap" action's run. */
+  const mountEditor = async (props: Record<string, unknown> = {}) => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+    const wrapper = mount(MonacoEditor, { props: { modelValue: 'a long line', ...props }, global: { plugins: [pinia] }, attachTo: document.body });
+    await wrapper.vm.$nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await wrapper.vm.$nextTick();
+    const action = mockEditor.addAction.mock.calls.map(([entry]: [any]) => entry).find((entry: any) => entry.id === 'toggle-word-wrap');
+    // The editor reports the wrap it was last given, as Monaco does.
+    let current = mockMonaco.editor.create.mock.calls[0][1].wordWrap;
+    mockEditor.getOption.mockImplementation((option: string) => (option === 'wordWrap' ? current : undefined));
+    mockEditor.updateOptions.mockImplementation((options: Record<string, unknown>) => { if ('wordWrap' in options) current = options.wordWrap; });
+    return { wrapper, toggle: () => action.run(), wrap: () => current };
+  };
+
+  it('opens with word wrap on when no caller sets it (autobyteus-618 REQ-001)', async () => {
+    const { wrap } = await mountEditor();
+    expect(mockMonaco.editor.create).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ wordWrap: 'on' }));
+    expect(wrap()).toBe('on');
+  });
+
+  it('"Toggle Word Wrap" turns wrap off and on again (AC-002)', async () => {
+    const { wrapper, toggle, wrap } = await mountEditor();
+    toggle();
+    expect(wrap()).toBe('off');
+    toggle();
+    expect(wrap()).toBe('on');
+    expect(wrapper.emitted('update:wordWrap')).toEqual([[false], [true]]);
+  });
+
+  it('a value the caller passes still wins, as the prop or in options (AC-003)', async () => {
+    await mountEditor({ wordWrap: 'off' });
+    expect(mockMonaco.editor.create.mock.calls[0][1].wordWrap).toBe('off');
+    mockMonaco.editor.create.mockClear();
+    await mountEditor({ options: { wordWrap: false } });
+    expect(mockMonaco.editor.create.mock.calls[0][1].wordWrap).toBe('off');
+  });
 });
