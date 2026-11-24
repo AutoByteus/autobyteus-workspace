@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-006 (… SR-005: D-3 per boundary; SR-006: the external user trace's time is its admission time, after implementation's Design Impact)
+- Current solution revision ID: SR-007 (SR-007: traces keep their write time, after delivery's Finding 2; … SR-005: D-3 per boundary; SR-006: the external user trace's time is its admission time, after implementation's Design Impact)
 - Approved requirements: `requirements-doc.md` at SR-005. SR-001…003: Solution Designer within the direction, user informed. SR-004's REQ-004: the user, 2026-11-23 (in their words). SR-005: the text aligned (AR-002).
 - User approval of the design: Not required.
 - Design status: `Ready`
@@ -310,7 +310,7 @@ Implementation confirms the list against every handler that creates or stamps a 
 
 | Record / Message | Boundary | Field | Meaning | Written By | Read By |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRunEvent` (node) | AgentRun → listeners | `occurredAt: number` (epoch ms) | The node's time of the event | **AgentRun, at one point:** a private method through which every delivery to listeners passes. That covers the processed pipeline (`publishSourceEvents` → `dispatchProcessedAgentRunEvents`), the input state (`broadcastUnpublishedInputState`, `agent-run.ts:524-529`), the canonical status (`dispatchCanonicalStatus`, `:531-545`) and the subscribe snapshot (`:222-226`). Events already stamped are not re-stamped (one event, one time). | the memory recorder for external runtimes (trace `ts`); the three mappers |
+| `AgentRunEvent` (node) | AgentRun → listeners | `occurredAt: number` (epoch ms) | The node's time of the event | **AgentRun, at one point:** a private method through which every delivery to listeners passes. That covers the processed pipeline (`publishSourceEvents` → `dispatchProcessedAgentRunEvents`), the input state (`broadcastUnpublishedInputState`, `agent-run.ts:524-529`), the canonical status (`dispatchCanonicalStatus`, `:531-545`) and the subscribe snapshot (`:222-226`). Events already stamped are not re-stamped (one event, one time). | the three mappers (SR-007: **not** the memory recorder; traces keep their write time) |
 | Timed payloads (table above) | `/ws/agent` | `payload.occurred_at` | same | `AgentRunEventMessageMapper` from `occurredAt` | `messageParser.ts` (exact keys include it for these types) → the handlers |
 | Timed payloads | `/ws/agent-team` | `payload.occurred_at` (inherited from the shared schema; content batch items carry it) | same | the Team projector from `occurredAt` | `TeamStreamingService` → the same handlers |
 | Timed payloads | Org / collaboration | `payload.occurred_at` (shared schema) | same | `projectAgentPresentationMessage` from `AgentPresentationEvent.occurredAt` (adapters carry it from `AgentRunEvent`) | Org/collaboration parsers → the same handlers |
@@ -357,7 +357,7 @@ Not Affected:
 - Node:
   - AgentRun's one stamping delivery method;
   - the three mappers and producers write the field;
-  - the memory recorder uses `occurredAt`;
+  - the memory recorder keeps each trace's write time, as before; only the user trace takes its admission time (SR-006, SR-007);
   - `inputAdmissionState` records `accepted_at`.
 - Web:
   - `messageParser.ts` exact keys;
@@ -397,3 +397,24 @@ Route: architecture review.
 - **Rejected:**
   - a tolerance window in D-2 (a heuristic);
   - a stored preface link on the user trace (a new stored field for what admission order already guarantees).
+
+## SR-007: Stored traces keep their write time (delivery DR-001 Finding 2)
+
+- **The mistake:** D-3 said "the memory recorder uses `occurredAt` for external runtimes' trace `ts` (stored = live)", and named no rule for a trace built from several events.
+  - A reasoning trace took its segment's first event time.
+  - A tool call written when its arguments arrive at the result took the result's time.
+  - The reload sorts by `ts` (`raw-trace-record-normalizer.ts:121-130`), so the stored order changed from write order. Post-card reasoning can show before its tool card after a reopen.
+  - Delivery reproduced it: with event times 7 ms apart, 7 of 25 tests fail in `runtime-memory-event-accumulator.test.ts` (`evidence/delivery/DEL-BLOCK-accumulator-distinct-event-times/`). The suite passed only because the helper stamped one millisecond.
+- **Decision:** the memory recorder does not read `occurredAt`.
+  - Every trace keeps the time it was written: the payload's own time where it carries one, else the write time (`extractTimestamp(payload)`, then `Date.now()` in `ExternalRuntimeMemoryWriter`, exactly as before D-3).
+  - The one exception is SR-006's user trace, stored at its admission time `acceptedAt`.
+- **Why it holds:**
+  - **REQ-004:** every stored time is still the server's (write time on the server's clock), and the live rows use the frames' `occurred_at`. They are two server times of the same event, ms apart, and the app never uses its own clock. "Stored = live to the millisecond" was not a requirement.
+  - **D-2 rule (a):** the notice trace is written at its write time, after the dispatch that follows admission, so `u.ts` (admission) < `n.ts` (write) holds by construction (SR-006 unchanged).
+  - **Stored order:** the write order again, for every trace but the user's.
+  - A queued user message (sent while a turn runs) is stored at its admission time. A reopen shows it where it was sent, the same as live, where the app appends it at send (D-1).
+- **Validation:**
+  - The accumulator suite runs with strictly increasing, distinct event times (delivery's `zz-distinct-times` shape) and passes, so no test can pass by ties.
+  - MSP-105 passes (live and reopened).
+  - The D-2 cases pass.
+- **Docs:** `agent_execution.md`'s sentences about the trace `ts` follow this (delivery's docs sync).

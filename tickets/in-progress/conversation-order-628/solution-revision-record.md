@@ -66,3 +66,14 @@ Review note: ARCH-REV-002 passed SR-005 (2026-11-23). The reviewer routed it to 
 - Follow-ups added: FU-002 (Org member and root-view probe cases failing on base), FU-003 (base server e2e failures), plus a note on the runtime e2e packages.
 
 Review note: ARCH-REV-003 passed SR-006 (2026-11-23). The reviewer routed it to `/implementation_engineer`. N-5 (D-2's own-turn sentences) is fixed editorially; N-4 (remove `forwardedAt` once unread) is for implementation.
+
+## SR-007 (2026-11-24)
+
+- Trigger: delivery DR-001 Blocked.
+  - Finding 2 (classified **Design Impact**, the Solution Designer's): D-3 made the memory recorder store traces at the event's `occurredAt`, with no rule for traces built from several events. That changed the stored order (7/25 accumulator tests fail with distinct event times).
+  - Finding 1 (**Local Fix**, implementation): the three contract packages' own test fixtures lack the new required fields (`pnpm -C <package> test`: 2/23, 4/39, 2/14 fail).
+- Design: the recorder keeps each trace's write time as before D-3; only the user trace takes `acceptedAt` (SR-006).
+- Requirements: unchanged (REQ-004 holds; stored = live to the ms was never required).
+- Classification: unchanged, `Large` / `High`. Routing: architecture review of SR-007. Then implementation applies SR-007 and Finding 1, then code review, API/E2E and delivery.
+- The check a later stage caught: the contract packages' own suites belong in the implementation and API/E2E plans for a contract change. TESTING.md "Other packages" names the command. API/E2E (owner of TESTING.md) makes it a rule for any change to a contract package.
+- Design case: docs/design-cases.md Case 3 (a reader of derived data left out: the stored order derived from trace `ts`).

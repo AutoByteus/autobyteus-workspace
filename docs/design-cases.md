@@ -62,6 +62,8 @@ Principle 11.
 - **Again in autobyteus-280 (AR-003):** the design renamed a token-usage error code that the web matches to show its friendly message (`TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`). The fix: keep the codes, and list both views as derived consumers.
 - **Notice it by:** an inventory that lists only the direct readers of a changed structure, or only the server side of a changed rule: user-visible text that states the rule is a consumer too; a new field or mark with no named reader.
 
+- **Again in autobyteus-628 (delivery DR-001 Finding 2):** to make stored times equal live ones, the design had the memory recorder store each trace at its event's own time. The reload orders traces by that time. A trace built from several events (reasoning that continues after a tool card, a tool call whose arguments arrive at its result) then took another event's time, and post-card reasoning sorted before its card. Fix (SR-007): traces keep their write time, and only the user trace takes its admission time. Lesson: when a design changes a stored value, list what is derived from it; here the reload's order was derived from `ts`.
+
 ### Case 4: Behavior By Absence (autobyteus-191, AR-007; autobyteus-349, AR-002)
 
 Principle 13.
