@@ -7,6 +7,7 @@
 | API-REV-001 | `/code_reviewer`, `code-review-report.md` (CRR-001 Pass), round 1 | SR-001, ARCH-REV-*, IR-001, CRR-001, DEC-006 | N/A | Fail / 89.6% |
 | API-REV-002 | `/code_reviewer`, `code-review-report.md` (CRR-003 Pass, targeted delta on IR-002), round 2 | IR-002 (`fb2357dc09`, `6479a28f4b`), CRR-002 (CR-001, CR-002), CRR-003 | Fail / 89.6% | Pass / 92.4% |
 | API-REV-003 | `/delivery_engineer`, DR-001 (O-4 attribution request), round 3 | DR-001; product code unchanged since `64a99bbcd2` | Pass / 92.4% | Fail (F-3) / 93.0% |
+| API-REV-004 | `/code_reviewer`, `code-review-report.md` (CRR-006 Pass on IR-003), round 4 | IR-003 (`c3ff688979`), CRR-005, CRR-006 | Fail (F-3) / 93.0% | Fail (F-4) / 91.9% |
 
 ## Revision Entries
 
@@ -78,3 +79,30 @@ None new (F-1, F-2 resolved in API-REV-002).
 - New or remaining failure IDs: F-3
 - Recommended owner: code reviewer (failure-origin review); preliminary `Local Fix` in the iOS loader
 - Remaining risks, blocked evidence, or untested scope: no physical phones; the media message on a live run (DEC-006)
+
+### API-REV-004 — IR-003's flag ends the scrub freeze but makes playback fall below real time on any link with a round trip (F-4)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-006, targeted delta, Pass), round 4
+- Triggering finding or case IDs: F-3 (= CR-003); the reviewer's watch item (many small ranges: request count and timing against AC-001); T-2
+- Related revision IDs: IR-003 (`c3ff688979`), CRR-005, CRR-006
+- Why recorded: rerun after the F-3 fix; a new failure found
+- Coverage decisions or durable test paths changed:
+  - `testAWideVideoFromTheChatLink`'s picture check waits until the controls are gone (T-2);
+  - new `testBDeliversInRealTimeOverASlowerLink` (at 50 ms the node must deliver at least the bitrate);
+  - `native-video-node.mjs`: `--latency-ms`, `POST /latency`, `POST /touch`;
+  - all need the code reviewer's proportional review.
+- Cases added, changed, removed, or rechecked: R4-IOS-2, R4-IOS-RQ, R4-IOS-LAT (20/50 ms, with and without the flag), R4-IOS-DL, R4-IOS-U, R4-IOS-13
+- Commands, environment, fixture, or broader-validation delta: own simulator `api574-r4`, deleted after; latency in the proxy; a temporary one-line revert of the flag for the controls, restored; the 60 s fixture for the core loader test
+
+#### Prior Failure Resolution
+
+| Prior Failure ID | Prior Case IDs | Fix Revision | Recheck Case IDs | Result |
+| --- | --- | --- | --- | --- |
+| F-3 | IOS-6, R3-O4-a, R3-IOS-2 | `c3ff688979` | R4-IOS-2 | Symptom resolved on a zero-latency link; the fix causes F-4 (not acceptable as is) |
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md` (Round 4 Cases, F-4, AC-001, scorecard, result), `api-e2e-test-progress.md`, `evidence/api-e2e/R4/`
+- Prior result and confidence: Fail (F-3) / 93.0%
+- Current result and confidence: Fail (F-4) / 91.9%
+- New or remaining failure IDs: F-4
+- Recommended owner: code reviewer (failure-origin review); preliminary `Local Fix` in the iOS loader
+- Remaining risks, blocked evidence, or untested scope: no physical phones or real networks; the media message on a live run (DEC-006)

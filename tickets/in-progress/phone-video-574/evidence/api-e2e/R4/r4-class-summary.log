@@ -1,0 +1,27 @@
+MARK tap 1795548074978
+MARK player 1795548076729
+MARK landscape 1795548076736
+MARK seek 1795548084231
+MARK seek-done 1795548085665
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795548091037
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.120 seconds).
+REALTIME delivered 1873448 bytes in 10.0 s; real-time playback needs at least 5334477
+/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:100: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink] : XCTAssertGreater
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' failed (19.390 seconds).
+MARK skip 1795548126064
+POSITION after skip 18 seconds elapsed, 12 seconds remaining
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (21.742 seconds).
+MARK tap 1795548142320
+MARK player 1795548144327
+MARK back 1795548151093
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (18.875 seconds).
+MARK rewrite-while-open 1795548167139
+MARK rewrite-while-closed 1795548178051
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' passed (36.905 seconds).
+MARK close 1795548203867
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (17.037 seconds).
+MARK removed 1795548217722
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.531 seconds).

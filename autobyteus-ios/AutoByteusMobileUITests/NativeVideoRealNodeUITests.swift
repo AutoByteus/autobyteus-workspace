@@ -45,7 +45,7 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         }
         // The picture plays on after the scrub, not only the clock (API/E2E F-3): with the controls hidden, two
         // screenshots a second apart differ while the video plays and are identical when its picture is frozen.
-        Thread.sleep(forTimeInterval: 2)
+        XCTAssertTrue(wait(10) { !app.sliders.firstMatch.exists }, "the controls hide (so only the picture can change)")
         XCTAssertTrue(pictureMoves(app), "the picture plays on after a scrub to the middle")
         app.buttons["video.back"].tap()
         XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
@@ -70,6 +70,34 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         skip.tap()
         print("POSITION after skip \(position(app))")
         Thread.sleep(forTimeInterval: 4)
+        app.buttons["video.back"].tap()
+        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+    }
+
+    /// Over a slower link (50 ms before each answer's first byte, a Wi-Fi or tailnet round trip) the node delivers a
+    /// fresh copy of the 6 Mbit/s video at least as fast as it plays (API/E2E F-4). Read from the stack's request log:
+    /// the player's own clock is no measure (it runs on while the picture lags).
+    func testBDeliversInRealTimeOverASlowerLink() throws {
+        try control("POST", "/latency?ms=50")
+        defer { try? control("POST", "/latency?ms=0") }
+        try control("POST", "/touch")
+        let stack = try stack()
+        let size = Double(((stack.info["sizes"] as? [String: Any])?["wide"] as? NSNumber)?.int64Value ?? 0)
+        let bytesPerSecond = size / 30 // the stack's wide video is 30 s long
+        let app = try openTheRun()
+        let link = app.webViews.buttons["Open wide-574.mp4 in Files"]
+        XCTAssertTrue(link.waitForExistence(timeout: timeout), "the chat's file link")
+        let opened = Date()
+        link.tap()
+        let player = app.otherElements["video.player"]
+        XCTAssertTrue(player.waitForExistence(timeout: timeout), "the app's player opens")
+        Thread.sleep(forTimeInterval: max(0, 10 - Date().timeIntervalSince(opened)))
+        let elapsed = Date().timeIntervalSince(opened)
+        let log = try controlJSON("/log?since=\(Int(opened.timeIntervalSince1970 * 1000))") as? [[String: Any]] ?? []
+        let delivered = log.filter { ($0["path"] as? String)?.contains("wide-574.mp4") == true }.reduce(0.0) { $0 + Double(($1["bytes"] as? NSNumber)?.int64Value ?? 0) }
+        let needed = bytesPerSecond * (elapsed - 3)
+        print("REALTIME delivered \(Int(delivered)) bytes in \(String(format: "%.1f", elapsed)) s; real-time playback needs at least \(Int(needed))")
+        XCTAssertGreaterThanOrEqual(delivered, needed, "the node delivers the video at least as fast as it plays, over a slower link")
         app.buttons["video.back"].tap()
         XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
     }
@@ -233,7 +261,8 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         return slider.exists ? "\(slider.value ?? "-")" : "hidden"
     }
 
-    /// Whether the screen changes within a second (the player's controls hidden): a playing video's picture moves.
+    /// Whether the screen changes within a second; call it with the player's controls hidden (no time label, no
+    /// scrubber), so only a playing video's picture can change it.
     private func pictureMoves(_ app: XCUIApplication) -> Bool {
         let before = XCUIScreen.main.screenshot().pngRepresentation
         Thread.sleep(forTimeInterval: 1)
@@ -249,6 +278,17 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         let done = expectation(description: "control \(path)")
         URLSession.shared.dataTask(with: request) { _, _, _ in done.fulfill() }.resume()
         wait(for: [done], timeout: 30)
+    }
+
+    /// One GET to the stack's control endpoint, its JSON answer.
+    private func controlJSON(_ path: String) throws -> Any {
+        let stack = try stack()
+        let port = stack.info["controlPort"].map { "\($0)" } ?? ""
+        var answer: Data?
+        let done = expectation(description: "control \(path)")
+        URLSession.shared.dataTask(with: URL(string: "http://127.0.0.1:\(port)\(path)")!) { data, _, _ in answer = data; done.fulfill() }.resume()
+        wait(for: [done], timeout: 30)
+        return try JSONSerialization.jsonObject(with: answer ?? Data("[]".utf8))
     }
 
     private func mark(_ event: String) { print("MARK \(event) \(Int(Date().timeIntervalSince1970 * 1000))") }

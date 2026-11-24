@@ -5,7 +5,7 @@
 // WebView's DevTools socket (the API/E2E report of autobyteus-574 lists the steps).
 //
 // Run: node autobyteus-web/tests/e2e/native-video-node.mjs --output-dir=<fresh> --origin-host=<host the phone uses>
-//        [--listen-host=127.0.0.1] [--bps=1500000] [--secrets-file=<path outside the evidence>]
+//        [--listen-host=127.0.0.1] [--bps=1500000] [--latency-ms=0] [--secrets-file=<path outside the evidence>]
 // Android emulator: --origin-host=10.0.2.2 (the host's loopback). iOS simulator: a pairing link may not name a loopback
 // host, so --origin-host and --listen-host are this computer's LAN address (the proxy then listens there; the node stays
 // on loopback and refuses every request without a credential).
@@ -18,6 +18,8 @@
 //                         owner credential (or none): status, the range and cache headers, the body's length and SHA-256
 //   POST /rewrite         replaces the wide video with other content (a new ETag)
 //   POST /throttle?bps=<n> changes the file routes' rate
+//   POST /latency?ms=<n>   delays each file-route answer's first byte by n ms (a slower network's round trip)
+//   POST /touch           gives the wide video a new modification time (a new ETag, the same content: nothing cached)
 //   POST /stop            stops everything
 // The pairing link is a secret (a one-time code): it is written only to the secrets file (mode 600), never printed.
 // The node runs on a test-owned data root with the probe's launch owner credential; nothing of the user's is touched.
@@ -41,6 +43,8 @@ const outputDir = path.resolve(arg('output-dir', path.join(webDir, 'test-results
 const originHost = arg('origin-host', '127.0.0.1');
 const listenHost = arg('listen-host', '127.0.0.1');
 let bytesPerSecond = Number(arg('bps', '1500000'));
+// Each file-route answer waits this long before its first byte: a round trip of a slower network (Wi-Fi, a tailnet).
+let latencyMs = Number(arg('latency-ms', '0'));
 const secretsFile = path.resolve(arg('secrets-file', path.join(outputDir, '..', 'native-video-node.secrets.json')));
 const MODEL = 'gemini-3.8-flash-low';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -153,9 +157,10 @@ const main = async () => {
     const upstream = http.request({ host: '127.0.0.1', port: nodePort, method: request.method, path: request.url, headers: request.headers }, async (answer) => {
       Object.assign(entry, { status: answer.statusCode, contentRange: answer.headers['content-range'] ?? null, etag: answer.headers.etag ?? null,
         cacheControl: answer.headers['cache-control'] ?? null, acceptRanges: answer.headers['accept-ranges'] ?? null, bytes: 0 });
-      response.writeHead(answer.statusCode, answer.headers);
       answer.pause();
       const throttled = /\/rest\/(workspaces\/[^/]+\/(content|static)|node-files\/content|files\/)/.test(request.url);
+      if (throttled && latencyMs > 0) await sleep(latencyMs);
+      response.writeHead(answer.statusCode, answer.headers);
       // Each chunk is written after its throttle wait, in order; the response ends only after the last one is written
       // (a stream emits 'end' right after its last 'data', even while paused).
       let written = Promise.resolve();
@@ -211,6 +216,8 @@ const main = async () => {
         sha256: createHash('sha256').update(body).digest('hex') });
     }
     if (url.pathname === '/rewrite' && request.method === 'POST') { await fs.copyFile(files.changed, files.wide); return json({ rewritten: true, size: (await fs.stat(files.wide)).size }); }
+    if (url.pathname === '/touch' && request.method === 'POST') { const now = new Date(); await fs.utimes(files.wide, now, now); return json({ touched: true }); }
+    if (url.pathname === '/latency' && request.method === 'POST') { latencyMs = Math.max(0, Number(url.searchParams.get('ms')) || 0); return json({ latencyMs }); }
     if (url.pathname === '/throttle' && request.method === 'POST') { bytesPerSecond = Number(url.searchParams.get('bps')) || bytesPerSecond; return json({ bytesPerSecond }); }
     if (url.pathname === '/stop' && request.method === 'POST') { json({ stopping: true }); await fs.writeFile(path.join(outputDir, 'proxy-log.json'), JSON.stringify(log, null, 1)); await stop(); proxy.close(); control.close(); process.exit(0); }
     response.writeHead(404); response.end();

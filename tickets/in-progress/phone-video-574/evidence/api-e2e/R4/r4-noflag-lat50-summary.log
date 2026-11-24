@@ -1,0 +1,11 @@
+MARK tap 1795547709704
+MARK player 1795547712107
+MARK landscape 1795547712114
+MARK seek 1795547719606
+MARK seek-done 1795547721058
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:49: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink] : XCTAssertTrue failed - the
+MARK back 1795547726429
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' failed (24.816 seconds).

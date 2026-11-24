@@ -1,0 +1,3 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.232 seconds).
+REALTIME position 6 → 13 in 6.6 s
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBPlaysInRealTimeOverASlowerLink]' passed (24.028 seconds).

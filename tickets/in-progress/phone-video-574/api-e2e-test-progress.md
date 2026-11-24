@@ -62,3 +62,12 @@
 | 2026-11-24 19:35 | R3-O4-e | Completed | — | with `isEntireLengthAvailableOnDemand = true` the drag plays on (2/2); without it stops again (16.000) |
 | 2026-11-24 19:39 | R3-IOS-2 | Completed | Fail (F-3, as intended) | the durable picture check fails on the clean shipped tree (rebuilt after reverting every temporary change); reads "moves" on the plain path and with the flag |
 | 2026-11-24 19:40 | — | Checkpoint | — | stack stopped; simulator `api574-o4` deleted |
+| 2026-11-24 20:06 | — | Checkpoint | — | Round 4 (CRR-006 on IR-003 `c3ff688979`): phone bundle rebuilt (contract packages' `dist/` rebuilt first); own simulator `api574-r4`; T-2: the picture check now waits until the controls are gone |
+| 2026-11-24 20:07 | R4-IOS-2, R4-IOS-RQ | Completed | Pass; observation | the scrub plays on (first open and cached); 580 requests of about 23 KB on a first open, one at a time; a reopen fetches 42 KB again (cancelled requests' bytes not cached) |
+| 2026-11-24 20:10 | R4-IOS-13 | Completed | Pass | skip, Files, rewrite, Close, node removal (cache emptied) |
+| 2026-11-24 20:13 | R4-IOS-LAT | Completed | Fail (F-4) | with the flag: 50 ms → moving at about 6 s, 0.4–0.54×; 20 ms → about 3.3 s, 0.7×; the scrubber's clock claims real time |
+| 2026-11-24 20:15 | R4-IOS-LAT | Completed | — | control without the flag (temporary revert): 20 and 50 ms → moving at about 1.5 s, 1×; the scrub freezes |
+| 2026-11-24 20:20 | R4-IOS-DL | Completed | Fail (F-4, as intended) | new delivery check: fix 1.9 MB of 5.3 MB needed in 10 s; without the flag 13.7 MB (passes); the flag restored |
+| 2026-11-24 20:23 | R4-IOS-13, R4-IOS-DL | Completed | Pass; Fail (F-4) | the whole class on the shipped fix: all pass except the delivery check |
+| 2026-11-24 20:25 | R4-IOS-U | Completed | Fail (F-4) | core 74/75: the loader test plays "past 30.3 s" after a seek to 30 s with no byte of the middle fetched (3/3, 60 s video) |
+| 2026-11-24 20:26 | — | Checkpoint | — | stack stopped; simulator `api574-r4` deleted |
