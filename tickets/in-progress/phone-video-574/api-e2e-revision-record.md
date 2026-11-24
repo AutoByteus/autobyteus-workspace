@@ -8,6 +8,7 @@
 | API-REV-002 | `/code_reviewer`, `code-review-report.md` (CRR-003 Pass, targeted delta on IR-002), round 2 | IR-002 (`fb2357dc09`, `6479a28f4b`), CRR-002 (CR-001, CR-002), CRR-003 | Fail / 89.6% | Pass / 92.4% |
 | API-REV-003 | `/delivery_engineer`, DR-001 (O-4 attribution request), round 3 | DR-001; product code unchanged since `64a99bbcd2` | Pass / 92.4% | Fail (F-3) / 93.0% |
 | API-REV-004 | `/code_reviewer`, `code-review-report.md` (CRR-006 Pass on IR-003), round 4 | IR-003 (`c3ff688979`), CRR-005, CRR-006 | Fail (F-3) / 93.0% | Fail (F-4) / 91.9% |
+| API-REV-005 | `/code_reviewer`, `code-review-report.md` (CRR-008 Pass on IR-004), round 5 | IR-004 (`d92abaeaa2`), CRR-007, CRR-008 | Fail (F-4) / 91.9% | Pass / 93.6% |
 
 ## Revision Entries
 
@@ -106,3 +107,27 @@ None new (F-1, F-2 resolved in API-REV-002).
 - New or remaining failure IDs: F-4
 - Recommended owner: code reviewer (failure-origin review); preliminary `Local Fix` in the iOS loader
 - Remaining risks, blocked evidence, or untested scope: no physical phones or real networks; the media message on a live run (DEC-006)
+
+### API-REV-005 — IR-004: one streaming fetch answers the small reads; F-3 and F-4 resolved
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-008, targeted delta, Pass), round 5
+- Triggering finding or case IDs: F-3 (= CR-003), F-4 (= CR-004); held H-1, H-3
+- Related revision IDs: IR-004 (`d92abaeaa2`), CRR-007, CRR-008
+- Why recorded: rerun after the F-4 fix
+- Coverage decisions or durable test paths changed: None in round 5 (the round-3/4 test changes await the proportional review)
+- Cases added, changed, removed, or rechecked: R5-IOS-2, R5-IOS-DL, R5-IOS-LAT (20/50 ms), R5-IOS-H1, R5-IOS-H3 (0.5 MB/s), R5-IOS-U (60 s video, twice), R5-IOS-13
+- Commands, environment, fixture, or broader-validation delta: own simulator `api574-r5`, deleted after; the request analysis script kept with the evidence
+
+#### Prior Failure Resolution
+
+| Prior Failure ID | Prior Case IDs | Fix Revision | Recheck Case IDs | Result |
+| --- | --- | --- | --- | --- |
+| F-3 | IOS-6, R3-O4-a, R3-IOS-2 | `c3ff688979` + `d92abaeaa2` | R5-IOS-2, R5-IOS-LAT | Resolved: the scrub plays on, first open and cached, at 0–50 ms |
+| F-4 | R4-IOS-LAT, R4-IOS-DL, R4-IOS-U | `d92abaeaa2` | R5-IOS-DL, R5-IOS-LAT, R5-IOS-U | Resolved: one streaming fetch per open; real time at 20 and 50 ms; 13.9 MB delivered against 5.34 MB needed; the core loader test passes with the 60 s video |
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md` (Round 5 Cases, AC-001, observations, scorecard, result), `api-e2e-test-progress.md`, `evidence/api-e2e/R5/`
+- Prior result and confidence: Fail (F-4) / 91.9%
+- Current result and confidence: Pass / 93.6%
+- New or remaining failure IDs: None
+- Recommended owner: code reviewer (proportional test-code review of `ef3107bb3e`, `bb80c1cc9e`)
+- Remaining risks, blocked evidence, or untested scope: no physical phones or real networks; O-7; the media message on a live run (DEC-006)

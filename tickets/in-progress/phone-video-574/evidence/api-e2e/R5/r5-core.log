@@ -1,0 +1,42 @@
+r5-core-1.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 4.367 (4.384) seconds
+r5-core-1.log:autobyteus-574 iOS: playing after 0.76 s; at the middle 0.62 s after the seek; requests ["bytes=0-1", "bytes=0-30541907", "bytes=15565777-30541907"]; cached [ClosedRange(0...983039), ClosedRange(15565777...16417744)]
+r5-core-1.log:autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+r5-core-1.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.007 (0.007) seconds
+r5-core-1.log:	 Executed 5 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+r5-core-1.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+r5-core-1.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 3.352 (3.354) seconds
+r5-core-1.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.013 (0.014) seconds
+r5-core-1.log:	 Executed 9 tests, with 0 failures (0 unexpected) in 0.324 (0.328) seconds
+r5-core-1.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+r5-core-1.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 0.026 (0.029) seconds
+r5-core-1.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+r5-core-1.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.007) seconds
+r5-core-1.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 0.033 (0.035) seconds
+r5-core-1.log:	 Executed 6 tests, with 0 failures (0 unexpected) in 0.046 (0.047) seconds
+r5-core-1.log:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+r5-core-1.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+r5-core-1.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+r5-core-1.log:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+r5-core-1.log:	 Executed 82 tests, with 0 failures (0 unexpected) in 11.168 (11.218) seconds
+r5-core-1.log:	 Executed 82 tests, with 0 failures (0 unexpected) in 11.168 (11.218) seconds
+r5-core-2.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 4.295 (4.300) seconds
+r5-core-2.log:autobyteus-574 iOS: playing after 0.76 s; at the middle 0.56 s after the seek; requests ["bytes=0-1", "bytes=0-30541907", "bytes=15565777-30541907"]; cached [ClosedRange(0...1048575), ClosedRange(15565777...16352208)]
+r5-core-2.log:autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+r5-core-2.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+r5-core-2.log:	 Executed 5 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+r5-core-2.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.006) seconds
+r5-core-2.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 3.353 (3.355) seconds
+r5-core-2.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+r5-core-2.log:	 Executed 9 tests, with 0 failures (0 unexpected) in 0.316 (0.320) seconds
+r5-core-2.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+r5-core-2.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 0.023 (0.026) seconds
+r5-core-2.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+r5-core-2.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+r5-core-2.log:	 Executed 7 tests, with 0 failures (0 unexpected) in 0.033 (0.035) seconds
+r5-core-2.log:	 Executed 6 tests, with 0 failures (0 unexpected) in 0.043 (0.045) seconds
+r5-core-2.log:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+r5-core-2.log:	 Executed 2 tests, with 0 failures (0 unexpected) in 0.009 (0.010) seconds
+r5-core-2.log:	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+r5-core-2.log:	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+r5-core-2.log:	 Executed 82 tests, with 0 failures (0 unexpected) in 10.956 (10.996) seconds
+r5-core-2.log:	 Executed 82 tests, with 0 failures (0 unexpected) in 10.956 (10.997) seconds

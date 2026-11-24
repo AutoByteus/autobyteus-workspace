@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-004`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-005`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: Round 4; `/code_reviewer` CRR-006 Pass on IR-003 (`c3ff688979`: `AuthorizedMediaLoader` sets `isEntireLengthAvailableOnDemand = true`, the only source change since `64a99bbcd2`). Round 3: `/delivery_engineer` DR-001 asked to attribute O-4 (the iOS scrubber freeze) with three controls, on the branch tip `ad813b4e6d` (product code unchanged since `64a99bbcd2`). Round 2: `/code_reviewer` CRR-003 Pass (targeted delta, 9.4/10) on IR-002, code head `64a99bbcd2`: `fb2357dc09` (CR-001 = my F-1, web), `6479a28f4b` (CR-002 = my F-2, both apps). Round 1: CRR-001 Pass on `b0a2eeacc0` (base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during it
-- Prior round reviewed: round 3 (API-REV-003, Fail F-3); rounds 1–3 rows below are kept as run
+- Round and trigger: Round 5; `/code_reviewer` CRR-008 Pass on IR-004 (`d92abaeaa2`: `AuthorizedMediaLoader` keeps the on-demand declaration and answers small reads from one streaming fetch; `AuthorizedMediaLoaderTests` waits for decoded frames). Round 4: `/code_reviewer` CRR-006 Pass on IR-003 (`c3ff688979`: `AuthorizedMediaLoader` sets `isEntireLengthAvailableOnDemand = true`, the only source change since `64a99bbcd2`). Round 3: `/delivery_engineer` DR-001 asked to attribute O-4 (the iOS scrubber freeze) with three controls, on the branch tip `ad813b4e6d` (product code unchanged since `64a99bbcd2`). Round 2: `/code_reviewer` CRR-003 Pass (targeted delta, 9.4/10) on IR-002, code head `64a99bbcd2`: `fb2357dc09` (CR-001 = my F-1, web), `6479a28f4b` (CR-002 = my F-2, both apps). Round 1: CRR-001 Pass on `b0a2eeacc0` (base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during it
+- Prior round reviewed: round 4 (API-REV-004, Fail F-4); rounds 1–4 rows below are kept as run
 - Deviations from the investigation's plan, and why: none in scope. Two harness defects of my own stack were found and fixed before any result was kept (progress log 14:40, 15:23)
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/tickets/in-progress/phone-video-574/evidence/api-e2e/`
 
@@ -31,6 +31,22 @@
 | R2 | `64a99bbcd2` | as ENV-1…ENV-5 | rebuilt phone bundle, Android app, iOS app; AVD `api574_r2` (`-port 5584`, host GPU); simulator `api574-r2` | ENV-2/ENV-3 roles; both deleted after |
 
 ## Cases
+
+## Round 5 Cases (IR-004, the fix `d92abaeaa2`)
+
+Own simulator `api574-r5` (iPhone 17, iOS 26.1), a fresh stack, the phone bundle rebuilt (the contract packages' `dist/` rebuilt first). Playback is judged by the burnt-in timecode in the recordings and by the node's request log, never by the player's clock. Product code is unchanged by me.
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R5-IOS-2 | AC-001 (start, seek), F-3 | the AVKit scrub, first open and cached, no added latency | `testAWideVideoFromTheChatLink` | ENV-1, ENV-3 | Pass | `R5/r5-tc.png`, `r5-first-summary.log`, `r5-cached-summary.log`, `r5-requests.txt` | start: moving about 0.5 s after the tap, 1×; scrub: 11.5 → 15.6 within about 0.5 s, then 1× (cached: 9.2 → 15.4, 1×); first open: the 2-byte probe + **one** streaming fetch (`bytes=0-`, stopped at Back after 22.3 MB); cached reopen: only the probe, **0 bytes** | round 4: 580 requests per open |
+| R5-IOS-DL | AC-001, F-4 | `testBDeliversInRealTimeOverASlowerLink` (50 ms) | `xcodebuild …` | ENV-1, ENV-3 | Pass | `R5/r5-dl-summary.log` | `delivered 13893634 bytes in 10.0 s; real-time playback needs at least 5339896` | round 4: 1.9 MB |
+| R5-IOS-LAT | AC-001, F-4 | the scrub journey on fresh versions at 20 and 50 ms | `POST /touch`, `POST /latency`; timecode | ENV-1, ENV-3 | Pass | `R5/r5-lat-tc.png`, `r5-lat20-summary.log`, `r5-lat50-summary.log` | 20 ms: moving by 1.0 s, 1×; scrub 10.3 → 15.2 at +0.5 s, 1×. 50 ms: moving by 1.0 s, 1×; scrub 9.0 → 16.6 at +0.5 s, 1×; each open one streaming fetch, nothing fetched twice | round 4: 0.4–0.7×, start 3–6 s |
+| R5-IOS-H1 | H-1 | the same bytes fetched twice (proxy log, per file version, all runs) | `req-analysis.mjs` and a per-ETag sum | ENV-1 | Pass (observation) | `R5/r5-requests.txt`, `proxy-log.json` | never two fetches at once (max concurrent 1); on a version with stopped fetches, 2 × 64 KB fetched again exactly where an earlier fetch was stopped (bytes in flight when it was cancelled); no other overlap | expected at a cancel boundary |
+| R5-IOS-H3 | H-3 | a link slower than the bitrate (0.5 MB/s vs 0.76 MB/s), fresh version, the scrub journey | `POST /throttle?bps=500000` | ENV-1, ENV-3 | Observation (O-7) | `R5/r5-slow-tc.png`, `r5-slow-summary.log` | the picture plays at about 0.64× (the link's speed); the scrub fetches from the middle (3 fetches, one at a time: from 0, a preview from 6.5 MB, from 10.9 MB) and the picture reaches the middle about 3 s after the drag; the scrubber's clock runs about 2 s ahead of the picture meanwhile | outside AC-001's link (1.5 MB/s); real time is impossible on it |
+| R5-IOS-U | AC-001, AC-002 | iOS core tests with a 60 s 30.5 MB video, twice | `xcodebuild … -only-testing:AutoByteusMobileCoreTests` | ENV-3 | Pass | `R5/r5-core.log` | `Executed 82 tests, with 0 failures` (2/2); loader test: `playing after 0.76 s; at the middle 0.62 s / 0.56 s after the seek; requests [bytes=0-1, bytes=0-30541907, bytes=15565777-30541907]`; reopen `fetched again of the cached: 0` | round 4: failed 3/3 on this fixture |
+| R5-IOS-13 | AC-002, AC-004, F-1, round-2 journeys | the rest of the durable class | `testBSkip…`, `testC…`, `testDA…`, `testE…`, `testZ…` | ENV-1, ENV-3 | Pass | `R5/r5-rest-summary.log` | all pass; after node removal the app's video cache holds 0 files | — |
+
+Round 1–4 rows (kept as run):
 
 ## Round 4 Cases (IR-003, the fix `c3ff688979`)
 
@@ -124,7 +140,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | User-Only Or Accepted-Risk Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8, R2-IOS-13, R2-IOS-U, R3-O4-a…e, R3-IOS-2, R4-IOS-2, R4-IOS-LAT, R4-IOS-DL, R4-IOS-U | **Not proven on iOS: F-4** (round 4: with the fix, playback falls below real time once a link has any round trip, 20–50 ms; F-3's freeze is gone on a zero-latency link); Android proven | the media message on a live run: DEC-006 (a) |
+| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8, R2-IOS-13, R2-IOS-U, R3-O4-a…e, R3-IOS-2, R4-IOS-2, R4-IOS-LAT, R4-IOS-DL, R4-IOS-U, R5-IOS-2, R5-IOS-DL, R5-IOS-LAT, R5-IOS-U | Proven (round 5: both apps; iOS start about 0.5–1 s and a scrub to the middle within about 0.5 s at 0, 20 and 50 ms, real time) | the media message on a live run: DEC-006 (a) |
 | AC-002 | Yes | AND-4, AND-10, AND-12, IOS-4, IOS-5, IOS-12, R2-AND-9 (Play after a rewrite plays the new version), R2-IOS-13 | Proven | — |
 | AC-003 | Yes | AND-1, AND-7, IOS-10 (scans); R2-AND-8, R2-IOS-9 (refusal) | Proven (round 2) | — |
 | AC-004 | Yes | AND-5, AND-6, IOS-2, IOS-3, IOS-14 | Proven | — |
@@ -158,7 +174,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 - Expected: a URL whose path, once normalized, is not under `/rest/` (or any URL with `.`/`..` segments, raw or percent-encoded) is refused before anything is sent.
 - Preliminary classification: `Local Fix` (both apps' route check; a unit case each, beside `ShellBridgeMessagesTest` / `NodeVideoHTTPTests`).
 
-### F-3 — On iOS, a drag of the player's scrubber stops the picture of a node video (the loader-backed asset); the same drag on a plain file plays on (was O-4)
+### F-3 — Resolved in round 5 (IR-003's flag with IR-004's read-ahead; R5-IOS-2, R5-IOS-LAT) — On iOS, a drag of the player's scrubber stops the picture of a node video (the loader-backed asset); the same drag on a plain file plays on (was O-4)
 
 - Where: the iOS player path for node videos: `AuthorizedMediaLoader` (AVAssetResourceLoader delegate) under `NativeVideoPlayerViewController`'s AVPlayerViewController.
 - Seen:
@@ -173,7 +189,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 - Preliminary classification: `Local Fix` (the iOS loader: how it answers AVFoundation's content information, data requests or both). The failure-origin review decides.
 - Residual: the simulator only (no physical iPhone). The control isolates the loader as the cause on the simulator, and a physical device may or may not show it. A verified fix removes the question.
 
-### F-4 — With IR-003's `isEntireLengthAvailableOnDemand`, an iOS node video plays below real time on any link with a round trip (20–50 ms), and the player's clock runs ahead of the data (new in round 4)
+### F-4 — Resolved in round 5 (`d92abaeaa2`; R5-IOS-DL, R5-IOS-LAT, R5-IOS-U) — With IR-003's `isEntireLengthAvailableOnDemand`, an iOS node video plays below real time on any link with a round trip (20–50 ms), and the player's clock runs ahead of the data (new in round 4)
 
 - Where: `AuthorizedMediaLoader`. With the flag, AVFoundation asks for about 23 KB at a time, one request after another. The loader fetches each uncached one as its own ranged HTTP request, so every 23 KB pays a full round trip.
 - Seen (R4-IOS-LAT, R4-IOS-DL, R4-IOS-U), on the same 1.5 MB/s link and 6 Mbit/s video:
@@ -192,6 +208,9 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 - F-3 status: its symptom (the frozen picture after a scrub) is gone on a zero-latency link (R4-IOS-2). Its fix is not acceptable as is because of F-4.
 
 ## Observations (not failures)
+
+- **O-7 (H-3, round 5), iOS on a link slower than the video's bitrate.** At 0.5 MB/s for a 0.76 MB/s video, the picture plays at the link's speed, about 0.64×. After a scrub it reaches the middle about 3 s later, and the player's clock runs about 2 s ahead of the picture meanwhile. Real time is impossible on such a link; it is outside AC-001's conditions.
+- **R4/R5 note on reopen bytes.** A fetch stopped by a newer one can leave up to 64 KB in flight. Those bytes are fetched again later (R5-IOS-H1). Round 4's 42 KB re-fetch on a plain reopen is gone (0 bytes, R5-IOS-2).
 
 - **O-1 (R-2), Android: a night-mode switch during playback.** The player is recreated and says it could not play. Back and Play recover, from the cache (AND-10). This is the reviewer's prediction; the design accepts a recreated player failing loudly. A scheduled dark mode at dusk would trigger it.
 - **O-2 (R-1), iOS: the Back/title bar stays over the landscape video.** It sits over the video's top-left (in the test video, over its timecode), and it stays there with the controls hidden (`ios/strips/landscape-r1-back-bar.png`). This is the frame for the user's judgement.
@@ -213,21 +232,21 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 84% | every AC on a real node in both apps, except iOS playback over a link with a round trip | AC-001 on iOS fails (F-4) | the fix and a rerun |
-| Changed-boundary execution directness | 92% | 96% | the real chain on both apps; with and without the flag on one simulator, stack and video | — | — |
-| Cross-boundary integration realism and mock gap | 88% | 93% | a real node behind a throttled proxy, now with a link round trip; real pairing; the old app; Chromium | the live media segment (DEC-006) | — |
-| Environment, configuration, identity, and fixture fidelity | 88% | 91% | clean env; own emulators/simulators; latency in the proxy | no physical phone or real Wi-Fi/tailnet | a device on a real network |
-| Failure, edge-case, lifecycle, and recovery evidence | 92% | 95% | rewrites, night mode, node removal, old app, crafted URLs, changed file, scrub, link latency | LRU eviction at 500 MB not reached | — |
-| User-surface, browser, and desktop-shell confidence | 88% | 90% | recordings and timecode crops of every journey; R-1 frame for the user | the physical iPhone | — |
-| Durable regression coverage quality and relevance | 90% | 94% | `native-video-node.mjs` (`--latency-ms`, `/touch`); `NativeVideoRealNodeUITests` (picture after the scrub, delivery over a slower link) | the Android journeys are not a durable driver | an Android driver on the stack |
+| Requirement and acceptance-criteria proof | 92% | 95% | every AC on a real node in both apps; iOS start and scrub in real time at 0–50 ms | the media message by its URL form (DEC-006) | — |
+| Changed-boundary execution directness | 93% | 96% | the real chain on both apps; the loader's requests read per run | — | — |
+| Cross-boundary integration realism and mock gap | 90% | 93% | a real node behind a throttled proxy with link latency; real pairing; the old app; Chromium | the live media segment (DEC-006) | — |
+| Environment, configuration, identity, and fixture fidelity | 88% | 91% | clean env; own emulators/simulators; latency and throttle in the proxy | no physical phone or real Wi-Fi/tailnet | a device on a real network |
+| Failure, edge-case, lifecycle, and recovery evidence | 93% | 95% | rewrites, night mode, node removal, old app, crafted URLs, changed file, scrub, latency, a link slower than the bitrate | LRU eviction at 500 MB not reached | — |
+| User-surface, browser, and desktop-shell confidence | 90% | 91% | recordings and timecode crops of every journey; R-1 frame for the user | the physical iPhone | — |
+| Durable regression coverage quality and relevance | 92% | 94% | `native-video-node.mjs` (`--latency-ms`, `/touch`); `NativeVideoRealNodeUITests` (picture after the scrub, delivery over a slower link); IR-004's frame-based loader tests | the Android journeys are not a durable driver | an Android driver on the stack |
 
-- Overall post-repository confidence: 89.0% (round 4)
-- Overall final confidence: 91.9% (mean of the seven final scores; round 3: 93.0%, Fail; round 2: 92.4%, Pass)
+- Overall post-repository confidence: 91.1% (round 5)
+- Overall final confidence: 93.6% (mean of the seven final scores; round 4: 91.9%, Fail)
 - Calculation method: mean of the final category scores
-- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `No` (AC-001 on iOS: F-4)
-- Any final applicable category below `90%`: `Yes` (requirement proof 84%: F-4)
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-4 (open); no physical phones or real networks; the media message on a live run (DEC-006)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `No` (bounded by the emulator/simulator-only environment)
+- Confidence-limiting residual risks: no physical phones or real networks (a physical-iPhone scrub check recommended); O-7 on links slower than the bitrate; the media message on a live run (DEC-006)
 
 ## Broader Validation Decision (Mandatory)
 
@@ -281,7 +300,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 | --- | --- | --- | --- |
 | `/tmp/api574` (HOME, TMPDIR, stack roots, scripts, recordings, scans, derived data) | Yes | kept until the ticket closes; removed when the Solution Designer asks | kept |
 | AVDs `api574_video`, `api574_gpu`, `api574_r2` and their emulators (ports 5580, 5582, 5584) | Yes | `emu kill`; `avdmanager delete avd` | deleted |
-| Simulators `api574-iphone`, `api574-smoke`, `api574-r2`, `api574-o4`, `api574-r4` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
+| Simulators `api574-iphone`, `api574-smoke`, `api574-r2`, `api574-o4`, `api574-r4`, `api574-r5` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
 | Stacks (nodes, proxies) | Yes | `POST /stop` | stopped; no process left |
 | Base worktree `/tmp/api574/base-app` | Yes | `git worktree remove` | removed |
 | Temporary XCTests `ScrubControlTests.swift` (round 1), `RouteCheckControlTests.swift` (round 2), `FrameCompareControlTests.swift`, `ScrubPlainControlUITests.swift` (round 3); round 3's temporary switches and logging in `NativeVideoPlayer.swift` and `AuthorizedMediaLoader.swift`; round 4's one-line revert of the flag for the controls | Yes | deleted / `git checkout` before commit; the clean tree rebuilt and R3-IOS-2 rerun on it | removed |
@@ -290,23 +309,31 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 ## Preliminary Classification (On `Fail`)
 
-- F-4: `Local Fix`, iOS `AuthorizedMediaLoader` (IR-003's flag makes each ~23 KB read its own round trip). The durable checks: R4-IOS-DL, R4-IOS-U, R4-IOS-2. The failure-origin review decides the owner.
-- F-3: its symptom is resolved by IR-003 on a zero-latency link; that fix causes F-4.
-- Resolved earlier: F-1, F-2.
+Not applicable in round 5 (Pass).
+- F-3 and F-4 are resolved by IR-003 + IR-004 (CR-003, CR-004).
+- F-1 and F-2 were resolved earlier.
 - Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six cases), 609 FU-007 (SE-1's RRB-1/SID-2). No new follow-up.
 
 ## Latest Authoritative Result
 
-- Result: `Fail` (round 4: F-4, on IR-003 `c3ff688979`)
+- Result: `Pass` (round 5, IR-004 `d92abaeaa2`)
 - Criteria not proven, parts only the user can check, or accepted as unverified risk:
-  - not proven: AC-001 on iOS over a link with a round trip (F-4);
   - accepted: the media message on a live run (DEC-006);
-  - for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`).
+  - for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`);
+  - recommended: a physical-iPhone scrub check on a real network.
 - Evidence decisions requested: DEC-006 (round 1; decided: accept)
-- Preliminary classification and recommended owner (on `Fail`): `Local Fix`; code reviewer for the failure-origin review
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (Fail)
+- Preliminary classification and recommended owner (on `Fail`): —
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (Pass, Large / High). It does the proportional test-code review of `ef3107bb3e` and `bb80c1cc9e`:
+  - `pictureMoves` with T-2;
+  - `testBDeliversInRealTimeOverASlowerLink`;
+  - `--latency-ms`, `POST /latency`, `POST /touch`.
+
+  No test-code change in round 5.
 - Notes:
-  - With the flag the scrub plays on, and the rest of the iOS class passes.
-  - But AVFoundation reads about 23 KB at a time, and each read is one round trip. At 20–50 ms the video plays at 0.4–0.7× and starts after 3–6 s, while the player's clock claims real time.
-  - Without the flag, the same links play in real time and the scrub freezes. Both behaviours were measured on one simulator, stack and video.
-  - The reviewer's T-2 is addressed (the picture check waits until the controls are gone).
+  - The iOS loader now opens with one streaming fetch. A reopen fetches 0 bytes.
+  - The scrub plays on.
+  - Playback runs in real time at 0, 20 and 50 ms of link latency.
+  - Core passes 82/82.
+  - The rest of the iOS class passes.
+  - H-1: no two fetches at once (64 KB fetched again at a cancel boundary only).
+  - H-3: on a link slower than the bitrate, the picture plays at link speed and the clock runs ahead after a seek (O-7, outside the AC).

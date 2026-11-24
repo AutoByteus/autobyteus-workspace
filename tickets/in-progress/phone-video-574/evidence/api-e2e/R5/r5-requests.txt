@@ -1,0 +1,80 @@
+== r5-first
+{
+ "requests": 2,
+ "dataRequests": 1,
+ "bytes": 22282240,
+ "aborted": 1,
+ "statuses": [
+  206
+ ],
+ "headerOnly": true,
+ "maxConcurrent": 1,
+ "bytesFetchedTwiceWithinWindow": 0,
+ "ranges": [
+  "bytes=0-22865714:22282240:aborted"
+ ]
+}
+== r5-cached
+{
+ "requests": 1,
+ "dataRequests": 0,
+ "bytes": 0,
+ "aborted": 0,
+ "statuses": [
+  206
+ ],
+ "headerOnly": true,
+ "maxConcurrent": 0,
+ "bytesFetchedTwiceWithinWindow": 0,
+ "ranges": []
+}
+== r5-lat20
+{
+ "requests": 2,
+ "dataRequests": 1,
+ "bytes": 22265700,
+ "aborted": 1,
+ "statuses": [
+  206
+ ],
+ "headerOnly": true,
+ "maxConcurrent": 1,
+ "bytesFetchedTwiceWithinWindow": 0,
+ "ranges": [
+  "bytes=0-22865714:22265700:aborted"
+ ]
+}
+== r5-lat50
+{
+ "requests": 2,
+ "dataRequests": 1,
+ "bytes": 22151168,
+ "aborted": 1,
+ "statuses": [
+  206
+ ],
+ "headerOnly": true,
+ "maxConcurrent": 1,
+ "bytesFetchedTwiceWithinWindow": 0,
+ "ranges": [
+  "bytes=0-22865714:22151168:aborted"
+ ]
+}
+== r5-slow
+{
+ "requests": 4,
+ "dataRequests": 3,
+ "bytes": 7733248,
+ "aborted": 3,
+ "statuses": [
+  206
+ ],
+ "headerOnly": true,
+ "maxConcurrent": 1,
+ "bytesFetchedTwiceWithinWindow": 0,
+ "ranges": [
+  "bytes=0-22865714:4784128:aborted",
+  "bytes=6535579-22865714:917504:aborted",
+  "bytes=10940927-22865714:2031616:aborted"
+ ]
+}

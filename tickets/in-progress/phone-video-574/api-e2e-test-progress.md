@@ -71,3 +71,10 @@
 | 2026-11-24 20:23 | R4-IOS-13, R4-IOS-DL | Completed | Pass; Fail (F-4) | the whole class on the shipped fix: all pass except the delivery check |
 | 2026-11-24 20:25 | R4-IOS-U | Completed | Fail (F-4) | core 74/75: the loader test plays "past 30.3 s" after a seek to 30 s with no byte of the middle fetched (3/3, 60 s video) |
 | 2026-11-24 20:26 | — | Checkpoint | — | stack stopped; simulator `api574-r4` deleted |
+| 2026-11-24 20:58 | — | Checkpoint | — | Round 5 (CRR-008 on IR-004 `d92abaeaa2`): contract `dist/` and phone bundle rebuilt; own simulator `api574-r5`; fresh stack |
+| 2026-11-24 21:02 | R5-IOS-2 | Completed | Pass | scrub plays on, first open and cached; start moving about 0.5 s, 1×; one streaming fetch per open; reopen 0 bytes |
+| 2026-11-24 21:03 | R5-IOS-DL | Completed | Pass | 50 ms: 13.9 MB delivered in 10 s against 5.34 MB needed |
+| 2026-11-24 21:04 | R5-IOS-LAT | Completed | Pass | 20 and 50 ms: moving by 1.0 s, 1×; scrub to the middle within about 0.5 s, then 1× |
+| 2026-11-24 21:06 | R5-IOS-H3, R5-IOS-H1 | Completed | Observation | 0.5 MB/s (below the bitrate): picture at link speed (0.64×), middle 3 s after the drag, clock about 2 s ahead (O-7); fetches one at a time, 64 KB re-fetched only at a cancel boundary |
+| 2026-11-24 21:07 | R5-IOS-U | Completed | Pass | core 82/82 twice with the 60 s video; middle 0.56–0.62 s after the seek in 3 requests; reopen 0 bytes |
+| 2026-11-24 21:10 | R5-IOS-13 | Completed | Pass | skip, Files, rewrite, Close, node removal (cache 0 files); stack stopped, simulator `api574-r5` deleted |
