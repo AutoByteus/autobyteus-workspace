@@ -249,8 +249,18 @@ onBeforeUnmount(() => {
   clearResolvedObjectUrl();
 });
 
+// Each source is compared by value: the phone's message list hands a new, equal reference object on every message
+// update, and a reload remounts the viewer, whose player in the phone app would open again by itself (autobyteus-642
+// CR-002). A changed file (`updatedAt`) or a re-click (`refreshSignal`) reloads it.
 watch(
-  () => [props.contentPath, props.reference.referenceId, props.reference.path, props.reference.type, props.reference.updatedAt, props.refreshSignal ?? 0],
+  [
+    () => props.contentPath,
+    () => props.reference.referenceId,
+    () => props.reference.path,
+    () => props.reference.type,
+    () => props.reference.updatedAt,
+    () => props.refreshSignal ?? 0,
+  ],
   () => { void syncReferenceView(); },
   { immediate: true },
 );
