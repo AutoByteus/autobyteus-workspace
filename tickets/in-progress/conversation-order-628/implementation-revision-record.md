@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, design-spec.md (SR-001…SR-006); Architecture Reviewer, design-review-report.md rounds 1–3 | N/A | `Initial Baseline` | SR-001…SR-006, ARCH-REV-001…ARCH-REV-003 | D-1, D-2, D-3 and SR-006 implemented; ready for code review |
 | IR-002 | Code Reviewer, code-review-report.md round 1 (CRR-001) | CR-001 | `Local Fix` | CRR-001 | The three second-clock fallbacks removed; the comment corrected; one new case per side; ready for the delta review |
+| IR-003 | Delivery Engineer, DR-001 (Blocked); Solution Designer SR-007; Architecture Reviewer ARCH-REV-004 | DR-001 Finding 1 (Local Fix), Finding 2 (Design Impact → SR-007); N-6 | `Design Impact` + `Local Fix` | SR-007, ARCH-REV-004, DR-001 | Stored traces keep their write time (IR-002's recorder half reverted); contract packages' own suites pass |
 
 ## Revision Entries
 
@@ -84,3 +85,50 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The fix touches no build input, so IMP-14 and IMP-15 still hold.
 - Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
 - Remaining limitations or risks: a stored row without `ts` now hydrates with no time. Every node writer stores one, so this happens only for a row written outside them.
+
+### IR-003 — Stored traces keep their write time; the contract packages' own suites carry the new fields
+
+- Triggering role, report path, and round:
+  - Delivery Engineer, DR-001 (Blocked), evidence `evidence/delivery/DEL-BLOCK-*`;
+  - Solution Designer, `design-spec.md` "SR-007";
+  - Architecture Reviewer, `design-review-report.md` round 4 (ARCH-REV-004, Pass).
+- Triggering finding IDs: DR-001 Finding 1 (Local Fix), DR-001 Finding 2 (Design Impact → SR-007); ARCH-REV-004 N-6.
+- Classification: `Design Impact` (SR-007) plus `Local Fix` (Finding 1).
+- Prior authoritative result: IR-002, CRR-002 Pass, API-REV-001 Pass; DR-001 Blocked.
+- Current authoritative result: SR-007 and Finding 1 implemented and checked; `Large` / `High`.
+- Related solution revision IDs: SR-007.
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003.
+- Related API/E2E revision IDs: API-REV-001.
+- Related delivery revision IDs: DR-001.
+- Why this implementation revision is recorded:
+  - **Finding 2:** reading the run's `occurredAt` in the memory recorder (D-3, made strict in IR-002) changed the stored order for traces built from several events. A reasoning trace took its segment's first event time; a tool call completed at its result took the result's time. The reload sorts by `ts`, so they could move.
+  - **How the suite missed it:** my fixture helper stamped `Date.now()`, giving every event in a test the same millisecond. With distinct times, 7 accumulator tests fail.
+  - **Finding 1:** the three contract packages' own suites had fixtures without the fields D-3 made required.
+- Approved behavior or requirement IDs affected: REQ-002 and AC-003 (the stored order), REQ-004 (stored times stay the node's).
+- Implementation delta:
+  - **`ba25165c1e` (SR-007):**
+    - `provider-compaction-boundary-recorder.ts`, `runtime-tool-trace-sequencer.ts`, `runtime-memory-event-payload.ts` and `runtime-memory-event-accumulator.ts` are restored to base: `extractTimestamp(payload)`, then the writer's `Date.now()`.
+    - The accumulator's user trace keeps SR-006's `acceptedAt`.
+    - `extractTimestamp` gains N-6's comment: node-local times only.
+    - `agent-run-event.ts`: IR-002's `serverTimeMsOf` is folded back into `serverTimeOf`, its only caller. The `occurredAt` doc no longer names the memory recorder. The streams still refuse an unstamped timed event.
+    - Tests: the accumulator, sequencer and notice helpers stamp strictly increasing, distinct times (7 ms apart, delivery's shape).
+    - The recorder case in `agent-run-event-time.test.ts` now shows a trace stored at its write time, not its delivery time, stamped or not.
+    - `preface-notice-order`'s notice carries its time in its payload again, and the accumulator test's marker is back to `ts: 2`.
+  - **`2dbfe43c28` (Finding 1):**
+    - The fixtures of agent-presentation, collaboration-stream and team-stream gain `occurred_at` and `accepted_at`.
+    - agent-presentation adds a case: a timed message without `occurred_at`, or with a number, is refused.
+- Changed files or areas: the five server source files and five server test files above, and four contract test files.
+- Local validation and result:
+  - IMP-18:
+    - Red on the pre-SR-007 recorder: delivery's same 7 accumulator tests fail, and so do the new case and the D-2 external cases. With SR-007 all pass.
+    - The server unit suite passes (1081 files), the typecheck is at baseline, and the integration suite passes (92 files, 523 tests).
+    - The three contract suites pass, and `check:contract-dist` passes.
+  - IMP-19:
+    - The phone cases MSP-66, 75, 76, 77, 99 and 105 pass. MSP-105 is in order live and reopened, with the user trace before its notice in the node's stored order.
+    - The clean-environment server e2e result is recorded there.
+- Next recipient or routing: from `get_handoff_rules` (Large/High).
+- Remaining limitations or risks:
+  - A row's stored time and its live `occurred_at` are two node times of one event, milliseconds apart (SR-007).
+  - IR-002's fixture stamps (`stampForDelivery` in the backend replay tests, the integration and e2e feeds) stay. They mirror what AgentRun delivers, and the recorder ignores them.
+

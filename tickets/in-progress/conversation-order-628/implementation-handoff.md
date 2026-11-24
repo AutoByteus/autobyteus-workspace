@@ -21,12 +21,13 @@ Ticket autobyteus-628 (conversation-order-628). Worktree `<worktree>` (`autobyte
 
 - Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/conversation-order-628/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-002` (CR-001 Local Fix). IR-001 is the baseline.
-- Related solution revision IDs: SR-001…SR-006.
-- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003.
-- Related code-review revision IDs: CRR-001.
-- Related API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: CR-001. Reviewer notes applied in IR-001: N-1, N-2 (ARCH-REV-002) and N-4, N-5 (ARCH-REV-003).
+- Current implementation revision ID: `IR-003` (SR-007 and DR-001 Finding 1). IR-001 is the baseline; IR-002 was CR-001.
+- Related solution revision IDs: SR-001…SR-007.
+- Related architecture-review revision IDs: ARCH-REV-001…ARCH-REV-004.
+- Related code-review revision IDs: CRR-001, CRR-002 (Pass), CRR-003 (API/E2E test-code Pass).
+- Related API/E2E revision IDs: API-REV-001 (Pass).
+- Related delivery revision IDs: DR-001 (Blocked: Finding 1 Local Fix, Finding 2 Design Impact → SR-007).
+- Triggering finding IDs: DR-001 Finding 1 and Finding 2 (SR-007); ARCH-REV-004 N-6 applied. Earlier: CR-001 (IR-002); N-1, N-2, N-4, N-5 (IR-001).
 
 What the change does:
 
@@ -93,9 +94,9 @@ What the change does:
   - `models.ts` `createErrorMessage`, `agent-team-stream-handler.ts`, `team-tool-approval-command-handler.ts`;
   - `peer-run.ts`, `peer-run-stream-session.ts`;
   - `agent-stream-handler.ts` (send acks).
-- **D-3 node, batch items and memory:**
+- **D-3 node, batch items:**
   - the three `websocket-egress/*-sequenced-shape.ts` files;
-  - `runtime-memory-event-payload.ts` (`extractEventTime`), `runtime-memory-event-accumulator.ts`, `runtime-tool-trace-sequencer.ts`, `provider-compaction-boundary-recorder.ts`.
+- **Memory (after SR-007):** the recorder files match base, except `runtime-memory-event-accumulator.ts`, whose user trace takes `acceptedAt` (SR-006), and `extractTimestamp`'s N-6 comment in `runtime-memory-event-payload.ts`.
 - **D-3 input state:**
   - `src/agent-execution/input/agent-run-input-admission-state.ts` (`acceptedAt`, `accepted_at`).
 - **D-3 web:**
@@ -137,15 +138,15 @@ What the change does:
 - **`TOOL_LOG` and the send ack are timed.** `TOOL_LOG` creates and times a tool row; a send ack's ERROR becomes a row. Both carry `occurred_at`.
 - **No fallback to another clock anywhere this change writes a row time:**
   - native compaction: the provider-timestamp and viewer-clock fallbacks in `compactionActivityProjection.ts` and `nativeCompactionActivityReconciliation.ts` were removed (N-2);
-  - stored traces: the memory recorder reads only the run's `occurredAt`, through `serverTimeMsOf`. The payload-time and `provider_timestamp` fallbacks were removed (IR-002, CR-001);
+  - stored traces (SR-007, IR-003): the memory recorder does not read `occurredAt`. Each trace is stored at its payload's own time, else its write time, as on base, so the stored order is the write order. These are node-local times (N-6). Only the user trace takes its admission time `acceptedAt` (SR-006). IR-002's strict `occurredAt` read was reverted: a trace built from several events took an earlier event's time and moved on reload (DR-001 Finding 2);
   - hydration: see the `null` row times above.
 
 ## Known Risks
 
-- **The time shown for a user row differs live and after a reload**, by the dispatch delay (milliseconds), on both sides of the comparison:
+- **A row's stored time and its live time are two node times of the same event, milliseconds apart** (SR-007). The order is the same; the app shows each as given. For a user row:
   - Live, a Team member's message shows its echo's `received_at`, and after a reload, its stored `acceptedAt`.
   - Both are the node's times, and the order is the same.
-- **A producer outside a run that forgets to stamp its time** makes its message fail loudly: the mapper throws, the Team and Org adapters reject the event, and the memory recorder refuses to store it (IR-002). The refusal is logged as a listener failure.
+- **A producer outside a run that forgets to stamp its time** makes its message fail loudly: the mapper throws, and the Team and Org adapters reject the event. The memory recorder does not depend on it (SR-007).
   - Every such producer found is listed above, and the suites cover them.
   - A new producer added later must stamp its own time.
 - **Typecheck baselines are unchanged:** the server's test-file errors stay at 972 in 299 files, the web's at 86 in 36.
@@ -165,7 +166,7 @@ What the change does:
 
 - Backward-compatibility mechanisms introduced: `None`. A timed frame without `occurred_at` is refused, not given a fallback time.
 - Legacy old-behavior retained in scope: `No`.
-- Dead code in the touched files and modules removed (Core Principle 7): `Yes`. Removed (IR-002 also removed `extractTimestamp` and its normalizer, left without a caller):
+- Dead code in the touched files and modules removed (Core Principle 7): `Yes`. Removed (IR-003 restores `extractTimestamp`, which the recorder uses again, and folds IR-002's `serverTimeMsOf` back into `serverTimeOf`, its only caller):
   - the window's `order` field;
   - the compaction projection's `now` input and provider-timestamp helper;
   - the viewer-clock fallback in native compaction reconciliation;
@@ -225,6 +226,8 @@ Evidence is under `tickets/in-progress/conversation-order-628/evidence/implement
 | IMP-15 | `pnpm release:test --ref codex/conversation-order-628`; `gh run watch 45293566395 --exit-status` | `5c598ffca8` (code = `6ad8920bd6`) | GitHub Actions, release-desktop.yml, build only | all five desktop targets | DESIGN.md rule 12 | Pass | `IMP-15-build-only-desktop-release.log` | `conclusion: success`; 6 build jobs success; sign and publish skipped |
 | IMP-16 | the two new CR-001 cases and their files, on the fix and with the 4 CR-001 source files stashed; then `pnpm test:unit` (server), the web suite, both typechecks, the three guards, `pnpm check:contract-dist` | `eaebb94304` | macOS, Node 22 | `serverTimeMsOf`, the memory recorder, the provider boundary recorder, hydration | REQ-004, AC-006, CR-001 | Pass (pre-fix: each new case fails, as expected) | `IMP-16-cr001-no-second-clock.log` | red `1 failed` ×2; `1074 passed \| 5 skipped`; `803 passed` |
 | IMP-17 | rebuild; MSP-105; `env -i … pnpm exec vitest run tests/e2e`; `env -i … pnpm test:integration` (after `test:integration:prepare`) | `eaebb94304` (MSP-105, whole e2e); `8fbffd707f` (integration suite; the one fixed e2e file) | macOS, Node 22, clean environment, scripted runtimes | the strict recorder on real paths; the integration fixtures | AC-001…AC-003, AC-005, AC-006, CR-001 | Pass after fixture fixes (no product change) | `IMP-17-cr001-runtime-checks/` | MSP-105 `Pass`; integration `92 passed`, `523 passed`; 0 refusals |
+| IMP-18 | the memory, run-history, execution and restart folders; a red run with the 5 SR-007 source files stashed; `pnpm test:unit`; server typecheck; clean `pnpm test:integration`; `pnpm -C <each contract package> test`; `pnpm check:contract-dist` | `ba25165c1e`, `2dbfe43c28` | macOS, Node 22 | the recorder's trace times; the contract packages' own suites | REQ-002, AC-003, REQ-004, DR-001 Findings 1–2, N-6 | Pass (red: delivery's 7 accumulator tests + the new case + D-2 external cases fail, as expected) | `IMP-18-sr007-write-time-and-contract-suites.log` | `1081 passed \| 5 skipped`; integration `523 passed`; contracts `# fail 0` ×3 |
+| IMP-19 | rebuild; `mobile-shell-probe.mjs --cases=MSP-66,MSP-75,MSP-76,MSP-77,MSP-99,MSP-105`; clean `vitest run tests/e2e` | `ba25165c1e` (+ `2dbfe43c28`) | macOS, Chrome headless, loopback nodes, scripted runtimes; clean env | the whole stack, live and reopened; the server over HTTP/WebSocket | AC-001…AC-003, AC-005 | Pass | `IMP-19-sr007-phone-and-e2e/` | `mobile-shell probe: Pass`; MSP-105 user before notice ×3; e2e `127 passed` |
 
 - Not run, and why:
   - real provider runtimes (left to API/E2E; the probes use scripted runtimes);

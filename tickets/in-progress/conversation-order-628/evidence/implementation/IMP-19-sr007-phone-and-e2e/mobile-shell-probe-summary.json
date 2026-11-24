@@ -1,0 +1,178 @@
+{
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-105": "Pass",
+   "MSP-66": "Pass",
+   "MSP-75": "Pass",
+   "MSP-76": "Pass",
+   "MSP-77": "Pass",
+   "MSP-99": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "MSP-105": {
+  "result": "Pass",
+  "seconds": 27.7,
+  "team": "order_team_b7f42c75e23d4c5d8ec0b7156448bc12",
+  "lead": "order_lead_45a9392ac98b46578f5110cdc6e07527",
+  "rounds": [
+   {
+    "label": "phone-order-behind-sends",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2001,
+    "sender": "phone",
+    "marker": "ORDER-628-65ba9242",
+    "live": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795494093.128",
+     "message:user@1795494098.213",
+     "system_task_notification@1795494098.219",
+     "message:assistant@1795494098.223"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-ahead-sends",
+    "offsetMs": 2000,
+    "clockOffsetMs": 2000,
+    "sender": "phone",
+    "marker": "ORDER-628-0c64abed",
+    "live": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795494098.223",
+     "message:user@1795494106.56",
+     "system_task_notification@1795494106.569",
+     "message:assistant@1795494106.573"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-behind-watches",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2001,
+    "sender": "another client",
+    "marker": "ORDER-628-1d740b18",
+    "live": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795494106.573",
+     "message:user@1795494115.377",
+     "system_task_notification@1795494115.389",
+     "message:assistant@1795494115.401"
+    ],
+    "nodeNoticeAfterMessage": true
+   }
+  ]
+ }
+}
