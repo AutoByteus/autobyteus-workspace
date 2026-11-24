@@ -92,7 +92,7 @@ Each failure is logged with the run and the reason.
   - Rewritten by the recorder only when the set changes; removed when the set is empty (nothing running, nothing pending).
   - Final write at the graceful stop, before the close stops anything: `running ∪ pending`. It first awaits the startedByPerson reads in flight, bounded at 1 s in total (R-1); a root whose read did not finish in time is left out and logged.
   - Absent means nothing to bring back.
-  - An invalid file is logged and removed, and nothing is brought back (as `busy-runs.json`).
+  - An invalid file is logged and nothing is brought back; the recorder's first write replaces or removes it.
 - **Invariants:**
   - one entry per root, sorted by kind then ID, so equal sets compare equal;
   - only runs a person started (`startedByPerson`), never delegated runs or Org units. `agent_org` roots from `liveRoots()` are skipped explicitly (R-3).
@@ -197,7 +197,7 @@ export class RunningRunRestorer {
   constructor(deps: { recordPath: string; rootHistory: (root) => Promise<RootHistoryState>;
     runFiles: Pick<RunOwnAgentsReader, "listingFactsOf">; running: Pick<RunningAgents, "rootOf" | "teamCoordinatorOf">;
     rootResolver: CollaborationRootResolver; concurrency?: number });
-  take(): Promise<void>;                                  // reads the file into pending (never removes it); invalid → logged, pending empty, file removed
+  take(): Promise<void>;                                  // reads the file into pending (never removes it); invalid → logged, pending empty (the recorder's first write replaces or removes the file; it stays the only writer)
   pending(): readonly RootExecutionIdentity[];            // the taken runs not yet restored, skipped or failed (the recorder's question)
   restore(): Promise<Readonly<{ restored: number; skipped: number; failed: number }>>;  // works through pending; never throws
 }
