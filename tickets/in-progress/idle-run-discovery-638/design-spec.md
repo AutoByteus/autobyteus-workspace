@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (ARCH-REV-001 AR-001: the restore window is owned; residuals R-1..R-3 taken in)
 - Approved requirements: [requirements-doc.md](requirements-doc.md) SR-002, approved by the founder on 2026-11-24 in conversation (quotes there)
 - User approval of the design: `Not required` (the Task asked for approval before implementing; the founder approved the approach)
 - Design status: `Ready`
@@ -87,14 +87,16 @@ Each failure is logged with the run and the reason.
   - the entry agent comes from the root itself (a standalone root's own agent; a Team's coordinator from its tree);
   - no time, status or version is stored, because nothing reads them. The cause of the restart doesn't matter (DEC-005).
 - **Lifecycle:**
-  - Taken (read, then removed) once at startup, before this session's recorder starts.
-  - Rewritten by the recorder only when the set changes; removed when the set is empty.
-  - Final write at the graceful stop, before the close stops anything.
+  - Taken (read, **not removed**) once at startup, before this session's recorder starts. The taken runs are **pending** in the restorer until each is restored, skipped or failed (SR-003, AR-001).
+  - The recorder is the file's only writer. Its set is `running ∪ pending`, so a stop or crash during the restore window keeps every run not yet handled.
+  - Rewritten by the recorder only when the set changes; removed when the set is empty (nothing running, nothing pending).
+  - Final write at the graceful stop, before the close stops anything: `running ∪ pending`. It first awaits the startedByPerson reads in flight, bounded at 1 s in total (R-1); a root whose read did not finish in time is left out and logged.
   - Absent means nothing to bring back.
   - An invalid file is logged and removed, and nothing is brought back (as `busy-runs.json`).
 - **Invariants:**
   - one entry per root, sorted by kind then ID, so equal sets compare equal;
-  - only runs a person started (`startedByPerson`), never delegated runs or Org units.
+  - only runs a person started (`startedByPerson`), never delegated runs or Org units. `agent_org` roots from `liveRoots()` are skipped explicitly (R-3).
+  - "Running" is the entry agent's live status as `RunningAgents.statusesOf` gives it: `initializing`, `running`, `idle` or `error`, never `offline`. A run whose agent is in `error` is recorded and comes back like the others; it was loaded, and the restore retries its start (R-2).
 
 ### C-2 New Team root method
 
@@ -119,6 +121,7 @@ Walks:
 2. **Crash.** The live record is at most 2 s old (last change), and the same walk follows. A run that started in the last 2 s may be missed (accepted, REQ-001).
 3. **Idle Team run.** Entry `{agent_team, …}`. Restorer: `resolveOrRestore(team root)`, then `root.ensureAgentReady(coordinatorAgentRunId)`. The coordinator becomes `idle` and the Team is listed by its coordinator ID.
 4. **Update with a busy run.** The run is in both records. The resumer runs first: it restores the run and posts the reminder. Then the restorer finds it already live and skips it.
+4b. **A stop or crash during the restore window (AR-001).** The file still holds every taken run. The recorder's first write is `running ∪ pending`, and each run leaves `pending` only when restored (it is then running, so still recorded), skipped (retired, so rightly dropped) or failed (logged). A second stop writes `running ∪ pending`; a crash leaves the last write. The next start brings back what wasn't handled.
 5. **Plain restart with a busy run.** It is in both records; the resumer posts nothing. The restorer restores it idle, and the reminder rides its next input, exactly once, as today (REQ-005).
 6. **Archived or stopped while down.** That can't happen while the node is down. If the person archives or stops the run during the restore window, the restorer re-reads history after the restore and stops nothing; the person's action wins through its own path. Before the restore, history `archived`/`terminated` means skip.
 7. **Delegated run or Org unit.** Never recorded (`startedByPerson` false). Their own lifecycle applies (BEH-003).
@@ -144,7 +147,7 @@ Walks:
 
 ## Primary Execution Spines
 
-- DS-001: `interval / cleanup → RunningRunRecorder.tick/record → RunningAgents.liveRoots + statusesOf + teamCoordinatorOf (entry agent running?) → startedByPerson (RunOwnAgentsReader.listingFactsOf, once per root, remembered) → writeRunningRunRecord`
+- DS-001: `interval / cleanup → RunningRunRecorder.tick/record → RunningAgents.liveRoots (agent_org skipped) + statusesOf + teamCoordinatorOf (entry agent not offline?) → startedByPerson (RunOwnAgentsReader.listingFactsOf, once per root, remembered) → ∪ RunningRunRestorer.pending() → writeRunningRunRecord`
 - DS-002: `server-runtime (after listen) → RestartResumer.resumeAfterRestart (unchanged) → RunningRunRestorer.restore(taken) → per run, max 3 at a time: rootHistory → listingFactsOf.startedByPerson → already live? → CollaborationRootResolver.resolveOrRestore → StandaloneAgentRunRoot.ensureAgentReady() | RootTeamRun.ensureAgentReady(coordinator) → log`
 
 ## Ownership Map
@@ -152,8 +155,8 @@ Walks:
 | Owner | Owns |
 | --- | --- |
 | `running-run-record.ts` | C-1 shape: path, tolerant reader (`missing`/`invalid`/`present`), atomic writer, remove |
-| `RunningRunRecorder` | Which runs are recorded and when; the startedByPerson fact per root, remembered for the root's life in this session |
-| `RunningRunRestorer` | `take()` at startup; `restore(taken)`: skips, restore, ready, logging, concurrency 3 |
+| `RunningRunRecorder` | Which runs are recorded and when (`running ∪ pending`); the startedByPerson fact per root, remembered for the root's life in this session; the only writer of the file |
+| `RunningRunRestorer` | `take()` at startup (read only); the **pending** set and its shrinking per outcome; `restore()`: skips, restore, ready, logging, concurrency 3 |
 | `RootTeamRun.ensureAgentReady` | Making one member ready in its root's gate |
 | `server-runtime.ts` | Order: take both previous records → start both recorders → cleanup writes both first → after listen: wake, then restore |
 
@@ -194,11 +197,13 @@ export class RunningRunRestorer {
   constructor(deps: { recordPath: string; rootHistory: (root) => Promise<RootHistoryState>;
     runFiles: Pick<RunOwnAgentsReader, "listingFactsOf">; running: Pick<RunningAgents, "rootOf" | "teamCoordinatorOf">;
     rootResolver: CollaborationRootResolver; concurrency?: number });
-  take(): Promise<readonly RootExecutionIdentity[]>;      // read + remove; invalid → logged, []
-  restore(runs: readonly RootExecutionIdentity[]): Promise<Readonly<{ restored: number; skipped: number; failed: number }>>;  // never throws
+  take(): Promise<void>;                                  // reads the file into pending (never removes it); invalid → logged, pending empty, file removed
+  pending(): readonly RootExecutionIdentity[];            // the taken runs not yet restored, skipped or failed (the recorder's question)
+  restore(): Promise<Readonly<{ restored: number; skipped: number; failed: number }>>;  // works through pending; never throws
 }
 ```
 
+- The recorder receives `pending: Pick<RunningRunRestorer, "pending">` (a question it asks; the restorer owns the set). The composition builds the restorer first, then the recorder with it.
 - The recorder's check is synchronous on live state. The startedByPerson read is async and happens once per newly live root; the write is skipped while it is pending (as `BusyRunRecorder` skips during a write).
 - `rootHistory` is the existing function in `restart-resume-composition.ts`, passed in (one owner).
 
@@ -220,7 +225,7 @@ export class RunningRunRestorer {
 | `src/restart-resume/running-run-restorer.ts` | New: DS-002 |
 | `src/compositions/restart-resume-composition.ts` | Compose both, with `running` and `runFiles`; export `runningRuns: { recorder, restorer }` |
 | `src/compositions/build-studio-server.ts` | Pass `running` (the `RunningAgents` already built there) and the run-files reader |
-| `src/server-runtime.ts` | Take both records before both recorders start. Cleanup: `await recorder.record(); await runningRecorder.record();` first. After listen: `void restartResumer.resumeAfterRestart(previous).then(() => runningRestorer.restore(previousRunning))` |
+| `src/server-runtime.ts` | `takePreviousSession()` and `runningRestorer.take()`, then both recorders start. Cleanup: `await recorder.record(); await runningRecorder.record();` first. After listen: `void restartResumer.resumeAfterRestart(previous).then(() => runningRestorer.restore())` |
 | `src/agent-team-execution/domain/root-team-run.ts`, `domain/team-run.ts`, `backends/team-run-backend.ts`, `local/flat-team-run-backend.ts`, `local/flat-team-execution-manager.ts` | C-2 |
 | `docs/modules/restart_resume.md` | New section "Running runs come back" |
 | `docs/design/collaboration_model.md` | §1 "Running agent": a restart doesn't end one a person started (since autobyteus-638) |
@@ -276,7 +281,9 @@ Bad shape (avoided): posting an empty or "you were restarted" input to make the 
 
 - Tests:
   - unit tests for the record reader (missing, invalid, present) and the recorder (set changes, Orgs, delegated runs, coordinator not started, final write);
-  - unit tests for the restorer (every skip, failure isolation, concurrency, order after the resumer);
+  - unit tests for the restorer (every skip, failure isolation, concurrency, order after the resumer, pending shrinking per outcome);
+  - **a stop in the middle of the restore keeps the unrestored runs** (recorder final write = running ∪ pending), and so does a crash (the last write) (AR-001);
+  - the recorder's final write awaits an in-flight startedByPerson read (R-1); `agent_org` roots are never recorded (R-3); an `error` entry agent is recorded (R-2);
   - the Team `ensureAgentReady` unit test;
   - a built-server E2E: start a run and let it go idle, restart gracefully, then `list_running_agents` lists it and `send_message_to` delivers. Then kill -9 and the same. A Team case as well.
 - Keep `busy-runs.json` and `RestartResumer` untouched (existing suites green).

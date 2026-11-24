@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial investigation and options report | N/A | N/A | Ready for Approval | BEH-001..004, REQ-001..007, DEC-001..007 | Sent to the founder for DEC-003, DEC-005 |
 | SR-002 | Mixed | Founder's alternative (bring idle runs back after a restart), approved 2026-11-24; design | N/A | Ready for Approval | Approved; design Ready | All REQ/AC rewritten; DEC-002..005 | Medium / High; to architecture review |
 
+| SR-003 | Design | ARCH-REV-001 Fail (Design Impact) | AR-001; residuals R-1..R-3 | design Ready (SR-002) | design Ready (SR-003) | REQ-001, REQ-002, SCN-002, DEC-003 | Restore window owned; to ARCH-REV-002 |
 ## Revision Entries
 
 ### SR-001 — Investigation, cause and options
@@ -29,3 +30,19 @@
 - Decision within the direction: DEC-003. Only the runs that were running at the stop come back, not every unarchived run (memory ≈270–330 MB per runtime process, notes §3a). The founder's words describe exactly this. I had offered the other variant first; the founder is told and can switch
 - Classification: Medium / High (startup lifecycle on every node; a new transient record; resource use)
 - Next: architecture review
+
+### SR-003 — The restore window has an owner (ARCH-REV-001)
+
+- Phase and classification: Design, Design Impact
+- Trigger: ARCH-REV-001 AR-001. `take()` removed the file before the background restore, and the recorder recorded only live roots, so a stop or crash mid-restore lost the runs not yet brought back
+- Change:
+  - `take()` reads without removing, and the taken runs are `pending` in the restorer until each is restored, skipped or failed;
+  - the recorder, still the only writer, records `running ∪ pending`, also in its final write.
+  - Residuals taken in:
+    - R-1: the final write awaits in-flight startedByPerson reads, bounded at 1 s;
+    - R-2: an `error` entry agent is recorded and comes back (documented);
+    - R-3: `agent_org` roots are skipped explicitly.
+  - New walk 4b and the AR-001 test.
+- Intended behavior changed: No (makes REQ-001/SCN-002 hold)
+- Classification: unchanged, Medium / High
+- Next: ARCH-REV-002
