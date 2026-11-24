@@ -16,16 +16,21 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2`
+- Current Code Review Revision ID: `CRR-004` (CRR-003 was the proportional test review)
+- Current Review Round: `3`
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): `git diff a619061fa2..52d8c1792c` changes source only in CR-001's places: `agent-run-event.ts` (`serverTimeMsOf`, on which `serverTimeOf` now builds), `runtime-memory-event-payload.ts`, `provider-compaction-boundary-recorder.ts`, D-2's comment, and the web hydration's `toServerTime`. Everything else is test fixtures (`8fbffd707f`) and documents. No spine, shared contract or other owner changed; round-1 evidence is carried forward for every other check.
-- Trigger: Implementation Engineer, IR-002 (CR-001 Local Fix)
-- Prior Review Round Reviewed: 1 (CRR-001, Fail — CR-001)
-- Latest Authoritative Round: 2
+- Review Scope Evidence (round 3): `git diff 54cee15c8e..2cbc1b7852` (after delivery's clean merge of `origin/personal`, which shares no file with the ticket) changes source only in these places:
+  - the four memory-recorder files: three are byte-identical to the base again, and the accumulator differs from the base only by SR-006's admission time;
+  - `agent-run-event.ts`: `serverTimeMsOf` folded back into `serverTimeOf`, and the `occurredAt` doc;
+  - tests: the recorder tests, now with distinct event times, and the three contract packages' own fixtures.
+  The web code is unchanged since CRR-002. No other owner changed, so round-1 and round-2 evidence is carried forward for every other check.
+- Trigger: Implementation Engineer, IR-003. It covers SR-007 (ARCH-REV-004 Pass), after delivery's DR-001 Blocked Finding 2, and the Local Fix for DR-001 Finding 1
+- Prior Review Round Reviewed: 2 (CRR-002, Pass)
+- Latest Authoritative Round: 3
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628`, branch `codex/conversation-order-628`, base `origin/personal` `1f761bc8db`.
   - Round 1: code through `6ad8920bd6`.
   - Round 2: pushed head `52d8c1792c`; fix `eaebb94304`, fixtures `8fbffd707f`.
+  - Round 3: pushed head `2cbc1b7852`; SR-007 `ba25165c1e`, contract fixtures `2dbfe43c28`; delivery's merge `54cee15c8e`.
 - Shared guidance: the team's design principles as updated 2026-11-23 (Principle 17, Data Contract First; "Data And Spine First"). The design spec already carries Data Contract sections for D-1/D-2 and D-3.
 - Failure-origin fields: N/A
 
@@ -76,7 +81,7 @@
 | BEH-002 | Confirmed | `orderPrefaceNoticesAfterTheirInput` before the trace loop (`raw-trace-to-historical-replay-events.ts:137-166,192`): rule (a) `input.ts <= notice.ts` within one turn; rule (b) both `NATIVE_INPUT_TRACE_SOURCE_EVENT` (exported from `memory-ingest-input-processor.ts`); `index += 1` after a swap. SR-006: `recordForwardedUserMessage` writes `acceptedAt` (`runtime-memory-event-accumulator.ts:87-88`); `acceptedAt` comes from the admission entry (`agent-run-input-admission-state.ts:120,262`) | — |
 | BEH-003 | Confirmed | Compactions merged before the first later message (strict `<`); the compaction time is `new Date(payload.occurred_at)` (`compactionActivityProjection.ts:190-191`); a `null` own send counts as 0, so a compaction waits until the node confirms the send | — |
 | REQ-004 (live) | Confirmed | One stamp point: `AgentRun.deliverToListeners` → `stampForDelivery`, covering the processed events, the input state, the canonical status and the subscribe snapshot (`agent-run.ts:223,340,525,529-546`). Every timed wire message reads `serverTimeOf`, which throws when unstamped. The web parser refuses a timed `/ws/agent` frame without `occurred_at`; Team and Org frames are checked by the contract schemas, which now require it. The handlers create rows with `occurred_at`; pending input uses `accepted_at`; an own send is `null` until the echo (`upsertUserMessageByIdentity` spreads the echo's time) or the input state (`existing.timestamp ?? message.timestamp`) | — |
-| REQ-004 (recorded and reloaded) | Confirmed (round 2: CR-001 resolved) | The memory recorder subscribes only to the run's delivered events (`agent-run-memory-recorder.ts:40-45`), so `occurredAt` is always set. The external writer stamps the node's time when a trace has none (`external-runtime-memory-writer.ts:10-15`), so a stored `ts` is always present | CR-001 |
+| REQ-004 (recorded and reloaded) | Confirmed (round 3: SR-007; stored times are the node's write times) | The memory recorder subscribes only to the run's delivered events (`agent-run-memory-recorder.ts:40-45`), so `occurredAt` is always set. The external writer stamps the node's time when a trace has none (`external-runtime-memory-writer.ts:10-15`), so a stored `ts` is always present | CR-001 |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
@@ -210,11 +215,39 @@ None new.
 - **A gap closed in this round.** The implementer had not run the server integration suite in IR-001. It now passes: 92 files, 523 tests (IMP-17). The clean-environment e2e passes too, and the probe and integration logs show no "has no occurredAt" refusal.
 - No build input changed in round 2, so the fresh-start build and the release run (IMP-14, IMP-15) still hold.
 
+## Round 3 (IR-003): SR-007 and DR-001 Finding 1
+
+- **Why the ruling changes ("Rulings hold" unless new evidence).** CRR-001 asked, and CRR-002 accepted, that the memory recorder read the event's `occurredAt` and fail without it (CR-001, server half). Delivery's DR-001 Finding 2 is new evidence that this shape is wrong:
+  - a trace built from several events took one event's delivery time: a reasoning segment took its first event's, and a tool call written at its result took the result's;
+  - the reload sorts by `ts` (`raw-trace-record-normalizer.ts:121-130`), so stored order departed from write order;
+  - with distinct event times 7 ms apart, 7 of 25 accumulator tests fail (`evidence/delivery/DEL-BLOCK-accumulator-distinct-event-times/`).
+  The suite had passed only because every fixture event shared one millisecond, from `Date.now()` in the helper IR-002 added at CR-001's request. SR-007 (ARCH-REV-004 Pass) is the design's answer, and this round follows it.
+- **Review gap, owned here.** Rounds 1 and 2 traced `occurredAt` from the run's stamp to every stream, but not into a trace the recorder assembles from several events. CR-001 tightened the recorder toward the delivery time without asking which event's time a multi-event trace takes, or whether a time sort over those times keeps write order. A review that tests a time rule should check it with distinct times, which is what delivery did.
+- **SR-007 as built (`ba25165c1e`).**
+  - `provider-compaction-boundary-recorder.ts`, `runtime-tool-trace-sequencer.ts` and `runtime-memory-event-payload.ts` are byte-identical to the base again (`git diff 1f761bc8db 2cbc1b7852`), apart from N-6's comment on `extractTimestamp`.
+  - The accumulator differs from the base only by SR-006's `acceptedAt` for the user trace.
+  - Each trace keeps its payload's own time, else the writer's `Date.now()` (`external-runtime-memory-writer.ts:10-15`). All are node times. N-6 says every current producer sets these fields on the node's machine, and a spot check agrees: Claude's `createdAt` is `nowTimestampSeconds()`.
+  - D-2 rule (a) holds by construction: the user trace is at admission, its notice at its later write.
+  - `serverTimeMsOf` had only one caller left, so it is folded back into `serverTimeOf` (Principle 7). The streams still refuse an unstamped timed event.
+  - CR-001's web half stays: hydration gives `null` for a row without `ts`.
+- **Tests.**
+  - The accumulator, sequencer and notice fixtures now stamp strictly increasing, distinct times 7 ms apart, so no test can pass by a tie.
+  - The CR-001 recorder case is rewritten: with fake time, a trace is stored at its write time whether or not the event was stamped.
+  - On the pre-SR-007 recorder, delivery's 7 cases, the new case and the D-2 external cases fail; with SR-007 they pass (IMP-18).
+- **Finding 1 (`2dbfe43c28`).**
+  - The three contract packages' own fixtures carry `occurred_at` and `accepted_at`.
+  - `agent-presentation-contracts` adds a case refusing a timed message without `occurred_at` or with a number.
+  - All three `pnpm -C <package> test` pass, and `check:contract-dist` passes with `dist/` unchanged (IMP-18). Test-only.
+- **Checks (implementation).**
+  - IMP-18: server unit suite 1081 files; typecheck at baseline; clean integration suite 92 files / 523 tests; the three contract suites.
+  - IMP-19: phone cases MSP-66, 75, 76, 77, 99 and 105, with MSP-105 in order live and reopened; clean server e2e 127 files.
+- **Stored time and live time.** A row's live time (`occurred_at`) and its stored time (the write time) are two node times of the same event, milliseconds apart. Order does not depend on them: live keeps array order (D-1), and the reload keeps write order. REQ-004 holds because no time is the app's own clock. The requirements never asked stored and live times to be equal (SR-007).
+
 ## Findings
 
-| ID | Finding | Classification | Owner | Status (round 2) |
+| ID | Finding | Classification | Owner | Status (round 3) |
 | --- | --- | --- | --- | --- |
-| CR-001 | Never-reached fallbacks to a second clock in code this change wrote or touched | Local Fix | Implementation | Resolved (`eaebb94304`, `8fbffd707f`; IMP-16, IMP-17) |
+| CR-001 | Second-clock fallbacks | Local Fix | Implementation | Resolved in round 2. Its server half (the recorder reads `occurredAt`) is superseded by SR-007 on delivery's evidence; the web half stays |
 
 No open findings.
 
@@ -222,7 +255,8 @@ No open findings.
 
 - Follow-ups this review added (round 1):
   - FU-004: the run list's live navigation time comes from the viewer's clock.
-  - FU-005: `runProjectionActivityHydration.ts` `toDate` falls back to `new Date()` (never reached; the file is not touched here).
+  - FU-005: `runProjectionActivityHydration.ts` `toDate` falls back to `new Date()`.
+- The ticket's own `follow-ups.md` also carries DEC-005's follow-up (one timestamp per event), recorded by the Solution Designer.
 
 ## Classification
 
@@ -230,27 +264,24 @@ No open findings.
 
 ## Recommended Recipient
 
-- API/E2E Engineer (`/api_e2e_engineer`), per the rule "implementation review passes". Implementation Engineer gets the informational notice.
+- API/E2E Engineer (`/api_e2e_engineer`): after an implementation-owned fix, API/E2E runs again. Implementation Engineer gets the informational notice. Delivery resumes with DR-002 after API/E2E.
 
 ## Residual Risks
 
-- Real runtimes (Claude, Codex, native) are left to API/E2E, as the handoff lists:
-  - a Team member on Claude or Codex with the phone's clock behind, live and reopened;
-  - native D-2 rule (b);
-  - a queued message during a restart notice's own turn;
-  - each row's shown time equal to the node's.
-- A user row's shown time differs between live (`received_at`) and reload (`acceptedAt`) by the dispatch delay. Both are the node's times and the order is the same.
-- Same-version deploy is required (DESIGN.md rule 9).
-- FU-002 (five phone cases that fail on the base too), FU-004, FU-005; MSP-61 (autobyteus-609 FU-006).
-- The architecture-review documents are untracked in the worktree.
+- N-6: a future runtime that puts a remote provider's time in `ts`, `timestamp`, `createdAt` or `created_at` would bring a second clock into the reload order. The comment at `extractTimestamp` keeps that visible.
+- The live Claude and native cases (MSP-106/107) were not rerun on the merged tree. Delivery notes this, and the recorder change affects them.
+- Real runtimes, same-version deploy, and FU-002, FU-004, FU-005 as before.
+- The architecture-review documents have uncommitted reviewer edits in the worktree.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2, `Targeted Delta Review`)
+- Review Entry Point: `Implementation Review` (round 3, `Targeted Delta Review`)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; every category ≥ 9.4
+- Material-Premise Gate: `Pass` (N-6 accepted with its comment)
+- Score Summary: 9.4 average; every category ≥ 9.4 (Runtime Correctness 9.4 with SR-007; Cleanup 9.4)
 - Failure Origin: N/A
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: CR-001 is resolved. Round 1's acceptance of the implementer's three points stands.
+- Notes:
+  - CR-001's recorder half is reversed by SR-007 on new evidence (delivery's distinct-time reproduction). That was a review gap in rounds 1 and 2, owned here.
+  - Finding 1 is fixed in the contract tests.

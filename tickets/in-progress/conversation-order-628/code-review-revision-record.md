@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Local Fix (implementation) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, CR-001 fix) | Fail | Pass | CR-001 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | Pass (CRR-002, source) | Pass | None |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003: SR-007, DR-001 Finding 1) | Pass (CRR-003) | Pass | CR-001 (server half superseded) |
 
 ## Revision Entries
 
@@ -102,3 +103,35 @@ None (no prior test-review findings).
 - Material score or classification changes: None
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: N-5 and Codex not run live; no physical phone; FU-002, FU-004, FU-005; 609 FU-006 and FU-007 on the base
+
+### CRR-004 — Round 3 of IR-003 (SR-007, DR-001 Finding 1): Pass; CR-001's recorder half superseded on new evidence
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. Source changes are only in the memory recorder (back to the base apart from SR-006 and N-6) and `serverTimeOf`; the rest is tests. The web is unchanged.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-003); delivery's `delivery-revision-record.md` DR-001 Findings 1 and 2; SR-007; ARCH-REV-004
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-003 test review; CRR-002 source)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - Delivery reproduced that stamping recorded traces with the delivery time reorders multi-event traces on reload: 7 of 25 accumulator tests fail with distinct times. The suite had passed only by ties in the fixture helper written for CR-001.
+  - SR-007 returns every trace to its write time, except the user trace (admission, SR-006), and this round confirms the code does exactly that.
+  - CR-001's server half is superseded on that evidence; its web half stays.
+  - The contract packages' own tests now carry the new fields.
+  - Rounds 1 and 2 missed this. It is recorded as a review gap.
+- Supported product scenario / material-premise basis changes: N-6 (node-local payload times only) accepted, with its comment.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-002) | Resolved; server half superseded by SR-007 | DR-001 Finding 2, SR-007, ARCH-REV-004, IR-003 (`ba25165c1e`) | Recorder files equal to the base apart from SR-006 and N-6 (`git diff 1f761bc8db 2cbc1b7852`); distinct-time fixtures; IMP-18 (the pre-SR-007 recorder fails delivery's 7 cases, the new case and the D-2 external cases; SR-007 passes) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none material; Runtime Correctness stays 9.4 on the new basis
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: N-6; MSP-106/107 not rerun on the merged tree; FU-002, FU-004, FU-005
