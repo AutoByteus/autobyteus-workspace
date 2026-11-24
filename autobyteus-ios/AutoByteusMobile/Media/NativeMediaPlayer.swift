@@ -54,6 +54,7 @@ final class NativeMediaPlayerViewController: UIViewController {
         playerController.view.frame = view.bounds
         playerController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         playerController.didMove(toParent: self)
+        if kind == .audio { addAudioPlaceholder(title: playback?.title ?? "") }
         addBackButton(title: playback?.title ?? "")
         guard let playback else { return showCouldNotPlay() }
         start(playback)
@@ -103,6 +104,50 @@ final class NativeMediaPlayerViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
         setNeedsUpdateOfSupportedInterfaceOrientations()
         view.window?.windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: on ? .landscape : .portrait)) { _ in }
+    }
+
+    /// An audio file has no picture: the player shows an audio symbol and the file's name instead, over AVKit's own
+    /// artwork and under its controls, which AVKit still hides while it plays and shows on a tap (autobyteus-642 SR-003 C-2).
+    private func addAudioPlaceholder(title: String) {
+        guard let content = playerController.contentOverlayView else { return }
+        let overlay = UIView()
+        overlay.backgroundColor = .black
+        // A tap still reaches AVKit, which shows its controls.
+        overlay.isUserInteractionEnabled = false
+        overlay.translatesAutoresizingMaskIntoConstraints = false
+        content.addSubview(overlay)
+        NSLayoutConstraint.activate([
+            overlay.topAnchor.constraint(equalTo: content.topAnchor),
+            overlay.bottomAnchor.constraint(equalTo: content.bottomAnchor),
+            overlay.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            overlay.trailingAnchor.constraint(equalTo: content.trailingAnchor),
+        ])
+        let symbol = UIImageView(image: UIImage(systemName: "waveform"))
+        symbol.tintColor = .lightGray
+        symbol.contentMode = .scaleAspectFit
+        symbol.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 72, weight: .regular)
+        symbol.isAccessibilityElement = true
+        symbol.accessibilityLabel = title
+        symbol.accessibilityIdentifier = "media.audioSymbol"
+        let name = UILabel()
+        name.text = title
+        name.textColor = .white
+        name.font = .preferredFont(forTextStyle: .title3)
+        name.textAlignment = .center
+        name.numberOfLines = 2
+        name.lineBreakMode = .byTruncatingMiddle
+        let stack = UIStackView(arrangedSubviews: [symbol, name])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        overlay.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
+            stack.leadingAnchor.constraint(greaterThanOrEqualTo: overlay.leadingAnchor, constant: 24),
+            stack.trailingAnchor.constraint(lessThanOrEqualTo: overlay.trailingAnchor, constant: -24),
+        ])
     }
 
     private func addBackButton(title: String) {

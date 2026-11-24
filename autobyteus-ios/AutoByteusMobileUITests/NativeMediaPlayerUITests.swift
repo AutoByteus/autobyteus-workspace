@@ -53,7 +53,13 @@ final class NativeMediaPlayerUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 5)
         XCTAssertFalse(app.staticTexts["media.couldNotPlay"].exists, "the audio plays")
         XCTAssertFalse(isLandscape(app), "an audio file stays in portrait")
+        // With the controls hidden while it plays, the screen still shows an audio symbol and the name (642 C-2).
+        XCTAssertTrue(app.images["media.audioSymbol"].exists, "the audio symbol")
+        XCTAssertGreaterThanOrEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "memo.mp3")).count, 2, "the name in the bar and under the symbol")
         attach(app, "audio-portrait")
+        app.otherElements["media.player"].coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
+        XCTAssertTrue(app.sliders.firstMatch.waitForExistence(timeout: 5), "a tap shows the player's audio controls")
+        attach(app, "audio-controls")
 
         app.buttons["media.back"].tap()
         XCTAssertTrue(wait(timeout) { !app.otherElements["media.player"].exists }, "Back closes the player")
