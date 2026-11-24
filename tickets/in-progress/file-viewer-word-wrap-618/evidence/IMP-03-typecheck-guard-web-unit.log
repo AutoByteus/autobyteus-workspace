@@ -1,0 +1,20 @@
+# IMP-03
+# Command: pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-web guard:web-boundary; env -i PATH HOME=<temp> TMPDIR USER pnpm -C autobyteus-web exec vitest --run (the whole web unit suite)
+# Commit: 0f5e844087
+# Environment: macOS (Darwin 25.5.0); agent shell for the typecheck and guard; clean env for the suite
+# Date: 2026-11-24
+
+## typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 44.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.0s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+## guard
+> autobyteus@1.5.14 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-word-wrap-618/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+## web unit suite
+ Test Files  804 passed (804)
+      Tests  6138 passed | 2 skipped (6140)

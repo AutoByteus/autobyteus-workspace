@@ -1,0 +1,1503 @@
+{
+  "startedAt": "2026-11-24T18:02:32.083Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 59434,
+      "nodeId": "srv_K1ZhlQBzPiuLLeS683UcIWcLMk71UnMU",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 59435,
+      "nodeId": "srv_3_mIjYCrB9Q2jtd9U83UeLgF5N3oFox_",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_fbe34ed8c1a94186b5b827d330ee9c55",
+    "writerRun": "release_notes_writer_e51bd36b8ddb4bc29a2881e0edf33eb1",
+    "squadRun": "docs_review_team_d9d5bdbf49834d8ab5f087f61c8d41cf",
+    "reviewer": "release_notes_writer_e4091e361dfd4a248ea38a0ae5c13096",
+    "memberDelegated": "fact_checker_4cdd222ecb754e7497bcd52b17416140",
+    "remoteAgentRun": "publisher_f0f61472445449369fa1f39686bb61b5",
+    "remoteTeamRun": "studio_team_0e51ce0684ff4500a395957ad4dd58c2",
+    "plain": [
+      "fact_checker_5b034f78d1e447e989363681cfb79711",
+      "fact_checker_0b4231095ffb472a812d2b61cf715ace",
+      "fact_checker_8a86c25c776d4f7bb2ecf0cb520e73ce"
+    ],
+    "org": "delivery_org_2e0bc4be18914cc084e0591ea1852b69",
+    "orgPlanner": "release_notes_writer_20bc6706067943578d105cf45947368f",
+    "reviewOrg": "review_org_d7c53b7c174b40a8a3c1a5ac79e9e3fb",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_0f189cfddf3b4ad499f6f15a37f3eec0",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_986b750cfc8b42209c47cd4ce3bc393e",
+    "deliveryLead": "fact_checker_a379271e66e246e19e13070e2fde98b4",
+    "deliveryMate": "release_notes_writer_ddcb75c90fc1454ea5c66dee6a6ed760",
+    "leadDelegated": "changelog_helper_bf6b9c9c82d54e6a8d8cafa9d79be766",
+    "approver": "approver_f19c62544dcc4b8ea026cc80301bcf9e",
+    "taskA": "launch-966a53-1",
+    "taskB": "launch-966a53-2"
+  },
+  "cases": {
+    "MSP-108": {
+      "result": "Pass",
+      "seconds": 25,
+      "summary": [
+        {
+          "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+          "failures": [],
+          "editorWidth": 131,
+          "rows": 38,
+          "numberedRows": 5,
+          "wrapped": 33,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+          "failures": [],
+          "editorWidth": 1372,
+          "rows": 10,
+          "numberedRows": 8,
+          "wrapped": 2,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+          "failures": [],
+          "editorWidth": 131,
+          "rows": 38,
+          "numberedRows": 8,
+          "wrapped": 28,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+          "failures": [],
+          "editorWidth": 1372,
+          "rows": 19,
+          "numberedRows": 18,
+          "wrapped": 1,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+          "failures": [],
+          "editorWidth": 131,
+          "rows": 38,
+          "numberedRows": 3,
+          "wrapped": 35,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+          "failures": [],
+          "editorWidth": 1372,
+          "rows": 7,
+          "numberedRows": 5,
+          "wrapped": 2,
+          "past": 0
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+          "failures": [],
+          "editorWidth": 1372,
+          "rows": 5,
+          "numberedRows": 5,
+          "wrapped": 0,
+          "past": 2
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+          "failures": [],
+          "editorWidth": 1372,
+          "rows": 7,
+          "numberedRows": 5,
+          "wrapped": 2,
+          "past": 0
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 131,
+            "contentRight": 1426,
+            "rows": 38,
+            "numberedRows": 5,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  \"applicatio"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  ns/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  brief-studi"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  o/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  backend-src"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  /"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  a-package-f"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  older-with-"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  a-long-name"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  /"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  that-keeps-"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  going/past/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  any-narrow-"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  panel/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  and-past-a-"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  maximized-d"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  esktop-edit"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  or-too/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  because-the"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  -wrap-check"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  -needs-a-li"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  ne-wider-th"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  an-any-wind"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  ow/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  with-more-f"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  olders/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  still-going"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  /**\""
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  \"autobyteus"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  -web\""
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  s/"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  a-dependenc"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  y-with-a-re"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 1372,
+            "contentRight": 1426,
+            "rows": 10,
+            "numberedRows": 8,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  because-the-wrap-check"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  5678-and-more-build-me"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 131,
+            "contentRight": 1426,
+            "rows": 38,
+            "numberedRows": 8,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "2",
+                "lineTextLeft": 1326,
+                "rowTextLeft": 1326,
+                "start": "  tions\": {"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    \"ES2022\","
+              },
+              {
+                "line": "4",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    \"NodeNext"
+              },
+              {
+                "line": "4",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    \","
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "     true,"
+              },
+              {
+                "line": "6",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    {"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      yteus/"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      applica"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      tion-sd"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      k-contr"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      acts/"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 1360,
+                "rowTextLeft": 1360,
+                "start": "      *\": ["
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        autob"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        yteus"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        -appl"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        icati"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        on-sd"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        k-con"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        tract"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        s/"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        src/"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        a-ver"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        y-lon"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        g-fol"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        der-n"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        ame-t"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        hat-d"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 1376,
+                "rowTextLeft": 1376,
+                "start": "        oes-n"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-panel-tsconfig.json.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 1372,
+            "contentRight": 1426,
+            "rows": 19,
+            "numberedRows": 18,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        because-it-keeps"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-maximized-tsconfig.json.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 131,
+            "contentRight": 1426,
+            "rows": 38,
+            "numberedRows": 3,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "This first "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "paragraph is "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "one long "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "line, as a "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "draft "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "written in a "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "plain text "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "editor often "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "is: it goes "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "on past the "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "right edge "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "of any phone "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "and of a "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "narrow "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "panel, and "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "even past "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "the edge of "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "a maximized "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "desktop "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "editor, "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "because it "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "keeps going "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "with more "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "and more "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "words, so it "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "must wrap to "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 1309,
+                "rowTextLeft": 1309,
+                "start": "be read."
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    indented "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    line, "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    four "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    spaces "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    in, that "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    is also "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    much "
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 1343,
+                "rowTextLeft": 1343,
+                "start": "    longer "
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-panel-draft-v1.txt.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 1372,
+            "contentRight": 1426,
+            "rows": 7,
+            "numberedRows": 5,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "narrow panel, and even p"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    rows show whether th"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 1372,
+            "contentRight": 1426,
+            "rows": 5,
+            "numberedRows": 5,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "past": [
+              {
+                "number": "1",
+                "right": 2580,
+                "start": "DRAFT-618 This first par"
+              },
+              {
+                "number": "3",
+                "right": 1897,
+                "start": "    An indented line, fo"
+              }
+            ],
+            "wrapped": [],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off.png"
+        },
+        {
+          "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+          "viewport": "1440x900",
+          "failures": [],
+          "measured": {
+            "editorWidth": 1372,
+            "contentRight": 1426,
+            "rows": 7,
+            "numberedRows": 5,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "narrow panel, and even p"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    rows show whether th"
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again.png"
+        }
+      ]
+    },
+    "MSP-109": {
+      "result": "Pass",
+      "seconds": 7.4,
+      "summary": [
+        {
+          "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+          "failures": [],
+          "editorWidth": 322,
+          "rows": 24,
+          "numberedRows": 8,
+          "wrapped": 16,
+          "past": 0
+        },
+        {
+          "name": "MSP-109-phone-390-tsconfig.json",
+          "failures": [],
+          "editorWidth": 322,
+          "rows": 32,
+          "numberedRows": 18,
+          "wrapped": 14,
+          "past": 0
+        },
+        {
+          "name": "MSP-109-phone-390-draft-v1.txt",
+          "failures": [],
+          "editorWidth": 322,
+          "rows": 20,
+          "numberedRows": 5,
+          "wrapped": 15,
+          "past": 0
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "editorWidth": 322,
+            "contentRight": 376,
+            "rows": 24,
+            "numberedRows": 8,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  backend-src/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  a-package-folder-with-"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  that-keeps-going/past/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  any-narrow-panel/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  and-past-a-maximized-d"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  r-too/"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  because-the-wrap-check"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  e-wider-than-any-windo"
+              },
+              {
+                "line": "2",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  with-more-folders/stil"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  a-dependency-with-a-re"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  oped-package-name-for-"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  ck\": \"^1.2.3-beta.4+bu"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  5678-and-more-build-me"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  runs-on-past-the-edge-"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  ed-desktop-editor-as-w"
+              },
+              {
+                "line": "5",
+                "lineTextLeft": 85,
+                "rowTextLeft": 85,
+                "start": "  aps-there-too\""
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-109-phone-390-pnpm-workspace.yaml.png"
+        },
+        {
+          "name": "MSP-109-phone-390-tsconfig.json",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "editorWidth": 322,
+            "contentRight": 376,
+            "rows": 32,
+            "numberedRows": 18,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "7",
+                "lineTextLeft": 119,
+                "rowTextLeft": 119,
+                "start": "      application-sdk-co"
+              },
+              {
+                "line": "7",
+                "lineTextLeft": 119,
+                "rowTextLeft": 119,
+                "start": "      ["
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        autobyteus-appli"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        ontracts/src/"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        a-very-long-fold"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        -does-not-fit/"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        in-a-narrow-pane"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        nor-in-a-maximiz"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        ditor/"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        because-it-keeps"
+              },
+              {
+                "line": "8",
+                "lineTextLeft": 135,
+                "rowTextLeft": 135,
+                "start": "        more-and-more-fo"
+              },
+              {
+                "line": "15",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    a-folder-with-a-long"
+              },
+              {
+                "line": "15",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    nerated-sources-that"
+              },
+              {
+                "line": "15",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    e-edge/**/*.ts\""
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-109-phone-390-tsconfig.json.png"
+        },
+        {
+          "name": "MSP-109-phone-390-draft-v1.txt",
+          "viewport": "390x844",
+          "failures": [],
+          "measured": {
+            "editorWidth": 322,
+            "contentRight": 376,
+            "rows": 20,
+            "numberedRows": 5,
+            "lineNumbers": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "past": [],
+            "wrapped": [
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "one long line, as a draf"
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "in a plain text editor o"
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "goes on past the right e"
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "phone and of a narrow pa"
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "even past the edge of a "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "desktop editor, because "
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "going with more and more"
+              },
+              {
+                "line": "1",
+                "lineTextLeft": 68,
+                "rowTextLeft": 68,
+                "start": "it must wrap to be read."
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    in, that is also muc"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    than the editor is w"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    when the editor is m"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    a desktop window, so"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    wrapped rows show wh"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    keep its indentation"
+              },
+              {
+                "line": "3",
+                "lineTextLeft": 102,
+                "rowTextLeft": 102,
+                "start": "    spaces."
+              }
+            ],
+            "misindented": [],
+            "pageScrollsSideways": false
+          },
+          "screenshot": "MSP-109-phone-390-draft-v1.txt.png"
+        }
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-109",
+      "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-109",
+      "label": "phone",
+      "url": "http://192.168.77.24:59434/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-109",
+      "label": "phone",
+      "url": "http://192.168.77.24:59434/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-109",
+      "label": "phone",
+      "url": "http://192.168.77.24:59434/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileWordWrap": {
+    "run": "fact_checker_a942246c46964fde9caadf5ed863a6cd",
+    "dir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-ABh5lt/alpha/workspace/word-wrap-618"
+  },
+  "summary": {
+    "cases": {
+      "MSP-108": "Pass",
+      "MSP-109": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-24T18:04:07.239Z"
+}
