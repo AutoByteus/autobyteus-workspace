@@ -216,12 +216,12 @@ Evidence is under `tickets/in-progress/conversation-order-628/evidence/implement
 | IMP-11 | the whole phone probe, after rebuilding the server and the phone bundle; base comparison of its failing cases | `0b60b9f668` build | as IMP-03 | the whole stack | AC-005; MSP-105 for AC-001…AC-003 | Pass for this change: 97 Pass, 6 Fail, all six failing on the base too (MSP-17/58/65/82/87 = FU-002; MSP-61 = autobyteus-609 FU-006) | `IMP-11-whole-phone-probe/` | `unknownBrowserErrors: 0`; `MSP-105: Pass` |
 | IMP-12 | `cd autobyteus-server-ts && env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e`, after `build` and `test:integration:prepare` | `6ad8920bd6` | macOS, Node 22, clean environment, scripted runtimes | the whole server over HTTP/WebSocket | AC-005 | Pass | `IMP-12-server-e2e-clean-env.log` | `Test Files  127 passed \| 165 skipped`, `Tests  573 passed` |
 | IMP-13 | the agent-execution, agent-streaming, team-execution, agent-memory and run-history unit folders; server typecheck | `6ad8920bd6` | macOS, Node 22 | the `stampForDelivery` move | REQ-004 | Pass | `IMP-13-stamp-move.log` | `320 passed \| 4 skipped`; `[typecheck] PASS` |
-| IMP-14 | PENDING (fresh-start build) | | | | | | | |
-| IMP-15 | PENDING (build-only release run) | | | | | | | |
+| IMP-14 | fresh `--no-local` clone; `pnpm install --frozen-lockfile`; `pnpm build:electron:mac -- --arm64` with the job's env; the job's Prisma and terminal-runtime verify steps | `3e4c6322a4` (code = `6ad8920bd6`) | macOS arm64, Node 22, `env -i` | the release build's gates, packaging, the contract `dist/` as build inputs | DESIGN.md rule 12 | Pass | `IMP-14-fresh-start-build.log` | `build=0`, `verify-prisma=0`, `verify-terminal=0`, `[typecheck] PASS` |
+| IMP-15 | `pnpm release:test --ref codex/conversation-order-628`; `gh run watch 45293566395 --exit-status` | `5c598ffca8` (code = `6ad8920bd6`) | GitHub Actions, release-desktop.yml, build only | all five desktop targets | DESIGN.md rule 12 | Pass | `IMP-15-build-only-desktop-release.log` | `conclusion: success`; 6 build jobs success; sign and publish skipped |
 
 - Not run, and why:
   - real provider runtimes (left to API/E2E; the probes use scripted runtimes);
-  - signing, notarization and Windows/Linux packaging locally (the build-only release run covers the packaging);
+  - signing and notarization (the build-only run skips them; they need the release's secrets). Packaging for Windows, Linux and macOS x64 ran in IMP-15;
   - the iOS and Android apps (the phone surface checked is the mobile web bundle the probe serves).
 
 ## Frontend Rendered-Result Check (When Applicable)
