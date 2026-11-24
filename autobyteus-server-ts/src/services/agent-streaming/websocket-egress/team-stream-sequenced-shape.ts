@@ -15,10 +15,11 @@ export const teamStreamSequencedShape: SequencedStreamShape<TeamStreamServerMess
   },
   contentOf: (message) => {
     if (message.type !== "SEGMENT_CONTENT") return null;
-    const { agent_run_id, segment_id, turn_id, segment_type, delta } = message.payload;
+    const { agent_run_id, segment_id, turn_id, segment_type, delta, occurred_at } = message.payload;
     return {
       identityKey: JSON.stringify([agent_run_id, segment_id, turn_id, segment_type]),
-      item: { agent_run_id, segment_id, turn_id, segment_type },
+      // A batch item keeps the time its segment's text first appeared in the window (autobyteus-628 D-3).
+      item: { agent_run_id, segment_id, turn_id, segment_type, occurred_at },
       delta,
     };
   },

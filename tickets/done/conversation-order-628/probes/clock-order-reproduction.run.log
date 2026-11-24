@@ -1,0 +1,55 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | services/eventMonitor/__tests__/sd628-clock-order.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/sd628-clock-order.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/eventMonitor/__tests__/sd628-clock-order.spec.ts (2 tests | 1 failed) 7ms
+   ✓ autobyteus-628 reproduction > same clock: your message before the notice and reply 2ms
+   × autobyteus-628 reproduction > phone 1 s behind the node: your message after the reply (the founder's screenshots) 4ms
+     → expected [ …(4) ] to deeply equal [ …(4) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/eventMonitor/__tests__/sd628-clock-order.spec.ts > autobyteus-628 reproduction > phone 1 s behind the node: your message after the reply (the founder's screenshots)
+AssertionError: expected [ …(4) ] to deeply equal [ …(4) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "agent:please confirm: go back ",[22m
+[32m-   "You",[39m
+[2m    "notice",[22m
+[2m    "agent:My recommendation stands",[22m
+[31m+   "You",[39m
+[2m  ][22m
+
+ ❯ services/eventMonitor/__tests__/sd628-clock-order.spec.ts:40:23
+     38|   it('phone 1 s behind the node: your message after the reply (the fou…
+     39|     vi.useFakeTimers();
+     40|     expect(run(1000)).toEqual(['agent:please confirm: go back ', 'You'…
+       |                       ^
+     41|   });
+     42| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  18:08:31
+   Duration  8.21s (transform 4.00s, setup 7.63s, collect 24ms, tests 7ms, environment 134ms, prepare 131ms)
+

@@ -204,9 +204,38 @@ describe("AgentRun input admission", () => {
     }));
     expect(lifecycle).toEqual([
       { kind: "admitted" },
-      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" },
+      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1", acceptedAt: expect.any(String) },
       { kind: "turn_associated", turnId: "turn-1" },
     ]);
+  });
+
+  // autobyteus-628 SR-006: the message is recorded at the node's admission time, the time the input state shows, not at
+  // the later time the provider took it (a notice published in between must not sort before it).
+  it("tells the forwarding observers the input's admission time, not the time it was forwarded", async () => {
+    const admittedAt = Date.parse("2026-11-23T16:55:09.000Z");
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(admittedAt);
+      const deferred = createDeferred<AgentRunBackendInputDispatchResult>();
+      const onUserMessageForwarded = vi.fn();
+      const harness = createHarness({ dispatchUserInput: vi.fn().mockReturnValue(deferred.promise), commandObserver: { onUserMessageForwarded } });
+      const lifecycle: AgentRunInputLifecycle[] = [];
+      const inputStates: AgentRunEvent[] = [];
+      harness.run.subscribeToEvents((item) => { if (item.eventType === AgentRunEventType.AGENT_INPUT_STATE) inputStates.push(item); });
+
+      await harness.run.postUserMessage(new AgentInputUserMessage("start"), { lifecycleObserver: (fact) => lifecycle.push(fact) });
+      vi.setSystemTime(admittedAt + 5_000);
+      deferred.resolve({ forwarded: true, turnId: "turn-1" });
+      await vi.waitFor(() => expect(onUserMessageForwarded).toHaveBeenCalledOnce());
+
+      const iso = new Date(admittedAt).toISOString();
+      expect(onUserMessageForwarded.mock.calls[0]?.[0].acceptedAt).toEqual(new Date(admittedAt));
+      expect(lifecycle).toContainEqual({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1", acceptedAt: iso });
+      const entries = (inputStates.at(-1)?.payload as { entries: Array<{ accepted_at: string }> }).entries;
+      expect(entries.map((entry) => entry.accepted_at)).toEqual([iso]);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("claims exact active Codex append and exposes only that atomic turn id", async () => {
@@ -427,7 +456,7 @@ describe("AgentRun input admission", () => {
     }));
     expect(lifecycle).toEqual([
       { kind: "admitted" },
-      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-sync" },
+      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-sync", acceptedAt: expect.any(String) },
       { kind: "turn_associated", turnId: "turn-sync" },
       { kind: "completed", turnId: "turn-sync" },
     ]);
@@ -675,7 +704,7 @@ describe("AgentRun input admission", () => {
     await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce());
     dispatch.resolve({ forwarded: true, turnId: "turn-reserved" });
     await vi.waitFor(() => expect(lifecycle).toContainEqual({
-      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-reserved",
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-reserved", acceptedAt: expect.any(String),
     }));
     harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-reserved" } });
     await harness.getSourceListener()?.([
@@ -762,7 +791,7 @@ describe("AgentRun input admission", () => {
     expect(terminate).not.toHaveBeenCalled();
     firstDispatch.resolve({ forwarded: true, turnId: "turn-1" });
     await vi.waitFor(() => expect(firstLifecycle).toContainEqual({
-      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1",
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1", acceptedAt: expect.any(String),
     }));
     harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" } });
     await harness.getSourceListener()?.([
@@ -775,7 +804,7 @@ describe("AgentRun input admission", () => {
     await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledTimes(2));
     secondDispatch.resolve({ forwarded: true, turnId: "turn-2" });
     await vi.waitFor(() => expect(secondLifecycle).toContainEqual({
-      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-2",
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-2", acceptedAt: expect.any(String),
     }));
     harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-2" } });
     await harness.getSourceListener()?.([
@@ -873,7 +902,7 @@ describe("AgentRun input admission", () => {
     await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledWith("turn-fenced"));
     dispatch.resolve({ forwarded: true, turnId: "turn-fenced" });
     await vi.waitFor(() => expect(lifecycle).toContainEqual({
-      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-fenced",
+      kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-fenced", acceptedAt: expect.any(String),
     }));
 
     harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });

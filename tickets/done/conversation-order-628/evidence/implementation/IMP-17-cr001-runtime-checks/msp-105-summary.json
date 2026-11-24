@@ -1,0 +1,173 @@
+{
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-105": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "MSP-105": {
+  "result": "Pass",
+  "seconds": 27.6,
+  "team": "order_team_be292582b38b4314b2f52e254577fd68",
+  "lead": "order_lead_f8c6e9346311445581911a145d36ce11",
+  "rounds": [
+   {
+    "label": "phone-order-behind-sends",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2001,
+    "sender": "phone",
+    "marker": "ORDER-628-7f598d72",
+    "live": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795482740.609",
+     "message:user@1795482745.671",
+     "system_task_notification@1795482745.677",
+     "message:assistant@1795482745.683"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-ahead-sends",
+    "offsetMs": 2000,
+    "clockOffsetMs": 2000,
+    "sender": "phone",
+    "marker": "ORDER-628-aa3a3fd3",
+    "live": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795482745.683",
+     "message:user@1795482754.021",
+     "system_task_notification@1795482754.026",
+     "message:assistant@1795482754.036"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-behind-watches",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2002,
+    "sender": "another client",
+    "marker": "ORDER-628-8c962618",
+    "live": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795482754.036",
+     "message:user@1795482762.786",
+     "system_task_notification@1795482762.796",
+     "message:assistant@1795482762.802"
+    ],
+    "nodeNoticeAfterMessage": true
+   }
+  ]
+ }
+}

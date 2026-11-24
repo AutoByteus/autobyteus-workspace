@@ -1,10 +1,15 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema, compactionRecoveryEventSchema } from "./agent-input-state-dto.js";
 import { z } from "zod";
-import { agentAddressSchema, finiteNumberSchema, jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
+import { agentAddressSchema, finiteNumberSchema, jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, serverTimeSchema, } from "./schema-helpers.js";
 import { agentTokenUsageRunSummarySchema } from "./token-usage-presentation-dto.js";
 const turnId = nullableNonEmptyStringSchema;
 const segmentType = z.enum(["text", "tool_call", "write_file", "edit_file", "run_bash", "reasoning", "media"]);
 const toolCore = { invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId };
+/**
+ * `occurred_at`: the time the run's node recorded the event (autobyteus-628 D-3), on the messages whose reader creates or
+ * times a conversation row (an agent message, a tool call and its Activity row, a notice, an error, a compaction row).
+ */
+const occurredAt = { occurred_at: serverTimeSchema };
 const status = {
     recoverableBlock: compactionRecoveryBlockSchema.nullable(),
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
@@ -71,14 +76,15 @@ const compaction = {
     provider_session_id: nullableNonEmptyStringSchema, provider_thread_id: nullableNonEmptyStringSchema,
     provider_timestamp: nullableFiniteNumberSchema, trigger: nullableNonEmptyStringSchema,
     pre_tokens: nullableFiniteNumberSchema, rotation_eligible: z.boolean().nullable(),
+    ...occurredAt,
 };
 export const agentPresentationPayloadSchemas = {
     SYSTEM_INSTRUCTIONS_SUPPLIED: z.object({ trace_id: nonEmptyStringSchema, content: z.string(), ts: finiteNumberSchema.positive() }).strict(),
     TURN_STARTED: z.object({ turn_id: turnId }).strict(),
     TURN_COMPLETED: z.object({ turn_id: turnId, reason: nullableNonEmptyStringSchema }).strict(),
     TURN_INTERRUPTED: z.object({ turn_id: turnId, reason: nullableNonEmptyStringSchema }).strict(),
-    SEGMENT_START: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, segment_type: segmentType, metadata: jsonValueSchema.nullable() }).strict(),
-    SEGMENT_CONTENT: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, segment_type: segmentType, delta: z.string() }).strict(),
+    SEGMENT_START: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, segment_type: segmentType, metadata: jsonValueSchema.nullable(), ...occurredAt }).strict(),
+    SEGMENT_CONTENT: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, segment_type: segmentType, delta: z.string(), ...occurredAt }).strict(),
     SEGMENT_END: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, metadata: jsonValueSchema.nullable(), interrupted: z.boolean(), reason: nullableNonEmptyStringSchema, failed: z.boolean(), error: nullableNonEmptyStringSchema }).strict(),
     AGENT_STATUS: z.object(status).strict(),
     COMPACTION_STATUS: z.object(compaction).strict(),
@@ -87,17 +93,18 @@ export const agentPresentationPayloadSchemas = {
     AGENT_INPUT_STATE: agentInputStateSchema,
     TOKEN_USAGE_UPDATED: z.object(token).strict(),
     ASSISTANT_COMPLETE: z.object({ content: z.string().nullable(), reasoning: z.string().nullable(), usage: jsonValueSchema.nullable(), image_urls: z.array(nonEmptyStringSchema), audio_urls: z.array(nonEmptyStringSchema), video_urls: z.array(nonEmptyStringSchema) }).strict(),
-    TOOL_APPROVAL_REQUESTED: z.object({ ...toolCore, arguments: jsonValueSchema }).strict(),
-    TOOL_APPROVED: z.object({ ...toolCore, reason: nullableNonEmptyStringSchema }).strict(),
-    TOOL_DENIED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nullableNonEmptyStringSchema, error: nullableNonEmptyStringSchema }).strict(),
-    TOOL_EXECUTION_STARTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable() }).strict(),
-    TOOL_EXECUTION_SUCCEEDED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), result: jsonValueSchema.nullable() }).strict(),
-    TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema }).strict(),
-    TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }).strict(),
-    TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }).strict(),
+    TOOL_APPROVAL_REQUESTED: z.object({ ...toolCore, arguments: jsonValueSchema, ...occurredAt }).strict(),
+    TOOL_APPROVED: z.object({ ...toolCore, reason: nullableNonEmptyStringSchema, ...occurredAt }).strict(),
+    TOOL_DENIED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nullableNonEmptyStringSchema, error: nullableNonEmptyStringSchema, ...occurredAt }).strict(),
+    TOOL_EXECUTION_STARTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), ...occurredAt }).strict(),
+    TOOL_EXECUTION_SUCCEEDED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), result: jsonValueSchema.nullable(), ...occurredAt }).strict(),
+    TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema, ...occurredAt }).strict(),
+    TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema, ...occurredAt }).strict(),
+    /** Timed: a log that arrives before its call's start creates the call's row (autobyteus-628 D-3). */
+    TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId, ...occurredAt }).strict(),
     BACKGROUND_TASK_UPDATED: z.object({ task_id: nonEmptyStringSchema, kind: backgroundTaskKindSchema, description: z.string(), command: z.string().nullable(), status: backgroundTaskStatusSchema, summary: z.string().nullable(), end_reason: backgroundTaskEndReasonSchema.nullable(), exit_code: z.number().int().nullable(), started_at: nonEmptyStringSchema }).strict(),
     /** `message_id`: the notice's one id, the same on every copy (autobyteus-526); null for a notice that has none. */
-    SYSTEM_TASK_NOTIFICATION: z.object({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: executionIdentity }).strict()]), content: z.string(), message_id: nonEmptyStringSchema.nullable() }).strict(),
+    SYSTEM_TASK_NOTIFICATION: z.object({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: executionIdentity }).strict()]), content: z.string(), message_id: nonEmptyStringSchema.nullable(), ...occurredAt }).strict(),
     ARTIFACT_PERSISTED: z.object({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
     FILE_CHANGE: z.object({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
     MEMBER_INPUT_MESSAGE: z.object({ message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema, content: z.string(), input_origin: z.enum(["user_message", "inter_agent_delivery"]), received_at: nonEmptyStringSchema, context_file_paths: z.array(contextPath), sender_agent_run_id: nonEmptyStringSchema.nullable(), parent_communication_message_id: nonEmptyStringSchema.nullable() }).strict(),
@@ -106,6 +113,7 @@ const errorCommon = {
     code: nonEmptyStringSchema, message: nonEmptyStringSchema, details: z.string().nullable().optional(),
     provider_status: z.union([z.number().finite(), nonEmptyStringSchema]).nullable().optional(),
     provider_code: nullableNonEmptyStringSchema.optional(), provider_request_id: nullableNonEmptyStringSchema.optional(),
+    ...occurredAt,
 };
 export const agentPresentationErrorPayloadSchemas = {
     unscoped: z.object({ ...errorCommon, error_scope: z.null(), error_effect: z.null(), turn_id: z.null() }).strict(),

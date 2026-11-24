@@ -30,7 +30,7 @@ describe("a notice's one id on every copy (autobyteus-526 SR-002)", () => {
   it("the agent stream carries the id, and null for a notice that has none", () => {
     const mapper = getAgentRunEventMessageMapper();
     const notice = (payload: Record<string, unknown>): AgentRunEvent =>
-      ({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "run-1", payload, statusHint: null });
+      ({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "run-1", payload, statusHint: null, occurredAt: 1795452909697 });
     expect(mapper.map(notice({ sender_id: "system.restart_resume", content: "x", message_id: "notice-1" })).payload)
       .toMatchObject({ sender_id: "system.restart_resume", content: "x", message_id: "notice-1" });
     expect(mapper.map(notice({ sender_id: "system", content: "x" })).payload).toMatchObject({ message_id: null });
@@ -49,10 +49,10 @@ describe("a notice's one id on every copy (autobyteus-526 SR-002)", () => {
 
   it("the collaboration presentation carries the id (strict contract; required, nullable)", () => {
     const message = projectAgentPresentationMessage({ eventType: "SYSTEM_TASK_NOTIFICATION",
-      details: { sender: { kind: "system" }, content: "x", messageId: "notice-1" }, statusHint: null } as never);
-    expect(message).toEqual({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x", message_id: "notice-1" } });
-    expect(agentPresentationMessageSchema.parse({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x", message_id: null } }))
+      details: { sender: { kind: "system" }, content: "x", messageId: "notice-1" }, statusHint: null, occurredAt: 1795452909697 } as never);
+    expect(message).toEqual({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x", message_id: "notice-1", occurred_at: "2026-11-23T16:55:09.697Z" } });
+    expect(agentPresentationMessageSchema.parse({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x", message_id: null, occurred_at: "2026-11-23T16:55:09.697Z" } }))
       .toMatchObject({ payload: { message_id: null } });
-    expect(() => agentPresentationMessageSchema.parse({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x" } })).toThrow();
+    expect(() => agentPresentationMessageSchema.parse({ type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: "x", occurred_at: "2026-11-23T16:55:09.697Z" } })).toThrow();
   });
 });

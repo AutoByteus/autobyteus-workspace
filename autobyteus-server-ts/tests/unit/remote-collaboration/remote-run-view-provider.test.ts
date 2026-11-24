@@ -138,7 +138,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const opened = await f.gateway.openRunObservation(body, peerCallerOfBody(body), sink);
     if (!opened.answer.accepted || !("observation" in opened.answer)) throw new Error("expected an observation");
     expect(f.access.observeRunAgents).not.toHaveBeenCalled();
-    f.emitLead({ runId: "lead-run", eventType: "SEGMENT_START", payload: { id: "s", turn_id: "t", segment_type: "text" }, statusHint: null });
+    f.emitLead({ runId: "lead-run", eventType: "SEGMENT_START", payload: { id: "s", turn_id: "t", segment_type: "text" }, statusHint: null, occurredAt: 1795452909697 });
     expect(sink.send).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: "lead-run", liveSequenceId: expect.any(String),
       frame: expect.objectContaining({ type: "SEGMENT_START", sequence: 1 }) }));
     opened.answer.observation.close();

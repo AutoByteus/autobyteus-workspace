@@ -27,7 +27,7 @@ import type {
 import { createAgentRunInputReservation } from "../input/agent-run-input-reservation.js";
 import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
 import type { AgentRunContext } from "./agent-run-context.js";
-import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
+import { AgentRunEventType, stampForDelivery, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
 import type { AgentRunInputPreface, AgentRunPreface } from "./agent-run-input-preface.js";
 import { AgentRunInputPrefaceDispatch, canCarryPreface, combinePreface } from "./agent-run-input-preface-dispatch.js";
@@ -220,7 +220,7 @@ export class AgentRun {
     void this.dispatchQueue.enqueue(this.runId, () => {
       if (closed) return;
       this.reconcileRecovery();
-      const snapshot = this.inputStateEvent(this.refreshInputState());
+      const snapshot = stampForDelivery(this.inputStateEvent(this.refreshInputState()));
       this.broadcastUnpublishedInputState(snapshot);
       this.listeners.add(listener);
       try { listener(snapshot); } catch (error) { logger.warn(`[AgentRun] snapshot listener failed: ${String(error)}`); }
@@ -337,7 +337,7 @@ export class AgentRun {
   private async publishSourceEvents(events: readonly AgentRunEvent[]): Promise<void> {
     await dispatchProcessedAgentRunEvents({
       runContext: this.backend.getContext(),
-      listeners: this.listeners,
+      deliver: (event) => this.deliverToListeners(event, `listener failed for run '${this.runId}'`),
       events,
       dispatchQueue: this.dispatchQueue,
       lifecycleState: this.lifecycleState,
@@ -349,9 +349,6 @@ export class AgentRun {
         this.reconcileUncertainDispatch();
         this.reconcileAndPublishInputState();
         this.termination.scheduleRootShutdownEvaluation();
-      },
-      onListenerError: (error) => {
-        logger.warn(`[AgentRun] listener failed for run '${this.runId}': ${String(error)}`);
       },
     });
     await this.drainInputAfterLifecycleChange();
@@ -525,25 +522,27 @@ export class AgentRun {
     const revision = (event.payload as AgentInputStateDto).revision;
     if (revision === this.publishedInputRevision) return;
     this.publishedInputRevision = revision;
-    dispatchRuntimeEvent({ listeners: this.listeners, event,
-      onListenerError: error => logger.warn(`[AgentRun] input projection listener failed: ${String(error)}`) });
+    this.deliverToListeners(event, "input projection listener failed");
   }
 
   private dispatchCanonicalStatus(): void {
     const status = this.lifecycleState.status;
-    dispatchRuntimeEvent({
-      listeners: this.listeners,
-      event: {
-        eventType: AgentRunEventType.AGENT_STATUS,
-        runId: this.runId,
-        payload: buildAgentStatusPayload({ status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
-          agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
-        statusHint: agentStatusHint(status),
-      },
-      onListenerError: (error) => {
-        logger.warn(`[AgentRun] listener failed for run '${this.runId}': ${String(error)}`);
-      },
-    });
+    this.deliverToListeners({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      runId: this.runId,
+      payload: buildAgentStatusPayload({ status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
+        agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
+      statusHint: agentStatusHint(status),
+    }, `listener failed for run '${this.runId}'`);
+  }
+
+  /**
+   * Every delivery to the run's listeners passes here: the processed events, the input state, the canonical status and
+   * the subscribe snapshot (autobyteus-628 D-3). Each event gets the node's time once; an event already stamped keeps it.
+   */
+  private deliverToListeners(event: AgentRunEvent, failure: string): void {
+    dispatchRuntimeEvent({ listeners: this.listeners, event: stampForDelivery(event),
+      onListenerError: (error) => logger.warn(`[AgentRun] ${failure}: ${String(error)}`) });
   }
 
 

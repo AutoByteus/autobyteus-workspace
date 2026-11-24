@@ -26,11 +26,15 @@ afterEach(async () => {
   tempDirs.clear();
 });
 
+let deliveryTick = 0;
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({
   eventType,
   runId: "run-1",
   payload,
   statusHint: null,
+  // Strictly increasing, distinct delivery times, as AgentRun stamps them (autobyteus-628 SR-007): the recorder does not
+  // read them, and no test here can pass because two events share a millisecond.
+  occurredAt: 1_800_000_000_000 + (deliveryTick += 7),
 });
 
 const readView = (memoryDir: string, includeArchive = false) =>
@@ -622,7 +626,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       platformAgentRunId: "session-1",
       message,
       result: { accepted: true, turnId },
-      forwardedAt: new Date(1000),
+      acceptedAt: new Date(1000),
     });
     forward(new AgentInputUserMessage("From the researcher", SenderType.AGENT, null, {
       input_origin: "inter_agent_delivery", sender_agent_id: "run-researcher",
@@ -650,7 +654,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       platformAgentRunId: "session-1",
       message: new AgentInputUserMessage("hello after lifecycle"),
       result: { accepted: true, turnId: null },
-      forwardedAt: new Date(1000),
+      acceptedAt: new Date(1000),
     });
 
     expect(readView(memoryDir).rawTraces).toEqual([]);

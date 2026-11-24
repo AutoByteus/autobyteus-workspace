@@ -692,6 +692,8 @@ describe("Agent status WebSocket contract integration", () => {
           error_scope: "turn",
           error_effect: "terminal",
           turn_id: "turn-error",
+          // The node's time of the error (autobyteus-628 D-3).
+          occurred_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/),
         },
       });
       expect(JSON.stringify(trace[3])).not.toContain("raw-provider-secret");

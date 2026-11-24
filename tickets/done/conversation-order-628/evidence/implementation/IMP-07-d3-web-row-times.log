@@ -1,0 +1,29 @@
+# IMP-07 (D-3, REQ-004, AC-006 web part; ARCH-REV-002 N-1) every row time is the node's: the pre-D-3 web, then the fix
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run --reporter=verbose services/agentStreaming/__tests__/serverRowTimes.spec.ts
+#          (first with the 22 pre-D-3 web source files from HEAD b45ef33694 checked out, the D-3 files restored after)
+# commit: b45ef33694 web source (pre-D-3, with D-1 and D-2); 87d7321915 (fix)
+# env: macOS arm64, Node v22.23.1; the viewer's clock by fake timers, 2 s behind and 2 s ahead; frame times on odd ms
+# date: 2026-11-23
+# result: Reproduced, then fixed. Pre-D-3 all 4 fail: the own send carries the viewer's clock (16:55:07 behind, 16:55:11
+#   ahead) and a frame without a time is accepted. With D-3 all 4 pass: the own send is null until the echo's received_at
+#   (Team) or the input state's accepted_at (standalone, N-1; a later revision keeps the time shown); the notice, agent
+#   message, tool Activity row and compaction row carry their frames' occurred_at; updatedAt is the latest row time; a
+#   frame without occurred_at is refused at the parser.
+
+## pre-D-3 web source
+ FAIL a Team member's turn with the viewer 2 s behind: the own send is untimed until its echo, then every row has the node's time 6ms
+ FAIL a Team member's turn with the viewer 2 s ahead: the own send is untimed until its echo, then every row has the node's time 1ms
+ FAIL a standalone own send (no echo on /ws/agent) takes its time from the input state's accepted_at, live (ARCH-REV-002 N-1) 1ms
+ FAIL a message frame without the node's time is refused at the boundary, never shown with the viewer's clock 2ms
+      Tests  4 failed (4)
+AssertionError: expected 2026-11-23T16:55:07.000Z to be null
+AssertionError: expected 2026-11-23T16:55:11.000Z to be null
+AssertionError: expected 2026-11-23T16:55:07.000Z to be null
+AssertionError: expected [Function] to throw an error
+
+## fix (87d7321915)
+ ok   a Team member's turn with the viewer 2 s behind: the own send is untimed until its echo, then every row has the node's time 9ms
+ ok   a Team member's turn with the viewer 2 s ahead: the own send is untimed until its echo, then every row has the node's time 3ms
+ ok   a standalone own send (no echo on /ws/agent) takes its time from the input state's accepted_at, live (ARCH-REV-002 N-1) 2ms
+ ok   a message frame without the node's time is refused at the boundary, never shown with the viewer's clock 1ms
+      Tests  4 passed (4)

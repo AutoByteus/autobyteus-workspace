@@ -357,6 +357,7 @@ describe("Application agent communication WebSocket integration", () => {
       payload: {
         eventType: "ERROR",
         statusHint: null,
+        occurredAt: 1795452909697,
         details: {
           code: "LLM_PROVIDER_ERROR",
           message: "The provider rejected the team request.",

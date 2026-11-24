@@ -49,6 +49,8 @@ export type AgentRunInputLifecycle =
       kind: "forwarded";
       dispatchKind: AgentRunBackendInputDispatch["kind"];
       turnId: string | null;
+      /** When the node admitted the input, ISO 8601 (autobyteus-628 SR-006): its message's recorded time. */
+      acceptedAt: string;
     }>
   | Readonly<{ kind: "held" | "resumed"; turnId: string }>
   | Readonly<{ kind: "turn_associated"; turnId: string }>

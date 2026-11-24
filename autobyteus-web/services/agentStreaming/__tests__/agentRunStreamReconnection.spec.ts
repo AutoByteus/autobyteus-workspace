@@ -66,9 +66,9 @@ describe('AgentRunStreamReconnection', () => {
   const snapshot = (assistantText: string, base = 0, turnFrames: unknown[] = [], sequenceId: string | null = 'live-1') =>
     ws.message('AGENT_STREAM_SNAPSHOT', { stored: storedProjection(assistantText), input_state: null, turn_frames: turnFrames,
       base_sequence: base, live_sequence_id: sequenceId });
-  const start = (id: string, turn: string, sequence: number) => ({ type: 'SEGMENT_START', payload: { id, turn_id: turn, segment_type: 'text' }, sequence });
+  const start = (id: string, turn: string, sequence: number) => ({ type: 'SEGMENT_START', payload: { occurred_at: '2026-11-23T16:55:09.697Z', id, turn_id: turn, segment_type: 'text' }, sequence });
   const content = (id: string, turn: string, delta: string, sequence: number) =>
-    ({ type: 'SEGMENT_CONTENT', payload: { id, turn_id: turn, segment_type: 'text', delta }, sequence });
+    ({ type: 'SEGMENT_CONTENT', payload: { occurred_at: '2026-11-23T16:55:09.697Z', id, turn_id: turn, segment_type: 'text', delta }, sequence });
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -112,9 +112,9 @@ describe('AgentRunStreamReconnection', () => {
   it('the snapshot shows the stored part, replays the unconfirmed turn, and the frames after its base continue it', async () => {
     openAsOwner();
     snapshot('confirmed answer', 2, [start('seg-1', 'turn-2', 1), content('seg-1', 'turn-2', 'live ', 2)]);
-    ws.frame('SEGMENT_CONTENT', { id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: 'and on' }, 3);
+    ws.frame('SEGMENT_CONTENT', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: 'and on' }, 3);
     // Coalesced content covers a range of frames.
-    ws.frame('SEGMENT_CONTENT_BATCH', { items: [{ id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: ' more' }] }, 4, 6);
+    ws.frame('SEGMENT_CONTENT_BATCH', { items: [{ occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-1', turn_id: 'turn-2', segment_type: 'text', delta: ' more' }] }, 4, 6);
     await flush();
     expect(shown()).toContain('Run the long build');
     expect(shown()).toContain('confirmed answer');
@@ -125,10 +125,10 @@ describe('AgentRunStreamReconnection', () => {
   it('a frame at or below the base is already shown; a gap reopens the stream for a fresh snapshot', async () => {
     openAsOwner();
     snapshot('stored', 3);
-    ws.frame('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 3);
+    ws.frame('SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 3);
     await flush();
     expect(shown()).not.toContain('seg-old');
-    ws.frame('SEGMENT_START', { id: 'seg-gap', turn_id: 'turn-1', segment_type: 'text' }, 5);
+    ws.frame('SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-gap', turn_id: 'turn-1', segment_type: 'text' }, 5);
     expect(ws.state).toBe(ConnectionState.DISCONNECTED);
     await vi.advanceTimersByTimeAsync(1_000);
     expect(ws.connects).toBe(2);
@@ -141,8 +141,8 @@ describe('AgentRunStreamReconnection', () => {
   it('after a loss the attempt just opens: the new snapshot replaces what was shown', async () => {
     openAsOwner();
     snapshot('stored', 0);
-    ws.frame('SEGMENT_START', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 1);
-    ws.frame('SEGMENT_CONTENT', { id: 'seg-old', turn_id: 'turn-1', segment_type: 'text', delta: 'shown before the loss' }, 2);
+    ws.frame('SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-old', turn_id: 'turn-1', segment_type: 'text' }, 1);
+    ws.frame('SEGMENT_CONTENT', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-old', turn_id: 'turn-1', segment_type: 'text', delta: 'shown before the loss' }, 2);
     ws.lose();
 
     await vi.advanceTimersByTimeAsync(1_000);
@@ -159,8 +159,8 @@ describe('AgentRunStreamReconnection', () => {
     openAsOwner();
     snapshot('before the stop', 4, [], 'live-1');
     snapshot('after the restore', 0, [], 'live-2');
-    ws.frame('SEGMENT_START', { id: 'seg-new', turn_id: 'turn-9', segment_type: 'text' }, 1);
-    ws.frame('SEGMENT_CONTENT', { id: 'seg-new', turn_id: 'turn-9', segment_type: 'text', delta: 'resumed' }, 2);
+    ws.frame('SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-new', turn_id: 'turn-9', segment_type: 'text' }, 1);
+    ws.frame('SEGMENT_CONTENT', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-new', turn_id: 'turn-9', segment_type: 'text', delta: 'resumed' }, 2);
     await flush();
     expect(shown()).toContain('after the restore');
     expect(shown()).toContain('resumed');
@@ -170,7 +170,7 @@ describe('AgentRunStreamReconnection', () => {
   it('a stopped run\'s snapshot is its whole stored conversation, and no frame follows it', async () => {
     openAsOwner();
     snapshot('the whole conversation', 0, [], null);
-    ws.frame('SEGMENT_START', { id: 'seg-x', turn_id: 'turn-1', segment_type: 'text' }, 1);
+    ws.frame('SEGMENT_START', { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-x', turn_id: 'turn-1', segment_type: 'text' }, 1);
     await flush();
     expect(shown()).toContain('the whole conversation');
     expect(ws.state).toBe(ConnectionState.DISCONNECTED);

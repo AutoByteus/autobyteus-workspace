@@ -77,7 +77,7 @@ it('sorts merged facts chronologically, preserves highlight/approval and applies
   expect(s.getActivities('run')[0].activityId).toBe('s-1'); expect(s.hasAwaitingApproval('run')).toBe(false);
 });
 it('maps stopped through live and saved presentation with exact copy and existing operation identity', () => {
-  const live = projectCompactionStatusToActivity({ phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12 }, {runId:'run', previousStatus:null, now:new Date(4000)});
+  const live = projectCompactionStatusToActivity({ phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12, occurred_at:new Date(4000).toISOString() }, {runId:'run', previousStatus:null});
   expect(live.activity).toMatchObject({ activityId:native().activityId, phase:'stopped', message:'Stopped', rawTraceCount:12 });
   const saved = buildActivitiesFromProjection([{kind:'compaction', activityId:native().activityId, compactionOperationId:'op', phase:'stopped', message:'obsolete error', ts:4}]);
   expect(saved[0]).toMatchObject({ phase:'stopped', message:'Stopped', centerTimelineTimestamp:new Date(4000) });
@@ -90,7 +90,7 @@ it('strict shared and Team envelopes carry stopped through both Team and Org ren
   const fields = Object.keys(agentPresentationPayloadSchemas.COMPACTION_STATUS.shape);
   const payload = agentPresentationPayloadSchemas.COMPACTION_STATUS.parse({
     ...Object.fromEntries(fields.map(field => [field, null])),
-    phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12,
+    phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12, occurred_at:'2026-11-23T16:55:09.697Z',
   });
   const org = toAgentPresentationProjectionMessage({type:'COMPACTION_STATUS',payload},'run');
   const team = parseTeamStreamServerMessage({type:'COMPACTION_STATUS',payload:{...payload,agent_run_id:'run',change_sequence:1}});

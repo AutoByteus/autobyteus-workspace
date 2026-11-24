@@ -33,6 +33,12 @@ export const extractContentDelta = (payload: Record<string, unknown>): string | 
   asContentString(payload["text"]) ??
   asContentString(payload["message"]);
 
+/**
+ * A trace's stored time from its payload, else none (the writer then stamps its write time). The recorder never reads the
+ * event's `occurredAt` (autobyteus-628 SR-007): each trace keeps its write order. Node-local times only (ARCH-REV-004 N-6):
+ * every producer that sets one of these fields (or a boundary's `provider_timestamp`) takes it from the node's machine,
+ * the node itself or a runtime process it runs.
+ */
 export const extractTimestamp = (payload: Record<string, unknown>): number | null =>
   normalizeTimestampSeconds(payload["ts"]) ??
   normalizeTimestampSeconds(payload["timestamp"]) ??

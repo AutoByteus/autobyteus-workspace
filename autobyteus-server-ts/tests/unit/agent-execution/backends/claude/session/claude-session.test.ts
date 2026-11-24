@@ -23,7 +23,7 @@ import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../../../../../src/a
 import type { ClaudeSdkStreamingSessionOptions } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
 import { ClaudeSessionEventConverter } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
-import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeMemoryEventAccumulator } from "../../../../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
@@ -1463,7 +1463,7 @@ describe("ClaudeSession compaction (real SDK frame shapes)", () => {
       toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
     const runEvents = events.flatMap((event) => new ClaudeSessionEventConverter("run-1").convert(event));
-    for (const runEvent of runEvents) accumulator.recordRunEvent(runEvent);
+    for (const runEvent of runEvents) accumulator.recordRunEvent(stampForDelivery(runEvent));
     const store = new RunMemoryFileStore(memoryDir);
     return {
       compactionEvents: runEvents.filter((event) => event.eventType === AgentRunEventType.COMPACTION_STATUS),

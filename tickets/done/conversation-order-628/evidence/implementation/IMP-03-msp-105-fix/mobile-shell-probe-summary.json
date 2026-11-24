@@ -1,0 +1,183 @@
+{
+ "startedAt": "2026-11-23T17:40:50.007Z",
+ "finishedAt": "2026-11-23T17:42:08.684Z",
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-105": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "browserErrorsCount": 0,
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "cases": {
+  "MSP-105": {
+   "result": "Pass",
+   "seconds": 27.8,
+   "team": "order_team_fb4818ee70214c42942024cf05475132",
+   "lead": "order_lead_cab4c06d62184552ba458450f7ec56c7",
+   "rounds": [
+    {
+     "label": "phone-order-behind-sends",
+     "offsetMs": -2000,
+     "clockOffsetMs": -2000,
+     "sender": "phone",
+     "marker": "ORDER-628-ca9a22a2",
+     "live": {
+      "message": 2,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 2,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795455683.867",
+      "message:user@1795455688.99",
+      "system_task_notification@1795455688.991",
+      "message:assistant@1795455688.996"
+     ],
+     "nodeNoticeAfterMessage": true
+    },
+    {
+     "label": "phone-order-ahead-sends",
+     "offsetMs": 2000,
+     "clockOffsetMs": 2000,
+     "sender": "phone",
+     "marker": "ORDER-628-893f4a26",
+     "live": {
+      "message": 5,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated No longer available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 5,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated No longer available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795455688.996",
+      "message:user@1795455697.398",
+      "system_task_notification@1795455697.399",
+      "message:assistant@1795455697.406"
+     ],
+     "nodeNoticeAfterMessage": true
+    },
+    {
+     "label": "phone-order-behind-watches",
+     "offsetMs": -2000,
+     "clockOffsetMs": -2000,
+     "sender": "another client",
+     "marker": "ORDER-628-41c4e810",
+     "live": {
+      "message": 8,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 8,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795455697.406",
+      "message:user@1795455706.242",
+      "system_task_notification@1795455706.243",
+      "message:assistant@1795455706.249"
+     ],
+     "nodeNoticeAfterMessage": true
+    }
+   ]
+  }
+ }
+}

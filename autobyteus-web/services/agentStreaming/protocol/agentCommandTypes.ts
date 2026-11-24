@@ -15,6 +15,8 @@ export interface SendMessageCommandAckPayload {
     | 'failed';
   accepted: boolean;
   duplicate: boolean;
+  /** The node's time of the ack: a refused send's row takes it (autobyteus-628 D-3). */
+  occurred_at: string;
   code?:
     | 'RUN_COMMAND_IN_PROGRESS'
     | 'INVALID_COMMAND_ID'

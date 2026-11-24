@@ -66,6 +66,7 @@ export declare const agentPendingInputSchema: z.ZodObject<{
         file_type: z.ZodString;
         file_name: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>>;
+    accepted_at: z.ZodISODateTime;
 }, z.core.$strict>;
 /** Transient projection of one live AgentRun FIFO, never a delivery outbox. */
 export declare const agentInputStateSchema: z.ZodObject<{
@@ -92,6 +93,7 @@ export declare const agentInputStateSchema: z.ZodObject<{
             file_type: z.ZodString;
             file_name: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>>;
+        accepted_at: z.ZodISODateTime;
     }, z.core.$strict>>;
     recoverableBlock: z.ZodNullable<z.ZodObject<{
         operationId: z.ZodString;

@@ -35,6 +35,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly SEGMENT_START: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -51,6 +52,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly SEGMENT_CONTENT: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -112,6 +114,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly COMPACTION_STATUS: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         phase: z.ZodNullable<z.ZodString>;
         kind: z.ZodNullable<z.ZodString>;
         status: z.ZodNullable<z.ZodString>;
@@ -219,6 +222,7 @@ export declare const teamAgentPayloadSchemas: {
                 file_type: z.ZodString;
                 file_name: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>>;
+            accepted_at: z.ZodISODateTime;
         }, z.core.$strict>>;
         recoverableBlock: z.ZodNullable<z.ZodObject<{
             operationId: z.ZodString;
@@ -470,6 +474,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_APPROVAL_REQUESTED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -478,6 +483,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_APPROVED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         reason: z.ZodNullable<z.ZodString>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -486,6 +492,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_DENIED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         reason: z.ZodNullable<z.ZodString>;
         error: z.ZodNullable<z.ZodString>;
@@ -496,6 +503,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_STARTED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -504,6 +512,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_SUCCEEDED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         result: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
@@ -513,6 +522,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_FAILED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         error: z.ZodString;
         invocation_id: z.ZodString;
@@ -522,6 +532,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_EXECUTION_INTERRUPTED: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         reason: z.ZodString;
         invocation_id: z.ZodString;
@@ -531,6 +542,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly TOOL_LOG: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         log_entry: z.ZodString;
         tool_invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -567,6 +579,7 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         sender: z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"system">;
         }, z.core.$strict>, z.ZodObject<{
@@ -616,6 +629,7 @@ export declare const teamSegmentContentBatchPayloadSchema: z.ZodObject<{
     change_sequence: z.ZodNumber;
     change_sequence_through: z.ZodNumber;
     items: z.ZodArray<z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -636,6 +650,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     error_scope: z.ZodNull;
     error_effect: z.ZodNull;
     turn_id: z.ZodNull;
+    occurred_at: z.ZodISODateTime;
     code: z.ZodString;
     message: z.ZodString;
     details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -652,6 +667,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
         terminal: "terminal";
     }>;
     turn_id: z.ZodString;
+    occurred_at: z.ZodISODateTime;
     code: z.ZodString;
     message: z.ZodString;
     details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -665,6 +681,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     error_scope: z.ZodLiteral<"runtime">;
     error_effect: z.ZodLiteral<"terminal">;
     turn_id: z.ZodNull;
+    occurred_at: z.ZodISODateTime;
     code: z.ZodString;
     message: z.ZodString;
     details: z.ZodOptional<z.ZodNullable<z.ZodString>>;

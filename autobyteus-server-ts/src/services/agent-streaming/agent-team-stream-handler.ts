@@ -44,6 +44,8 @@ const errorMessage = (
     code, message, ...(details ? { details } : {}), change_sequence: null, agent_run_id: agentRunId,
     error_scope: null, error_effect: null, turn_id: null,
     ...(collaboratorName ? { collaborator_name: collaboratorName } : {}),
+    // A stream's own error is a conversation row: it carries the node's time (autobyteus-628 D-3).
+    occurred_at: new Date().toISOString(),
   } });
 
 const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";

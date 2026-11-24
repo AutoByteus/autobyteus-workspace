@@ -1,0 +1,7 @@
+      Tests  2 failed | 571 passed | 804 skipped (1377)
+   Duration  1210.94s (transform 17.03s, setup 6.37s, import 370.60s, tests 807.36s, environment 16ms)
+ FAIL  tests/e2e/app-data-migrations/remove-retired-built-in-agents-startup.e2e.test.ts > Removal of the retired built-in agents on startup (built Studio) > RRB-1 deletes exactly the two installed copies once; other agents and every run, old item files included, stay byte-identical
+ FAIL  tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts > Removal of the Skill Improvement feature's data on startup (built Studio) > SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open
+ Test Files  2 failed | 125 passed | 169 skipped (296)
+Error: Unknown system error -102: Unknown system error -102, open '<tmp>/tmp/remove-retired-built-ins-startup-e2e-aCgXq8/node-access/local-control.sock'
+Error: Unknown system error -102: Unknown system error -102, open '<tmp>/tmp/remove-skill-improvement-startup-e2e-aWEv7M/node-access/local-control.sock'

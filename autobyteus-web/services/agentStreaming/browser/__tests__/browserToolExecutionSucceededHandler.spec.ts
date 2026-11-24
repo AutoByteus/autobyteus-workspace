@@ -35,7 +35,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   });
 
   it('focuses the browser shell and activates the browser tab for an eligible embedded open_tab', async () => {
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-1',
       tool_name: 'open_tab',
       turn_id: 'turn-1',
@@ -55,7 +55,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   });
 
   it('preserves projection for an eligible JSON-string open_tab result', async () => {
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-string',
       tool_name: 'open_tab',
       turn_id: 'turn-string',
@@ -73,7 +73,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   it('does not project a remote-node open_tab into the local browser shell', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow = false;
 
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-remote',
       tool_name: 'open_tab',
       turn_id: 'turn-remote',
@@ -91,7 +91,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   it('does not project an embedded open_tab when the local browser shell is unavailable', async () => {
     browserShellStoreMock.browserAvailable = false;
 
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-unavailable',
       tool_name: 'open_tab',
       turn_id: 'turn-unavailable',
@@ -107,7 +107,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   });
 
   it('ignores unrelated tool successes', async () => {
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-2',
       tool_name: 'read_file',
       turn_id: 'turn-2',
@@ -119,7 +119,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
   });
 
   it('ignores open_tab success results without a tab_id', async () => {
-    await handleBrowserToolExecutionSucceeded({
+    await handleBrowserToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: 'call-3',
       tool_name: 'open_tab',
       turn_id: 'turn-3',

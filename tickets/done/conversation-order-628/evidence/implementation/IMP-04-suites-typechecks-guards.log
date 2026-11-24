@@ -1,0 +1,34 @@
+# IMP-04 the whole web and server unit suites, both typechecks, the three web guards, autobyteus-ts input processor tests
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run ; cd autobyteus-server-ts && pnpm test:unit ;
+#          cd autobyteus-ts && pnpm exec vitest run tests/unit/agent/input-processor ;
+#          pnpm -C autobyteus-web typecheck ; pnpm -C autobyteus-server-ts typecheck ; the three web guards (one at a time)
+# commit: tree = 2bb11e0874 (run before committing; same files)
+# env: macOS arm64, Node v22.23.1 (autobyteus-ts built first: this fresh worktree had no autobyteus-ts dist/, which a
+#      cross-package web spec fixture imports)
+# date: 2026-11-23
+# result: Pass.
+
+## web unit suite
+ Test Files  802 passed (802)
+      Tests  6119 passed | 2 skipped (6121)
+
+## server unit suite
+ Test Files  1073 passed | 5 skipped (1078)
+      Tests  8920 passed | 9 skipped (8929)
+
+## autobyteus-ts input processor tests
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## server typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

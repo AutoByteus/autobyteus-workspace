@@ -15,7 +15,7 @@ describe('handleSystemTaskNotification', () => {
     const context = contextWith();
 
     handleSystemTaskNotification(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         sender_id: 'system_task_runner',
         content: 'You have a new task.\n\nTask ID: task_0001',
         message_id: null,
@@ -37,7 +37,7 @@ describe('handleSystemTaskNotification', () => {
   });
 
   describe('a notice is shown once (autobyteus-526 SR-002)', () => {
-    const reminder = { sender_id: 'system.restart_resume', content: '[Platform notice — application restarted]\n\n…', message_id: 'n1' };
+    const reminder = { occurred_at: '2026-11-23T16:55:09.697Z', sender_id: 'system.restart_resume', content: '[Platform notice — application restarted]\n\n…', message_id: 'n1' };
 
     it('a frame whose notice the conversation already shows (a replayed or repeated frame) adds nothing', () => {
       const context = contextWith();

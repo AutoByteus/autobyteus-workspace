@@ -59,7 +59,7 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
       const refusal = refuse.get(agentRunId);
       if (refusal) return { accepted: false, ...refusal };
       live.add(agentRunId);
-      postOptions.lifecycleObserver?.({ kind: "forwarded", dispatchKind: "start_turn", turnId: `turn-${agentRunId}` });
+      postOptions.lifecycleObserver?.({ kind: "forwarded", acceptedAt: "2026-11-23T16:55:09.000Z", dispatchKind: "start_turn", turnId: `turn-${agentRunId}` });
       return { accepted: true, displayName: `Name ${agentRunId}` };
     } finally { inFlight -= 1; }
   };

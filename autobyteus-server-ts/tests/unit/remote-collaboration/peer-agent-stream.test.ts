@@ -16,8 +16,8 @@ const fakeRun = (runId: string) => {
   };
 };
 const segment = (runId: string, turnId: string, delta: string): AgentRunEvent[] => [
-  { runId, eventType: AgentRunEventType.SEGMENT_START, payload: { id: `${turnId}-s`, turn_id: turnId, segment_type: "text" }, statusHint: null },
-  { runId, eventType: AgentRunEventType.SEGMENT_CONTENT, payload: { id: `${turnId}-s`, turn_id: turnId, segment_type: "text", delta }, statusHint: null },
+  { runId, eventType: AgentRunEventType.SEGMENT_START, payload: { id: `${turnId}-s`, turn_id: turnId, segment_type: "text" }, statusHint: null, occurredAt: 1795452909697 },
+  { runId, eventType: AgentRunEventType.SEGMENT_CONTENT, payload: { id: `${turnId}-s`, turn_id: turnId, segment_type: "text", delta }, statusHint: null, occurredAt: 1795452909697 },
 ];
 const stored = (agentRunId: string) => async () => ({ agentRunId, conversation: [{ kind: "message", role: "user", content: "the task" }],
   activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false });

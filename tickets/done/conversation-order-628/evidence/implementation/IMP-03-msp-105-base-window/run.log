@@ -1,0 +1,3 @@
+[mobile-shell] MSP-105 …
+[mobile-shell] MSP-105 Fail: phone-order-behind-sends: live, the message, then the notice, then the reply (AC-001, AC-002); phone-order-behind-watches: live, the message, then the notice, then the reply (AC-001, AC-002)
+mobile-shell probe: Fail

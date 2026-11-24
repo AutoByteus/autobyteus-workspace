@@ -85,6 +85,7 @@ const createSyntheticToolSegment = (
   turnId: string | null,
   toolName: string,
   argumentsPayload: Record<string, any>,
+  occurredAt: string,
 ): ToolLifecycleSegment => {
   const segmentType = inferSegmentTypeFromTool(toolName, argumentsPayload);
   const metadata: Record<string, any> = { tool_name: toolName };
@@ -111,7 +112,7 @@ const createSyntheticToolSegment = (
       rawContent: '',
     };
     if (turnId) setStreamSegmentIdentity(fallback, turnId, invocationId, 'tool_call');
-    const aiMessage = findOrCreateAIMessage(context);
+    const aiMessage = findOrCreateAIMessage(context, occurredAt);
     aiMessage.segments.push(fallback);
     return fallback;
   }
@@ -141,7 +142,7 @@ const createSyntheticToolSegment = (
     }
   }
 
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, occurredAt);
   aiMessage.segments.push(segment);
   return segment;
 };
@@ -152,15 +153,17 @@ const ensureToolLifecycleSegment = (
   turnId: string | null,
   toolName: string,
   argumentsPayload: Record<string, any>,
+  /** The node's time of the tool event (autobyteus-628 D-3). */
+  occurredAt: string,
 ): EnsuredToolLifecycleSegment => {
   const existing = resolveToolSegmentById(context, invocationId);
   if (existing) {
-    upsertActivityFromToolSegment(context, invocationId, existing, argumentsPayload);
+    upsertActivityFromToolSegment(context, invocationId, existing, new Date(occurredAt), argumentsPayload);
     return { segment: existing, created: false };
   }
 
-  const synthetic = createSyntheticToolSegment(context, invocationId, turnId, toolName, argumentsPayload);
-  upsertActivityFromToolSegment(context, invocationId, synthetic, argumentsPayload);
+  const synthetic = createSyntheticToolSegment(context, invocationId, turnId, toolName, argumentsPayload, occurredAt);
+  upsertActivityFromToolSegment(context, invocationId, synthetic, new Date(occurredAt), argumentsPayload);
   return { segment: synthetic, created: true };
 };
 
@@ -235,13 +238,11 @@ export function handleToolApprovalRequested(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -276,7 +277,7 @@ export function handleToolApproved(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {}, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -303,13 +304,11 @@ export function handleToolDenied(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -339,13 +338,11 @@ export function handleToolExecutionStarted(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -376,13 +373,11 @@ export function handleToolExecutionSucceeded(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -412,13 +407,11 @@ export function handleToolExecutionFailed(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -448,13 +441,11 @@ export function handleToolExecutionInterrupted(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(
-    context,
+  const ensured = ensureToolLifecycleSegment(context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
-    parsed.arguments,
-  );
+    parsed.arguments, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 
@@ -484,7 +475,7 @@ export function handleToolLog(
   }
 
 
-  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {}, payload.occurred_at);
   const { segment } = ensured;
   const before = beginToolMutation(ensured);
 

@@ -20,11 +20,15 @@ afterEach(async () => {
   tempDirs.clear();
 });
 
+let deliveryTick = 0;
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({
   eventType,
   runId: "run-1",
   payload,
   statusHint: null,
+  // Strictly increasing, distinct delivery times, as AgentRun stamps them (autobyteus-628 SR-007): the recorder does not
+  // read them, and no test here can pass because two events share a millisecond.
+  occurredAt: 1_800_000_000_000 + (deliveryTick += 7),
 });
 
 const createSequencer = (

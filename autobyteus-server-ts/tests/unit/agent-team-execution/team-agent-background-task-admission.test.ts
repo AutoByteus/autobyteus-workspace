@@ -25,7 +25,7 @@ const payload = buildBackgroundTaskUpdatedPayload({
   exitCode: null,
   startedAt: "2026-09-29T16:48:20.000Z",
 });
-const event: AgentRunEvent = { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId, payload, statusHint: null };
+const event: AgentRunEvent = { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId, payload, statusHint: null, occurredAt: 1795452909697 };
 
 describe("BACKGROUND_TASK_UPDATED collaboration admission", () => {
   it("projects a member's task snapshot onto the Team stream with that member's execution identity (AC-009)", () => {
@@ -38,7 +38,7 @@ describe("BACKGROUND_TASK_UPDATED collaboration admission", () => {
         taskId: "bg-1", kind: "subagent", description: "Research lighthouses", command: "rg -n lighthouse docs",
         status: "running", summary: null, endReason: null, exitCode: null, startedAt: "2026-09-29T16:48:20.000Z",
       },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
     expect(projectTeamAgentEventMessage(execution, admitted.event, 4)).toEqual({
       type: "BACKGROUND_TASK_UPDATED",

@@ -84,17 +84,21 @@ const tokenUsageDetails = (agentRunId: string): TeamTokenUsageDetails => ({
   outputThroughput: null, runSummaryAfterEvent: null, qualityFlags: [],
 });
 
-/** Team-agent events; the root envelope reuses their presentation bodies. */
-const teamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content" | Boundary, value = "", status: "running" | "idle" = "running"): TeamAgentEvent => {
+/** Team-agent events, each with the node's delivery time as its run stamps it (autobyteus-628 D-3); the root envelope
+ * reuses their presentation bodies. */
+const teamAgentEvent = (...args: Parameters<typeof untimedTeamAgentEvent>): TeamAgentEvent =>
+  ({ ...untimedTeamAgentEvent(...args), occurredAt: Date.now() }) as TeamAgentEvent;
+
+const untimedTeamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content" | Boundary, value = "", status: "running" | "idle" = "running"): Omit<TeamAgentEvent, "occurredAt"> => {
   const segment = { segmentId: segmentId(agentRunId.endsWith("a") ? "A" : "B"), turnId };
   switch (kind) {
-    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
-    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", backgroundTasksRunning: 0, trigger: null }) } as TeamAgentEvent;
+    case "status": return { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status, backgroundTasksRunning: 0, trigger: null }) } as Omit<TeamAgentEvent, "occurredAt">;
+    case "terminal_status": return { eventType: "AGENT_STATUS", statusHint: "idle", details: createTeamAgentStatusDetails({ status: "idle", backgroundTasksRunning: 0, trigger: null }) } as Omit<TeamAgentEvent, "occurredAt">;
     case "start": return { eventType: "SEGMENT_START", statusHint: "running", details: { ...segment, segmentType: "text", metadata: null } };
     case "content": return { eventType: "SEGMENT_CONTENT", statusHint: "running", details: { ...segment, segmentType: "text", delta: value } };
     case "segment_end": return { eventType: "SEGMENT_END", statusHint: "running", details: { ...segment, metadata: null, interrupted: false, reason: null, failed: false, error: null } };
     case "tool": return { eventType: "TOOL_EXECUTION_STARTED", statusHint: "running", details: { invocationId: `tool-${agentRunId}`, toolName: "run_bash", turnId, arguments: {} } };
-    case "error": return { eventType: "ERROR", statusHint: "running", details: { code: "TOOL_DIAGNOSTIC", message: "diagnostic", errorScope: "turn", errorEffect: "diagnostic", turnId } } as TeamAgentEvent;
+    case "error": return { eventType: "ERROR", statusHint: "running", details: { code: "TOOL_DIAGNOSTIC", message: "diagnostic", errorScope: "turn", errorEffect: "diagnostic", turnId } } as Omit<TeamAgentEvent, "occurredAt">;
     case "token_usage": return { eventType: "TOKEN_USAGE_UPDATED", statusHint: "running", details: tokenUsageDetails(agentRunId) };
     case "root_event": throw new Error("A root event is not an agent event.");
   }

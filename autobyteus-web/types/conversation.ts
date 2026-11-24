@@ -62,7 +62,12 @@ export type ContextFilePath = ContextAttachment;
 
 export interface Message {
   type: 'user' | 'ai';
-  timestamp: Date;
+  /**
+   * The row's time as the node recorded it (autobyteus-628 D-3): the echo's `received_at`, an input's `accepted_at`, an
+   * event's `occurred_at`, or the stored `ts`. Null for a row the node has no time for yet (an own send it has not
+   * confirmed) or never will (a send that failed before reaching it). The app never stamps one from its own clock.
+   */
+  timestamp: Date | null;
 }
 
 export interface UserMessage extends Message {

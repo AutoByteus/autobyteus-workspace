@@ -110,7 +110,7 @@ const productionFixture = (): {
     event: {
       eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
       runId: observation.run_id,
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
       payload: {
         ...folded.authoritativePayload,
         run_summary_after_event: summary,

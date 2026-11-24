@@ -32,7 +32,7 @@ describe('tool lifecycle ordering regression', () => {
     const context = buildContext();
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'bash-segment-first',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -57,7 +57,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'bash-segment-first',
         tool_name: 'Bash',
         turn_id: 'turn-1',
@@ -87,7 +87,7 @@ describe('tool lifecycle ordering regression', () => {
     const context = buildContext();
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'bash-lifecycle-first',
         tool_name: 'Bash',
         turn_id: 'turn-1',
@@ -97,7 +97,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'bash-lifecycle-first',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -131,7 +131,7 @@ describe('tool lifecycle ordering regression', () => {
     const store = useAgentActivityStore();
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'bash-alias-base:approval-1',
         tool_name: 'run_bash',
         turn_id: 'turn-1',
@@ -141,7 +141,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'bash-alias-base',
         turn_id: 'turn-1',
         segment_type: 'run_bash',
@@ -216,7 +216,7 @@ describe('tool lifecycle ordering regression', () => {
 
     for (const [index, [baseId, suffixedId]] of cases.entries()) {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: baseId,
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -225,7 +225,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolExecutionStarted(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: suffixedId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -255,7 +255,7 @@ describe('tool lifecycle ordering regression', () => {
       const command = index === 0 ? 'pwd' : `echo phase-${index}`;
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: invocationId,
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -264,7 +264,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolExecutionStarted(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: invocationId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -273,7 +273,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolLog(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           tool_invocation_id: invocationId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -282,7 +282,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolExecutionSucceeded(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: invocationId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -336,7 +336,7 @@ describe('tool lifecycle ordering regression', () => {
       const command = index === 0 ? 'pwd' : `echo phase-${index}`;
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: invocationId,
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -345,7 +345,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolExecutionStarted(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: invocationId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -354,7 +354,7 @@ describe('tool lifecycle ordering regression', () => {
         context,
       );
       handleToolExecutionSucceeded(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: invocationId,
           tool_name: 'run_bash',
           turn_id: 'turn-1',
@@ -365,7 +365,7 @@ describe('tool lifecycle ordering regression', () => {
     }
 
     handleError(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'OPENAI_COMPATIBLE_PROVIDER_ERROR',
         message: '400 Param Incorrect: Xiaomi/mimo-v2.5-pro continuation request rejected',
         error_scope: null,
@@ -407,7 +407,7 @@ describe('tool lifecycle ordering regression', () => {
     const store = useAgentActivityStore();
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-command-1',
         tool_name: 'run_bash',
         turn_id: 'turn-1',
@@ -417,7 +417,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'codex-dynamic-1',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -429,7 +429,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'codex-file-1',
         turn_id: 'turn-1',
         segment_type: 'edit_file',
@@ -468,7 +468,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-dynamic-1',
         tool_name: 'echo_dynamic',
         turn_id: 'turn-1',
@@ -477,7 +477,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-file-1',
         tool_name: 'edit_file',
         turn_id: 'turn-1',
@@ -490,7 +490,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-command-1',
         tool_name: 'run_bash',
         turn_id: 'turn-1',
@@ -499,7 +499,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-dynamic-1',
         tool_name: 'echo_dynamic',
         turn_id: 'turn-1',
@@ -508,7 +508,7 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'codex-file-1',
         tool_name: 'edit_file',
         turn_id: 'turn-1',
@@ -562,7 +562,7 @@ describe('tool lifecycle ordering regression', () => {
     };
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: invocationId,
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -584,7 +584,7 @@ describe('tool lifecycle ordering regression', () => {
     ]);
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'search_web',
         turn_id: 'turn-1',
@@ -594,7 +594,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'search_web',
         turn_id: 'turn-1',
@@ -652,7 +652,7 @@ describe('tool lifecycle ordering regression', () => {
     const context = buildContext();
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'edit-1',
         turn_id: 'turn-1',
         segment_type: 'edit_file',
@@ -664,7 +664,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolApprovalRequested(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'edit-1',
         tool_name: 'edit_file',
         turn_id: 'turn-1',
@@ -703,7 +703,7 @@ describe('tool lifecycle ordering regression', () => {
     };
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'Write',
         turn_id: 'turn-1',
@@ -726,7 +726,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(store.hasAwaitingApproval(runId)).toBe(false);
 
     handleToolApprovalRequested(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'Write',
         turn_id: 'turn-1',
@@ -746,7 +746,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(store.hasAwaitingApproval(runId)).toBe(true);
 
     handleToolApproved(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'Write',
         turn_id: 'turn-1',
@@ -766,7 +766,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(store.hasAwaitingApproval(runId)).toBe(false);
 
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'Write',
         turn_id: 'turn-1',
@@ -792,7 +792,7 @@ describe('tool lifecycle ordering regression', () => {
     const context = buildContext();
 
     handleSegmentStart(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'edit-2',
         turn_id: 'turn-1',
         segment_type: 'edit_file',
@@ -804,7 +804,7 @@ describe('tool lifecycle ordering regression', () => {
     );
 
     handleToolExecutionSucceeded(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'edit-2',
         tool_name: 'edit_file',
         turn_id: 'turn-1',

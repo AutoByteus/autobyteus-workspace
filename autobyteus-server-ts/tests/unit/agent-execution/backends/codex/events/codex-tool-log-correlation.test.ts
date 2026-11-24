@@ -21,7 +21,8 @@ const createStrictTeamAdapter = (agentRunId: string): TeamAgentEventAdapter => {
 
 const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): void => {
   for (const event of events) {
-    expect(createStrictTeamAdapter(event.runId).adapt(event)).toMatchObject({ kind: "publish" });
+    // As the run delivers it: stamped with its time (autobyteus-628 D-3).
+    expect(createStrictTeamAdapter(event.runId).adapt({ ...event, occurredAt: 1795452909697 })).toMatchObject({ kind: "publish" });
   }
 };
 
@@ -177,7 +178,7 @@ describe("Codex TOOL_LOG correlation", () => {
         log_entry: "{\"task_id\":\"task-1\",\"status\":\"active\"}",
       },
     });
-    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt(rawOutput[0]!)).toEqual(expect.objectContaining({
+    expect(createStrictTeamAdapter(rawOutput[0]!.runId).adapt({ ...rawOutput[0]!, occurredAt: 1795452909697 })).toEqual(expect.objectContaining({
       kind: "publish",
       event: expect.objectContaining({
         eventType: "TOOL_LOG",

@@ -165,7 +165,7 @@ describe('AgentStreamingService', () => {
         (service as any).dispatchMessage(
             {
                 type: 'SYSTEM_TASK_NOTIFICATION',
-                payload: {
+                payload: { occurred_at: '2026-11-23T16:55:09.697Z',
                     sender_id: 'system.other_producer',
                     content: 'Another producer finished its work for this run.',
                     message_id: 'notice-1',
@@ -223,7 +223,7 @@ describe('AgentStreamingService', () => {
         (service as any).dispatchMessage(
             {
                 type: 'SEGMENT_START',
-                payload: {
+                payload: { occurred_at: '2026-11-23T16:55:09.697Z',
                     id: 'segment-1',
                     turn_id: 'turn-1',
                     segment_type: 'text',
@@ -465,7 +465,7 @@ describe('AgentStreamingService', () => {
         (service as any).dispatchMessage(
             {
                 type: 'COMPACTION_STATUS',
-                payload: {
+                payload: { occurred_at: '2026-11-23T16:55:09.697Z',
                     phase: 'started',
                     turn_id: 'turn-1',
                     selected_block_count: 3,
@@ -514,7 +514,7 @@ describe('AgentStreamingService', () => {
 
         const start = {
             type: 'SEGMENT_START',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
         };
         (service as any).dispatchMessage(start, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
@@ -524,7 +524,7 @@ describe('AgentStreamingService', () => {
 
         (service as any).dispatchMessage({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
         }, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
@@ -541,7 +541,7 @@ describe('AgentStreamingService', () => {
 
         onMessage(JSON.stringify({
             type: 'SEGMENT_START',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
         onMessage(JSON.stringify({
@@ -551,7 +551,7 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
         onMessage(JSON.stringify({
@@ -561,17 +561,18 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages[0].segments[0].content).toBe('hello');
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
         }));
 
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
-        expect(mockConversation.updatedAt).toBe('2026-08-01T10:00:00.050Z');
+        // The conversation's time is its latest row's server time (the frame's occurred_at), not the viewer's clock (D-3).
+        expect(mockConversation.updatedAt).toBe('2026-11-23T16:55:09.697Z');
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(3);
 
         vi.setSystemTime(new Date('2026-08-01T10:00:00.100Z'));
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
         }));
         onMessage(JSON.stringify({
             type: 'AGENT_STATUS',
@@ -591,7 +592,7 @@ describe('AgentStreamingService', () => {
         scheduledService.attachContext(mockAgentContext);
         (scheduledService as any).dispatchMessage({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'final bytes' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'final bytes' },
         }, mockAgentContext);
 
         scheduledService.disconnect();
@@ -610,7 +611,7 @@ describe('AgentStreamingService', () => {
         scheduledService.connect('test-agent-id', mockAgentContext);
         (scheduledService as any).dispatchMessage({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'old-segment', turn_id: 'turn-old', segment_type: 'text', delta: 'old bytes' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'old-segment', turn_id: 'turn-old', segment_type: 'text', delta: 'old bytes' },
         }, mockAgentContext);
 
         const replacementConversation: any = { messages: [], updatedAt: '' };
@@ -630,7 +631,7 @@ describe('AgentStreamingService', () => {
 
         (scheduledService as any).dispatchMessage({
             type: 'SEGMENT_CONTENT',
-            payload: { id: 'new-segment', turn_id: 'turn-new', segment_type: 'text', delta: 'new bytes' },
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 'new-segment', turn_id: 'turn-new', segment_type: 'text', delta: 'new bytes' },
         }, replacementContext);
         callbacks.get('onDisconnect')?.('remote closed');
 
@@ -658,13 +659,13 @@ describe('AgentStreamingService', () => {
 
         (service as any).dispatchMessage({
             type: 'TOOL_LOG',
-            payload: {
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z',
                 tool_invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1', log_entry: 'Activity detail',
             },
         }, mockAgentContext);
         (service as any).dispatchMessage({
             type: 'TOOL_EXECUTION_SUCCEEDED',
-            payload: {
+            payload: { occurred_at: '2026-11-23T16:55:09.697Z',
                 invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1',
                 arguments: { query: 'weather' }, result: { output: 'Activity result' },
             },

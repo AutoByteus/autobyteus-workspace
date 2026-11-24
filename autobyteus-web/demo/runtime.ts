@@ -10,7 +10,7 @@
  * and Activity, as a node keeps them.
  */
 import { agentPresentationPayloadSchemas } from '@autobyteus/agent-presentation-contracts';
-import { validateCanonicalBoundary } from '~/services/agentStreaming/protocol/messageParser';
+import { TIMED_MESSAGE_TYPES, validateCanonicalBoundary } from '~/services/agentStreaming/protocol/messageParser';
 import { backgroundTasksRunningOf } from './world/backgroundTasks';
 import { replyFor, words } from './world/content/replies';
 import { activitiesOf, conversationOf } from './world/conversations';
@@ -39,6 +39,8 @@ export type DemoSendPayload = {
 
 export type DemoSendAck = {
   command_type: 'SEND_MESSAGE';
+  /** The demo node's time of the ack (autobyteus-628 D-3). */
+  occurred_at: string;
   run_id: string;
   message_id: string;
   dedupe_key: string;
@@ -96,7 +98,9 @@ export class DemoRuntime {
     return { run_instance_id: stream.runInstanceId, revision: stream.inputRevision, entries, recoverableBlock: null };
   }
 
-  private publish(agent: DemoAgent, type: PresentationType, payload: Record<string, unknown>): void {
+  private publish(agent: DemoAgent, type: PresentationType, untimed: Record<string, unknown>): void {
+    // The demo plays the node: it records each timed event's time, as a node does (autobyteus-628 D-3).
+    const payload = TIMED_MESSAGE_TYPES.has(type) ? { ...untimed, occurred_at: new Date().toISOString() } : untimed;
     validateCanonicalBoundary(type, payload);
     // The frames outside the boundary check share the presentation contract's wire shape (a segment's differs: its id).
     if (!type.startsWith('SEGMENT_')) (agentPresentationPayloadSchemas[type] as { parse(value: unknown): unknown }).parse(payload);
@@ -157,9 +161,10 @@ export class DemoRuntime {
     this.publish(agent, 'AGENT_INPUT_STATE', this.inputState(agent, [{
       sequence: stream.inputRevision, message_id: messageId, dedupe_key: dedupeKey, turn_id: null, state: 'queued', content, sender_type: 'user',
       file_attachments: attached.map((path, index) => ({ uri: path, file_type: 'Text', file_name: names[index]! })),
+      accepted_at: new Date(sentAt).toISOString(),
     }]));
     this.play(agent, turnId, content, names);
-    return { command_type: 'SEND_MESSAGE', run_id: agent.agentRunId, message_id: messageId, dedupe_key: dedupeKey, state: 'accepted', accepted: true, duplicate: false };
+    return { command_type: 'SEND_MESSAGE', run_id: agent.agentRunId, message_id: messageId, dedupe_key: dedupeKey, state: 'accepted', accepted: true, duplicate: false, occurred_at: new Date(sentAt).toISOString() };
   }
 
   /** The scripted turn; `attached` holds the names of the files the message carries. */

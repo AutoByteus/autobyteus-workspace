@@ -85,6 +85,10 @@ by recipient (and nullable sender) run ID, delegated children by `agent_run_id`
 or `team_run_id`. The transport does not expose or accept member/source paths,
 route keys, task-instance IDs, generated identity, or name targets.
 
+Every message a client turns into a conversation row carries the node's time
+(`occurred_at`, or `accepted_at` on an input-state entry), set once by `AgentRun` when it
+delivers the event and formatted by the three mappers; see [Row Times](../design/agent_websocket_streaming_protocol.md#row-times).
+
 `TeamAgentEventAdapter` verifies the AgentRun binding and maps post-pipeline
 Agent events into the finite Team domain without owning lifecycle state. The
 Team WebSocket projector then emits exact strict payloads. Segment start/content

@@ -25,7 +25,7 @@ const ROOT='native-team';
 beforeEach(()=>{setActivePinia(createPinia());vi.clearAllMocks();io.bindingRevision=1;});
 afterEach(()=>{useAgentRunStore().disconnectAgentStream('lead');useAgentTeamRunStore().disconnectTeamStream(ROOT);});
 const seed = (context:AgentContext,id='op',phase:'requested'|'started'|'completed'|'failed'='started') => {
-  handleCompactionStatus({ phase, compaction_operation_id:id,turn_id:'turn-7',requested_turn_id:'turn-6',execution_turn_id:'turn-7',raw_trace_count:12,compaction_model_identifier:'native-model' },context);
+  handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z', phase, compaction_operation_id:id,turn_id:'turn-7',requested_turn_id:'turn-6',execution_turn_id:'turn-7',raw_trace_count:12,compaction_model_identifier:'native-model' },context);
 };
 const setup=()=>{
   const raw=buildTestTeamContext({teamRunId:ROOT,coordinatorAddress:'/lead',rootChildren:['lead','worker','external','empty'].map(id=>testAgentNode(`/${id}`,{agentRunId:id,runtimeKind:id==='external'?'codex_app_server':'autobyteus'}))});

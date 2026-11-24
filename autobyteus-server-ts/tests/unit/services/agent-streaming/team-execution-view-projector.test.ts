@@ -119,6 +119,7 @@ describe("Team execution view strict projection", () => {
         payload: {
           eventType: "SEGMENT_CONTENT",
           statusHint: null,
+          occurredAt: 1795452909697,
           details: { segmentId: "segment-1", turnId: "turn-1", segmentType: "text", delta: "hello" },
         },
       },
@@ -132,6 +133,7 @@ describe("Team execution view strict projection", () => {
         turn_id: "turn-1",
         segment_type: "text",
         delta: "hello",
+        occurred_at: "2026-11-23T16:55:09.697Z",
       },
     });
   });

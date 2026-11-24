@@ -64,23 +64,23 @@ const liveMessagesForCycle = (index: number): ServerMessage[] => {
   return [
     {
       type: 'TOOL_EXECUTION_STARTED',
-      payload: { invocation_id: toolId, tool_name: 'search', turn_id: turnId, arguments: { query: `query-${index}` } },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', invocation_id: toolId, tool_name: 'search', turn_id: turnId, arguments: { query: `query-${index}` } },
     },
     {
       type: 'TOOL_LOG',
-      payload: { tool_invocation_id: toolId, tool_name: 'search', turn_id: turnId, log_entry: `detail-${index}` },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', tool_invocation_id: toolId, tool_name: 'search', turn_id: turnId, log_entry: `detail-${index}` },
     },
     {
       type: 'TOOL_EXECUTION_SUCCEEDED',
-      payload: {
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: toolId, tool_name: 'search', turn_id: turnId,
         arguments: { query: `query-${index}` }, result: { output: `result-${index}` },
       },
     },
-    { type: 'SEGMENT_START', payload: { id: segmentId, turn_id: turnId, segment_type: 'text' } },
+    { type: 'SEGMENT_START', payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: segmentId, turn_id: turnId, segment_type: 'text' } },
     {
       type: 'SEGMENT_CONTENT',
-      payload: { id: segmentId, turn_id: turnId, segment_type: 'text', delta: `response-${index}` },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: segmentId, turn_id: turnId, segment_type: 'text', delta: `response-${index}` },
     },
     { type: 'SEGMENT_END', payload: { id: segmentId, turn_id: turnId, segment_type: 'text' } },
     {
@@ -181,7 +181,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
       const reasoningId = `reasoning-block:test:${index}`;
       dispatch({
         type: 'SEGMENT_CONTENT',
-        payload: { id: reasoningId, turn_id: turnId, segment_type: 'reasoning', delta: `thinking-${index}` },
+        payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: reasoningId, turn_id: turnId, segment_type: 'reasoning', delta: `thinking-${index}` },
       } as ServerMessage, context);
       dispatch({
         type: 'SEGMENT_END',
@@ -189,7 +189,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
       } as ServerMessage, context);
       dispatch({
         type: 'TOOL_EXECUTION_SUCCEEDED',
-        payload: {
+        payload: { occurred_at: '2026-11-23T16:55:09.697Z',
           invocation_id: `tool-${index}`,
           turn_id: turnId,
           tool_name: 'run_bash',
@@ -276,7 +276,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
 
     dispatch({
       type: 'SYSTEM_TASK_NOTIFICATION',
-      payload: { sender_id: 'system', content: 'transient completed event' },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', sender_id: 'system', content: 'transient completed event' },
     } as ServerMessage, context);
 
     expect(context.state.eventMonitorPresentationRevision).toBe(0);
@@ -300,11 +300,11 @@ describe('recent Event Monitor production dispatch coverage', () => {
 
     dispatch({
       type: 'TOOL_LOG',
-      payload: { tool_invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1', log_entry: 'detail' },
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z', tool_invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1', log_entry: 'detail' },
     } as ServerMessage, context);
     dispatch({
       type: 'TOOL_EXECUTION_SUCCEEDED',
-      payload: {
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1',
         arguments: { query: 'weather' }, result: { output: 'detail result' },
       },
@@ -313,7 +313,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
 
     dispatch({
       type: 'TOOL_EXECUTION_SUCCEEDED',
-      payload: {
+      payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1',
         arguments: { query: 'forecast' }, result: { output: 'detail result' },
       },

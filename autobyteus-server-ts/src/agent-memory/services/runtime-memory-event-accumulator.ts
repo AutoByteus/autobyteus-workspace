@@ -84,7 +84,8 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       content: payload.message.content,
       sourceEvent: "AgentRun.postUserMessage",
-      ts: payload.forwardedAt.getTime() / 1000,
+      // The input's admission time (autobyteus-628 SR-006): before its notice's write, so it never sorts after it.
+      ts: payload.acceptedAt.getTime() / 1000,
       media,
       fileAttachments,
       senderId: resolveInterAgentSenderId(payload.message.metadata),

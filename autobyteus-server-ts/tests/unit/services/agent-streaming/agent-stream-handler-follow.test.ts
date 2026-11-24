@@ -27,9 +27,9 @@ const fakeRun = () => {
     getInputStateSnapshot: () => ({ run_instance_id: `${RUN}-instance`, revision: 0, entries: [], recoverableBlock: null }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => { listeners.add(listener); return () => listeners.delete(listener); }),
     emit: (delta: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.SEGMENT_CONTENT,
-      payload: { id: "item-1", delta, segment_type: "text" }, statusHint: null })),
+      payload: { id: "item-1", delta, segment_type: "text" }, statusHint: null, occurredAt: 1795452909697 })),
     status: (status: string) => listeners.forEach((listener) => listener({ runId: RUN, eventType: AgentRunEventType.AGENT_STATUS,
-      payload: { status, agent_id: RUN }, statusHint: null })),
+      payload: { status, agent_id: RUN }, statusHint: null, occurredAt: 1795452909697 })),
     listenerCount: () => listeners.size,
   };
 };

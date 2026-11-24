@@ -1,0 +1,19 @@
+### phone-probe: pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-66,MSP-75,MSP-76,MSP-77,MSP-99,MSP-105
+
+> autobyteus@1.5.14-beta.10 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-66,MSP-75,MSP-76,MSP-77,MSP-99,MSP-105
+
+[mobile-shell] MSP-105 …
+[mobile-shell] MSP-105 Pass
+[mobile-shell] MSP-66 …
+[mobile-shell] MSP-66 Pass
+[mobile-shell] MSP-75 …
+[mobile-shell] MSP-75 Pass
+[mobile-shell] MSP-76 …
+[mobile-shell] MSP-76 Pass
+[mobile-shell] MSP-77 …
+[mobile-shell] MSP-77 Pass
+[mobile-shell] MSP-99 …
+[mobile-shell] MSP-99 Pass
+mobile-shell probe: Pass
+exit 0

@@ -43,8 +43,22 @@ const validOptionalProviderStatus = (payload: Record<string, unknown>): boolean 
   || (typeof payload.provider_status === 'number' && Number.isFinite(payload.provider_status))
   || (typeof payload.provider_status === 'string' && payload.provider_status.trim().length > 0);
 
+/**
+ * The messages whose reader creates or times a conversation row: each carries the node's `occurred_at` (autobyteus-628
+ * D-3). One without it is refused here, so no row is ever timed by the viewer's clock.
+ */
+export const TIMED_MESSAGE_TYPES: ReadonlySet<string> = new Set([
+  'SEGMENT_START', 'SEGMENT_CONTENT', 'TOOL_APPROVAL_REQUESTED', 'TOOL_APPROVED', 'TOOL_DENIED',
+  'TOOL_EXECUTION_STARTED', 'TOOL_EXECUTION_SUCCEEDED', 'TOOL_EXECUTION_FAILED', 'TOOL_EXECUTION_INTERRUPTED',
+  'TOOL_LOG', 'SYSTEM_TASK_NOTIFICATION', 'INTER_AGENT_MESSAGE', 'ERROR', 'COMPACTION_STATUS',
+]);
+const isServerTime = (value: unknown): boolean => nonEmpty(value) && !Number.isNaN(Date.parse(value));
+
 export const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   if (!isRecord(payload)) throw new Error(`${type} payload must be an object`);
+  if (TIMED_MESSAGE_TYPES.has(type) && !isServerTime(payload.occurred_at)) {
+    throw new Error(`${type} payload has no occurred_at: its node did not record its time`);
+  }
   if (type === 'AGENT_INPUT_STATE') { agentInputStateSchema.parse(payload); }
   else if (type === 'COMPACTION_BLOCKED' || type === 'COMPACTION_RESUMED') { compactionRecoveryEventSchema.parse(payload); }
   else if (type === 'AGENT_STATUS') { compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock); }
@@ -57,13 +71,13 @@ export const validateCanonicalBoundary = (type: string, payload: unknown): void 
       throw new Error('Invalid canonical SYSTEM_INSTRUCTIONS_SUPPLIED payload');
     }
   } else if (type === 'SEGMENT_START') {
-    if (!exactKeys(payload, ['id', 'turn_id', 'segment_type', 'metadata']) ||
+    if (!exactKeys(payload, ['id', 'turn_id', 'segment_type', 'metadata', 'occurred_at']) ||
       !nonEmpty(payload.id) || !nonEmpty(payload.turn_id) || !SEGMENT_TYPES.has(payload.segment_type as string) ||
       !validOptionalMetadata(payload)) {
       throw new Error('Invalid canonical SEGMENT_START payload');
     }
   } else if (type === 'SEGMENT_CONTENT') {
-    if (!exactKeys(payload, ['id', 'turn_id', 'segment_type', 'delta']) ||
+    if (!exactKeys(payload, ['id', 'turn_id', 'segment_type', 'delta', 'occurred_at']) ||
       !nonEmpty(payload.id) || !nonEmpty(payload.turn_id) ||
       !SEGMENT_TYPES.has(payload.segment_type as string) || typeof payload.delta !== 'string') {
       throw new Error('Invalid canonical SEGMENT_CONTENT payload');
@@ -76,7 +90,7 @@ export const validateCanonicalBoundary = (type: string, payload: unknown): void 
       throw new Error('Invalid canonical SEGMENT_END payload');
     }
   } else if (type === 'ERROR') {
-    if (!exactKeys(payload, ['code', 'message', 'details', 'provider_status', 'provider_code', 'provider_request_id', 'error_scope', 'error_effect', 'turn_id']) ||
+    if (!exactKeys(payload, ['code', 'message', 'details', 'provider_status', 'provider_code', 'provider_request_id', 'error_scope', 'error_effect', 'turn_id', 'occurred_at']) ||
       !nonEmpty(payload.code) || !nonEmpty(payload.message) ||
       !validOptionalNullableString(payload, 'details') ||
       !validOptionalProviderStatus(payload) ||

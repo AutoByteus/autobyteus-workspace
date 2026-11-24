@@ -1,0 +1,16 @@
+# IMP-06 (D-3, REQ-004, AC-006 server part) the run's one time for each event; every timed message on the three streams carries it
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose tests/unit/agent-execution/agent-run-event-time.test.ts
+# commit: 18a9eb6f34 (+ the contracts 33a75a4ae4)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Pass (4 of 4). The real AgentRun (the backend a double) delivers a live turn's events (a notice, segments, a
+#   tool call and its log, a compaction, an error) to two listeners: every delivery is stamped (the processed events,
+#   the input state, the canonical status, the subscribe snapshot) and both read the same time; an input entry carries
+#   accepted_at; an event already stamped keeps its time. The /ws/agent mapper, the Team adapter + projector and the Org
+#   adapter + projector write that time as occurred_at on every timed message; a timed event no run delivered is refused.
+
+ ok   stamps every delivery once: the subscribe snapshot, the processed events, the input state and the status; each listener reads the same time 7ms
+ ok   an event already stamped keeps its time 3ms
+ ok   every timed message on /ws/agent, the Team stream and the Org presentation carries the run's time as occurred_at 18ms
+ ok   a timed event that no run delivered is refused, never sent with another clock's time 1ms
+      Tests  4 passed (4)

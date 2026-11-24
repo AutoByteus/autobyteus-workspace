@@ -12,7 +12,7 @@ import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
 import { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
 import { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
-import { AgentRunEventType, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexThreadEventName } from "../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { AgentSegmentLifecycleEventTransformer } from "../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { AgentSegmentLifecycleState } from "../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
@@ -73,7 +73,7 @@ const recordRuntimeEvents = (memoryDir: string, events: AgentRunEvent[]): void =
   for (const runtimeEvent of events) {
     lifecycleState.observeEvent(runtimeEvent);
     for (const item of transformer.transform({ runContext: {} as never, events: [runtimeEvent], lifecycleState, segmentLifecycleState }))
-      accumulator.recordRunEvent(item);
+      accumulator.recordRunEvent(stampForDelivery(item));
   }
 };
 

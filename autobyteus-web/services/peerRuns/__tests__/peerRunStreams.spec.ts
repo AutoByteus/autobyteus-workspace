@@ -33,10 +33,10 @@ describe('peer run streams', () => {
     const socket = io.sockets[0]!
     socket.frame({ type: 'CONNECTED', payload: { agent_id: 'member-b', session_id: 's' } })
     socket.frame({ type: 'AGENT_STREAM_SNAPSHOT', payload: { input_state: null, base_sequence: 2, live_sequence_id: 'live-b', turn_frames: [
-      { type: 'SEGMENT_START', payload: { id: 's1', turn_id: 't1', segment_type: 'text' }, sequence: 1 },
-      { type: 'SEGMENT_CONTENT', payload: { id: 's1', turn_id: 't1', segment_type: 'text', delta: 'from node B ' }, sequence: 2 }],
+      { type: 'SEGMENT_START', payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 's1', turn_id: 't1', segment_type: 'text' }, sequence: 1 },
+      { type: 'SEGMENT_CONTENT', payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 's1', turn_id: 't1', segment_type: 'text', delta: 'from node B ' }, sequence: 2 }],
       stored: { runId: 'member-b', conversation: [{ kind: 'message', role: 'user', content: 'the task', ts: 1 }], activities: [], hasEarlierActiveTraceEvents: false } } })
-    socket.frame({ type: 'SEGMENT_CONTENT', sequence: 3, payload: { id: 's1', turn_id: 't1', segment_type: 'text', delta: 'live' } })
+    socket.frame({ type: 'SEGMENT_CONTENT', sequence: 3, payload: { occurred_at: '2026-11-23T16:55:09.697Z', id: 's1', turn_id: 't1', segment_type: 'text', delta: 'live' } })
     const shown = JSON.stringify(peers.streamOf(subject)!.context.state.conversation.messages)
     expect(shown).toContain('the task')
     expect(shown).toContain('from node B live')

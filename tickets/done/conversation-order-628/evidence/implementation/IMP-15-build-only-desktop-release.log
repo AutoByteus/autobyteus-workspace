@@ -1,0 +1,17 @@
+# IMP-15 (DESIGN.md rule 12, as ARCH-REV-002/003 named) the build-only Desktop Release run on the ticket branch
+# command: bash scripts/check_secrets.sh ; git push origin HEAD:refs/heads/codex/conversation-order-628 ;
+#          pnpm release:test --ref codex/conversation-order-628 ; gh run watch 45293566395 --exit-status
+# commit: 5c598ffca8 (code = 6ad8920bd6; later commits only add documents)
+# env: GitHub Actions, release-desktop.yml (workflow_dispatch, build only: no release published)
+# date: 2026-11-24
+# result: Pass. Run 45293566395 concluded success:
+#   Resolve Release Metadata: success
+#   Build Linux x64: success
+#   Build Linux ARM64: success
+#   Build Windows x64: success
+#   Build macOS Intel x64: success
+#   Build macOS ARM64: success
+#   Sign authenticated Linux desktop releases: skipped (build-only)
+#   Publish GitHub Release: skipped (build-only)
+# Annotation only: GitHub's notice that Node 20 actions are forced to run on Node 24 (all jobs; not from this change).
+# URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45293566395

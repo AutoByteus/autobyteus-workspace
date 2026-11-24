@@ -1,0 +1,130 @@
+{
+ "startedAt": "2026-11-23T18:09:26.802Z",
+ "finishedAt": "2026-11-23T18:16:56.682Z",
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-99": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "browserErrorsCount": 10,
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "cases": {
+  "MSP-99": {
+   "result": "Pass",
+   "seconds": 83.6,
+   "runId": "notice_reader_971a552b2079494481d3819f66c23ee4",
+   "wakeLive": {
+    "at": 2,
+    "agentName": "Notice Reader",
+    "checks": {
+     "ownRow": true,
+     "labelAsSpeakerLine": true,
+     "iconNoAgentAvatar": true,
+     "noHeaderLine": true,
+     "noColoredPanel": true,
+     "beforeSpeaker": true,
+     "beforeHasNoNotice": true,
+     "beforeText": true,
+     "afterSpeaker": true,
+     "afterShowsItsSpeaker": true,
+     "afterText": true
+    }
+   },
+   "restartLive": {
+    "at": 7,
+    "agentName": "Notice Reader",
+    "checks": {
+     "ownRow": true,
+     "labelAsSpeakerLine": true,
+     "iconNoAgentAvatar": true,
+     "noHeaderLine": true,
+     "noColoredPanel": true,
+     "beforeSpeaker": true,
+     "beforeHasNoNotice": true,
+     "beforeText": true,
+     "afterSpeaker": true,
+     "afterShowsItsSpeaker": true,
+     "afterText": true
+    }
+   },
+   "wakeReloaded": {
+    "at": 2,
+    "agentName": "Notice Reader",
+    "checks": {
+     "ownRow": true,
+     "labelAsSpeakerLine": true,
+     "iconNoAgentAvatar": true,
+     "noHeaderLine": true,
+     "noColoredPanel": true,
+     "beforeSpeaker": true,
+     "beforeHasNoNotice": true,
+     "beforeText": true,
+     "afterSpeaker": true,
+     "afterShowsItsSpeaker": true,
+     "afterText": true
+    }
+   },
+   "restartReloaded": {
+    "at": 7,
+    "agentName": "Notice Reader",
+    "checks": {
+     "ownRow": true,
+     "labelAsSpeakerLine": true,
+     "iconNoAgentAvatar": true,
+     "noHeaderLine": true,
+     "noColoredPanel": true,
+     "beforeSpeaker": true,
+     "beforeHasNoNotice": true,
+     "beforeText": true,
+     "afterSpeaker": true,
+     "afterShowsItsSpeaker": true,
+     "afterText": true
+    }
+   },
+   "rowsAfterReload": [
+    [
+     "user",
+     "You You CASE:MSP-99 Start the short build in the background."
+    ],
+    [
+     "agent",
+     "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+    ],
+    [
+     "system",
+     "Background tasks finished pid 35196 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: <os-tmp>"
+    ],
+    [
+     "agent",
+     "NR Notice Reader Notice Reader MSP99_NOTED"
+    ],
+    [
+     "user",
+     "You You CASE:MSP-99 Start the long build."
+    ],
+    [
+     "agent",
+     "NR Notice Reader Notice Reader run_bash · \"~/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_10a83"
+    ],
+    [
+     "user",
+     "You You CASE:MSP-99 And now?"
+    ],
+    [
+     "system",
+     "Application restarted The application restarted at 23 Nov 2026, 19:11 CET (reason: a restart). If you started any backgr"
+    ],
+    [
+     "agent",
+     "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+    ]
+   ]
+  }
+ }
+}

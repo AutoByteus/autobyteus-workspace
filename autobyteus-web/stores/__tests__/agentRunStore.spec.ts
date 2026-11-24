@@ -308,6 +308,8 @@ describe('agentRunStore', () => {
           type: 'ai',
           isComplete: true,
           segments: [expect.objectContaining({ type: 'error', message: 'preparation failed' })],
+          // A failure the node never saw has no recorded time (autobyteus-628 D-3).
+          timestamp: null,
         });
         expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(2);
         expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenLastCalledWith({
@@ -317,7 +319,7 @@ describe('agentRunStore', () => {
           summary: 'do something',
         }, {
           kind: 'PRESENTATION',
-          occurredAt: mockAgentContext.state.conversation.updatedAt,
+          occurredAt: expect.any(String),
         });
         expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
         expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();

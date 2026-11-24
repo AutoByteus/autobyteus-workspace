@@ -1,4 +1,5 @@
 import { handleAgentInputState } from './handlers/agentInputStateHandler';
+import { refreshConversationUpdatedAt } from '~/utils/conversation/conversationRowTimes';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ServerMessage } from './protocol';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
@@ -148,6 +149,7 @@ const dispatchToHandler = (
           error_scope: null,
           error_effect: null,
           turn_id: null,
+          occurred_at: message.payload.occurred_at,
         }, context);
         effects = mergeAgentStreamMutationEffects(
           effects,
@@ -216,12 +218,8 @@ export const dispatchAgentStreamMessage = (
   target: AgentStreamProjectionTarget,
 ): AgentStreamMutationEffects => {
   const effects = dispatchToHandler(message, target.context);
-  if (effects.conversationChanged) {
-    const occurredAt = effects.navigation.kind === 'ACTIVITY'
-      ? effects.navigation.occurredAt
-      : new Date().toISOString();
-    target.context.conversation.updatedAt = occurredAt;
-  }
+  // The conversation's time is its latest row's server time (autobyteus-628 D-3), never the viewer's clock.
+  if (effects.conversationChanged) refreshConversationUpdatedAt(target.context.conversation);
   commitRecentEventMonitorEffect(target.context, effects.eventMonitor);
   if (effects.navigation.kind !== 'NONE') {
     const currentStatus = target.context.state.currentStatus;

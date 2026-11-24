@@ -10,7 +10,11 @@ export type AgentRunUserMessageForwardedPayload = {
   platformAgentRunId: string | null;
   message: AgentInputUserMessage;
   result: AgentOperationResult;
-  forwardedAt: Date;
+  /**
+   * When the node admitted the input (autobyteus-628 SR-006): the time its message is recorded at. Admission comes before
+   * the input's platform notice is taken and published, so a stored message never sorts after its own notice.
+   */
+  acceptedAt: Date;
 };
 
 export interface AgentRunCommandObserver {

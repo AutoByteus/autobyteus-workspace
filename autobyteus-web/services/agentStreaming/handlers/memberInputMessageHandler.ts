@@ -38,6 +38,6 @@ const upsertInterAgentDelivery = (payload: MemberInputMessagePayload, context: A
     messageType: 'agent_message',
     content: delivery.body,
   };
-  findOrCreateAIMessage(context).segments.push(segment);
+  findOrCreateAIMessage(context, payload.received_at).segments.push(segment);
   return true;
 };

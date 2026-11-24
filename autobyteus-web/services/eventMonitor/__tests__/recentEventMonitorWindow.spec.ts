@@ -163,7 +163,7 @@ describe('recent Event Monitor presentation: platform notice rows', () => {
 
     // a replayed frame of the same notice id adds nothing to the reloaded conversation
     const context = { state: { runId: 'run-1' }, conversation: hydrated } as unknown as AgentContext;
-    expect(handleSystemTaskNotification({ sender_id: 'system.restart_resume', content: RESTART_NOTICE, message_id: 'n1' }, context)).toBe(false);
+    expect(handleSystemTaskNotification({ occurred_at: '2026-11-23T16:55:09.697Z', sender_id: 'system.restart_resume', content: RESTART_NOTICE, message_id: 'n1' }, context)).toBe(false);
     expect(rows(hydrated)).toEqual(expected);
   });
 

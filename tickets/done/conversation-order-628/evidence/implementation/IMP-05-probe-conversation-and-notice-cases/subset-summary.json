@@ -1,0 +1,698 @@
+{
+ "startedAt": "2026-11-23T18:03:29.889Z",
+ "finishedAt": "2026-11-23T18:08:40.001Z",
+ "result": "Fail",
+ "summary": {
+  "cases": {
+   "MSP-102": "Pass",
+   "MSP-103": "Pass",
+   "MSP-105": "Pass",
+   "MSP-66": "Pass",
+   "MSP-75": "Pass",
+   "MSP-76": "Pass",
+   "MSP-77": "Pass",
+   "MSP-99": "Fail"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "browserErrorsCount": 48,
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "cases": {
+  "MSP-66": {
+   "360": {
+    "width": 360,
+    "height": 780,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 336,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "412": {
+    "width": 412,
+    "height": 915,
+    "phone": true,
+    "textSize": "standard",
+    "fontSize": 17,
+    "lineHeight": 25.5,
+    "bodies": [
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "user"
+     },
+     {
+      "left": 12,
+      "width": 388,
+      "speaker": "agent"
+     }
+    ],
+    "speakers": [
+     "You",
+     "lead",
+     "You",
+     "lead",
+     "You",
+     "lead"
+    ],
+    "avatars": [
+     22,
+     22,
+     22,
+     22,
+     22,
+     22
+    ],
+    "composerGap": 8
+   },
+   "result": "Pass",
+   "seconds": 4.9,
+   "interAgent": {
+    "arrow": {
+     "visible": true,
+     "box": {
+      "x": 376,
+      "y": 102,
+      "width": 20,
+      "height": 20
+     }
+    },
+    "typeLineBefore": 0,
+    "typeLine": "agent_message",
+    "messageBox": {
+     "x": 12,
+     "y": 100,
+     "width": 388,
+     "height": 72.0625
+    }
+   }
+  },
+  "MSP-75": {
+   "result": "Pass",
+   "seconds": 20.8,
+   "runId": "build_runner_9335e0d7030b42e0b2a7cd98dbecd201",
+   "agentTimes": [
+    "2026-11-23 18:06 UTC",
+    "2026-11-23 18:06 UTC"
+   ],
+   "expectedCards": [
+    "23 Nov 2026, 19:06 CET",
+    "23 Nov 2026, 19:06 CET"
+   ],
+   "afterFirst": {
+    "cards": [
+     "Application restarted The application restarted at 23 Nov 2026, 19:06 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+    ],
+    "inputs": [
+     1,
+     1,
+     0
+    ],
+    "replies": [
+     1,
+     1,
+     0
+    ]
+   },
+   "live": {
+    "cards": [
+     "Application restarted The application restarted at 23 Nov 2026, 19:06 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+     "Application restarted The application restarted at 23 Nov 2026, 19:06 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+    ],
+    "inputs": [
+     1,
+     1,
+     1
+    ],
+    "replies": [
+     1,
+     1,
+     1
+    ]
+   },
+   "reloaded": {
+    "cards": [
+     "Application restarted The application restarted at 23 Nov 2026, 19:06 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+     "Application restarted The application restarted at 23 Nov 2026, 19:06 CET (reason: a restart). If you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work."
+    ],
+    "inputs": [
+     1,
+     1,
+     1
+    ],
+    "replies": [
+     1,
+     1,
+     1
+    ]
+   },
+   "requests": 5
+  },
+  "MSP-76": {
+   "result": "Pass",
+   "seconds": 14.2,
+   "key": "team:build_team_e27947485d86472ba546fa77e7792cb7",
+   "runId": "build_team_e27947485d86472ba546fa77e7792cb7",
+   "live": {
+    "cards": [
+     "Background tasks finished pid 51780 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: <os-tmp>/build_lead_2cbd6c598b034c63bff5d88ffa442c1d/call-1795457204970-51641.log. Last lines: MSP-76_BUILT"
+    ],
+    "started": 1,
+    "noted": 1
+   },
+   "reloaded": {
+    "cards": [
+     "Background tasks finished pid 51780 sleep 4; echo MSP-76_BUILT: exit code 0 after 4s. Output: <os-tmp>/build_lead_2cbd6c598b034c63bff5d88ffa442c1d/call-1795457204970-51641.log. Last lines: MSP-76_BUILT"
+    ],
+    "started": 1,
+    "noted": 1
+   },
+   "requests": 3,
+   "noticeReachedAgent": true
+  },
+  "MSP-77": {
+   "result": "Pass",
+   "seconds": 14.6,
+   "key": "org:build_org_913c556b963743a8a2a09b3e0953d6f9",
+   "runId": "build_org_913c556b963743a8a2a09b3e0953d6f9",
+   "live": {
+    "cards": [
+     "Background tasks finished pid 58575 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: <os-tmp>/build_worker_b5e708b6e1024d918f218d25d26ba4d8/call-1795457219201-58547.log. Last lines: MSP-77_BUILT"
+    ],
+    "started": 1,
+    "noted": 1
+   },
+   "reloaded": {
+    "cards": [
+     "Background tasks finished pid 58575 sleep 4; echo MSP-77_BUILT: exit code 0 after 4s. Output: <os-tmp>/build_worker_b5e708b6e1024d918f218d25d26ba4d8/call-1795457219201-58547.log. Last lines: MSP-77_BUILT"
+    ],
+    "started": 1,
+    "noted": 1
+   },
+   "requests": 3,
+   "noticeReachedAgent": true
+  },
+  "MSP-99": {
+   "result": "Fail",
+   "seconds": 84.1,
+   "error": "MSP-99 restartLive: the notice is its own labelled row and the agent after it shows its name (failed: beforeIsAgent, beforeText, afterSpeaker, afterText)",
+   "details": {
+    "runId": "notice_reader_271307956c094d9f9b34fcf865d2bd56",
+    "wakeLive": {
+     "at": 2,
+     "agentName": "Notice Reader",
+     "checks": {
+      "ownRow": true,
+      "labelAsSpeakerLine": true,
+      "iconNoAgentAvatar": true,
+      "noHeaderLine": true,
+      "noColoredPanel": true,
+      "beforeIsAgent": true,
+      "beforeHasNoNotice": true,
+      "beforeText": true,
+      "afterSpeaker": true,
+      "afterShowsItsSpeaker": true,
+      "afterText": true
+     }
+    },
+    "restartLive": {
+     "at": 7,
+     "agentName": "Notice Reader",
+     "checks": {
+      "ownRow": true,
+      "labelAsSpeakerLine": true,
+      "iconNoAgentAvatar": true,
+      "noHeaderLine": true,
+      "noColoredPanel": true,
+      "beforeIsAgent": false,
+      "beforeHasNoNotice": true,
+      "beforeText": false,
+      "afterSpeaker": false,
+      "afterShowsItsSpeaker": true,
+      "afterText": false
+     }
+    },
+    "wakeReloaded": {
+     "at": 2,
+     "agentName": "Notice Reader",
+     "checks": {
+      "ownRow": true,
+      "labelAsSpeakerLine": true,
+      "iconNoAgentAvatar": true,
+      "noHeaderLine": true,
+      "noColoredPanel": true,
+      "beforeIsAgent": true,
+      "beforeHasNoNotice": true,
+      "beforeText": true,
+      "afterSpeaker": true,
+      "afterShowsItsSpeaker": true,
+      "afterText": true
+     }
+    },
+    "restartReloaded": {
+     "at": 7,
+     "agentName": "Notice Reader",
+     "checks": {
+      "ownRow": true,
+      "labelAsSpeakerLine": true,
+      "iconNoAgentAvatar": true,
+      "noHeaderLine": true,
+      "noColoredPanel": true,
+      "beforeIsAgent": false,
+      "beforeHasNoNotice": true,
+      "beforeText": false,
+      "afterSpeaker": false,
+      "afterShowsItsSpeaker": true,
+      "afterText": false
+     }
+    },
+    "rowsAfterReload": [
+     [
+      "user",
+      "You You CASE:MSP-99 Start the short build in the background."
+     ],
+     [
+      "agent",
+      "NR Notice Reader Notice Reader run_bash · sleep 4; echo MSP99_BUILT MSP99_STARTED"
+     ],
+     [
+      "system",
+      "Background tasks finished pid 63730 sleep 4; echo MSP99_BUILT: exit code 0 after 4s. Output: <os-tmp>"
+     ],
+     [
+      "agent",
+      "NR Notice Reader Notice Reader MSP99_NOTED"
+     ],
+     [
+      "user",
+      "You You CASE:MSP-99 Start the long build."
+     ],
+     [
+      "agent",
+      "NR Notice Reader Notice Reader run_bash · \"~/.hermes/node/bin/node\" -e \"setInterval(()=>{},1000)\" MSP75_e8c49"
+     ],
+     [
+      "user",
+      "You You CASE:MSP-99 And now?"
+     ],
+     [
+      "system",
+      "Application restarted The application restarted at 23 Nov 2026, 19:08 CET (reason: a restart). If you started any backgr"
+     ],
+     [
+      "agent",
+      "NR Notice Reader Notice Reader MSP99_AFTER_RESTART"
+     ]
+    ]
+   }
+  },
+  "MSP-102": {
+   "result": "Pass",
+   "seconds": 81.7,
+   "run": "fact_checker_b3ef7c84a8c143b98dcb93dbdac8aec4",
+   "fillers": 50,
+   "pageEvents": 110,
+   "loadedEarlierCount": 10,
+   "pageRequests": 1,
+   "live": {
+    "send_message_to": {
+     "name": "send_message_to",
+     "summary": "→ /release_notes_writer",
+     "stopped": false
+    },
+    "get_project_task": {
+     "name": "get_project_task",
+     "summary": "autobyteus-609",
+     "stopped": false
+    },
+    "run_command": {
+     "name": "run_command",
+     "summary": "ls -la docs",
+     "stopped": false
+    },
+    "view_file": {
+     "name": "view_file",
+     "summary": "docs/notes-609.md",
+     "stopped": false
+    }
+   },
+   "heldCard": {
+    "name": "run_command",
+    "summary": "sleep 600 # HOLD_TURN",
+    "stopped": true
+   },
+   "deskActivity": [
+    {
+     "name": "run_command",
+     "chip": "Success"
+    },
+    {
+     "name": "run_command",
+     "chip": "Stopped"
+    }
+   ],
+   "phoneRow": {
+    "status": "interrupted",
+    "word": "Stopped"
+   },
+   "phoneDetail": "Stopped",
+   "api": {
+    "send_message_to": {
+     "kind": "tool_card",
+     "toolName": "send_message_to",
+     "statusKey": "success",
+     "summaryArgs": {
+      "recipient_address": "/release_notes_writer"
+     }
+    },
+    "get_project_task": {
+     "kind": "tool_card",
+     "toolName": "get_project_task",
+     "statusKey": "success",
+     "summaryArgs": {
+      "task_id": "autobyteus-609"
+     }
+    },
+    "run_command": {
+     "kind": "tool_card",
+     "toolName": "run_command",
+     "statusKey": "success",
+     "summaryArgs": {
+      "CommandLine": "cd /agy/probe-609 && ls -la docs"
+     }
+    },
+    "view_file": {
+     "kind": "tool_card",
+     "toolName": "view_file",
+     "statusKey": "success",
+     "summaryArgs": {
+      "AbsolutePath": "/agy/probe-609/docs/notes-609.md"
+     }
+    },
+    "held": {
+     "kind": "tool_card",
+     "toolName": "run_command",
+     "statusKey": "interrupted",
+     "summaryArgs": {
+      "CommandLine": "sleep 600 # HOLD_TURN"
+     }
+    }
+   },
+   "browse": {
+    "send_message_to": {
+     "name": "send_message_to",
+     "summary": "→ /release_notes_writer",
+     "stopped": false
+    },
+    "get_project_task": {
+     "name": "get_project_task",
+     "summary": "autobyteus-609",
+     "stopped": false
+    },
+    "run_command": {
+     "name": "run_command",
+     "summary": "ls -la docs",
+     "stopped": false
+    },
+    "view_file": {
+     "name": "view_file",
+     "summary": "docs/notes-609.md",
+     "stopped": false
+    }
+   },
+   "browseHeld": {
+    "name": "run_command",
+    "summary": "sleep 600 # HOLD_TURN",
+    "stopped": true
+   }
+  },
+  "MSP-103": {
+   "result": "Pass",
+   "seconds": 10.1,
+   "team": "delivery_team_333004d253fe42799eabbe99599a52a8",
+   "lead": "fact_checker_e624f2f285bd44339554e0eca96ba567",
+   "mate": "release_notes_writer_6012584cf2f142779cce98827cc7aa0f",
+   "phoneLive": {
+    "status": "interrupted",
+    "word": "Stopped"
+   },
+   "deskCard": {
+    "name": "run_command",
+    "summary": "sleep 600 # HOLD_TURN",
+    "stopped": true,
+    "error": false
+   },
+   "deskActivity": [
+    {
+     "name": "run_command",
+     "chip": "Stopped"
+    }
+   ],
+   "phoneReadBack": {
+    "status": "interrupted",
+    "word": "Stopped"
+   },
+   "stored": [
+    "interrupted"
+   ],
+   "conflicts": [],
+   "deskErrors": []
+  },
+  "MSP-105": {
+   "result": "Pass",
+   "seconds": 28,
+   "team": "order_team_e6fc9ed26c02461aa080874371feca55",
+   "lead": "order_lead_7c4098cdef6c49a6853bc79c8eb3a5cf",
+   "rounds": [
+    {
+     "label": "phone-order-behind-sends",
+     "offsetMs": -2000,
+     "clockOffsetMs": -2000,
+     "sender": "phone",
+     "marker": "ORDER-628-7ff084d1",
+     "live": {
+      "message": 2,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 2,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795457137.411",
+      "message:user@1795457142.557",
+      "system_task_notification@1795457142.562",
+      "message:assistant@1795457142.573"
+     ],
+     "nodeNoticeAfterMessage": true
+    },
+    {
+     "label": "phone-order-ahead-sends",
+     "offsetMs": 2000,
+     "clockOffsetMs": 2000,
+     "sender": "phone",
+     "marker": "ORDER-628-0fd70f97",
+     "live": {
+      "message": 5,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated No longer available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 5,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated No longer available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795457142.573",
+      "message:user@1795457150.975",
+      "system_task_notification@1795457150.976",
+      "message:assistant@1795457150.981"
+     ],
+     "nodeNoticeAfterMessage": true
+    },
+    {
+     "label": "phone-order-behind-watches",
+     "offsetMs": -2000,
+     "clockOffsetMs": -2000,
+     "sender": "another client",
+     "marker": "ORDER-628-1a0b23b0",
+     "live": {
+      "message": 8,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "reopened": {
+      "message": 8,
+      "before": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "next": {
+       "speaker": "system",
+       "notice": "Tools updated",
+       "text": "Tools updated Now available: list_project_tasks."
+      },
+      "after": {
+       "speaker": "agent",
+       "notice": null,
+       "text": "L lead lead OK"
+      },
+      "ok": true
+     },
+     "nodeOrder": [
+      "message:assistant@1795457150.981",
+      "message:user@1795457159.766",
+      "system_task_notification@1795457159.766",
+      "message:assistant@1795457159.768"
+     ],
+     "nodeNoticeAfterMessage": true
+    }
+   ]
+  }
+ }
+}

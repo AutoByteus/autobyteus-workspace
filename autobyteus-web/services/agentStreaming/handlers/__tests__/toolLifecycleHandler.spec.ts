@@ -157,11 +157,11 @@ describe('toolLifecycleHandler', () => {
     const invocation_id = 'agy-tool-agy-turn-2';
     const background = { provider_state: 'RUNNING',
       output: 'Started as a background task; still running when the turn ended.' };
-    handleToolExecutionStarted({ invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
+    handleToolExecutionStarted({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
       arguments: { CommandLine: 'pnpm dev', IsDaemon: true } }, context);
     const card = (context.conversation.messages[0] as any).segments[0] as ToolCallSegment;
     expect(buildToolCardPresentation(card)).toMatchObject({ toolName: 'run_command', statusKey: 'running' });
-    handleToolExecutionSucceeded({ invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
+    handleToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
       arguments: { CommandLine: 'pnpm dev', IsDaemon: true }, result: background }, context);
     expect(card.status).toBe('success');
     expect(card.result).toEqual(background);
@@ -173,18 +173,18 @@ describe('toolLifecycleHandler', () => {
   it('projects AGY native generate_image pathless DONE and safe denial as ordinary chat tool cards', () => {
     const successContext = buildEmptyContext();
     const invocation_id = 'agy-native-image-1';
-    handleToolExecutionStarted({ invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn', arguments: {} }, successContext);
+    handleToolExecutionStarted({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn', arguments: {} }, successContext);
     const running = (successContext.conversation.messages[0] as any).segments[0] as ToolCallSegment;
     expect(buildToolCardPresentation(running)).toMatchObject({ toolName: 'generate_image', statusKey: 'running' });
-    handleToolExecutionSucceeded({ invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn',
+    handleToolExecutionSucceeded({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn',
       result: { provider_state: 'DONE', output: null } }, successContext);
     expect(running.result).toEqual({ provider_state: 'DONE', output: null });
     expect(buildToolCardPresentation(running)).toMatchObject({ toolName: 'generate_image', statusKey: 'success' });
 
     const deniedContext = buildEmptyContext();
-    handleToolExecutionStarted({ invocation_id: 'agy-native-image-2', tool_name: 'generate_image',
+    handleToolExecutionStarted({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id: 'agy-native-image-2', tool_name: 'generate_image',
       turn_id: 'agy-turn-2', arguments: {} }, deniedContext);
-    handleToolDenied({ invocation_id: 'agy-native-image-2', tool_name: 'generate_image', turn_id: 'agy-turn-2',
+    handleToolDenied({ occurred_at: '2026-11-23T16:55:09.697Z', invocation_id: 'agy-native-image-2', tool_name: 'generate_image', turn_id: 'agy-turn-2',
       reason: 'Antigravity denied this tool invocation.' }, deniedContext);
     const denied = (deniedContext.conversation.messages[0] as any).segments[0] as ToolCallSegment;
     expect(buildToolCardPresentation(denied)).toMatchObject({ toolName: 'generate_image', statusKey: 'denied' });
@@ -196,7 +196,7 @@ describe('toolLifecycleHandler', () => {
     const context = buildEmptyContext();
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'run_bash',
         turn_id: 'turn-1',
@@ -221,7 +221,7 @@ describe('toolLifecycleHandler', () => {
     const segment = buildEditFileSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const payload: ToolApprovalRequestedPayload = {
+    const payload: ToolApprovalRequestedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'edit_file',
       turn_id: 'turn-1',
@@ -261,7 +261,7 @@ describe('toolLifecycleHandler', () => {
       reason: 'Need validation access',
     };
 
-    const payload: ToolApprovalRequestedPayload = {
+    const payload: ToolApprovalRequestedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'request_permissions',
       turn_id: 'turn-1',
@@ -295,13 +295,13 @@ describe('toolLifecycleHandler', () => {
     const segment = buildTerminalSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const approvedPayload: ToolApprovedPayload = {
+    const approvedPayload: ToolApprovedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'run_bash',
       turn_id: 'turn-1',
       reason: 'approved',
     };
-    const startedPayload: ToolExecutionStartedPayload = {
+    const startedPayload: ToolExecutionStartedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'run_bash',
       turn_id: 'turn-1',
@@ -327,7 +327,7 @@ describe('toolLifecycleHandler', () => {
     const context = buildContextWithSegment(segment);
 
     handleToolExecutionStarted(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'send_message_to',
         turn_id: 'turn-1',
@@ -353,13 +353,13 @@ describe('toolLifecycleHandler', () => {
     const segment = buildTerminalSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const startedPayload: ToolExecutionStartedPayload = {
+    const startedPayload: ToolExecutionStartedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'run_bash',
       turn_id: 'turn-1',
       arguments: { command: 'python server.py' },
     };
-    const approvedPayload: ToolApprovedPayload = {
+    const approvedPayload: ToolApprovedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'run_bash',
       turn_id: 'turn-1',
@@ -377,13 +377,13 @@ describe('toolLifecycleHandler', () => {
     const segment = buildToolCallSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const startedPayload: ToolExecutionStartedPayload = {
+    const startedPayload: ToolExecutionStartedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'read_file',
       turn_id: 'turn-1',
       arguments: { path: '/tmp/a.txt' },
     };
-    const succeededPayload: ToolExecutionSucceededPayload = {
+    const succeededPayload: ToolExecutionSucceededPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'read_file',
       turn_id: 'turn-1',
@@ -402,7 +402,7 @@ describe('toolLifecycleHandler', () => {
   it('hydrates arguments from a result-first TOOL_EXECUTION_SUCCEEDED payload', () => {
     const invocationId = 'claude-bash-result-first';
     const context = buildEmptyContext();
-    const payload: ToolExecutionSucceededPayload = {
+    const payload: ToolExecutionSucceededPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'Bash',
       turn_id: 'turn-1',
@@ -439,7 +439,7 @@ describe('toolLifecycleHandler', () => {
     const segment = buildToolCallSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const payload: ToolExecutionFailedPayload = {
+    const payload: ToolExecutionFailedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'read_file',
       turn_id: 'turn-1',
@@ -457,7 +457,7 @@ describe('toolLifecycleHandler', () => {
     const segment = buildToolCallSegment(invocationId);
     const context = buildContextWithSegment(segment);
 
-    const payload: ToolDeniedPayload = {
+    const payload: ToolDeniedPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       invocation_id: invocationId,
       tool_name: 'delete_file',
       turn_id: 'turn-1',
@@ -483,7 +483,7 @@ describe('toolLifecycleHandler', () => {
     const context = buildContextWithSegment(segment);
 
     handleToolDenied(
-      {
+      { occurred_at: '2026-11-23T16:55:09.697Z',
         invocation_id: invocationId,
         tool_name: 'delete_file',
         reason: null,
@@ -502,7 +502,7 @@ describe('toolLifecycleHandler', () => {
     segment.status = 'executing';
     const context = buildContextWithSegment(segment);
 
-    const payload: ToolLogPayload = {
+    const payload: ToolLogPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
       tool_invocation_id: invocationId,
       tool_name: 'read_file',
       turn_id: 'turn-1',

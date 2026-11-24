@@ -1,0 +1,285 @@
+{
+ "startedAt": "2026-11-23T22:12:34.368Z",
+ "finishedAt": "2026-11-23T23:04:41.249Z",
+ "result": "Fail",
+ "summary": {
+  "cases": {
+   "MSP-01": "Pass",
+   "MSP-15": "Pass",
+   "MSP-02": "Pass",
+   "MSP-03": "Pass",
+   "MSP-04": "Pass",
+   "MSP-05": "Pass",
+   "MSP-06": "Pass",
+   "MSP-07": "Pass",
+   "MSP-38": "Pass",
+   "MSP-08": "Pass",
+   "MSP-33": "Pass",
+   "MSP-36": "Pass",
+   "MSP-16": "Pass",
+   "MSP-43": "Pass",
+   "MSP-47": "Pass",
+   "MSP-48": "Pass",
+   "MSP-49": "Pass",
+   "MSP-59": "Pass",
+   "MSP-78": "Pass",
+   "MSP-104": "Pass",
+   "MSP-94": "Pass",
+   "MSP-95": "Pass",
+   "MSP-96": "Pass",
+   "MSP-97": "Pass",
+   "MSP-102": "Pass",
+   "MSP-103": "Pass",
+   "MSP-105": "Pass",
+   "MSP-14": "Pass",
+   "MSP-10": "Pass",
+   "MSP-11": "Pass",
+   "MSP-12": "Pass",
+   "MSP-20": "Pass",
+   "MSP-09": "Pass",
+   "MSP-19": "Pass",
+   "MSP-17": "Fail",
+   "MSP-73": "Pass",
+   "MSP-18": "Pass",
+   "MSP-66": "Pass",
+   "MSP-60": "Pass",
+   "MSP-74": "Pass",
+   "MSP-61": "Fail",
+   "MSP-62": "Pass",
+   "MSP-63": "Pass",
+   "MSP-64": "Pass",
+   "MSP-65": "Fail",
+   "MSP-67": "Pass",
+   "MSP-68": "Pass",
+   "MSP-69": "Pass",
+   "MSP-70": "Pass",
+   "MSP-71": "Pass",
+   "MSP-72": "Pass",
+   "MSP-80": "Pass",
+   "MSP-81": "Pass",
+   "MSP-82": "Fail",
+   "MSP-83": "Pass",
+   "MSP-84": "Pass",
+   "MSP-85": "Pass",
+   "MSP-86": "Pass",
+   "MSP-87": "Fail",
+   "MSP-88": "Pass",
+   "MSP-13": "Pass",
+   "MSP-21": "Pass",
+   "MSP-22": "Pass",
+   "MSP-23": "Pass",
+   "MSP-24": "Pass",
+   "MSP-25": "Pass",
+   "MSP-26": "Pass",
+   "MSP-34": "Pass",
+   "MSP-27": "Pass",
+   "MSP-35": "Pass",
+   "MSP-28": "Pass",
+   "MSP-29": "Pass",
+   "MSP-30": "Pass",
+   "MSP-89": "Pass",
+   "MSP-91": "Pass",
+   "MSP-92": "Pass",
+   "MSP-31": "Pass",
+   "MSP-37": "Pass",
+   "MSP-90": "Pass",
+   "MSP-56": "Pass",
+   "MSP-57": "Pass",
+   "MSP-58": "Fail",
+   "MSP-39": "Pass",
+   "MSP-40": "Pass",
+   "MSP-41": "Pass",
+   "MSP-42": "Pass",
+   "MSP-44": "Pass",
+   "MSP-45": "Pass",
+   "MSP-46": "Pass",
+   "MSP-100": "Pass",
+   "MSP-101": "Pass",
+   "MSP-50": "Pass",
+   "MSP-51": "Pass",
+   "MSP-52": "Pass",
+   "MSP-53": "Pass",
+   "MSP-54": "Pass",
+   "MSP-55": "Pass",
+   "MSP-75": "Pass",
+   "MSP-76": "Pass",
+   "MSP-77": "Pass",
+   "MSP-99": "Pass",
+   "MSP-93": "Pass",
+   "MSP-32": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "failed": {
+  "MSP-17": "Timed out waiting for the run screen of org:delivery_org_8809b64a734c4f2b8cd14885409b77d2/agent:changelog_helper_4ef7366a74054590967a535a0de32e6c",
+  "MSP-61": "REQ-006 another runtime clears the model; Save waits for a model",
+  "MSP-65": "REQ-008 after the stop the phone stays on Settings with the rows open",
+  "MSP-82": "The message \"MSP-82-org-member-start\" did not start a turn (a lost send)",
+  "MSP-87": "Timed out waiting for Send enabled",
+  "MSP-58": "Timed out waiting for the run screen"
+ },
+ "MSP-105": {
+  "result": "Pass",
+  "seconds": 27.9,
+  "team": "order_team_53f128823cf241408c51a9f6253dcaa5",
+  "lead": "order_lead_814c91f63d5d42c38fef4c33a426bd63",
+  "rounds": [
+   {
+    "label": "phone-order-behind-sends",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2000,
+    "sender": "phone",
+    "marker": "ORDER-628-5d5b8b55",
+    "live": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 2,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795472430.086",
+     "message:user@1795472435.253",
+     "system_task_notification@1795472435.256",
+     "message:assistant@1795472435.26"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-ahead-sends",
+    "offsetMs": 2000,
+    "clockOffsetMs": 1999,
+    "sender": "phone",
+    "marker": "ORDER-628-b51dc008",
+    "live": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 5,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated No longer available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795472435.26",
+     "message:user@1795472443.689",
+     "system_task_notification@1795472443.692",
+     "message:assistant@1795472443.698"
+    ],
+    "nodeNoticeAfterMessage": true
+   },
+   {
+    "label": "phone-order-behind-watches",
+    "offsetMs": -2000,
+    "clockOffsetMs": -2000,
+    "sender": "another client",
+    "marker": "ORDER-628-aad475a8",
+    "live": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "reopened": {
+     "message": 8,
+     "before": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "next": {
+      "speaker": "system",
+      "notice": "Tools updated",
+      "text": "Tools updated Now available: list_project_tasks."
+     },
+     "after": {
+      "speaker": "agent",
+      "notice": null,
+      "text": "L lead lead OK"
+     },
+     "ok": true
+    },
+    "nodeOrder": [
+     "message:assistant@1795472443.698",
+     "message:user@1795472452.449",
+     "system_task_notification@1795472452.459",
+     "message:assistant@1795472452.466"
+    ],
+    "nodeNoticeAfterMessage": true
+   }
+  ]
+ }
+}

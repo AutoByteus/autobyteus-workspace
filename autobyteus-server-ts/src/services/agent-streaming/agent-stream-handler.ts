@@ -360,6 +360,8 @@ export class AgentStreamHandler {
         command_type: "SEND_MESSAGE", run_id: agentRunId, message_id: messageId, dedupe_key: dedupeKey,
         state: "rejected", accepted: false, duplicate: false,
         code: "COLLABORATOR_MENTION_INVALID", message: "Mentions must be at most 8 unique Agents or Agent Teams.",
+        // A refused send is shown as a row: it carries the node's time (autobyteus-628 D-3).
+        occurred_at: new Date().toISOString(),
       }));
       return;
     }
@@ -378,7 +380,8 @@ export class AgentStreamHandler {
     egress.send(
       new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
-        result.ack,
+        // A refused send is shown as a row: the ack carries the node's time (autobyteus-628 D-3).
+        { ...result.ack, occurred_at: new Date().toISOString() },
       ),
     );
     if (!result.ack.accepted) {

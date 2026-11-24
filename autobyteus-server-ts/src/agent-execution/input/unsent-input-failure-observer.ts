@@ -29,6 +29,8 @@ export const createUnsentInputFailureObserver = (input: Readonly<{
       runId: input.runId,
       payload: { code: fact.code, message: fact.message },
       statusHint: null,
+      // Published outside the run's delivery, so it carries its own node time (autobyteus-628 D-3).
+      occurredAt: Date.now(),
     });
   };
 };

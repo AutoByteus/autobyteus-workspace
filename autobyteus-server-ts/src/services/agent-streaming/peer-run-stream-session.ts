@@ -107,6 +107,7 @@ export class PeerRunStreamSession {
       command_type: "SEND_MESSAGE", run_id: this.input.agentRunId, message_id: messageId, dedupe_key: dedupeKey,
       state: receipt.accepted ? "accepted" : "rejected", accepted: receipt.accepted, duplicate: false,
       ...(receipt.accepted ? {} : { code: "RUNTIME_REJECTED", message: receipt.message }),
+      occurred_at: new Date().toISOString(),
     }));
   }
 
@@ -119,7 +120,7 @@ export class PeerRunStreamSession {
 
   private end(reason: string): void {
     if (this.closed) return;
-    this.input.sink.send(message("ERROR", { code: "PEER_RUN_STREAM_ENDED", message: reason, error_scope: null, error_effect: null, turn_id: null }));
+    this.input.sink.send(message("ERROR", { code: "PEER_RUN_STREAM_ENDED", message: reason, error_scope: null, error_effect: null, turn_id: null, occurred_at: new Date().toISOString() }));
     this.close();
     this.input.sink.close(1011);
   }

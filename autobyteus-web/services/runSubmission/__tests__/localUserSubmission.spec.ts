@@ -73,8 +73,11 @@ describe('localUserSubmission', () => {
       summary: 'hello runtime',
     }, {
       kind: 'PRESENTATION',
-      occurredAt: context.state.conversation.updatedAt,
+      occurredAt: expect.any(String),
     });
+    // The own send has no time until the node confirms it, and the conversation keeps its server time (D-3).
+    expect(handle.message.timestamp).toBeNull();
+    expect(context.state.conversation.updatedAt).toBe('2026-05-17T00:00:00.000Z');
   });
 
   it('applies the same exact summary/activity effect to an existing team member', () => {

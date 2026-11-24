@@ -981,6 +981,16 @@ team member metadata -> member memoryDir -> active raw traces -> historical repl
   anchored to the call even when call and result are in different raw-trace
   files. A result-local name supports partial evidence, but does not replace
   call correlation for arguments, anchoring, ordering, or lifecycle integrity.
+- A platform notice delivered in front of a user's input reads back right after that input,
+  as it showed live (autobyteus-628 D-2). The replay builder
+  (`raw-trace-to-historical-replay-events.ts`, `orderPrefaceNoticesAfterTheirInput`) moves
+  a stored `system_task_notification` behind the `user` trace that immediately follows it in the same
+  turn when (a) the user trace's `ts` is not later than the notice's (an external runtime's user
+  trace is stored at the input's admission time, which is earlier than the notice's delivery),
+  or (b) both were written by the native input processor (`LLMUserMessageReadyEvent` source, which writes a
+  notice there only as a preface). A notice that opened its own turn (a restart or task notice) with an input appended to
+  that turn later, and any other notice, keep their stored place. The stored traces are not changed, so old and new runs read alike, and the
+  earlier-events page follows the same order.
 - A stored tool result that is an interruption reads back as `interrupted`, the
   status the web shows as "Stopped" (autobyteus-609). One rule decides it,
   `isInterruptedToolResult` (`src/agent-memory/domain/tool-result-interruption.ts`),
