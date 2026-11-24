@@ -233,6 +233,7 @@ import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 import { runActivityDetailsCases } from './mobile-activity-details-cases.mjs';
 import { runStoppedCallTraceCases } from './desktop-stopped-call-trace-cases.mjs';
 import { runConversationOrderCases } from './mobile-conversation-order-cases.mjs';
+import { runConversationOrderLiveCases } from './mobile-conversation-order-live-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
@@ -1838,6 +1839,8 @@ const runCases = async () => {
   await runStoppedCallTraceCases({ runCase, page, stack, alpha, browser, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir, selected, sendOver, openPhone, paired });
   // autobyteus-628: the conversation keeps its order whatever the phone's clock (`mobile-conversation-order-cases.mjs`).
   await runConversationOrderCases({ runCase, page, stack, alpha, openPhone, paired, shot, waitFor, sleep, assert, selected, sendOver, ensureUnfolded, openRow, rowsOf, childRow });
+  // autobyteus-628, gated (real models): the order and the node's row times on Claude and native runs (`mobile-conversation-order-live-cases.mjs`).
+  await runConversationOrderLiveCases({ runCase, serverAt, freePort, chromium, executablePath, root, waitFor, sleep, assert, selected, shot, sendOver, ensureUnfolded, openRow, rowsOf, childRow });
 
   await runCase('MSP-14', async () => {
     await toList(page);
