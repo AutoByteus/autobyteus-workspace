@@ -2,7 +2,7 @@
 // wraps at the editor's width, its wrapped rows keep its indentation, line numbers stay, nothing scrolls sideways; the
 // editor's own "Toggle Word Wrap" turns wrap off (the line runs past the edge again) and on again. Cases of
 // `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after the code-wrap cases
-// (`--cases=MSP-108,MSP-109` runs only these).
+// (`--cases=MSP-108,MSP-109,MSP-110` runs only these).
 //
 // On alpha, with test data only: `word-wrap-618/` in the probe workspace holds a `pnpm-workspace.yaml`, a `tsconfig.json`
 // and a `draft-v1.txt`, each with long lines, indented ones among them (the files of the founder's report, synthesized);
@@ -13,11 +13,14 @@
 //                  the editor beside the tree (narrow) and with the viewer maximized (wide). Then "Toggle Word Wrap" (the editor's context menu) on the long-line text
 //                  file: its lines run past the editor's edge (the control: the measurement sees an unwrapped line), and
 //                  toggled again they wrap.
+//   MSP-110 REQ-003  The desktop window at 1440×900, the long-line text file wrapped in the maximized editor: the user
+//                  types at the end of a line and adds a new long line, saves with Cmd/Ctrl+S ("Changes saved"); the file
+//                  on disk is the old text with exactly those edits, and the editor still wraps, the new line included.
 //   MSP-109 AC-001  The phone (production bundle at /mobile) at 390×844: each file opened from the run's Files screen, in the
 //                  phone file viewer (the same editor, read-only).
 // Per file and surface: no row of text ends past the editor's right edge; at least one line wraps (rows without a line
 // number); each wrapped row starts where its line's first non-space character does; line numbers are shown; the page
-// does not scroll sideways.
+// does not scroll sideways; the JSON file is highlighted (more than one Monaco token class).
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
@@ -98,8 +101,11 @@ const measureEditor = (editor) => {
     wrapped.push({ line: line.number, lineTextLeft: line.firstTextLeft, rowTextLeft: at, start: row.start });
   }
   const de = document.documentElement;
+  // Monaco colors tokens with `mtk<N>` classes: one class only means the text is not highlighted.
+  const tokenClasses = [...new Set([...editor.querySelectorAll('.view-lines .view-line span[class*="mtk"]')]
+    .flatMap(el => [...el.classList].filter(c => /^mtk\d+$/.test(c))))].sort();
   return {
-    editorWidth: Math.round(box.width), contentRight: Math.round(contentRight),
+    editorWidth: Math.round(box.width), contentRight: Math.round(contentRight), tokenClasses,
     rows: rows.length, numberedRows: rows.filter(r => r.number).length, lineNumbers: numbers.map(n => n.text),
     past: rows.filter(r => r.right !== null && r.right > contentRight + 1).map(r => ({ number: r.number, right: r.right, start: r.start.replace(/\u00a0/g, ' ') })),
     wrapped: wrapped.map(w => ({ ...w, start: w.start.replace(/\u00a0/g, ' ') })), misindented: wrapped.filter(w => w.lineTextLeft === null || w.rowTextLeft === null || Math.abs(w.rowTextLeft - w.lineTextLeft) > 2),
@@ -107,9 +113,10 @@ const measureEditor = (editor) => {
   };
 };
 
-const failuresOf = (measured, expectWrapped) => {
+const failuresOf = (measured, expectWrapped, expectHighlighted) => {
   const failures = [];
   if (!measured.numberedRows) failures.push('no line numbers');
+  if (expectHighlighted && measured.tokenClasses.length < 2) failures.push(`not highlighted: token classes ${JSON.stringify(measured.tokenClasses)}`);
   if (measured.pageScrollsSideways) failures.push('the page scrolls sideways');
   if (expectWrapped) {
     if (measured.past.length) failures.push(`rows past the editor's edge: ${JSON.stringify(measured.past)}`);
@@ -127,7 +134,7 @@ const failuresOf = (measured, expectWrapped) => {
  */
 export const runFileWordWrapCases = async (probe) => {
   const { runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView } = probe;
-  const ids = ['MSP-108', 'MSP-109'];
+  const ids = ['MSP-108', 'MSP-109', 'MSP-110'];
   if (selected && !ids.some(id => selected.has(id))) return;
   let currentCase = 'word-wrap-setup';
   const dir = path.join(stack.workspace, DIR);
@@ -163,7 +170,9 @@ export const runFileWordWrapCases = async (probe) => {
     await sleep(600);
     const measured = await editor.evaluate(measureEditor);
     const viewport = page.viewportSize();
-    return { name, viewport: `${viewport.width}x${viewport.height}`, failures: failuresOf(measured, expectWrapped), measured, screenshot: await shot(page, name) };
+    // The JSON file is highlighted. `getLanguage` opens YAML and plain text as `plaintext`, which has nothing to highlight.
+    const highlighted = /\.json$/.test(name);
+    return { name, viewport: `${viewport.width}x${viewport.height}`, failures: failuresOf(measured, expectWrapped, highlighted), measured, screenshot: await shot(page, name) };
   };
   // The first words each file shows (Monaco renders spaces as no-break spaces; the check normalizes them).
   const markers = { 'pnpm-workspace.yaml': 'packages:', 'tsconfig.json': '"compilerOptions"', 'draft-v1.txt': 'DRAFT-618' };
@@ -175,26 +184,33 @@ export const runFileWordWrapCases = async (probe) => {
   const phoneBrowser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
   const phoneOrigin = `http://${PHONE_HOST}:${alpha.port}`;
   let phoneContext = null;
+  const viewer = deskPage.locator('#contentViewer:visible').first();
+  const files = deskPage.locator('[data-test="right-side-files-panel"]');
+  // A tree row's visible name (a folder's row also holds its children and a hidden drag-preview copy of the name).
+  const treeName = name => files.locator('.file-item span.select-none').filter({ hasText: new RegExp(`^${name.replace(/[.]/g, '\\.')}$`) }).first();
+  let desktopOpen = false;
+  /** The desktop window on the run's Files tab, its `word-wrap-618/` folder expanded (once, for whichever case comes first). */
+  const openDesktopFiles = async () => {
+    if (desktopOpen) return;
+    await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
+    // The first load lets a cold `nuxt dev` finish its bundles (TESTING.md § Browser probes); browser lines count after it.
+    await deskPage.goto(stack.frontendUrl, { waitUntil: 'networkidle', timeout: 240_000 }).catch(() => undefined);
+    await sleep(3_000);
+    watch(deskPage, 'desktop', stack.frontendUrl);
+    await deskPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+    await desktopRunsView(deskPage);
+    const showOlder = deskPage.locator('[data-test="run-list-show-older"]');
+    if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+    await deskPage.locator(`[data-test="run-list-row"][data-run-id="${run}"] [data-test="workspace-agent-run-row"]`).first().click({ timeout: 60_000 });
+    await deskPage.locator('[data-test="right-side-tab-list"]').getByText('Files', { exact: true }).first().click();
+    await treeName(DIR).waitFor({ timeout: 30_000 });
+    if (!(await treeName('draft-v1.txt').isVisible().catch(() => false))) await treeName(DIR).click();
+    desktopOpen = true;
+  };
   try {
     await runCase('MSP-108', async () => {
       currentCase = 'MSP-108';
-      await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
-      // The first load lets a cold `nuxt dev` finish its bundles (TESTING.md § Browser probes); browser lines count after it.
-      await deskPage.goto(stack.frontendUrl, { waitUntil: 'networkidle', timeout: 240_000 }).catch(() => undefined);
-      await sleep(3_000);
-      watch(deskPage, 'desktop', stack.frontendUrl);
-      await deskPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
-      await desktopRunsView(deskPage);
-      const showOlder = deskPage.locator('[data-test="run-list-show-older"]');
-      if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
-      await deskPage.locator(`[data-test="run-list-row"][data-run-id="${run}"] [data-test="workspace-agent-run-row"]`).first().click({ timeout: 60_000 });
-      await deskPage.locator('[data-test="right-side-tab-list"]').getByText('Files', { exact: true }).first().click();
-      const files = deskPage.locator('[data-test="right-side-files-panel"]');
-      // A tree row's visible name (a folder's row also holds its children and a hidden drag-preview copy of the name).
-      const treeName = name => files.locator('.file-item span.select-none').filter({ hasText: new RegExp(`^${name.replace(/[.]/g, '\\.')}$`) }).first();
-      await treeName(DIR).waitFor({ timeout: 30_000 });
-      if (!(await treeName('draft-v1.txt').isVisible().catch(() => false))) await treeName(DIR).click();
-      const viewer = deskPage.locator('#contentViewer:visible').first();
+      await openDesktopFiles();
       const results = [];
       for (const name of Object.keys(FILES)) {
         await treeName(name).waitFor({ timeout: 30_000 });
@@ -228,6 +244,60 @@ export const runFileWordWrapCases = async (probe) => {
       const all = [...results, off, onAgain];
       const details = { summary: all.map(r => ({ name: r.name, failures: r.failures, editorWidth: r.measured.editorWidth, rows: r.measured.rows, numberedRows: r.measured.numberedRows, wrapped: r.measured.wrapped.length, past: r.measured.past.length })), results: all };
       assert(all.every(r => r.failures.length === 0), 'desktop: each file wraps at the editor\'s width with its indentation and line numbers, nothing past the edge; Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)', details);
+      return details;
+    });
+
+    await runCase('MSP-110', async () => {
+      currentCase = 'MSP-110';
+      await openDesktopFiles();
+      const name = 'draft-v1.txt';
+      const file = path.join(dir, name);
+      // The text file in the editor, maximized (where MSP-108 leaves it, or opened from the tree).
+      const maximized = deskPage.locator('#contentViewer:visible button[title="Restore view"], #contentViewer:visible button[title="Exit full view"]');
+      if (await maximized.count()) { await maximized.first().click(); await sleep(800); }
+      await treeName(name).click();
+      await sleep(800);
+      if (!(await viewer.locator('.monaco-editor:visible').count())) await viewer.locator('[title="Edit Mode"]:visible').first().click().catch(() => undefined);
+      await viewer.locator('button[title="Maximize view"]').first().click();
+      await sleep(800);
+      const before = await check(deskPage, viewer, 'MSP-110-desktop-1440-before-edit', markers[name]);
+      const original = await fs.readFile(file, 'utf8');
+      // The user clicks past the end of line 4 ("A short line."), types, and adds a new line long enough to wrap.
+      // Each typed text ends with "." (not a word character), which closes Monaco's word suggestions, so Enter makes a new
+      // line and accepts no suggestion. Escape would also leave the maximized view (`FileExplorerTabs.vue`, Zen mode).
+      const editor = viewer.locator('.monaco-editor:visible').first();
+      const lineFour = await editor.evaluate((el) => {
+        const number = [...el.querySelectorAll('.margin .line-numbers')].find(n => n.textContent.trim() === '4');
+        const lines = el.querySelector('.view-lines').getBoundingClientRect();
+        const box = number?.getBoundingClientRect();
+        return box ? { x: lines.right - 40, y: box.top + box.height / 2 } : null;
+      });
+      assert(lineFour, 'line 4 is shown', before.measured.lineNumbers);
+      await deskPage.mouse.click(lineFour.x, lineFour.y);
+      const added = ' EDITED-618.';
+      const newLine = 'NEW-618 a line typed into the wrapped editor, ' + 'long enough to wrap at the width of a maximized desktop editor, '.repeat(4) + 'and saved.';
+      const noSuggestions = () => waitFor('Monaco\'s suggestions closed', async () => !(await editor.locator('.suggest-widget.visible').count()), 5_000);
+      await deskPage.keyboard.type(added, { delay: 5 });
+      await noSuggestions();
+      await deskPage.keyboard.press('Enter');
+      await deskPage.keyboard.type(newLine, { delay: 2 });
+      await noSuggestions();
+      await deskPage.keyboard.press(process.platform === 'darwin' ? 'Meta+S' : 'Control+S');
+      await deskPage.getByText('Changes saved').first().waitFor({ timeout: 15_000 })
+        .catch(async (error) => { await shot(deskPage, 'MSP-110-not-saved'); throw error; });
+      const expected = original.replace('A short line.\n', `A short line.${added}\n${newLine}\n`);
+      let saved = '';
+      await waitFor('the edited text on disk', async () => (saved = await fs.readFile(file, 'utf8')) === expected, 15_000).catch(() => undefined);
+      const after = await check(deskPage, viewer, 'MSP-110-desktop-1440-after-save', 'NEW-618');
+      const newLineWraps = after.measured.wrapped.some(w => w.line === '5');
+      const details = {
+        before: { failures: before.failures, wrapped: before.measured.wrapped.length, screenshot: before.screenshot },
+        after: { failures: after.failures, wrapped: after.measured.wrapped.length, lineNumbers: after.measured.lineNumbers, newLineWraps, screenshot: after.screenshot },
+        savedEqualsExpected: saved === expected, savedBytes: Buffer.byteLength(saved), expectedBytes: Buffer.byteLength(expected),
+        ...(saved === expected ? {} : { saved, expected }),
+      };
+      assert(before.failures.length === 0 && saved === expected && after.failures.length === 0 && newLineWraps,
+        'desktop: a wrapped file is edited and saved with Cmd/Ctrl+S; the file on disk holds exactly the edits, and the editor still wraps, the new line too (REQ-003)', details);
       return details;
     });
 

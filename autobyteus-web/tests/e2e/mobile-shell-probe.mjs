@@ -156,9 +156,10 @@
 //                  the phone's conversation and file viewer at 390 and 360 px; copied text equals the source; inline
 //                  code, links, URLs, long words and headings wrap too, with nothing past the edge (autobyteus-24):
 //                  `mobile-code-wrap-cases.mjs` (on alpha, last; its agent answers with the scripted runtime's `REPLY_FILE:`).
-//   MSP-108…109 autobyteus-618  Text and code files open with word wrap on in the file viewer's editor: the desktop Files
+//   MSP-108…110 autobyteus-618  Text and code files open with word wrap on in the file viewer's editor: the desktop Files
 //                  tab at 1440 px and the phone file viewer at 390 px; a long line wraps at the editor's width with its
-//                  indentation, line numbers stay, nothing scrolls sideways; Toggle Word Wrap turns it off and on again:
+//                  indentation, line numbers and highlighting stay, nothing scrolls sideways; Toggle Word Wrap turns it off
+//                  and on again; a wrapped file is edited and saved, and the file on disk holds exactly the edits:
 //                  `mobile-file-word-wrap-cases.mjs` (on alpha, after the code-wrap cases).
 //   MSP-53…55 autobyteus-workspace-6  Context-file size limits on the phone, in zh-CN: a 26 MiB video (above the old 25 MiB
 //                  limit) attaches with a visible percentage, Send blocked meanwhile, and is sent (draft and final file whole on
