@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, design-review-report.md round 2 (ARCH-REV-002); Solution Designer, design-spec.md SR-002 | N/A (N-1…N-4 applied) | `Initial Baseline` | SR-001, SR-002, ARCH-REV-001, ARCH-REV-002 | D-1…D-7 and NA-8 implemented; ready for code review |
 | IR-002 | Code Reviewer, code-review-report.md failure-origin review (CRR-002), from API/E2E round 1 (F-1, F-2) | CR-001, CR-002 | `Local Fix` | CRR-001, CRR-002, API/E2E round 1 | A reload no longer opens the player by itself; dot-segment paths are refused on both platforms |
+| IR-003 | Code Reviewer, code-review-report.md failure-origin review (CRR-005), from API/E2E round 3 (F-3, formerly O-4) | CR-003 | `Local Fix` | CRR-003, CRR-005, API/E2E round 3 | The iOS loader declares the whole file available on demand; a scrub plays on |
 
 ## Revision Entries
 
@@ -61,4 +62,27 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - As the reviewer noted, re-tapping the same open file now shows the viewer with Play: the store cannot tell a live refresh from a reopen.
   - On iOS an invalid escape such as `%zz` becomes the literal `%25zz` (`URL(string:)`), a plain path under `/rest/`, so it is not refused there; Android rejects it as unparsable.
+
+### IR-003 — The iOS loader declares the whole file available on demand, so a scrub plays on
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/phone-video-574/code-review-report.md`, "Round 4 Failure-Origin Finding" (CRR-005), from API/E2E round 3 (`api-e2e-execution-coverage-report.md` F-3, formerly O-4; `evidence/api-e2e/R3-O4/`).
+- Triggering finding IDs: CR-003 (API/E2E F-3).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002, CRR-003 Pass; API/E2E round 3 Fail (F-3); CRR-005 Fail with the origin in implementation.
+- Current authoritative result: fixed and checked; `Large` / `High`, back to code review for the delta, then an API/E2E rerun.
+- Related solution and architecture-review revision IDs: N/A (no requirement or design change).
+- Related code-review revision IDs: CRR-003, CRR-005.
+- Related API/E2E revision IDs: API/E2E round 3.
+- Related delivery revision IDs: DR-001 (base integrated; evidence requested for the iOS scrubber).
+- Why this implementation revision is recorded: dragging the iOS player's scrubber froze the picture while the clock ran on (AC-001's seek). The loader's content information did not declare what it does: serve any range at any time.
+- Approved behavior or requirement IDs affected: REQ-001 / AC-001 (iOS).
+- Implementation delta (`c3ff688979`): `AutoByteusMobileCore/Video/AuthorizedMediaLoader.swift` sets `information.isEntireLengthAvailableOnDemand = true` beside `isByteRangeAccessSupported`, with its reason. The API exists from iOS 16 and the app targets 17, so there is no availability check. The optional bounded serving of cached bytes was not done; the reviewer did not require it.
+- Changed files or areas: that one file.
+- Local validation and result: IMP-12.
+  - `NativeVideoRealNodeUITests.testAWideVideoFromTheChatLink` against `native-video-node.mjs` on my own simulator passes with the fix: on a first open (fresh install) and twice cached.
+  - It fails at its `pictureMoves` check without the fix (cached).
+  - The cached reopen fetched 0 bytes of the first run's.
+  - The Core suite passes 75 of 75, the AVPlayer reopen fetching 0 cached bytes.
+- Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
+- Remaining limitations or risks: a cached to-end request is still answered in one synchronous loop (the reviewer's optional note), so a cancel cannot arrive within it; held for evidence.
 

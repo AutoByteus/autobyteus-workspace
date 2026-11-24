@@ -1,0 +1,64 @@
+# IMP-12 (CR-003; CRR-005, API/E2E F-3) the iOS player plays on after a scrub: the real-node UI test, a first open and cached, red without the fix
+# command: pnpm install; builds (autobyteus-ts, server, demo web, then build:mobile-web LAST: the node serves autobyteus-web/dist/public,
+#            which the demo build overwrites with a "/"-based bundle and a blank page); autobyteus-ios/scripts/generate-project.sh;
+#          node autobyteus-web/tests/e2e/native-video-node.mjs --output-dir=<fresh> --origin-host=<LAN IP> --listen-host=<LAN IP>
+#            --secrets-file=<outside the evidence>;
+#          TEST_RUNNER_AUTOBYTEUS_574_REAL_NODE_INFO=… TEST_RUNNER_AUTOBYTEUS_574_REAL_NODE_SECRETS=… xcodebuild … -destination id=<own simulator>
+#            -only-testing:AutoByteusMobileUITests/NativeVideoRealNodeUITests/<test> test:
+#            run 1: test0PairsWithTheNodeByItsLink + testAWideVideoFromTheChatLink on a fresh install (first open, empty cache);
+#            run 2: testAWideVideoFromTheChatLink again (cached); run 3: the same with the fix stashed (red); run 4: the fix again;
+#          TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<the 23 MB MP4> xcodebuild … -only-testing:AutoByteusMobileCoreTests test
+# commit: c3ff688979 (the CR-003 fix; run on its working tree before committing, same file)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this run); the real node of this worktree behind the stack's
+#   proxy throttled to about 1.5 MB/s
+# date: 2026-11-24
+# result: Pass.
+#   - With the fix the scrub to the middle plays on (pictureMoves, NativeVideoRealNodeUITests.swift:49) on a first open
+#     (run 1) and with the video cached (runs 2 and 4).
+#   - Without it (run 3, cached) the clock runs on (16 → 18 s) while the picture is frozen, and the test fails at line 49,
+#     as API/E2E found.
+#   - The cached reopen (run 2) fetched 0 bytes of what run 1 had fetched (the proxy's log): only gaps where the scrub
+#     landed elsewhere.
+#   - Core suite: 75 passed, 0 failed, 0 skipped; AuthorizedMediaLoaderTests: a reopen fetches 0 bytes of the cached.
+#     With the declaration, AVFoundation asks for many small ranges and started sooner in this headless test
+#     (0.94 s; 2.2-2.4 s before).
+
+## run 1: fix, first open (fresh install)
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.098 seconds).
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 17 seconds elapsed, 13 seconds remaining
+POSITION +3s hidden
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.839 seconds).
+
+## run 2: fix, cached
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 17 seconds elapsed, 13 seconds remaining
+POSITION +3s hidden
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.138 seconds).
+
+## run 2 against run 1, from the proxy's request log (bytes of the wide video)
+run 1 fetched [(0, 355), (369, 388), (397, 412), (417, 663), (668, 10712), (10729, 7725125), (7982543, 8889606), (10961603, 17572459)]
+run 2 fetched [(0, 1), (7725126, 7982542), (9534354, 10234529), (17572460, 17994018)]
+run 2 bytes overlapping run 1 (the 2-byte probe excluded): 0 of 1379154
+every video request with the phone credential in its header: True; video requests with a credential in the URL: 0; the only URL credentials in the log are the page's WebSocket upgrades (10, `access_token`, NA-8's exception): True
+
+## run 3: without the fix, cached (red)
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+<worktree>/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:49: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink] : XCTAssertTrue failed - the picture plays on after 
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' failed (26.087 seconds).
+
+## run 4: fix again, cached
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.097 seconds).
+
+## Core suite
+** TEST SUCCEEDED **
+autobyteus-574 iOS: playing after 0.94 s; at the middle 0.60 s after the seek; cached [ClosedRange(0...355), ClosedRange(369...388), ClosedRange(397...412), ClosedRange(417...675), ClosedRange(680...17159), ClosedRange(17173...17192), ClosedRange(17197...17212), ClosedRange(17217...53953), ClosedRan
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=13599998-13600272:275", "bytes=13610795-13611072:278", "bytes=13621663-13622223:561", "bytes=13632286-13632571:286", "bytes=13719015-13719577:563", "bytes=13731357-13731631:275", "bytes=13737930-13738496:567"]; fetched again of the cached: 0
+      "failedTests" : 0,
+      "passedTests" : 75,
+      "skippedTests" : 0,

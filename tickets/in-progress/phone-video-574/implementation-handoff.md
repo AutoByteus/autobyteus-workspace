@@ -17,13 +17,13 @@ Ticket autobyteus-574 (phone-video-574, absorbs autobyteus-636). Worktree `<work
 
 - Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/phone-video-574/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-002` (CR-001 and CR-002, Local Fix). IR-001 is the baseline.
+- Current implementation revision ID: `IR-003` (CR-003, Local Fix). IR-001 is the baseline; IR-002 was CR-001 and CR-002.
 - Related solution revision IDs: SR-001, SR-002.
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002.
-- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (failure-origin: implementation).
-- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1, F-2).
+- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (failure-origin: implementation), CRR-003 (Pass), CRR-005 (failure-origin: implementation, CR-003).
+- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1, F-2), round 3 (Fail: F-3).
 - Related delivery revision IDs: N/A.
-- Triggering finding IDs: CR-001 (F-1), CR-002 (F-2). In IR-001, the reviewer notes applied were: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
+- Triggering finding IDs: CR-003 (F-3); earlier CR-001 (F-1), CR-002 (F-2). In IR-001, the reviewer notes applied were: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
 
 What the change does:
 
@@ -128,7 +128,7 @@ What the change does:
   - AVFoundation sends many 64 KB ranges beside its main stream. One that falls in bytes still in flight, not yet cached, is fetched again.
   - Correctness and the cache are unaffected, and a reopen still fetches nothing it holds.
   - It is extra traffic on a first play only. A later refinement could serve such a range from the in-flight fetch.
-- **iOS start time in a headless unit test:** 2.2–2.4 s against a stub at 1.5 MB/s. AC-001 asks under 2 s in the app; API/E2E measures it on the simulator journey. Android measured 0.4–0.6 s.
+- **iOS start time in a headless unit test:** 2.2–2.4 s against a stub at 1.5 MB/s before IR-003; 0.94 s with IR-003's declaration. Android measured 0.4–0.6 s.
 - **The iOS player's Back/title bar stays visible** over the video, while the player's own controls hide. AVPlayerViewController does not expose when its controls show.
 - **Apple's networking logs the request URL** (the path, never the credential) in the simulator's unified log, on its own. A device redacts these lines as `<private>`. The app's code logs no URL on either platform.
 - **The emulator's WebView decoder stalls on a heavy 720p stream** that the native player plays. The in-page full-screen test uses a small baseline clip; real in-page playback is the page's existing path.
@@ -165,6 +165,7 @@ What the change does:
 
 ## Environment Or Dependency Notes
 
+- **Build order for the real-node stack:** run `build:mobile-web` after the iOS demo build. The node serves `autobyteus-web/dist/public`, which `prepare-demo-web.sh --build` overwrites with a `/`-based bundle, giving a blank page.
 - A fresh worktree needs `pnpm install`, `pnpm -C autobyteus-ts build`, `pnpm -C autobyteus-server-ts prebuild` and `pnpm -C autobyteus-web exec nuxt prepare` before the suites.
 - iOS: `autobyteus-ios/scripts/prepare-demo-web.sh --build` and `generate-project.sh`.
 - A dedicated emulator AVD (`ie574_api35`, port 5640) and simulator (`ie574-iphone17`) were created for these runs and are deleted at cleanup. No other agent's device was used.
@@ -188,6 +189,7 @@ Evidence is under `tickets/in-progress/phone-video-574/evidence/implementation/`
 | IMP-09 | build-only Android Release (`release-android.yml`, `publish_release=false`) and iOS Release (`release-ios.yml`, `publish_app_store_connect=false`) on the branch | `8e666f6c78` | GitHub Actions | the signed release build; the Xcode 27 build and tests | DESIGN.md rule 12 | Pass | `IMP-09-build-only-release-runs.log` | Android 45397185529 `success`; iOS 45397190773 `success` (Build And Test iOS App) |
 | IMP-10 | `pnpm test:unit`; server typecheck; clean-env `test:integration` and `vitest run tests/e2e` | `8e666f6c78` | macOS, Node 22, clean env | the whole server | AC-005, AC-006 | Pass | `IMP-10-server-suites.log` | unit `1085 passed`; integration `92 passed`; e2e `128 passed` |
 | IMP-11 | CR-001: the viewer specs on the fix and with `VideoPlayer.vue` stashed; web typecheck, guards, whole suite. CR-002: Android JVM tests on the fix and with `NodeVideoHttp.kt` stashed; build, androidTest compile, lint; iOS Core tests on the fix (with the video) and with `NodeVideoURL.swift` stashed | `fb2357dc09`, `6479a28f4b` | macOS, Node 22; JDK 21; Xcode 26.1.1, iOS 26.1 simulator | the viewer's auto-open; both apps' node-file-route rule (bridge, probe, every read) | UC-001, REQ-003, AC-003, CR-001, CR-002 | Pass (each new case red before the fix) | `IMP-11-cr001-cr002-local-fixes.log` | web `806 passed`; Android `total 129 tests, 0 failed`; iOS `passedTests 75` |
+| IMP-12 | `native-video-node.mjs` at the LAN address; `NativeVideoRealNodeUITests` test0 + testA on a fresh install, testA cached (twice), testA without the fix (red); the Core suite with the video | `c3ff688979` | Xcode 26.1.1, iOS 26.1 simulator, the real node behind the throttled proxy | `AuthorizedMediaLoader`'s content information; the scrub through the loader | AC-001 (iOS seek), CR-003 | Pass (red without the fix, as API/E2E found) | `IMP-12-cr003-ios-scrub.log` | testA `passed` ×3; red `swift:49` fails; reopen overlap `0`; Core `passedTests 75` |
 
 - Not run, and why:
   - real devices (API/E2E);
