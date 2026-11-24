@@ -1,0 +1,1 @@
+INFO         | emuglConfig_init: vulkan_mode_selected:host gles_mode_selected:host

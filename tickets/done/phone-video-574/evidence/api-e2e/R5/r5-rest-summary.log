@@ -1,0 +1,14 @@
+MARK skip 1795550866437
+POSITION after skip 18 seconds elapsed, 12 seconds remaining
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (21.690 seconds).
+MARK tap 1795550898977
+MARK player 1795550900709
+MARK back 1795550907460
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (34.674 seconds).
+MARK rewrite-while-open 1795550933322
+MARK rewrite-while-closed 1795550944276
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' passed (46.758 seconds).
+MARK close 1795550985774
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (32.713 seconds).
+MARK removed 1795550999501
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.436 seconds).

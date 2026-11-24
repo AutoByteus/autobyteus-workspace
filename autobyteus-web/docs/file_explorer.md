@@ -329,10 +329,26 @@ workspace-relative content routes instead of the Electron scheme.
 supported file can load finite metadata, play/pause, and seek without first
 buffering the whole source into renderer memory, where the element is given the
 URL itself: the embedded window's `local-file:` URLs answer Range requests, so
-they seek; a desktop window's workspace URL plays progressively, but the node's
-file routes serve no part of a file, so it cannot seek past what has loaded.
-Where the node key must travel in a request header (the phone),
-`useAuthorizedObjectUrl` downloads the whole file into an object URL first;
+they seek; a desktop window's workspace URL is a node file route, which answers
+Range requests (206 with an `ETag`, and `no-cache` so a rewritten file reloads
+new: [User Files](../../autobyteus-server-ts/docs/features/remote_access.md#user-files)),
+so it seeks too (autobyteus-574).
+Where the node key must travel in a request header (the phone), the viewer plays
+a video one of two ways, chosen by `useNativeVideoPlayback.modeFor(url)`
+(autobyteus-574). In the Android and iOS apps, whose `hello` reply says they have
+a video player (`videoPlayer`), a protected video of the open node is `native`:
+the page loads nothing itself, the viewer shows the file's name and a **Play**
+button, and the app's own player (Media3, AVPlayer) streams the file by range with
+the key in a header, never in a URL (the shell bridge's `playVideo`: [Phone
+Access](./remote_access.md#shell-bridge-android-and-ios)). The player opens by
+itself when the viewer is first shown or another file is selected, never when the
+same file is reloaded (`contentRevision`: an agent rewrote it, or it was opened
+again): Back closes it, and **Play** opens it again on the file as it is then. A
+video in a chat media message shows a **Play video** tile that does the same
+(`MediaSegment.vue`). While the app has not yet said whether it has the player
+(`pending`), nothing is loaded. In a phone browser, in an older app, for another
+site's video or without a key (`page`), `useAuthorizedObjectUrl` downloads the
+whole file into an object URL first, as before;
 meanwhile the player shows `MediaLoadingState` (a spinner, "Loading video…", and
 "4.1 of 9.7 MB" when the node declared the file's length) instead of "Video URL
 is not available.", which appears only when there is no URL and nothing is

@@ -1,0 +1,9 @@
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 23585ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  7154ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)  9294ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)  7135ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 841ms
+     ✓ does not retain PTYs across close-before-connect and repeated open/close churn  584ms
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+exit=0

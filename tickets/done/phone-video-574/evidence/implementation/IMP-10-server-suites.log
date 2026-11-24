@@ -1,0 +1,24 @@
+# IMP-10 (AC-005, AC-006) the whole server: unit suite, typecheck, integration suite and e2e
+# command: cd autobyteus-server-ts && pnpm test:unit ; pnpm typecheck ; pnpm test:integration:prepare ;
+#          env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:integration ;
+#          env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e
+# commit: 8e666f6c78
+# env: macOS arm64, Node v22.23.1; the integration suite and the e2e in a clean environment (TESTING.md)
+# date: 2026-11-24
+# result: Pass, every file.
+
+## unit suite
+ Test Files  1085 passed | 5 skipped (1090)
+      Tests  9076 passed | 9 skipped (9085)
+
+## typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+
+## integration suite
+ Test Files  92 passed | 21 skipped (113)
+      Tests  523 passed | 71 skipped (594)
+
+## e2e
+ Test Files  128 passed | 172 skipped (300)
+      Tests  575 passed | 808 skipped (1383)

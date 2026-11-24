@@ -1,0 +1,9 @@
+close-x.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' started.
+close-x.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.532 seconds).
+close-x.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' started.
+close-x.log:MARK close 1795541262735
+close-x.log:CLOSE player=false landscape=false back=false page=false position=hidden
+close-x.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (21.929 seconds).
+close-x-2.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' started.
+close-x-2.log:MARK close 1795541308484
+close-x-2.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (16.913 seconds).

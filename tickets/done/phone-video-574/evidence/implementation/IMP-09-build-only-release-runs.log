@@ -1,0 +1,16 @@
+# IMP-09 (DESIGN.md rule 12, as ARCH-REV-002 named) the build-only Android and iOS release runs on the ticket branch
+# command: bash scripts/check_secrets.sh; git push origin HEAD:refs/heads/codex/phone-video-574;
+#          gh workflow run release-android.yml --ref codex/phone-video-574 -f publish_release=false -f release_ref=codex/phone-video-574;
+#          gh workflow run release-ios.yml --ref codex/phone-video-574 -f publish_app_store_connect=false -f release_ref=codex/phone-video-574;
+#          gh run watch <run> --exit-status
+# commit: 8e666f6c78
+# env: GitHub Actions (release-android.yml; release-ios.yml on the xcode-27 runner image), build only: nothing published
+# date: 2026-11-24
+# result: Pass.
+#   Android run 45397185529: Resolve Android Release Metadata success; Build Android APK success; Publish skipped.
+#   iOS run 45397190773: Resolve iOS Release Metadata success; Build And Test iOS App success (Xcode 27, which this Mac
+#     does not have); Archive And Upload skipped; Validate iOS Publish Secrets skipped.
+# Why: the Android Gradle file is a build input (Media3), and the iOS app gains new Swift code that the release builds
+#   with a newer Xcode than the local one.
+# Android: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45397185529 2026-11-24T12:49:04Z 2026-11-24T12:54:34Z
+# iOS: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45397190773 2026-11-24T12:49:06Z 2026-11-24T13:20:37Z

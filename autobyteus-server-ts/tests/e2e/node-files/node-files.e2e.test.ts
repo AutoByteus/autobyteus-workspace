@@ -83,6 +83,24 @@ describe("Node files: one file by absolute path, read-only (autobyteus-436)", ()
     expect(image.rawPayload.subarray(0, 4)).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47]));
   });
 
+  // autobyteus-574 D-1 (AC-005): a paired phone's player reads a node file by range, with the credential in the header;
+  // the version lets it reuse what it has, and a refusal is unchanged.
+  it("a paired phone reads a node file by range: 206 with the bytes, ETag, no-cache; 304 for the same version; 401 without the credential", async () => {
+    const image = path.join(outside, "worktree", "diagram.png");
+    const asPhone = { authorization: `Bearer ${phoneCredential}` };
+    const ranged = await inject({ url: fileUrl(image), headers: { ...asPhone, range: "bytes=1-3" } });
+    expect(ranged.statusCode).toBe(206);
+    expect(ranged.rawPayload).toEqual(Buffer.from([0x50, 0x4e, 0x47]));
+    expect(ranged.headers["content-range"]).toBe("bytes 1-3/8");
+    expect(ranged.headers["accept-ranges"]).toBe("bytes");
+    expect(ranged.headers["cache-control"]).toBe("no-cache");
+    expect(ranged.headers["content-security-policy"]).toBe("sandbox allow-scripts");
+    const etag = String(ranged.headers.etag);
+    expect(etag).toMatch(/^"8-\d+"$/);
+    expect((await inject({ url: fileUrl(image), headers: { ...asPhone, "if-none-match": etag } })).statusCode).toBe(304);
+    expect((await inject({ url: fileUrl(image), headers: { range: "bytes=1-3" } })).statusCode).toBe(401);
+  });
+
   it("NAS-39 refuses a relative path, a '..' path and a folder 400, a missing file 404, and follows a symbolic link to its file", async () => {
     const asPhone = (pathText: string) => inject({ url: fileUrl(pathText), headers: { authorization: `Bearer ${phoneCredential}` } });
     expect((await asPhone("worktree/tickets/data-contract.md")).json()).toMatchObject({ code: "NODE_FILE_PATH_INVALID" });

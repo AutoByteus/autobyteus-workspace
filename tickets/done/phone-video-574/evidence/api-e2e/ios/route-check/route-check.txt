@@ -1,0 +1,5 @@
+ROUTE-CHECK /rest/../graphql allowed=true urlPath=/rest/../graphql outcome=status(401)
+ROUTE-CHECK /rest/%2e%2e/graphql allowed=true urlPath=/rest/../graphql outcome=status(401)
+ROUTE-CHECK /rest/../mobile/ allowed=true urlPath=/rest/../mobile outcome=status(401)
+ROUTE-CHECK /graphql allowed=false urlPath=/graphql outcome=refusedURL
+ROUTE-CHECK /rest/./files/video/media-574.mp4 allowed=true urlPath=/rest/./files/video/media-574.mp4 outcome=status(401)

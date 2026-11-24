@@ -1,0 +1,10 @@
+<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">
+<body style="margin:0;background:#000;color:#fff;font:14px sans-serif">
+<video id="v" controls playsinline style="width:100%" src="/media/video.mp4"></video>
+<div id="s">idle</div>
+<script>
+const v=document.getElementById('v'),s=document.getElementById('s');
+const log=(m)=>{s.textContent=m; console.log('PROTO '+m)};
+['loadedmetadata','canplay','playing','seeked','error','waiting'].forEach(e=>v.addEventListener(e,()=>log(e+' t='+v.currentTime.toFixed(1)+' rs='+v.readyState+(v.error?' err='+v.error.code:''))));
+window.runProto=async()=>{v.muted=true;await v.play().catch(e=>log('play-rejected '+e));setTimeout(()=>{v.currentTime=45;},4000);};
+</script>

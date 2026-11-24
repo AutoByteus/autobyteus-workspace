@@ -1,0 +1,33 @@
+# IMP-02 (D-2; REQ-001, REQ-003, AC-003, AC-006) the page hands a protected node video to the app's player only when the app has one
+# command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/fileExplorer/viewers/__tests__/
+#            composables/mobile/__tests__/useNativeVideoPlayback.spec.ts utils/remoteAccess/__tests__/shellBridge.spec.ts
+#          then, one at a time: NUXT_TEST=true pnpm exec vitest run (the whole web suite); pnpm typecheck;
+#          pnpm guard:web-boundary; pnpm guard:localization-boundary; pnpm audit:localization-literals
+# commit: 2c5673f890 (run on its working tree before committing; same files)
+# env: macOS arm64, Node v22.23.1; the app is a fake object behind window.AutoByteusShell; the session store is real
+# date: 2026-11-24
+# result: Pass. useNativeVideoPlayback (9 cases): a browser, an older app (hello without videoPlayer), another site's video,
+#   a route that is not a protected file route and an unpaired page play in the page; an app with the player plays a
+#   protected file of this node natively, pending until it answers; play() posts one playVideo with the absolute URL,
+#   the file name and the credential. The viewers (VideoPlayer.native.spec.ts, 4 cases, the real owner): Files opens the
+#   app's player at once and leaves Play, another file is handed over too, chat shows a play tile; none downloads the
+#   video; an app without the player downloads and plays it in the page as today. The bridge reads videoPlayer and posts
+#   playVideo with nothing else.
+
+## the viewer, owner and bridge specs
+ Test Files  11 passed (11)
+      Tests  63 passed (63)
+shellBridge.spec.ts (after its new cases):       Tests  6 passed (6)
+
+## whole web suite
+ Test Files  806 passed (806)
+      Tests  6152 passed | 2 skipped (6154)
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

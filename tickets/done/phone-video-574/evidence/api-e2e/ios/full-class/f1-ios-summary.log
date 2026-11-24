@@ -1,0 +1,7 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testARewriteWhileTheViewerIsOpen]' started.
+MARK rewrite-while-open 1795531152993
+F1-OPEN players=1
+F1-OPEN after one Back: player shown=false
+MARK rewrite-while-closed 1795531167270
+F1-CLOSED player shown=true
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testARewriteWhileTheViewerIsOpen]' passed (40.177 seconds).

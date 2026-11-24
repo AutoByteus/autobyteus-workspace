@@ -147,6 +147,8 @@ final class AppShellCoordinator: NodeConnectionScreens {
     private func presentRemove(_ entry: SavedNodeEntry, from presenter: UIViewController?) {
         presenter?.present(RemoveNodeSheet(entry: entry) { [weak self] in
             self?.savedNodeStore.removeEntry(id: entry.id)
+            // Its videos leave the phone with it (autobyteus-574 D-7).
+            DispatchQueue.global(qos: .utility).async { MediaRangeCache.shared.deleteNode(entry.id) }
             self?.showStart()
         }, animated: true)
     }

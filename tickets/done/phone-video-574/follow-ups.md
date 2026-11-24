@@ -1,0 +1,6 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, design-spec.md D-1 | Collaboration message references are sent as a stream with no size (`api/rest/collaboration-message-references.ts:34`), so they cannot be served in ranges; a phone video reached only that way would still download whole | Code read | The phone's video paths in this ticket use workspace, node and context file routes; the references' reader returns a stream | No | Let the message reference reader return the file (path, size, mtime) so its route serves ranges like the other file routes | |
+| FU-002 | Solution Designer, requirements-doc.md Out Of Scope | Audio on the phone still downloads whole before playing (the same object-URL path as video had) | `composables/useAuthorizedObjectUrl.ts`; `components/fileExplorer/viewers/AudioPlayer.vue:28` | The Task asks for video; the native players can take audio with the same handoff | No | Play node audio files through the apps' native player (streaming, the key in a header), as autobyteus-574 does for video | |

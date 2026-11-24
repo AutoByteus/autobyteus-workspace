@@ -1,0 +1,34 @@
+# IMP-05 (D-4, D-5, D-7, design N-1, N-3, N-4; AC-001…AC-003 on iOS) the iOS Core XCTests on a dedicated simulator
+# command: autobyteus-ios/scripts/prepare-demo-web.sh --build; autobyteus-ios/scripts/generate-project.sh;
+#          xcrun simctl create ie574-iphone17 iPhone-17 iOS-26-1;
+#          TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<the 23.4 MB MP4> xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj
+#            -scheme AutoByteusMobile -destination id=<that simulator> -only-testing:AutoByteusMobileCoreTests test
+# commit: 648073efd9 (run on its working tree before committing; same files)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this run)
+# date: 2026-11-24
+# result: Pass: 74 tests, 0 failed, 0 skipped (the app's existing 50 and 24 new):
+#   - MediaRangeCacheTests (7, design N-3's list): partial ranges kept, read back and their gaps named; overlapping and
+#     adjacent ranges merged; a reopen of what is held needs nothing fetched; a changed ETag is a new entry (the old bytes
+#     never served); the least recently used entry dropped above the limit; removing a node deletes its entries only;
+#     keys and file names are hashes that spell out no path.
+#   - NodeVideoHTTPTests (6): the probe reads two bytes with the credential in the header only; a 302 is refused and not
+#     followed, over real local sockets (the other server receives nothing; a URLProtocol stub cannot stand in for a
+#     refused redirect); off-origin and non-/rest/ URLs refused before anything is sent; a refused credential (401) and a
+#     missing file (404) fail the probe; If-Range by version; URL and asset-scheme mapping.
+#   - NodeVideoPlayRequestTests (4): the bridge's playVideo rules (one-token credential, plain title, the page's own node
+#     only); nothing prints the credential or the URL.
+#   - AuthorizedMediaLoaderTests (1): AVPlayer through the loader and cache, the node a stub streaming at about 1.5 MB/s:
+#     it plays without the whole file; a seek to the middle plays by a range from there; every request carries the
+#     credential; never a whole-file answer; a reopen fetches 0 bytes of what the cache holds; a changed file is fetched
+#     again. Measured in this headless test: playing 2.2-2.4 s after open (AC-001 asks under 2 s in the app; API/E2E
+#     measures it there), 0.8-1.3 s after the seek.
+
+## result
+** TEST SUCCEEDED **
+autobyteus-574 iOS: playing after 2.23 s; at the middle 1.23 s after the seek; cached [ClosedRange(0...1703937), ClosedRange(11796480...13238271)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=1703938-11796479:65536", "bytes=1703938-11796479:524288", "bytes=11730944-11796479:65536", "bytes=13238272-23384107:589824"]; fetched again of the cached: 0
+## result bundle summary (Test-AutoByteusMobile-2026.11.24_13-27-53)
+      "failedTests" : 0,
+      "passedTests" : 74,
+      "skippedTests" : 0,
+  "failedTests" : 0,

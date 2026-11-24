@@ -1,0 +1,12 @@
+# IMP-08 (DESIGN.md rule 12; TESTING.md Fresh-start build, the Android build) the Android app from a fresh clone and an empty Gradle home
+# command: git clone --no-local <worktree> <tmp>/fresh; git checkout 8e666f6c78; cd autobyteus-android &&
+#          env -i PATH HOME TMPDIR ANDROID_HOME=<sdk> GRADLE_USER_HOME=<new empty folder> ./gradlew --no-daemon clean :app:assembleDebug
+# commit: 8e666f6c78
+# env: macOS arm64, JDK 21; nothing in the Gradle home (Gradle and every dependency, Media3 1.5.1 included, downloaded)
+# date: 2026-11-24
+# result: Pass. Why this check: the change touches a build input (autobyteus-android/app/build.gradle.kts: the Media3
+#   dependencies). The debug APK is 5.9 MB. The signed release build needs the runner's secrets: IMP-09 ran it build-only.
+
+> Task :app:assembleDebug
+BUILD SUCCESSFUL in 1m 42s
+5946326 bytes <tmp>/fresh/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk

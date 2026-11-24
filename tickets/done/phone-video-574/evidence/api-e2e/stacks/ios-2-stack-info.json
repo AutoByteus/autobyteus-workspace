@@ -1,0 +1,41 @@
+{
+ "nodePort": 63133,
+ "proxyPort": 63134,
+ "controlPort": 63135,
+ "phoneOrigin": "http://192.168.2.158:63134",
+ "root": "/private/tmp/api574/tmp/native-video-node-TvC2ha",
+ "runId": "video_checker_1d832535252e4274841efb12693ca091",
+ "workspaceId": "agent_ws_7326b80d14c5677da39fe86103fb56eeaa99f7193bae15ee74957e0cb12af542",
+ "workspace": "/private/tmp/api574/tmp/native-video-node-TvC2ha/workspace",
+ "bytesPerSecond": 1500000,
+ "files": {
+  "wide": {
+   "path": "/private/tmp/api574/tmp/native-video-node-TvC2ha/workspace/wide-574.mp4",
+   "url": "/rest/workspaces/agent_ws_7326b80d14c5677da39fe86103fb56eeaa99f7193bae15ee74957e0cb12af542/content?path=wide-574.mp4"
+  },
+  "tall": {
+   "path": "/private/tmp/api574/tmp/native-video-node-TvC2ha/workspace/tall-574.mp4",
+   "url": "/rest/workspaces/agent_ws_7326b80d14c5677da39fe86103fb56eeaa99f7193bae15ee74957e0cb12af542/content?path=tall-574.mp4"
+  },
+  "outside": {
+   "path": "/private/tmp/api574/tmp/native-video-node-TvC2ha/outside/outside-574.mp4",
+   "url": "/rest/node-files/content?path=%2Fprivate%2Ftmp%2Fapi574%2Ftmp%2Fnative-video-node-TvC2ha%2Foutside%2Foutside-574.mp4"
+  },
+  "media": {
+   "path": "/private/tmp/api574/tmp/native-video-node-TvC2ha/data/media/video/media-574.mp4",
+   "url": "/rest/files/video/media-574.mp4"
+  },
+  "changed": {
+   "path": "/private/tmp/api574/tmp/native-video-node-TvC2ha/changed-574.mp4",
+   "url": null
+  }
+ },
+ "staticWide": "/rest/workspaces/agent_ws_7326b80d14c5677da39fe86103fb56eeaa99f7193bae15ee74957e0cb12af542/static/wide-574.mp4",
+ "sizes": {
+  "wide": 22881864,
+  "tall": 4201363,
+  "outside": 22881864,
+  "media": 22881864,
+  "changed": 2244078
+ }
+}
