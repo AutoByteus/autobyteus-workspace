@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
-import { useNativeVideoPlayback, videoTitleOf } from '~/composables/mobile/useNativeVideoPlayback';
+import { mediaTitleOf, useNativeMediaPlayback } from '~/composables/mobile/useNativeMediaPlayback';
 import MediaLoadingState from './MediaLoadingState.vue';
 
 const props = defineProps<{
@@ -46,9 +46,9 @@ const mediaAttemptKey = ref(0);
 const nativeMediaFailed = ref(false);
 // In the phone apps a protected node video plays in the app's own player, by range (autobyteus-574 D-2): the page then
 // loads nothing itself; elsewhere it plays here, as before.
-const nativePlayback = useNativeVideoPlayback();
+const nativePlayback = useNativeMediaPlayback('video');
 const playbackMode = computed(() => nativePlayback.modeFor(props.url));
-const title = computed(() => (props.url ? videoTitleOf(props.url) : ''));
+const title = computed(() => (props.url ? mediaTitleOf(props.url) : ''));
 const { resolvedUrl, error: resourceError, loading, progress, refresh } = useAuthorizedObjectUrl(
   () => (playbackMode.value === 'page' ? props.url : null),
   { revision: () => props.contentRevision ?? 0 },

@@ -365,6 +365,8 @@ const messages = {
   "workspace.pathRefusal.notAFolder": "This path is a file, not a folder.",
   "workspace.components.conversation.segments.MediaSegment.play_video": "Play video",
   "workspace.components.conversation.segments.MediaSegment.loading_video": "Loading video…",
+  "workspace.components.conversation.segments.MediaSegment.play_audio": "Play audio",
+  "workspace.components.conversation.segments.MediaSegment.loading_audio": "Loading audio…",
 } satisfies TranslationCatalog;
 
 export default messages;
