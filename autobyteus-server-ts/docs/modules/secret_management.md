@@ -402,7 +402,9 @@ The vault is an ordinary current-schema application database plus key:
   GitHub MCP, credential proxy and private-repository live checks (the last:
   `tests/e2e/integrations/github-private-repository-live.e2e.test.ts`,
   `RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1`; the token must read a private
-  repository). Such an ID is known to `isKnownSecretId` and listed by
+  repository; also `github-private-repository-built-server.e2e.test.ts`, same gate, and
+  `github-private-repository-docker-node.e2e.test.ts`,
+  `RUN_GITHUB_PRIVATE_REPOSITORY_DOCKER_E2E=1` with `GITHUB_PRIVATE_DOCKER_SERVER_PACKAGE`). Such an ID is known to `isKnownSecretId` and listed by
   `listFixedSecretIds` (so `status` shows it), but `resolve` returns it for no
   consumer. Only `test-vault setup` accepts its alias; `secrets:import` into an
   application vault refuses it (`IMPORT_MAPPING_INVALID`). The test reads it

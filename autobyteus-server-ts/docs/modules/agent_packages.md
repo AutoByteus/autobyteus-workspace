@@ -88,8 +88,9 @@ later check (`CHECK_FAILED` keeps the latest known revision).
 `agentPackages` returns package inventory plus `updateInfo` for row actions and
 copy. Mutations are thin adapters over `AgentPackageService`:
 
-- `importAgentPackage(input)` links a local path or installs a public GitHub
-  repository archive.
+- `importAgentPackage(input)` links a local path or installs a GitHub
+  repository archive (a public repository, or a private one through this
+  node's GitHub connection).
 - `removeAgentPackage(packageId)` removes a non-default package source.
 - `reloadAgentPackage(packageId)` validates and rescans a local package without
   mutating its folder.
@@ -97,7 +98,7 @@ copy. Mutations are thin adapters over `AgentPackageService`:
   default-branch metadata for all or selected GitHub packages. A check (and an
   update) reads the default branch and its head commit through git (`ls-refs`,
   one `github.com` request, no REST API quota); an import still reads the REST
-  API for the repository's identity and visibility.
+  API for the repository's identity.
 - `updateAgentPackage(packageId)` downloads, validates, and replaces a managed
   GitHub package with the latest default-branch archive.
 
@@ -270,7 +271,12 @@ above, the header per host, the archive), `github-request-credentials.test.ts`
 (connect, a private import and check through GraphQL with a faked GitHub, and the
 custody scan) and the gated live check
 `tests/e2e/integrations/github-private-repository-live.e2e.test.ts`
-(`RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1` with the test vault's `test.github.token`).
+(`RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1` with the test vault's `test.github.token`),
+`tests/e2e/integrations/github-private-repository-built-server.e2e.test.ts` (a built server against real
+GitHub, and a private package's install, update and revocation against an emulated GitHub; the same gate)
+and `tests/e2e/integrations/github-private-repository-docker-node.e2e.test.ts` (a test-owned Docker node
+with this worktree's server package: `RUN_GITHUB_PRIVATE_REPOSITORY_DOCKER_E2E=1` and
+`GITHUB_PRIVATE_DOCKER_SERVER_PACKAGE=<folder>`).
 
 ## Failure And Rollback Rules
 

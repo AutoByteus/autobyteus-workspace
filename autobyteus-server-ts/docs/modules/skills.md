@@ -78,7 +78,7 @@ While the node's Update checks setting is on, the
 within the skill sources' interval (default 30 minutes). A check and an update
 read the default branch and its head commit through git (`ls-refs`, one
 `github.com` request, no REST API quota); importing still reads the REST API
-for the repository's identity and visibility. Any check that finds a newer
+for the repository's identity. Any check that finds a newer
 revision (also the check when Manage skill sources opens) becomes that source's
 notification; Update from the notification shows the same confirmation and runs
 `updateGitHubSkillSource`. With automatic updates for skill sources on (off by

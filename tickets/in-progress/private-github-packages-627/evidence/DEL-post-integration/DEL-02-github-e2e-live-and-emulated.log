@@ -1,0 +1,7 @@
+# Merged state 6d2a3e88bf, server dist rebuilt from it. test.github.token valid (expires 2026-11-25); the token value is never printed.
+# Command (worktree root): AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/integrations/github-private-repository-{live,built-server,graphql}.e2e.test.ts --no-watch
+ Test Files  3 passed (3)
+      Tests  4 passed (4)
+   Duration  214.92s (transform 7.73s, setup 133ms, import 11.95s, tests 202.08s, environment 0ms)
+exit=0
+# token-pattern matches (ghp_ / github_pat_) in this log: 0

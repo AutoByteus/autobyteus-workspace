@@ -144,11 +144,15 @@ check failure. A failed check counts as a check.
 ## Network Calls
 
 - **Agent packages and skill sources:** per source and interval (default 30
-  minutes, 15 minutes to 24 hours), one unauthenticated request to
-  `github.com`: the git protocol v2 `ls-refs` request for the repository's
-  `HEAD` (`POST https://github.com/<owner>/<repo>.git/git-upload-pack`), which
-  answers its default branch and head commit. It costs no REST API quota. A
-  `401` or `404` means the repository is missing or not public.
+  minutes, 15 minutes to 24 hours), one request to `github.com`: the git
+  protocol v2 `ls-refs` request for the repository's `HEAD`
+  (`POST https://github.com/<owner>/<repo>.git/git-upload-pack`), which answers
+  its default branch and head commit. It costs no REST API quota. It goes
+  without a token first; only when GitHub answers `401` or `404` is it sent
+  again with this node's GitHub token (the GitHub client's access rule, see
+  [Agent Packages](agent_packages.md#private-github-repositories)). A `401` or
+  `404` that remains means the repository is missing, or the node has no token
+  or the token cannot read it, and the check fails with that reason.
 - **Agent runtimes** (desktop's own node, default every 60 minutes): each
   vendor's own version source. Codex: the tag
   `github.com/openai/codex/releases/latest` redirects to (no REST quota);
@@ -156,10 +160,11 @@ check failure. A failed check counts as a check.
 - **Automatic updates:** a package or skill source downloads its archive from
   GitHub (`codeload.github.com`); a runtime runs its own update command.
 - Imports still read the REST API (`api.github.com`) for the repository's
-  identity and visibility.
+  identity.
 
-No account or token is used. GitHub sees the node's IP address and the
-repository names; nothing is sent to AutoByteus.
+No account is used. The node's GitHub token is sent to GitHub only to read a
+repository GitHub did not show without it, never for a public one. GitHub sees
+the node's IP address and the repository names; nothing is sent to AutoByteus.
 
 ## GitHub Rate Limits
 
