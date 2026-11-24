@@ -1,0 +1,9 @@
+# API-02 BS-L1 on the built server against real GitHub (new durable test)
+# pnpm -C autobyteus-server-ts build (by pnpm test-vault status); AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/integrations/github-private-repository-built-server.e2e.test.ts --no-watch
+# HEAD 66688c11d9 (code 30fcc50ec7 + this round's test files); Node 22.23.1; macOS 26; 2026-11-24T06:41:45Z
+## run 1: the data root lacked its .env (test setup), fixed; run 2: the token= scan matched a downloaded public package's own script (serve.mjs: '__stop?token='), narrowed to the node's own records; run 3:
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  25.81s (transform 12.66s, setup 63ms, import 15.96s, tests 9.31s, environment 0ms)
+EXIT 0
+# token pattern matches in the full log: 0; no repository name printed

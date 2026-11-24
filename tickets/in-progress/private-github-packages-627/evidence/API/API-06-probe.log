@@ -1,0 +1,4 @@
+# API-06 browser probe rerun after the fixture change: pnpm -C autobyteus-web test:e2e:github-connection-line <fresh dir>
+# 2026-11-24T07:01:17Z; HEAD 35a2f84fbf
+{"result":"Pass","cases":{"WEB-627-01-not-connected-import":"Pass","WEB-627-02-connect":"Pass","WEB-627-03-private-import":"Pass","WEB-627-04-skill-sources-disconnect":"Pass","WEB-627-05-zh-CN":"Pass"}}
+EXIT 0

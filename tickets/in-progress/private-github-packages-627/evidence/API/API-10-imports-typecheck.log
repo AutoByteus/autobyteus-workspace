@@ -1,0 +1,5 @@
+# API-10 tracked imports; server typecheck after the new test files
+# 2026-11-24T07:25:58Z; HEAD 35a2f84fbf
+Tracked-import check passed. Tracked files scanned: 104545
+EXIT 0
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files) PASS (pnpm -C autobyteus-server-ts typecheck, after the test files, before commit 35a2f84fbf)

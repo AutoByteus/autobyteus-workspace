@@ -1,0 +1,17 @@
+# API-08 fresh start (autobyteus-web/package.json changed): git clone --no-local; checkout HEAD; pnpm install --frozen-lockfile; both typechecks; clone removed
+# 2026-11-24T07:25:58Z; HEAD 35a2f84fbf
+commit 35a2f84fbf
+install exit 0
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.0s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 29.5s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+server typecheck exit 0
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 37.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.9s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+web typecheck exit 0
+removed clone

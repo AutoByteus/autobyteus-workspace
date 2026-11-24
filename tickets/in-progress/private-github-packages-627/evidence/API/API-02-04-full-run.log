@@ -1,0 +1,8 @@
+# API-02/API-04 one full run: the live client file and the built-server file (BS-L1 live, BS-E1 emulated)
+# AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/integrations/github-private-repository-built-server.e2e.test.ts tests/e2e/integrations/github-private-repository-live.e2e.test.ts --no-watch
+# 2026-11-24T07:01:17Z; HEAD 35a2f84fbf
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Duration  234.00s (transform 6.71s, setup 91ms, import 9.09s, tests 224.22s, environment 0ms)
+EXIT 0
+# token pattern matches in the full log: 0

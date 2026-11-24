@@ -1,0 +1,6 @@
+# API-00 temporary read-only probe (removed after use): the private repositories the GitHub test token reads, by shape
+# A vitest file under tests/e2e/integrations read the test vault, listed /user/repos?visibility=private and each root's
+# contents; it wrote only anonymised labels (sha256 of the name, 8 hex) and booleans. Deleted after the run.
+[{"label":"9e1990c6","rootStatus":200,"agentPackage":false,"rootSkill":false,"dirs":0,"files":1,"push":true}]
+# One private repository: one file at its root, no folders: neither an agent package nor a skill source. The token can
+# also push to it; this validation writes nothing to GitHub, so no private package fixture can be made there.
