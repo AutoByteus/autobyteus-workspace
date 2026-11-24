@@ -14,8 +14,8 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2` (round 1 below stays as recorded except where round 2 updates it)
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `3`, a `Targeted Delta Review` of `292ea71db5..af2b65c2c0`. The only source change is `36881a6734`: `CollaborationMessageReferenceViewer.vue` and its spec. Rounds 1 and 2 below stay as recorded except where a later round updates them.
 - Review Scope: round 2 is a `Targeted Delta Review` of `4313640f6e..26ebb05729`. Round 1 was a `Full Review`.
 - Round 2 scope evidence: the source delta is two commits.
   - `dc350be435` (web): `CollaborationMessageReferenceViewer.vue`, `useNativeMediaPlayback.ts`, `VideoPlayer.vue`, `AudioPlayer.vue`, `FileViewer.vue`, `MediaSegment.vue`, and their specs.
@@ -60,6 +60,17 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 3 Delta Verification (CRR-003)
+
+**CR-002 is Resolved.**
+
+- **The change:** the viewer's refetch watch is now multi-source. Its six getters (`contentPath`, `referenceId`, `path`, `type`, `updatedAt`, `refreshSignal ?? 0`) are each compared by value, so an equal new `reference` object no longer reloads or remounts the viewer.
+- **What still reloads it:** a new `updatedAt`, and desktop's re-click (`referenceRefreshSignal`).
+- **The spec:** two equal new objects give no fetch and no remount; `updatedAt` and `refreshSignal` each fetch.
+  - IMP-13 shows it red on `26ebb05729` (`{ fetches: 3, mounts: 3 }`) and green after.
+  - The double mount on first load is the pre-probe render with no URL, which the native player ignores (mode `page` for a null URL). One `playMedia` per open.
+- **Re-run by me:** collaboration, mobile and viewer specs, 31 files and 308 tests passed.
 
 ## Round 2 Delta Review (CRR-002)
 
@@ -261,6 +272,15 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 3, CRR-003). CR-001 and CR-002 are resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.3 / 10. Runtime correctness is back to 9.3; every category is ≥ 9.2.
+- Recommended Recipient: `/api_e2e_engineer`. Run:
+  - AC-001 to AC-004 as written, including the reference journeys on the desktop (ranged requests) and in both apps (native);
+  - a reference opened while new messages arrive (CR-002);
+  - the iOS audio screen frame;
+  - AC-002 timings on a throttled node with latency (574's lesson).
+- Round 2 result (CRR-002, superseded):
 - Review Decision: `Fail` (round 2, CRR-002). CR-001 is resolved; CR-002 is a new `Local Fix`, owned by implementation.
 - Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Score Summary: 9.1 / 10. Runtime correctness is 8.5 (CR-002); data-flow spine is back to 9.3 (CR-001 resolved).

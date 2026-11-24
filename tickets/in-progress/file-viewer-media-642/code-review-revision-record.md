@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail: Requirement Gap | CR-001 (new) |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002), Targeted Delta | Fail | Fail: Local Fix | CR-001 (resolved), CR-002 (new) |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-003), Targeted Delta | Fail | Pass | CR-002 (resolved) |
 
 ## Revision Entries
 
@@ -78,3 +79,35 @@ None.
   - C-6: ship 574 and 642 together;
   - the zero-byte 416 (held);
   - the iOS Back bar over AVKit's buttons.
+
+### CRR-003: targeted delta review of IR-003 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 3 Delta Verification")
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review` of `292ea71db5..af2b65c2c0` (`36881a6734`: the viewer's watch and its spec)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003); CR-002
+- Relevant solution revision IDs: SR-003, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-002)
+- Current authoritative result: Pass, 9.3 / 10
+- What changed in the review result and why: the watch is value-compared, as CRR-002 asked. The spec is red before and green after (IMP-13). My re-run: 308 tests passed.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (CRR-002) | Resolved | IR-003 `36881a6734` | The new spec case: an equal object makes no fetch or remount; `updatedAt` and `refreshSignal` reload. Red on `26ebb05729` |
+| CR-001 | Resolved (CRR-002) | Resolved | — | Unaffected |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness 8.5 → 9.3.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - C-6: ship 574 and 642 in the same release;
+  - the zero-byte 416;
+  - the iOS Back bar over AVKit's buttons;
+  - the cosmetic `video-loader` queue label.
