@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-003 (SR-002 after ARCH-REV-001; SR-003 after CRR-001: the reference viewer's media path (D-1b), the iOS audio placeholder)
+- Current solution revision ID: SR-004 (… SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
 - Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
 - User approval of the design: not required
 - Design status: `Ready`
@@ -137,3 +137,31 @@
   - Deleted: the probe's 404 with `REFERENCE_NOT_FOUND` → "not found".
 - **C-2 (iOS audio screen):** `NativeMediaPlayer` sets, for `kind: 'audio'`, a `contentOverlayView` with an audio symbol and the file name. AVKit's control auto-hide stays (a tap shows them). API/E2E captures the frame.
 - **Design case:** docs/design-cases.md Case 3 (a route changed without its client).
+
+## SR-004: The file name is an explicit input (ARCH-REV-003 AR-002)
+
+- **The gap:** `useNativeMediaPlayback` derived the type and title from the URL (its `path` query, else its pathname; `useNativeMediaPlayback.ts:44-62,77-82`). A reference URL ends in `…/references/:referenceId/content` (`collaboration-message-references.ts:25`), so it names no file: `modeFor` answered `page`, and the title would read "content".
+- **Decision:**
+  - `useNativeMediaPlayback` takes the file name from its caller: `modeFor(url, fileName)` and `play(url, fileName)`. The kind is decided by the extension of `fileName` against the app's lists (SR-002); the title is `fileName`'s base name.
+  - The URL-derived name is **removed** from the composable (Principle 13: no behavior from guessing). Each caller passes the name it owns:
+    - `VideoPlayer.vue` and `AudioPlayer.vue` get a required `fileName` prop, filled by `FileViewer.vue` from `file.path`. That covers the Files viewers and the reference viewer, which already passes `reference.path` as `file.path` (`CollaborationMessageReferenceViewer.vue:60-72,111`);
+    - `MediaSegment.vue` owns its URLs: a node media URL is `/rest/files/<relativePath>` (`media-storage-service.ts:241`), so it passes that path's last segment (decoded) as the name.
+  - This also replaces round 2's N-4 rule (the `path` query), which assumed that every media URL names its file.
+- **Data contract:** unchanged on the wire. `playMedia.title` is now the caller's file name.
+- **Derived consumers:**
+  - `FileViewer.vue` (passes `fileName`);
+  - `VideoPlayer.vue` and `AudioPlayer.vue` (props);
+  - `MediaSegment.vue` (its own name);
+  - the composable's spec;
+  - any other caller of `modeFor`/`play` (implementation lists them by search).
+- **Walks:**
+
+  | Case | Phone app | Desktop or browser |
+  | --- | --- | --- |
+  | An `mp4` reference (`reference.path` `demo/clip.mp4`) | `modeFor(url, 'demo/clip.mp4')` → `native` → `playMedia{kind:'video', title:'clip.mp4'}` with the reference URL | Ranged requests to the reference route |
+  | An `m4a` reference | `native` (`m4a` is in both apps' audio lists), title `memo.m4a` | Ranged |
+  | A workspace file `notes/a.mp3` (Files) | `FileViewer` passes `notes/a.mp3` → native, as before | Unchanged |
+  | A chat media `/rest/files/x/clip.mp4` | `MediaSegment` passes `clip.mp4` → native | Unchanged |
+  | An `.ogg` reference on iOS | `page` (not listed) | — |
+
+- **Tests:** a composable spec with a reference URL and an explicit name (native, title); a `FileViewer` spec showing `fileName` reaches the players; a `MediaSegment` spec for the name from its URL.

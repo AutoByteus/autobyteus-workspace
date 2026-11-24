@@ -42,3 +42,10 @@ Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to 
 - Design: D-1b (the viewer probes one byte, then hands the URL to `FileViewer`'s players for Video and Audio); the iOS audio overlay.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review, then implementation (IR-002), then code review.
 - Design case: Case 3.
+
+## SR-004 (2026-11-24)
+
+- Trigger: ARCH-REV-003 Fail, AR-002. The native-playback owner derived the file name from the URL, and a reference URL names none (`…/content`), so phone apps would have downloaded references whole and titled them "content".
+- Design: the file name is an explicit input from its owner. `FileViewer` passes `file.path` to the players, and `MediaSegment` passes its URL's file name. The URL guess is removed, which also replaces round 2's N-4 rule. Walks: an mp4 and an m4a reference, a workspace file, a chat media URL, an iOS `.ogg`.
+- Requirements: unchanged. Classification: unchanged, `Large` / `High`. Routing: architecture review.
+- Design case: docs/design-cases.md Case 5 (a claim that every media URL names its file, taken on trust).
