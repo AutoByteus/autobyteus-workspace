@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Local Fix (implementation) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, CR-001 fix) | Fail | Pass | CR-001 (resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | Pass (CRR-002, source) | Pass | None |
 
 ## Revision Entries
 
@@ -73,3 +74,31 @@ None.
 - Material score or classification changes: Cleanup 9.0 → 9.4; Naming 9.2 → 9.4; Runtime Correctness 9.3 → 9.4; no classification
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: real runtimes left to API/E2E; same-version deploy; FU-002, FU-004, FU-005
+
+### CRR-003 — Proportional test-code review after API/E2E round 1: Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); MSP-106, MSP-107
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002, source review)
+- Current authoritative result: Pass
+- What changed in the review result and why: reviewed the gated live cases (`mobile-conversation-order-live-cases.mjs`) and their registration.
+  - They use real runtimes (Claude, native) with test-owned credentials, from the vault only.
+  - Each round runs with the phone clock verified 2 s off and checks the drawn order (live and reopened), the node's entry order, and the app state's times against the node's stored times (500 ms bound).
+  - The evidence matches the report. No findings; three non-blocking notes.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: N-5 and Codex not run live; no physical phone; FU-002, FU-004, FU-005; 609 FU-006 and FU-007 on the base
