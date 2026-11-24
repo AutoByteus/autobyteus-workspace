@@ -321,8 +321,20 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   use from their shell through the credential proxy, with the user's token kept in
   the node's vault. It is a skill plus authentication: one top-level folder of an
   imported skill source (its folder name is its ID). Not the server folder
-  `src/integrations/github/`, which is the public GitHub client for package and
-  skill sources (no token).
+  `src/integrations/github/`, which is the GitHub client for package and skill
+  sources (it uses this node's GitHub connection only for a private repository).
+- **GitHub connection:** this node's GitHub token in its vault
+  (`integration.github.token`) and the login it belongs to. One per node, shared
+  by the GitHub integration (agents, through the credential proxy) and by imports
+  and updates of private repositories (server-side requests). Connected from the
+  GitHub integration's card or from the **GitHub connection line** in the import
+  areas of Agent Packages and Skill sources.
+- **Private repository:** GitHub's term for a repository GitHub does not show
+  without credentials. Always written with "repository"; not an agent-private
+  skill.
+- **Access rule (GitHub client):** every GitHub request goes without a token
+  first; only when GitHub answers "not visible" (401 or 404) is it sent again
+  with this node's GitHub token. Public repositories never use the token.
 - **Integration manifest:** an integration folder's `integration.json` (`name`,
   `description`, optional `token.help`, optional `prerequisites`). Presentation
   only: it never says where a token may go.

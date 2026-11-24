@@ -99,8 +99,31 @@ kept, the other is skipped with a warning (DEC-017).
   the update (DEC-016).
 
 A token saved before an integration source was imported (a node that used the
-earlier GitHub card) stays in the vault; its card shows it connected once the
-source is imported.
+earlier GitHub card, or the GitHub connection line below) stays in the vault; its
+card shows it connected once the source is imported.
+
+### The GitHub Token's Second User: Private Repositories
+
+The GitHub token is also this node's **GitHub connection** for imports and updates
+of private repositories (Agent Packages, Skill sources, integration sources;
+autobyteus-627). The GitHub client of `src/integrations/github/` reads it with
+`readNodeGitHubToken` only when GitHub answers "not visible" to a request sent
+without a token, and sends it as a request header to GitHub's own hosts; see
+[Agent Packages](agent_packages.md#private-github-repositories). It never imports
+the credential proxy.
+
+- **Connect without an imported integration.** GraphQL `githubConnection`,
+  `connectGitHub(token)` and `disconnectGitHub` (the **GitHub connection line** in
+  the import areas) call the same `IntegrationConnectionService` (still the only
+  writer: token checked with GitHub's `/user` before it is saved), without
+  `requireImported`. Both connect paths trim the token and refuse an empty one
+  (`TOKEN_REQUIRED`); errors carry the same codes.
+- **Agents' access is unchanged.** A token connected from an import area reaches
+  agents only through the GitHub integration's skill (the access rule above).
+- **One token (DEC-001).** Disconnecting anywhere, or removing the GitHub
+  integration's source (DEC-015), also ends private imports and updates; their
+  next check fails with "connect GitHub". The connection line says what the token
+  is used for.
 
 ## Who May Use An Integration
 

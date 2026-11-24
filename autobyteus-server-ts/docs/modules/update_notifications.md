@@ -163,8 +163,8 @@ repository names; nothing is sent to AutoByteus.
 
 ## GitHub Rate Limits
 
-`publicGitHubRequest` consults `GitHubRateLimitGate` for every request, per host
-family:
+`gitHubRequest` consults `GitHubRateLimitGate` for every request, per host
+family (requests with and without this node's GitHub token alike):
 
 - `api` (`api.github.com`, the REST API): a `403` or `429` with `retry-after`,
   or with `x-ratelimit-remaining: 0` and `x-ratelimit-reset`, blocks the family
@@ -175,8 +175,8 @@ family:
   once with `GitHub rate limit reached; try again after HH:MM.` and no request
   is made. The Update checks card shows the later of the two times.
 - `github.com` serves only those two paths; any other host or path is refused.
-- The agent package installer's archive download does not go through
-  `publicGitHubRequest` (it is not gated).
+- Every archive download (agent packages and skill sources) goes through the
+  GitHub client's `downloadArchive` and so through `gitHubRequest` and its gate.
 
 ## Settings
 

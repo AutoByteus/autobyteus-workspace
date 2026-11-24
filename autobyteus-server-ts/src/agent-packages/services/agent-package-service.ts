@@ -1,4 +1,5 @@
 import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
+import { readNodeGitHubToken } from "../../integrations/github/node-github-token.js";
 import type {
   GitHubSourceStateListener,
   GitHubSourceUpdateState,
@@ -78,7 +79,7 @@ export class AgentPackageService {
     rootSettingsStore?: AgentPackageRootSettingsStore;
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
-    githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">;
+    githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead" | "fetchRepositoryRevisionMetadata" | "downloadArchive">;
     reloadAgentPackageDefinitions?: ReloadAgentPackageDefinitionsFn;
     packageFolderWatchStatus?: PackageFolderWatchStatusFn;
     skillNames?: SkillNameGuard;
@@ -88,8 +89,10 @@ export class AgentPackageService {
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
     this.registryStore =
       dependencies.registryStore ?? new AgentPackageRegistryStore();
+    /** One GitHub client, with this node's token reader, for imports, checks, updates and edit capture. */
+    const githubClient = dependencies.githubClient ?? new GitHubRepositoryClient({ readToken: readNodeGitHubToken });
     this.installer =
-      dependencies.installer ?? new GitHubAgentPackageInstaller();
+      dependencies.installer ?? new GitHubAgentPackageInstaller({ githubClient });
     this.reloadAgentPackageDefinitions =
       dependencies.reloadAgentPackageDefinitions ??
       (() => AgentDefinitionService.getInstance().reloadAgentPackageDefinitions());
@@ -99,7 +102,7 @@ export class AgentPackageService {
     this.skillNames = dependencies.skillNames ?? SkillService.getInstance();
     this.githubUpdates = new GitHubAgentPackageUpdates({
       registryStore: this.registryStore,
-      githubClient: dependencies.githubClient ?? new GitHubRepositoryClient(),
+      githubClient,
       installer: this.installer,
       reloadAgentPackageDefinitions: this.reloadAgentPackageDefinitions,
       assertPackageSkillNames: (rootPath) => this.assertPackageSkillNames(rootPath),

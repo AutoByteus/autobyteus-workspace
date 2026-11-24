@@ -14,6 +14,7 @@ import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from ".
 import { SkillNameConflictError } from "../../../src/skills/domain/skill-name-conflict-error.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { writeAgentOrg } from "../../fixtures/agent-org-skill-package.js";
+import { UNUSED_GITHUB_CLIENT } from "../../helpers/unused-github-client.js";
 
 // D-19 / REQ-023: every agent package import path validates skill names before it commits.
 const parseAdditionalRoots = (): string[] =>
@@ -45,7 +46,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
   let skillService: SkillService;
   const inheritedPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
 
-  const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">) => new AgentPackageService({
+  const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead" | "fetchRepositoryRevisionMetadata" | "downloadArchive">) => new AgentPackageService({
       packageEditCapture: noCapture,
     rootSettingsStore: new AgentPackageRootSettingsStore(
       { getAppDataDir: () => defaultRoot, getRegisteredAgentPackageRoots: parseAdditionalRoots,
@@ -159,7 +160,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
       }
     }
 
-    await expect(createService(new MockInstaller()).importAgentPackage({
+    await expect(createService(new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT })).importAgentPackage({
       sourceKind: "GITHUB_REPOSITORY", source: "https://github.com/AutoByteus/desk-package",
     })).rejects.toMatchObject({ code: "SKILL_NAME_CONFLICT", conflicts: [expect.objectContaining({ existingPath: existing })] });
 
@@ -182,6 +183,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     const rollback = vi.fn(async () => { await fs.rm(path.join(installDir, "agents", "desk-helper", "skills"), { recursive: true, force: true }); });
     const commit = vi.fn(async () => undefined);
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead() {
         return { defaultBranch: "main", latestRevision: "new-sha" };
       }
@@ -196,7 +198,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
       }
     }
 
-    await expect(createService(new MockInstaller(), githubClient).updateAgentPackage(record.packageId))
+    await expect(createService(new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }), githubClient).updateAgentPackage(record.packageId))
       .rejects.toMatchObject({ conflicts: [expect.objectContaining({ name: "desk-alpha", existingPath: existing })] });
 
     expect(rollback).toHaveBeenCalledTimes(1);

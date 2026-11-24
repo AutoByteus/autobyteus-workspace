@@ -32,7 +32,7 @@ package folder's auto-refresh state.
 | --- | --- | --- |
 | `BUILT_IN` | Platform-owned default package root. | Listed for inventory only; not removable, reloadable, checkable, or user-updatable. |
 | `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. Definition edits in the folder are also picked up automatically while the root is watched. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
-| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; personal settings are kept, other local changes are replaced without asking, after a backup). |
+| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a GitHub repository archive (a public repository, or a private one through this node's GitHub connection). | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; personal settings are kept, other local changes are replaced without asking, after a backup). |
 
 ## GitHub Update State
 
@@ -232,13 +232,54 @@ receives the same exact resolved roots through `AgentConfig.skills`. Runtime
 resolution does not use the package-wide catalog scan as its fallback,
 preserving the owning agent/team context for package-contained skills.
 
+## Private GitHub Repositories
+
+Imports, update checks, updates and the edit capture's download all go through
+one `GitHubRepositoryClient` (`src/integrations/github/`), which the package
+service builds once with `readNodeGitHubToken` and gives to the installer and the
+update owner. The client owns the **access rule**:
+
+1. Each request (REST metadata, ls-refs head, codeload archive pinned to a
+   commit) goes out without a token first, exactly as for a public repository.
+2. Only when GitHub answers 401 or 404 does the client read this node's GitHub
+   token from the vault (`integration.github.token`, the GitHub integration's
+   own connection) and send the request again with it: `Authorization: Bearer`
+   for `api.github.com` and `codeload.github.com`, `Basic x-access-token` for
+   `github.com`. The header is computed for each redirect hop's own allowed host.
+3. With the token, 401 means GitHub rejected it, and 403 or 404 means it can't
+   read the repository. Without a token, the text says to connect GitHub.
+
+| Case | Text (also stored as a failed check's `lastError`) |
+| --- | --- |
+| Not visible, no token | `GitHub repository not found, or it is private: <url>. To use a private repository, connect GitHub on this node.` |
+| Token rejected | `GitHub rejected this node's GitHub token (expired or revoked). Reconnect GitHub on this node.` |
+| No access | `GitHub repository not found, or this node's GitHub token can't read it: <url>. Give the token access to this repository with Contents: read.` |
+| Vault unavailable | `GitHub repository not found, or it is private: <url>. This node's secret vault is unavailable, so its GitHub token can't be used.` |
+
+A public repository never reads the token, so a rejected token can't break it.
+The token is only ever a request header: never in a URL, log line, error,
+record or response. The archive is written as `<staging>/download/repository.tar.gz`
+(mode 0600) and extracted; no `.git` folder or git remote exists on disk. The
+user connects GitHub from the **GitHub connection line** in the import box
+(GraphQL `githubConnection`, `connectGitHub`, `disconnectGitHub`; see
+[Credential Proxy](credential_proxy.md)).
+
+Tests: `tests/unit/integrations/github/github-access-rule.test.ts` (every case
+above, the header per host, the archive), `github-request-credentials.test.ts`
+(the header per redirect hop), `tests/e2e/integrations/github-private-repository-graphql.e2e.test.ts`
+(connect, a private import and check through GraphQL with a faked GitHub, and the
+custody scan) and the gated live check
+`tests/e2e/integrations/github-private-repository-live.e2e.test.ts`
+(`RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1` with the test vault's `test.github.token`).
+
 ## Failure And Rollback Rules
 
 - Duplicate GitHub imports are rejected with guidance to use the existing row's
   update/check flow.
-- Direct private GitHub URL imports are not authenticated. Users should clone or
-  sync private repositories locally, import the local path, and use local
-  package reload after external updates.
+- A private GitHub repository imports and updates with this node's GitHub
+  connection (see [Private repositories](#private-github-repositories)). Each
+  failure names its case: GitHub not connected, the token rejected (expired or
+  revoked: reconnect), or a repository the token can't read.
 - GitHub update checks never modify package files. Check failures persist
   `CHECK_FAILED` metadata and preserve the previous package state, including the
   latest known revision.
@@ -254,8 +295,8 @@ preserving the owning agent/team context for package-contained skills.
 
 ## Notes
 
-- Public GitHub default-branch archives are the only managed remote update path
-  in this module. Local Git pull/status execution is intentionally out of
+- GitHub default-branch archives (public, or private through this node's GitHub
+  connection) are the only managed remote update path in this module. Local Git pull/status execution is intentionally out of
   scope.
 - Managed install paths are support/debug details. User-facing list rows should
   prefer repository identity for GitHub packages and the selected local path for

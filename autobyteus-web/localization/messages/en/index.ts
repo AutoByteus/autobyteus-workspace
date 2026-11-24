@@ -13,6 +13,7 @@ import commonMessages from './common.generated';
 import generatedMemoryMessages from './memory.generated';
 import memoryMessages from './memory';
 import integrationsMessages from './integrations';
+import githubConnectionMessages from './githubConnection';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
@@ -62,6 +63,7 @@ const enMessages: TranslationCatalog = {
   ...generatedMemoryMessages,
   ...memoryMessages,
   ...integrationsMessages,
+  ...githubConnectionMessages,
   ...serverMessages,
   ...manualServerMessages,
   ...generatedSettingsMessages,

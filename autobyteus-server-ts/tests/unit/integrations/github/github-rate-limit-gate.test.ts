@@ -7,7 +7,7 @@ import {
   GitHubRateLimitGate,
   setGitHubRateLimitGateForTests,
 } from "../../../../src/integrations/github/github-rate-limit-gate.js";
-import { publicGitHubRequest } from "../../../../src/integrations/github/public-github-request.js";
+import { gitHubRequest } from "../../../../src/integrations/github/github-request.js";
 
 const T0 = new Date("2026-10-20T10:00:00.000Z");
 const resetEpoch = (date: Date): string => String(Math.floor(date.getTime() / 1000));
@@ -99,7 +99,7 @@ describe("GitHubRateLimitGate (REQ-004, AR-003)", () => {
   });
 });
 
-describe("publicGitHubRequest per gate family", () => {
+describe("gitHubRequest per gate family", () => {
   let dir: string;
   beforeEach(() => {
     dir = fs.mkdtempSync(path.join(os.tmpdir(), "github-request-"));
@@ -114,24 +114,24 @@ describe("publicGitHubRequest per gate family", () => {
     const reset = new Date(Date.now() + 3_600_000);
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 403, headers: {
       "x-ratelimit-remaining": "0", "x-ratelimit-reset": resetEpoch(reset) } }));
-    await expect(publicGitHubRequest("https://api.github.com/repos/acme/skills", { fetchImpl })).rejects.toThrow(GitHubRateLimitError);
-    await expect(publicGitHubRequest("https://api.github.com/repos/acme/other", { fetchImpl }))
+    await expect(gitHubRequest("https://api.github.com/repos/acme/skills", { fetchImpl })).rejects.toThrow(GitHubRateLimitError);
+    await expect(gitHubRequest("https://api.github.com/repos/acme/other", { fetchImpl }))
       .rejects.toThrow(/GitHub rate limit reached; try again after \d\d:\d\d/);
     expect(fetchImpl).toHaveBeenCalledOnce();
     fetchImpl.mockResolvedValue(new Response("archive", { status: 200 }));
-    expect((await publicGitHubRequest("https://codeload.github.com/acme/skills/tar.gz/main", { fetchImpl })).status).toBe(200);
+    expect((await gitHubRequest("https://codeload.github.com/acme/skills/tar.gz/main", { fetchImpl })).status).toBe(200);
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
   it("a throttled git service answer stops the web family (git service and codeload), not the REST API", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 429, headers: { "retry-after": "600" } }));
-    await expect(publicGitHubRequest("https://github.com/acme/skills.git/git-upload-pack", { method: "POST", fetchImpl }))
+    await expect(gitHubRequest("https://github.com/acme/skills.git/git-upload-pack", { method: "POST", fetchImpl }))
       .rejects.toThrow(GitHubRateLimitError);
-    await expect(publicGitHubRequest("https://codeload.github.com/acme/skills/tar.gz/main", { fetchImpl }))
+    await expect(gitHubRequest("https://codeload.github.com/acme/skills/tar.gz/main", { fetchImpl }))
       .rejects.toThrow(GitHubRateLimitError);
     expect(fetchImpl).toHaveBeenCalledOnce();
     fetchImpl.mockResolvedValue(new Response("{}", { status: 200 }));
-    expect((await publicGitHubRequest("https://api.github.com/repos/acme/skills", { fetchImpl })).status).toBe(200);
+    expect((await gitHubRequest("https://api.github.com/repos/acme/skills", { fetchImpl })).status).toBe(200);
   });
 
   it("allows github.com only for a repository's git service and latest-release redirect", async () => {
@@ -143,11 +143,11 @@ describe("publicGitHubRequest per gate family", () => {
       "https://github.com/acme/skills/releases/tag/v1",
       "https://github.com/login",
     ]) {
-      await expect(publicGitHubRequest(url, { fetchImpl })).rejects.toThrow("Unsupported");
+      await expect(gitHubRequest(url, { fetchImpl })).rejects.toThrow("Unsupported");
     }
     expect(fetchImpl).not.toHaveBeenCalled();
-    await publicGitHubRequest("https://github.com/acme/skills.git/git-upload-pack", { method: "POST", body: "0000", fetchImpl });
-    await publicGitHubRequest("https://github.com/openai/codex/releases/latest", { fetchImpl });
+    await gitHubRequest("https://github.com/acme/skills.git/git-upload-pack", { method: "POST", body: "0000", fetchImpl });
+    await gitHubRequest("https://github.com/openai/codex/releases/latest", { fetchImpl });
     expect(fetchImpl).toHaveBeenCalledTimes(2);
     expect(fetchImpl.mock.calls[0]?.[1]).toMatchObject({ method: "POST", body: "0000", redirect: "manual" });
   });
@@ -155,7 +155,7 @@ describe("publicGitHubRequest per gate family", () => {
   it("followRedirects false returns the redirect answer itself", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 302, headers: {
       location: "https://github.com/openai/codex/releases/tag/rust-v0.50.0" } }));
-    const response = await publicGitHubRequest("https://github.com/openai/codex/releases/latest", { followRedirects: false, fetchImpl });
+    const response = await gitHubRequest("https://github.com/openai/codex/releases/latest", { followRedirects: false, fetchImpl });
     expect(response.status).toBe(302);
     expect(fetchImpl).toHaveBeenCalledOnce();
   });

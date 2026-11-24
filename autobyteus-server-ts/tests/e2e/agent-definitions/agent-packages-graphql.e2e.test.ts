@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
+import { archiveReadRevision, headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
+import { UNUSED_GITHUB_CLIENT } from "../../helpers/unused-github-client.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -170,7 +171,8 @@ type RevisionBackedGitHubInput = {
 
 /**
  * The controlled GitHub answers (repository metadata and branch head for imports; the git head read for checks and
- * updates) shared by the installer and the service's revision client.
+ * updates; the archive download, whose body is the revision the extraction fake reads) behind the one GitHub client
+ * the installer and the service share.
  */
 const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): typeof fetch => {
   const defaultBranch = input.defaultBranch ?? "main";
@@ -183,6 +185,11 @@ const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): type
 
     if (headReadRepository(requestUrl, init) === `${input.owner}/${input.repo}`.toLowerCase()) {
       return headReadResponse(input.getRevision(), defaultBranch);
+    }
+
+    const archiveRevision = archiveReadRevision(requestUrl);
+    if (archiveRevision) {
+      return new Response(archiveRevision, { status: 200 });
     }
 
     if (requestUrl.includes("/branches/")) {
@@ -215,21 +222,14 @@ const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): type
   }) as typeof fetch;
 };
 
-const createRevisionBackedGitHubInstaller = (input: RevisionBackedGitHubInput): GitHubAgentPackageInstaller =>
+const createRevisionBackedGitHubInstaller = (
+  input: RevisionBackedGitHubInput,
+  githubClient: GitHubRepositoryClient,
+): GitHubAgentPackageInstaller =>
   new GitHubAgentPackageInstaller({
+    githubClient,
     config: {
       getAppDataDir: () => input.dataRoot,
-      getDownloadDir: () => path.join(input.dataRoot, "downloads"),
-    },
-    fetchImpl: createRevisionBackedGitHubFetch(input),
-    downloadFileFromUrlImpl: async (archiveUrl, downloadDir) => {
-      await fs.mkdir(downloadDir, { recursive: true });
-      const revision = decodeURIComponent(
-        archiveUrl.split("/").filter(Boolean).at(-1) ?? input.getRevision(),
-      );
-      const archivePath = path.join(downloadDir, `${revision}.tar.gz`);
-      await fs.writeFile(archivePath, revision, "utf-8");
-      return archivePath;
     },
     extractArchiveImpl: async (archivePath, outputDir) => {
       const revision = (await fs.readFile(archivePath, "utf-8")).trim();
@@ -246,13 +246,16 @@ const createRevisionBackedGitHubInstaller = (input: RevisionBackedGitHubInput): 
   });
 
 /**
- * Package-service GitHub dependencies over one controlled upstream: the installer (download) and the
- * revision client that Check/Update use (`githubClient`, added by c6c4afbf4), so no request reaches GitHub.
+ * Package-service GitHub dependencies over one controlled upstream: one GitHub client (on a node without a GitHub
+ * connection) for the installer's imports and downloads and for Check/Update, so no request reaches GitHub.
  */
-const createRevisionBackedGitHubDependencies = (input: RevisionBackedGitHubInput) => ({
-  installer: createRevisionBackedGitHubInstaller(input),
-  githubClient: new GitHubRepositoryClient(createRevisionBackedGitHubFetch(input)),
-});
+const createRevisionBackedGitHubDependencies = (input: RevisionBackedGitHubInput) => {
+  const githubClient = new GitHubRepositoryClient({
+    readToken: async () => null,
+    fetchImpl: createRevisionBackedGitHubFetch(input),
+  });
+  return { installer: createRevisionBackedGitHubInstaller(input, githubClient), githubClient };
+};
 
 describe("Agent packages GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -703,7 +706,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: new MockGitHubInstaller(),
+      installer: new MockGitHubInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
     });
 
     const sourceUrl = `https://github.com/AutoByteus/mock-agent-package-${unique}`;
@@ -1318,7 +1321,7 @@ describe("Agent packages GraphQL e2e", () => {
     ).rejects.toBeDefined();
   });
 
-  it("returns local-clone guidance when direct private GitHub import metadata is unavailable", async () => {
+  it("names a private or missing repository and says to connect GitHub when this node has no GitHub connection", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const defaultRoot = appConfigProvider.config.getAppDataDir();
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), `agent-packages-registry-${unique}-`));
@@ -1333,14 +1336,16 @@ describe("Agent packages GraphQL e2e", () => {
       installer: new GitHubAgentPackageInstaller({
         config: {
           getAppDataDir: () => dataRoot,
-          getDownloadDir: () => path.join(dataRoot, "downloads"),
         },
-        fetchImpl: async () =>
-          new Response(JSON.stringify({ message: "Not Found" }), {
-            status: 404,
-            statusText: "Not Found",
-            headers: { "Content-Type": "application/json" },
-          }),
+        githubClient: new GitHubRepositoryClient({
+          readToken: async () => null,
+          fetchImpl: async () =>
+            new Response(JSON.stringify({ message: "Not Found" }), {
+              status: 404,
+              statusText: "Not Found",
+              headers: { "Content-Type": "application/json" },
+            }),
+        }),
       }),
     });
 
@@ -1358,9 +1363,9 @@ describe("Agent packages GraphQL e2e", () => {
       },
     );
 
-    expect(privateImport.errors?.[0]?.message).toContain("not found or not public");
-    expect(privateImport.errors?.[0]?.message).toContain(
-      "For private repositories, clone locally and import the local path",
+    expect(privateImport.errors?.[0]?.message).toBe(
+      `GitHub repository not found, or it is private: https://github.com/AutoByteus/private-agent-package-${unique}. `
+        + "To use a private repository, connect GitHub on this node.",
     );
   });
 
@@ -1399,7 +1404,7 @@ describe("Agent packages GraphQL e2e", () => {
     AgentPackageService.getInstance({
       rootSettingsStore: createTestRootSettingsStore(defaultRoot),
       registryStore: createTestRegistryStore(registryRoot),
-      installer: new InvalidGitHubInstaller(),
+      installer: new InvalidGitHubInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
     });
 
     const invalidLocalImport = await runGraphql(

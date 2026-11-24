@@ -62,6 +62,7 @@
           <Icon v-if="isRepositoryUrl" icon="heroicons:shield-exclamation" class="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
           <span>{{ t(isRepositoryUrl ? 'skills.sources.trust' : 'skills.sources.inputHint') }}</span>
         </p>
+        <GitHubConnectionLine class="mt-3" />
       </div>
 
       <footer class="flex shrink-0 justify-end border-t border-slate-100 bg-slate-50 px-4 py-3 sm:px-6">
@@ -101,6 +102,7 @@ import { skillSourceDisplayName } from '~/utils/skills/skillSourceDisplay'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import SkillSourceRow from './SkillSourceRow.vue'
 import SkillSourceUpdateConfirmation, { type SkillSourceUpdateTarget } from './SkillSourceUpdateConfirmation.vue'
+import GitHubConnectionLine from '~/components/github/GitHubConnectionLine.vue'
 
 const { t } = useLocalization()
 const emit = defineEmits(['close'])

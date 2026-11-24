@@ -43,7 +43,7 @@ export const normalizeGitHubRepositorySource = (
   }
 
   if (!SUPPORTED_HOSTS.has(url.hostname.toLowerCase())) {
-    throw new Error("Only public github.com repository URLs are supported.");
+    throw new Error("Only github.com repository URLs are supported.");
   }
 
   const pathSegments = url.pathname
@@ -90,13 +90,6 @@ export const buildGitHubRepositoryBranchApiUrl = (
 ): string =>
   `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/branches/${encodeURIComponent(branch)}`;
 
-export const buildGitHubRepositoryArchiveUrl = (
-  owner: string,
-  repo: string,
-  defaultBranch: string,
-): string =>
-  `https://codeload.github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tar.gz/refs/heads/${encodeURIComponent(defaultBranch)}`;
-
 export const buildGitHubRepositoryArchiveUrlForRef = (
   owner: string,
   repo: string,
@@ -111,7 +104,7 @@ export const isGitHubIdentitySegment = (value: unknown): value is string =>
 export const parseGitHubSkillRepository = (input: string): GitHubRepositorySource => {
   const raw = input.trim();
   const match = /^https:\/\/(github\.com|www\.github\.com)(?::443)?\/([^/?#]+)\/([^/?#]+)\/?$/i.exec(raw);
-  if (!match) throw new Error("Use a public HTTPS github.com repository-root URL (no branch or subfolder).");
+  if (!match) throw new Error("Use an HTTPS github.com repository-root URL (no branch or subfolder).");
   const owner = match[2]!;
   const repo = match[3]!.replace(/\.git$/i, "");
   if (!isGitHubIdentitySegment(owner) || !isGitHubIdentitySegment(repo)) {

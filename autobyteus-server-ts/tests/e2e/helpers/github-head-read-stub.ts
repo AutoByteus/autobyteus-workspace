@@ -1,5 +1,6 @@
 /**
- * GitHub answers for server E2E stubs of the quota-free requests (update-checks-and-auto-updates, SR-005):
+ * GitHub answers for server E2E stubs of the quota-free requests (update-checks-and-auto-updates, SR-005), and the
+ * archive download's URL (autobyteus-627):
  * - the head read: `POST https://github.com/<owner>/<repo>.git/git-upload-pack` (git protocol v2 `ls-refs`), which
  *   package and skill-source checks and updates use instead of the REST metadata;
  * - the Codex latest-release redirect: `GET https://github.com/openai/codex/releases/latest` → 302 to the tag.
@@ -22,6 +23,15 @@ export const headReadResponse = (revision: string, branch = "main"): Response =>
   new Response(`${pktLine(`${revision} HEAD symref-target:refs/heads/${branch}\n`)}0000`, {
     status: 200, headers: { "content-type": "application/x-git-upload-pack-result" },
   });
+
+const ARCHIVE_READ = /^https:\/\/codeload\.github\.com\/([^/]+)\/([^/]+)\/tar\.gz\/([^/]+)$/;
+
+/** The commit an archive download names (`GET https://codeload.github.com/<owner>/<repo>/tar.gz/<commit>`, what the
+ * GitHub client's `downloadArchive` requests); null for any other request. */
+export const archiveReadRevision = (url: string): string | null => {
+  const match = ARCHIVE_READ.exec(url);
+  return match ? decodeURIComponent(match[3]!) : null;
+};
 
 export const CODEX_LATEST_RELEASE_URL = "https://github.com/openai/codex/releases/latest";
 

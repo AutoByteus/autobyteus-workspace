@@ -13,7 +13,7 @@ const integrationsMessages = {
   'integrations.import.title': '导入集成',
   'integrations.import.label': 'GitHub 仓库链接或文件夹路径',
   'integrations.import.placeholder': 'https://github.com/owner/repository 或 /path/to/folder',
-  'integrations.import.hint': '公开的 GitHub 仓库，或本机上包含集成的文件夹。',
+  'integrations.import.hint': 'GitHub 仓库，或本机上包含集成的文件夹。',
   'integrations.import.trust': '请仅导入你信任的仓库。AutoByteus 只会把令牌发送到该服务自己的地址，但集成的脚本仍可以你的身份使用该服务。',
   'integrations.import.button': '导入',
   'integrations.import.importing': '正在导入…',

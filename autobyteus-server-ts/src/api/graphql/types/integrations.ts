@@ -10,6 +10,7 @@ import { IntegrationCatalogError } from "../../../credential-proxy/integration-i
 import {
   getIntegrationConnectionService,
   IntegrationConnectionError,
+  type IntegrationConnectionStatus,
 } from "../../../credential-proxy/integration-connection-service.js";
 
 const IntegrationState = { NEEDS_TOKEN: "NEEDS_TOKEN", CONNECTED: "CONNECTED", NEEDS_NEWER_APP: "NEEDS_NEWER_APP" } as const;
@@ -78,6 +79,21 @@ export class IntegrationSourceRemoval {
   @Field(() => [String]) removedConnectionNames!: string[];
 }
 
+/** This node's GitHub connection (its GitHub token in the vault), for the import areas. Never carries the token. */
+@ObjectType()
+export class GitHubConnection {
+  @Field(() => Boolean) connected!: boolean;
+  /** The GitHub login when connected, else null. */
+  @Field(() => String, { nullable: true }) login!: string | null;
+}
+
+const GITHUB_INTEGRATION_ID = "github";
+
+const toGitHubConnection = (status: IntegrationConnectionStatus): GitHubConnection => ({
+  connected: status.connected,
+  login: status.login,
+});
+
 const toView = (listing: IntegrationListing): IntegrationView => ({
   id: listing.id,
   name: listing.name,
@@ -133,6 +149,13 @@ const listingOf = async (integrationId: string): Promise<IntegrationView> => {
   return toView(listing);
 };
 
+/** The one token gate of both connect paths: trimmed, and required. */
+const requireToken = (token: string): SecretValue => {
+  const trimmed = token.trim();
+  if (!trimmed) throw new GraphQLError("Enter a token.", { extensions: { code: "TOKEN_REQUIRED" } });
+  return SecretValue.fromString(trimmed);
+};
+
 const requireImported = (integrationId: string): void => {
   if (!getIntegrationCatalog().entries().some((entry) => entry.id === integrationId)) {
     throw new GraphQLError("This integration is not imported.", { extensions: { code: "INTEGRATION_NOT_FOUND" } });
@@ -141,7 +164,8 @@ const requireImported = (integrationId: string): void => {
 
 /**
  * The Integrations page (DS-001…DS-003, DS-005): the cards, the imported sources, import, update and removal of a
- * source, and connect, test and disconnect of one integration.
+ * source, and connect, test and disconnect of one integration. Also this node's GitHub connection for the import
+ * areas (`githubConnection`, `connectGitHub`, `disconnectGitHub`), which needs no imported GitHub integration.
  */
 @Resolver()
 export class IntegrationsResolver {
@@ -176,11 +200,10 @@ export class IntegrationsResolver {
     @Arg("id", () => String) integrationId: string,
     @Arg("token", () => String) token: string,
   ): Promise<IntegrationView> {
-    const trimmed = token.trim();
-    if (!trimmed) throw new GraphQLError("Enter a token.", { extensions: { code: "TOKEN_REQUIRED" } });
+    const value = requireToken(token);
     requireImported(integrationId);
     return withCodedErrors(async () => {
-      await getIntegrationConnectionService().connect(integrationId, SecretValue.fromString(trimmed));
+      await getIntegrationConnectionService().connect(integrationId, value);
       return listingOf(integrationId);
     });
   }
@@ -201,5 +224,25 @@ export class IntegrationsResolver {
       await getIntegrationConnectionService().disconnect(integrationId);
       return listingOf(integrationId);
     });
+  }
+
+  @Query(() => GitHubConnection)
+  async githubConnection(): Promise<GitHubConnection> {
+    return withCodedErrors(async () => toGitHubConnection(await getIntegrationConnectionService().status(GITHUB_INTEGRATION_ID)));
+  }
+
+  /** Checks the token with GitHub, then saves it in this node's vault (replacing any earlier one). */
+  @Mutation(() => GitHubConnection)
+  async connectGitHub(@Arg("token", () => String) token: string): Promise<GitHubConnection> {
+    const value = requireToken(token);
+    return withCodedErrors(async () =>
+      toGitHubConnection(await getIntegrationConnectionService().connect(GITHUB_INTEGRATION_ID, value)));
+  }
+
+  /** Removes this node's GitHub token (idempotent); agents' GitHub access ends with it. */
+  @Mutation(() => GitHubConnection)
+  async disconnectGitHub(): Promise<GitHubConnection> {
+    return withCodedErrors(async () =>
+      toGitHubConnection(await getIntegrationConnectionService().disconnect(GITHUB_INTEGRATION_ID)));
   }
 }

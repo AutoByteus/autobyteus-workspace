@@ -825,6 +825,24 @@ the opt-in agent tool
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
 
+## Settings: Agent Packages And Private GitHub Repositories
+
+The import box takes a local package path or a GitHub repository URL. Under it,
+`components/github/GitHubConnectionLine.vue` (with `stores/githubConnectionStore.ts`
+and `graphql/githubConnection.ts`) shows this node's **GitHub connection**, the
+one token the GitHub integration also uses: *GitHub · not connected — needed
+only for private repositories.* with **Connect GitHub**, or *GitHub · connected
+as @login* with **Replace token** and **Disconnect** and what the token is used
+for. Connect opens a password field with the guidance for a fine-grained token
+(only the repositories needed; Contents: Read-only) and a link to GitHub's token
+page; the server checks the token with GitHub before saving it, and coded
+refusals (`TOKEN_REQUIRED`, `TOKEN_REJECTED`, `TOKEN_CHECK_FAILED`,
+`VAULT_UNAVAILABLE`) have their own texts. The token is sent once and never shown. After connecting, the user presses **Import Package** again. A
+private repository's failed check shows the server's text as the row's status
+(for example "GitHub rejected this node's GitHub token … Reconnect GitHub on this
+node."), with the connection line in the same box to reconnect. See
+[Agent Packages](../../autobyteus-server-ts/docs/modules/agent_packages.md#private-github-repositories).
+
 ## Settings: Agent Packages Auto-Refresh
 
 `components/settings/AgentPackagesManager.vue` shows each package row's

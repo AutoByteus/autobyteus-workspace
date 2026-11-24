@@ -61,6 +61,7 @@ describe("automatic checks' GitHub request budget (AC-003, QR-001)", () => {
       });
     }
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = installDirs.join(",");
+    const githubClient = new GitHubRepositoryClient({ readToken: async () => null, fetchImpl });
     return new AgentPackageService({
       skillNames: { assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }) },
       rootSettingsStore: new AgentPackageRootSettingsStore(
@@ -69,8 +70,8 @@ describe("automatic checks' GitHub request budget (AC-003, QR-001)", () => {
         { updateSetting: () => [true, "updated"] },
       ),
       registryStore,
-      installer: new GitHubAgentPackageInstaller(),
-      githubClient: new GitHubRepositoryClient(fetchImpl),
+      installer: new GitHubAgentPackageInstaller({ githubClient }),
+      githubClient,
       reloadAgentPackageDefinitions: async () => undefined,
     });
   };

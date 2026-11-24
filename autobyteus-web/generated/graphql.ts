@@ -1375,6 +1375,12 @@ export type GeminiVertexProjectObject = {
   project: Scalars['String']['output'];
 };
 
+export type GitHubConnection = {
+  __typename?: 'GitHubConnection';
+  connected: Scalars['Boolean']['output'];
+  login?: Maybe<Scalars['String']['output']>;
+};
+
 export type GitHubSkillSource = {
   __typename?: 'GitHubSkillSource';
   defaultBranch: Scalars['String']['output'];
@@ -1916,6 +1922,7 @@ export type Mutation = {
   checkGitHubSkillSourceUpdates: SkillSourceOperationResult;
   clearUpdateNotification: Array<UpdateNotification>;
   configureMcpServer: ConfigureMcpServerResult;
+  connectGitHub: GitHubConnection;
   connectIntegration: IntegrationView;
   createAgentDefinition: AgentDefinition;
   createAgentOrgDefinition: AgentOrgDefinition;
@@ -1946,6 +1953,7 @@ export type Mutation = {
   deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableSkill: Skill;
+  disconnectGitHub: GitHubConnection;
   disconnectIntegration: IntegrationView;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
   downloadEmbeddingModel: Scalars['Boolean']['output'];
@@ -2118,6 +2126,11 @@ export type MutationClearUpdateNotificationArgs = {
 
 export type MutationConfigureMcpServerArgs = {
   input: McpServerInput;
+};
+
+
+export type MutationConnectGitHubArgs = {
+  token: Scalars['String']['input'];
 };
 
 
@@ -2957,6 +2970,7 @@ export type Query = {
   getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
+  githubConnection: GitHubConnection;
   globalSemanticMemoryFolder: SemanticMemoryFolderState;
   health: HealthStatus;
   integrationSources: Array<IntegrationSourceView>;
@@ -4667,6 +4681,23 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
+
+export type GetGitHubConnectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGitHubConnectionQuery = { __typename?: 'Query', githubConnection: { __typename?: 'GitHubConnection', connected: boolean, login?: string | null } };
+
+export type ConnectGitHubMutationVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type ConnectGitHubMutation = { __typename?: 'Mutation', connectGitHub: { __typename?: 'GitHubConnection', connected: boolean, login?: string | null } };
+
+export type DisconnectGitHubMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DisconnectGitHubMutation = { __typename?: 'Mutation', disconnectGitHub: { __typename?: 'GitHubConnection', connected: boolean, login?: string | null } };
 
 export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, semanticMemoryPath: string, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
 
@@ -7490,6 +7521,90 @@ export function useRemoveApplicationPackageMutation(options: VueApolloComposable
   return VueApolloComposable.useMutation<RemoveApplicationPackageMutation, RemoveApplicationPackageMutationVariables>(RemoveApplicationPackageDocument, options);
 }
 export type RemoveApplicationPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveApplicationPackageMutation, RemoveApplicationPackageMutationVariables>;
+export const GetGitHubConnectionDocument = gql`
+    query GetGitHubConnection {
+  githubConnection {
+    connected
+    login
+  }
+}
+    `;
+
+/**
+ * __useGetGitHubConnectionQuery__
+ *
+ * To run a query within a Vue component, call `useGetGitHubConnectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGitHubConnectionQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetGitHubConnectionQuery();
+ */
+export function useGetGitHubConnectionQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>(GetGitHubConnectionDocument, {}, options);
+}
+export function useGetGitHubConnectionLazyQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>(GetGitHubConnectionDocument, {}, options);
+}
+export type GetGitHubConnectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGitHubConnectionQuery, GetGitHubConnectionQueryVariables>;
+export const ConnectGitHubDocument = gql`
+    mutation ConnectGitHub($token: String!) {
+  connectGitHub(token: $token) {
+    connected
+    login
+  }
+}
+    `;
+
+/**
+ * __useConnectGitHubMutation__
+ *
+ * To run a mutation, you first call `useConnectGitHubMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useConnectGitHubMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useConnectGitHubMutation({
+ *   variables: {
+ *     token: // value for 'token'
+ *   },
+ * });
+ */
+export function useConnectGitHubMutation(options: VueApolloComposable.UseMutationOptions<ConnectGitHubMutation, ConnectGitHubMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ConnectGitHubMutation, ConnectGitHubMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ConnectGitHubMutation, ConnectGitHubMutationVariables>(ConnectGitHubDocument, options);
+}
+export type ConnectGitHubMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ConnectGitHubMutation, ConnectGitHubMutationVariables>;
+export const DisconnectGitHubDocument = gql`
+    mutation DisconnectGitHub {
+  disconnectGitHub {
+    connected
+    login
+  }
+}
+    `;
+
+/**
+ * __useDisconnectGitHubMutation__
+ *
+ * To run a mutation, you first call `useDisconnectGitHubMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDisconnectGitHubMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDisconnectGitHubMutation();
+ */
+export function useDisconnectGitHubMutation(options: VueApolloComposable.UseMutationOptions<DisconnectGitHubMutation, DisconnectGitHubMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DisconnectGitHubMutation, DisconnectGitHubMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DisconnectGitHubMutation, DisconnectGitHubMutationVariables>(DisconnectGitHubDocument, options);
+}
+export type DisconnectGitHubMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DisconnectGitHubMutation, DisconnectGitHubMutationVariables>;
 export const CreateAgentDefinitionDocument = gql`
     mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
   createAgentDefinition(input: $input) {

@@ -10,6 +10,7 @@ import { AgentPackageService } from "../../../src/agent-packages/services/agent-
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
 import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/integrations/github/types.js";
+import { UNUSED_GITHUB_CLIENT } from "../../helpers/unused-github-client.js";
 
 /**
  * Update-notification support in `AgentPackageService`: per-package serialization with a fresh
@@ -79,8 +80,8 @@ describe("AgentPackageService GitHub update state", () => {
       skillNames: { assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }) },
       rootSettingsStore: setupResult.rootSettingsStore,
       registryStore: setupResult.registryStore,
-      installer: new StagingInstaller(),
-      githubClient: { fetchDefaultBranchHead: readHead },
+      installer: new StagingInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
+      githubClient: { ...UNUSED_GITHUB_CLIENT, fetchDefaultBranchHead: readHead },
       reloadAgentPackageDefinitions: async () => undefined,
     });
 

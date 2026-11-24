@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
+import { archiveReadRevision, headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
@@ -183,28 +183,25 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
       const url = typeof resource === "string" ? resource : resource instanceof URL ? resource.toString() : resource.url;
       // Checks and updates read the repository head through git (quota-free); imports keep the REST metadata.
       if (headReadRepository(url, init) === `autobyteus/${repo}`.toLowerCase()) return headReadResponse(getRevision());
+      // The archive download's body is the revision the extraction fake reads.
+      const archiveRevision = archiveReadRevision(url);
+      if (archiveRevision) return new Response(archiveRevision, { status: 200 });
       const body = url.includes("/branches/")
         ? { commit: { sha: getRevision() } }
         : { default_branch: "main", html_url: `https://github.com/AutoByteus/${repo}`, private: false, name: repo, owner: { login: "AutoByteus" } };
       return new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } });
     };
+    const githubClient = new GitHubRepositoryClient({ readToken: async () => null, fetchImpl });
     const installer = new GitHubAgentPackageInstaller({
-      config: { getAppDataDir: () => path.join(base, "github-data"), getDownloadDir: () => path.join(base, "github-data", "downloads") },
-      fetchImpl,
-      downloadFileFromUrlImpl: async (archiveUrl, downloadDir) => {
-        fs.mkdirSync(downloadDir, { recursive: true });
-        const revision = decodeURIComponent(archiveUrl.split("/").filter(Boolean).at(-1) ?? getRevision());
-        const archivePath = path.join(downloadDir, `${revision}.tar.gz`);
-        fs.writeFileSync(archivePath, revision, "utf-8");
-        return archivePath;
-      },
+      githubClient,
+      config: { getAppDataDir: () => path.join(base, "github-data") },
       extractArchiveImpl: async (archivePath, outputDir) => {
         const revision = fs.readFileSync(archivePath, "utf-8").trim();
         fs.mkdirSync(outputDir, { recursive: true });
         fs.cpSync(fixtures[revision]!, path.join(outputDir, `${repo}-${revision}`), { recursive: true });
       },
     });
-    return { installer, githubClient: new GitHubRepositoryClient(fetchImpl) };
+    return { installer, githubClient };
   };
 
   it("AC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there", async () => {

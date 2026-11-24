@@ -13,7 +13,7 @@ const integrationsMessages = {
   'integrations.import.title': 'Import integrations',
   'integrations.import.label': 'GitHub repository link or folder path',
   'integrations.import.placeholder': 'https://github.com/owner/repository or /path/to/folder',
-  'integrations.import.hint': 'A public GitHub repository, or a folder on this computer that contains integrations.',
+  'integrations.import.hint': 'A GitHub repository, or a folder on this computer that contains integrations.',
   'integrations.import.trust': 'Import only repositories you trust. AutoByteus sends a token only to its service\'s own address, but an integration\'s scripts can still use the service as you.',
   'integrations.import.button': 'Import',
   'integrations.import.importing': 'Importing…',

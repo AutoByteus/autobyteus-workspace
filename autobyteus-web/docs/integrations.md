@@ -36,6 +36,12 @@ Approved design: `autobyteus-web-design` `tickets/done/integrations-page-r2/ui-u
   - `IntegrationDialog.vue`, `IntegrationDetail.vue`, `IntegrationStepMarker.vue`:
     the three steps (Imported, with the source; Connect, with the integration's
     help text and the token form; Give agents access) and the tools row.
+- The GitHub integration's token is also this node's **GitHub connection** for
+  private repositories, which the import areas of Agent Packages and Skill sources
+  connect without an imported integration (`GitHubConnectionLine.vue`, see
+  [Settings](./settings.md#settings-agent-packages-and-private-github-repositories)).
+  A token saved there shows on the GitHub card as connected once the integration
+  is imported; removing the GitHub integration's source also ends private imports.
 - `stores/integrationsStore.ts`: the cards and sources (read on the node, no
   network), import, update, remove, connect, test, disconnect; server errors keep
   their code and details (`IntegrationError`).

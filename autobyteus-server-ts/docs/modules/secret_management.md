@@ -127,10 +127,12 @@ governance and keeps its Codex-owned authentication behavior.
 - **Integration tokens** use the consumer kind `integration`
   (`{ kind: "integration", integrationId: "github" }`), bound to the fixed ID
   `integration.github.token`. Only `IntegrationConnectionService` saves or
-  removes it (after GitHub accepts the token), and only the credential proxy
-  resolves it, per forwarded call. The ID is not in `isKnownSecretId`: it is not
-  a provider credential for batch import or test-vault status. See
-  [Credential Proxy](credential_proxy.md).
+  removes it (after GitHub accepts the token). Two owners resolve it, each at the
+  moment of use: the credential proxy, per forwarded call, and the GitHub client
+  of package and skill sources (`readNodeGitHubToken`), only when GitHub answers
+  "not visible" to a request without a token (a private repository). The ID is
+  not in `isKnownSecretId`: it is not a provider credential for batch import or
+  test-vault status. See [Credential Proxy](credential_proxy.md).
 - **The DeepSeek Harness key** uses the consumer
   `{ kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" }`,
   bound to `provider.deepseek.api-key` (the same entry the native DeepSeek
@@ -397,7 +399,10 @@ The vault is an ordinary current-schema application database plus key:
 - **Test-only secret IDs.** Besides provider keys, the test vault can hold
   secrets a live check hands to the system under test itself:
   `test.github.token` (source alias `AUTOBYTEUS_TEST_GITHUB_TOKEN`) for the
-  GitHub MCP live check. Such an ID is known to `isKnownSecretId` and listed by
+  GitHub MCP, credential proxy and private-repository live checks (the last:
+  `tests/e2e/integrations/github-private-repository-live.e2e.test.ts`,
+  `RUN_GITHUB_PRIVATE_REPOSITORY_E2E=1`; the token must read a private
+  repository). Such an ID is known to `isKnownSecretId` and listed by
   `listFixedSecretIds` (so `status` shows it), but `resolve` returns it for no
   consumer. Only `test-vault setup` accepts its alias; `secrets:import` into an
   application vault refuses it (`IMPORT_MAPPING_INVALID`). The test reads it

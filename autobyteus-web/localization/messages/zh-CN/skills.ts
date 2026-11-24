@@ -60,7 +60,7 @@ const skillMessages = {
   "skills.sources.github": "GitHub",
   "skills.sources.close": "关闭",
   "skills.sources.working": "处理中…",
-  "skills.sources.trust": "请仅导入您信任的来源。仅支持公开仓库根 URL 和默认分支。更新会替换整个托管副本；如需保留自己的修改，请使用本地文件夹。",
+  "skills.sources.trust": "请仅导入您信任的来源。仅支持仓库根 URL 和默认分支；私有仓库需要在此节点上连接 GitHub。更新会替换整个托管副本；如需保留自己的修改，请使用本地文件夹。",
   "skills.sources.tryAgain": "重试",
   "skills.sources.update": "更新",
   "skills.sources.remove": "移除",
@@ -97,7 +97,7 @@ const skillMessages = {
   "skills.sources.addSource": "添加技能来源",
   "skills.sources.add": "添加",
   "skills.sources.inputPlaceholder": "文件夹路径或 GitHub 仓库地址",
-  "skills.sources.inputHint": "本机上包含技能的文件夹，或公开的 GitHub 仓库地址。",
+  "skills.sources.inputHint": "本机上包含技能的文件夹，或 GitHub 仓库地址。",
 } satisfies TranslationCatalog;
 
 export default skillMessages;
