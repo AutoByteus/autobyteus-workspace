@@ -41,7 +41,7 @@ const wrappers: VueWrapper[] = [];
 
 const mountSubject = (url: string | null): VueWrapper => {
   const wrapper = mount(VideoPlayer, {
-    props: { url },
+    props: { url, fileName: 'media/clip' },
     global: {
       mocks: {
         $t: (key: string) => translations[key] ?? key,

@@ -25,19 +25,19 @@
       <div v-for="(url, index) in segment.urls" :key="index">
         <!-- In the phone apps a node audio file of a type the app plays opens its own player (autobyteus-642 D-2). -->
         <button
-          v-if="audioPlayback.modeFor(url) === 'native'"
+          v-if="audioPlayback.modeFor(url, fileNameOf(url)) === 'native'"
           type="button"
           class="flex w-full items-center gap-3 rounded-lg bg-gray-900 p-4 text-left text-white shadow-md"
           data-testid="native-audio-tile"
-          @click="audioPlayback.play(url)"
+          @click="audioPlayback.play(url, fileNameOf(url))"
         >
           <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 flex-none fill-current"><path d="M8 5v14l11-7z" /></svg>
           <span class="min-w-0 flex-1">
             <span class="block text-sm font-semibold">{{ $t('workspace.components.conversation.segments.MediaSegment.play_audio') }}</span>
-            <span class="block truncate text-xs text-gray-300">{{ mediaTitleOf(url) }}</span>
+            <span class="block truncate text-xs text-gray-300">{{ fileNameOf(url) }}</span>
           </span>
         </button>
-        <p v-else-if="audioPlayback.modeFor(url) === 'pending'" class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">{{ $t('workspace.components.conversation.segments.MediaSegment.loading_audio') }}</p>
+        <p v-else-if="audioPlayback.modeFor(url, fileNameOf(url)) === 'pending'" class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">{{ $t('workspace.components.conversation.segments.MediaSegment.loading_audio') }}</p>
         <audio v-else-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="w-full">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the') }}</audio>
         <p v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ resourceErrorsBySource[url] || 'Loading protected audio…' }}</p>
       </div>
@@ -48,19 +48,19 @@
       <div v-for="(url, index) in segment.urls" :key="index" class="relative">
         <!-- In the phone apps a node video opens the app's own player (autobyteus-574 D-2); nothing is downloaded here. -->
         <button
-          v-if="videoPlayback.modeFor(url) === 'native'"
+          v-if="videoPlayback.modeFor(url, fileNameOf(url)) === 'native'"
           type="button"
           class="flex w-full items-center gap-3 rounded-lg bg-gray-900 p-4 text-left text-white shadow-md"
           data-testid="native-video-tile"
-          @click="videoPlayback.play(url)"
+          @click="videoPlayback.play(url, fileNameOf(url))"
         >
           <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 flex-none fill-current"><path d="M8 5v14l11-7z" /></svg>
           <span class="min-w-0 flex-1">
             <span class="block text-sm font-semibold">{{ $t('workspace.components.conversation.segments.MediaSegment.play_video') }}</span>
-            <span class="block truncate text-xs text-gray-300">{{ mediaTitleOf(url) }}</span>
+            <span class="block truncate text-xs text-gray-300">{{ fileNameOf(url) }}</span>
           </span>
         </button>
-        <p v-else-if="videoPlayback.modeFor(url) === 'pending'" class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">{{ $t('workspace.components.conversation.segments.MediaSegment.loading_video') }}</p>
+        <p v-else-if="videoPlayback.modeFor(url, fileNameOf(url)) === 'pending'" class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">{{ $t('workspace.components.conversation.segments.MediaSegment.loading_video') }}</p>
         <video v-else-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="rounded-lg w-full shadow-md">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2') }}</video>
         <p v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ resourceErrorsBySource[url] || 'Loading protected video…' }}</p>
       </div>
@@ -84,7 +84,7 @@ import { ref, computed } from 'vue';
 import type { MediaSegment } from '~/types/segments';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
-import { mediaTitleOf, useNativeMediaPlayback } from '~/composables/mobile/useNativeMediaPlayback';
+import { useNativeMediaPlayback } from '~/composables/mobile/useNativeMediaPlayback';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
@@ -94,12 +94,23 @@ const props = defineProps<{
 const isModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
 const videoPlayback = useNativeMediaPlayback('video');
+/**
+ * The file a media URL of this message names: a node media file is `/rest/files/<relativePath>`, so the last segment of
+ * its path, decoded (autobyteus-642 SR-004). The tile's label and the native player's title.
+ */
+const fileNameOf = (url: string): string => {
+  try {
+    return decodeURIComponent(new URL(url, 'http://node.invalid').pathname.split('/').filter(Boolean).pop() ?? '');
+  } catch {
+    return '';
+  }
+};
 const audioPlayback = useNativeMediaPlayback('audio');
 // A video or audio file the app plays itself (or may, while it has not answered) is not downloaded by the page.
 const pageLoadedUrls = () => {
   const { mediaType, urls } = props.segment;
-  if (mediaType === 'video') return urls.filter((url) => videoPlayback.modeFor(url) === 'page');
-  if (mediaType === 'audio') return urls.filter((url) => audioPlayback.modeFor(url) === 'page');
+  if (mediaType === 'video') return urls.filter((url) => videoPlayback.modeFor(url, fileNameOf(url)) === 'page');
+  if (mediaType === 'audio') return urls.filter((url) => audioPlayback.modeFor(url, fileNameOf(url)) === 'page');
   return urls;
 };
 const {

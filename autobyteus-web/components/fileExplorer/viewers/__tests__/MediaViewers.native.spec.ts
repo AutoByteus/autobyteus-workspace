@@ -63,12 +63,15 @@ const mountWithSession = async (component: 'VideoPlayer' | 'AudioPlayer' | 'Medi
 
 const playMessages = (posted: Array<Record<string, unknown>>) => posted.filter((message) => message.type === 'playMedia');
 
+// A chat media message's own URLs are node media files, `/rest/files/<relativePath>` (autobyteus-642 SR-004).
 const KINDS = [
-  { kind: 'video', viewer: 'VideoPlayer', element: 'video', url: VIDEO, title: 'plan.mp4', other: '/rest/node-files/content?path=%2Ftmp%2Fother.mp4', otherTitle: 'other.mp4' },
-  { kind: 'audio', viewer: 'AudioPlayer', element: 'audio', url: AUDIO, title: 'memo.m4a', other: '/rest/node-files/content?path=%2Ftmp%2Fother.mp3', otherTitle: 'other.mp3' },
+  { kind: 'video', viewer: 'VideoPlayer', element: 'video', url: VIDEO, fileName: 'demo/plan.mp4', title: 'plan.mp4', chatUrl: '/rest/files/media/plan.mp4',
+    other: '/rest/node-files/content?path=%2Ftmp%2Fother.mp4', otherName: '/tmp/other.mp4', otherTitle: 'other.mp4' },
+  { kind: 'audio', viewer: 'AudioPlayer', element: 'audio', url: AUDIO, fileName: 'notes/memo.m4a', title: 'memo.m4a', chatUrl: '/rest/files/media/memo.m4a',
+    other: '/rest/node-files/content?path=%2Ftmp%2Fother.mp3', otherName: '/tmp/other.mp3', otherTitle: 'other.mp3' },
 ] as const;
 
-describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, viewer, element, url, title, other, otherTitle }) => {
+describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, viewer, element, url, fileName, title, chatUrl, other, otherName, otherTitle }) => {
   beforeEach(() => { downloads.length = 0; });
   afterEach(() => {
     for (const wrapper of wrappers.splice(0)) wrapper.unmount();
@@ -77,7 +80,7 @@ describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, v
 
   it('Files: opening it plays it in the app at once and leaves a Play button; the page downloads nothing', async () => {
     const posted = installApp(true);
-    const wrapper = await mountWithSession(viewer, { url });
+    const wrapper = await mountWithSession(viewer, { url, fileName });
     expect(playMessages(posted)).toEqual([{ type: 'playMedia', kind, url: `${window.location.origin}${url}`, title, credential: 'mra_phone_credential' }]);
     expect(wrapper.find(`[data-testid="native-${kind}"]`).text()).toContain(title);
     expect(wrapper.find(element).exists()).toBe(false);
@@ -89,8 +92,8 @@ describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, v
 
   it('Files: opening another file hands that one to the app', async () => {
     const posted = installApp(true);
-    const wrapper = await mountWithSession(viewer, { url });
-    await wrapper.setProps({ url: other });
+    const wrapper = await mountWithSession(viewer, { url, fileName });
+    await wrapper.setProps({ url: other, fileName: otherName });
     expect(playMessages(posted).map((message) => message.title)).toEqual([title, otherTitle]);
   });
 
@@ -98,7 +101,7 @@ describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, v
   // does not open the player by itself: it may already be open, or the user closed it. Play still opens it.
   it('Files: a reload of the open file (contentRevision) posts no playMedia; Play still does', async () => {
     const posted = installApp(true);
-    const wrapper = await mountWithSession(viewer, { url, contentRevision: 0 });
+    const wrapper = await mountWithSession(viewer, { url, fileName, contentRevision: 0 });
     expect(playMessages(posted)).toHaveLength(1);
     await wrapper.setProps({ contentRevision: 1 });
     await wrapper.setProps({ contentRevision: 2 });
@@ -111,19 +114,20 @@ describe.each(KINDS)('a protected node $kind file in the phone apps', ({ kind, v
 
   it('chat: a media message shows a play tile, which plays it in the app; nothing is downloaded', async () => {
     const posted = installApp(true);
-    const wrapper = await mountWithSession('MediaSegment', { segment: { type: 'media', mediaType: kind, urls: [url] } });
+    const wrapper = await mountWithSession('MediaSegment', { segment: { type: 'media', mediaType: kind, urls: [chatUrl] } });
     expect(playMessages(posted)).toEqual([]);
     const tile = wrapper.find(`[data-testid="native-${kind}-tile"]`);
+    // The tile's label and the native player's title are the same name, from the message's own URL (N-6).
     expect(tile.text()).toContain(title);
     expect(wrapper.find(element).exists()).toBe(false);
     await tile.trigger('click');
-    expect(playMessages(posted)).toEqual([{ type: 'playMedia', kind, url: `${window.location.origin}${url}`, title, credential: 'mra_phone_credential' }]);
+    expect(playMessages(posted)).toEqual([{ type: 'playMedia', kind, url: `${window.location.origin}${chatUrl}`, title, credential: 'mra_phone_credential' }]);
     expect(downloads).toEqual([]);
   });
 
   it('an app without the player: the page downloads it and plays it in its own player, as today (574 AC-006)', async () => {
     const posted = installApp(false);
-    const wrapper = await mountWithSession(viewer, { url });
+    const wrapper = await mountWithSession(viewer, { url, fileName });
     expect(playMessages(posted)).toEqual([]);
     expect(downloads).toEqual([url]);
     expect(wrapper.find(element).exists()).toBe(true);
@@ -138,11 +142,11 @@ describe('a type the app does not play (autobyteus-642 REQ-002)', () => {
   });
 
   it.each([
-    ['AudioPlayer', 'audio', '/rest/workspaces/agent_ws_ab12/content?path=notes%2Fvoice.ogg'],
-    ['VideoPlayer', 'video', '/rest/workspaces/agent_ws_ab12/content?path=demo%2Fclip.webm'],
-  ] as const)('%s: an iOS app without it in its list keeps the page path (%s)', async (viewer, element, url) => {
+    ['AudioPlayer', 'audio', '/rest/workspaces/agent_ws_ab12/content?path=notes%2Fvoice.ogg', 'notes/voice.ogg'],
+    ['VideoPlayer', 'video', '/rest/workspaces/agent_ws_ab12/content?path=demo%2Fclip.webm', 'demo/clip.webm'],
+  ] as const)('%s: an iOS app without it in its list keeps the page path (%s)', async (viewer, element, url, fileName) => {
     const posted = installApp(true);
-    const wrapper = await mountWithSession(viewer, { url });
+    const wrapper = await mountWithSession(viewer, { url, fileName });
     expect(playMessages(posted)).toEqual([]);
     expect(downloads).toEqual([url]);
     expect(wrapper.find(element).exists()).toBe(true);
@@ -150,7 +154,7 @@ describe('a type the app does not play (autobyteus-642 REQ-002)', () => {
 
   it('chat: an Ogg audio message on iOS plays in the page', async () => {
     const posted = installApp(true);
-    const url = '/rest/workspaces/agent_ws_ab12/content?path=notes%2Fvoice.ogg';
+    const url = '/rest/files/media/voice.ogg';
     const wrapper = await mountWithSession('MediaSegment', { segment: { type: 'media', mediaType: 'audio', urls: [url] } });
     expect(wrapper.find('[data-testid="native-audio-tile"]').exists()).toBe(false);
     expect(playMessages(posted)).toEqual([]);

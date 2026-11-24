@@ -1,5 +1,6 @@
 // autobyteus-574 D-2, D-5 and autobyteus-642 D-2 (REQ-002; AC-002): the page hands a protected video or audio file of this
-// node to the phone app's own player only when the app says its player plays that file's type; the credential goes to the
+// node to the phone app's own player only when the app says its player plays that file's type (the caller names the file,
+// autobyteus-642 SR-004: a URL need not name it); the credential goes to the
 // bridge here, in a playMedia message, and nowhere else. A browser, an older app, a type the app does not list, another
 // site's file and an unpaired page keep today's path.
 // Production: useNativeMediaPlayback, getShellBridge (a fake app object behind window.AutoByteusShell), the session store.
@@ -32,6 +33,10 @@ const shell = (mediaPlayer?: unknown) => ({ type: 'shell', nodeCount: 1, deviceN
 
 const NODE_VIDEO = '/rest/workspaces/agent_ws_ab12/content?path=demo%2Fplan.mp4';
 const NODE_AUDIO = '/rest/workspaces/agent_ws_ab12/content?path=notes%2Fmemo.m4a';
+const VIDEO_NAME = 'demo/plan.mp4';
+const AUDIO_NAME = 'notes/memo.m4a';
+// A message reference's route names no file (autobyteus-642 SR-003, SR-004).
+const REFERENCE = '/rest/collaboration-messages/agent_team/team-1/messages/m1/references/r1/content';
 const content = (file: string) => `/rest/workspaces/agent_ws_ab12/content?path=${encodeURIComponent(file)}`;
 
 const load = async (credential: string | null = 'mra_phone_credential') => {
@@ -42,7 +47,7 @@ const load = async (credential: string | null = 'mra_phone_credential') => {
     useMobileNodeSessionStore().session = { entryId: 'e1', serverBaseUrl: window.location.origin, nodeName: 'MacBook', credential, pairedAt: '2026-11-24T00:00:00.000Z' } as never;
   }
   const module = await import('../useNativeMediaPlayback');
-  return { video: module.useNativeMediaPlayback('video'), audio: module.useNativeMediaPlayback('audio'), mediaTitleOf: module.mediaTitleOf };
+  return { video: module.useNativeMediaPlayback('video'), audio: module.useNativeMediaPlayback('audio') };
 };
 
 const settle = async () => { await Promise.resolve(); await nextTick(); };
@@ -53,18 +58,18 @@ describe('useNativeMediaPlayback', () => {
 
   it('in a browser (no bridge) every video and audio file plays in the page, as today', async () => {
     const { video, audio } = await load();
-    expect([video.modeFor(NODE_VIDEO), audio.modeFor(NODE_AUDIO)]).toEqual(['page', 'page']);
-    expect(video.play(NODE_VIDEO) || audio.play(NODE_AUDIO)).toBe(false);
+    expect([video.modeFor(NODE_VIDEO, VIDEO_NAME), audio.modeFor(NODE_AUDIO, AUDIO_NAME)]).toEqual(['page', 'page']);
+    expect(video.play(NODE_VIDEO, VIDEO_NAME) || audio.play(NODE_AUDIO, AUDIO_NAME)).toBe(false);
   });
 
   it('in an app with the player: pending until it answers, then native for a protected file of this node of a listed type', async () => {
     installApp(shell(IOS));
     const { video, audio } = await load();
-    expect([video.modeFor(NODE_VIDEO), audio.modeFor(NODE_AUDIO)]).toEqual(['pending', 'pending']);
+    expect([video.modeFor(NODE_VIDEO, VIDEO_NAME), audio.modeFor(NODE_AUDIO, AUDIO_NAME)]).toEqual(['pending', 'pending']);
     await settle();
-    expect([video.modeFor(NODE_VIDEO), audio.modeFor(NODE_AUDIO)]).toEqual(['native', 'native']);
-    expect(video.modeFor(`${window.location.origin}/rest/node-files/content?path=%2Ftmp%2Fclip.mp4`)).toBe('native');
-    expect(audio.modeFor('/rest/workspaces/w/static/site/media/theme.mp3')).toBe('native');
+    expect([video.modeFor(NODE_VIDEO, VIDEO_NAME), audio.modeFor(NODE_AUDIO, AUDIO_NAME)]).toEqual(['native', 'native']);
+    expect(video.modeFor(`${window.location.origin}/rest/node-files/content?path=%2Ftmp%2Fclip.mp4`, '/tmp/clip.mp4')).toBe('native');
+    expect(audio.modeFor('/rest/workspaces/w/static/site/media/theme.mp3', 'site/media/theme.mp3')).toBe('native');
   });
 
   it.each([
@@ -86,25 +91,35 @@ describe('useNativeMediaPlayback', () => {
     installApp(shell(player));
     const playback = (await load())[kind];
     await settle();
-    expect(playback.modeFor(content(file))).toBe(expected);
+    expect(playback.modeFor(content(file), file)).toBe(expected);
   });
 
-  it('reads the type from the file the URL names, not the URL path (autobyteus-642 N-4)', async () => {
-    installApp(shell(IOS));
-    const { audio } = await load();
+  it('reads the type from the name the caller gives, not the URL (autobyteus-642 SR-004)', async () => {
+    const posted = installApp(shell(IOS));
+    const { video, audio } = await load();
     await settle();
-    expect(audio.modeFor('/rest/workspaces/w/content.mp3?path=notes%2Fmemo.ogg')).toBe('page');
-    expect(audio.modeFor('/rest/workspaces/w/content?path=notes.mp3%2Fmemo')).toBe('page');
+    // A message reference: its URL names no file; its path does.
+    expect(video.modeFor(REFERENCE, 'demo/clip.mp4')).toBe('native');
+    expect(audio.modeFor(REFERENCE, '/tmp/memo.m4a')).toBe('native');
+    expect(audio.modeFor(REFERENCE, 'notes/voice.ogg')).toBe('page');
+    // A URL that seems to name another type does not decide it.
+    expect(audio.modeFor('/rest/workspaces/w/content.mp3?path=notes%2Fmemo.mp3', 'notes/memo.ogg')).toBe('page');
+    expect(video.play(REFERENCE, 'demo/clip.mp4')).toBe(true);
+    expect(posted.filter((message) => message.type === 'playMedia')).toEqual([{
+      type: 'playMedia', kind: 'video', url: `${window.location.origin}${REFERENCE}`, title: 'clip.mp4', credential: 'mra_phone_credential',
+    }]);
   });
 
   it.each([
-    ['video', NODE_VIDEO, 'plan.mp4'],
-    ['audio', NODE_AUDIO, 'memo.m4a'],
-  ] as const)('play hands the app the %s file: its kind, absolute URL, file name and the credential, in one playMedia message', async (kind, url, title) => {
+    ['video', NODE_VIDEO, VIDEO_NAME, 'plan.mp4'],
+    ['audio', NODE_AUDIO, AUDIO_NAME, 'memo.m4a'],
+    ['audio', '/rest/files/media/intro%20clip.mp3', 'intro clip.mp3', 'intro clip.mp3'],
+    ['video', '/rest/node-files/content?path=%2FUsers%2Fme%2Fdemo.mov', 'C:\\Users\\me\\demo.mov', 'demo.mov'],
+  ] as const)('play hands the app the %s file: its kind, absolute URL, base name and the credential, in one playMedia message', async (kind, url, name, title) => {
     const posted = installApp(shell(IOS));
     const playback = (await load())[kind];
     await settle();
-    expect(playback.play(url)).toBe(true);
+    expect(playback.play(url, name)).toBe(true);
     expect(posted.filter((message) => message.type === 'playMedia')).toEqual([{
       type: 'playMedia', kind, url: `${window.location.origin}${url}`, title, credential: 'mra_phone_credential',
     }]);
@@ -118,8 +133,8 @@ describe('useNativeMediaPlayback', () => {
     const posted = installApp(shell(IOS));
     const { video } = await load();
     await settle();
-    expect(video.modeFor(url)).toBe('page');
-    expect(video.play(url)).toBe(false);
+    expect(video.modeFor(url, 'a.mp4')).toBe('page');
+    expect(video.play(url, 'a.mp4')).toBe(false);
     expect(posted.some((message) => message.type === 'playMedia')).toBe(false);
   });
 
@@ -127,7 +142,7 @@ describe('useNativeMediaPlayback', () => {
     const posted = installApp(shell(IOS));
     const { audio } = await load();
     await settle();
-    expect(audio.play(content('voice.ogg'))).toBe(false);
+    expect(audio.play(content('voice.ogg'), 'voice.ogg')).toBe(false);
     expect(posted.some((message) => message.type === 'playMedia')).toBe(false);
   });
 
@@ -135,23 +150,15 @@ describe('useNativeMediaPlayback', () => {
     installApp(shell());
     const { video, audio } = await load();
     await settle();
-    expect([video.modeFor(NODE_VIDEO), audio.modeFor(NODE_AUDIO)]).toEqual(['page', 'page']);
+    expect([video.modeFor(NODE_VIDEO, VIDEO_NAME), audio.modeFor(NODE_AUDIO, AUDIO_NAME)]).toEqual(['page', 'page']);
   });
 
   it('an unpaired page (no credential) keeps today\'s path and never posts a credential', async () => {
     const posted = installApp(shell(IOS));
     const { video, audio } = await load(null);
     await settle();
-    expect([video.modeFor(NODE_VIDEO), audio.modeFor(NODE_AUDIO)]).toEqual(['page', 'page']);
-    expect(video.play(NODE_VIDEO) || audio.play(NODE_AUDIO)).toBe(false);
+    expect([video.modeFor(NODE_VIDEO, VIDEO_NAME), audio.modeFor(NODE_AUDIO, AUDIO_NAME)]).toEqual(['page', 'page']);
+    expect(video.play(NODE_VIDEO, VIDEO_NAME) || audio.play(NODE_AUDIO, AUDIO_NAME)).toBe(false);
     expect(posted.some((message) => message.type === 'playMedia')).toBe(false);
-  });
-
-  it('names the file by its file name for the player\'s title', async () => {
-    const { mediaTitleOf } = await load();
-    expect(mediaTitleOf(NODE_VIDEO)).toBe('plan.mp4');
-    expect(mediaTitleOf(NODE_AUDIO)).toBe('memo.m4a');
-    expect(mediaTitleOf('/rest/workspaces/w/static/site/media/intro%20clip.mp4')).toBe('intro clip.mp4');
-    expect(mediaTitleOf('/rest/node-files/content?path=%2FUsers%2Fme%2Fdemo.mov')).toBe('demo.mov');
   });
 });

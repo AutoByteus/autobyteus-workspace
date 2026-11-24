@@ -113,6 +113,8 @@ const componentProps = computed(() => {
     content: props.file.content || null,
     contentRevision: props.file.contentRevision ?? 0,
   };
+  // The players name the file by its path, not its URL (a message reference's URL names none; autobyteus-642 SR-004).
+  if (props.file.type === 'Video' || props.file.type === 'Audio') return { ...media, fileName: props.file.path };
   const zoomable = props.touchZoom && (props.file.type === 'PDF' || props.file.type === 'Image');
   return zoomable ? { ...media, touchZoom: true, zoomMemory: props.zoomMemory ?? null } : media;
 });

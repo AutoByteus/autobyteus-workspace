@@ -40,23 +40,12 @@ const nodeMediaUrl = (url: string): string | null => {
   }
 };
 
-/**
- * The file's name: the last segment of the file path the URL names, which is its `path` query (workspace and node files:
- * `…/content?path=notes%2Fmemo.m4a`) or else its path (`…/static/site/intro.mp4`). The player's title, and its type.
- */
-export const mediaTitleOf = (url: string): string => {
-  try {
-    const parsed = new URL(url, 'http://node.invalid');
-    const filePath = parsed.searchParams.get('path') ?? decodeURIComponent(parsed.pathname);
-    return filePath.split(/[\\/]/).filter(Boolean).pop() ?? '';
-  } catch {
-    return '';
-  }
-};
+/** The base name of `fileName` (a name or a path): the player's title. */
+const baseNameOf = (fileName: string): string => fileName.split(/[\\/]/).filter(Boolean).pop() ?? '';
 
-/** The lowercase extension of the file the URL names; `''` when it has none (autobyteus-642 N-4). */
-const mediaExtensionOf = (url: string): string => {
-  const name = mediaTitleOf(url);
+/** The lowercase extension of `fileName`; `''` when it has none. */
+const extensionOf = (fileName: string): string => {
+  const name = baseNameOf(fileName);
   const dot = name.lastIndexOf('.');
   return dot > 0 ? name.slice(dot + 1).toLowerCase() : '';
 };
@@ -65,30 +54,32 @@ const mediaExtensionOf = (url: string): string => {
  * The page's one owner of native media playback (autobyteus-574 D-2, D-5; autobyteus-642 D-2), for one kind of file. A
  * viewer asks how a URL plays and, for `native`, hands it to the app with `play`; the credential goes from the session to
  * the bridge here, never through a component. The app says which file types its player plays, per kind; any other type
- * plays in the page.
+ * plays in the page. The caller names the file (`fileName`, a name or a path): a URL need not name it, as a message
+ * reference's `…/references/<id>/content` does not (autobyteus-642 SR-004). Its extension decides the type, its base name
+ * is the player's title.
  */
 export function useNativeMediaPlayback(kind: ShellMediaKind): {
-  modeFor: (url: string | null | undefined) => MediaPlaybackMode;
-  play: (url: string, title?: string) => boolean;
+  modeFor: (url: string | null | undefined, fileName: string) => MediaPlaybackMode;
+  play: (url: string, fileName: string) => boolean;
 } {
   const app = appMediaPlayerState();
   const { activeCredential } = storeToRefs(useMobileNodeSessionStore());
 
-  const modeFor = (url: string | null | undefined): MediaPlaybackMode => {
+  const modeFor = (url: string | null | undefined, fileName: string): MediaPlaybackMode => {
     const trimmed = url?.trim();
     const player = app.value;
     if (!trimmed || player === 'absent' || !activeCredential.value) return 'page';
     if (!isProtectedRemoteAccessResourceUrl(trimmed) || !nodeMediaUrl(trimmed)) return 'page';
     if (player === 'asking') return 'pending';
-    return player[kind].includes(mediaExtensionOf(trimmed)) ? 'native' : 'page';
+    return player[kind].includes(extensionOf(fileName)) ? 'native' : 'page';
   };
 
-  const play = (url: string, title: string = mediaTitleOf(url)): boolean => {
+  const play = (url: string, fileName: string): boolean => {
     const bridge = getShellBridge();
     const credential = activeCredential.value;
     const absolute = nodeMediaUrl(url.trim());
-    if (!bridge || !credential || !absolute || modeFor(url) !== 'native') return false;
-    bridge.playMedia({ kind, url: absolute, title, credential });
+    if (!bridge || !credential || !absolute || modeFor(url, fileName) !== 'native') return false;
+    bridge.playMedia({ kind, url: absolute, title: baseNameOf(fileName), credential });
     return true;
   };
 

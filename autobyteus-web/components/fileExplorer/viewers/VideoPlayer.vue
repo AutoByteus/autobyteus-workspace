@@ -33,11 +33,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
-import { mediaTitleOf, useNativeMediaPlayback } from '~/composables/mobile/useNativeMediaPlayback';
+import { useNativeMediaPlayback } from '~/composables/mobile/useNativeMediaPlayback';
 import MediaLoadingState from './MediaLoadingState.vue';
 
 const props = defineProps<{
   url: string | null;
+  /** The file's name or path: its type and the native player's title (a URL need not name its file, autobyteus-642 SR-004). */
+  fileName: string;
   /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
   contentRevision?: number;
 }>();
@@ -47,15 +49,15 @@ const nativeMediaFailed = ref(false);
 // In the phone apps a protected node video plays in the app's own player, by range (autobyteus-574 D-2): the page then
 // loads nothing itself; elsewhere it plays here, as before.
 const nativePlayback = useNativeMediaPlayback('video');
-const playbackMode = computed(() => nativePlayback.modeFor(props.url));
-const title = computed(() => (props.url ? mediaTitleOf(props.url) : ''));
+const playbackMode = computed(() => nativePlayback.modeFor(props.url, props.fileName));
+const title = computed(() => props.fileName.split(/[\\/]/).filter(Boolean).pop() ?? '');
 const { resolvedUrl, error: resourceError, loading, progress, refresh } = useAuthorizedObjectUrl(
   () => (playbackMode.value === 'page' ? props.url : null),
   { revision: () => props.contentRevision ?? 0 },
 );
 
 const playNatively = (): void => {
-  if (props.url) nativePlayback.play(props.url, title.value);
+  if (props.url) nativePlayback.play(props.url, props.fileName);
 };
 
 // Opening a video opens the player at once (the viewer shown, another URL, or the app's answer arriving); Play opens it
