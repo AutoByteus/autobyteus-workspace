@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, design-review-report.md round 2 (ARCH-REV-002); Solution Designer, design-spec.md SR-002 | N/A (N-4, N-5 applied) | `Initial Baseline` | SR-001, SR-002, ARCH-REV-001, ARCH-REV-002 | D-1…D-4 implemented and checked locally; ready for code review |
 | IR-002 | Code Reviewer, code-review-report.md CRR-001 (CR-001, C-2) via Solution Designer SR-003; Architecture Reviewer ARCH-REV-003 (AR-002) via SR-004; ARCH-REV-004 Pass | CR-001, C-2, AR-002, N-6 | `Requirement Gap` (resolved upstream; implemented here) | CRR-001, SR-003, SR-004, ARCH-REV-003, ARCH-REV-004 | Message references stream video and audio; the native player takes the file name from its caller; the iOS audio screen shows a symbol and the name |
 | IR-003 | Code Reviewer, code-review-report.md Round 2 Delta Review (CRR-002) | CR-002 | `Local Fix` | CRR-002 | The reference viewer reloads only when a reference changes by value; a native player no longer re-opens on a message update |
+| IR-004 | Architecture Reviewer, design-review-report.md ARCH-REV-005 (Pass); Solution Designer, design-spec.md SR-005 (DEC-007, from API/E2E's evidence request) | N/A (N-7, N-8 applied) | `Design Impact` (decided upstream; implemented here) | SR-005, ARCH-REV-005, CRR-003 | The iOS media player plays in the playback audio session while it shows; the switch no longer mutes it |
 
 ## Revision Entries
 
@@ -92,4 +93,30 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - 31 files / 308 tests in the collaboration, mobile and viewer folders; web typecheck PASS.
 - Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
 - Remaining limitations or risks: the held notes stay held: a zero-byte media reference answers the probe with 416 and shows the error state; the iOS Back bar sits over AVKit's top buttons.
+
+### IR-004 — The iOS media player's audio session
+
+- Triggering role, report path, and round: Solution Designer, `design-spec.md` SR-005 (DEC-007, after API/E2E's evidence request on the iOS Ring/Silent switch); Architecture Reviewer, `design-review-report.md` ARCH-REV-005 (Pass) with N-7 and N-8.
+- Triggering finding IDs: N/A (a design change). Notes applied: N-7 (end the session in the teardown, however the screen goes), N-8 (restore the category in effect before).
+- Classification: `Design Impact` (decided upstream; this round implements SR-005).
+- Prior authoritative result: IR-003, CRR-003 Pass.
+- Current authoritative result: implemented and checked; `Large` / `High`, to code review.
+- Related solution and architecture-review revision IDs: SR-005, ARCH-REV-005.
+- Related code-review revision IDs: CRR-003.
+- Related API/E2E and delivery revision IDs: N/A.
+- Why this implementation revision is recorded: the app set no audio session category, so on an iPhone the Ring/Silent switch muted the native player (audio, and 574's video).
+- Approved behavior or requirement IDs affected: REQ-002 / AC-002 (iOS); 574's video sound.
+- Implementation delta (`38f318021c`):
+  - New `AutoByteusMobileCore/Media/MediaAudioSession.swift`.
+    - `begin()` records the category, mode and options in effect, then sets `.playback` / `.moviePlayback` and `setActive(true)`.
+    - `end()` calls `setActive(false, options: .notifyOthersOnDeactivation)` and restores what `begin` recorded.
+    - Failures, `isBusy` included, are logged with their code and never stop playback. A second `begin` or `end` does nothing.
+  - `NativeMediaPlayerViewController` calls `begin()` in `viewDidLoad`, on present. It calls `end()` in its `viewDidDisappear` teardown beside `loader?.invalidate()`, which runs however the screen goes (N-7).
+  - `docs/ios_mobile_access.md` describes it.
+  - Info.plist (no background mode) and Android are unchanged.
+- Placement: the session is in Core, not the app. The Core tests have the test host's real `AVAudioSession`; the app layer has no unit-test target, and its UI tests cannot read the app's session.
+- Changed files or areas: the above, and `MediaAudioSessionTests.swift` (new).
+- Local validation and result: IMP-14. `MediaAudioSessionTests` covers the category during, the restore after, and that repeated calls change nothing; the Core suite passes 88 of 88; `NativeMediaPlayerUITests` passes 3 of 3, with no session failure in the log.
+- Next recipient or routing: `/code_reviewer` (Large/High).
+- Remaining limitations or risks: the switch and the sound themselves need a physical iPhone, which is the check before release (SR-005).
 
