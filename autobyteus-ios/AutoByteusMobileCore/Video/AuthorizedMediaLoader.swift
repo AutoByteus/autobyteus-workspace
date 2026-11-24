@@ -69,6 +69,9 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
             information.contentType = UTType(mimeType: probe.contentType ?? "video/mp4")?.identifier ?? UTType.mpeg4Movie.identifier
             information.contentLength = probe.length
             information.isByteRangeAccessSupported = true
+            // Any range is served at any time, from the cache or by a ranged fetch; without saying so, a scrub of the player
+            // stops the picture while its clock runs on (autobyteus-574 CR-003).
+            information.isEntireLengthAvailableOnDemand = true
         }
         guard let data = loadingRequest.dataRequest else {
             loadingRequest.finishLoading()
