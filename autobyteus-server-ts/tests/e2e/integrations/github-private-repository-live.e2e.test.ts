@@ -52,8 +52,9 @@ describe.skipIf(!GATE)("GitHub private repositories through the access rule (liv
   });
 
   it("reads and downloads a private repository with the token, and names each failure", async (context) => {
-    const token = await readLiveTestSecret(context, "test.github.token");
-    const value = token.revealToTrustedConsumer();
+    const value = (await readLiveTestSecret(context, "test.github.token")).revealToTrustedConsumer();
+    // The server's own SecretValue (the test vault helper reads with autobyteus-ts's source copy).
+    const token = SecretValue.fromString(value);
 
     // A private repository the token can read (test-side listing; its name is never printed).
     const listing = await fetch("https://api.github.com/user/repos?visibility=private&per_page=100", {

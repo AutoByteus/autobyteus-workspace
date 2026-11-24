@@ -81,7 +81,7 @@ describe("Private GitHub repositories through GraphQL (in process, faked GitHub)
       return Response.json({ owner: { login: OWNER }, name: REPO, default_branch: "main", html_url: REPOSITORY_URL, private: true });
     }
     if (url === `https://api.github.com/repos/${OWNER}/${REPO}/branches/main`) return Response.json({ commit: { sha: SHA } });
-    if (archiveReadRevision(url) === SHA) return new Response(archiveBytes);
+    if (archiveReadRevision(url) === SHA) return new Response(new Uint8Array(archiveBytes));
     throw new Error(`unexpected request in the fake GitHub: ${url}`);
   };
 
