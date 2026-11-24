@@ -13,6 +13,11 @@
  *
  *   RUN-01  graceful restart (SIGTERM)
  *   RUN-02  forced kill (SIGKILL)
+ *   RUN-03  a graceful stop while the restore is still running (design walk 4b, AR-001): seven idle Agent runs are
+ *           recorded; at the next start the model server answers the model list slowly, and the node is stopped as soon
+ *           as the restore has asked for it, before the restore's summary. The record still holds all seven runs, and the
+ *           start after that brings all seven back.
+ *   RUN-04  the same with a kill during the restore
  *
  * Gate: RUN_RUNNING_RUNS_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree. No credentials.
  * macOS/Linux. About 2 minutes. Run (in autobyteus-server-ts):
@@ -62,6 +67,9 @@ const textOf = (content: unknown): string => typeof content === "string" ? conte
 class ScriptedModel {
   readonly requests: ModelRequest[] = [];
   private readonly scripts = new Map<string, Step[]>();
+  /** Model-list (GET) requests seen, and how long each is held before its answer (RUN-03/04 slow the restore with it). */
+  modelListRequests = 0;
+  modelListDelayMs = 0;
   private server: Server | null = null;
   origin = "";
   script(caseId: string, steps: Step[]): void { this.scripts.set(caseId, [...steps]); }
@@ -75,6 +83,8 @@ class ScriptedModel {
   async close(): Promise<void> { this.server?.closeAllConnections(); await new Promise<void>((resolve) => this.server ? this.server.close(() => resolve()) : resolve()); }
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (req.method === "GET") {
+      this.modelListRequests += 1;
+      if (this.modelListDelayMs) await wait(this.modelListDelayMs);
       res.setHeader("content-type", "application/json");
       res.end(JSON.stringify({ models: [{ key: MODEL_KEY, max_context_length: 65536, loaded_instances: [{ config: { context_length: 65536 } }] }] }));
       return;
@@ -294,6 +304,44 @@ describe.skipIf(!ENABLED)("A restart keeps a person's runs running (built server
     await node.stop(session, "SIGTERM");
   };
 
+  /** Walk 4b: a stop (or a crash) while the restore is still working through the record loses no run. */
+  const duringRestore = async (prefix: "RUN-03" | "RUN-04", signal: "SIGTERM" | "SIGKILL") => {
+    const node = await TestNode.create({ LMSTUDIO_HOSTS: model.origin });
+    cleanups.push(() => fs.rm(node.root, { recursive: true, force: true }));
+    let session = await node.start();
+    const modelId = await modelIdOf(session);
+    const runIds: string[] = [];
+    for (let index = 1; index <= 7; index += 1) runIds.push(await idleAgentRun(session, node, `${prefix}R${index}`, modelId));
+    const expected = runIds.map((rootRunId) => ({ rootSubjectKind: "agent", rootRunId })).sort((a, b) => a.rootRunId.localeCompare(b.rootRunId));
+    await until(async () => JSON.stringify((await readJson(node.runningRuns))?.runs) === JSON.stringify(expected), "all seven recorded", 15_000);
+    await node.stop(session, "SIGTERM");
+
+    // The next start: the model list is answered slowly, so the restore (three at a time) is still working when it stops.
+    model.modelListDelayMs = 4_000;
+    const listsBefore = model.modelListRequests;
+    session = await node.start();
+    await until(() => model.modelListRequests > listsBefore, "the restore asked for the model list", 60_000);
+    const restoreDone = session.output().includes("Running runs after the restart:");
+    await node.stop(session, signal);
+    const afterInterrupted = await readJson(node.runningRuns);
+    model.modelListDelayMs = 0;
+
+    // The start after that brings all seven back.
+    session = await node.start();
+    await until(() => session.output().includes("Running runs after the restart:"), "the restore summary", 120_000);
+    const summary = session.output().match(/Running runs after the restart: [^\n]*/)?.[0] ?? "";
+    for (const runId of runIds) await until(() => isAgentActive(session, runId), `${runId} running again`, 30_000);
+    if (EVIDENCE_DIR) {
+      await fs.mkdir(EVIDENCE_DIR, { recursive: true });
+      await fs.writeFile(path.join(EVIDENCE_DIR, `${prefix}.json`), JSON.stringify({ signal, runIds, restoreDoneWhenStopped: restoreDone,
+        modelListRequestsDuringRestore: model.modelListRequests - listsBefore, afterInterrupted, summary }, null, 2));
+    }
+    expect(restoreDone, "stopped before the restore finished").toBe(false);
+    expect(afterInterrupted?.runs, "the record still holds every run").toEqual(expected);
+    expect(summary).toBe("Running runs after the restart: 7 brought back, 0 skipped, 0 failed");
+    await node.stop(session, "SIGTERM");
+  };
+
   it("RUN-01: graceful restart: the idle Agent run and Team come back running, listed and reachable; the stopped run does not", async () => {
     await scenario("RUN-01", "SIGTERM");
   }, 300_000);
@@ -301,4 +349,12 @@ describe.skipIf(!ENABLED)("A restart keeps a person's runs running (built server
   it("RUN-02: forced kill: the same from the live record", async () => {
     await scenario("RUN-02", "SIGKILL");
   }, 300_000);
+
+  it("RUN-03: a graceful stop during the restore loses no run: the record keeps all seven and the next start brings them back", async () => {
+    await duringRestore("RUN-03", "SIGTERM");
+  }, 600_000);
+
+  it("RUN-04: a kill during the restore: the same", async () => {
+    await duringRestore("RUN-04", "SIGKILL");
+  }, 600_000);
 });
