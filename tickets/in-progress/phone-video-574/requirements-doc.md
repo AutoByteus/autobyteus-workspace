@@ -2,14 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (DEC-001 and DEC-002 need the user)
+- Status: `Approved`
 - Current solution revision ID: SR-001
 - Package identifier: `phone-video-574`
 - Request: autobyteus-574 (absorbs autobyteus-636), Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the founder
 - Requirements owner: Solution Designer
 - Date: 2026-11-24
-- Approved by and reference: pending (the user: DEC-001, DEC-002)
+- Approved by and reference: **the user**, in conversation 2026-11-24: "I trust your recommended solutions". That approves DEC-001 (b), the native player, and DEC-002 (a), the per-playback credential handoff. The other decisions are the Solution Designer's within the direction.
+- Exact approved baseline: this document at SR-001
 
 ## Problem And Desired Outcome
 
@@ -61,19 +62,23 @@ None.
 | REQ-004 | Fullscreen: landscape, system bars hidden, the video fills the screen; exit returns to portrait with the playing position kept | Must | Task Part 2 (636) | Native players provide it (P2, P3); Android web fullscreen via `onShowCustomView` (autobyteus-432 pattern) |
 | REQ-005 | The node's file routes answer Range requests with 206, `Content-Range`, `Accept-Ranges` and a validator (`ETag`); an unchanged validator lets the app reuse its cache | Must | Needed by REQ-001/002 | Standard HTTP; server-side |
 
-## Acceptance Criteria (summary; full table after approval)
+## Acceptance Criteria
 
-- **AC-001:** in each app (emulator and simulator), a 20+ MB video on a throttled node plays in under 2 s and seeks to its middle with a Range request.
-- **AC-002:** a reopen of the unchanged file downloads 0 bytes for parts already fetched. After the file changes, the new content plays.
-- **AC-003:** the node's request log shows the `Authorization` header on every media request, and no credential in any URL. App logs contain no credential.
-- **AC-004:** fullscreen enter and exit on both apps: landscape, bars hidden, back to portrait, the same position.
-- **AC-005:** the node's Range/206 behavior (server tests); the browser phone path and desktop unchanged.
+| AC | REQ | Trigger | Expected | Alternate / failure | Verification |
+| --- | --- | --- | --- | --- | --- |
+| AC-001 | REQ-001, REQ-003 | In the Android app (emulator) and the iOS app (simulator), paired to a test node throttled to about 1.5 MB/s, open a 20+ MB MP4: from Files, from a chat link to a file, and from a media message | The native player shows and plays in under 2 s; a seek to the middle plays within 2 s; the node's log shows ranged requests (206), each with the phone's `Authorization` header | A missing file: the player says it could not play, with Back; no crash | The apps' instrumented or UI tests, and a probe reading the test node's request log |
+| AC-002 | REQ-002 | Close and reopen the same video; then change the file on the node and reopen | The reopen fetches 0 bytes for the parts already played. After the change (new `ETag`), the new content plays | The cache is full: the least-recently-used entries are dropped; playback is unaffected | Request log byte counts; the apps' cache unit tests |
+| AC-003 | REQ-003 | Every AC-001/002 run | No credential in any URL (node log, app logs, `adb logcat`, simulator log); nothing written to disk contains it (cache files hold only video bytes and range maps) | A page that asks to play a URL of another origin or another route: refused, and no request is sent | Log scans; the bridge's unit tests (origin and route allowlist) |
+| AC-004 | REQ-004 | Tap fullscreen in the native player; then exit. Android only: an in-page video's fullscreen button (DEC-004) | Landscape, bars hidden, the video fills the screen; exit returns to portrait with the position kept | — | UI tests with orientation and position read back; screenshots |
+| AC-005 | REQ-005 | `GET` a node file with `Range: bytes=a-b`, `bytes=a-`, `bytes=-n`, an invalid range, and `If-None-Match` | 206 with the exact bytes, `Content-Range`, `Accept-Ranges: bytes` and `ETag`; 416 for an unsatisfiable range; 304 for a matching validator; 200 without Range. The same on every file route (workspace content, static, node files) | Access refusals unchanged (401/403/400) | Server unit and integration tests |
+| AC-006 | Preserved | The phone web app in a browser; an app without the native player (older); desktop | Unchanged: the page keeps today's download path when the app does not offer the player | — | Web unit tests; the phone probe's existing media cases (MSP-89…92) |
 
 ## Decisions
 
 | ID | Question | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | How the apps play videos | (a) Keep the in-page web player and intercept its requests (the Task's example). Measured: on Android, seeking loops or fails (P1, P1b, P1c); service workers cannot work on iOS and need `https`. (b) **A native player in each app** (Android Media3, iOS AVPlayer), opened when a video is tapped. Measured: plays at once, seeks, header only (P2, P3) | **(b).** It is the only way that seeks reliably on Android, and it gives native fullscreen and rotation, a cache and the platform's familiar controls. The visible change: a tapped video opens the phone's own full-screen video player (with Back) instead of the in-page player. Inline previews in chat open it too | User | Needs user |
-| DEC-002 | How the native player gets the credential | The credential lives only in the web app's storage today, by design (`SavedNodeEntry.kt:6-7`). (a) **The web app hands it to native over the existing node-bound bridge when it opens a video; native keeps it in memory for that playback only**, never logged or stored. (b) Move the credential into native secure storage (Keychain or Keystore), with native as its owner: a larger change to pairing | **(a).** It is the smallest change that keeps the credential out of URLs, logs and storage. The bridge is already bound to the node's origin. Native drops it when the player closes | User (security) | Needs user |
+| DEC-001 | How the apps play videos (**approved: b**) | (a) Keep the in-page web player and intercept its requests (the Task's example). Measured: on Android, seeking loops or fails (P1, P1b, P1c); service workers cannot work on iOS and need `https`. (b) **A native player in each app** (Android Media3, iOS AVPlayer), opened when a video is tapped. Measured: plays at once, seeks, header only (P2, P3) | **(b).** It is the only way that seeks reliably on Android, and it gives native fullscreen and rotation, a cache and the platform's familiar controls. The visible change: a tapped video opens the phone's own full-screen video player (with Back) instead of the in-page player. Inline previews in chat open it too | User | Decided (user, 2026-11-24) |
+| DEC-002 | How the native player gets the credential (**approved: a**) | The credential lives only in the web app's storage today, by design (`SavedNodeEntry.kt:6-7`). (a) **The web app hands it to native over the existing node-bound bridge when it opens a video; native keeps it in memory for that playback only**, never logged or stored. (b) Move the credential into native secure storage (Keychain or Keystore), with native as its owner: a larger change to pairing | **(a).** It is the smallest change that keeps the credential out of URLs, logs and storage. The bridge is already bound to the node's origin. Native drops it when the player closes | User (security) | Decided (user, 2026-11-24) |
 | DEC-003 | Cache | The founder asked for no re-download on reopen | Android: Media3's cache. iOS: a range cache in the loader. Keyed by node, file and validator; bounded (for example 500 MB, least-recently-used); in app-private storage; cleared when the node is removed. Files are the user's own; no credential is stored | Solution Designer | Decided |
 | DEC-004 | Android web fullscreen for other in-page media | The fullscreen button is disabled for any in-page video | Also add `onShowCustomView`/`onHideCustomView` (landscape, bars hidden, the 432 pattern), so no in-page player has a dead fullscreen button | Solution Designer | Decided |
+| DEC-005 | An app older than the page | The phone apps update through the stores, separately from the node and its page; the bridge already tolerates older apps ("An app older than this ignores the message", `shellBridge.ts`) | The app's `hello` reply says whether it has the native player. The page uses it only then; otherwise today's path stays. This is not a compatibility path between node versions (DESIGN.md rule 9 covers the desktop, web, server and nodes): it is the store-distributed app's capability, as the bridge already handles | Solution Designer | Decided |
