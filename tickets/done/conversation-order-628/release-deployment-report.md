@@ -140,3 +140,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape: a 
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/conversation-order-628`: committed (tip `25e4d204d6`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/conversation-order-628` (`2cbc1b7852..25e4d204d6`, a fast-forward of the tip API/E2E pushed earlier). The branch has no push-by-default upstream; delivery used the explicit refspec. Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 46 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `2a8d5bf8c3`, which the ticket branch already contained (merge `061498f684`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/conversation-order-628` (from `origin/personal` `2a8d5bf8c3`), `git merge --no-ff codex/conversation-order-628` = `98ae80dcff` (parents `2a8d5bf8c3` and `25e4d204d6`; the merged tree equals the ticket branch's tree, `546cdf8486`). Secret Gate on the merged state: `PASS`, 47 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (104 697 tracked files).
+- Push: `git push origin HEAD:personal` `2a8d5bf8c3..98ae80dcff`; `origin/personal` = `98ae80dcff` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/conversation-order-628` and pushed to `origin/personal` as the commit that follows `98ae80dcff`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/conversation-order-628` and `codex/conversation-order-628`, and delete delivery's own `/tmp/del628`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is in the terminal message.
