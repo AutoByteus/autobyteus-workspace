@@ -26,3 +26,5 @@
 - Requirements: REQ-005 and AC-005 made precise (revalidation, multi-range, never stale). The intent is unchanged (the existing behavior already shows new bytes), so this is editorial within the approval.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review.
 - Design case: docs/design-cases.md Case 3 (an HTTP cache as a reader of a changed reply).
+
+Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to `/implementation_engineer`.
