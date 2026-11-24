@@ -11,25 +11,28 @@ Ticket autobyteus-642 (file-viewer-media-642, absorbs autobyteus-639). Worktree 
 - Design spec: `tickets/in-progress/file-viewer-media-642/design-spec.md` (D-1…D-4, the data contract).
 - Supplemental task artifacts: `handoff-architecture-design-complete.md`.
 - Design review report and architecture review revision record: `design-review-report.md`, `architecture-review-revision-record.md`. Round 2 is the reviewer's, uncommitted in the ticket folder; I left it unstaged.
-- Triggering rework report: N/A (initial).
+- Triggering rework report: `code-review-report.md` CRR-001 (CR-001, C-2) and `design-review-report.md` ARCH-REV-003 (AR-002), resolved as SR-003 and SR-004 (ARCH-REV-004 Pass, N-6).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/file-viewer-media-642/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
-- Related solution revision IDs: SR-001, SR-002.
-- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002.
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A. Reviewer notes applied: N-4 and N-5 (N-1…N-3 were in SR-002).
+- Current implementation revision ID: `IR-002` (SR-003, SR-004). IR-001 is the baseline.
+- Related solution revision IDs: SR-001…SR-004.
+- Related architecture-review revision IDs: ARCH-REV-001…ARCH-REV-004.
+- Related code-review revision IDs: CRR-001 (Fail, CR-001).
+- Related API/E2E and delivery revision IDs: N/A.
+- Triggering finding IDs: CR-001, C-2, AR-002, N-6. In IR-001: N-4 and N-5 (N-1…N-3 were in SR-002); SR-004 replaces N-4's rule.
 
 What the change does:
 
 - **D-1, the server.** A message reference is served like the other file routes: 206 for a range, the `ETag`, 304, 416, 200 for no range or several, and its `Cache-Control: no-store` kept.
+- **D-1b, the reference viewer (IR-002, SR-003).** A video or audio reference is no longer downloaded whole. One byte is asked (so a gone reference still says so), then the viewer is given the route's own URL: the desktop element streams it by range, the phone apps play it natively, and a phone browser downloads it itself. Text, PDF and image are unchanged.
 - **D-2, native audio and the media rename.** On both phones a protected node audio file plays in the app's player as video does: streamed by range, credential in the header, cache reused on reopen. Each app's `hello` lists the extensions its player plays per kind. The page goes native only for a listed type of the file the URL names, and the bridge message is `playMedia { kind, url, title, credential }`.
   - Android (Media3): video `mp4, m4v, mov, webm, mkv, 3gp`; audio `mp3, m4a, aac, wav, ogg, oga, opus, flac`.
   - iOS (AVPlayer): video `mp4, m4v, mov`; audio `mp3, m4a, aac, wav, aif, aiff, caf`.
-  - Audio stays portrait with its name and controls; video is unchanged.
+  - The file's name comes from the caller (IR-002, SR-004): `FileViewer` passes the file's path to the players, and a chat media message the last segment of its own `/rest/files` URL, which also labels its tile (N-6). A URL need not name its file.
+  - Audio stays portrait with its name and controls; on iOS it shows an audio symbol and the name in place of a picture (C-2). Video is unchanged.
   - `video`-named code, folders, messages, identifiers and cache folders are renamed `media` on all three sides, with no compatibility path (574 is unreleased).
 - **D-3, the Files layout.** The tree sits beside the viewer only when a 150 px tree, the 1 px divider and a 400 px viewer fit; otherwise the tree goes above. In split the tree is shown at the user's width or what leaves the viewer 400 px, and the divider stops there.
 - **D-4, highlighting.** One table of file types names each engine's language. The viewer (Monaco) and chat file previews (Prism) highlight YAML, TOML, shell, Go, Rust, Java, XML, INI and Dockerfile, and the viewer now highlights HTML and Vue.
@@ -51,10 +54,11 @@ What the change does:
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
+| UC-001 (IR-002) | A video or audio reference streams instead of downloading whole | `CollaborationMessageReferenceViewer.fetchContent` (probe `Range: bytes=0-0`, `no-store`; `resolvedUrl` = the route URL) → `FileViewer` (`fileName: file.path`) → `VideoPlayer`/`AudioPlayer` → `useAuthorizedObjectUrl` (desktop: the URL itself) or `useNativeMediaPlayback` (phone app) | IMP-11: one request with `Range: bytes=0-0`, no blob, the URL passed on; 404 codes and other errors as before |
 | UC-001 / REQ-001 | A message reference is served by range with its version, no-store kept | `run-history/services/message-reference-content-reader.ts` (`resolve` returns `{ mimeType, path, size, modifiedMs }` from one `statSync`) → `api/rest/collaboration-message-references.ts` (`sendUserFile(reply, content, request)` after `cache-control: no-store`) → `user-file-reply.ts` | IMP-01: 206/`ETag`/`Accept-Ranges`/304, 416 outside, 200 whole for none or several ranges, `no-store`, for all three root kinds |
-| UC-002 / REQ-002 (web) | Native only for a listed type of the file the URL names; else the page path | `composables/mobile/useNativeMediaPlayback.ts` (`modeFor`: page/pending/native by `hello.mediaPlayer[kind]` and the extension of `mediaTitleOf(url)`) → `utils/remoteAccess/shellBridge.ts` (`playMedia`, `parseMediaPlayer`) ← `VideoPlayer.vue`, `AudioPlayer.vue`, `MediaSegment.vue` | IMP-04: iOS Ogg/Opus/WebM page; Android Ogg/Opus/WebM native; MP3 native on both; no extension → page; the extension of `?path=`, not of the URL path |
+| UC-002 / REQ-002 (web) | Native only for a listed type of the file the caller names; else the page path | `composables/mobile/useNativeMediaPlayback.ts` (`modeFor(url, fileName)`: page/pending/native by `hello.mediaPlayer[kind]` and the extension of `fileName`; IR-002) → `utils/remoteAccess/shellBridge.ts` (`playMedia`, `parseMediaPlayer`) ← `VideoPlayer.vue`, `AudioPlayer.vue`, `MediaSegment.vue` | IMP-04, IMP-11: iOS Ogg/Opus/WebM page; Android Ogg/Opus/WebM native; MP3 native on both; no extension → page; a reference URL with `demo/clip.mp4` → native, title `clip.mp4` |
 | UC-002 (Android) | Audio through the same player, data source and cache, portrait with title and controls | `web/ShellBridge.kt` (`playMediaOf`, `helloReply` from `media/MediaKind.kt`) → `MainActivity.onPlayMedia` (`MediaPlayerActivity.intent(token, kind)`) → `media/MediaPlayerActivity.kt` (`MediaKind.AUDIO`: no full-screen button, controller always shown) → `NodeMediaDataSource` / `NodeMediaHttp` / `MediaCache` | IMP-06, IMP-07: MP3 and M4A play, seek by range, reopen reads 0 cached bytes, header only |
-| UC-002 (iOS) | The same on iOS | `Shell/ShellBridgeHandler.swift` (`playMedia`, `hello.mediaPlayer` from `MediaKind.extensions`) → `WebShellViewController` → `Media/NativeMediaPlayer.swift` (kind: no landscape for audio) → `AuthorizedMediaLoader` (type from `NodeMediaURL.fileType`) / `NodeMediaHTTP` / `MediaRangeCache` | IMP-08, IMP-09: lists checked against `AVURLAsset.audiovisualTypes()`; audio opens in portrait with its name and plays, probe plus one streaming range |
+| UC-002 (iOS) | The same on iOS | `Shell/ShellBridgeHandler.swift` (`playMedia`, `hello.mediaPlayer` from `MediaKind.extensions`) → `WebShellViewController` → `Media/NativeMediaPlayer.swift` (kind: no landscape for audio) → `AuthorizedMediaLoader` (type from `NodeMediaURL.fileType`) / `NodeMediaHTTP` / `MediaRangeCache` | IMP-08, IMP-09, IMP-12: lists checked against `AVURLAsset.audiovisualTypes()`; audio opens in portrait with its name and plays, probe plus one streaming range; a symbol and the name while AVKit's controls are hidden (C-2) |
 | UC-002, older app | `hello` without `mediaPlayer` → page path | `parseMediaPlayer` returns `null` for anything but two string lists | IMP-04 (and an old `videoPlayer: true` hello counts as none) |
 | UC-003 / REQ-003 | Viewer ≥ 400 px; stacked below 551 px, split above, divider bounded | `components/fileExplorer/FileExplorerLayout.vue` (`MIN_VIEWER_WIDTH`, `ResizeObserver`, `isStacked`, `shownTreeWidth`, clamped drag); `RightSideTabs.vue` unchanged (it still passes the mode) | IMP-03 (rule), IMP-10 (rendered: 450 px panel stacked at 1440×900 and 1280×800; 700 px split 250/449; divider stops at viewer 400 and tree 150) |
 | UC-004 / REQ-004 | Listed types highlighted in both engines; Python, TypeScript, JSON, Markdown unchanged | `utils/highlighting/languageDetector.ts` → `FileViewer.vue` (`getMonacoLanguage`) and `FileDisplay.vue` (`getPrismLanguage`) → `services/highlightService.ts` (Prism grammars) | IMP-02 (each type: Monaco's own grammar gives ≥ 2 token kinds, Prism ≥ 2 classes), IMP-10 (YAML, JSON highlighted in the rendered viewer) |
@@ -110,7 +114,8 @@ What the change does:
 
 - **iOS's list is narrower than iOS 26 plays.** The iOS 26.1 simulator also lists Ogg, Opus and FLAC as playable. The app supports iOS 17 and REQ-002 keeps Ogg/Opus on the page path there, so the static list leaves them out. On iOS 26 those files play in the page.
   - A later change could build the list from `AVURLAsset.audiovisualTypes()` at run time. That is a product decision, not taken here.
-- **iOS audio controls hide while playing:** AVKit hides its own controls, as for a video, and a tap shows them. AVPlayerViewController has no public setting to keep them shown. On Android they stay shown.
+- **iOS audio controls hide while playing:** AVKit hides its own controls, as for a video, and a tap shows them. AVPlayerViewController has no public setting to keep them shown. Since IR-002 the screen shows an audio symbol and the name meanwhile (C-2). On Android they stay shown.
+- **The desktop's ranged reading of a reference** was not rendered in IR-002: the viewer gives the element the route URL, as Files does, and the route answers by range (IMP-01). API/E2E checks it on the built stack.
 - **The Android audio start time in the instrumented test** reads "playing after 3 ms": it counts from `ActivityScenario.launch` returning, which already waits for the screen. The video case's 1.0 s is measured the same way, as in 574. AC-002's "under 2 s" in the app is API/E2E's measure.
 - **`mkv` and `3gp` on Android** depend on the codecs inside them; the device decodes what it can. Media3 reads both containers.
 
@@ -165,11 +170,15 @@ What the change does:
 | IMP-09 | `NativeMediaPlayerUITests` against the fake node with `--video` and `--audio` | `2e2a98a51e` | Xcode 26.1.1, iOS 26.1 simulator | bridge `playMedia`, player screens | UC-002, AC-002 (iOS) | Pass | `IMP-09-ios-ui-fake-node.log`, `IMP-09-audio-portrait.png` | `testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed`; audio requests `bytes=0-1`, `bytes=0-3841579`, `"authorized": true` |
 | IMP-10 | `mobile-shell-probe.mjs --cases=MSP-108,MSP-109,MSP-110` (618's cases); MSP-108 again with a temporary layout block | `4024239e07` | macOS, headless Chrome, probe-owned nodes | the Files tab, Monaco highlighting | UC-003, UC-004, AC-003, AC-004 (rendered) | Pass | `IMP-10-rendered-files-tab.log`, `IMP-10-*.png` | `"1440-default", "layout": "stacked", … "viewer": 450`; `"1280-panel-700-divider-dragged-right", "layout": "split", … "viewer": 400`; `mobile-shell probe: Pass` |
 
+| IMP-11 | IR-002 web: the reference viewer, composable, FileViewer and native viewer specs on the fix and with the six source files as at IR-001; the whole web suite; both typechecks; the web guards | `dc350be435` | macOS, Node 22 | `CollaborationMessageReferenceViewer`, `useNativeMediaPlayback`, `FileViewer`, the players, `MediaSegment` | UC-001, UC-002, SR-003, SR-004, N-6 | Pass (red before) | `IMP-11-ir002-web-reference-and-name.log` | red `Tests  8 failed \| 58 passed (66)`; `Tests  428 passed (428)`; first suite run `6 failed \| 801 passed` (missing contracts `dist/`, cause recorded), rerun `Test Files  6 passed (6)` |
+| IMP-12 | IR-002 iOS: `NativeMediaPlayerUITests` against the fake node with `--video` and `--audio` | `fff1b0af0c` | Xcode 26.1.1, iOS 26.1 simulator (own) | `NativeMediaPlayerViewController.addAudioPlaceholder` | C-2, REQ-002 | Pass | `IMP-12-ir002-ios-audio-screen.log`, `IMP-12-audio-playing.png`, `IMP-12-audio-controls.png` | `testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed`; the symbol and the name in `IMP-12-audio-playing.png`; the scrubber in `IMP-12-audio-controls.png` |
+
 - Not run, and why:
   - `tests/e2e/projects/message-references-every-view.e2e.test.ts`: it is gated on a real Antigravity CLI (`RUN_AGY_FAILURE_E2E`) and skipped. Server E2E for the reference route is left to API/E2E.
   - The phone bundle's journey for audio (`test:e2e:mobile-shell` with a new case), the real-node iOS stack, and AC-002's timings in the apps against a throttled node: API/E2E.
   - A red run of the iOS UI tests on the old app: it ignores `playMedia`, so Play audio opens nothing.
   - A rendered `.html`/`.vue` file in the viewer: the unit spec tokenizes them with Monaco's own `html` grammar.
+  - IR-002: a rendered reference playing on the desktop or a phone (no probe case opens a media reference; API/E2E). IMP-01…IMP-10 stay valid: IR-002 changed none of the server, the Android app, the iOS Core or the layout and highlighting code.
 
 ## Frontend Rendered-Result Check (When Applicable)
 

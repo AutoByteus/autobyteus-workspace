@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, design-review-report.md round 2 (ARCH-REV-002); Solution Designer, design-spec.md SR-002 | N/A (N-4, N-5 applied) | `Initial Baseline` | SR-001, SR-002, ARCH-REV-001, ARCH-REV-002 | D-1…D-4 implemented and checked locally; ready for code review |
+| IR-002 | Code Reviewer, code-review-report.md CRR-001 (CR-001, C-2) via Solution Designer SR-003; Architecture Reviewer ARCH-REV-003 (AR-002) via SR-004; ARCH-REV-004 Pass | CR-001, C-2, AR-002, N-6 | `Requirement Gap` (resolved upstream; implemented here) | CRR-001, SR-003, SR-004, ARCH-REV-003, ARCH-REV-004 | Message references stream video and audio; the native player takes the file name from its caller; the iOS audio screen shows a symbol and the name |
 
 ## Revision Entries
 
@@ -34,3 +35,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-01…IMP-10 in the handoff's Checks Run table.
 - Next recipient or routing: `/code_reviewer` (Large/High).
 - Remaining limitations or risks: see the handoff's Known Risks.
+
+### IR-002 — The reference viewer streams video and audio; the file name is the native player's input; the iOS audio screen
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-001 (CR-001, Requirement Gap; C-2), resolved by the Solution Designer in `design-spec.md` SR-003; Architecture Reviewer, `design-review-report.md` round 3 (ARCH-REV-003, AR-002), resolved in SR-004; round 4 (ARCH-REV-004) Pass, with N-6.
+- Triggering finding IDs: CR-001, C-2, AR-002, N-6.
+- Classification: `Requirement Gap` (decided upstream; this round implements SR-003 and SR-004).
+- Prior authoritative result: IR-001; CRR-001 Fail (CR-001).
+- Current authoritative result: implemented and checked locally; `Large` / `High`, back to code review.
+- Related solution revision IDs: SR-003, SR-004.
+- Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004.
+- Related code-review revision IDs: CRR-001.
+- Related API/E2E and delivery revision IDs: N/A.
+- Why this implementation revision is recorded:
+  - D-1 made the route ranged, but its only client, the reference viewer, still read every file whole.
+  - The native path named a file from its URL, and a reference's URL names none.
+- Approved behavior or requirement IDs affected: UC-001 / REQ-001 (the user-visible part); UC-002 / REQ-002 (references and chat media on the phone; the iOS audio screen).
+- Implementation delta:
+  - `dc350be435` (web):
+    - `CollaborationMessageReferenceViewer.fetchContent`: for a Video or Audio type, one probe (`Range: bytes=0-0`, `no-store`) keeps the 404/`REFERENCE_NOT_FOUND`/error handling; its body is cancelled, and `resolvedUrl` is the route's own URL. Text, PDF and image are unchanged.
+    - `useNativeMediaPlayback`: `modeFor(url, fileName)` and `play(url, fileName)` take the type from `fileName`'s extension and the title from its base name; `mediaTitleOf` is removed.
+    - `VideoPlayer` and `AudioPlayer`: a required `fileName` prop, which `FileViewer` fills from `file.path` for Video and Audio only.
+    - `MediaSegment`: `fileNameOf(url)`, the last decoded path segment of its own `/rest/files/…` URL, for `modeFor`, `play` and the tile's label (N-6).
+  - `fff1b0af0c` (iOS): for `kind == .audio`, `NativeMediaPlayerViewController.addAudioPlaceholder` puts a black view over the `contentOverlayView` with a `waveform` symbol and the file's name. It is not interactive, so a tap reaches AVKit; AVKit's control auto-hide stays.
+  - `4395650f18` docs (`agent_artifacts.md`, `file_explorer.md`, `docs/ios_mobile_access.md`).
+- Changed files or areas: the files above, their specs (`CollaborationMessageReferenceViewer.spec.ts`, `useNativeMediaPlayback.spec.ts`, `FileViewer.spec.ts`, `FileViewer.touchZoom.spec.ts`, `MediaViewers.native.spec.ts`, the two player specs) and `NativeMediaPlayerUITests.swift`.
+- Local validation and result: IMP-11 and IMP-12.
+  - 8 new web cases are red on IR-001; the affected specs pass (428). The whole web suite passes once the contracts package I had deleted is rebuilt (cause recorded). Both typechecks and the guards pass.
+  - iOS UI tests pass 3 of 3: the symbol and the name show with the controls hidden, and a tap shows the scrubber.
+- Next recipient or routing: `/code_reviewer` (Large/High).
+- Remaining limitations or risks:
+  - The desktop's ranged reading of a reference was not rendered here: the viewer gives the element the route URL, as Files does (`useAuthorizedObjectUrl`), and API/E2E checks it on the built stack.
+  - With iOS's controls shown, the app's Back bar sits over AVKit's top buttons, as for a video since 574.
+

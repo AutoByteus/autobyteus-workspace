@@ -1,0 +1,26 @@
+# IMP-12 (IR-002: SR-003 C-2) the iOS audio screen: an audio symbol and the file's name; a tap shows AVKit's controls
+# command: python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29643 --video <a 30 s wide MP4> --audio <a 120 s MP3>;
+#   xcodebuild ... -only-testing:AutoByteusMobileUITests/NativeMediaPlayerUITests AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29643/mobile test
+# commit: fff1b0af0c (its working tree, the same files)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this round and deleted after)
+# date: 2026-11-25
+# result: Pass: 3 of 3. The audio case finds the symbol (media.audioSymbol) and the name twice (the bar and under the
+#   symbol) after 5 s of playing with AVKit's controls hidden, and a tap shows the scrubber.
+#   First run: the overlay was drawn over AVKit's own audio artwork (both visible); the overlay now covers the content
+#   area in black and lets taps through. Screenshots: IMP-12-audio-playing.png (controls hidden), IMP-12-audio-controls.png
+#   (after a tap). With the controls shown, the app's Back bar sits over AVKit's top buttons, as for a video since 574.
+
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testAMissingVideoSaysItCouldNotBePlayedWithBack]' passed (18.178 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed (22.872 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeVideoPlaysInTheAppsPlayerInLandscapeAndBackReturnsToThePageInPortrait]' passed (21.250 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 62.301 (62.308) seconds
+
+## the fake node's media requests (all three runs of the class this round)
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-3841922", "authorized": true, "bytes": 3841923}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-15021338", "authorized": true, "bytes": 9502720}
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
