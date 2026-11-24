@@ -68,6 +68,8 @@ Principle 11.
 
 - **Again in autobyteus-642 (ARCH-REV-001 AR-001):** the design kept Ogg/Opus audio on the in-page player "on iOS", decided in the web page, while the page could not tell iOS from Android: the app's `hello` said only "has a player". Fix (SR-002): each app, which owns the fact, lists the file types its player plays (`mediaPlayer: { video, audio }`), and the page reads the list. Lesson: a rule that depends on a fact must be decided where the fact is known, or the fact must be sent there.
 
+- **Again in autobyteus-642 (CRR-001 CR-001):** to stop message-reference videos downloading whole, the design made the server's reference route serve ranges and validated it at the route. Its only client, the reference viewer, still read every file whole into a blob, so the user's problem stayed. Fix (SR-003): the viewer hands video and audio to the players, which already stream on each surface. Lesson: a requirement stated as a route's behavior is not the user's outcome; trace to the screen.
+
 ### Case 4: Behavior By Absence (autobyteus-191, AR-007; autobyteus-349, AR-002)
 
 Principle 13.

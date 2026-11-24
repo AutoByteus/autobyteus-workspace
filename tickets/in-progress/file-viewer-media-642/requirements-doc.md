@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-002
+- Current solution revision ID: SR-003
 - Package identifier: `file-viewer-media-642`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
@@ -50,8 +50,8 @@ Desired: each works as the Requirements say, with nothing else changed.
 
 | ID | Requirement | Priority | Basis |
 | --- | --- | --- | --- |
-| REQ-001 | The message-reference route serves ranges, `ETag` and 304 like the other file routes, and keeps its `no-store` | Must | 574 FU-001 |
-| REQ-002 | In both apps, a node audio file plays through the app's native player: streaming by range, the credential only in the header, the cache reused on reopen, exactly as video (574 REQ-001…003). The player shows the file name and standard audio controls, and Back returns. Each app states which file types its player plays; a type it does not list keeps the page path (for example Ogg/Opus on iOS, which AVPlayer cannot play; on Android, Media3 plays them natively) | Must | 574 FU-002; ARCH-REV-001 AR-001 |
+| REQ-001 | The message-reference route serves ranges, `ETag` and 304 like the other file routes, and keeps its `no-store`. **SR-003 (CRR-001 CR-001), what the user gets:** a reference's video or audio is not downloaded whole before it plays. On the desktop it streams by range; in the phone apps it plays in the native player (REQ-002's rules, types per app); in a phone browser it downloads as before. Text, PDF and image references keep today's whole read. A missing or deleted reference still shows its "not found" or "unavailable" message | Must | 574 FU-001; CRR-001 CR-001 |
+| REQ-002 | In both apps, a node audio file plays through the app's native player: streaming by range, the credential only in the header, the cache reused on reopen, exactly as video (574 REQ-001…003). The player shows the file name and standard audio controls, and Back returns. On iOS the controls follow AVKit's standard behavior (they hide during playback and a tap shows them), over a placeholder with an audio symbol and the file name, so the screen is never blank (CRR-001 C-2). Each app states which file types its player plays; a type it does not list keeps the page path (for example Ogg/Opus on iOS, which AVPlayer cannot play; on Android, Media3 plays them natively) | Must | 574 FU-002; ARCH-REV-001 AR-001 |
 | REQ-003 | In the desktop Files tab, the file viewer is never narrower than 400 px while the panel is at least 400 px wide. When the panel cannot fit the tree beside a 400 px viewer, the tree goes above the viewer (stacked); when it can, they sit side by side, and dragging the divider never takes the viewer below 400 px | Must | 618 FU-002; DEC-001 |
 | REQ-004 | `.yaml`/`.yml`, `.toml`, `.sh`/`.bash`/`.zsh`, `.go`, `.rs`, `.java`, `.xml`, `.ini`, `Dockerfile` are highlighted in the file viewer (Monaco) and in chat file previews (Prism). `.html` and `.vue` are highlighted in the file viewer too (they are not today) | Must | 618 FU-003; DEC-002 |
 
@@ -59,7 +59,7 @@ Desired: each works as the Requirements say, with nothing else changed.
 
 | AC | REQ | Expected | Verification |
 | --- | --- | --- | --- |
-| AC-001 | REQ-001 | `GET` a message reference with `Range` returns 206 with the exact bytes, `ETag`, `Accept-Ranges` and `Cache-Control: no-store`; 416; 304; 200 | Server unit and integration tests |
+| AC-001 | REQ-001 | `GET` a message reference with `Range` returns 206 with the exact bytes, `ETag`, `Accept-Ranges` and `Cache-Control: no-store`; 416; 304; 200. **And** opening a reference's video or audio in the Messages panel (desktop) and the phone's reference viewer: the desktop's requests are ranged; the apps play it natively, with ranged requests carrying the header; a reference text, PDF or image shows as today; a deleted reference shows its message | Server tests; web specs of the viewer; a desktop request log; app probes as in AC-002 |
 | AC-002 | REQ-002 | Android emulator and iOS simulator, throttled test node: an audio file (MP3 and M4A) plays in under 2 s, seeks with a ranged request carrying the header, and a reopen fetches only the probe. No credential in any URL, log or cache. Video unchanged | App tests and probes as in 574 |
 | AC-003 | REQ-003 | Desktop window 1280×800 and 1440×900 at the default panel width: the Files tab is stacked and the viewer is at least 400 px wide (a wrapped line shows 40+ characters). Widen the panel to 700 px: split, the viewer at least 400 px, and the divider stops at 400 px | Rendered probe measuring widths; web unit spec of the layout rule |
 | AC-004 | REQ-004 | For each listed type, a sample opens in the file viewer with more than one Monaco token class, and a chat file preview with Prism token spans. Python, TypeScript, JSON and Markdown are unchanged | Web unit tests per type (the map and both engines); a rendered probe of the viewer |

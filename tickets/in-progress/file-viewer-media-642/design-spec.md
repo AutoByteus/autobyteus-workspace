@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-002 (after ARCH-REV-001: the app states the types it plays; split rule tree width; Monaco `shell`; rule 12)
+- Current solution revision ID: SR-003 (SR-002 after ARCH-REV-001; SR-003 after CRR-001: the reference viewer's media path (D-1b), the iOS audio placeholder)
 - Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
 - User approval of the design: not required
 - Design status: `Ready`
@@ -115,3 +115,25 @@
 - Start from 574's code; the rename is mechanical, then audio is the `kind` branch.
 - Never log the credential or a URL with its query.
 - Test emulators and simulators of your own.
+
+## SR-003: The reference viewer stops downloading media whole (CRR-001 CR-001, C-2)
+
+- **The gap:** D-1 made the route ranged, but its only client reads the whole file into a blob for every type: `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue:177-205` (`fetchContent`, `authorizedFetch(contentUrl, { cache: 'no-store' })`). That client serves the desktop Messages panel (`CollaborationMessagesPanel.vue:224`) and the phone (`MobileTeamReferenceViewer.vue:18`).
+- **D-1b:** the viewer renders through `FileViewer` (`:60-72`), whose `VideoPlayer` and `AudioPlayer` already own each surface's path:
+  - the desktop gives the URL straight to the element, and Electron attaches the credential (NA-8);
+  - a phone app uses `useNativeMediaPlayback` (`playMedia`);
+  - a phone browser downloads as before.
+- **Change:** for a reference whose type is Video or Audio:
+  - `fetchContent` does not read the body;
+  - it sends one probe, `authorizedFetch(contentUrl, { headers: { Range: 'bytes=0-0' }, cache: 'no-store' })`, which keeps today's 404 handling (`REFERENCE_NOT_FOUND` → "not found", other 404 → "unavailable", other errors → the error state). The probe's body (one byte) is discarded;
+  - then it passes `contentUrl` itself as `url` to `FileViewer`.
+  - Text, PDF and image keep today's read.
+- **Data contract:** unchanged (the route's HTTP contract is D-1's; the viewer's `file.url` already exists).
+- **Derived consumers:** the two hosts above (no change; they pass the reference), and the viewer's spec (new cases).
+- **Validation:**
+  - Desktop: a video reference → ranged requests to `/rest/…/references/…` (206).
+  - Phone app: an `mp4` reference → `playMedia{kind:'video'}` with the reference URL (same origin, `/rest/`, allowed by the bridge).
+  - Phone browser: blob.
+  - Deleted: the probe's 404 with `REFERENCE_NOT_FOUND` → "not found".
+- **C-2 (iOS audio screen):** `NativeMediaPlayer` sets, for `kind: 'audio'`, a `contentOverlayView` with an audio symbol and the file name. AVKit's control auto-hide stays (a tap shows them). API/E2E captures the frame.
+- **Design case:** docs/design-cases.md Case 3 (a route changed without its client).

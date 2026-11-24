@@ -28,3 +28,17 @@
 - Design case: docs/design-cases.md Case 3 (a fact decided by a reader that does not own it).
 
 Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to `/implementation_engineer`. N-4 (take the extension from the file path the URL names, its `path` query) is for implementation; N-5 (the iOS `.webm` correction) is recorded.
+
+## SR-003 (2026-11-24)
+
+- Trigger: CRR-001 (code review of IR-001).
+  - CR-001, a Requirement Gap: the reference viewer still reads media whole, so item 1's user outcome was not met.
+  - C-2: the iOS audio screen is blank while its controls hide.
+- Requirements:
+  - REQ-001 states the user outcome (desktop by range, apps native, browser unchanged, other types unchanged, the not-found messages kept);
+  - REQ-002 accepts AVKit's auto-hide over a placeholder;
+  - AC-001 is extended.
+  - Approved by the Solution Designer within the direction (the Task's item 1 is "a video reached via a message reference still downloads whole"); user informed.
+- Design: D-1b (the viewer probes one byte, then hands the URL to `FileViewer`'s players for Video and Audio); the iOS audio overlay.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review, then implementation (IR-002), then code review.
+- Design case: Case 3.
