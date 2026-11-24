@@ -58,11 +58,12 @@ const playNatively = (): void => {
   if (props.url) nativePlayback.play(props.url, title.value);
 };
 
-// Opening the file opens the player at once; Play opens it again after it was closed.
-watch([playbackMode, () => props.url, () => props.contentRevision], ([mode], previous) => {
-  const [previousMode, previousUrl, previousRevision] = previous ?? [];
-  const reopened = previousUrl !== props.url || previousRevision !== props.contentRevision;
-  if (mode === 'native' && (previousMode !== 'native' || reopened)) playNatively();
+// Opening a video opens the player at once (the viewer shown, another URL, or the app's answer arriving); Play opens it
+// again after it was closed. A reload of the same file (`contentRevision`: the file changed, or it was opened again)
+// never opens it by itself: the player may be open, or the user closed it (autobyteus-574 CR-001).
+watch([playbackMode, () => props.url], ([mode, url], previous) => {
+  const [previousMode, previousUrl] = previous ?? [];
+  if (mode === 'native' && (previousMode !== 'native' || previousUrl !== url)) playNatively();
 }, { immediate: true });
 const hasMediaFailure = computed(() => nativeMediaFailed.value || Boolean(resourceError.value));
 

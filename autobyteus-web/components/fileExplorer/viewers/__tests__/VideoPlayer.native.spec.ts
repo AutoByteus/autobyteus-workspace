@@ -84,6 +84,21 @@ describe('a protected node video in the phone apps (autobyteus-574 D-2)', () => 
     expect(playMessages(posted).map((message) => message.title)).toEqual(['plan.mp4', 'other.mp4']);
   });
 
+  // CR-001 (API/E2E F-1): the open file reloading (live refresh after an agent rewrote it, or the file opened again) does
+  // not open the player by itself: it may already be open, or the user closed it. Play still opens it.
+  it('Files: a reload of the open video (contentRevision) posts no playVideo; Play still does', async () => {
+    const posted = installApp(true);
+    const wrapper = await mountWithSession('VideoPlayer', { url: VIDEO, contentRevision: 0 });
+    expect(playMessages(posted)).toHaveLength(1);
+    await wrapper.setProps({ contentRevision: 1 });
+    await wrapper.setProps({ contentRevision: 2 });
+    expect(playMessages(posted)).toHaveLength(1);
+    expect(wrapper.find('[data-testid="native-video"]').exists()).toBe(true);
+    await wrapper.find('.play-button').trigger('click');
+    expect(playMessages(posted)).toHaveLength(2);
+    expect(downloads).toEqual([]);
+  });
+
   it('chat: a media message shows a play tile, which plays it in the app; nothing is downloaded', async () => {
     const posted = installApp(true);
     const wrapper = await mountWithSession('MediaSegment', { segment: { type: 'media', mediaType: 'video', urls: [VIDEO] } });
