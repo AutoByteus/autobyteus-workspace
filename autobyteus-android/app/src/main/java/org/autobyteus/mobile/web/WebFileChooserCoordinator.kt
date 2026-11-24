@@ -7,7 +7,6 @@ import android.net.Uri
 import android.util.Log
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import android.webkit.WebView
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
 
@@ -17,19 +16,17 @@ class WebFileChooserCoordinator(
 ) {
     private var pendingFileChooser: ValueCallback<Array<Uri>>? = null
 
-    fun chromeClient(): WebChromeClient = object : WebChromeClient() {
-        override fun onShowFileChooser(
-            webView: WebView,
-            filePathCallback: ValueCallback<Array<Uri>>,
-            fileChooserParams: FileChooserParams,
-        ): Boolean = openFileChooser(
-            filePathCallback = filePathCallback,
-            spec = FileChooserRequestPolicy.fromAcceptTypes(
-                acceptTypes = fileChooserParams.acceptTypes,
-                allowMultiple = fileChooserParams.mode == FileChooserParams.MODE_OPEN_MULTIPLE,
-            ),
-        )
-    }
+    /** The page asks for files (`<input type=file>`): Android's document picker ([AutoByteusChromeClient]). */
+    fun showFileChooser(
+        filePathCallback: ValueCallback<Array<Uri>>,
+        fileChooserParams: WebChromeClient.FileChooserParams,
+    ): Boolean = openFileChooser(
+        filePathCallback = filePathCallback,
+        spec = FileChooserRequestPolicy.fromAcceptTypes(
+            acceptTypes = fileChooserParams.acceptTypes,
+            allowMultiple = fileChooserParams.mode == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE,
+        ),
+    )
 
     fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode != REQUEST_CODE) {

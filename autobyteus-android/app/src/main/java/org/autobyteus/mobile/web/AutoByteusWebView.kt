@@ -23,6 +23,8 @@ class AutoByteusWebView(
     private val context: Context,
     val entry: SavedNodeEntry,
     private val fileChooserCoordinator: WebFileChooserCoordinator,
+    /** An in-page player's full screen (autobyteus-574 D-6). */
+    private val mediaFullScreen: WebMediaFullScreen,
     /** The shell bridge for this entry's origin; registered before the first page loads. */
     private val shellBridge: ShellBridge?,
     /**
@@ -58,7 +60,7 @@ class AutoByteusWebView(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
-            webChromeClient = fileChooserCoordinator.chromeClient()
+            webChromeClient = AutoByteusChromeClient(fileChooserCoordinator, mediaFullScreen)
             webViewClient = Client()
             setDownloadListener(DownloadListener { url, _, _, _, _ -> openExternal(url) })
         }
@@ -86,6 +88,7 @@ class AutoByteusWebView(
 
     fun destroy() {
         fileChooserCoordinator.cancelPending()
+        mediaFullScreen.hide()
         if (this::webView.isInitialized) {
             webView.stopLoading()
             webView.destroy()

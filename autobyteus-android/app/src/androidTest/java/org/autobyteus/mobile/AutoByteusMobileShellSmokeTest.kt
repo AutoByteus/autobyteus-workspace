@@ -15,9 +15,11 @@ import org.autobyteus.mobile.connection.ConnectionFailureKind
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.SavedNodeEntry
 import org.autobyteus.mobile.shell.QrScanCoordinator
+import org.autobyteus.mobile.ui.DesktopFullScreenController
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.autobyteus.mobile.web.AutoByteusWebView
 import org.autobyteus.mobile.web.WebFileChooserCoordinator
+import org.autobyteus.mobile.web.WebMediaFullScreen
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -80,13 +82,15 @@ class AutoByteusMobileShellSmokeTest {
             NodeUrlNormalizer.normalize("https://desktop.tailnet-name.ts.net/mobile"),
         )
         instrumentation.runOnMainSync {
-            // This settings-posture test does not exercise picker launch; it only needs the
-            // coordinator's WebChromeClient so AutoByteusWebView can be constructed without
-            // depending on MainActivity launch-idle state.
+            // This settings-posture test does not exercise picker launch or media full screen; it only needs the
+            // chrome client's owners so AutoByteusWebView can be constructed without depending on MainActivity
+            // launch-idle state.
+            val activity = Activity()
             val webHost = AutoByteusWebView(
                 context = context,
                 entry = entry,
-                fileChooserCoordinator = WebFileChooserCoordinator(Activity()) {},
+                fileChooserCoordinator = WebFileChooserCoordinator(activity) {},
+                mediaFullScreen = WebMediaFullScreen(activity, DesktopFullScreenController.forActivity(activity)),
                 shellBridge = null,
                 onPageStarted = {},
                 onDiagnostic = {},

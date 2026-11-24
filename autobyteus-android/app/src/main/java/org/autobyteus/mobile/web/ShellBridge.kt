@@ -9,6 +9,7 @@ import androidx.webkit.WebMessageCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import org.autobyteus.mobile.connection.SavedNodeEntry
+import org.autobyteus.mobile.video.NodeVideoHttp
 import org.json.JSONObject
 import java.util.concurrent.Executors
 
@@ -17,10 +18,12 @@ import java.util.concurrent.Executors
  * origin. The page may tell the app it is ready (the node's page is mounted: the only signal that shows the page, which
  * WebView's own error page cannot send, autobyteus-433 DS-006) or paired, ask it to show its node list or its scanner,
  * turn its VNC Viewer's desktop full screen on or off (autobyteus-432), or hand it a PDF or image to save to the phone's
- * Downloads (autobyteus-472, [ShellBridgeAction.SaveFile]); `hello` answers with the phone's node count
- * and model name, and the open node's name as the app shows it (`""` when it has none, autobyteus-433). Messages from a
- * subframe or another origin are ignored, so a sandboxed HTML preview inside the page cannot act as the app
- * (autobyteus-417). It carries no credential and, of the entry, only the open node's name.
+ * Downloads (autobyteus-472, [ShellBridgeAction.SaveFile]), or hand it a protected node video to play in its own
+ * player (autobyteus-574, [ShellBridgeAction.PlayVideo]); `hello` answers with the phone's node count and model name,
+ * the open node's name as the app shows it (`""` when it has none, autobyteus-433) and that the app has the player.
+ * Messages from a subframe or another origin are ignored, so a sandboxed HTML preview inside the page cannot act as the
+ * app (autobyteus-417). Only `playVideo` carries the phone's credential, for that one playback (D-5); of the entry, the
+ * app tells the page only the open node's name.
  */
 class ShellBridge(
     private val entry: SavedNodeEntry,
@@ -37,6 +40,8 @@ class ShellBridge(
         fun onDesktopFullScreen(on: Boolean)
         /** Save [file] to Downloads and show the result (autobyteus-472). */
         fun onSaveFile(file: ShellBridgeAction.SaveFile)
+        /** Play [video], a file of the entry [entryId], in the app's player (autobyteus-574). */
+        fun onPlayVideo(entryId: String, video: ShellBridgeAction.PlayVideo)
     }
 
     private val mainThread = Handler(Looper.getMainLooper())
@@ -70,6 +75,7 @@ class ShellBridge(
             ShellBridgeAction.StartScan -> actions.onStartScan()
             is ShellBridgeAction.DesktopFullScreen -> actions.onDesktopFullScreen(action.on)
             is ShellBridgeAction.SaveFile -> actions.onSaveFile(action)
+            is ShellBridgeAction.PlayVideo -> actions.onPlayVideo(entry.id, action)
         }
     }
 
@@ -103,6 +109,15 @@ sealed class ShellBridgeAction {
     data class SaveFile(val fileName: String, val mimeType: String, val base64: String) : ShellBridgeAction() {
         override fun toString(): String = "SaveFile(fileName=$fileName, mimeType=$mimeType, base64=${base64.length} chars)"
     }
+
+    /**
+     * A protected node video to play (autobyteus-574 D-2, D-5): its [url] (a file route of the open node, its origin
+     * checked here and again by the player), its file name [title], and the phone's [credential] for this playback only.
+     * Neither the URL nor the credential appears in [toString]: a path can be private, and the credential is never logged.
+     */
+    data class PlayVideo(val url: String, val title: String, val credential: String) : ShellBridgeAction() {
+        override fun toString(): String = "PlayVideo(title=$title, url=<redacted>, credential=<redacted>)"
+    }
 }
 
 /** The bridge's message rules, apart from the WebView so they can be checked on the JVM. */
@@ -119,6 +134,7 @@ object ShellBridgeMessages {
             "startScan" -> ShellBridgeAction.StartScan
             "desktopFullScreen" -> (json.opt("on") as? Boolean)?.let { ShellBridgeAction.DesktopFullScreen(it) }
             "saveFile" -> saveFileOf(json)
+            "playVideo" -> playVideoOf(json, expectedOrigin)
             else -> null
         }
     }
@@ -152,6 +168,22 @@ object ShellBridgeMessages {
         return ShellBridgeAction.SaveFile(fileName, mimeType, base64)
     }
 
+    private const val MAX_CREDENTIAL_CHARS = 1024
+
+    /**
+     * A playback request (autobyteus-574 D-5, AC-003): a URL on the page's own node origin under `/rest/` (never another
+     * site or route, so the credential is never sent elsewhere), a title, and a credential that is one token (no
+     * whitespace, no control character). Anything else is ignored.
+     */
+    private fun playVideoOf(json: JSONObject, expectedOrigin: String): ShellBridgeAction.PlayVideo? {
+        val url = json.opt("url") as? String ?: return null
+        val credential = json.opt("credential") as? String ?: return null
+        val title = (json.opt("title") as? String)?.trim()?.takeIf { isPlainFileName(it) }.orEmpty()
+        if (!NodeVideoHttp.isNodeFileUrl(expectedOrigin, url)) return null
+        if (credential.isEmpty() || credential.length > MAX_CREDENTIAL_CHARS || credential.any { it.isWhitespace() || it.code < 0x21 || it.code == 0x7f }) return null
+        return ShellBridgeAction.PlayVideo(url, title, credential)
+    }
+
     private fun isPlainFileName(name: String): Boolean =
         name.length in 1..MAX_FILE_NAME_CHARS &&
             name == name.trim() &&
@@ -164,6 +196,8 @@ object ShellBridgeMessages {
         .put("nodeCount", nodeCount)
         .put("deviceName", deviceName)
         .put("nodeName", nodeName)
+        // The app plays a protected node video in its own player (autobyteus-574 D-2).
+        .put("videoPlayer", true)
         .toString()
 
     private fun sameOrigin(left: String, right: String): Boolean =
