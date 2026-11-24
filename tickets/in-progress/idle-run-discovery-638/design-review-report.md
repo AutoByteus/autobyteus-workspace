@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/idle-run-discovery-638/requirements-doc.md` (Approved, SR-002)
+- Upstream Requirements Doc: `tickets/in-progress/idle-run-discovery-638/requirements-doc.md` (Approved, SR-002; status SR-003)
 - Upstream Investigation Notes: `tickets/in-progress/idle-run-discovery-638/investigation-notes.md`
-- Upstream Solution Revision Record: `tickets/in-progress/idle-run-discovery-638/solution-revision-record.md` (SR-001, SR-002)
-- Reviewed Design Spec: `tickets/in-progress/idle-run-discovery-638/design-spec.md` (Ready, SR-002)
+- Upstream Solution Revision Record: `tickets/in-progress/idle-run-discovery-638/solution-revision-record.md` (SR-001 … SR-003)
+- Reviewed Design Spec: `tickets/in-progress/idle-run-discovery-638/design-spec.md` (Ready, SR-003)
 - Supplemental Task Artifacts Reviewed: None (no supplements); `handoff-architecture-review.md`
-- Relevant Solution Revision IDs: SR-001, SR-002
+- Relevant Solution Revision IDs: SR-001 … SR-003
 - Architecture Review Revision Record: `tickets/in-progress/idle-run-discovery-638/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
 - Trigger: Solution Designer handoff "Architecture Design Complete", `Medium`/`High`, 2026-11-24. Design approval by the founder: `Not required`.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Prior Review Round Reviewed: 1 (ARCH-REV-001, `Fail`)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638`, branch `codex/idle-run-discovery-638` at `2dce370752` (design `abd6ab8ffa`). Code read at the base `c1147c8917` with `git show`:
   - `server-runtime.ts:200-250`;
   - `restart-resume/busy-run-recorder.ts` (all);
@@ -51,7 +51,7 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | Pass | Pass | Fail | Needs Correction | AR-001 (a stop during the restore window loses the runs not yet brought back) |
+| BEH-001 | Operational | Pass | Pass | Pass | Confirmed | AR-001 resolved in round 2 (`running ∪ pending`) |
 | BEH-002 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-003 | Operational | Pass | Pass | Pass | Confirmed | — |
 
@@ -69,7 +69,7 @@ None.
 
 | Record / Message | Each Field Has A Meaning, A Writer And A Reader? | Identities, Relationships And Lifecycle Are Explicit? | Each In-Scope Flow Walked Through It, With An Example Per Case? | Checked Against Existing Data And Real Dependencies? | The Layers Above Follow It Without Mappings, Recomputed Facts Or Second Copies? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- |
-| C-1 `running-runs.json` | Pass | Fail | Pass (walks 1–9) | Pass (`terminatedAt: null` after a restart; production restore path) | Pass | Fail: AR-001. The lifecycle says "taken (read, then removed) once at startup, before this session's recorder starts". Between that removal and each run's restore, a recorded run is in neither the file nor the live set, so a stop or crash there loses it. The busy record's own `take` avoids this by persisting first |
+| C-1 `running-runs.json` | Pass | Pass (round 2) | Pass (walks 1–9, 4b) | Pass (`terminatedAt: null` after a restart; production restore path) | Pass (round 2: AR-001 resolved; AR-002 non-blocking) | Round 1: Fail. The lifecycle said "taken (read, then removed) once at startup, before this session's recorder starts". Between that removal and each run's restore, a recorded run is in neither the file nor the live set, so a stop or crash there loses it. The busy record's own `take` avoids this by persisting first |
 | C-2 `RootTeamRun.ensureAgentReady(agentRunId)` | Pass | Pass | Pass (walk 3) | Pass | Pass | Pass |
 
 ## Spine Inventory Verdict
@@ -77,7 +77,7 @@ None.
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 record | 2 s check / graceful stop | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-002 restore | Start, after the update wake | Pass | Pass | N/A | Pass | Fail | Pass | Fail (AR-001: the restore window is owned by nobody: the restorer has removed the record and the recorder does not know the pending runs) |
+| DS-002 restore | Start, after the update wake | Pass | Pass | N/A | Pass | Pass | Pass | Pass (round 2; round 1 failed with AR-001: the restore window is owned by nobody: the restorer has removed the record and the recorder does not know the pending runs) |
 
 ## Boundary Encapsulation Verdict
 
@@ -196,52 +196,52 @@ Derived consumers: `Pass` (only the restorer reads the file). Vocabulary: `Pass`
 
 None.
 
+## Round 2 Delta Review (SR-003, commit `affa990598`)
+
+| Item | Change | Verdict |
+| --- | --- | --- |
+| AR-001 | `take()` reads without removing; the taken runs are `pending` in the restorer until each is restored, skipped or failed; the recorder (the only writer) records `running ∪ pending` on every change and in its final write; walk 4b and a test cover a stop or crash mid-restore | Resolved. A run leaves `pending` only once it is running (still recorded), retired (rightly dropped) or failed (logged). The recorder asks the restorer `pending()`, a question with no callback; the composition builds the restorer first (Principle 16) |
+| R-1 | The final write awaits in-flight `startedByPerson` reads, at most 1 s, and logs a root left out | Taken in |
+| R-2 | `error` entry agents are recorded and come back; documented | Taken in |
+| R-3 | `agent_org` roots are skipped explicitly | Taken in |
+| C-1 Data Contract | Lifecycle and invariants rewritten | Pass (the Data Contract Verdict's C-1 row now passes) |
+| DS-002 | The restore window is owned | Pass |
+
 ## Review Decision
 
-`Fail`.
+`Pass` (round 2). The upstream behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery depends on an unsupported material premise. MP-001 is handled by `running ∪ pending`.
 
 ## Findings
 
-### AR-001 — A stop or crash during the restore window loses the runs not yet brought back
+No blocking finding. AR-001 is resolved.
 
-- Type: `Design Impact`; severity: Medium.
-- Protects: REQ-001, REQ-002, SCN-002, DEC-003.
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Problem: MP-001. The record is removed at `take()`, before the runs it lists are running again. For the length of the restore, nothing owns them: they are not in the file, and the recorder does not know them.
-- Evidence: design C-1 lifecycle, DS-001 and DS-002; `server-runtime.ts:212-216, 241`; `busy-run-recorder.ts:82-94` (the pattern records only live state); `restart-resumer.ts:71-104` (the busy path persists before it removes).
-- Required update: one owner keeps the file covering the pending runs until each is handled, and the design says who drives the order. Possible shapes:
-  - (a) The recorder's set is `live ∪ pending`, where `pending` is the taken entries the restorer has not finished yet. The restorer drops an entry when it is restored, skipped (archived, stopped, gone, not started by a person) or failed. The recorder stays the one writer of the file, and its final write at a graceful stop includes the still-pending entries.
-  - (b) `take()` only reads, and the restorer removes the file when it finishes. The recorder must then not write before the restorer is done, which reopens the crash gap for new runs, so (a) is the cleaner shape.
-  - Add a test: a stop during the restore keeps the unrestored entries.
-- Why proportionate: a set union in the existing recorder and three "handled" calls in the restorer; no new file or state.
-- Recipient: Solution Designer.
+### AR-002 — The recorder's first write may not happen, so a stale or invalid file can stay (non-blocking)
+
+- Type: `Design Impact`; severity: Low; blocking: No.
+- Problem:
+  - C-1 says an invalid file is "replaced or removed by the recorder's first write", and that the file is removed when the set is empty.
+  - The copied pattern starts with `written = "[]"` (`busy-run-recorder.ts:25`) and writes only on change.
+  - So when nothing runs and nothing is pending at the first 2 s check (for example, every taken run was skipped or failed quickly, or the file was invalid), no write happens and the old file stays.
+- Consequence: harmless. Retired runs are skipped again and failed runs retried at the next start, and an invalid file is logged at each start. But it contradicts the stated lifecycle.
+- Required update (implementation): start the recorder's `written` key as "unknown" (or as the taken set), so its first check always writes or removes the file. Add a test.
+- Recipient: implementation engineer; Solution Designer informed.
 
 ## Classification
 
-`Design Impact` (AR-001). Route: Solution Designer.
+N/A (Pass). AR-002 is non-blocking.
 
 ## Recommended Recipient
 
-Solution Designer.
+Implementation engineer (primary). Solution Designer (informational).
 
 ## Residual Risks
 
-These are for implementation; none blocks:
-- **The final write and a pending `startedByPerson` read.** At a graceful stop, `record()` should await the person-started reads still in flight (bounded, as the busy recorder bounds its background-task inspection), or a root that became live in the last moment is missed. Losing up to 2 s is accepted for a crash, not for a graceful stop.
-- **`error` entry agents.** `statusesOf` keeps `error` (only `offline` is left out), so a run whose entry agent was in error is recorded and brought back. This matches "earlier X, after restart X" and the listing's `error` state; state it in the docs.
-- **Org roots.** `liveRoots()` returns Org roots too. The recorder must skip `agent_org` explicitly (C-1: never `agent_org`), not only by `startedByPerson`.
-- **Startup load.** The runs that were running come back within seconds of listening, 3 at a time. It is the same memory as before the stop (QR-001), but loading peaks during the window MP-001 describes.
-- Messages from peers during the restore window are refused "not running" until each run is back (CM-13). This is transient and accepted.
+- A run whose restore failed leaves `pending` and is not recorded again. With AR-002 fixed, it is not retried at the next start either. This is logged (REQ-004), and its person brings it back by opening or messaging it.
+- Startup load: the runs that were running come back 3 at a time within seconds of listening (QR-001, QR-002).
+- Peers' messages during the restore window are refused "not running" until each run is back (CM-13); this is transient.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass`. MP-001 is reachable with a forward witness.
-- Notes: The rest of the design is sound:
-  - a separate record keeps "busy" with one meaning;
-  - the recorder copies the busy recorder, whose `record()` stops its own timer before the final write;
-  - the restorer runs after the never-throwing resumer, with explicit skips and isolated failures;
-  - the Team readiness chain follows the existing Team layering;
-  - only what was running comes back (DEC-003).
-
-  Only the restore window needs an owner.
+- Review Decision: `Pass` (ARCH-REV-002)
+- Material-Premise Gate: `Pass`. MP-001 is handled.
+- Notes: `task_size=Medium`, `architectural_risk=High`. The design is ready at SR-003 (`affa990598`). AR-002 is a non-blocking implementation note.
