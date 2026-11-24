@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (SR-003 adds REQ-008: the Update checks card text; see the end of Change Scope)
 - Approved requirements baseline: [requirements-doc.md](requirements-doc.md) at SR-002, approved by the founder on 2026-11-24 (his words relayed verbatim by `/project_task_manager`; Task comment of the same day)
 - Behavior-defining supplements: none
 - User approval of the design: `Not required` (the go-ahead covers design and implementation; no release without the founder's word)
@@ -87,6 +87,7 @@ The node's GitHub connection gets its own small API (status, connect, disconnect
   - Application Packages (FU-627-01). `utils/download-utils.ts` stays for its other callers.
   - Device Flow (FU-627-02).
   - The rate-limit gate's per-family accounting (see Risks).
+- **SR-003 addition (REQ-008, AC-008):** `autobyteus-web/localization/messages/en/updateNotifications.ts:107` and `zh-CN/updateNotifications.ts:107` (`settings.notifications.setting.description`), the assertion in `components/settings/__tests__/UpdateChecksCard.spec.ts:58`, and `autobyteus-web/docs/settings.md:589` get the AC-008 text. The About screen's own version-check text (`AboutSettingsManager.autoCheck.description`) is about the app's version check and stays. Size Small, risk Low for this delta; the whole package stays Medium / High
 - **Follow-ups:** FU-627-01 Application Packages private repositories; FU-627-02 GitHub sign-in (Device Flow). Both are in `follow-ups.md`.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)

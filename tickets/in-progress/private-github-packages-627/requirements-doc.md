@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `private-github-packages-627`
 - Request / ticket: autobyteus-627 "Investigate: supporting private GitHub URLs for Agent Packages (feasibility, auth process & UX options)"
 - Requested by: `/project_task_manager` (for the founder)
@@ -130,6 +130,7 @@ As the template states: blocking findings cite a REQ/AC/BEH ID here; new policy 
 | REQ-005 | The token, and any URL that GitHub signs with a temporary token, never appears in a log, error message, stored record, git remote or file on disk, the UI, Memory Sync or an export. It is sent only as a request header to GitHub hosts | BEH-003 | Must | The Task's custody rule; the repository is public | Measured: the documented tarball redirect carries `token=` in its URL | Task; RELEASE.md Secret Gate |
 | REQ-006 | A Docker node works with its own GitHub connection, set in that node's window. Nothing is read from the host | BEH-001 | Must | Docker is a supported node kind | The vault is per node | Task |
 | REQ-007 | Public imports and updates keep working with no token and with a rejected token | Preserved | Must | No regression | — | Preserved boundary |
+| REQ-008 | Product text that describes what GitHub update checks send stays true: the Update checks card no longer says "No account or token is used"; it says the node's GitHub token goes only to GitHub, only for private repositories, and nothing goes to AutoByteus | BEH-003 | Must | The change made the earlier text false (REQ-016 of the update-notifications ticket); a privacy statement must be true | — | SR-003; Solution Designer within the direction (founder's custody emphasis), founder informed 2026-11-24 |
 
 ## Acceptance Criteria
 
@@ -142,6 +143,7 @@ As the template states: blocking findings cite a REQ/AC/BEH ID here; new policy 
 | AC-005 | REQ-005 | Any import or update, including a failed one | The token and any signed URL are absent from server logs, errors, records, the app-data folder and API responses | — | Log and file scan in tests for the token value and `token=`; gitleaks on the branch |
 | AC-006 | REQ-006 | Docker node with its own connection | AC-001 passes on the Docker node | — | Docker run, or an evidence decision if Docker is unavailable |
 | AC-007 | REQ-007 | Public repo; no token, or a rejected token | Import and update work as today | — | Existing tests plus one with a rejected token |
+| AC-008 | REQ-008 | BEH-003 | Settings → Server Settings → Basics → Update checks | en: "No account is used. This node's GitHub token is sent only to GitHub, and only for private repositories. Nothing is sent to AutoByteus." zh-CN: "不使用任何账号。此节点的 GitHub 令牌只会发送给 GitHub，且仅用于私有仓库。不会向 AutoByteus 发送任何内容。" `autobyteus-web/docs/settings.md` says the same | — | `UpdateChecksCard.spec.ts` asserts the English text |
 
 ## Relevant Scenarios And Journeys
 
@@ -205,6 +207,7 @@ As the template states: blocking findings cite a REQ/AC/BEH ID here; new policy 
 | REQ-005 | all | BEH-003 | AC-005 | all |
 | REQ-006 | UC-005 | BEH-001 | AC-006 | SCN-005 |
 | REQ-007 | — | preserved | AC-007 | — |
+| REQ-008 | UC-003 | BEH-003 | AC-008 | SCN-003 |
 
 ## Architecture Phase Input
 

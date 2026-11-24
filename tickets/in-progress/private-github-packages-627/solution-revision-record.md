@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial investigation and options report | N/A | N/A | Ready for Approval | BEH-001..004, REQ-001..007, DEC-001..005 | Sent to the founder for decisions |
 | SR-002 | Mixed | Founder go-ahead 2026-11-24; architecture design | N/A | Ready for Approval | Requirements Approved; design Ready | DEC-001..005; REQ-002 (refined UI place); all REQ for design | Design complete, Medium / High |
 
+| SR-003 | Requirements | Delivery Engineer finding (Requirement Gap), 2026-11-24 | delivery report: Update checks card text | Approved (SR-002) | Approved (SR-003) | REQ-008, AC-008 | Text fix routed to implementation |
 ## Revision Entries
 
 ### SR-001 — Investigation, measured feasibility, options and recommendation
@@ -55,3 +56,15 @@
   - no private agent-package fixture repository (live proof covers the transport; a full import is proven with a faked GitHub);
   - the test token expires 2026-11-25.
 - Next action: route by the handoff rules
+
+### SR-003 — The Update checks card's privacy text
+
+- Phase and classification: Requirements, Requirement Gap
+- Trigger: the Delivery Engineer's finding (release-deployment-report.md): Settings → Server Settings → Basics → Update checks says "No account or token is used. Nothing is sent to AutoByteus." Since this ticket, a check of a private source sends the node's GitHub token to GitHub. The investigation and the design missed the text because they searched docs, not the localization files
+- Prior status: requirements Approved SR-002; design Ready; delivery on hold
+- Current status: requirements Approved SR-003; design SR-003 (one Change Scope entry)
+- IDs affected: REQ-008, AC-008 (new)
+- Intended behavior changed: Yes. Product text only; it makes the statement true again
+- Approval: Solution Designer, within the direction. The founder's direction is strict token custody and honesty about where the token goes; this only corrects a statement the change made false. The founder is informed in this conversation on 2026-11-24
+- Route: (a) fix in this ticket. Implementation engineer, then code review, then API/E2E as their rules decide, then back to delivery. Delta classification Small / Low; the package stays Medium / High
+- Lesson: for any change in what a feature sends or stores, search the user-visible strings (localization files), not only the docs, for claims about it (privacy, "no token", "nothing sent")
