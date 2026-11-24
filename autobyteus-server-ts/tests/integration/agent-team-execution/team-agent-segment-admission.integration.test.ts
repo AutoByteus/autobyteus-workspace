@@ -183,6 +183,8 @@ describe("AgentRun-owned Team segment lifecycle", () => {
         error_scope: "turn",
         error_effect: "terminal",
         turn_id: "turn-error",
+        // The run's one time for the event (autobyteus-628 D-3).
+        occurred_at: new Date(canonical!.occurredAt!).toISOString(),
       },
     });
 
@@ -256,7 +258,8 @@ describe("AgentRun-owned Team segment lifecycle", () => {
         turn_id: "turn-1",
         metadata: { completed: true },
       }),
-    ]);
+      // Each delivered with the run's time (autobyteus-628 D-3).
+    ].map((expected) => ({ ...expected, occurredAt: expect.any(Number) })));
 
     const adapter = new TeamAgentEventAdapter(() => execution);
     const admitted = canonical.map((event) => adapter.adapt(event));
@@ -306,6 +309,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
         turn_id: "turn-1",
         segment_type: "text",
         delta: "visible content",
+        occurred_at: new Date(canonical[1]!.occurredAt!).toISOString(),
       },
     });
 
