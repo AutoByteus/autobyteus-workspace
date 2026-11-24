@@ -10,3 +10,9 @@
   - Native players stream, seek and cache with the credential only in a header (Android Media3; iOS AVPlayer with a resource loader).
 - Approval: the user ("I trust your recommended solutions"): DEC-001 (b), the native player; DEC-002 (a), the per-playback credential handoff. DEC-003…005 are the Solution Designer's.
 - Next: architecture design.
+
+## SR-001 design (2026-11-24)
+
+- Design: D-1…D-7, with the data contract first and validated.
+- Classification: `Large` / `High`. Routing: architecture review.
+- Follow-ups: FU-001, FU-002.
