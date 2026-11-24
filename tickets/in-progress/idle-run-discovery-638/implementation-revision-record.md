@@ -7,7 +7,7 @@ the implementation rounds.
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture reviewer, [design-review-report.md](design-review-report.md), round 2 (Pass) | AR-002 (non-blocking, fixed) | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; checks in the handoff; to code review |
+| IR-001 | Architecture reviewer, [design-review-report.md](design-review-report.md), round 2 (Pass) | AR-002 (non-blocking, fixed) | `Initial Baseline` | SR-003, ARCH-REV-002, CRR-001 | Implemented; code review CRR-001 Pass (9.5/10, no findings), sent on to API/E2E |
 
 ## Revision Entries
 
@@ -22,7 +22,7 @@ the implementation rounds.
 - Current authoritative result: implementation complete (see the handoff).
 - Related solution revision IDs: SR-003.
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002.
-- Related code-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-001 (Pass, 9.5/10, no findings, [code-review-report.md](code-review-report.md); informational: FU-001 agreed as a follow-up; residual: `root-team-run.ts` at 495 of 500 non-empty lines).
 - Related API/E2E revision IDs: N/A.
 - Related delivery revision IDs: N/A.
 - Why this baseline is recorded: the initial implementation of the reviewed design.
