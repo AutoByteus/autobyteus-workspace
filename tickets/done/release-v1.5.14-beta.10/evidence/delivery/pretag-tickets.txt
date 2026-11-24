@@ -1,0 +1,14 @@
+# git log --merges --first-parent v1.5.14-beta.9..HEAD at e5d878832b, 2026-11-24 (36 commits since v1.5.14-beta.9)
+e5d878832b Merge branch 'codex/stopped-run-unavailable-model' into personal (autobyteus-53: continue a stopped run on another model, a model hand-over)
+1b7b4dc334 Merge branch 'codex/agy-capsule-tools-and-spill-shapes' into personal (autobyteus-588: a drift warning when the Antigravity capsule's tool list names a tool the CLI's registry lacks)
+87ca2ceb99 Merge branch 'codex/agy-tool-result-content' into personal (autobyteus-377: Antigravity native tool results and the arguments of parallel calls in the Work Journal)
+
+# direct commits
+27a08a1794 docs(agy-capsule-tools-and-spill-shapes): record finalization, checkout and cleanup
+19e4dce128 docs(agy-tool-result-content): record finalization, checkout and cleanup
+1f761bc8db docs(release-v1.5.14-beta.9): released and verified (4/4 workflows, 27/27 assets, iOS 1.5.14 (355), Docker system level 2) (autobyteus-626)
+
+# release notes of the tickets: tickets/done/{agy-tool-result-content,agy-capsule-tools-and-spill-shapes,stopped-run-unavailable-model}/release-notes.md (none has a 'What you need to do' section)
+# app-data migrations, prisma, docker, workflows, scripts changed since beta.9:        0
+# RELEASE.md changed since beta.9:        0 files
+# files since beta.9 with 'codex' in the path: 0

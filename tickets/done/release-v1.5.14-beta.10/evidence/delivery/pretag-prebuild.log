@@ -1,0 +1,5 @@
+# pnpm -C autobyteus-server-ts prebuild
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+prebuild-exit=0

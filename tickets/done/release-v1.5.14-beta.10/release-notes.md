@@ -1,0 +1,20 @@
+## What you need to do
+
+- **From beta.8 or beta.9: a normal update.** Nothing else to do. This beta adds no data conversion and no Docker system change.
+- **Journals are rendered again once.** The Work Journal format moves to revision 5 (for Antigravity tool results, below). Each journal is rendered again once, at its run's next turn or memory pass, and memory search re-indexes the changed ones. Nothing to do and no data is lost; runs that already finished keep the short size-only text that was recorded at the time.
+- **From beta.7 or older: two things come with this beta.**
+  - **Update the app and every node you connect to together.** An app and a node of different versions cannot open each other's message reference files: the link the app uses changed, and the old one is gone. This applies to the desktop app, the phone app, paired desktop nodes and Docker or remote nodes.
+  - **Saved organization runs are converted on the first start, once, and this cannot be undone.** Nothing to do before upgrading: your saved organization runs keep their conversations, messages, memory, Tasks and history. After upgrading, do not install an older version; if you need to go back, contact support instead. If you work with a paired node, upgrade both nodes.
+- **Docker nodes:** this release's server image is still system level 2, as the previous betas. A node that is still on a level-1 image (for example the stable 1.5.13) must be recreated once before it takes this beta: run `autobyteus-docker upgrade --all --tag beta`. A node already on a previous beta updates in place.
+- **iPhone and iPad: update AutoByteus from TestFlight** to the new build, version 1.5.14 (build <IOS_BUILD>). It is a TestFlight beta only; nothing is sent for App Store review.
+- **Desktop:** with **Settings > Updates > Receive beta updates** on, the app updates itself to this beta.
+
+## What's new since beta.9
+
+- **A stopped AutoByteus run whose model is gone can continue on another model.** If a model is no longer available (for example one you removed from LM Studio), open the run's Settings, choose any model the list offers, and press Save. Your next message starts a fresh session on the new model, which continues from the run's work journal; the chat shows "Model changed from … to …" and earlier messages stay in the chat. This also applies when the new model has a smaller or unknown context window than the one the run last ran on; a model with a verified equal or bigger window keeps the same session, as before. Team and Organization members and delegated copies behave the same way. The help text under the model menu says so, in English and Simplified Chinese.
+- **The Work Journal shows what Antigravity's tool calls actually did.** A file read shows the lines that were read (for a range, as `sed -n '5,9p' <file>` with the lines), a command that failed shows its exit code as `exit N` instead of Antigravity's wrapper text, and file writes and edits show their full content and diff, also when Antigravity made several calls in one response. Memory search can therefore find what Antigravity read and wrote, not only that it did. Only new Antigravity work carries the content.
+- **A warning if the Antigravity CLI renames a tool.** If a future Antigravity CLI renames one of the native tools AutoByteus allows, the server writes one line to its log (`AGY_CAPSULE_TOOL_NOT_IN_REGISTRY`) naming the tool, so the change is noticed instead of the tool silently disappearing from the agent. Starting the agent is never delayed or blocked by it. With the current Antigravity CLI (1.5.15) no warning appears.
+
+## Good to know
+
+- If you come from beta.7 or older, everything that is new since then (organizations as containers of runs, reference files of delegated runs, "Stopped" tool calls, the phone's Activity details, Grok improvements, the Memory page fix and more) is listed in the [beta.8](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.14-beta.8) and [beta.9](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.14-beta.9) release notes.
