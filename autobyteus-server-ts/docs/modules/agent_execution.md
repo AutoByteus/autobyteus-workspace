@@ -596,9 +596,13 @@ private method every delivery to listeners passes through (`deliverToListeners`)
 the processed pipeline, the input state, the canonical status and the subscribe
 snapshot. An event that already has a time keeps it, so one event has one time.
 Listeners read it with `serverTimeOf` / `serverTimeMsOf`, which throw for a timed event
-that has none. The streams carry it as `occurred_at` ([Row Times](../design/agent_websocket_streaming_protocol.md#row-times)),
-and the memory recorder uses it as the `ts` of an external runtime's stored traces (except the
-user's message, below), so what a reload reads and what the stream showed are the same time.
+that has none. The streams carry it as `occurred_at` ([Row Times](../design/agent_websocket_streaming_protocol.md#row-times)).
+The memory recorder does not read it (SR-007): a stored trace keeps the time it had before
+the node stamped events, the payload's own time when the payload has one, else the time the
+trace is written (`extractTimestamp`; the writer's `toTimestampSeconds`), so traces written
+for one run stay in the order they were written. The one exception is the user's message,
+below. A live row's time (the stream's `occurred_at`) and a reloaded row's time (the stored
+`ts`) can therefore differ for the same row; the order of the rows is the same.
 
 Admission has its own time. `postUserMessage` admits an input (`admit`), then claims it and
 takes the platform preface for that dispatch (`claimNextInput`, `startInputDispatch`), so the
@@ -607,7 +611,8 @@ notice's delivery time. The forwarding observers receive `acceptedAt`
 (`AgentRunUserMessageForwardedPayload`), and `recordForwardedUserMessage` stores an external
 runtime's user trace at that time, not at the time the runtime accepted it. That keeps the
 stored order the live one (the user's message, then its platform notice) when a reload sorts by
-`ts`.
+`ts`. It is the only stored trace that takes an admission time: every other trace keeps its
+write time (above), and the notice, written after the input was claimed, is later than it.
 
 ### Platform Input Preface And Run Lifecycle Observer
 
