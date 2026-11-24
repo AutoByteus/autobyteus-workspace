@@ -1,0 +1,48 @@
+# IMP-04 (D-3, D-6, D-7; AC-001, AC-002, AC-003, AC-004 on Android) instrumented tests on a dedicated emulator
+# command: avdmanager create avd -n ie574_api35 -k "system-images;android-35;google_apis;arm64-v8a"; emulator -avd ie574_api35
+#            -port 5640 -no-window (rotation locked to portrait); adb push <the 20+ MB MP4> /data/local/tmp/autobyteus-574-video.mp4;
+#            adb push <the small baseline MP4> /data/local/tmp/autobyteus-574-page-video.mp4 (autobyteus-android/README.md says how);
+#          ANDROID_SERIAL=emulator-5640 ./gradlew :app:connectedDebugAndroidTest; adb logcat -d, scanned for the credentials and the path
+# commit: a526d58a7e (run on its working tree before committing; same files)
+# env: emulator API 35 (arm64, google_apis, WebView of the image), the test node is RangeFileServer on the device:
+#   /rest/files/videos/clip.mp4 by one range with a strong ETag and If-Range, 401 without the credential, about 1.5 MB/s
+# date: 2026-11-24
+# result: Pass. The whole instrumented run passes 21 of 21 (the app's existing 17 and 4 new); the node-removal case, added
+#   after it, ran with the player test (4 of 4):
+#   - VideoPlayerActivityTest (4), the real player screen through the real handoff:
+#     - a 23.4 MB video plays in under 2 s (measured 0.4-0.6 s), and a seek to the middle plays within 2 s (0.74-0.78 s) by
+#       one range from there;
+#     - every request carries the credential in the Authorization header; no request reads the whole file;
+#     - a reopen reads 0 bytes of what the player's cache holds (only the 2-byte probe), measured against the cache's own
+#       spans;
+#     - a changed file (new ETag) is read again from its start;
+#     - full screen turns to landscape (SENSOR_LANDSCAPE) with the bars hidden and back to the phone's portrait, the
+#       position kept;
+#     - a missing file, a refused credential and a playback after the process ended each say "This video could not be
+#       played." with Back;
+#     - removing a node deletes its cached video and not another node's.
+#   - WebMediaFullScreenTest (1, D-6): a tap on an in-page player's full-screen button shows it in landscape with the
+#     bars hidden, and leaving full screen returns to portrait with the video where it was. (The emulator's WebView decoder
+#     stalls on the heavy 720p stream, so this test uses a small baseline clip; the native player plays the heavy one.)
+#   - logcat of the whole run: 0 lines with a credential, 0 lines with the video's path.
+
+## instrumented run
+Starting 21 tests on ie574_api35(AVD) - 15
+Finished 21 tests on ie574_api35(AVD) - 15
+BUILD SUCCESSFUL in 1m 4s
+
+## the measured numbers (adb logcat -s VideoPlayerActivityTest WebMediaFullScreenTest)
+ 9668  9682 I VideoPlayerActivityTest: first open: playing after 629 ms; 1179650 of 23384108 bytes served by then
+ 9668  9682 I VideoPlayerActivityTest: seek to 30 s: playing there after 742 ms; ranges asked: [bytes=0-1, null, bytes=11750374-23384107]
+ 9668  9682 I VideoPlayerActivityTest: reopen: 5319596 bytes cached before; served on reopen [bytes=0-1:2, bytes=1182636-11750373:327680, bytes=15887334-23384107:1900544]; read again of the cached: 0
+ 9668  9682 I VideoPlayerActivityTest: changed file: served [bytes=0-1:2, null:2228224]
+ 9668  9682 I VideoPlayerActivityTest: full screen: landscape at 839 ms; back to portrait at 1755 ms
+ 9668  9682 I WebMediaFullScreenTest: in-page full screen: landscape at 6.20641 s; portrait at 7.342953 s
+
+## the player test again, with the node removal case (4 tests)
+Starting 4 tests on ie574_api35(AVD) - 15
+BUILD SUCCESSFUL in 37s
+
+## logcat scan
+lines with a test credential: 0
+lines with the video's path: 0

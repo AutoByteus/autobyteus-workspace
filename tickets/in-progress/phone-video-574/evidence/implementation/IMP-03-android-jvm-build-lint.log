@@ -1,0 +1,43 @@
+# IMP-03 (D-3, D-5, D-7; REQ-003, AC-003) Android JVM tests, build, instrumented-test compile and lint
+# command: cd autobyteus-android && ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest :app:assembleDebug
+#            :app:compileDebugAndroidTestKotlin :app:lintDebug
+# commit: a526d58a7e (run on its working tree before committing; same files)
+# env: macOS arm64, JDK 21, AGP 8.13.2, Kotlin 2.0.21, Media3 1.5.1
+# date: 2026-11-24
+# result: Pass. 127 JVM tests, 0 failed, among them:
+#   - ShellBridgeMessagesTest (17): playVideo is read only from the node's main frame, for a /rest/ URL on the node's own
+#     origin (not another site, port, scheme, route or a URL with user info), with a one-token credential; a non-plain
+#     title is dropped; neither the credential nor the URL is printed; hello says videoPlayer: true.
+#   - NodeVideoHttpTest (6), against two real local HTTP servers: a range with the credential only in the header; a 302 is
+#     refused and not followed (the other server receives nothing); off-origin and non-/rest/ URLs are refused before any
+#     request; If-Range by version; Range and Content-Range forms.
+#   - NativeVideoPlaybackTest (3): the handoff is taken once by its token; a new one replaces it; nothing prints the
+#     credential.
+#   - VideoCacheKeysTest (2): a key per version (a new ETag, file or node gives another), hashed, under its node's prefix.
+#   Lint: no error; the new files add only SetTextI18n (plain strings, as the app's other screens use).
+
+## JVM test results (per class)
+org.autobyteus.mobile.MainActivityManifestTest: 3 tests, 0 failed
+org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest: 9 tests, 0 failed
+org.autobyteus.mobile.connection.NodeUrlNormalizerTest: 4 tests, 0 failed
+org.autobyteus.mobile.connection.PairingLinkParserTest: 5 tests, 0 failed
+org.autobyteus.mobile.connection.SavedNodeEntryTest: 4 tests, 0 failed
+org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest: 6 tests, 0 failed
+org.autobyteus.mobile.shell.ConnectionInputResolverTest: 3 tests, 0 failed
+org.autobyteus.mobile.shell.NodeConnectionFlowTest: 16 tests, 0 failed
+org.autobyteus.mobile.shell.NodeReachabilityTest: 2 tests, 0 failed
+org.autobyteus.mobile.shell.OpenPageRestoreTest: 6 tests, 0 failed
+org.autobyteus.mobile.shell.OpenPageStateTest: 8 tests, 0 failed
+org.autobyteus.mobile.ui.DesktopFullScreenControllerTest: 16 tests, 0 failed
+org.autobyteus.mobile.ui.DesktopFullScreenRequestTest: 8 tests, 0 failed
+org.autobyteus.mobile.video.NativeVideoPlaybackTest: 3 tests, 0 failed
+org.autobyteus.mobile.video.NodeVideoHttpTest: 6 tests, 0 failed
+org.autobyteus.mobile.video.VideoCacheKeysTest: 2 tests, 0 failed
+org.autobyteus.mobile.web.FileChooserRequestPolicyTest: 3 tests, 0 failed
+org.autobyteus.mobile.web.ShellBridgeMessagesTest: 17 tests, 0 failed
+org.autobyteus.mobile.web.TrustedNavigationPolicyTest: 6 tests, 0 failed
+total 127 tests, 0 failed
+
+## gradle
+> Task :app:lintDebug
+BUILD SUCCESSFUL in 29s
