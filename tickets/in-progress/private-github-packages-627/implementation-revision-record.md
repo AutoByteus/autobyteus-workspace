@@ -8,6 +8,7 @@ the implementation rounds.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, [design-review-report.md](design-review-report.md), round 1 (Pass) | N/A (AR-001 measured) | `Initial Baseline` | SR-002, ARCH-REV-001, CRR-001 | Implemented; code review CRR-001 Pass (9.5/10), sent on to API/E2E |
+| IR-002 | Solution Designer, [handoff-sr003-implementation.md](handoff-sr003-implementation.md), SR-003 | N/A (Requirement Gap from delivery, decided as REQ-008) | `Requirement Gap` (decided upstream; text-only delta) | SR-003 | Update checks card text corrected (AC-008); to API/E2E |
 
 ## Revision Entries
 
@@ -51,3 +52,32 @@ the implementation rounds.
 - Next recipient or routing: `/code_reviewer` (architectural risk High).
 - Remaining limitations or risks: see the handoff's Known Risks (test token expiry 2026-11-25; codeload's header
   support is undocumented; Docker AC-006 left to API/E2E).
+
+### IR-002 — The Update checks card no longer says "No account or token is used" (SR-003, AC-008)
+
+- Triggering role, report path, and round: Solution Designer, `handoff-sr003-implementation.md` (SR-003), after the
+  Delivery Engineer's Requirement Gap in `release-deployment-report.md`.
+- Triggering finding IDs: N/A (REQ-008 / AC-008).
+- Classification: `Requirement Gap`, decided upstream as SR-003; the delta is text only. SR-003 is classified
+  `Small`/`Low`; the SR-002 architecture is unchanged.
+- Prior authoritative result: IR-001, CRR-001 Pass, API/E2E and delivery in progress.
+- Current authoritative result: the card's text says the node's GitHub token goes only to GitHub, only for private
+  repositories.
+- Related solution revision IDs: SR-003.
+- Related architecture-review revision IDs: N/A (no architecture change).
+- Related code-review revision IDs: CRR-001 (for IR-001).
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: the card's privacy statement became false with this ticket.
+- Approved behavior or requirement IDs affected: REQ-008, AC-008.
+- Implementation delta: en and zh-CN `settings.notifications.setting.description` set to the handoff's exact texts;
+  `UpdateChecksCard.spec.ts` asserts the new English text and names REQ-016 and autobyteus-627 REQ-008;
+  `autobyteus-web/docs/settings.md` (the Update checks card's line) says "no account; the node's GitHub token goes
+  only to GitHub, only for private repositories". `AboutSettingsManager.autoCheck.description` left alone (the app's
+  own version check).
+- Changed files or areas: `autobyteus-web/localization/messages/{en,zh-CN}/updateNotifications.ts`,
+  `autobyteus-web/components/settings/__tests__/UpdateChecksCard.spec.ts`, `autobyteus-web/docs/settings.md`.
+- Local validation and result: IMP-14 Pass (the card spec 8/8; localization boundary guard; literal audit).
+- Next recipient or routing: `/api_e2e_engineer` (SR-003 Small/Low rule).
+- Remaining limitations or risks: none; no live GitHub run needed (the Delivery Engineer ran the live cases on the
+  merged base).

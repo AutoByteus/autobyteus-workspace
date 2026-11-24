@@ -29,8 +29,8 @@ Packages import box and the Skill sources dialog.
 
 - Implementation cycle: `Initial`
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
+- Current implementation revision ID: `IR-002` (IR-001 baseline; IR-002: the Update checks card text, SR-003, AC-008 — see the revision record)
+- Related solution revision IDs: `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-001`
 - Related code-review revision IDs: `N/A`
 - Related API/E2E revision IDs: `N/A`
@@ -198,6 +198,7 @@ fixes and the browser probe; no source change). IMP-03 and IMP-05 are superseded
 | IMP-08 | `pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run` | 3a83f76325 | macOS, Node 22 | whole web suite (line, store, manager, modal, integrations page) | AC-002, AC-004 | Pass | `IMP-08-web-nuxt-tests.log` | `Tests  6121 passed \| 2 skipped (6123)` |
 | IMP-09 | web guards (`guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`), demo coverage spec, `codegen:check` | 3a83f76325 | macOS, Node 22 | localization, demo operation list, generated types | — | Pass | `IMP-09-web-guards-codegen.log` | `Passed with zero unresolved findings`; `Tests  8 passed (8)`; `exit=0` |
 | IMP-10 | `pnpm -C autobyteus-server-ts build && node autobyteus-web/tests/e2e/github-connection-line-probe.mjs <fresh dir>` | 30fcc50ec7 | built backend (own data dir + vault), Nuxt dev, headless Chrome 1440×1000, GitHub emulated | the line, both screens, a private import through the real stack, en + zh-CN, custody | AC-001, AC-002, AC-005 | Pass | `IMP-10-browser-probe.log`, `IMP-10-browser-probe/` (result.json, 5 screenshots) | `"result":"Pass"`, five cases Pass, `leaks: []`, `pageErrors: []`, all cleanup true |
+| IMP-14 | `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings/__tests__/UpdateChecksCard.spec.ts`; `guard:localization-boundary`; `audit:localization-literals` | IR-002 (on 8d30998e89) | macOS, Node 22 | the Update checks card text, en/zh-CN catalogs | AC-008 | Pass | `IMP-14-sr003-text.log` | `Tests  8 passed (8)`; both guards `Passed` |
 | — | `gitleaks protect --staged` before each commit | both | local | the diff | REQ-005 | Pass | — | `no leaks found` |
 
 - Not run, and why: AC-006 Docker (left to API/E2E); the whole server E2E suite (the affected files ran, IMP-06);

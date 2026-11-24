@@ -586,7 +586,8 @@ node has its own switch on the Nodes page).
   background checks with what it contacts (github.com for packages and skill
   sources; for runtimes GitHub (Codex), downloads.claude.ai, Antigravity's
   updater, xAI (Grok); GitHub downloads and each runtime's own update command
-  for automatic updates; no account or token; nothing sent to AutoByteus), an
+  for automatic updates; no account; the node's GitHub token goes only to
+  GitHub, only for private repositories; nothing sent to AutoByteus), an
   amber banner while GitHub asks the node to wait (a wait changes no setting and
   is announced by nothing, so the card re-reads the settings when it opens and
   drops the banner when the time passes) or while checks are off, "How

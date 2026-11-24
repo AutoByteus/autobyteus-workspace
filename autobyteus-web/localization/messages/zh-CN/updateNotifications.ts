@@ -104,7 +104,7 @@ const updateNotificationsMessages = {
   'settings.notifications.runtime.details': '在这台电脑上运行 {{name}} 自带的更新，与“设置 → 智能体运行时”相同。',
   'settings.notifications.setting.summaryOwn': '查找你的 GitHub 智能体包、技能来源和智能体运行时的新版本。',
   'settings.notifications.setting.label': '在后台检查更新',
-  'settings.notifications.setting.description': '不使用任何账号或令牌。不会向 AutoByteus 发送任何内容。',
+  'settings.notifications.setting.description': '不使用任何账号。此节点的 GitHub 令牌只会发送给 GitHub，且仅用于私有仓库。不会向 AutoByteus 发送任何内容。',
   'settings.notifications.setting.network.title': '访问地址',
   'settings.notifications.setting.network.packages': '智能体包和技能来源：github.com',
   'settings.notifications.setting.network.runtimes': '智能体运行时：GitHub（Codex）、downloads.claude.ai、Antigravity 更新服务、xAI（Grok）',
