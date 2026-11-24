@@ -109,15 +109,16 @@ ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
 ```
 
-The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`, `DesktopFullScreenWindowTest`, `DownloadsSaverTest`, `VideoPlayerActivityTest`, `WebMediaFullScreenTest`) run on a running emulator or a connected device. No CI job runs them:
+The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`, `DesktopFullScreenWindowTest`, `DownloadsSaverTest`, `MediaPlayerActivityTest`, `MediaPlayerActivityAudioTest`, `WebMediaFullScreenTest`) run on a running emulator or a connected device. No CI job runs them:
 
 ```bash
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:connectedDebugAndroidTest
 ```
 
-The video player tests (autobyteus-574) need two test videos on the device, and are skipped without them: a 20+ MB
-MP4 for the player (`VideoPlayerActivityTest`) and a small baseline H.264 MP4 for an in-page player
-(`WebMediaFullScreenTest`; the emulator's WebView decoder stalls on a heavy stream). For example:
+The media player tests (autobyteus-574, autobyteus-642) need test files on the device, and are skipped without them: a
+20+ MB MP4 for the player (`MediaPlayerActivityTest`), a small baseline H.264 MP4 for an in-page player
+(`WebMediaFullScreenTest`; the emulator's WebView decoder stalls on a heavy stream), and a 3+ MB MP3 and M4A longer
+than 60 s for the audio player (`MediaPlayerActivityAudioTest`). For example:
 
 ```bash
 ffmpeg -f lavfi -i testsrc2=size=1280x720:rate=30 -f lavfi -i sine=frequency=440 -t 60 -vf noise=alls=20:allf=t \
@@ -127,6 +128,10 @@ ffmpeg -f lavfi -i testsrc=size=640x360:rate=30 -f lavfi -i sine=frequency=440 -
   -pix_fmt yuv420p -c:a aac -movflags +faststart page-video.mp4
 adb push video.mp4 /data/local/tmp/autobyteus-574-video.mp4
 adb push page-video.mp4 /data/local/tmp/autobyteus-574-page-video.mp4
+ffmpeg -f lavfi -i sine=frequency=440:duration=120 -c:a libmp3lame -b:a 256k audio.mp3
+ffmpeg -f lavfi -i sine=frequency=330:duration=120 -c:a aac -b:a 256k -movflags +faststart audio.m4a
+adb push audio.mp3 /data/local/tmp/autobyteus-642-audio.mp3
+adb push audio.m4a /data/local/tmp/autobyteus-642-audio.m4a
 ```
 
 ## Real-device validation handoff

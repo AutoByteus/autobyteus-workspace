@@ -333,21 +333,26 @@ they seek; a desktop window's workspace URL is a node file route, which answers
 Range requests (206 with an `ETag`, and `no-cache` so a rewritten file reloads
 new: [User Files](../../autobyteus-server-ts/docs/features/remote_access.md#user-files)),
 so it seeks too (autobyteus-574).
-Where the node key must travel in a request header (the phone), the viewer plays
-a video one of two ways, chosen by `useNativeVideoPlayback.modeFor(url)`
-(autobyteus-574). In the Android and iOS apps, whose `hello` reply says they have
-a video player (`videoPlayer`), a protected video of the open node is `native`:
-the page loads nothing itself, the viewer shows the file's name and a **Play**
-button, and the app's own player (Media3, AVPlayer) streams the file by range with
-the key in a header, never in a URL (the shell bridge's `playVideo`: [Phone
+Where the node key must travel in a request header (the phone), the video and
+audio viewers play a file one of two ways, chosen by
+`useNativeMediaPlayback(kind).modeFor(url)` (autobyteus-574, autobyteus-642). In
+the Android and iOS apps, whose `hello` reply lists the file extensions their own
+player plays per kind (`mediaPlayer: { video, audio }`), a protected file of the
+open node whose extension is listed is `native`. The extension is that of the file
+the URL names: its `path` query for workspace and node files, else its path. The
+page loads nothing itself, the viewer shows the file's name and a **Play** button,
+and the app's own player (Media3, AVPlayer) streams the file by range with the key
+in a header, never in a URL (the shell bridge's `playMedia`: [Phone
 Access](./remote_access.md#shell-bridge-android-and-ios)). The player opens by
 itself when the viewer is first shown or another file is selected, never when the
 same file is reloaded (`contentRevision`: an agent rewrote it, or it was opened
 again): Back closes it, and **Play** opens it again on the file as it is then. A
-video in a chat media message shows a **Play video** tile that does the same
-(`MediaSegment.vue`). While the app has not yet said whether it has the player
-(`pending`), nothing is loaded. In a phone browser, in an older app, for another
-site's video or without a key (`page`), `useAuthorizedObjectUrl` downloads the
+video or audio file in a chat media message shows a **Play video** or **Play
+audio** tile that does the same (`MediaSegment.vue`). While the app has not yet
+said what its player plays (`pending`), nothing is loaded. In a phone browser, in
+an older app, for a type the app does not list (for example WebM video, or Ogg and
+Opus audio, on iOS), for another site's file or without a key (`page`),
+`useAuthorizedObjectUrl` downloads the
 whole file into an object URL first, as before;
 meanwhile the player shows `MediaLoadingState` (a spinner, "Loading video…", and
 "4.1 of 9.7 MB" when the node declared the file's length) instead of "Video URL
