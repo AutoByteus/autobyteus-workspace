@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-11-24T06:19:17.254Z",
+  "cases": {
+    "WEB-627-01-not-connected-import": {
+      "result": "Pass",
+      "observed": {
+        "error": "GitHub repository not found, or it is private: https://github.com/probe-org/private-pack. To use a private repository, connect GitHub on this node."
+      }
+    },
+    "WEB-627-02-connect": {
+      "result": "Pass",
+      "observed": {
+        "refused": "GitHub rejected this token. Check that you copied all of it, and that it has not expired.",
+        "status": "GitHub · connected as @octo-dev"
+      }
+    },
+    "WEB-627-03-private-import": {
+      "result": "Pass",
+      "observed": {
+        "row": "probe-org/private-pack\nGitHub | Shared Agents: 1 | Team-local Agents: 0 | Teams: 0 | Applications: 0\nhttps://github.com/probe-org/private-pack\nUp to date.\nAuto-refreshing\nGitHub\nCheck again\nRemove"
+      }
+    },
+    "WEB-627-04-skill-sources-disconnect": {
+      "result": "Pass",
+      "observed": {
+        "status": "GitHub · not connected — needed only for private repositories."
+      }
+    },
+    "WEB-627-05-zh-CN": {
+      "result": "Pass",
+      "observed": {
+        "status": "GitHub · 未连接 — 仅私有仓库需要。",
+        "help": "在 GitHub 上创建细粒度令牌 ↗ — 只选择您需要的仓库；Repository permissions → Contents：Read-only。令牌保存在此节点的保险库中，不会再次显示。"
+      }
+    }
+  },
+  "pageErrors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "childrenStopped": true,
+    "backendPortReleased": true,
+    "frontendPortReleased": true,
+    "dataRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-connection-web-KA8ZV3",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-connection-web-KA8ZV3/data",
+    "backendUrl": "http://127.0.0.1:62089",
+    "frontendUrl": "http://127.0.0.1:62092"
+  },
+  "custody": {
+    "filesScanned": 91,
+    "leaks": [],
+    "upstream": [
+      {
+        "url": "https://api.github.com/repos/probe-org/private-pack",
+        "credential": "none"
+      },
+      {
+        "url": "https://api.github.com/user",
+        "credential": "other"
+      },
+      {
+        "url": "https://api.github.com/user",
+        "credential": "accepted"
+      },
+      {
+        "url": "https://api.github.com/repos/probe-org/private-pack",
+        "credential": "none"
+      },
+      {
+        "url": "https://api.github.com/repos/probe-org/private-pack",
+        "credential": "accepted"
+      },
+      {
+        "url": "https://api.github.com/repos/probe-org/private-pack/branches/main",
+        "credential": "none"
+      },
+      {
+        "url": "https://api.github.com/repos/probe-org/private-pack/branches/main",
+        "credential": "accepted"
+      },
+      {
+        "url": "https://codeload.github.com/probe-org/private-pack/tar.gz/cccccccccccccccccccccccccccccccccccccccc",
+        "credential": "none"
+      },
+      {
+        "url": "https://codeload.github.com/probe-org/private-pack/tar.gz/cccccccccccccccccccccccccccccccccccccccc",
+        "credential": "accepted"
+      },
+      {
+        "url": "https://github.com/probe-org/private-pack.git/git-upload-pack",
+        "credential": "none"
+      }
+    ]
+  },
+  "result": "Pass",
+  "finishedAt": "2026-11-24T06:19:53.476Z"
+}

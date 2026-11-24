@@ -1,0 +1,56 @@
+# IMP-03 server-typecheck (autobyteus-627 IR-001)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 3a83f76325 (branch codex/private-github-packages-627)
+# Environment: Node v22.23.1, macOS 26.5.2, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627; no AUTOBYTEUS_TEST_VAULT
+# Date: 2026-11-24 06:50:36 CET
+
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 110ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.2s
+[typecheck] server tests (tsconfig.tests.json): 975 errors, exit 2, 29.8s
+
+Test files above their baseline count:
+tests/e2e/integrations/github-private-repository-graphql.e2e.test.ts(84,63): error TS2345: Argument of type 'Buffer<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'.
+  Type 'Buffer<ArrayBufferLike>' is missing the following properties from type 'URLSearchParams': size, append, delete, get, and 2 more.
+tests/e2e/integrations/github-private-repository-live.e2e.test.ts(82,52): error TS2322: Type '() => Promise<SecretValue>' is not assignable to type 'GitHubTokenReader'.
+  Type 'Promise<SecretValue>' is not assignable to type 'Promise<SecretValue | null>'.
+    Property '#private' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+tests/e2e/integrations/github-private-repository-live.e2e.test.ts(96,55): error TS2322: Type '() => Promise<SecretValue>' is not assignable to type 'GitHubTokenReader'.
+  Type 'Promise<SecretValue>' is not assignable to type 'Promise<SecretValue | null>'.
+    Property '#private' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+[typecheck] new test file with errors: tests/e2e/integrations/github-private-repository-graphql.e2e.test.ts (1)
+[typecheck] new test file with errors: tests/e2e/integrations/github-private-repository-live.e2e.test.ts (2)
+[typecheck] production errors: 0; test-file errors: 975 in 301 files (baseline 972 in 299 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

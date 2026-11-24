@@ -1,0 +1,103 @@
+# IMP-09 web-guards-codegen (autobyteus-627 IR-001)
+# Command: bash -c pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals && NUXT_TEST=true pnpm -C autobyteus-web exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts && pnpm -C autobyteus-web codegen:check
+# Commit: 3a83f76325 (branch codex/private-github-packages-627)
+# Environment: Node v22.23.1, macOS 26.5.2, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627; no AUTOBYTEUS_TEST_VAULT
+# Date: 2026-11-24 07:12:15 CET
+
+
+> autobyteus@1.5.14-beta.10 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.14-beta.10 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.14-beta.10 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:87122) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts (8 tests) 91ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  07:12:18
+   Duration  556ms (transform 55ms, setup 105ms, collect 16ms, tests 91ms, environment 0ms, prepare 82ms)
+
+
+> autobyteus@1.5.14-beta.10 codegen:check /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/codegen-local.mjs --check
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 108ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:97567) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+AgentFactory (Singleton) initialized.
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-3Gyoxo/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-3Gyoxo/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+exit=0
