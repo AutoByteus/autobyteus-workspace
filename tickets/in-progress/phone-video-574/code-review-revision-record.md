@@ -10,6 +10,7 @@
 | CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass; test code `cf3d344ff4`) | Pass (CRR-003) | Pass | None |
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-003 F-3) | Pass (CRR-003/004) | Fail: implementation Local Fix | CR-003 (new) |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 5 (IR-003), Targeted Delta | Fail | Pass | CR-003 (resolved) |
+| CRR-007 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-004 F-4) | Pass (CRR-006) | Fail: implementation Local Fix (stop rule to the Solution Designer) | CR-004 (new); CR-003 reopened with it |
 
 ## Revision Entries
 
@@ -206,4 +207,44 @@ None (first test review).
   - simulator only, so a physical iPhone check stays recommended;
   - the bounded cache serving is held;
   - T-2 (`pictureMoves` false-pass risk) is for the next test review;
+  - R-1 and R-2 are unchanged.
+
+### CRR-007: failure-origin review of API-REV-004 (F-4): the iOS loader is a Local Fix
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/code-review-report.md` ("Round 6 Failure-Origin Finding")
+- Review entry point and round: API/E2E Failure-Origin Review, round 6
+- Review scope: `N/A` (failure-origin). Product code is unchanged since `c3ff688979`. Re-read: `AuthorizedMediaLoader.swift` and `evidence/api-e2e/R4/`.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (commit `bb80c1cc9e`): F-4 (R4-IOS-LAT, R4-IOS-DL, R4-IOS-U)
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003, API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-006)
+- Current authoritative result: Fail. The origin is implementation: CR-004, `Local Fix`.
+- What changed in the review result and why:
+  - The on-demand declaration lets AVFoundation make small serial reads and run its clock without waiting. The loader's one-request-per-gap serving pays a round trip per 23 KB, so playback runs at 0.4–0.7× at 20–50 ms.
+  - The fix must keep the scrub working (CR-003) and add real-time delivery over a round trip.
+  - Recommended: a read-ahead under the declaration. The alternative is finding the progressive-mode scrub stall.
+  - Stop rule: if neither meets the outcomes, it goes to `/solution_designer` as a Design Impact.
+- **Review gaps I own:**
+  - CRR-005 called the declaration "correct and not a workaround" without checking what AVFoundation assumes when it is set.
+  - CRR-006 passed IR-003 with the per-read round trip only held as a watch item. Requiring a latency run before passing would have caught it.
+  - Lesson: a declaration to a framework is a performance contract too. Check what the framework will then do (read size, waiting), not only what the declaration literally says.
+- Supported product scenario / material-premise basis changes: S-1 now explicitly includes links with a 20–50 ms round trip (Wi-Fi, tailnet). These are the product's own pairing ways, so the scenario is supported, not contrived.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Resolved (CRR-006) | Reopened, coupled with CR-004 | IR-003 | The scrub plays on with the declaration (R4-IOS-2), but the declaration causes CR-004. The next fix must pass both checks |
+| CR-001, CR-002 | Resolved | Resolved | — | The rest of the class passes (R4 class summary) |
+
+- New or remaining finding IDs: CR-004 (with CR-003)
+- Material score or classification changes: runtime correctness is below 9.2 until CR-004 is fixed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty:
+  - a link slower than the bitrate under the declaration (held);
+  - a physical iPhone check stays recommended;
+  - test-code review of `ef3107bb3e` and `bb80c1cc9e` is pending;
   - R-1 and R-2 are unchanged.

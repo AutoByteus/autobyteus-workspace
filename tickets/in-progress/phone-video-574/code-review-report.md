@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 5, IR-003, a Targeted Delta Review of `fa72e74e90..03c4495955`). The only source change is `c3ff688979`, three lines in `AuthorizedMediaLoader.swift`. Round 4 was the `API/E2E Failure-Origin Review` (API-REV-003 F-3). The earlier rounds:
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 6, API-REV-004 F-4, commit `bb80c1cc9e`). Product code is unchanged since IR-003 (`c3ff688979`). Round 5 was the `Implementation Review` of IR-003 (Targeted Delta, CRR-006, Pass); round 4 was the `API/E2E Failure-Origin Review` of API-REV-003 F-3 (CRR-005). The earlier rounds:
   - round 1 (CRR-001, Pass): implementation review;
   - round 2 (CRR-002, Fail): failure-origin review;
   - round 3 (CRR-003, Pass): targeted delta review;
@@ -22,8 +22,18 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: `5` (targeted delta). The entries for rounds 4 and 3 follow.
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: `6` (failure-origin). The entries for rounds 5, 4 and 3 follow.
+- Round 6 scope and trigger:
+  - API/E2E round 4 (API-REV-004) failed with F-4.
+  - Re-read: `AuthorizedMediaLoader.swift` (how it serves requests under the on-demand declaration) and `evidence/api-e2e/R4/`:
+    - the latency runs, with and without the flag;
+    - `r4-scrub-requests-0ms.txt`;
+    - `r4-core-and-loader.log`;
+    - the delivery measurements.
+  - Failing scenarios:
+    - `testBDeliversInRealTimeOverASlowerLink` (1.9 MB delivered where 5.3 MB is needed, at 50 ms);
+    - `AuthorizedMediaLoaderTests` line 80 with a 60 s, 30.5 MB video (3/3).
 - Round 4 scope and trigger:
   - API/E2E round 3 (API-REV-003, commit `ef3107bb3e`, on top of delivery `ad813b4e6d`) failed with F-3. Delivery DR-001 had asked API/E2E to attribute O-4.
   - Product code is unchanged since `64a99bbcd2`.
@@ -275,6 +285,48 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
   - Apple's simulator log shows the request path, never the credential (a device redacts it).
 - **Not run by me:** the Android and iOS suites (IMP-03…06 evidence used).
 
+## Round 6 Failure-Origin Finding (CRR-007)
+
+### CR-004: under the on-demand declaration, iOS playback falls below real time on any link with a round trip (F-4)
+
+- **Severity:** High for AC-001 on iOS. The phone's real links (Wi-Fi, tailnet) have 20–50 ms round trips:
+  - at 20 ms, playback moves after about 3.3 s and then runs at about 0.7×;
+  - at 50 ms, it moves after about 6 s and then runs at 0.4–0.54×;
+  - the player's clock claims real time meanwhile.
+
+  The supported scenario is S-1 over the pairing ways the product offers (local network, Tailscale).
+- **Where:** `autobyteus-ios/AutoByteusMobileCore/Video/AuthorizedMediaLoader.swift`. Two parts combine:
+  - the IR-003 declaration `isEntireLengthAvailableOnDemand = true`;
+  - the loader's one-request-per-gap serving in `advance`.
+- **Mechanism (evidence R4):**
+  - With the declaration, AVFoundation reads about 23 KB at a time, strictly one request after another: 580 requests for 13.6 MB on a first open.
+  - The loader fetches each uncached read as its own ranged HTTP request, so every 23 KB pays a full round trip.
+  - AVFoundation also no longer waits for data. In the Core test the clock passes 30.3 s after a seek to 30 s with no byte of the middle fetched.
+  - The control without the declaration plays at exactly 1× with one streaming request at the same latencies, but the scrub freezes (F-3/CR-003).
+- **Correction to CRR-005:** I wrote that the declaration was "correct and not a workaround". That was wrong. Apple's on-demand declaration lets AVFoundation assume reads are as cheap and quick as local storage: small serial reads, and a clock that does not wait. A network-backed loader keeps that promise only if it makes the reads cheap itself. Recorded as my review gap in CRR-007.
+- **Classification:** `Local Fix`, implementation, inside the loader the design names (D-4: "resource loader: … Range, streaming"; "range cache in the loader"). The data contract, the cache entries, the credential rule and the boundaries stay unchanged.
+- **Required outcome.** All of these must hold, on your own simulator and stack:
+  1. **Scrub:** `testAWideVideoFromTheChatLink` (picture after the scrub) passes, on a first open and cached.
+  2. **Real time over a round trip:** `testBDeliversInRealTimeOverASlowerLink` passes at 50 ms.
+  3. **Middle seek:** `AuthorizedMediaLoaderTests` passes with a 60 s video (bytes from the middle are fetched).
+  4. **Reopen (AC-002):** fetches 0 bytes of what is cached.
+  5. **Credential:** only in the header, nothing sent off the node's rule.
+  6. **Unit cases** for the new serving behaviour.
+- **Recommended direction, in this order:**
+  - **(a) Keep the declaration (it fixes the scrub) and serve small reads from a read-ahead.**
+    - When a read at offset X is not in the cache and no running fetch will reach X soon, start one streaming fetch from X: `bytes=X-`, or a large bounded window.
+    - Answer every pending read from that stream's bytes as they arrive, and from the cache.
+    - Start another stream only for a read far from the running one (a scrub or a seek), and stop a stream no pending read needs.
+    - Keep what arrived in the cache even when the read that asked for it was cancelled. Round 4 saw 42 KB re-fetched because cancelled reads' bytes were dropped.
+    - This also removes the known "a range fetched twice" risk. Unit cases:
+      - a burst of small sequential reads uses one upstream request;
+      - a far read starts a new stream;
+      - cancelling one read does not stop a stream another read waits on;
+      - bytes of a cancelled read are cached.
+  - **(b) Or remove the declaration and find why AVKit's scrub stalls in progressive mode.** Round 3's evidence (no request during or after the scrub, with all bytes delivered) points into AVFoundation rather than the loader's I/O, so this is the less certain path.
+- **Stop rule:** if neither (a) nor (b) meets outcomes 1–5, stop and report to `/solution_designer` as a Design Impact. The loader approach would then be in question, and alternatives such as a phone-local HTTP proxy carry NA-8 implications that need design.
+- **Held, not required:** with the declaration, a link slower than the video's bitrate may make the clock run without frames, instead of stalling. AC-001's link (1.5 MB/s against 0.75 MB/s) is faster than the video's bitrate. Report what you observe at a lower `--bps` if you can; it does not gate this fix.
+
 ## Round 4 Failure-Origin Finding (CRR-005)
 
 ### CR-003: an iOS scrubber drag freezes the picture of a node video, while the clock runs on (F-3)
@@ -321,6 +373,11 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 6, CRR-007). The failure origin is implementation: CR-004, `Local Fix` in the iOS loader, with a stop rule to the Solution Designer.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- CR-003's symptom (the scrub freeze) is fixed by IR-003, but its fix causes CR-004. The two are closed together: the next fix must pass both checks.
+- Recommended Recipient: `/implementation_engineer`. Then a targeted delta code review, then API/E2E, then the proportional test review of `ef3107bb3e` and `bb80c1cc9e`.
+- Round 5 result (CRR-006, superseded):
 - Review Decision: `Pass` (round 5, CRR-006). CR-003 is resolved; CR-001 and CR-002 stay resolved.
 - Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Score Summary: 9.4 / 10. Runtime correctness is back to 9.3.
