@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-004 (… SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
+- Current solution revision ID: SR-005 (SR-005: the iOS audio session while the native player is open; … SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
 - Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
 - User approval of the design: not required
 - Design status: `Ready`
@@ -165,3 +165,13 @@
   | An `.ogg` reference on iOS | `page` (not listed) | — |
 
 - **Tests:** a composable spec with a reference URL and an explicit name (native, title); a `FileViewer` spec showing `fileName` reaches the players; a `MediaSegment` spec for the name from its URL.
+
+## SR-005: iOS audio session (DEC-007)
+
+- **Owner:** `NativeMediaPlayer` (iOS), the one owner of the player's lifetime.
+  - On present: `AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)` and `setActive(true)`.
+  - On dismiss: `setActive(false, options: .notifyOthersOnDeactivation)`.
+  - A failure to set it is logged without the URL and does not block playback.
+- **Applies to:** both kinds (video sound, 574, and audio). `Info.plist` is unchanged: no background audio mode.
+- **Android:** unchanged. Media3 plays through the media stream, which the ringer mode does not silence.
+- **Tests:** a test-host check of the category and active state during and after the player. API/E2E keeps the frame. The physical-iPhone check before release covers the switch and the sound.

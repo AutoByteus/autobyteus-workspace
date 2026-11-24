@@ -51,3 +51,10 @@ Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to 
 - Design case: docs/design-cases.md Case 5 (a claim that every media URL names its file, taken on trust).
 
 Review note: ARCH-REV-004 passed SR-004, with SR-003 (2026-11-24). The reviewer routed it to `/implementation_engineer` (IR-002). N-6 (the chat tile label uses the same file name) is for implementation.
+
+## SR-005 (2026-11-25)
+
+- Trigger: API/E2E's evidence request (AC-002 on iOS, whether the audio is heard). The app sets no audio session, so the Ring/Silent switch would silence the native player on a real iPhone.
+- Requirements: REQ-002 says the sound is heard also on silent; background playback is out of scope. DEC-007 (b) was decided by the Solution Designer within REQ-002, with the user informed.
+- Design: `NativeMediaPlayer` makes the audio session `.playback`/`.moviePlayback` while it is open and deactivates it on close.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review (a design change), then implementation. API/E2E is told the decision.
