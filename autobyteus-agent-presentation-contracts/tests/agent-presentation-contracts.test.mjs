@@ -2,15 +2,25 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { agentPresentationMessageSchema } from "../dist/index.js";
 
+const NODE_TIME = "2026-11-23T16:55:09.697Z";
+
 test("accepts a strict root-neutral message and rejects root identity", () => {
   assert.equal(agentPresentationMessageSchema.parse({
     type: "SEGMENT_CONTENT",
-    payload: { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "hello" },
+    payload: { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "hello", occurred_at: NODE_TIME },
   }).type, "SEGMENT_CONTENT");
   assert.throws(() => agentPresentationMessageSchema.parse({
     type: "SEGMENT_CONTENT",
-    payload: { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "hello", root_team_run_id: "team-1" },
+    payload: { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "hello", occurred_at: NODE_TIME, root_team_run_id: "team-1" },
   }));
+});
+
+// autobyteus-628 D-3: a timed message carries the node's time as ISO 8601; without it, or with another shape, it is refused.
+test("a timed message requires the node's occurred_at", () => {
+  const payload = { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "hello" };
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "SEGMENT_CONTENT", payload }));
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "SEGMENT_CONTENT", payload: { ...payload, occurred_at: 1795452909697 } }));
+  assert.equal(agentPresentationMessageSchema.parse({ type: "SEGMENT_CONTENT", payload: { ...payload, occurred_at: NODE_TIME } }).payload.occurred_at, NODE_TIME);
 });
 
 test("accepts a background-task snapshot with a required nullable command and rejects the removed to-do message", () => {
@@ -45,7 +55,7 @@ test("accepts a background-task snapshot with a required nullable command and re
 test("compaction carries direct diagnostics separately from provider-native identity", () => {
  const keys = 'phase kind status turn_id compaction_operation_id requested_turn_id execution_turn_id selected_block_count compacted_block_count raw_trace_count summary_char_count compaction_invocation_id summarizer_provider completion_status compaction_model_identifier completion_reason summary_token_count error_message provider source_surface boundary_key provider_event_id provider_session_id provider_thread_id provider_timestamp trigger pre_tokens rotation_eligible'.split(' ');
  const payload = Object.fromEntries(keys.map(key=>[key,null]));
- Object.assign(payload,{phase:'completed',compaction_operation_id:'operation',summarizer_provider:'openai',completion_status:'complete',compaction_invocation_id:'invocation',summary_char_count:512,summary_token_count:128});
+ Object.assign(payload,{phase:'completed',compaction_operation_id:'operation',summarizer_provider:'openai',completion_status:'complete',compaction_invocation_id:'invocation',summary_char_count:512,summary_token_count:128,occurred_at:NODE_TIME});
  const message = agentPresentationMessageSchema.parse({type:'COMPACTION_STATUS',payload});
  assert.equal(message.payload.provider,null); assert.equal(message.payload.summarizer_provider,'openai');
  assert.throws(()=>agentPresentationMessageSchema.parse({type:'COMPACTION_STATUS',payload:{...payload,semantic_fact_count:3}}));

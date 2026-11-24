@@ -4,6 +4,7 @@ import { parseTeamStreamServerMessage, serializeTeamStreamServerMessage } from "
 
 const item = (agentRunId, delta) => ({
   agent_run_id: agentRunId, segment_id: `segment-${agentRunId}`, turn_id: "turn-1", segment_type: "text", delta,
+  occurred_at: "2026-11-23T16:55:09.697Z",
 });
 const batch = (payload) => ({ type: "SEGMENT_CONTENT_BATCH", payload });
 
