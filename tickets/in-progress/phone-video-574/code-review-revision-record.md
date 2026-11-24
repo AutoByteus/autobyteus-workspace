@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1, F-2) | Pass | Fail: implementation Local Fix | CR-001, CR-002 (new) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001, CR-002 (resolved) |
+| CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass; test code `cf3d344ff4`) | Pass (CRR-003) | Pass | None |
 
 ## Revision Entries
 
@@ -108,3 +109,32 @@ None (CRR-001 had no findings).
 - Material score or classification changes: runtime correctness back to 9.3; no classification.
 - Recommended recipient: `/api_e2e_engineer`, to rerun AND-8, AND-9, IOS-9 and IOS-11.
 - Remaining risks or uncertainty: R-1 and R-2 (confirmed, non-blocking) and O-4 (to check on a physical iPhone) are unchanged.
+
+### CRR-004: proportional review of the API/E2E test code (Pass)
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/api-e2e-test-review-report.md` (new)
+- Review entry point and round: API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). Reviewed: `native-video-node.mjs`, `NativeVideoRealNodeUITests.swift`, `ios-simulator-smoke.sh`, the iOS README (commit `cf3d344ff4`; round 2 `dbd8a23c8f` changed no test code).
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass, 92.4%)
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003, implementation)
+- Current authoritative result: Pass (test code)
+- What changed in the review result and why:
+  - The test code is coherent and enters through real triggers.
+  - The F-1 regression assertion (`testDA…`) is real: it fails on IR-001 and passes on IR-002.
+  - No credential or pairing code is in the committed evidence.
+  - Non-blocking note T-1: two docstrings claim more than the tests assert (skip position, cache deletion).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None (first test review).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: R-1 and R-2 are confirmed and non-blocking. O-4 needs a scrubber check on a physical iPhone. The Android journeys have no durable driver (the coverage report says so).
