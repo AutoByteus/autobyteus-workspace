@@ -17,13 +17,13 @@ Ticket autobyteus-574 (phone-video-574, absorbs autobyteus-636). Worktree `<work
 
 - Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/phone-video-574/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-003` (CR-003, Local Fix). IR-001 is the baseline; IR-002 was CR-001 and CR-002.
+- Current implementation revision ID: `IR-004` (CR-004, Local Fix). IR-001 is the baseline; IR-002 was CR-001 and CR-002; IR-003 was CR-003.
 - Related solution revision IDs: SR-001, SR-002.
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002.
-- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (failure-origin: implementation), CRR-003 (Pass), CRR-005 (failure-origin: implementation, CR-003).
-- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1, F-2), round 3 (Fail: F-3).
+- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (failure-origin: implementation), CRR-003 (Pass), CRR-005 (failure-origin: implementation, CR-003), CRR-006 (Pass), CRR-007 (failure-origin: implementation, CR-004).
+- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1, F-2), round 3 (Fail: F-3), round 4 (Fail: F-4).
 - Related delivery revision IDs: N/A.
-- Triggering finding IDs: CR-003 (F-3); earlier CR-001 (F-1), CR-002 (F-2). In IR-001, the reviewer notes applied were: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
+- Triggering finding IDs: CR-004 (F-4); earlier CR-003 (F-3), CR-001 (F-1), CR-002 (F-2). In IR-001, the reviewer notes applied were: N-1 (redirects), N-2 (multi-range), N-3 (the iOS range cache, its tests), N-4 (hashed keys).
 
 What the change does:
 
@@ -38,7 +38,7 @@ What the change does:
   - Its full-screen button turns the phone to landscape with the bars hidden.
   - An in-page player's full-screen button now works too.
 - **D-4, iOS.**
-  - AVPlayer reads through a resource loader that serves from a range cache and fetches only the gaps.
+  - AVPlayer reads through a resource loader that serves from a range cache and fetches only the gaps. AVFoundation's small reads are answered from one streaming fetch (a read-ahead), not a request each; a seek far away starts its own (IR-004).
   - A wide video plays in landscape.
 - **D-5, both apps.**
   - The credential reaches the player in memory, for one playback only.
@@ -124,11 +124,9 @@ What the change does:
 
 ## Known Risks
 
-- **iOS: a range AVFoundation asks for while the main stream is still fetching it is fetched twice.**
-  - AVFoundation sends many 64 KB ranges beside its main stream. One that falls in bytes still in flight, not yet cached, is fetched again.
-  - Correctness and the cache are unaffected, and a reopen still fetches nothing it holds.
-  - It is extra traffic on a first play only. A later refinement could serve such a range from the in-flight fetch.
-- **iOS start time in a headless unit test:** 2.2–2.4 s against a stub at 1.5 MB/s before IR-003; 0.94 s with IR-003's declaration. Android measured 0.4–0.6 s.
+- **iOS: a fetch runs on to its gap's end while the player is open** (IR-004), filling the cache as the single stream did before IR-003. It stops when a read far away needs a fetch of its own, or when the player closes. The earlier "range fetched twice" risk is gone: a fetch stops where the cache or a running fetch begins.
+- **iOS on a link slower than the video (held, CRR-007):** at 0.5 MB/s against the video's ~0.76 MB/s, the scrub's reads started their own fetches and the picture moved. Whether the picture keeps up with the clock on such a link was not measured.
+- **iOS start time in a headless unit test:** 0.8 s against a stub at 1.5 MB/s with IR-004 (2.2–2.4 s before IR-003). It is measured to the first decoded frame. Android measured 0.4–0.6 s.
 - **The iOS player's Back/title bar stays visible** over the video, while the player's own controls hide. AVPlayerViewController does not expose when its controls show.
 - **Apple's networking logs the request URL** (the path, never the credential) in the simulator's unified log, on its own. A device redacts these lines as `<private>`. The app's code logs no URL on either platform.
 - **The emulator's WebView decoder stalls on a heavy 720p stream** that the native player plays. The in-page full-screen test uses a small baseline clip; real in-page playback is the page's existing path.
@@ -190,6 +188,7 @@ Evidence is under `tickets/in-progress/phone-video-574/evidence/implementation/`
 | IMP-10 | `pnpm test:unit`; server typecheck; clean-env `test:integration` and `vitest run tests/e2e` | `8e666f6c78` | macOS, Node 22, clean env | the whole server | AC-005, AC-006 | Pass | `IMP-10-server-suites.log` | unit `1085 passed`; integration `92 passed`; e2e `128 passed` |
 | IMP-11 | CR-001: the viewer specs on the fix and with `VideoPlayer.vue` stashed; web typecheck, guards, whole suite. CR-002: Android JVM tests on the fix and with `NodeVideoHttp.kt` stashed; build, androidTest compile, lint; iOS Core tests on the fix (with the video) and with `NodeVideoURL.swift` stashed | `fb2357dc09`, `6479a28f4b` | macOS, Node 22; JDK 21; Xcode 26.1.1, iOS 26.1 simulator | the viewer's auto-open; both apps' node-file-route rule (bridge, probe, every read) | UC-001, REQ-003, AC-003, CR-001, CR-002 | Pass (each new case red before the fix) | `IMP-11-cr001-cr002-local-fixes.log` | web `806 passed`; Android `total 129 tests, 0 failed`; iOS `passedTests 75` |
 | IMP-12 | `native-video-node.mjs` at the LAN address; `NativeVideoRealNodeUITests` test0 + testA on a fresh install, testA cached (twice), testA without the fix (red); the Core suite with the video | `c3ff688979` | Xcode 26.1.1, iOS 26.1 simulator, the real node behind the throttled proxy | `AuthorizedMediaLoader`'s content information; the scrub through the loader | AC-001 (iOS seek), CR-003 | Pass (red without the fix, as API/E2E found) | `IMP-12-cr003-ios-scrub.log` | testA `passed` ×3; red `swift:49` fails; reopen overlap `0`; Core `passedTests 75` |
+| IMP-13 | Core: `AuthorizedMediaLoaderTests` (60 s video) and the new `AuthorizedMediaLoaderReadAheadTests`, on the fix and on the IR-003 loader; the Core suite. Real node (two stacks, 1.5 MB/s and 1 MB/s; 0 and 50 ms): testA first open and cached, `testBDeliversInRealTimeOverASlowerLink` on the fix and on IR-003, the rest of the class; a held run at 0.5 MB/s | `d92abaeaa2` | Xcode 26.1.1, iOS 26.1 simulator (own), the real node behind the throttled proxy | `AuthorizedMediaLoader`'s serving: the cache in steps, the read-ahead fetch, cancels | AC-001, AC-002 (iOS), CR-004, CR-003 | Pass (red on IR-003 where it applies) | `IMP-13-cr004-ios-read-ahead.log` | `REALTIME delivered 14024706` (red `2029386`); testA `passed` ×7; Core `Executed 82 tests, with 0 failures`; red `("136") is greater than ("6")`; reopen overlap `0` |
 
 - Not run, and why:
   - real devices (API/E2E);

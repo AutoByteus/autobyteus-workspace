@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, design-review-report.md round 2 (ARCH-REV-002); Solution Designer, design-spec.md SR-002 | N/A (N-1…N-4 applied) | `Initial Baseline` | SR-001, SR-002, ARCH-REV-001, ARCH-REV-002 | D-1…D-7 and NA-8 implemented; ready for code review |
 | IR-002 | Code Reviewer, code-review-report.md failure-origin review (CRR-002), from API/E2E round 1 (F-1, F-2) | CR-001, CR-002 | `Local Fix` | CRR-001, CRR-002, API/E2E round 1 | A reload no longer opens the player by itself; dot-segment paths are refused on both platforms |
 | IR-003 | Code Reviewer, code-review-report.md failure-origin review (CRR-005), from API/E2E round 3 (F-3, formerly O-4) | CR-003 | `Local Fix` | CRR-003, CRR-005, API/E2E round 3 | The iOS loader declares the whole file available on demand; a scrub plays on |
+| IR-004 | Code Reviewer, code-review-report.md failure-origin review (CRR-007), from API/E2E round 4 (F-4) | CR-004 | `Local Fix` | CRR-006, CRR-007, API/E2E round 4 | The iOS loader answers small reads from one streaming fetch: real time over a 50 ms link, and the scrub still plays on |
 
 ## Revision Entries
 
@@ -85,4 +86,41 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The Core suite passes 75 of 75, the AVPlayer reopen fetching 0 cached bytes.
 - Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
 - Remaining limitations or risks: a cached to-end request is still answered in one synchronous loop (the reviewer's optional note), so a cancel cannot arrive within it; held for evidence.
+
+### IR-004 — The iOS loader answers AVFoundation's small reads from a read-ahead
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/phone-video-574/code-review-report.md`, "Round 6 Failure-Origin Finding" (CRR-007), from API/E2E round 4 (`api-e2e-execution-coverage-report.md` F-4; `evidence/api-e2e/R4/`).
+- Triggering finding IDs: CR-004 (API/E2E F-4).
+- Classification: `Local Fix`, direction (a) of CRR-007: keep the declaration, serve small reads from a read-ahead. The stop rule was not reached; outcomes 1–6 hold.
+- Prior authoritative result: IR-003, CRR-006 Pass; API/E2E round 4 Fail (F-4); CRR-007 Fail with the origin in implementation.
+- Current authoritative result: fixed and checked; `Large` / `High`, back to code review for the delta, then API/E2E.
+- Related solution and architecture-review revision IDs: N/A (no requirement or design change; the loader D-4 names: "Range, streaming", "range cache in the loader").
+- Related code-review revision IDs: CRR-006, CRR-007.
+- Related API/E2E revision IDs: API/E2E round 4.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: with IR-003's declaration AVFoundation reads about 23 KB at a time, one read after another, and the loader fetched each uncached read as its own ranged request. Over a 20–50 ms link that paid a round trip per read and played at 0.4–0.7× real time.
+- Approved behavior or requirement IDs affected: REQ-001 / AC-001 (iOS: start, seek, real time); REQ-002 / AC-002 (reopen from the cache).
+- Implementation delta (`d92abaeaa2`), all in `AutoByteusMobileCore/Video/AuthorizedMediaLoader.swift`:
+  - A read is served from the cache first, at most 1 MB per step; the queue is free between steps, so a cancel takes effect there (the CRR-005 held note).
+  - Past the cache, a read waits for a running fetch that will reach it within 1 MB (`readAheadReach`, about 0.7 s of AC-001's link). Otherwise it starts one fetch from its first missing byte to the next byte the cache holds or a running fetch starts at, or to the end.
+  - Arriving bytes go to the cache, whether or not a read still waits for them, and to every read they reach.
+  - A cancelled read leaves its fetch running. Fetches no read waits for stop when another fetch starts (a seek or a scrub moved the reader).
+  - The `If-Range` version check, the 206 and `Content-Range` check, the route rule and the header-only credential are unchanged.
+  - A `MediaRead` seam (AVFoundation's data request behind it) lets the unit tests drive the serving.
+  - The "fetched twice" Known Risk goes: a fetch now stops where a running fetch or the cache begins.
+- Tests:
+  - New `AuthorizedMediaLoaderReadAheadTests` (7 cases): a burst of 40 small sequential reads makes one request; a far read starts its own fetch and the idle one stops; cancelling one read keeps the fetch another waits for; a cancelled read's bytes are cached; a gap between cached bytes is fetched alone; cached bytes go in bounded steps and a cancel between steps stops the rest; a changed file fails the read.
+  - `AuthorizedMediaLoaderTests` waits for decoded frames, not the clock. With on-demand reads, a player with no video output reads no frame and only its clock runs; that is why round 4 saw it "past 30.3 s" with nothing fetched. It now also checks the request count: at most 6, against 136 on the IR-003 loader. README: the test video must be longer than 31 s.
+- Changed files or areas: the loader, its two test files, `autobyteus-ios/README.md`.
+- Local validation and result: IMP-13. On my own simulator and two stacks:
+  1. The scrub passes 7 times: first open and cached at 0 and 50 ms, at 1 MB/s with 50 ms, and at 0.5 MB/s with 50 ms.
+  2. `testBDeliversInRealTimeOverASlowerLink` at 50 ms delivers 14.0 MB in 10 s (5.3 MB needed), twice. The IR-003 loader on the same stack delivers 2.0 MB (red).
+  3. The AVPlayer test with a 60 s video fetches the middle: 3 requests, middle frames 0.6 s after the seek. On IR-003 it fails, at line 96 with the new test and with an item error (-11800) with the old one.
+  4. A reopen fetches 0 cached bytes: in the unit test and twice on the real node, only the probe.
+  5. The credential goes only in the header, on every video request; none has it in its URL.
+  6. The 7 new unit cases pass; the Core suite passes 82 of 82; the rest of the real-node class passes.
+- Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
+- Remaining limitations or risks:
+  - A fetch runs on to its gap's end while the player is open, filling the cache, as the single stream did before IR-003; it stops when a far read needs a fetch, or when the player closes.
+  - Held, measured partly: at 0.5 MB/s (below the video's ~0.76 MB/s) the scrub's reads started their own fetches and the picture moved. Whether the picture keeps up with the clock on such a link was not measured.
 

@@ -1,0 +1,220 @@
+# IMP-13 (CR-004; CRR-007, API/E2E F-4) the iOS loader answers AVFoundation's small reads from a read-ahead: real time over a
+#   50 ms link, the scrub plays on, a seek fetches the middle, a reopen fetches nothing cached, the credential only in the header
+# command:
+#   unit: TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<a 60 s 30.5 MB MP4> xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj
+#     -scheme AutoByteusMobile -destination id=<own simulator> -only-testing:AutoByteusMobileCoreTests[/<class>] test
+#     (the MP4: ffmpeg lavfi testsrc2 1280x720, 30 fps, 60 s, libx264 4 Mbit/s, +faststart)
+#   real node: env -i PATH="$PATH" HOME=<tmp>/home TMPDIR="$TMPDIR" node autobyteus-web/tests/e2e/native-video-node.mjs
+#     --output-dir=<fresh> --origin-host=<LAN IP> --listen-host=<LAN IP> --secrets-file=<outside the evidence>
+#     (stack 1: the default 1.5 MB/s; stack 2: --bps=1000000 --latency-ms=50), the existing builds (the server and the
+#     /mobile/ bundle, unchanged since API/E2E round 4); TEST_RUNNER_AUTOBYTEUS_574_REAL_NODE_INFO/_SECRETS=... xcodebuild ...
+#     test-without-building -only-testing:AutoByteusMobileUITests/NativeVideoRealNodeUITests/<test>
+#   red runs: the same with AuthorizedMediaLoader.swift as at c3ff688979 (IR-003), the new unit file set aside (it needs the
+#     new seam), rebuilt; then the fix restored and rebuilt (compared byte for byte)
+# commit: d92abaeaa2 (run on its working tree before committing, the same files)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for these runs and deleted after); the worktree's node behind the
+#   stack's throttled proxy
+# date: 2026-11-24
+# result: Pass; each required outcome red on the IR-003 loader where it applies.
+#   1 scrub (testAWideVideoFromTheChatLink, pictureMoves): passes on a first open and cached at 0 ms, a first open and cached
+#     at 50 ms, at 1 MB/s with 50 ms, and at 0.5 MB/s with 50 ms (7 runs).
+#   2 real time at 50 ms (testBDeliversInRealTimeOverASlowerLink): 14,024,706 bytes delivered in 10 s against 5,341,933 needed
+#     (twice); on the IR-003 loader 2,029,386 (fails, as API/E2E found).
+#   3 middle seek (AuthorizedMediaLoaderTests, 60 s video): passes; the middle is fetched (requests: the probe, 0-, 15558573-).
+#     On the IR-003 loader with the 60 s video: the item fails to play (-11800/-17377) with the old test, and 136 requests with
+#     the new one (fails at line 96).
+#   4 reopen: 0 bytes fetched again of what was cached (unit, and real node twice: only the 2-byte probe).
+#   5 credential: every video request has the phone credential in its header (160 on stack 1, the red run's included; 6 on stack 2); none has one in
+#     its URL. The only URL credentials are the page's WebSocket upgrades (`/ws/...`, access_token, NA-8's exception).
+#   6 unit cases: 7 new in AuthorizedMediaLoaderReadAheadTests, pass. Core suite: 82 tests, 0 failures.
+
+## red: AuthorizedMediaLoaderTests with the 60 s video on the IR-003 loader, the test as it was (flag on)
+<worktree>/autobyteus-ios/AutoByteusMobileCoreTests/Video/AuthorizedMediaLoaderTests.swift:49: error: -[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain] : failed - playing: not within 20.0 s
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' failed (20.106 seconds).
+Test Suite 'AuthorizedMediaLoaderTests' failed at 2026-11-24 20:32:36.927.
+Test Suite 'AutoByteusMobileCoreTests.xctest' failed at 2026-11-24 20:32:36.928.
+Test Suite 'Selected tests' failed at 2026-11-24 20:32:36.928.
+item failed: AVFoundationErrorDomain Code=-11800, underlying NSOSStatusErrorDomain Code=-17377 (repeated while it waits)
+
+## control: the same, the flag removed (IR-002's loader behaviour)
+autobyteus-574 iOS: playing after 2.02 s; at the middle 2.46 s after the seek; cached [ClosedRange(0...1835009), ClosedRange(14548992...17760255)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=1835010-14548991:0", "bytes=1835010-14548991:458752", "bytes=17760256-30539202:393216"]; fetched again of the cached: 0
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' passed (6.807 seconds).
+Test Suite 'AuthorizedMediaLoaderTests' passed at 2026-11-24 20:33:35.027.
+Test Suite 'AutoByteusMobileCoreTests.xctest' passed at 2026-11-24 20:33:35.028.
+Test Suite 'Selected tests' passed at 2026-11-24 20:33:35.028.
+
+## diagnosis: a temporary test (deleted) with a video output on the item, the read-ahead loader, every 0.1 s after a seek to 30 s
+DIAG start t=0.00 clock=0.00 status=0 rate=1.0 tc=1 frames=0 lastframe=-1.00 served=1 last=bytes=0-1:2 loaded=
+DIAG start t=0.11 clock=0.00 status=0 rate=1.0 tc=1 frames=0 lastframe=-1.00 served=2 last=bytes=0-30539202:131072 loaded=
+DIAG start t=0.21 clock=0.00 status=0 rate=1.0 tc=1 frames=0 lastframe=-1.00 served=2 last=bytes=0-30539202:262144 loaded=
+DIAG seek t=2.41 clock=30.00 status=1 rate=1.0 tc=2 frames=1 lastframe=30.00 served=3 last=bytes=15558573-30539202:327680 loaded=0.0+60.0
+DIAG seek t=2.52 clock=30.10 status=1 rate=1.0 tc=2 frames=2 lastframe=30.10 served=3 last=bytes=15558573-30539202:458752 loaded=0.0+60.0
+DIAG seek t=2.62 clock=30.21 status=1 rate=1.0 tc=2 frames=3 lastframe=30.21 served=3 last=bytes=15558573-30539202:589824 loaded=0.0+60.0
+DIAG seek t=2.73 clock=30.31 status=1 rate=1.0 tc=2 frames=4 lastframe=30.31 served=3 last=bytes=15558573-30539202:720896 loaded=0.0+60.0
+DIAG served ["bytes=0-1:2", "bytes=0-30539202:2818048", "bytes=15558573-30539202:5373952"]
+# frames are decoded at the clock's times after the seek, from a fetch at the middle. The durable test's player had no
+# video output: with on-demand reads AVFoundation then reads no frame at all and only its clock runs (R4's "cached 0...21072"),
+# so the test now waits for decoded frames, as the app's player view takes them.
+
+## green: AuthorizedMediaLoaderTests and AuthorizedMediaLoaderReadAheadTests
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testABurstOfSmallSequentialReadsMakesOneRequest]' passed (1.074 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAChangedFileFailsTheReadInsteadOfMixingVersions]' passed (0.030 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAFarReadStartsItsOwnFetchAndTheIdleOneStops]' passed (0.486 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAGapBetweenCachedBytesIsFetchedAlone]' passed (1.563 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testCachedBytesAreHandedOverInBoundedSteps]' passed (0.239 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testCancellingOneReadKeepsTheFetchAnotherReadWaitsFor]' passed (0.316 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testTheBytesOfACancelledReadAreCached]' passed (0.473 seconds).
+Test Suite 'AuthorizedMediaLoaderReadAheadTests' passed at 2026-11-24 20:36:02.317.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 4.181 (4.183) seconds
+autobyteus-574 iOS: playing after 0.77 s; at the middle 0.61 s after the seek; requests ["bytes=0-1", "bytes=0-30539202", "bytes=15558573-30539202"]; cached [ClosedRange(0...983039), ClosedRange(15558573...16345004)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' passed (2.954 seconds).
+Test Suite 'AuthorizedMediaLoaderTests' passed at 2026-11-24 20:38:04.558.
+Test Suite 'AutoByteusMobileCoreTests.xctest' passed at 2026-11-24 20:38:04.577.
+Test Suite 'Selected tests' passed at 2026-11-24 20:38:04.594.
+
+## red: the new AuthorizedMediaLoaderTests on the IR-003 loader
+autobyteus-574 iOS: playing after 1.26 s; at the middle 0.67 s after the seek; requests ["bytes=0-1", "bytes=0-1", "bytes=2-7", "bytes=32-39", "bytes=40-47", "bytes=148-155", "bytes=20952-20959", "bytes=8-31", "bytes=48-51", "bytes=52-147", "bytes=156-163", "bytes=164-167", "bytes=168-247", "bytes=248-255", "bytes=284-291", "bytes=256-263", "bytes=264-283", "bytes=292-299", "bytes=300-303", "bytes=304-323", "bytes=32
+<worktree>/autobyteus-ios/AutoByteusMobileCoreTests/Video/AuthorizedMediaLoaderTests.swift:96: error: -[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain] : XCTAssertLessThanOrEqual failed: ("136") is greater than ("6") - the probe and a few fetches, not a request per read
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=830155-848959:18805", "bytes=848960-866506:17547", "bytes=866507-892727:26221", "bytes=16244071-16256086:12016"]; fetched again of the cached: 0
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' failed (4.716 seconds).
+
+## Core suite on the fix (the 60 s video)
+autobyteus-574 iOS: playing after 0.81 s; at the middle 0.57 s after the seek; requests ["bytes=0-1", "bytes=0-30539202", "bytes=15558573-30539202"]; cached [ClosedRange(0...1048575), ClosedRange(15558573...16345004)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+	 Executed 82 tests, with 0 failures (0 unexpected) in 10.998 (11.029) seconds
+
+## stack 1 run 1: test0 + testA, a fresh install (first open), 0 ms
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (8.387 seconds).
+MARK tap 1795549220640
+MARK player 1795549222397
+MARK landscape 1795549222403
+MARK seek 1795549229896
+MARK seek-done 1795549231329
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795549236630
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.574 seconds).
+
+## stack 1 run 2: testA cached, 0 ms
+MARK tap 1795549275874
+MARK player 1795549277678
+MARK landscape 1795549277686
+MARK seek 1795549285169
+MARK seek-done 1795549286596
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795549291889
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (25.180 seconds).
+
+## stack 1 run 3a: POST /latency?ms=50, POST /touch (a new version), testA first open at 50 ms
+MARK tap 1795549330789
+MARK player 1795549332667
+MARK landscape 1795549332674
+MARK seek 1795549340122
+MARK seek-done 1795549341563
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795549346831
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (27.032 seconds).
+
+## stack 1 run 3b: testA cached at 50 ms
+MARK tap 1795549387868
+MARK player 1795549389690
+MARK landscape 1795549389698
+MARK seek 1795549397141
+MARK seek-done 1795549398651
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795549404163
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.894 seconds).
+
+## stack 1 run 4: testBDeliversInRealTimeOverASlowerLink (50 ms, a new version)
+REALTIME delivered 14024706 bytes in 10.0 s; real-time playback needs at least 5341933
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' passed (21.268 seconds).
+
+## stack 1 run 5 (red): testBDelivers... on the IR-003 loader
+REALTIME delivered 2029386 bytes in 10.0 s; real-time playback needs at least 5341593
+<worktree>/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:100: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink] : XCTAssertGreaterThanOrEqual failed: ("2029386.0") is less than ("5341593.735128593") - the node delivers the video at least as fast as it plays, over a slower link
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' failed (20.566 seconds).
+
+## stack 1 run 6: the rest of the class on the fix (testA, testBDelivers, testBSkip, testC, testDA, testE, testZ)
+MARK tap 1795549621762
+MARK player 1795549623559
+MARK landscape 1795549623566
+MARK seek 1795549631013
+MARK seek-done 1795549632432
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795549637707
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (25.707 seconds).
+REALTIME delivered 14024706 bytes in 10.0 s; real-time playback needs at least 5341931
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' passed (19.210 seconds).
+MARK skip 1795549672534
+POSITION after skip 18 seconds elapsed, 12 seconds remaining
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (21.671 seconds).
+MARK tap 1795549688710
+MARK player 1795549690449
+MARK back 1795549697218
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (18.549 seconds).
+MARK rewrite-while-open 1795549712975
+MARK rewrite-while-closed 1795549723894
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' passed (36.680 seconds).
+MARK close 1795549749402
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (16.670 seconds).
+MARK removed 1795549763131
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.442 seconds).
+
+## stack 2 (1 MB/s, 50 ms) run 1: test0 + testA, first open
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (8.152 seconds).
+MARK tap 1795549887506
+MARK player 1795549889450
+MARK landscape 1795549889457
+MARK seek 1795549896936
+MARK seek-done 1795549898386
+POSITION +1s 15 seconds elapsed, 15 seconds remaining
+POSITION +2s 16 seconds elapsed, 14 seconds remaining
+POSITION +3s hidden
+MARK back 1795549903766
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (34.918 seconds).
+
+## stack 2 run 2 (held observation): POST /throttle?bps=500000 (below the video's ~0.76 MB/s), POST /touch, testA
+MARK tap 1795549957489
+MARK player 1795549959433
+MARK landscape 1795549959440
+MARK seek 1795549966931
+MARK seek-done 1795549968399
+POSITION +1s 15 seconds elapsed, 15 seconds remaining
+POSITION +2s 16 seconds elapsed, 14 seconds remaining
+POSITION +3s hidden
+MARK back 1795549973775
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.289 seconds).
+
+## stack 1: the wide video's requests per run (the proxy's log), refetches and credentials
+run1: video requests 2 (probes 1), bytes 22544386; requests: [('bytes=0-1', 206, 2, '9153687'), ('bytes=0-22877255', 206, 22544384, '9153687')]
+run2: video requests 1 (probes 1), bytes 2; requests: [('bytes=0-1', 206, 2, '9153687')]
+run3a: video requests 2 (probes 1), bytes 22806530; requests: [('bytes=0-1', 206, 2, '9295970'), ('bytes=0-22877255', 206, 22806528, '9295970')]
+run3b: video requests 1 (probes 1), bytes 2; requests: [('bytes=0-1', 206, 2, '9295970')]
+run2 against run1: fetched again of what run1 fetched: 0 bytes (run1 fetched 22544384)
+run3b against run3a: fetched again of what run3a fetched: 0 bytes (run3a fetched 22806528)
+every video request with the phone credential in its header: True 160
+video requests with a credential in the URL: 0
+requests with a URL credential: 52 ['/ws/agent-collaboration/video_checker_65c5302c63634f3c9934cad1b43d37ec', '/ws/agent-package-definitions', '/ws/agent/video_checker_65c5302c63634f3c9934cad1b43d37ec', '/ws/file-explorer/agent_ws_4bc9c1cbe886767f7a47327e61cc6dcf227f308948e4717b062475489604328f']
+run4 (50 ms): [('bytes=0-1', 206, 2, '52 ms'), ('bytes=0-22877255', 206, 15138816, '10468 ms')]
+run5-red (IR-003 loader, 50 ms): 143 video requests; the first: ['bytes=0-1', 'bytes=0-1', 'bytes=2-7', 'bytes=32-39', 'bytes=40-47', 'bytes=148-155'] ...
+run6 (the class): 11 video requests: [('bytes=0-1', 206, 2), ('bytes=2285551-22877255', 206, 20119552), ('bytes=0-1', 206, 2), ('bytes=0-22877255', 206, 15138816), ('bytes=0-1', 206, 2), ('bytes=15073280-22877255', 206, 5701632), ('bytes=0-1', 206, 2), ('bytes=0-4199619', 206, 4199620), ('bytes=0-1', 206, 2), ('bytes=0-1', 206, 2), ('bytes=0-2243933', 206, 2243934)]
+
+## stack 2: the wide video's requests (ms after each run's tap)
+s2run1: seek at +9430 ms; [(256, 'bytes=0-1', 206, 2, 'phone', False), (318, 'bytes=0-22892283', 206, 15204352, 'phone', False)]
+s2run2-lowbps: seek at +9442 ms; [(211, 'bytes=0-1', 206, 2, 'phone', False), (273, 'bytes=0-22892283', 206, 4784128, 'phone', False), (9972, 'bytes=6542335-22892283', 206, 851578, 'phone', False), (11719, 'bytes=10947897-22892283', 206, 2097152, 'phone', False)]
+stack 2: every video request with the phone credential in its header: True (6); with a credential in the URL: 0
+# s2run1: when AVFoundation asked for the scrub's position the running fetch was within the 1 MB reach, so the read waited for
+#   it (about a second) and the picture played on. s2run2 (held, not required): at 0.5 MB/s the drag's reads were beyond the
+#   reach and started their own fetches (6542335-, then 10947897-); each earlier, idle fetch stopped; the picture moved after
+#   the scrub (pictureMoves). Whether the picture keeps up with the clock on a link slower than the video was not measured.
