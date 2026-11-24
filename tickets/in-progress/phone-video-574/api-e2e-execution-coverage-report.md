@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: Round 1; `/code_reviewer` CRR-001 Pass (9.4/10) on code head `b0a2eeacc0` (branch `codex/phone-video-574`, base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during the round
-- Prior round reviewed: None
+- Round and trigger: Round 2; `/code_reviewer` CRR-003 Pass (targeted delta, 9.4/10) on IR-002, code head `64a99bbcd2`: `fb2357dc09` (CR-001 = my F-1, web), `6479a28f4b` (CR-002 = my F-2, both apps). Round 1: CRR-001 Pass on `b0a2eeacc0` (base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during it
+- Prior round reviewed: round 1 (API-REV-001, Fail F-1, F-2); its rows below are kept as run
 - Deviations from the investigation's plan, and why: none in scope. Two harness defects of my own stack were found and fixed before any result was kept (progress log 14:40, 15:23)
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/tickets/in-progress/phone-video-574/evidence/api-e2e/`
 
@@ -28,8 +28,26 @@
 | ENV-3 | `b0a2eeacc0` app (Debug) | iOS simulator, own device `api574-iphone` (iPhone 17, iOS 26.1), Xcode 26.1.1 | the app paired with ENV-1 at the LAN address (`--listen-host`); XCUITest; `simctl io recordVideo` | deleted after the run; other agents' iPhone 17 and iPhone 16e not touched |
 | ENV-4 | `b0a2eeacc0` | as ENV-1 | Chrome (headless) with the owner credential on its requests, against a real node | the desktop renderer's engine |
 | ENV-5 | `b0a2eeacc0` | as ENV-1 | whole phone probe; server integration and E2E | clean env; short `TMPDIR` |
+| R2 | `64a99bbcd2` | as ENV-1…ENV-5 | rebuilt phone bundle, Android app, iOS app; AVD `api574_r2` (`-port 5584`, host GPU); simulator `api574-r2` | ENV-2/ENV-3 roles; both deleted after |
 
 ## Cases
+
+## Round 2 Cases (IR-002, code head `64a99bbcd2`)
+
+Rebuilt from `64a99bbcd2`: the phone bundle (`build:mobile-web`, after rebuilding the contract packages' missing `dist/`), the Android debug app, the iOS app. The server is unchanged since round 1.
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R2-AND-8 | AC-003 (refusal), F-2 | Android bridge `playVideo` from the page | `ac003-r2.mjs` (round 1's nine URLs) on a new AVD `api574_r2` (`-port 5584`, host GPU), fresh stack and pairing | ENV-1, ENV-2 | Pass | `R2-android/ac003-r2.json` | `/rest/../graphql`, `/rest/%2e%2e/graphql`, `/rest/../mobile/`, and the five others: no player (0 → 0) and no request but the page's own `GET /rest/health` / `POST /graphql` polling; the positive control `/rest/files/…` opens the player (`bytes=0-1` 206, a ranged read, phone header) | — |
+| R2-AND-9 | UC-001, D-2, F-1 | Android: a rewrite while the viewer is open | open the wide video from Files; `POST /rewrite` with the player open; Back; `POST /rewrite`; Play; the same file tapped again; another file; the chat link | ENV-2 | Pass | `R2-android/rewrite-while-open-2.png`, `rewrite-while-closed-2.png`, `play-after-rewrite.png`, `same-file-again.png`, `other-file.png`, `chat-link.png` | `VideoPlayerActivity` in the task's history: open 1 → after the rewrite 1 → one Back 0 → after a rewrite while closed 0 (the viewer shows Play); Play: probe + 200 of the new ETag `"2244077-…"`, CHANGED-574 plays; the same file tapped again: the viewer with Play (CRR-003's expected change); another file and the chat link: the player opens by itself (1), one Back closes it | a first count of mine matched another `dumpsys` section; the counts above read the task's `Hist` entries |
+| R2-IOS-9 | AC-003 (refusal), F-2 | iOS route check and `NodeVideoHTTP` against the real proxy | a temporary XCTest (dummy credential), deleted after | ENV-1, ENV-3 | Pass | `R2-ios/r2-route-check.txt`, `R2-ios/proxy-log.json` | refused before sending: `/rest/../graphql`, `/rest/%2e%2e/graphql`, `/rest/%2E%2E/graphql`, `/rest/../mobile/`, `/rest/./files/…`, `/rest/files%2F..%2F..%2Fgraphql`, `/graphql`; the only request the proxy saw: `/rest/files/video/media-574.mp4` (401, dummy credential) | — |
+| R2-IOS-13 | AC-001, AC-002, AC-004, F-1 | the durable class on a fresh stack, new simulator `api574-r2` | `xcodebuild … -only-testing:AutoByteusMobileUITests/NativeVideoRealNodeUITests` | ENV-1, ENV-3 | Pass | `R2-ios/r2-class-summary.log` | `Executed 7 tests, with 0 failures`: pairing, chat link (seek, Back), skip, Files tall, `testDARewriteDoesNotOpenThePlayerByItself` (R2-IOS-11), the player's Close, node removal | — |
+| R2-IOS-U | unit | iOS core tests on my simulator | `xcodebuild … -only-testing:AutoByteusMobileCoreTests` | ENV-3 | Pass | `R2-ios/r2-core-summary.log`, `r2-loader-60s.log` | 75 core tests pass (76 with the temporary route check); `AuthorizedMediaLoaderTests` with a 60 s 30.5 MB video: `playing after 1.47 s; at the middle 0.33 s after the seek`; reopen `fetched again of the cached: 0` | with my 30 s stack video it cannot pass (it seeks to 30 s): a fixture length, not the product |
+| R2-AND-U | unit | Android JVM tests | `./gradlew :app:testDebugUnitTest` | ENV-5 | Pass | `R2-checks/android-unit.log` | `tests 129 skipped 0 failed 0` (incl. `NodeVideoHttpTest`, `ShellBridgeMessagesTest`) | — |
+| R2-WEB-U | unit | web video specs | `vitest run` the viewer, playback and segment specs | ENV-5 | Pass | `R2-checks/web-specs.log` | `Test Files 24 passed (24)`, `Tests 200 passed (200)` | — |
+| R2-MSP-89…92 | AC-006 | phone media in a plain browser (the changed viewer) | `mobile-shell-probe.mjs --cases=MSP-89,MSP-90,MSP-91,MSP-92` | ENV-5 | Pass | `R2-checks/media-probe.json`, `R2-media-probe-console.log` | all four `Pass`; `unknownBrowserErrors: 0` | the rest of the probe touches no changed code |
+
+Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -72,16 +90,16 @@
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | User-Only Or Accepted-Risk Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8 | Proven (start < 2 s on both with GPU rendering; seek by range; header only); O-4 open | the media message on a live run: DEC-006 (a); the iOS scrubber drag (O-4) on a physical iPhone |
-| AC-002 | Yes | AND-4, AND-10, AND-12, IOS-4, IOS-5, IOS-12 | Proven | — |
-| AC-003 | Yes | AND-1, AND-7, AND-8, IOS-9, IOS-10 | **Not proven: F-2** (the refusal leg) | — |
+| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8, R2-IOS-13, R2-IOS-U | Proven (start < 2 s on both with GPU rendering; seek by range; header only); O-4 open | the media message on a live run: DEC-006 (a); the iOS scrubber drag (O-4) on a physical iPhone |
+| AC-002 | Yes | AND-4, AND-10, AND-12, IOS-4, IOS-5, IOS-12, R2-AND-9 (Play after a rewrite plays the new version), R2-IOS-13 | Proven | — |
+| AC-003 | Yes | AND-1, AND-7, IOS-10 (scans); R2-AND-8, R2-IOS-9 (refusal) | Proven (round 2) | — |
 | AC-004 | Yes | AND-5, AND-6, IOS-2, IOS-3, IOS-14 | Proven | — |
 | AC-005 | Yes | AC5-1, DSK-1, SI-1, SE-1, U-1 | Proven | — |
-| AC-006 | Yes | AND-11, WS-1, DSK-1, U-1 | Proven | the old iOS app not built (same `hello` rule as Android) |
+| AC-006 | Yes | AND-11, WS-1, DSK-1, U-1, R2-MSP-89…92 | Proven | the old iOS app not built (same `hello` rule as Android) |
 
 ## Findings
 
-### F-1 — A file rewritten while its video viewer is open opens the native player again (Android and iOS)
+### F-1 — A file rewritten while its video viewer is open opens the native player again (Android and iOS) — Resolved in round 2 (`fb2357dc09`; R2-AND-9, R2-IOS-13)
 
 - Where: `autobyteus-web/components/fileExplorer/viewers/VideoPlayer.vue` lines 62–65. The watcher on `[playbackMode, url, contentRevision]` calls `playNatively()` whenever `contentRevision` changes in native mode, and live refresh bumps `contentRevision` when an agent rewrites the open file.
 - Seen:
@@ -93,7 +111,7 @@
 - Expected: a rewrite refreshes the viewer (the Play button plays the new version, AC-002); the player opens only on a tap or on the viewer's first opening.
 - Preliminary classification: `Local Fix` (web, D-2's auto-open rule: open natively on mount or when the URL changes, not on `contentRevision`). Owner per the failure-origin review.
 
-### F-2 — The apps' route check lets `/rest/..` dot segments through, and the phone's credential goes to other routes of the node (Android and iOS)
+### F-2 — The apps' route check lets `/rest/..` dot segments through, and the phone's credential goes to other routes of the node (Android and iOS) — Resolved in round 2 (`6479a28f4b`; R2-AND-8, R2-IOS-9)
 
 - Where:
   - Android `NodeVideoHttp.isNodeFileUrl` (`target.rawPath?.startsWith("/rest/")`);
@@ -128,21 +146,21 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 80% | AC-001, 002, 004, 005, 006 proven on a real node in both apps; AC-003's scans proven | AC-003's refusal leg fails (F-2); F-1 breaks DEC-001's "a tapped video opens…" | the fixes and a rerun |
-| Changed-boundary execution directness | 88% | 95% | the real page → bridge → native player → proxy → node chain on both apps; the request log read per case | the iOS bridge driven by its checker and sender, not by page script (no Web Inspector) | — |
-| Cross-boundary integration realism and mock gap | 85% | 92% | a real node behind a throttled proxy; real pairing; the old app from the base; Chromium for the desktop | the media message by its URL form only (DEC-006) | — |
-| Environment, configuration, identity, and fixture fidelity | 85% | 90% | clean env; own emulator and simulator; host-GPU re-measure | no physical phone | a device run |
-| Failure, edge-case, lifecycle, and recovery evidence | 80% | 92% | rewrite while open and after Back; night mode and recovery; node removal; old app; crafted bridge URLs; changed file | LRU eviction at 500 MB not reached | — |
-| User-surface, browser, and desktop-shell confidence | 82% | 88% | recordings and frames of every journey; landscape/portrait; R-1 frame for the user | O-4 (the scrubber on the simulator) unattributed | a physical iPhone scrubber check |
-| Durable regression coverage quality and relevance | 80% | 90% | `native-video-node.mjs`; `NativeVideoRealNodeUITests` (incl. F-1's assertion) | the Android journeys are not a durable driver (adb + raw CDP steps in the report) | an Android driver on the stack |
+| Requirement and acceptance-criteria proof | 90% | 96% | every AC on a real node in both apps; AC-003's refusal leg after the fix (R2-AND-8, R2-IOS-9) | the media message by its URL form (DEC-006) | — |
+| Changed-boundary execution directness | 90% | 95% | the real page → bridge → native player → proxy → node chain; the fixed rules exercised live (Android) and against the real proxy (iOS) | the iOS bridge driven by its checker and sender, not by page script | — |
+| Cross-boundary integration realism and mock gap | 88% | 92% | a real node behind a throttled proxy; real pairing; the old app; Chromium for the desktop | the live media segment (DEC-006) | — |
+| Environment, configuration, identity, and fixture fidelity | 88% | 90% | clean env; own emulators/simulators; host-GPU timings | no physical phone | a device run |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 94% | rewrite open/closed (fixed), night mode and recovery, node removal, old app, crafted URLs (fixed), changed file | LRU eviction at 500 MB not reached | — |
+| User-surface, browser, and desktop-shell confidence | 85% | 88% | recordings and frames of every journey; R-1 frame for the user; the X and Back | O-4 (the iOS scrubber drag on the simulator) unattributed | a physical iPhone scrubber check |
+| Durable regression coverage quality and relevance | 88% | 92% | `native-video-node.mjs`; `NativeVideoRealNodeUITests` (7 tests, F-1's assertion passing now); the implementation's new F-1/F-2 unit tests | the Android journeys are not a durable driver | an Android driver on the stack |
 
-- Overall post-repository confidence: 83.6%
-- Overall final confidence: 89.6% (mean of the seven final scores)
+- Overall post-repository confidence: 88.4% (round 2)
+- Overall final confidence: 92.4% (mean of the seven final scores; round 1: 89.6%, Fail)
 - Calculation method: mean of the final category scores
-- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `No` (AC-003's refusal leg: F-2)
-- Any final applicable category below `90%`: `Yes` (requirement proof 80%, user surface 88%)
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-1, F-2 (open); O-4; no physical phone
+- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `Yes`
+- Any final applicable category below `90%`: `Yes` (user surface 88%: O-4 on the simulator; no physical phone)
+- Default final confidence target of `95%` met: `No` (bounded by the emulator/simulator-only environment and O-4)
+- Confidence-limiting residual risks: O-4 (a physical iPhone scrubber check recommended before release); no physical phones; the media message on a live run (DEC-006)
 
 ## Broader Validation Decision (Mandatory)
 
@@ -192,35 +210,28 @@
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
 | `/tmp/api574` (HOME, TMPDIR, stack roots, scripts, recordings, scans, derived data) | Yes | kept until the ticket closes; removed when the Solution Designer asks | kept |
-| AVDs `api574_video`, `api574_gpu` and their emulators (ports 5580, 5582) | Yes | `emu kill`; `avdmanager delete avd` | deleted |
-| Simulators `api574-iphone`, `api574-smoke` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
+| AVDs `api574_video`, `api574_gpu`, `api574_r2` and their emulators (ports 5580, 5582, 5584) | Yes | `emu kill`; `avdmanager delete avd` | deleted |
+| Simulators `api574-iphone`, `api574-smoke`, `api574-r2` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
 | Stacks (nodes, proxies) | Yes | `POST /stop` | stopped; no process left |
 | Base worktree `/tmp/api574/base-app` | Yes | `git worktree remove` | removed |
-| Temporary XCTest `ScrubControlTests.swift` | Yes | deleted before commit | removed |
+| Temporary XCTests `ScrubControlTests.swift` (round 1), `RouteCheckControlTests.swift` (round 2) | Yes | deleted before commit | removed |
+| Contract packages' `dist/` (missing in round 2; build outputs, untracked) | Yes | rebuilt with their `build` scripts for the phone bundle | kept (untracked) |
 | Paid inference | No | — | none |
 
 ## Preliminary Classification (On `Fail`)
 
-- F-1: `Local Fix`, web (`VideoPlayer.vue`, D-2's auto-open rule). Add a spec: a `contentRevision` change while mounted in native mode does not call `playVideo`.
-- F-2: `Local Fix`, Android `NodeVideoHttp.isNodeFileUrl` and iOS `NodeVideoURL.isNodeFileURL`. Refuse dot segments, raw or percent-encoded, or normalize the path and then check it. Add a unit case on each, beside the existing route-check cases.
-- Not failures: O-1…O-6. O-4 (the iOS scrubber freeze on the simulator) is open: it needs a physical iPhone.
-- Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six cases), 609 FU-007 (SE-1's RRB-1/SID-2). No new follow-up.
+Not applicable in round 2 (Pass). Round 1's F-1 and F-2 (`Local Fix`) were confirmed by the code reviewer (CRR-002: CR-001, CR-002) and are resolved. Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six cases), 609 FU-007 (SE-1's RRB-1/SID-2). No new follow-up.
 
 ## Latest Authoritative Result
 
-- Result: `Fail` (F-1, F-2)
-- Criteria not proven, parts only the user can check, or accepted as unverified risk:
-  - AC-003's refusal leg (F-2);
-  - accepted: the media message on a live run (DEC-006);
-  - for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`).
-- Evidence decisions requested: DEC-006 (decided: accept)
-- Preliminary classification and recommended owner (on `Fail`): `Local Fix` for both; code reviewer for the failure-origin review
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (Fail)
-- Notes: both players work on a real node:
-  - start under 2 s (with GPU rendering on Android), seek by range;
-  - 0 bytes on reopen, a changed file fetched fresh, the cache cleared on node removal;
-  - full screen;
-  - no credential in any URL, log or file;
-  - the old app and the browser keep today's path.
+- Result: `Pass` (round 2, code head `64a99bbcd2`)
+- Criteria not proven, parts only the user can check, or accepted as unverified risk: accepted: the media message on a live run (DEC-006); for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`); open: O-4 (the iOS scrubber drag freezes the picture on the simulator; a physical iPhone check is recommended before release)
+- Evidence decisions requested: DEC-006 (round 1; decided: accept)
+- Preliminary classification and recommended owner (on `Fail`): —
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (Pass, Large / High: proportional test-code review of `native-video-node.mjs`, `NativeVideoRealNodeUITests.swift`, the smoke script and README lines, commit `cf3d344ff4`; no test-code change in round 2)
+- Notes: F-1 and F-2 hold fixed on both apps with no regression:
+  - the native player still opens from the chat link, from Files and for another file;
+  - Play plays a rewritten file's new version;
+  - the expected change shows: the same open file tapped again gives the viewer with Play.
 
-  R-3 is met in the app; R-1 is confirmed (frame for the user); R-2 is confirmed, and recovery works.
+  Unit suites green: iOS core 75, Android JVM 129, web 200; MSP-89…92 Pass. Round 1's proof of AC-001, AC-002, AC-004, AC-005 and AC-006 stands, as nothing else changed (`git diff b0a2eeacc0 64a99bbcd2` outside tickets: the two fixes, their tests, my round-1 test code).

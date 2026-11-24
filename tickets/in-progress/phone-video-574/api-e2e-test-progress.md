@@ -46,3 +46,12 @@
 | 2026-11-24 18:26 | smoke | Completed | Pass | `ios-simulator-smoke.sh` on my own simulator (`IOS_SIMULATOR_NAME=api574-smoke`): 8 passed, 0 skipped; the new class excluded |
 | 2026-11-24 18:28 | IOS-14 | Completed | Pass | the player's own Close (X) closes it as Back does (portrait, the page's viewer) |
 | 2026-11-24 18:29 | — | Checkpoint | — | stacks stopped; AVD `api574_gpu` and simulator `api574-smoke` deleted |
+| 2026-11-24 18:53 | — | Checkpoint | — | Round 2 (CRR-003 on IR-002, `64a99bbcd2`): phone bundle rebuilt (after rebuilding the contract packages' missing `dist/`), Android app built; web video specs 24 files / 200 tests Pass |
+| 2026-11-24 18:59 | R2-AND-8 | Completed | Pass | own AVD `api574_r2` (`-port 5584`, host GPU); the three dot-segment URLs and the five others refused, nothing sent; `/rest/files/…` plays |
+| 2026-11-24 19:01 | R2-AND-9 | Completed | Pass | rewrite with the player open: 1 stays 1; after Back 0 stays 0; Play plays the new version; the same file again shows Play; another file and the chat link open the player |
+| 2026-11-24 19:02 | — | Checkpoint | — | Android stack stopped; AVD `api574_r2` deleted |
+| 2026-11-24 19:08 | R2-IOS-13 | Completed | Pass | own simulator `api574-r2`, fresh stack: all 7 tests pass, incl. `testDARewriteDoesNotOpenThePlayerByItself` |
+| 2026-11-24 19:10 | R2-IOS-9, R2-IOS-U | Completed | Pass | every dot-segment form refused before sending; iOS core tests pass (the loader test with a 60 s video: a 30 s video cannot pass its 30 s seek) |
+| 2026-11-24 19:10 | — | Checkpoint | — | iOS stack stopped; simulator `api574-r2` deleted; temporary route-check test removed |
+| 2026-11-24 19:11 | R2-AND-U | Completed | Pass | Android JVM 129 tests, 0 failed |
+| 2026-11-24 19:16 | R2-MSP-89…92 | Completed | Pass | all four; `unknownBrowserErrors: 0` |

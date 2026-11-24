@@ -1,0 +1,4 @@
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' started.
+autobyteus-574 iOS: playing after 1.47 s; at the middle 0.33 s after the seek; cached [ClosedRange(0...1769473), ClosedRange(14548992...15007743)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=1769474-14548991:458752", "bytes=15007744-30541907:458752"]; fetched again of the cached: 0
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderTests testPlaysAtOnceSeeksByRangeReopensFromTheCacheAndFetchesAChangedFileAgain]' passed (3.933 seconds).

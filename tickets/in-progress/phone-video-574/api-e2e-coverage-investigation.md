@@ -16,10 +16,10 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (round 2 reruns F-1/F-2's cases and the changed units; the plan below is unchanged)
 - Trigger: `/code_reviewer`, CRR-001 Pass; branch `codex/phone-video-574`, code head `b0a2eeacc0` (reviewer's documents `b2a9886093`, DEC-006 `e9918a41a5`), base `4b73fccae2`; Large / High
-- Prior Investigation Reviewed: None (first round)
+- Prior Investigation Reviewed: round 1 (this file); round 2 trigger: `/code_reviewer` CRR-003 Pass on IR-002, code head `64a99bbcd2`
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
