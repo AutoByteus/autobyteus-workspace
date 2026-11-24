@@ -71,7 +71,8 @@ const unitRecords = (w: World) => ({
     return { messages: [...new Map(logs.flatMap((log) => log ?? []).map((line) => [line.messageId, line])).values()], isOwnAgent: () => true };
   },
 });
-const read = async (stream: NodeJS.ReadableStream) => { let text = ""; for await (const chunk of stream) text += String(chunk); return text; };
+/** The text of the file a reference resolves to (autobyteus-642: the reader returns the file, which the route serves by range). */
+const read = (resolved: { path: string }) => fs.readFile(resolved.path, "utf8");
 const orgReferenceId = (messageId: string, file: string) => createHash("sha256").update(`${messageId}\0${file}`).digest("hex");
 
 describe("SR-017: stored typed paths follow a renamed member folder (beta.7 cross-node files)", () => {
@@ -112,10 +113,10 @@ describe("SR-017: stored typed paths follow a renamed member folder (beta.7 cros
     const open = async (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, messageId: string, file: string) =>
       references.resolve({ rootKind, rootRunId, messageId, referenceId: orgReferenceId(messageId, file) });
     for (const [messageId, file, bytes] of [["m_peer_member", at.spec, "SPEC BYTES"], ["m_peer_agent", at.brief, "BRIEF BYTES"]] as const) {
-      expect(await read((await open("agent_org", ORG, messageId, file)).stream)).toBe(bytes);
+      expect(await read(await open("agent_org", ORG, messageId, file))).toBe(bytes);
     }
-    expect((await open("agent_team", SET, "m_peer_member", at.spec)).absolutePath).toBe(at.spec);
-    expect(await read((await open("agent", "concierge_1", "m_peer_agent", at.picture)).stream)).toBe("PNG BYTES");
+    expect((await open("agent_team", SET, "m_peer_member", at.spec)).path).toBe(at.spec);
+    expect(await read(await open("agent", "concierge_1", "m_peer_agent", at.picture))).toBe("PNG BYTES");
   });
 
   it("a re-run changes no byte; a file naming no moved Org is never parsed (byte pre-check)", async () => {
