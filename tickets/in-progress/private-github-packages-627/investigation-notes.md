@@ -81,6 +81,32 @@ Conclusions:
 3. **Secret-in-URL risk, measured:** GitHub's documented tarball endpoint answers with a redirect whose URL carries a temporary token. That URL must never be logged, stored, shown in an error, or kept in a record. The direct codeload URL with an `Authorization` header gives the same archive without a credential in any URL (measured 200), but codeload with a header is not a documented GitHub contract; the REST tarball endpoint is.
 4. Agent packages and skills keep working without git on the server: the tarball path needs no `.git` folder, no git remote and no credential helper on disk.
 
+### 2.3 Second probe (architecture phase, 2026-11-24)
+
+Same method (temporary vitest file `tests/probe-627/archive-ref.probe.test.ts`, read-only, statuses only; removed after the run, never committed). Against the same private repository, pinned to its head commit:
+
+| Call | Result |
+| --- | --- |
+| codeload `tar.gz/{commit}`, no token | 404 |
+| codeload `tar.gz/{commit}`, Bearer token | 200, gzip |
+| codeload `tar.gz/{commit}`, invalid token | **404** (codeload does not say "rejected") |
+| REST `GET /repos/{o}/{r}`, invalid token | 401 |
+| ls-refs, invalid token (Basic) | 401 |
+
+Conclusions: the download the code actually makes (archive pinned to a commit) works with the token. A rejected token is visible only on REST and ls-refs (401); every download is preceded by one of those calls (import: REST metadata; check and update: ls-refs), so "token rejected" is detected there. A 404 from codeload with a token means "no access".
+
+**Evidence risk:** the test token `test.github.token` expires on **2026-11-25** (`tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts:16`). Live validation must run before then, or the founder renews it.
+
+### 2.4 Architecture-phase code facts
+
+- Agent packages download archives through the generic `utils/download-utils.ts` `downloadFileFromUrl` (logs the full URL at :17 and :69; plain `fetch`, 30 s total timeout, no rate-limit gate, no headers), at `github-agent-package-installer.ts:198-201` (`downloadRevision`, used by `package-edit-capture.ts:104`) and `:216-238` (`downloadRepositoryArchive`). Skills download the same archive through `publicGitHubRequest` (`github-skill-repository.ts:93-100`, 120 s). Two paths for one capability.
+- `buildGitHubRepositoryArchiveUrl` (branch form) is reached only when `metadata.latestRevision` is empty (`github-agent-package-installer.ts:226-236`); both callers pass `GitHubRepositoryRevisionMetadata`, whose `latestRevision` is required, so it is never reached.
+- `GitHubRepositoryClient` is constructed at `agent-package-service.ts:102`, `github-agent-package-installer.ts:63` (per call), `skill-source-service.ts:46` and `codex-agent-runtime-strategy.ts:44`.
+- The vault entry is read with `getSecretVaultRuntime().requireService().resolveForUse({ kind: "integration", integrationId: "github" })` (`credential-proxy-routes.ts:112`, `integration-connection-service.ts:82`); a missing entry throws `SecretVaultError` `NOT_FOUND` (`integration-connection-service.ts:84`).
+- Connect today: GraphQL `connectIntegration(id, token)` requires an imported integration (`api/graphql/types/integrations.ts:136-140,174-186`) and returns its card.
+- Update-check failures are stored as text: agent packages `sourceMetadata.github.lastError` (`github-agent-package-updates.ts:88-99`), skills `lastCheck.error` (`skill-source-service.ts:192-196`). The UI shows that text (`AgentPackagesManager.vue:179-183`, `SkillSourceRow.vue:55-57`).
+- `GLOSSARY.md:320-325` calls `src/integrations/github/` "the public GitHub client for package and skill sources (no token)". "Private" already means a skill private to an agent (`agent_packages.md:183-203`); this ticket always says "private repository".
+
 ## 3. Approaches analyzed
 
 | # | Approach | Works on Docker node | Secret custody | User effort | Verdict |

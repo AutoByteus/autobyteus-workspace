@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (waiting for the founder's decisions DEC-001..DEC-004)
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002`
 - Package identifier: `private-github-packages-627`
 - Request / ticket: autobyteus-627 "Investigate: supporting private GitHub URLs for Agent Packages (feasibility, auth process & UX options)"
 - Requested by: `/project_task_manager` (for the founder)
 - Requirements owner: Solution Designer
 - Date: 2026-11-23
-- Approved by and reference: not yet. The Task requires the founder's decision before design or implementation
-- Exact approved requirements baseline / solution revision: none yet
+- Approved by and reference: User (the founder), 2026-11-24, relayed verbatim by `/project_task_manager`: "Obviously the token should be stored in private vault please send to the software engineering team which earlier worked on the investigation to get started working on it and I mean the token should be stored in private vault". The relay states: Option A, inline connect, Agent Packages + Skills, Device Flow deferred, the recommended defaults for DEC-001..DEC-004. Task comment of 2026-11-24 says the same
+- Exact approved requirements baseline / solution revision: SR-002 (this document)
 - Behavior-defining supplements: none (evidence: [investigation-notes.md](investigation-notes.md), [probe-627-results.txt](probe-627-results.txt))
 
 ## Options Report (summary for the founder)
@@ -32,7 +32,7 @@ What the user does:
    - The guide links to GitHub's page for creating the token.
    - The user pastes the token. GitHub checks it, and it is saved for the node, exactly as on the Integrations page.
    - The import continues.
-3. **If GitHub is connected:** the import just works. The package card looks like any GitHub package (it can show a "Private" mark).
+3. **If GitHub is connected:** the import just works. The package card looks like any GitHub package.
 4. **Updates:** the package keeps updating on the usual schedule with the same token.
 5. **When the token expires or is revoked:** the update check fails, and the package keeps what it has. The card says *"GitHub rejected this node's token. Reconnect GitHub"*, with a button to the connection.
 6. **When the token cannot see the repository** (it was not selected, or the organization has not approved the token): the message is *"Not found, or this node's GitHub token can't read it."*
@@ -188,11 +188,11 @@ As the template states: blocking findings cite a REQ/AC/BEH ID here; new policy 
 
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Do imports use the same per-node GitHub token as agents' GitHub access? | With one token, the repositories selected for packages can also be read by agents that have the GitHub integration skill | (A) one token per node; (A′) a separate "package downloads" token | One token is the simplest: one place to connect, renew and revoke. The user already controls what it reaches by choosing repositories on GitHub. Agents get it only through the GitHub skill the user assigns, and never see the value. A′ doubles the expiry work and only helps someone who wants packages private *from their own agents*. **Recommend A.** | Founder | Needs user |
-| DEC-002 | Where does the user connect GitHub when the GitHub integration isn't imported? | Today the token field exists only on an imported integration's card | (a) inline in the import dialog when a repository looks private; (b) also a GitHub entry on the Integrations page that is always there; (c) require importing the integration first | (c) is a confusing detour. (a) puts the step exactly where the need appears. The same connection then shows on the Integrations page when the integration is imported. **Recommend (a)**; (b) only if you want one fixed place too. | Founder | Needs user |
-| DEC-003 | Which imports get private support? | All three have the same refusal | Agent Packages only; + Skills; + Application Packages | Agent Packages and Skills use the same GitHub client, so supporting both costs almost nothing, and a private package often comes with private skills. Application Packages have a separate copy of the GitHub code; adding them is a separate piece of work. **Recommend Agent Packages + Skills now; Application Packages as a follow-up.** | Founder | Needs user |
-| DEC-004 | GitHub sign-in (Device Flow) now? | It would remove the "create a token" step | OAuth App (broad `repo` access); GitHub App (fine-grained, but needs an AutoByteus-owned App, refresh tokens and installation per org) | It changes only how the token is obtained, not how it is used, so it can come later without rework. **Recommend a follow-up ticket.** | Founder | Needs user |
-| DEC-005 | Which download address? | The documented address puts a temporary token in a redirect URL | REST `tarball` (documented; signed redirect) vs codeload with a header (measured; undocumented) | A technical choice within REQ-005. Decided in design: either is acceptable if the signed URL is never logged, stored or put in an error. | Solution Designer | Deferred to design |
+| DEC-001 | Do imports use the same per-node GitHub token as agents' GitHub access? | With one token, the repositories selected for packages can also be read by agents that have the GitHub integration skill | (A) one token per node; (A′) a separate "package downloads" token | One token is the simplest: one place to connect, renew and revoke. The user already controls what it reaches by choosing repositories on GitHub. Agents get it only through the GitHub skill the user assigns, and never see the value. A′ doubles the expiry work and only helps someone who wants packages private *from their own agents*. **Recommend A.** | Founder | Decided by the founder 2026-11-24: A (the token in this node's private vault, shared with the GitHub integration) |
+| DEC-002 | Where does the user connect GitHub when the GitHub integration isn't imported? | Today the token field exists only on an imported integration's card | (a) inline in the import dialog when a repository looks private; (b) also a GitHub entry on the Integrations page that is always there; (c) require importing the integration first | (c) is a confusing detour. (a) puts the step exactly where the need appears. The same connection then shows on the Integrations page when the integration is imported. **Recommend (a)**; (b) only if you want one fixed place too. | Founder | Decided by the founder 2026-11-24: (a). Refined in design (SR-002, no change of intent): the connection line sits in the import area of the Agent Packages and Skill sources screens and is always visible there (Connect / Connected as @login · Replace token · Disconnect), so the user can also reconnect after an expiry, where the failed update is shown |
+| DEC-003 | Which imports get private support? | All three have the same refusal | Agent Packages only; + Skills; + Application Packages | Agent Packages and Skills use the same GitHub client, so supporting both costs almost nothing, and a private package often comes with private skills. Application Packages have a separate copy of the GitHub code; adding them is a separate piece of work. **Recommend Agent Packages + Skills now; Application Packages as a follow-up.** | Founder | Decided by the founder 2026-11-24: Agent Packages + Skills; Application Packages follow-up FU-627-01 |
+| DEC-004 | GitHub sign-in (Device Flow) now? | It would remove the "create a token" step | OAuth App (broad `repo` access); GitHub App (fine-grained, but needs an AutoByteus-owned App, refresh tokens and installation per org) | It changes only how the token is obtained, not how it is used, so it can come later without rework. **Recommend a follow-up ticket.** | Founder | Decided by the founder 2026-11-24: follow-up FU-627-02 |
+| DEC-005 | Which download address? | The documented address puts a temporary token in a redirect URL | REST `tarball` (documented; signed redirect) vs codeload with a header (measured; undocumented) | Decided in design (SR-002): codeload with the header. Measured for the commit-pinned archive the code downloads (200 with the token, 404 without). No URL carrying a credential ever exists in this process, and downloads stay outside the REST quota as today. Risk: undocumented; see the design's Risks | Solution Designer | Decided |
 
 ## Traceability
 
@@ -224,9 +224,11 @@ As the template states: blocking findings cite a REQ/AC/BEH ID here; new policy 
 - Product design: N/A (not requested)
 - Decisions visible with reasoning: Yes
 - Content ready for approval: Yes
-- Remaining content blocker: the founder's decisions DEC-001..DEC-004
+- Remaining content blocker: none
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: No
-- Remaining blocker: the founder's decision (the Task requires it before design and implementation)
+- Approval recorded: Yes (founder, 2026-11-24)
+- Exact requirements and supplement approval basis recorded: Yes (SR-002)
+- Approved requirements package ready for architecture design: Yes
+- Remaining blocker: none
