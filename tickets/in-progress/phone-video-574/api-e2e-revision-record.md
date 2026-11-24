@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/code_reviewer`, `code-review-report.md` (CRR-001 Pass), round 1 | SR-001, ARCH-REV-*, IR-001, CRR-001, DEC-006 | N/A | Fail / 89.6% |
 | API-REV-002 | `/code_reviewer`, `code-review-report.md` (CRR-003 Pass, targeted delta on IR-002), round 2 | IR-002 (`fb2357dc09`, `6479a28f4b`), CRR-002 (CR-001, CR-002), CRR-003 | Fail / 89.6% | Pass / 92.4% |
+| API-REV-003 | `/delivery_engineer`, DR-001 (O-4 attribution request), round 3 | DR-001; product code unchanged since `64a99bbcd2` | Pass / 92.4% | Fail (F-3) / 93.0% |
 
 ## Revision Entries
 
@@ -56,3 +57,24 @@ None
 - New or remaining failure IDs: None
 - Recommended owner: code reviewer (proportional test-code review of `cf3d344ff4`)
 - Remaining risks, blocked evidence, or untested scope: O-4 (physical iPhone scrubber check); no physical phones; the media message on a live run (DEC-006)
+
+### API-REV-003 — O-4 attributed: the iOS loader-backed asset stops its picture after an AVKit scrub (F-3)
+
+- Triggering role, report path, and round: delivery engineer, DR-001 (its three controls for O-4), round 3
+- Triggering finding or case IDs: O-4 (IOS-6)
+- Related revision IDs: DR-001 (`ad813b4e6d`); code head `64a99bbcd2`
+- Why recorded: O-4 turned out to be a product defect
+- Coverage decisions or durable test paths changed: `NativeVideoRealNodeUITests.testAWideVideoFromTheChatLink` now asserts that the picture moves after the scrub (`pictureMoves`: two screenshots 1 s apart with the controls hidden). It fails on the shipped loader and passes on the plain-file path and with the flag. This change needs the code reviewer's proportional review
+- Cases added, changed, removed, or rechecked: R3-O4-a (loader vs plain file, 2 + 2 runs), R3-O4-b (pixels), R3-O4-c (bytes), R3-O4-d (loader requests), R3-O4-e (`isEntireLengthAvailableOnDemand`, 2 runs), R3-IOS-2
+- Commands, environment, fixture, or broader-validation delta: own simulator `api574-o4`, deleted after. Temporary uncommitted harness switches (a plain-file path in `NativeVideoPlayer.start`, loader logging, the flag) and two temporary test files, all reverted; the clean tree was rebuilt and R3-IOS-2 rerun
+
+#### Prior Failure Resolution
+
+None new (F-1, F-2 resolved in API-REV-002).
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md` (Round 3 Cases, F-3, AC-001, scorecard, result), `api-e2e-test-progress.md`, `evidence/api-e2e/R3-O4/`
+- Prior result and confidence: Pass / 92.4%
+- Current result and confidence: Fail (F-3) / 93.0%
+- New or remaining failure IDs: F-3
+- Recommended owner: code reviewer (failure-origin review); preliminary `Local Fix` in the iOS loader
+- Remaining risks, blocked evidence, or untested scope: no physical phones; the media message on a live run (DEC-006)

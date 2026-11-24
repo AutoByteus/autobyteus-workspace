@@ -19,7 +19,7 @@ final class NativeVideoRealNodeUITests: XCTestCase {
     }
 
     /// From the chat's file link: the app's player opens, a wide video turns to landscape, the scrubber is moved to the
-    /// middle, and Back returns to the page in portrait.
+    /// middle and the picture plays on from there, and Back returns to the page in portrait.
     func testAWideVideoFromTheChatLink() throws {
         let app = try openTheRun()
         let link = app.webViews.buttons["Open wide-574.mp4 in Files"]
@@ -43,6 +43,10 @@ final class NativeVideoRealNodeUITests: XCTestCase {
             Thread.sleep(forTimeInterval: 1)
             print("POSITION +\(second)s \(position(app))")
         }
+        // The picture plays on after the scrub, not only the clock (API/E2E F-3): with the controls hidden, two
+        // screenshots a second apart differ while the video plays and are identical when its picture is frozen.
+        Thread.sleep(forTimeInterval: 2)
+        XCTAssertTrue(pictureMoves(app), "the picture plays on after a scrub to the middle")
         app.buttons["video.back"].tap()
         XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
         XCTAssertTrue(wait(timeout) { !self.isLandscape(app) }, "and the phone returns to portrait")
@@ -227,6 +231,13 @@ final class NativeVideoRealNodeUITests: XCTestCase {
     private func position(_ app: XCUIApplication) -> String {
         let slider = app.sliders.firstMatch
         return slider.exists ? "\(slider.value ?? "-")" : "hidden"
+    }
+
+    /// Whether the screen changes within a second (the player's controls hidden): a playing video's picture moves.
+    private func pictureMoves(_ app: XCUIApplication) -> Bool {
+        let before = XCUIScreen.main.screenshot().pngRepresentation
+        Thread.sleep(forTimeInterval: 1)
+        return XCUIScreen.main.screenshot().pngRepresentation != before
     }
 
     /// One request to the stack's control endpoint (127.0.0.1), e.g. `POST /rewrite`.

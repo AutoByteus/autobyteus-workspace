@@ -1,0 +1,18 @@
+o4-ondemand.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' started.
+o4-ondemand.log:MARK tap-loader 1795545214939
+o4-ondemand.log:MARK seek 1795545224200
+o4-ondemand.log:MARK seek-done 1795545225650
+o4-ondemand.log:MARK end 1795545233994
+o4-ondemand.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' passed (26.140 seconds).
+o4-ondemand2.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testCLoaderScrubAgain]' started.
+o4-ondemand2.log:MARK tap-loader 1795545310728
+o4-ondemand2.log:MARK seek 1795545320065
+o4-ondemand2.log:MARK seek-done 1795545321501
+o4-ondemand2.log:MARK end 1795545329813
+o4-ondemand2.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testCLoaderScrubAgain]' passed (26.301 seconds).
+o4-ondemand2.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' started.
+o4-ondemand2.log:MARK tap-loader 1795545337220
+o4-ondemand2.log:MARK seek 1795545346520
+o4-ondemand2.log:MARK seek-done 1795545347984
+o4-ondemand2.log:MARK end 1795545356283
+o4-ondemand2.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' passed (26.646 seconds).

@@ -1,0 +1,58 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' started.
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (9.684 seconds).
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testALoaderScrub]' started.
+MARK tap-loader 1795544962207
+MARK seek 1795544972342
+MARK seek-done 1795544973797
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+POSITION +4s hidden
+POSITION +5s hidden
+POSITION +6s hidden
+POSITION +7s hidden
+POSITION +8s hidden
+MARK end 1795544982081
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testALoaderScrub]' passed (27.538 seconds).
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testBPlainFileScrub]' started.
+MARK tap-plain 1795544989356
+MARK seek 1795544998717
+MARK seek-done 1795545000147
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+POSITION +4s hidden
+POSITION +5s hidden
+POSITION +6s hidden
+POSITION +7s hidden
+POSITION +8s hidden
+MARK end 1795545008466
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testBPlainFileScrub]' passed (26.406 seconds).
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testCLoaderScrubAgain]' started.
+MARK tap-loader 1795545015856
+MARK seek 1795545025207
+MARK seek-done 1795545026630
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+POSITION +4s hidden
+POSITION +5s hidden
+POSITION +6s hidden
+POSITION +7s hidden
+POSITION +8s hidden
+MARK end 1795545034987
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testCLoaderScrubAgain]' passed (26.547 seconds).
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testDPlainFileScrubAgain]' started.
+MARK tap-plain 1795545042367
+MARK seek 1795545051740
+MARK seek-done 1795545053164
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+POSITION +4s hidden
+POSITION +5s hidden
+POSITION +6s hidden
+POSITION +7s hidden
+POSITION +8s hidden
+MARK end 1795545061474
+Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testDPlainFileScrubAgain]' passed (26.467 seconds).

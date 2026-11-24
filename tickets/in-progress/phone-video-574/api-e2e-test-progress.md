@@ -55,3 +55,10 @@
 | 2026-11-24 19:10 | — | Checkpoint | — | iOS stack stopped; simulator `api574-r2` deleted; temporary route-check test removed |
 | 2026-11-24 19:11 | R2-AND-U | Completed | Pass | Android JVM 129 tests, 0 failed |
 | 2026-11-24 19:16 | R2-MSP-89…92 | Completed | Pass | all four; `unknownBrowserErrors: 0` |
+| 2026-11-24 19:24 | — | Checkpoint | — | Round 3 (delivery DR-001: attribute O-4): own simulator `api574-o4`, fresh stack, temporary plain-file switch and control tests (uncommitted) |
+| 2026-11-24 19:28 | R3-O4-b, R3-O4-c | Completed | Pass | loader frames pixel-identical to the file's (6 seeks; 105 frames after a burst); cache 16.6 MB byte-identical |
+| 2026-11-24 19:31 | R3-O4-a | Completed | Fail (F-3) | the AVKit scrubber drag: loader stops at 15.533 (2/2, fresh and cached); plain file in the same screen plays on (2/2) |
+| 2026-11-24 19:32 | R3-O4-d | Completed | — | no loader request during or after the scrub (the whole file answered from the cache at open) |
+| 2026-11-24 19:35 | R3-O4-e | Completed | — | with `isEntireLengthAvailableOnDemand = true` the drag plays on (2/2); without it stops again (16.000) |
+| 2026-11-24 19:39 | R3-IOS-2 | Completed | Fail (F-3, as intended) | the durable picture check fails on the clean shipped tree (rebuilt after reverting every temporary change); reads "moves" on the plain path and with the flag |
+| 2026-11-24 19:40 | — | Checkpoint | — | stack stopped; simulator `api574-o4` deleted |

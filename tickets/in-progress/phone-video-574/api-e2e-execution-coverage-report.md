@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: Round 2; `/code_reviewer` CRR-003 Pass (targeted delta, 9.4/10) on IR-002, code head `64a99bbcd2`: `fb2357dc09` (CR-001 = my F-1, web), `6479a28f4b` (CR-002 = my F-2, both apps). Round 1: CRR-001 Pass on `b0a2eeacc0` (base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during it
-- Prior round reviewed: round 1 (API-REV-001, Fail F-1, F-2); its rows below are kept as run
+- Round and trigger: Round 3; `/delivery_engineer` DR-001 asked to attribute O-4 (the iOS scrubber freeze) with three controls, on the branch tip `ad813b4e6d` (product code unchanged since `64a99bbcd2`). Round 2: `/code_reviewer` CRR-003 Pass (targeted delta, 9.4/10) on IR-002, code head `64a99bbcd2`: `fb2357dc09` (CR-001 = my F-1, web), `6479a28f4b` (CR-002 = my F-2, both apps). Round 1: CRR-001 Pass on `b0a2eeacc0` (base `4b73fccae2`); DEC-006 (`e9918a41a5`) decided during it
+- Prior round reviewed: round 2 (API-REV-002, Pass); rounds 1 and 2 rows below are kept as run
 - Deviations from the investigation's plan, and why: none in scope. Two harness defects of my own stack were found and fixed before any result was kept (progress log 14:40, 15:23)
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/tickets/in-progress/phone-video-574/evidence/api-e2e/`
 
@@ -31,6 +31,25 @@
 | R2 | `64a99bbcd2` | as ENV-1…ENV-5 | rebuilt phone bundle, Android app, iOS app; AVD `api574_r2` (`-port 5584`, host GPU); simulator `api574-r2` | ENV-2/ENV-3 roles; both deleted after |
 
 ## Cases
+
+## Round 3 Cases (O-4 attribution; product code `64a99bbcd2`)
+
+Own simulator `api574-o4` (iPhone 17, iOS 26.1), a fresh stack, the same 30 s 22.9 MB `wide-574.mp4` (a byte-identical local copy for the plain runs). Temporary harness changes, reverted before the commit:
+- a launch-environment switch in `NativeVideoPlayer.start` that plays a local file through the same screen with no loader (the only difference from the shipped path);
+- loader request logging;
+- an `isEntireLengthAvailableOnDemand` switch;
+- two control test files.
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R3-O4-a | AC-001 (seek), O-4 | IOS-6's drag (`slider.adjust(0.5)`, the same steps and timing): the loader vs the plain file in the same screen | a temporary UI test, 2 runs each, recorded | ENV-3 | **Fail (F-3)** | `R3-O4/strip-A.png`, `strip-C.png` (loader), `strip-B.png`, `strip-D.png` (plain), `a-ui-runs.log` | loader, first open and fully cached: the picture **stops at 15.533** after the drag and stays (to +7 s); plain file: plays on 15.367 → 21.867 in both runs | the grey rectangle is the test pattern's own moving square (also in the plain frames, e.g. B at 4.5 s), not a damaged frame |
+| R3-O4-b | AC-001, O-4 | decoded pixels: the loader's frames vs the plain file's at the same item times | a temporary XCTest (`AVPlayerItemVideoOutput`, BGRA, SHA-256 per frame): 6 precise seeks (15.0, 15.533, 15.2, 3.6, 20.0, 7.0), then a scrub-like burst (20 precise seeks 70 ms apart) and 4 s of play | ENV-3 | Pass | `R3-O4/b-c-frames-and-bytes.log` | every seek frame identical; after the burst 105 frames at the same times, 0 differing | no damaged frame from the loader |
+| R3-O4-c | AC-001, O-4 | bytes: every range the loader served and every range its cache holds vs the file | the same test: the stub's 72 served ranges (cancelled ones included), then the cache read back against the file | ENV-3 | Pass | `R3-O4/b-c-frames-and-bytes.log` | cache 16,646,146 bytes in 5 ranges; chunks differing from the file: 0 | the loader hands AVFoundation the same `Data` it writes to the cache |
+| R3-O4-d | O-4 (diagnosis) | what the loader is asked during an AVKit scrub | temporary loader logging, a cached run | ENV-3 | — | `R3-O4/loader-requests-during-scrub.txt` | from the cache the loader answers `offset=0 toEnd=1` (the whole 22.9 MB) in 17 ms and one more to-end request; **no request during or after the scrub**: nothing is pending, yet the picture stops | not a starved decoder |
+| R3-O4-e | O-4 (diagnosis) | the same drag with `contentInformationRequest.isEntireLengthAvailableOnDemand = true` | temporary switch, 2 runs, recorded, with a loader run without it in between | ENV-3 | — | `R3-O4/strip-E.png`, `strip-C2-E2.png`, `on-demand-runs.log` | with the flag: plays on (17.133 → 22.133; 15.767 → 20.733); without it, in between: stops again (16.000) | a lead for the fix, not a verified fix |
+| R3-IOS-2 | AC-001 (seek) | the durable `testAWideVideoFromTheChatLink` with a new picture check (with the controls hidden, two screenshots 1 s apart must differ) | `xcodebuild … -only-testing:…/testAWideVideoFromTheChatLink` on the clean tree | ENV-3 | Fail (F-3, as intended) | `R3-O4/picture-check.log` | fails at line 49 on the shipped loader; the same check reads "moves" on the plain file and on the loader with the flag | the round-1/2 version read only the scrubber value, which advances while frozen |
+
+Round 1 and 2 rows (kept as run; IOS-6 is now F-3):
 
 ## Round 2 Cases (IR-002, code head `64a99bbcd2`)
 
@@ -90,7 +109,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | User-Only Or Accepted-Risk Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8, R2-IOS-13, R2-IOS-U | Proven (start < 2 s on both with GPU rendering; seek by range; header only); O-4 open | the media message on a live run: DEC-006 (a); the iOS scrubber drag (O-4) on a physical iPhone |
+| AC-001 | Yes | AND-1, AND-2b, AND-3, AND-13, IOS-2, IOS-3, IOS-7, IOS-8, R2-IOS-13, R2-IOS-U, R3-O4-a…e, R3-IOS-2 | **Not proven on iOS: F-3** (a scrubber drag stops the picture through the loader); Android proven; iOS start, skip seek and reopen proven | the media message on a live run: DEC-006 (a) |
 | AC-002 | Yes | AND-4, AND-10, AND-12, IOS-4, IOS-5, IOS-12, R2-AND-9 (Play after a rewrite plays the new version), R2-IOS-13 | Proven | — |
 | AC-003 | Yes | AND-1, AND-7, IOS-10 (scans); R2-AND-8, R2-IOS-9 (refusal) | Proven (round 2) | — |
 | AC-004 | Yes | AND-5, AND-6, IOS-2, IOS-3, IOS-14 | Proven | — |
@@ -124,6 +143,21 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 - Expected: a URL whose path, once normalized, is not under `/rest/` (or any URL with `.`/`..` segments, raw or percent-encoded) is refused before anything is sent.
 - Preliminary classification: `Local Fix` (both apps' route check; a unit case each, beside `ShellBridgeMessagesTest` / `NodeVideoHTTPTests`).
 
+### F-3 — On iOS, a drag of the player's scrubber stops the picture of a node video (the loader-backed asset); the same drag on a plain file plays on (was O-4)
+
+- Where: the iOS player path for node videos: `AuthorizedMediaLoader` (AVAssetResourceLoader delegate) under `NativeVideoPlayerViewController`'s AVPlayerViewController.
+- Seen:
+  - after AVKit's scrubber is dragged to the middle, the picture stops (15.533 or 16.000) while the clock runs on; pause and resume do not recover it (IOS-6, R3-O4-a, 3 of 3 runs, fresh and fully cached);
+  - the same screen, gesture and video on a plain local file plays on (2 of 2);
+  - the skip buttons and a no-UI player through the same loader play on (IOS-7, IOS-8, R3-O4-b).
+- Not the bytes or the decoding: the loader's frames are pixel-identical to the file's and its bytes byte-identical (R3-O4-b, R3-O4-c). From the cache it answers the whole file at once, and AVFoundation asks for nothing during the scrub (R3-O4-d).
+- Lead: with `contentInformationRequest.isEntireLengthAvailableOnDemand = true` the same drag plays on (2 of 2, R3-O4-e). This is a diagnostic, not a verified fix; the fix owner should confirm it, or find the real cause.
+- Why it matters: AC-001 "a seek to the middle plays within 2 s". On iOS the user's seek is this scrubber.
+- Expected: after a scrubber drag the picture plays on from there, as the plain file does.
+- Durable check: `testAWideVideoFromTheChatLink` now asserts the picture moves after the scrub. It fails on the shipped code and passes on the plain-file path and with the flag.
+- Preliminary classification: `Local Fix` (the iOS loader: how it answers AVFoundation's content information, data requests or both). The failure-origin review decides.
+- Residual: the simulator only (no physical iPhone). The control isolates the loader as the cause on the simulator, and a physical device may or may not show it. A verified fix removes the question.
+
 ## Observations (not failures)
 
 - **O-1 (R-2), Android: a night-mode switch during playback.** The player is recreated and says it could not play. Back and Play recover, from the cache (AND-10). This is the reviewer's prediction; the design accepts a recreated player failing loudly. A scheduled dark mode at dusk would trigger it.
@@ -133,7 +167,7 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
   - tall: first frame 0.17 s, playing 1.28 s;
   - reopen: likewise.
   The headless 2.2–2.4 s was not the app's.
-- **O-4, iOS: a scrubber drag freezes the picture on the simulator.**
+- **O-4 → F-3 (round 3).** The earlier observation, kept for the record: **a scrubber drag freezes the picture on the simulator.**
   - After `slider.adjust` the picture stops: at 15.533, at 15.200 on a fresh file, at 3.6 scrubbing back. The clock moves on and pause/resume does not recover it (IOS-6).
   - The player's skip button seeks and plays on (IOS-7).
   - Without UI, through the same loader, precise and rapid seeks keep delivering frames (IOS-8).
@@ -146,21 +180,21 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 90% | 96% | every AC on a real node in both apps; AC-003's refusal leg after the fix (R2-AND-8, R2-IOS-9) | the media message by its URL form (DEC-006) | — |
-| Changed-boundary execution directness | 90% | 95% | the real page → bridge → native player → proxy → node chain; the fixed rules exercised live (Android) and against the real proxy (iOS) | the iOS bridge driven by its checker and sender, not by page script | — |
+| Requirement and acceptance-criteria proof | 88% | 85% | every AC on a real node in both apps, except iOS's scrubber seek | AC-001 on iOS fails its seek leg (F-3) | the fix and a rerun |
+| Changed-boundary execution directness | 92% | 96% | the real chain on both apps; round 3 isolates the loader with a plain-file control in the same screen | — | — |
 | Cross-boundary integration realism and mock gap | 88% | 92% | a real node behind a throttled proxy; real pairing; the old app; Chromium for the desktop | the live media segment (DEC-006) | — |
 | Environment, configuration, identity, and fixture fidelity | 88% | 90% | clean env; own emulators/simulators; host-GPU timings | no physical phone | a device run |
-| Failure, edge-case, lifecycle, and recovery evidence | 90% | 94% | rewrite open/closed (fixed), night mode and recovery, node removal, old app, crafted URLs (fixed), changed file | LRU eviction at 500 MB not reached | — |
-| User-surface, browser, and desktop-shell confidence | 85% | 88% | recordings and frames of every journey; R-1 frame for the user; the X and Back | O-4 (the iOS scrubber drag on the simulator) unattributed | a physical iPhone scrubber check |
-| Durable regression coverage quality and relevance | 88% | 92% | `native-video-node.mjs`; `NativeVideoRealNodeUITests` (7 tests, F-1's assertion passing now); the implementation's new F-1/F-2 unit tests | the Android journeys are not a durable driver | an Android driver on the stack |
+| Failure, edge-case, lifecycle, and recovery evidence | 92% | 95% | rewrites, night mode, node removal, old app, crafted URLs, changed file; F-3's controls: pixels, bytes, requests, the flag | LRU eviction at 500 MB not reached | — |
+| User-surface, browser, and desktop-shell confidence | 88% | 90% | recordings and frames of every journey; F-3 attributed with frame strips; R-1 frame for the user | the physical iPhone | — |
+| Durable regression coverage quality and relevance | 90% | 93% | `native-video-node.mjs`; `NativeVideoRealNodeUITests` now asserts the picture moves after a scrub (fails on F-3, passes on the plain path) | the Android journeys are not a durable driver | an Android driver on the stack |
 
-- Overall post-repository confidence: 88.4% (round 2)
-- Overall final confidence: 92.4% (mean of the seven final scores; round 1: 89.6%, Fail)
+- Overall post-repository confidence: 89.4% (round 3)
+- Overall final confidence: 93.0% (mean of the seven final scores; round 2: 92.4%, Pass; round 1: 89.6%, Fail)
 - Calculation method: mean of the final category scores
-- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `Yes`
-- Any final applicable category below `90%`: `Yes` (user surface 88%: O-4 on the simulator; no physical phone)
-- Default final confidence target of `95%` met: `No` (bounded by the emulator/simulator-only environment and O-4)
-- Confidence-limiting residual risks: O-4 (a physical iPhone scrubber check recommended before release); no physical phones; the media message on a live run (DEC-006)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check or accepted as unverified risk: `No` (AC-001's iOS scrubber seek: F-3)
+- Any final applicable category below `90%`: `Yes` (requirement proof 85%: F-3)
+- Default final confidence target of `95%` met: `No`
+- Confidence-limiting residual risks: F-3 (open); no physical phones; the media message on a live run (DEC-006)
 
 ## Broader Validation Decision (Mandatory)
 
@@ -190,10 +224,11 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 | --- | --- | --- | --- |
 | `autobyteus-web/tests/e2e/native-video-node.mjs` (new) | Added | every AND-*, IOS-* | — |
 | `autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift` (new; skipped without the stack) | Added | IOS-1…3, 7, 11…14 | — |
+| `NativeVideoRealNodeUITests.testAWideVideoFromTheChatLink`: the picture must move after the scrub (`pictureMoves`), round 3 | Updated | R3-IOS-2 (F-3) | — |
 | `autobyteus-ios/scripts/ios-simulator-smoke.sh` (skips the new class, as it skips `NativeVideoPlayerUITests`) | Updated | smoke run on my simulator: 8 passed, 0 skipped (`ios/smoke/smoke-summary.log`) | — |
 | `autobyteus-ios/README.md` (how to run it) | Updated | — | — |
 
-- Commit: this round's API/E2E commit on `codex/phone-video-574`
+- Commits: `cf3d344ff4` (round 1); round 3's API/E2E commit on `codex/phone-video-574` (on top of delivery's `ad813b4e6d`)
 - Added or updated paths attached for proportional test-code review: `Yes`
 
 ## Dependencies Mocked Or Emulated
@@ -211,27 +246,31 @@ Round 1 rows (kept as run; F-1 and F-2 are resolved by the round-2 rows above):
 | --- | --- | --- | --- |
 | `/tmp/api574` (HOME, TMPDIR, stack roots, scripts, recordings, scans, derived data) | Yes | kept until the ticket closes; removed when the Solution Designer asks | kept |
 | AVDs `api574_video`, `api574_gpu`, `api574_r2` and their emulators (ports 5580, 5582, 5584) | Yes | `emu kill`; `avdmanager delete avd` | deleted |
-| Simulators `api574-iphone`, `api574-smoke`, `api574-r2` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
+| Simulators `api574-iphone`, `api574-smoke`, `api574-r2`, `api574-o4` | Yes | `simctl shutdown`, `simctl delete` | deleted (others' iPhone 17 and iPhone 16e untouched) |
 | Stacks (nodes, proxies) | Yes | `POST /stop` | stopped; no process left |
 | Base worktree `/tmp/api574/base-app` | Yes | `git worktree remove` | removed |
-| Temporary XCTests `ScrubControlTests.swift` (round 1), `RouteCheckControlTests.swift` (round 2) | Yes | deleted before commit | removed |
+| Temporary XCTests `ScrubControlTests.swift` (round 1), `RouteCheckControlTests.swift` (round 2), `FrameCompareControlTests.swift`, `ScrubPlainControlUITests.swift` (round 3); round 3's temporary switches and logging in `NativeVideoPlayer.swift` and `AuthorizedMediaLoader.swift` | Yes | deleted / `git checkout` before commit; the clean tree rebuilt and R3-IOS-2 rerun on it | removed |
 | Contract packages' `dist/` (missing in round 2; build outputs, untracked) | Yes | rebuilt with their `build` scripts for the phone bundle | kept (untracked) |
 | Paid inference | No | — | none |
 
 ## Preliminary Classification (On `Fail`)
 
-Not applicable in round 2 (Pass). Round 1's F-1 and F-2 (`Local Fix`) were confirmed by the code reviewer (CRR-002: CR-001, CR-002) and are resolved. Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six cases), 609 FU-007 (SE-1's RRB-1/SID-2). No new follow-up.
+- F-3: `Local Fix`, iOS `AuthorizedMediaLoader` (its answers to AVFoundation). Lead: `contentInformationRequest.isEntireLengthAvailableOnDemand`; R3-O4-e. The durable check: R3-IOS-2. The failure-origin review decides the owner.
+- Resolved earlier: F-1, F-2 (round 2).
+- Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six cases), 609 FU-007 (SE-1's RRB-1/SID-2). No new follow-up.
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, code head `64a99bbcd2`)
-- Criteria not proven, parts only the user can check, or accepted as unverified risk: accepted: the media message on a live run (DEC-006); for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`); open: O-4 (the iOS scrubber drag freezes the picture on the simulator; a physical iPhone check is recommended before release)
+- Result: `Fail` (round 3: F-3; product code `64a99bbcd2`)
+- Criteria not proven, parts only the user can check, or accepted as unverified risk:
+  - not proven: AC-001's iOS scrubber seek (F-3);
+  - accepted: the media message on a live run (DEC-006);
+  - for the user: the R-1 frame (`ios/strips/landscape-r1-back-bar.png`).
 - Evidence decisions requested: DEC-006 (round 1; decided: accept)
-- Preliminary classification and recommended owner (on `Fail`): —
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (Pass, Large / High: proportional test-code review of `native-video-node.mjs`, `NativeVideoRealNodeUITests.swift`, the smoke script and README lines, commit `cf3d344ff4`; no test-code change in round 2)
-- Notes: F-1 and F-2 hold fixed on both apps with no regression:
-  - the native player still opens from the chat link, from Files and for another file;
-  - Play plays a rewritten file's new version;
-  - the expected change shows: the same open file tapped again gives the viewer with Play.
-
-  Unit suites green: iOS core 75, Android JVM 129, web 200; MSP-89…92 Pass. Round 1's proof of AC-001, AC-002, AC-004, AC-005 and AC-006 stands, as nothing else changed (`git diff b0a2eeacc0 64a99bbcd2` outside tickets: the two fixes, their tests, my round-1 test code).
+- Preliminary classification and recommended owner (on `Fail`): `Local Fix`; code reviewer for the failure-origin review
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (Fail)
+- Notes:
+  - O-4 is settled on the simulator by delivery's three controls. The same AVKit scrubber drag stops the picture through the loader (3/3) and plays on a plain file in the same screen (2/2).
+  - The loader's frames and bytes equal the file's, and it has no request pending during the scrub.
+  - With `isEntireLengthAvailableOnDemand` set it plays on (2/2).
+  - Everything else of round 2 stands (no product change since `64a99bbcd2`).
