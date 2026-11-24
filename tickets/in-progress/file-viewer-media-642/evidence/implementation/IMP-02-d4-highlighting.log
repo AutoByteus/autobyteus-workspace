@@ -1,0 +1,58 @@
+# IMP-02 (D-4, REQ-004, AC-004) one table of file types, each with its Monaco and Prism language
+# command: pnpm -C autobyteus-web exec vitest run utils/highlighting/__tests__/languageDetector.spec.ts
+#            components/fileExplorer/__tests__/FileViewer.spec.ts
+#          red: the new spec with the old languageDetector.ts (its getLanguage standing for both lookups) and the old
+#            highlightService.ts (restored after)
+# commit: 531af6cea7
+# env: macOS, Node 22.23.1, vitest (jsdom for this spec; Monaco 0.52.2's own Monarch grammars tokenize the samples)
+# date: 2026-11-24
+# result: Pass: 59 tests. Red: 41 of 53 fail on the old map: each new type in both engines, and .html/.vue in Monaco
+#   only (the old map gave Monaco Prism's `markup`/`vue`); Python, TypeScript, JSON, Markdown unchanged pass on both.
+
+## red
+   × languageDetector (autobyteus-642 D-4) > config/app.yaml: Monaco yaml, Prism yaml 5ms
+   × languageDetector (autobyteus-642 D-4) > config/app.yml: Monaco yaml, Prism yaml 1ms
+   × languageDetector (autobyteus-642 D-4) > Cargo.toml: Monaco ini, Prism toml 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/build.sh: Monaco shell, Prism bash 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/env.bash: Monaco shell, Prism bash 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/rc.zsh: Monaco shell, Prism bash 0ms
+   × languageDetector (autobyteus-642 D-4) > cmd/main.go: Monaco go, Prism go 0ms
+   × languageDetector (autobyteus-642 D-4) > src/lib.rs: Monaco rust, Prism rust 0ms
+   × languageDetector (autobyteus-642 D-4) > src/App.java: Monaco java, Prism java 1ms
+   × languageDetector (autobyteus-642 D-4) > pom.xml: Monaco xml, Prism markup 1ms
+   × languageDetector (autobyteus-642 D-4) > settings.ini: Monaco ini, Prism ini 0ms
+   × languageDetector (autobyteus-642 D-4) > Dockerfile: Monaco dockerfile, Prism docker 0ms
+   × languageDetector (autobyteus-642 D-4) > web/index.html: Monaco html, Prism markup 0ms
+   × languageDetector (autobyteus-642 D-4) > web/App.vue: Monaco html, Prism vue 0ms
+   × languageDetector (autobyteus-642 D-4) > matches by the file name, not a folder, and ignores case 1ms
+   × languageDetector (autobyteus-642 D-4) > config/app.yaml is highlighted by Monaco (its yaml grammar gives several token kinds) 1ms
+   × languageDetector (autobyteus-642 D-4) > config/app.yml is highlighted by Monaco (its yaml grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > Cargo.toml is highlighted by Monaco (its ini grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/build.sh is highlighted by Monaco (its shell grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/env.bash is highlighted by Monaco (its shell grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/rc.zsh is highlighted by Monaco (its shell grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > cmd/main.go is highlighted by Monaco (its go grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > src/lib.rs is highlighted by Monaco (its rust grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > src/App.java is highlighted by Monaco (its java grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > pom.xml is highlighted by Monaco (its xml grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > settings.ini is highlighted by Monaco (its ini grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > Dockerfile is highlighted by Monaco (its dockerfile grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > web/index.html is highlighted by Monaco (its html grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > web/App.vue is highlighted by Monaco (its html grammar gives several token kinds) 0ms
+   × languageDetector (autobyteus-642 D-4) > config/app.yaml is highlighted by Prism (several token classes) 1ms
+   × languageDetector (autobyteus-642 D-4) > config/app.yml is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > Cargo.toml is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/build.sh is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/env.bash is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > scripts/rc.zsh is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > cmd/main.go is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > src/lib.rs is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > src/App.java is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > pom.xml is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > settings.ini is highlighted by Prism (several token classes) 0ms
+   × languageDetector (autobyteus-642 D-4) > Dockerfile is highlighted by Prism (several token classes) 0ms
+      Tests  41 failed | 12 passed (53)
+
+## green
+Test Files  2 passed (2)
+      Tests  59 passed (59)

@@ -1,0 +1,37 @@
+# IMP-10 (D-3, D-4 rendered; AC-003, AC-004) the desktop Files tab and its viewer in a real renderer
+# command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web; env -i PATH HOME=<temp, resolved> TMPDIR USER
+#   node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-108,MSP-109,MSP-110 --output-dir=<fresh> (618's word-wrap
+#   cases, re-run as they are); then MSP-108 again with a TEMPORARY block (not committed; the file restored) that measures the
+#   Files layout at 1440x900 and 1280x800, widens the right panel to 700 px with its resize handle and drags the tree divider
+#   600 px right and left, screenshotting each state
+# commit: 4024239e07 (web code as at c2f93e7c2b)
+# env: macOS, Node 22.23.1, headless Chrome; the probe's own synthetic nodes and nuxt dev desktop window
+# date: 2026-11-24
+# result: Pass. 618's cases pass on the new layout. The default 450 px panel is stacked at both window sizes (viewer 450 px);
+#   a 700 px panel splits with the tree at 250 px and the viewer at 449 px; the divider stops with the viewer at 400 px
+#   (tree 299) and the tree at 150 px. YAML and JSON open highlighted (Monaco token classes mtk1/mtk22/mtk5, mtk1/mtk20/mtk5).
+#   `editorWidth` is Monaco's text area, without its line-number gutter, not the viewer's width.
+
+## layout (the temporary block)
+{"label": "1440-default", "layout": "stacked", "panel": 450, "tree": 450, "viewer": 450, "window": "1440x900"}
+{"label": "1280-default", "layout": "stacked", "panel": 450, "tree": 450, "viewer": 450, "window": "1280x800"}
+{"label": "1280-panel-700", "layout": "split", "panel": 700, "tree": 250, "viewer": 449, "window": "1280x800"}
+{"label": "1280-panel-700-divider-dragged-right", "layout": "split", "panel": 700, "tree": 299, "viewer": 400, "window": "1280x800"}
+{"label": "1280-panel-700-divider-dragged-left", "layout": "split", "panel": 700, "tree": 150, "viewer": 549, "window": "1280x800"}
+
+## 618's cases
+MSP-108 MSP-108-desktop-1440-panel-pnpm-workspace.yaml 1440x900 editorWidth=382 tokenClasses=['mtk1', 'mtk22', 'mtk5'] failures=[]
+MSP-108 MSP-108-desktop-1440-maximized-pnpm-workspace.yaml 1440x900 editorWidth=1372 tokenClasses=['mtk1', 'mtk22', 'mtk5'] failures=[]
+MSP-108 MSP-108-desktop-1440-panel-tsconfig.json 1440x900 editorWidth=382 tokenClasses=['mtk1', 'mtk20', 'mtk5'] failures=[]
+MSP-108 MSP-108-desktop-1440-maximized-tsconfig.json 1440x900 editorWidth=1372 tokenClasses=['mtk1', 'mtk20', 'mtk5'] failures=[]
+MSP-108 MSP-108-desktop-1440-panel-draft-v1.txt 1440x900 editorWidth=382 tokenClasses=['mtk1'] failures=[]
+MSP-108 MSP-108-desktop-1440-maximized-draft-v1.txt 1440x900 editorWidth=1372 tokenClasses=['mtk1'] failures=[]
+MSP-108 MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off 1440x900 editorWidth=1372 tokenClasses=['mtk1'] failures=[]
+MSP-108 MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again 1440x900 editorWidth=1372 tokenClasses=['mtk1'] failures=[]
+MSP-109 MSP-109-phone-390-pnpm-workspace.yaml 390x844 editorWidth=322 tokenClasses=['mtk1', 'mtk22', 'mtk5'] failures=[]
+MSP-109 MSP-109-phone-390-tsconfig.json 390x844 editorWidth=322 tokenClasses=['mtk1', 'mtk20', 'mtk5'] failures=[]
+MSP-109 MSP-109-phone-390-draft-v1.txt 390x844 editorWidth=322 tokenClasses=['mtk1'] failures=[]
+[mobile-shell] MSP-108 Pass
+[mobile-shell] MSP-110 Pass
+[mobile-shell] MSP-109 Pass
+mobile-shell probe: Pass

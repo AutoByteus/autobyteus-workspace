@@ -1,0 +1,24 @@
+# IMP-05 the whole web suite, the web typecheck and the web guards
+# command: env -i PATH HOME TMPDIR pnpm -C autobyteus-web test:nuxt; ... typecheck; ... guard:web-boundary;
+#          guard:localization-boundary; audit:localization-literals
+# commit: 4024239e07 (web code as at c2f93e7c2b)
+# env: macOS, Node 22.23.1
+# date: 2026-11-24
+# result: Pass.
+
+## web suite
+ Test Files  807 passed (807)
+      Tests  6245 passed | 2 skipped (6247)
+
+## web typecheck
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 41.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.6s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+audit:localization-literals: exit 0

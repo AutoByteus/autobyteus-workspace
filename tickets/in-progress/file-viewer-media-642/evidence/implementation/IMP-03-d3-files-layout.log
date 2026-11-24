@@ -1,0 +1,24 @@
+# IMP-03 (D-3, REQ-003, AC-003 unit) the Files tab splits only when a 150 px tree, the divider and a 400 px viewer fit
+# command: pnpm -C autobyteus-web exec vitest run components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+#          red: the same spec with the old FileExplorerLayout.vue stashed
+# commit: 3d8326eb83
+# env: macOS, Node 22.23.1, vitest (happy-dom; the panel width is the spec's ResizeObserver and measurement stub)
+# date: 2026-11-24
+# result: Pass: 11 tests. Red: 7 of the new width cases fail on the old layout (split by mode at any width).
+
+## red
+   ✓ FileExplorerLayout split target availability > gates both children at null, restores explicit B, and preserves omitted defaults 15ms
+   ✓ FileExplorerLayout stacked target availability > gates both children at null, restores explicit B, and preserves omitted defaults 4ms
+   ✓ releases an in-progress layout resize when its target becomes unavailable or the layout unmounts 5ms
+   × FileExplorerLayout by its own width > stacks at a 400 px panel (the default panel is 400–450 px) 5ms
+   × FileExplorerLayout by its own width > stacks at a 450 px panel (the default panel is 400–450 px) 2ms
+   × FileExplorerLayout by its own width > stacks at a 550 px panel (the default panel is 400–450 px) 2ms
+   × FileExplorerLayout by its own width > splits from 551 px, the tree at what leaves the viewer 400 px 2ms
+   × FileExplorerLayout by its own width > narrows the tree when the panel narrows, and gives it back when there is room again 2ms
+   × FileExplorerLayout by its own width > stops the divider where the viewer reaches 400 px or the tree 150 px 2ms
+   × FileExplorerLayout by its own width > stays stacked when the parent asks for it (the phone), whatever its width 1ms
+   ✓ FileExplorerLayout by its own width > stops observing its width when it unmounts 1ms
+      Tests  7 failed | 4 passed (11)
+
+## green
+      Tests  11 passed (11)
