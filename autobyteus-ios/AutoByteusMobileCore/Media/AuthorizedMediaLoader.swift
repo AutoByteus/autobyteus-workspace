@@ -14,9 +14,9 @@ protocol MediaRead: AnyObject {
 }
 
 /// AVFoundation's reader of one node video (autobyteus-574 D-4, D-5): the asset's URL is under the app's own scheme
-/// (`NodeVideoURL.assetURL`), so AVFoundation asks this loader for every byte range. Each read is served from the cache
+/// (`NodeMediaURL.assetURL`), so AVFoundation asks this loader for every byte range. Each read is served from the cache
 /// first; past it, from a read-ahead: one streaming fetch of the node by range, with the credential in the header
-/// (`NodeVideoHTTP`: the node's origin only, no redirect), which answers every read it reaches as its bytes arrive.
+/// (`NodeMediaHTTP`: the node's origin only, no redirect), which answers every read it reaches as its bytes arrive.
 /// Fetched bytes are kept in `MediaRangeCache` under this version's key, so a reopen of an unchanged file reads nothing
 /// again of what it has. A range is asked with `If-Range` (the version the playback started with): a file changed
 /// meanwhile fails the read instead of mixing two versions.
@@ -28,9 +28,9 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
     static let cacheStep = 1 << 20
 
     public let queue = DispatchQueue(label: "org.autobyteus.video-loader")
-    private let http: NodeVideoHTTP
+    private let http: NodeMediaHTTP
     private let url: URL
-    private let probe: NodeVideoHTTP.Probe
+    private let probe: NodeMediaHTTP.Probe
     private let cache: MediaRangeCache
     private let cacheKey: String
     private lazy var operations: OperationQueue = {
@@ -75,7 +75,7 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
     /// Bytes fetched from the node by this loader (read on `queue`), for checks.
     public private(set) var networkBytes: Int64 = 0
 
-    public init(url: URL, nodeID: String, http: NodeVideoHTTP, probe: NodeVideoHTTP.Probe, cache: MediaRangeCache = .shared) {
+    public init(url: URL, nodeID: String, http: NodeMediaHTTP, probe: NodeMediaHTTP.Probe, cache: MediaRangeCache = .shared) {
         self.url = url
         self.http = http
         self.probe = probe
@@ -97,9 +97,9 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
     // MARK: AVAssetResourceLoaderDelegate (called on `queue`)
 
     public func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
-        guard let assetURL = loadingRequest.request.url, NodeVideoURL.networkURL(for: assetURL) == url else { return false }
+        guard let assetURL = loadingRequest.request.url, NodeMediaURL.networkURL(for: assetURL) == url else { return false }
         if let information = loadingRequest.contentInformationRequest {
-            information.contentType = UTType(mimeType: probe.contentType ?? "video/mp4")?.identifier ?? UTType.mpeg4Movie.identifier
+            information.contentType = (NodeMediaURL.fileType(of: url) ?? .mpeg4Movie).identifier
             information.contentLength = probe.length
             information.isByteRangeAccessSupported = true
             // Any range is served at any time, from the cache or the read-ahead; without saying so, a scrub of the player
@@ -197,9 +197,9 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
         let http = response as? HTTPURLResponse
         let status = http?.statusCode ?? 0
         // Only the asked range of this version: a redirect, a refusal, or a changed file (200 for If-Range) fails the reads.
-        guard status == 206, NodeVideoHTTP.firstByte(contentRange: http?.value(forHTTPHeaderField: "Content-Range")) == fetch.first else {
+        guard status == 206, NodeMediaHTTP.firstByte(contentRange: http?.value(forHTTPHeaderField: "Content-Range")) == fetch.first else {
             fetches[dataTask.taskIdentifier] = nil
-            let error = (300...399).contains(status) ? NodeVideoHTTP.Failure.redirectRefused(status: status) : NodeVideoHTTP.Failure.status(status)
+            let error = (300...399).contains(status) ? NodeMediaHTTP.Failure.redirectRefused(status: status) : NodeMediaHTTP.Failure.status(status)
             serving.filter { $0.fetch === fetch }.forEach { fail($0, error) }
             return completionHandler(.cancel)
         }

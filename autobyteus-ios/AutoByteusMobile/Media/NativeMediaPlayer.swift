@@ -3,14 +3,16 @@ import AVKit
 import AutoByteusMobileCore
 import UIKit
 
-/// The app's video player (autobyteus-574 D-4, UC-001…UC-003): one protected node video, streamed by range with the
-/// phone's credential in the header (`AuthorizedMediaLoader`), its fetched bytes kept by version (`MediaRangeCache`).
-/// A wide video turns the phone to landscape with the status bar hidden; Back turns it back and closes the player, which
-/// keeps its position while it rotates. The credential lives in memory from the page's `playVideo` until the screen
-/// closes; nothing logs a URL or a header.
-final class NativeVideoPlayerViewController: UIViewController {
-    /// One playback: the node file, its name, the node it belongs to and the credential for this playback only.
+/// The app's media player (autobyteus-574 D-4, autobyteus-642 D-2): one protected node video or audio file, streamed by
+/// range with the phone's credential in the header (`AuthorizedMediaLoader`), its fetched bytes kept by version
+/// (`MediaRangeCache`). A wide video turns the phone to landscape with the status bar hidden; Back turns it back and
+/// closes the player, which keeps its position while it rotates. An audio file stays in portrait, with its title and
+/// the player's audio controls. The credential lives in memory from the page's `playMedia` until the screen closes;
+/// nothing logs a URL or a header.
+final class NativeMediaPlayerViewController: UIViewController {
+    /// One playback: its kind, the node file, its name, the node it belongs to and the credential for this playback only.
     struct Playback: CustomStringConvertible {
+        let kind: MediaKind
         let url: URL
         let title: String
         let nodeID: String
@@ -19,8 +21,10 @@ final class NativeVideoPlayerViewController: UIViewController {
         var description: String { "Playback(title: \(title), url: <redacted>, credential: <redacted>)" }
     }
 
-    static let couldNotPlay = "This video could not be played."
+    static func couldNotPlay(_ kind: MediaKind) -> String { "This \(kind.rawValue) could not be played." }
 
+    /// The screen's kind, kept after the playback (and its credential) is dropped.
+    private let kind: MediaKind
     private var playback: Playback?
     private let playerController = AVPlayerViewController()
     private var loader: AuthorizedMediaLoader?
@@ -29,6 +33,7 @@ final class NativeVideoPlayerViewController: UIViewController {
     private var landscape = false
 
     init(playback: Playback) {
+        self.kind = playback.kind
         self.playback = playback
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
@@ -42,7 +47,7 @@ final class NativeVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-        view.accessibilityIdentifier = "video.player"
+        view.accessibilityIdentifier = "media.player"
         playerController.entersFullScreenWhenPlaybackBegins = false
         addChild(playerController)
         view.addSubview(playerController.view)
@@ -55,8 +60,8 @@ final class NativeVideoPlayerViewController: UIViewController {
     }
 
     private func start(_ playback: Playback) {
-        let http = NodeVideoHTTP(nodeOrigin: playback.nodeOrigin, credential: playback.credential)
-        guard let assetURL = NodeVideoURL.assetURL(for: playback.url) else { return showCouldNotPlay() }
+        let http = NodeMediaHTTP(nodeOrigin: playback.nodeOrigin, credential: playback.credential)
+        guard let assetURL = NodeMediaURL.assetURL(for: playback.url) else { return showCouldNotPlay() }
         Task { @MainActor [weak self] in
             do {
                 let probe = try await http.probe(playback.url)
@@ -67,7 +72,7 @@ final class NativeVideoPlayerViewController: UIViewController {
                 self.loader = loader
                 self.play(AVPlayerItem(asset: asset))
             } catch {
-                NSLog("AutoByteusVideo: the video could not be opened (%@)", String(describing: type(of: error)))
+                NSLog("AutoByteusMedia: the file could not be opened (%@)", String(describing: type(of: error)))
                 self?.showCouldNotPlay()
             }
         }
@@ -80,11 +85,14 @@ final class NativeVideoPlayerViewController: UIViewController {
             guard item.status == .failed else { return }
             Task { @MainActor in self?.showCouldNotPlay() }
         }
-        // A wide video plays in landscape (DEC-001): the player fills the screen with the status bar hidden.
-        sizeObservation = item.observe(\.presentationSize) { [weak self] item, _ in
-            let size = item.presentationSize
-            guard size.width > 0, size.height > 0 else { return }
-            Task { @MainActor in self?.setLandscape(size.width > size.height) }
+        // A wide video plays in landscape (574 DEC-001): the player fills the screen with the status bar hidden. Audio has
+        // no picture and stays in portrait.
+        if kind == .video {
+            sizeObservation = item.observe(\.presentationSize) { [weak self] item, _ in
+                let size = item.presentationSize
+                guard size.width > 0, size.height > 0 else { return }
+                Task { @MainActor in self?.setLandscape(size.width > size.height) }
+            }
         }
         player.play()
     }
@@ -104,7 +112,7 @@ final class NativeVideoPlayerViewController: UIViewController {
         configuration.imagePadding = 4
         configuration.baseForegroundColor = .white
         let back = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in self?.close() })
-        back.accessibilityIdentifier = "video.back"
+        back.accessibilityIdentifier = "media.back"
         let label = UILabel()
         label.text = title
         label.textColor = .white
@@ -130,11 +138,11 @@ final class NativeVideoPlayerViewController: UIViewController {
         setLandscape(false)
         let message = UILabel()
         message.tag = Self.couldNotPlayTag
-        message.text = Self.couldNotPlay
+        message.text = Self.couldNotPlay(kind)
         message.textColor = .white
         message.numberOfLines = 0
         message.textAlignment = .center
-        message.accessibilityIdentifier = "video.couldNotPlay"
+        message.accessibilityIdentifier = "media.couldNotPlay"
         message.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(message)
         NSLayoutConstraint.activate([

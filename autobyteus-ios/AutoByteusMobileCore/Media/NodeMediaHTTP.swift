@@ -4,7 +4,7 @@ import Foundation
 /// origin, with the phone's credential only as `Authorization: Bearer`. No redirect is followed (node file routes never
 /// redirect; a redirect could carry the header elsewhere, design N-1), and a URL off the node's origin or outside its
 /// `/rest/` routes is refused before anything is sent. Nothing here logs a URL or a header.
-public final class NodeVideoHTTP: NSObject, URLSessionTaskDelegate {
+public final class NodeMediaHTTP: NSObject, URLSessionTaskDelegate {
     public enum Failure: Error, Equatable {
         /// Off the node's origin, or not a node file route.
         case refusedURL
@@ -15,11 +15,10 @@ public final class NodeVideoHTTP: NSObject, URLSessionTaskDelegate {
         case missingVersion
     }
 
-    /// What the two-byte probe learns: the file's version (its ETag), length and type.
+    /// What the two-byte probe learns: the file's version (its ETag) and length.
     public struct Probe: Equatable {
         public let etag: String
         public let length: Int64
-        public let contentType: String?
     }
 
     public let nodeOrigin: String
@@ -44,7 +43,7 @@ public final class NodeVideoHTTP: NSObject, URLSessionTaskDelegate {
     /// The request for bytes `first...last` of `url` (to the end when `last` is `nil`); `ifRange` is the version the reader
     /// has, so a changed file answers 200 with the whole file instead of a range of another version.
     public func request(_ url: URL, first: Int64, last: Int64?, ifRange: String?) throws -> URLRequest {
-        guard NodeVideoURL.isNodeFileURL(url, nodeOrigin: nodeOrigin) else { throw Failure.refusedURL }
+        guard NodeMediaURL.isNodeFileURL(url, nodeOrigin: nodeOrigin) else { throw Failure.refusedURL }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(credential)", forHTTPHeaderField: "Authorization")
         request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
@@ -65,7 +64,7 @@ public final class NodeVideoHTTP: NSObject, URLSessionTaskDelegate {
         let length = Self.totalLength(contentRange: http.value(forHTTPHeaderField: "Content-Range"))
             ?? (http.statusCode == 200 ? http.expectedContentLength : -1)
         guard length > 0 else { throw Failure.status(http.statusCode) }
-        return Probe(etag: etag, length: length, contentType: http.mimeType)
+        return Probe(etag: etag, length: length)
     }
 
     /// The size in a `Content-Range: bytes a-b/size` header.

@@ -1,8 +1,10 @@
 import Foundation
+import UniformTypeIdentifiers
 
-/// A node video's URLs (autobyteus-574 D-4, D-5): which URL the player may read with the phone's credential, and the
-/// asset URL AVFoundation is given so that every read goes through the app's loader (a scheme of the app's own).
-public enum NodeVideoURL {
+/// A node media file's URLs (autobyteus-574 D-4, D-5; autobyteus-642 D-2): which URL the player may read with the phone's
+/// credential, the asset URL AVFoundation is given so that every read goes through the app's loader (a scheme of the
+/// app's own), and the file the URL names.
+public enum NodeMediaURL {
     /// The prefix of the asset's scheme: `http` becomes `abmedia-http`, `https` becomes `abmedia-https`.
     public static let assetSchemePrefix = "abmedia-"
 
@@ -44,6 +46,22 @@ public enum NodeVideoURL {
         guard network == "http" || network == "https" else { return nil }
         components.scheme = network
         return components.url
+    }
+
+    /// The name of the file `url` names: the last segment of its `path` query (workspace and node files:
+    /// `…/content?path=notes%2Fmemo.m4a`), or else of its path (`…/static/site/intro.mp4`). As the page reads it.
+    public static func fileName(of url: URL) -> String {
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        let filePath = components?.queryItems?.first(where: { $0.name == "path" })?.value ?? url.path
+        return filePath.split(whereSeparator: { $0 == "/" || $0 == "\\" }).last.map(String.init) ?? ""
+    }
+
+    /// The type of the file `url` names, from its extension: the file types the app plays are named by extension
+    /// (`MediaKind.extensions`), and the node's MIME type for some (`audio/x-caf`) has no type AVFoundation knows.
+    public static func fileType(of url: URL) -> UTType? {
+        let name = fileName(of: url)
+        guard let dot = name.lastIndex(of: "."), dot != name.startIndex else { return nil }
+        return UTType(filenameExtension: String(name[name.index(after: dot)...]).lowercased())
     }
 
     private static func effectivePort(_ url: URL) -> Int {

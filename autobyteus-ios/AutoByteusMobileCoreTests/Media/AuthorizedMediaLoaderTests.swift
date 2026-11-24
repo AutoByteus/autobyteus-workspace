@@ -7,7 +7,7 @@ import XCTest
 /// the header, a reopen fetches nothing the cache holds, and a changed file (new ETag) is fetched again.
 /// "Plays" means decoded frames at those times, as the app's player view shows them, not the player's clock: AVFoundation
 /// reads the loader's file on demand, so with nothing to show it reads no frame, and its clock runs on regardless (CR-004).
-/// Production: AVPlayer and AVURLAsset, AuthorizedMediaLoader, NodeVideoHTTP, MediaRangeCache (real files); the node is
+/// Production: AVPlayer and AVURLAsset, AuthorizedMediaLoader, NodeMediaHTTP, MediaRangeCache (real files); the node is
 /// StubNodeProtocol serving a real MP4. The video comes from the host: run with
 /// `TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<a 20+ MB MP4 over 31 s long>`; without it the test is skipped.
 final class AuthorizedMediaLoaderTests: XCTestCase {
@@ -32,10 +32,10 @@ final class AuthorizedMediaLoaderTests: XCTestCase {
     /// One playback through a new loader over `cache`, as the player screen makes it, with a video output that takes its
     /// frames as the screen's player view does.
     private func play(cache: MediaRangeCache) async throws -> (AVPlayer, AuthorizedMediaLoader) {
-        let http = NodeVideoHTTP(nodeOrigin: node, credential: StubNodeProtocol.credential, configuration: StubNodeProtocol.configuration())
+        let http = NodeMediaHTTP(nodeOrigin: node, credential: StubNodeProtocol.credential, configuration: StubNodeProtocol.configuration())
         let probe = try await http.probe(url)
         let loader = AuthorizedMediaLoader(url: url, nodeID: node, http: http, probe: probe, cache: cache)
-        let asset = AVURLAsset(url: NodeVideoURL.assetURL(for: url)!)
+        let asset = AVURLAsset(url: NodeMediaURL.assetURL(for: url)!)
         asset.resourceLoader.setDelegate(loader, queue: loader.queue)
         let item = AVPlayerItem(asset: asset)
         item.add(AVPlayerItemVideoOutput(pixelBufferAttributes: nil))

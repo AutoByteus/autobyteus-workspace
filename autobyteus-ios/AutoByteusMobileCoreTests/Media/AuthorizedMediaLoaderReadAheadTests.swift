@@ -6,7 +6,7 @@ import XCTest
 /// fetch (a seek) starts its own, and the idle one stops. Cancelling one read keeps a fetch another read waits for, and
 /// a cancelled read's bytes are still cached. A gap between cached bytes is fetched alone; cached bytes are handed over in
 /// bounded steps; a changed file fails the read.
-/// Production: AuthorizedMediaLoader, NodeVideoHTTP, MediaRangeCache (real files); the node is StubNodeProtocol at about
+/// Production: AuthorizedMediaLoader, NodeMediaHTTP, MediaRangeCache (real files); the node is StubNodeProtocol at about
 /// 1.5 MB/s; the reads are the loader's own `MediaRead`, as AVFoundation's data requests are.
 final class AuthorizedMediaLoaderReadAheadTests: XCTestCase {
     private let node = "http://192.168.1.20:29695"
@@ -50,7 +50,7 @@ final class AuthorizedMediaLoaderReadAheadTests: XCTestCase {
 
     /// A loader after its probe; the node's record then holds its fetches only.
     private func loader() async throws -> AuthorizedMediaLoader {
-        let http = NodeVideoHTTP(nodeOrigin: node, credential: StubNodeProtocol.credential, configuration: StubNodeProtocol.configuration())
+        let http = NodeMediaHTTP(nodeOrigin: node, credential: StubNodeProtocol.credential, configuration: StubNodeProtocol.configuration())
         let probe = try await http.probe(url)
         key = MediaRangeCache.key(nodeID: node, url: url, etag: probe.etag)
         StubNodeProtocol.clearServed()
@@ -172,7 +172,7 @@ final class AuthorizedMediaLoaderReadAheadTests: XCTestCase {
         let read = Read(0, count: 23_000)
         start(read, on: loader)
         try await wait("the read fails") { read.error != nil || read.finished }
-        XCTAssertEqual(read.error as? NodeVideoHTTP.Failure, .status(200))
+        XCTAssertEqual(read.error as? NodeMediaHTTP.Failure, .status(200))
         XCTAssertTrue(read.received.isEmpty)
     }
 }

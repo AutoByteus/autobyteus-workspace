@@ -1,18 +1,18 @@
 import CryptoKit
 import Foundation
 
-/// The app's video cache on iOS (autobyteus-574 DEC-003, D-4, D-7, design N-3, N-4): the bytes of node videos already
-/// fetched, by version. An entry is one version of one node file (node, URL path and query, ETag), so a changed file has
-/// a new entry and its old bytes are never served. Each entry is a sparse data file and a map of the byte ranges it holds,
-/// in the app's private cache folder, named by a hash (no path is spelled out). The least recently used entries are
-/// dropped above `maxBytes`; a node's entries are deleted when the node is removed. It holds video bytes only, never a
+/// The app's media cache on iOS (autobyteus-574 DEC-003, D-4, D-7, design N-3, N-4): the bytes of node videos and audio
+/// files already fetched, by version. An entry is one version of one node file (node, URL path and query, ETag), so a
+/// changed file has a new entry and its old bytes are never served. Each entry is a sparse data file and a map of the
+/// byte ranges it holds, in the app's private cache folder, named by a hash (no path is spelled out). The least recently used entries are
+/// dropped above `maxBytes`; a node's entries are deleted when the node is removed. It holds media bytes only, never a
 /// credential. Safe to use from any thread.
 public final class MediaRangeCache {
     public static let defaultMaxBytes: Int64 = 500 * 1024 * 1024
 
     /// The app's one cache, in its caches folder.
     public static let shared = MediaRangeCache(
-        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("video-cache", isDirectory: true)
+        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("media-cache", isDirectory: true)
     )
 
     private struct RangeMap: Codable {
