@@ -1,0 +1,14 @@
+# AE-001 (MSP-108, MSP-109) and AE-002 (MSP-110), API/E2E run2
+# Command: env -i PATH="$PATH" HOME=<fresh mktemp -d> TMPDIR="$TMPDIR" USER="$USER" node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-108,MSP-109,MSP-110 --output-dir=/tmp/ae618/run2
+# Commit: 7824c552b3 (product code from 0f5e844087) + the MSP-110 edit to mobile-file-word-wrap-cases.mjs and mobile-shell-probe.mjs (committed after this run)
+# Builds first, same clean env: pnpm -C autobyteus-server-ts build (exit 0); pnpm -C autobyteus-web build:mobile-web (exit 0)
+# Environment: macOS Darwin 25.5.0; the probe's own stack (alpha and beta nodes, nuxt dev, headless Chromium), synthetic data; never the founder's app
+# Date: 2026-11-24
+
+[mobile-shell] MSP-108 …
+[mobile-shell] MSP-108 Pass
+[mobile-shell] MSP-110 …
+[mobile-shell] MSP-110 Pass
+[mobile-shell] MSP-109 …
+[mobile-shell] MSP-109 Pass
+mobile-shell probe: Pass

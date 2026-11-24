@@ -1,0 +1,12 @@
+# IMP-04
+# Command: pnpm -C autobyteus-web build:mobile-web; then env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR" USER="$USER" node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-108,MSP-109 --output-dir=<fresh>
+# Commit: 0f5e844087 (server built, phone bundle built from it)
+# Environment: macOS (Darwin 25.5.0); the probe's own synthetic nodes (alpha, beta) and the scripted AGY CLI; headless Chrome; desktop window = nuxt dev against alpha
+# Date: 2026-11-24
+# Note: Both cases Pass. Screenshots: MSP-108-* (desktop 1440x900: panel and maximized per file; wrap off and on again) and MSP-109-* (phone 390x844, one per file). Measurements per screenshot in mobile-shell-probe.json (cases.MSP-108 / MSP-109 .results[].measured).
+
+[mobile-shell] MSP-108 …
+[mobile-shell] MSP-108 Pass
+[mobile-shell] MSP-109 …
+[mobile-shell] MSP-109 Pass
+mobile-shell probe: Pass

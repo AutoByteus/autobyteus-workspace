@@ -1,0 +1,17 @@
+# IMP-01
+# Command: pnpm -C autobyteus-web exec vitest --run components/fileExplorer/__tests__/MonacoEditor.spec.ts (the new cases, before the change)
+# Commit: c1147c8917 source + the new spec
+# Environment: macOS (Darwin 25.5.0); web unit tests (happy-dom, Monaco mocked)
+# Date: 2026-11-24
+# Note: The default case and the toggle case fail on the shipped default; the passed-value case passes either way before the change.
+
+   ✓ MonacoEditor.vue > renders and initializes monaco editor with the default app font size 17ms
+   ✓ MonacoEditor.vue > updates monaco options when the app font size preset changes 21ms
+   ✓ MonacoEditor.vue > uses optimization for append updates 20ms
+   × MonacoEditor.vue > opens with word wrap on when no caller sets it (autobyteus-618 REQ-001) 29ms
+   × MonacoEditor.vue > "Toggle Word Wrap" turns wrap off and on again (AC-002) 20ms
+   ✓ MonacoEditor.vue > a value the caller passes still wins, as the prop or in options (AC-003) 15ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected "spy" to be called with arguments: [ Anything, ObjectContaining{…} ]
+AssertionError: expected 'on' to be 'off' // Object.is equality
+      Tests  2 failed | 4 passed (6)
