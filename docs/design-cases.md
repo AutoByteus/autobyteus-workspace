@@ -66,6 +66,8 @@ Principle 11.
 
 - **Again in autobyteus-574 (ARCH-REV-001 AR-001):** the design added `ETag` and `Last-Modified` to every user-file reply so the phone's video cache could validate. It named no freshness rule. Browsers and the desktop's Electron window cache such a reply heuristically, so after an agent rewrote a file, a reopen could show the old copy without a request. Fix (SR-002): `Cache-Control: no-cache` (revalidate on every use), `Last-Modified` dropped, and the HTTP caches listed as readers. Lesson: a header that lets one client cache is read by every client's cache; list them.
 
+- **Again in autobyteus-642 (ARCH-REV-001 AR-001):** the design kept Ogg/Opus audio on the in-page player "on iOS", decided in the web page, while the page could not tell iOS from Android: the app's `hello` said only "has a player". Fix (SR-002): each app, which owns the fact, lists the file types its player plays (`mediaPlayer: { video, audio }`), and the page reads the list. Lesson: a rule that depends on a fact must be decided where the fact is known, or the fact must be sent there.
+
 ### Case 4: Behavior By Absence (autobyteus-191, AR-007; autobyteus-349, AR-002)
 
 Principle 13.

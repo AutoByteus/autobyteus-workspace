@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (after ARCH-REV-001: the app states the types it plays; split rule tree width; Monaco `shell`; rule 12)
 - Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
 - User approval of the design: not required
 - Design status: `Ready`
@@ -39,13 +39,14 @@
 | Record / Message | Boundary | Field | Meaning | Writer | Readers |
 | --- | --- | --- | --- | --- | --- |
 | Bridge `playMedia` (renames `playVideo`) | page → app | `kind: 'video' \| 'audio'`, `url`, `title`, `credential` | Play this protected node file natively. `kind` lets the player choose its screen: video can rotate to landscape; audio stays portrait with the title. The rules are 574's: same origin, header only, refuse redirects, never logged | `useNativeMediaPlayback` | Android `ShellBridgeMessages`, iOS `NodeMediaPlayRequest` |
-| Bridge `hello` reply | app → page | `mediaPlayer: boolean` (renames `videoPlayer`) | The app has the native media player | both apps | the web composable |
+| Bridge `hello` reply | app → page | `mediaPlayer: { video: string[], audio: string[] }` (renames `videoPlayer`; SR-002) | The lowercase file extensions the app's own player plays, per kind. The app owns this fact; the page cannot tell platforms apart. Android (Media3): video `mp4, m4v, mov, webm, mkv, 3gp`; audio `mp3, m4a, aac, wav, ogg, oga, opus, flac`. iOS (AVPlayer): video `mp4, m4v, mov`; audio `mp3, m4a, aac, wav, aif, aiff, caf`. Implementation confirms each list against the platform's formats | both apps | the web composable: `native` only when the file's extension is in its kind's list |
 | `MessageReferenceContent` (server) | reader → route | `{ mimeType, path, size, modifiedMs }` (was `{ mimeType, stream }`) | The file to serve; the route builds `UserFileContent` `kind: 'file'` | the reader | the route |
 | Language table entry (web) | in-app | `{ extensions/names, monaco, prism }` | One file type; each engine's name | `utils/highlighting/languageDetector.ts` | `getMonacoLanguage(path)` (FileViewer), `getPrismLanguage(path)` (FileDisplay) |
 
 - **Examples:**
   - `{"type":"playMedia","kind":"audio","url":"http://192.168.1.20:29695/rest/workspaces/agent_ws_ab12/content?path=notes%2Fmemo.m4a","title":"memo.m4a","credential":"<redacted>"}`
-  - Table rows: `{ ext: ['yaml','yml'], monaco: 'yaml', prism: 'yaml' }`; `{ ext: ['toml'], monaco: 'ini', prism: 'toml' }`; `{ ext: ['html'], monaco: 'html', prism: 'markup' }`; `{ ext: ['vue'], monaco: 'html', prism: 'vue' }` (Prism's `vue` goes to `highlightVue`, as today); `{ names: ['Dockerfile'], monaco: 'dockerfile', prism: 'docker' }`.
+  - Hello: `{"type":"shell",…,"mediaPlayer":{"video":["mp4","m4v","mov"],"audio":["mp3","m4a","aac","wav","aif","aiff","caf"]}}` (iOS).
+  - Table rows: `{ ext: ['yaml','yml'], monaco: 'yaml', prism: 'yaml' }`; `{ ext: ['sh','bash','zsh'], monaco: 'shell', prism: 'bash' }` (Monaco's id is `shell`, N-3); `{ ext: ['toml'], monaco: 'ini', prism: 'toml' }`; `{ ext: ['html'], monaco: 'html', prism: 'markup' }`; `{ ext: ['vue'], monaco: 'html', prism: 'vue' }` (Prism's `vue` goes to `highlightVue`, as today); `{ names: ['Dockerfile'], monaco: 'dockerfile', prism: 'docker' }`.
 
 ### Validation
 
@@ -54,6 +55,10 @@
 | UC-001 | Reference → reader `{path,size,modifiedMs}` → `sendUserFile kind:'file'` → 206/304, keeping `no-store` | Yes |
 | UC-002 | Audio tile or viewer → `playMedia{kind:'audio'}` → native player (same data source, cache and redirect refusal) → portrait screen with title and controls | Yes (Media3 and AVPlayer play audio from the same sources) |
 | UC-002, older app | `hello` without `mediaPlayer` → the page path | Yes |
+| UC-002, `.ogg` on Android | `audio` includes `ogg` → `playMedia{kind:'audio'}` → Media3 | Yes |
+| UC-002, `.ogg` on iOS | `audio` lacks `ogg` → the page path (as today) | Yes |
+| UC-002, `.mp3` on both | listed → native | Yes |
+| UC-001 video `.webm` on iOS | `video` lacks `webm` → the page path (574 sent it natively, where AVPlayer could not play it; SR-002 corrects it) | Yes |
 | UC-003 | Width ≥ tree (250) + 1 + 400 → split, divider clamped; less → stacked | Yes |
 | UC-004 | Path → table → Monaco name / Prism name → highlighted | Yes |
 
@@ -72,9 +77,10 @@
   - iOS: `Media/NativeMediaPlayer.swift`, plus core `NodeMediaHTTP`, `NodeMediaPlayRequest` (with `kind`) and `NodeMediaURL`. `AuthorizedMediaLoader` and `MediaRangeCache` already have neutral names. Audio: no forced landscape; AVPlayerViewController shows its audio UI with the title.
   - The cache directories and keys keep their current form. 574 is unreleased, so there are no installed caches to migrate; the directory name may follow the rename.
 - **D-3 (layout).** `FileExplorerLayout.vue` measures its own width (a `ResizeObserver`).
-  - `split` (desktop mode) is used only when `width ≥ treeWidth + 1 + 400`; otherwise the stacked layout.
-  - In split, the divider's maximum is `width − 1 − 400` (and at least the tree minimum, 150).
+  - `split` (desktop mode) is used only when `width ≥ 150 (tree minimum) + 1 + 400`; otherwise the stacked layout (N-1: the rule uses the tree's minimum, not its current width).
+  - In split, the tree is shown at `min(treeWidth, width − 1 − 400)`, so a dragged-wide tree is clamped when the panel narrows, and the user's width comes back when there is room. The divider's maximum is `width − 1 − 400`.
   - `RightSideTabs.vue` keeps passing the mode. The rule lives in the layout, its one owner, and the 400 px is a named constant.
+- **Build inputs (N-2):** if `project.yml` (iOS paths) or a Gradle file changes, DESIGN.md rule 12 applies: a fresh-start build and the build-only release runs.
 - **D-4 (highlighting).**
   - `languageDetector.ts` becomes one table and two lookups: `getMonacoLanguage`, `getPrismLanguage`.
   - Extension, plus file name for `Dockerfile`: py, ts, js, jsx, vue, html, php, rb, css, json, md (today's), plus yaml, yml, toml, sh, bash, zsh, go, rs, java, xml, ini, Dockerfile.
@@ -102,7 +108,7 @@
 ## Risks
 
 - The rename's breadth (43 files): every reader is listed above. Implementation runs both apps' test suites and the web suite.
-- Audio formats: MP3, M4A/AAC and WAV play in both native players. An Ogg or Opus file: Media3 plays it, AVPlayer does not. On iOS, an `.ogg` or `.opus` keeps the page path (the composable's audio kind accepts only types AVPlayer plays; implementation lists them).
+- Audio formats: decided by each app's `mediaPlayer` lists (SR-002). The page never guesses the platform.
 
 ## Guidance For Implementation
 

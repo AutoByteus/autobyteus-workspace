@@ -11,3 +11,18 @@
 
 - Design: D-1…D-4, with the data contract first (the bridge rename `playMedia`/`mediaPlayer`, the reference reader result, the language table).
 - Classification: `Large` / `High`. Routing: architecture review.
+
+## SR-002 (2026-11-24)
+
+- Trigger: ARCH-REV-001 Fail.
+  - AR-001: the page decided per-platform audio types without knowing the platform.
+  - N-1…N-3.
+- Requirements: REQ-002 now says each app states the types its player plays (the outcome is unchanged: native where the app can play it, the page path otherwise). This is within the direction.
+- Design:
+  - `hello.mediaPlayer` becomes `{ video: string[], audio: string[] }`, written by each app and read by the composable;
+  - the walks: `.ogg` on Android and iOS, `.mp3` on both, and `.webm` video on iOS (a 574 correction);
+  - the split rule uses the tree minimum, and a dragged tree is clamped;
+  - Monaco `shell`;
+  - rule 12 noted.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review.
+- Design case: docs/design-cases.md Case 3 (a fact decided by a reader that does not own it).

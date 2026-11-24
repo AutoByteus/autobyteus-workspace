@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002
 - Package identifier: `file-viewer-media-642`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
@@ -51,7 +51,7 @@ Desired: each works as the Requirements say, with nothing else changed.
 | ID | Requirement | Priority | Basis |
 | --- | --- | --- | --- |
 | REQ-001 | The message-reference route serves ranges, `ETag` and 304 like the other file routes, and keeps its `no-store` | Must | 574 FU-001 |
-| REQ-002 | In both apps, a node audio file plays through the app's native player: streaming by range, the credential only in the header, the cache reused on reopen, exactly as video (574 REQ-001…003). The player shows the file name and standard audio controls, and Back returns. On iOS, a format AVPlayer cannot play (Ogg, Opus) keeps the page path | Must | 574 FU-002 |
+| REQ-002 | In both apps, a node audio file plays through the app's native player: streaming by range, the credential only in the header, the cache reused on reopen, exactly as video (574 REQ-001…003). The player shows the file name and standard audio controls, and Back returns. Each app states which file types its player plays; a type it does not list keeps the page path (for example Ogg/Opus on iOS, which AVPlayer cannot play; on Android, Media3 plays them natively) | Must | 574 FU-002; ARCH-REV-001 AR-001 |
 | REQ-003 | In the desktop Files tab, the file viewer is never narrower than 400 px while the panel is at least 400 px wide. When the panel cannot fit the tree beside a 400 px viewer, the tree goes above the viewer (stacked); when it can, they sit side by side, and dragging the divider never takes the viewer below 400 px | Must | 618 FU-002; DEC-001 |
 | REQ-004 | `.yaml`/`.yml`, `.toml`, `.sh`/`.bash`/`.zsh`, `.go`, `.rs`, `.java`, `.xml`, `.ini`, `Dockerfile` are highlighted in the file viewer (Monaco) and in chat file previews (Prism). `.html` and `.vue` are highlighted in the file viewer too (they are not today) | Must | 618 FU-003; DEC-002 |
 
