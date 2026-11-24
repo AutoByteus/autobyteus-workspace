@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Component } from 'vue';
-import { getLanguage } from '~/utils/highlighting/languageDetector';
+import { getMonacoLanguage } from '~/utils/highlighting/languageDetector';
 import type { FileDataType, FileOpenMode, FileRelativeResourceContext } from '~/stores/fileExplorerState';
 import type { ViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory';
 
@@ -102,7 +102,7 @@ const componentProps = computed(() => {
     }
     return {
       modelValue: props.file.content,
-      language: getLanguage(props.file.path),
+      language: getMonacoLanguage(props.file.path),
       readOnly: props.readOnly,
     };
   }

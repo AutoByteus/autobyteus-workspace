@@ -25,6 +25,16 @@ import 'prismjs/components/prism-php';
 // Other languages
 import 'prismjs/components/prism-json';
 
+// Chat file previews of these types (autobyteus-642 D-4; `getPrismLanguage`); go and java depend on clike
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-toml';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-go';
+import 'prismjs/components/prism-rust';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-ini';
+import 'prismjs/components/prism-docker';
+
 /**
  * Service for code syntax highlighting using Prism.js
  */

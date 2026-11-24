@@ -26,7 +26,7 @@ vi.mock('~/components/fileExplorer/viewers/HtmlPreviewer.vue', () => ({
   }
 }));
 vi.mock('~/utils/highlighting/languageDetector', () => ({
-  getLanguage: () => 'typescript'
+  getMonacoLanguage: () => 'typescript'
 }));
 
 describe('FileViewer.vue', () => {

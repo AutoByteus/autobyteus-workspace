@@ -16,7 +16,7 @@
 import { computed } from 'vue';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import { highlightWriteFileSegment } from '~/utils/highlighting/segmentHighlighter';
-import { getLanguage } from '~/utils/highlighting/languageDetector';
+import { getPrismLanguage } from '~/utils/highlighting/languageDetector';
 import type { WriteFileSegment } from '~/types/segments';
 import 'prismjs/themes/prism.css'; // Ensure PrismJS theme is available
 
@@ -26,7 +26,7 @@ const props = defineProps<{
 }>();
 
 const isMarkdownFile = computed(() => props.path.endsWith('.md'));
-const language = computed(() => getLanguage(props.path));
+const language = computed(() => getPrismLanguage(props.path));
 
 // To use highlightWriteFileSegment, we need to construct a temporary WriteFileSegment-like object.
 const tempFileSegmentForHighlighting = computed((): WriteFileSegment => ({
