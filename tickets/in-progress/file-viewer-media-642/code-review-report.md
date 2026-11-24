@@ -14,7 +14,8 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-004`. Round 4 is a `Targeted Delta Review` of `190cd51bc3..73c3330c49`: SR-005 / DEC-007 and IR-004, with the source change in `38f318021c`. Round 3's entry follows.
+- Previous: `CRR-003`
 - Current Review Round: `3`, a `Targeted Delta Review` of `292ea71db5..af2b65c2c0`. The only source change is `36881a6734`: `CollaborationMessageReferenceViewer.vue` and its spec. Rounds 1 and 2 below stay as recorded except where a later round updates them.
 - Review Scope: round 2 is a `Targeted Delta Review` of `4313640f6e..26ebb05729`. Round 1 was a `Full Review`.
 - Round 2 scope evidence: the source delta is two commits.
@@ -60,6 +61,26 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 4 Delta Verification (CRR-004): the iOS audio session (SR-005, DEC-007)
+
+- **The change:**
+  - **New `AutoByteusMobileCore/Media/MediaAudioSession.swift` (about 50 lines):**
+    - `begin()` records the category, mode and options, then sets `.playback` / `.moviePlayback` and `setActive(true)`;
+    - `end()` calls `setActive(false, options: .notifyOthersOnDeactivation)` and restores what was recorded (N-8);
+    - a second call to either does nothing, and failures are logged by error code only and never block playback.
+  - **`NativeMediaPlayerViewController`:** `begin()` in `viewDidLoad` (on present); `end()` in the existing `viewDidDisappear` teardown, beside `loader?.invalidate()`.
+- **N-7 holds:** the teardown's guard (`isBeingDismissed || presentingViewController == nil`) runs on every way the screen leaves (Back, swipe-down, AVKit's close). It does not run while AVKit presents its own full screen over the player, so the session stays active there.
+- **Placement:** in Core, so the test host's real `AVAudioSession` can be tested. Pass, with the reason recorded, and it holds.
+- **Unchanged:** Info.plist (no background mode) and Android.
+- **Evidence:**
+  - IMP-14: `MediaAudioSessionTests` checks `.playback` / `.moviePlayback` while shown, the category restored after, and repeated calls as no-ops; Core 88/88; the fake-node UI tests 3/3.
+  - Re-run by me on my own simulator (since deleted): Core 88 executed, 0 failures, 1 skipped (the host-video test).
+  - There is no red run, because the code is new. The sound and the Ring/Silent switch stay for the physical-iPhone check, as DEC-007 records.
+- **Held, not findings:**
+  - If `setActive(false)` answers `isBusy` (the player's teardown still running), the session stays active under the restored category, and other apps' audio is not told to resume. It is logged, as N-7 accepts. API/E2E may watch the log for that code.
+  - The app going to the background with the player open leaves the session active. The app has no background mode, so sound stops with the app.
+- **Result:** Pass. No new findings.
 
 ## Round 3 Delta Verification (CRR-003)
 
@@ -272,6 +293,13 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 4, CRR-004, SR-005 / IR-004). CR-001 and CR-002 stay resolved; there are no new findings.
+- Score Summary: 9.3 / 10.
+- Recommended Recipient: `/api_e2e_engineer`. Run round 3's list, plus:
+  - the iOS player opens and closes with no session-failure log line;
+  - a capture of the session behaviour;
+  - the physical-iPhone Ring/Silent check before release.
+- Round 3 result (CRR-003, superseded):
 - Review Decision: `Pass` (round 3, CRR-003). CR-001 and CR-002 are resolved.
 - Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Score Summary: 9.3 / 10. Runtime correctness is back to 9.3; every category is ≥ 9.2.

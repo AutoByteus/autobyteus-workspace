@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail: Requirement Gap | CR-001 (new) |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002), Targeted Delta | Fail | Fail: Local Fix | CR-001 (resolved), CR-002 (new) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-003), Targeted Delta | Fail | Pass | CR-002 (resolved) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-005), Targeted Delta | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -111,3 +112,35 @@ None.
   - the zero-byte 416;
   - the iOS Back bar over AVKit's buttons;
   - the cosmetic `video-loader` queue label.
+
+### CRR-004: targeted delta review of IR-004 (SR-005, the iOS audio session): Pass
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 4 Delta Verification")
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review` of `190cd51bc3..73c3330c49` (`38f318021c`: `MediaAudioSession.swift`, `NativeMediaPlayer.swift`, the tests, and `docs/ios_mobile_access.md`)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-004); SR-005 / DEC-007; ARCH-REV-005 N-7, N-8
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Pass, 9.3 / 10
+- What changed in the review result and why:
+  - The session is scoped to the player's lifetime: `begin` on present; `end` in the one teardown that every close path runs, but not during AVKit's own full screen (N-7).
+  - The prior category is restored (N-8), failures are logged by code only, and no background mode is added.
+  - My re-run: Core 88 passed on my own simulator.
+- Supported product scenario / material-premise basis changes: none. Held: an `isBusy` deactivation (logged), and the background case (no background mode).
+
+#### Prior Finding Resolution
+
+None open. CR-001 and CR-002 stay resolved.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the physical-iPhone Ring/Silent and sound check before release;
+  - C-6 (ship 574 and 642 together);
+  - the zero-byte 416;
+  - the iOS Back bar over AVKit's buttons.
