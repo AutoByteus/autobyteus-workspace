@@ -58,3 +58,5 @@ Review note: ARCH-REV-004 passed SR-004, with SR-003 (2026-11-24). The reviewer 
 - Requirements: REQ-002 says the sound is heard also on silent; background playback is out of scope. DEC-007 (b) was decided by the Solution Designer within REQ-002, with the user informed.
 - Design: `NativeMediaPlayer` makes the audio session `.playback`/`.moviePlayback` while it is open and deactivates it on close.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review (a design change), then implementation. API/E2E is told the decision.
+
+Review note: ARCH-REV-005 passed SR-005 (2026-11-25). The reviewer routed it to `/implementation_engineer`. N-7 (deactivate in the existing `viewDidDisappear` teardown) and N-8 (restore the previous category) are for implementation.
