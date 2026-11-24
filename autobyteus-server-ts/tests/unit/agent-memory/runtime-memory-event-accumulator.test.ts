@@ -26,13 +26,15 @@ afterEach(async () => {
   tempDirs.clear();
 });
 
+let deliveryTick = 0;
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({
   eventType,
   runId: "run-1",
   payload,
   statusHint: null,
-  // The node's delivery time, as AgentRun stamps every event it delivers to the recorder (autobyteus-628 D-3).
-  occurredAt: Date.now(),
+  // Strictly increasing, distinct delivery times, as AgentRun stamps them (autobyteus-628 SR-007): the recorder does not
+  // read them, and no test here can pass because two events share a millisecond.
+  occurredAt: 1_800_000_000_000 + (deliveryTick += 7),
 });
 
 const readView = (memoryDir: string, includeArchive = false) =>
@@ -1116,8 +1118,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       turnId: "turn-compact",
       content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
       sourceEvent: AgentRunEventType.COMPACTION_STATUS,
-      // A node time after the text's (both are the node's delivery times, autobyteus-628 D-3).
-      ts: Date.now() / 1000 + 1,
+      ts: 2,
       correlationId: boundaryKey,
     });
 

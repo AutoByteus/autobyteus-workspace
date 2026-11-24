@@ -10,7 +10,7 @@ import {
   asString,
   extractForwardedMessageAttachments,
   extractContentDelta,
-  extractEventTime,
+  extractTimestamp,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
@@ -84,7 +84,7 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       content: payload.message.content,
       sourceEvent: "AgentRun.postUserMessage",
-      // The input's admission time, the node's time of the message (autobyteus-628 SR-006).
+      // The input's admission time (autobyteus-628 SR-006): before its notice's write, so it never sorts after it.
       ts: payload.acceptedAt.getTime() / 1000,
       media,
       fileAttachments,
@@ -157,7 +157,7 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       parts: [],
       sourceEvent: event.eventType,
-      ts: extractEventTime(event),
+      ts: extractTimestamp(event.payload),
     });
   }
 
@@ -175,7 +175,7 @@ export class RuntimeMemoryEventAccumulator {
       segment.parts.push(delta);
     }
     segment.sourceEvent = event.eventType;
-    segment.ts = segment.ts ?? extractEventTime(event);
+    segment.ts = segment.ts ?? extractTimestamp(event.payload);
     this.segments.set(key, segment);
   }
 
@@ -214,7 +214,7 @@ export class RuntimeMemoryEventAccumulator {
     }
     const turnId = extractTurnId(event.payload);
     if (!turnId) return;
-    this.writeAssistantTrace(turnId, content, event.eventType, extractEventTime(event));
+    this.writeAssistantTrace(turnId, content, event.eventType, extractTimestamp(event.payload));
   }
 
   private flushSegment(id: string, sourceEvent: string): void {
@@ -280,7 +280,7 @@ export class RuntimeMemoryEventAccumulator {
       // The notice's one id (autobyteus-526), so the conversation shows it once beside its live copy.
       messageId: asString(event.payload.message_id) ?? undefined,
       sourceEvent: event.eventType,
-      ts: extractEventTime(event),
+      ts: extractTimestamp(event.payload),
     });
   }
 

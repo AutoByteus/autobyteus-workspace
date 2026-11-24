@@ -7,7 +7,7 @@ import {
   asNumber,
   asRecord,
   asString,
-  extractEventTime,
+  extractTimestamp,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 
@@ -43,8 +43,7 @@ export class ProviderCompactionBoundaryRecorder {
       turnId,
       content: `Provider-owned context compaction boundary: ${boundary.provider}/${boundary.source_surface}`,
       sourceEvent: event.eventType,
-      // The node's time, as the live compaction row's (autobyteus-628 D-3); the provider's time stays in toolResult only.
-      ts: extractEventTime(event),
+      ts: boundary.provider_timestamp ?? extractTimestamp(event.payload),
       correlationId: boundary.boundary_key,
       toolResult: {
         provider: boundary.provider,

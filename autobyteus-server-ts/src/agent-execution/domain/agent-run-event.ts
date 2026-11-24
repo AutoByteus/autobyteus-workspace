@@ -39,7 +39,8 @@ export interface AgentRunEvent {
   statusHint: AgentRunStatusHint;
   /**
    * The node's time of the event, epoch ms (autobyteus-628 D-3): set once by the AgentRun as it delivers the event to
-   * its listeners, so every listener (the streams, the memory recorder) reads the same time. Unset before delivery.
+   * its listeners, so every stream reads the same time. Unset before delivery. The memory recorder does not read it: a
+   * stored trace keeps its write time (SR-007).
    */
   occurredAt?: number;
 }
@@ -69,11 +70,7 @@ export const stampForDelivery = (event: AgentRunEvent): AgentRunEvent =>
  * always has one; a producer outside the run stamps its own (`occurredAt: Date.now()`). A timed event without one is a
  * producer's mistake and fails here, so no row is ever timed by the viewer's clock.
  */
-export const serverTimeOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): string =>
-  new Date(serverTimeMsOf(event)).toISOString();
-
-/** The event's node time, epoch ms, for every reader (the streams, the memory recorder): no other clock stands in for it. */
-export const serverTimeMsOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): number => {
+export const serverTimeOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): string => {
   if (event.occurredAt === undefined) throw new Error(`${event.eventType} event has no occurredAt: its producer did not stamp it.`);
-  return event.occurredAt;
+  return new Date(event.occurredAt).toISOString();
 };
