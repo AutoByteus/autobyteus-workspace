@@ -19,13 +19,14 @@ Ticket autobyteus-628 (conversation-order-628). Worktree `<worktree>` (`autobyte
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/conversation-order-628/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002` (CR-001 Local Fix). IR-001 is the baseline.
 - Related solution revision IDs: SR-001…SR-006.
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003.
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A. Reviewer notes applied: N-1, N-2 (ARCH-REV-002) and N-4, N-5 (ARCH-REV-003).
+- Related code-review revision IDs: CRR-001.
+- Related API/E2E and delivery revision IDs: N/A.
+- Triggering finding IDs: CR-001. Reviewer notes applied in IR-001: N-1, N-2 (ARCH-REV-002) and N-4, N-5 (ARCH-REV-003).
 
 What the change does:
 
@@ -132,15 +133,19 @@ What the change does:
   - `userMessageProjection` merge keeps the time already shown (`existing.timestamp ?? message.timestamp`);
   - the recent window (`toRecentWindowTimestampMs`) reads null as 0. Only compaction placement uses it, so a compaction waits after an unconfirmed send until the node confirms it.
   - A local error row (a send the node never took) stays `null`: the node never recorded it.
+  - A reloaded row stored without `ts` hydrates with `null`, not the viewer's clock (`toServerTime`, IR-002). Every node writer stores a `ts`.
 - **`TOOL_LOG` and the send ack are timed.** `TOOL_LOG` creates and times a tool row; a send ack's ERROR becomes a row. Both carry `occurred_at`.
-- **No fallback to another clock for native compaction.** The provider-timestamp and viewer-clock fallbacks in `compactionActivityProjection.ts` and `nativeCompactionActivityReconciliation.ts` were removed (N-2).
+- **No fallback to another clock anywhere this change writes a row time:**
+  - native compaction: the provider-timestamp and viewer-clock fallbacks in `compactionActivityProjection.ts` and `nativeCompactionActivityReconciliation.ts` were removed (N-2);
+  - stored traces: the memory recorder reads only the run's `occurredAt`, through `serverTimeMsOf`. The payload-time and `provider_timestamp` fallbacks were removed (IR-002, CR-001);
+  - hydration: see the `null` row times above.
 
 ## Known Risks
 
 - **The time shown for a user row differs live and after a reload**, by the dispatch delay (milliseconds), on both sides of the comparison:
   - Live, a Team member's message shows its echo's `received_at`, and after a reload, its stored `acceptedAt`.
   - Both are the node's times, and the order is the same.
-- **A producer outside a run that forgets to stamp its time** makes its message fail loudly: the mapper throws, the Team and Org adapters reject the event.
+- **A producer outside a run that forgets to stamp its time** makes its message fail loudly: the mapper throws, the Team and Org adapters reject the event, and the memory recorder refuses to store it (IR-002). The refusal is logged as a listener failure.
   - Every such producer found is listed above, and the suites cover them.
   - A new producer added later must stamp its own time.
 - **Typecheck baselines are unchanged:** the server's test-file errors stay at 972 in 299 files, the web's at 86 in 36.
@@ -160,7 +165,7 @@ What the change does:
 
 - Backward-compatibility mechanisms introduced: `None`. A timed frame without `occurred_at` is refused, not given a fallback time.
 - Legacy old-behavior retained in scope: `No`.
-- Dead code in the touched files and modules removed (Core Principle 7): `Yes`. Removed:
+- Dead code in the touched files and modules removed (Core Principle 7): `Yes`. Removed (IR-002 also removed `extractTimestamp` and its normalizer, left without a caller):
   - the window's `order` field;
   - the compaction projection's `now` input and provider-timestamp helper;
   - the viewer-clock fallback in native compaction reconciliation;
@@ -218,6 +223,8 @@ Evidence is under `tickets/in-progress/conversation-order-628/evidence/implement
 | IMP-13 | the agent-execution, agent-streaming, team-execution, agent-memory and run-history unit folders; server typecheck | `6ad8920bd6` | macOS, Node 22 | the `stampForDelivery` move | REQ-004 | Pass | `IMP-13-stamp-move.log` | `320 passed \| 4 skipped`; `[typecheck] PASS` |
 | IMP-14 | fresh `--no-local` clone; `pnpm install --frozen-lockfile`; `pnpm build:electron:mac -- --arm64` with the job's env; the job's Prisma and terminal-runtime verify steps | `3e4c6322a4` (code = `6ad8920bd6`) | macOS arm64, Node 22, `env -i` | the release build's gates, packaging, the contract `dist/` as build inputs | DESIGN.md rule 12 | Pass | `IMP-14-fresh-start-build.log` | `build=0`, `verify-prisma=0`, `verify-terminal=0`, `[typecheck] PASS` |
 | IMP-15 | `pnpm release:test --ref codex/conversation-order-628`; `gh run watch 45293566395 --exit-status` | `5c598ffca8` (code = `6ad8920bd6`) | GitHub Actions, release-desktop.yml, build only | all five desktop targets | DESIGN.md rule 12 | Pass | `IMP-15-build-only-desktop-release.log` | `conclusion: success`; 6 build jobs success; sign and publish skipped |
+| IMP-16 | the two new CR-001 cases and their files, on the fix and with the 4 CR-001 source files stashed; then `pnpm test:unit` (server), the web suite, both typechecks, the three guards, `pnpm check:contract-dist` | `eaebb94304` | macOS, Node 22 | `serverTimeMsOf`, the memory recorder, the provider boundary recorder, hydration | REQ-004, AC-006, CR-001 | Pass (pre-fix: each new case fails, as expected) | `IMP-16-cr001-no-second-clock.log` | red `1 failed` ×2; `1074 passed \| 5 skipped`; `803 passed` |
+| IMP-17 | rebuild; MSP-105; `env -i … pnpm exec vitest run tests/e2e`; `env -i … pnpm test:integration` (after `test:integration:prepare`) | `eaebb94304` (MSP-105, whole e2e); `8fbffd707f` (integration suite; the one fixed e2e file) | macOS, Node 22, clean environment, scripted runtimes | the strict recorder on real paths; the integration fixtures | AC-001…AC-003, AC-005, AC-006, CR-001 | Pass after fixture fixes (no product change) | `IMP-17-cr001-runtime-checks/` | MSP-105 `Pass`; integration `92 passed`, `523 passed`; 0 refusals |
 
 - Not run, and why:
   - real provider runtimes (left to API/E2E; the probes use scripted runtimes);

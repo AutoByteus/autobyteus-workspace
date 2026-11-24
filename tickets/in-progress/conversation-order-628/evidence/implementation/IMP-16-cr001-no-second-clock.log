@@ -1,0 +1,48 @@
+# IMP-16 (CR-001, CRR-001; REQ-004) a stored row's time is the node's or none: the recorder and hydration have no second clock
+# command: the two new cases and their files, on the fix, then with the 4 CR-001 source files stashed (git stash push -- <files>):
+#            cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose tests/unit/agent-execution/agent-run-event-time.test.ts
+#              tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+#            cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run --reporter=verbose services/runHydration/__tests__/runProjectionConversation.spec.ts
+#          then, one at a time: pnpm test:unit (server) ; NUXT_TEST=true pnpm exec vitest run (web) ; both typechecks ;
+#          the three web guards ; pnpm check:contract-dist
+# commit: eaebb94304 (run on its working tree before committing; same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-24
+# result: Pass. On the pre-CR-001 source each new case fails: the recorder stored an unstamped notice at its payload time
+#   instead of refusing it, and hydration gave a row without ts the viewer's clock. With the fix both pass, and so do the
+#   suites. 62 fixtures that handed unstamped events straight to the accumulator now stamp them with the production
+#   stampForDelivery (backend replay tests) or a node delivery time (the memory test helpers), as AgentRun does; the
+#   founder-shape notice in preface-notice-order carries its time as occurredAt; one marker written directly to the writer
+#   takes a node time after the text's (it was ts: 2, sorted against the text's old payload time 1).
+
+## fix: the new cases' files
+ ✓ tests/unit/agent-execution/agent-run-event-time.test.ts > the run's one time for each event it delivers (autobyteus-628 D-3) > an event that no run delivered is refused by the memory recorder too, even with a payload or provider time 3ms
+      Tests  30 passed (30)
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts > runProjectionConversation > a stored row without a ts hydrates with no time, not the viewer's clock; the conversation's times come from the timed rows 1ms
+      Tests  17 passed (17)
+
+## red: the pre-CR-001 source
+ × tests/unit/agent-execution/agent-run-event-time.test.ts > the run's one time for each event it delivers (autobyteus-628 D-3) > an event that no run delivered is refused by the memory recorder too, even with a payload or provider time 5ms
+      Tests  1 failed | 29 passed (30)
+ × services/runHydration/__tests__/runProjectionConversation.spec.ts > runProjectionConversation > a stored row without a ts hydrates with no time, not the viewer's clock; the conversation's times come from the timed rows 6ms
+      Tests  1 failed | 16 passed (17)
+
+## server unit suite (pnpm test:unit)
+ Test Files  1074 passed | 5 skipped (1079)
+      Tests  8927 passed | 9 skipped (8936)
+
+## web unit suite
+ Test Files  803 passed (803)
+      Tests  6124 passed | 2 skipped (6126)
+
+## typechecks
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## guards and contract dist
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.
