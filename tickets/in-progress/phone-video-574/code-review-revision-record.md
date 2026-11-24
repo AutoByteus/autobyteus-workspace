@@ -12,6 +12,7 @@
 | CRR-006 | `code-review-report.md` | Implementation Review, round 5 (IR-003), Targeted Delta | Fail | Pass | CR-003 (resolved) |
 | CRR-007 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-004 F-4) | Pass (CRR-006) | Fail: implementation Local Fix (stop rule to the Solution Designer) | CR-004 (new); CR-003 reopened with it |
 | CRR-008 | `code-review-report.md` | Implementation Review, round 7 (IR-004), Targeted Delta | Fail | Pass | CR-003, CR-004 (resolved) |
+| CRR-009 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 2 (API-REV-005 Pass) | Pass (CRR-008) | Pass | None |
 
 ## Revision Entries
 
@@ -290,3 +291,37 @@ None (first test review).
   - a physical iPhone check is still recommended;
   - the test-code review is pending (`ef3107bb3e`, `bb80c1cc9e`, IR-004's tests);
   - R-1 and R-2.
+
+### CRR-009: proportional review of the API/E2E test code, round 2 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/api-e2e-test-review-report.md`
+- Review entry point and round: API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). Reviewed:
+  - `ef3107bb3e` and `bb80c1cc9e`: `NativeVideoRealNodeUITests.swift` and `native-video-node.mjs`;
+  - IR-004's Core tests.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (API-REV-005 Pass, 93.6%, commit `f84245fe83`)
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003, API-REV-004, API-REV-005
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-008, implementation); test review round 1 Pass (CRR-004)
+- Current authoritative result: Pass (test code)
+- What changed in the review result and why:
+  - The new checks prove the user-visible properties that F-3 and F-4 broke: a picture that moves after a scrub, delivery at real time over a round trip, and decoded frames at the middle with few requests. Each was red on the broken loader and green on the fix.
+  - T-2 is resolved.
+  - The evidence scan is clean.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None (no test-review findings were open). Note T-2: resolved (the check waits for the controls to hide). Note T-1: still a non-blocking note.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - O-7 (a link slower than the bitrate) and H-1 (64 KB in transit) as observed;
+  - R-1 and R-2;
+  - a physical-iPhone check;
+  - the release-build checks should be repeated on the final head.
