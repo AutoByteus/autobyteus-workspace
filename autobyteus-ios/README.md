@@ -47,6 +47,42 @@ xcodebuild \
   test
 ```
 
+The video loader's AVPlayer test (`AuthorizedMediaLoaderTests`, autobyteus-574) reads a 20+ MB MP4 longer than 31 s (it
+seeks to 30 s) from the host and is skipped without it: add `TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<path>` before `xcodebuild` (the `TEST_RUNNER_` prefix passes it
+to the tests). The app's video player on the simulator (`NativeVideoPlayerUITests`) needs the fake node started with a
+wide MP4, and is not part of the smoke run:
+
+```bash
+python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29874 --video <a wide MP4> &
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:AutoByteusMobileUITests/NativeVideoPlayerUITests \
+  AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29874/mobile \
+  test
+```
+
+The app's player against a real node of this worktree (`NativeVideoRealNodeUITests`, autobyteus-574 API/E2E: pairing,
+a chat link, Files, seek, a file rewritten while its viewer is open, node removal) needs
+`autobyteus-web/tests/e2e/native-video-node.mjs`, started at this computer's LAN address (a pairing link may not name a
+loopback host). Its tests run in name order on one fresh stack (the pairing link is one-time); it is not part of the
+smoke run:
+
+```bash
+node autobyteus-web/tests/e2e/native-video-node.mjs --output-dir=<fresh dir> \
+  --origin-host=<LAN IP> --listen-host=<LAN IP> --secrets-file=<file outside the evidence> &
+TEST_RUNNER_AUTOBYTEUS_574_REAL_NODE_INFO=<fresh dir>/stack-info.json \
+TEST_RUNNER_AUTOBYTEUS_574_REAL_NODE_SECRETS=<secrets file> \
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,id=<your own simulator>' \
+  -only-testing:AutoByteusMobileUITests/NativeVideoRealNodeUITests \
+  IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autobyteus.mobile.share \
+  test
+```
+
 Simulator smoke path with a fake AutoByteus node:
 
 ```bash

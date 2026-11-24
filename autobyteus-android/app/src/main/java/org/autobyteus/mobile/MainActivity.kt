@@ -33,11 +33,15 @@ import org.autobyteus.mobile.ui.connect.ScanScreen
 import org.autobyteus.mobile.ui.sheets.RemoveNodeSheet
 import org.autobyteus.mobile.ui.sheets.TypeAddressSheet
 import org.autobyteus.mobile.ui.start.StartScreen
+import org.autobyteus.mobile.video.NativeVideoPlayback
+import org.autobyteus.mobile.video.VideoCache
+import org.autobyteus.mobile.video.VideoPlayerActivity
 import org.autobyteus.mobile.web.AutoByteusWebView
 import org.autobyteus.mobile.web.DownloadsSaver
 import org.autobyteus.mobile.web.ShellBridge
 import org.autobyteus.mobile.web.ShellBridgeAction
 import org.autobyteus.mobile.web.WebFileChooserCoordinator
+import org.autobyteus.mobile.web.WebMediaFullScreen
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -60,6 +64,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     /** The open document's desktop full-screen request over 432's controller (D-2 with DEC-011). */
     private lateinit var fullScreenRequest: DesktopFullScreenRequest
     private lateinit var fullScreenController: DesktopFullScreenController
+    /** An in-page player's full screen (autobyteus-574 D-6), over the same controller. */
+    private lateinit var mediaFullScreen: WebMediaFullScreen
     private val checks = Executors.newFixedThreadPool(4)
     private val mainThread = Executor { runOnUiThread(it) }
 
@@ -74,6 +80,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         super.onCreate(savedInstanceState)
         fullScreenController = DesktopFullScreenController.forActivity(this)
         fullScreenRequest = DesktopFullScreenRequest(fullScreenController)
+        mediaFullScreen = WebMediaFullScreen(this, fullScreenController)
         // autobyteus-290 SM-10: the saved entries' stored keys follow the code before the store first reads them.
         SavedNodeEntryKeysMigration.run(this)
         savedNodeStore = SavedNodeStore(this)
@@ -157,7 +164,11 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             Screen.CantReach -> showList()
             Screen.Web -> {
                 val webHost = currentWebHost
-                if (webHost?.canGoBack() == true) webHost.goBack() else leavePage()
+                when {
+                    mediaFullScreen.isShowing -> mediaFullScreen.hide()
+                    webHost?.canGoBack() == true -> webHost.goBack()
+                    else -> leavePage()
+                }
             }
         }
     }
@@ -207,6 +218,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             context = this,
             entry = entry,
             fileChooserCoordinator = fileChooserCoordinator,
+            mediaFullScreen = mediaFullScreen,
             shellBridge = ShellBridge(entry, bridgeActions),
             // A new document ends the old one's full screen and its request (432 D-2); it decides nothing about
             // visibility: only the page's pageReady shows the page (DS-006).
@@ -237,6 +249,17 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         override fun onDesktopFullScreen(on: Boolean) =
             fullScreenRequest.onRequest(on, plainPageOnScreen = screen == Screen.Web && pageState.overlay == null)
         override fun onSaveFile(file: ShellBridgeAction.SaveFile) = downloadsSaver.save(file)
+        /**
+         * The page's video, in the app's player (autobyteus-574 D-3, D-5): the credential goes to the player through
+         * memory only; the Intent carries a token.
+         */
+        override fun onPlayVideo(entryId: String, video: ShellBridgeAction.PlayVideo) {
+            val entry = currentWebHost?.entry?.takeIf { it.id == entryId } ?: return
+            val token = NativeVideoPlayback.put(NativeVideoPlayback.Request(
+                nodeId = entry.id, nodeOrigin = entry.origin, url = video.url, title = video.title, credential = video.credential,
+            ))
+            startActivity(Intent(this@MainActivity, VideoPlayerActivity::class.java).putExtra(VideoPlayerActivity.EXTRA_PLAYBACK, token))
+        }
     }
 
     private fun showStart() = renderList(Screen.Start)
@@ -286,6 +309,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun openRemoveSheet(entry: SavedNodeEntry) {
         startScreen.showSheet(RemoveNodeSheet.build(ui, entry, onRemove = {
             savedNodeStore.removeEntry(entry.id)
+            // Its videos leave the phone with it (autobyteus-574 D-7).
+            VideoCache.deleteNode(this, entry.id)
             if (currentWebHost?.entry?.id == entry.id) {
                 closePage()
                 showStart()

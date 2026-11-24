@@ -91,6 +91,10 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     // The shell bridge: a web-message object only for the open node's origin (a library, not a permission).
     implementation("androidx.webkit:webkit:1.12.1")
+    // The video player (autobyteus-574 D-3): ExoPlayer, its player view, and the database its disk cache indexes in.
+    implementation("androidx.media3:media3-exoplayer:1.5.1")
+    implementation("androidx.media3:media3-ui:1.5.1")
+    implementation("androidx.media3:media3-database:1.5.1")
 
     testImplementation("junit:junit:4.13.2")
     // The JVM unit tests run org.json for real (android.jar has only stubs): the bridge's message rules use it.

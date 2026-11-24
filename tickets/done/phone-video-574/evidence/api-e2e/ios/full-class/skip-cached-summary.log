@@ -1,0 +1,15 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testASkipWithThePlayersButton]' started.
+MARK skip 1795530749235
+SLIDER +1s 19 seconds elapsed, 11 seconds remaining 1795530751479
+SLIDER +2s hidden 1795530752509
+SLIDER +3s hidden 1795530753542
+SLIDER +4s hidden 1795530754577
+SLIDER +5s hidden 1795530755596
+SLIDER +6s hidden 1795530756615
+SLIDER +7s hidden 1795530757642
+SLIDER +8s hidden 1795530758676
+SLIDER +9s hidden 1795530759700
+SLIDER +10s hidden 1795530760721
+SLIDER +11s hidden 1795530761741
+SLIDER +12s hidden 1795530762767
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testASkipWithThePlayersButton]' passed (30.423 seconds).

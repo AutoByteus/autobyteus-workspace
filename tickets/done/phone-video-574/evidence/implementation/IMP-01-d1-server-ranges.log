@@ -1,0 +1,49 @@
+# IMP-01 (D-1; REQ-005, AC-005) the node serves user files by byte range with a strong ETag and no-cache: base, then the fix
+# command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/api/rest/user-file-ranges.test.ts   (base code, then the fix)
+#          pnpm exec vitest run tests/unit/api tests/unit/node-files tests/architecture/user-file-replies.test.ts tests/unit/node-access
+#          env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e/node-files/node-files.e2e.test.ts
+#            tests/integration/api/rest/context-files.integration.test.ts tests/integration/api/rest/workspace-content-after-restart.integration.test.ts
+#            tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+# commit: base 4b73fccae2 (red); 66534ef01c (fix)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-24
+# result: Reproduced, then fixed. On the base every one of the 18 range cases fails (whole file, no Accept-Ranges, no ETag,
+#   no 206/416/304). With D-1 all pass: one range (a-b, a-, -n) 206 with exactly its bytes and Content-Range; 416 with
+#   "bytes */size" for an unsatisfiable range; a multi-range or malformed Range answers the whole file (200);
+#   If-None-Match with the current version 304 (a list, W/, *); If-Range serves the range only for the current version;
+#   Cache-Control: no-cache, and a route's own no-store is kept; no Last-Modified; a rewritten file answers its new bytes
+#   and a new ETag, never 304 for the old one; HEAD answers the headers. Per route: workspace content and static (F1, F2),
+#   uploaded media (F3), run/Team/Org file changes (F9-F11, no-store kept), context files, node files (a paired phone over
+#   the real node access gate, 401 without the credential); message references stay whole (no file path, FU-001).
+
+## base
+     × without Range: 200, the whole file, Accept-Ranges, a strong ETag, no-cache and no Last-Modified 16ms
+     × Range bytes=100-199: 206 with exactly bytes 100-199 1ms
+     × Range bytes=900-: 206 with exactly bytes 900-999 1ms
+     × Range bytes=-50: 206 with exactly bytes 950-999 1ms
+     × Range bytes=990-5000: 206 with exactly bytes 990-999 1ms
+     × Range bytes=0-0: 206 with exactly bytes 0-0 1ms
+     × an unsatisfiable Range bytes=1000-: 416 with the size 1ms
+     × an unsatisfiable Range bytes=5000-6000: 416 with the size 1ms
+     × an unsatisfiable Range bytes=-0: 416 with the size 2ms
+     × a multi-range or malformed Range bytes=0-9,20-29: 200 with the whole file 1ms
+     × a multi-range or malformed Range items=0-9: 200 with the whole file 0ms
+     × a multi-range or malformed Range bytes=9-0: 200 with the whole file 0ms
+     × a multi-range or malformed Range bytes=abc: 200 with the whole file 0ms
+     × If-None-Match with the current version: 304, no body; with another version or a list without it: the file 0ms
+     × If-Range with the current version serves the range; with an old version or a date, the whole file 0ms
+     × a route that sets no-store keeps it, and still serves ranges 0ms
+     × a rewritten file is never answered 304 for the old version: new bytes and a new ETag 1ms
+     × HEAD answers the headers of the whole file or the range, without a body 1ms
+      Tests  18 failed (18)
+
+## fix
+      Tests  18 passed (18)
+
+## the API, node-files, node-access and architecture unit tests
+ Test Files  54 passed (54)
+      Tests  290 passed (290)
+
+## node-files e2e, the two related integration files, phone routes e2e (clean environment)
+ Test Files  4 passed (4)
+      Tests  30 passed (30)

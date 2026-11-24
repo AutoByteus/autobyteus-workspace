@@ -1,6 +1,13 @@
 <template>
   <div class="video-player-container">
-    <div v-if="hasMediaFailure" class="video-error" role="alert">
+    <div v-if="playbackMode === 'native'" class="native-video" data-testid="native-video">
+      <p class="native-video-title">{{ title }}</p>
+      <button type="button" class="play-button" @click="playNatively">
+        {{ $t('tools.components.fileExplorer.viewers.VideoPlayer.play') }}
+      </button>
+    </div>
+    <MediaLoadingState v-else-if="playbackMode === 'pending'" kind="video" :progress="null" class="video-loading" />
+    <div v-else-if="hasMediaFailure" class="video-error" role="alert">
       <p>{{ $t('tools.components.fileExplorer.viewers.VideoPlayer.video_could_not_be_played') }}</p>
       <button type="button" class="retry-button" @click="retry">
         {{ $t('tools.components.fileExplorer.viewers.VideoPlayer.retry') }}
@@ -26,6 +33,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
+import { useNativeVideoPlayback, videoTitleOf } from '~/composables/mobile/useNativeVideoPlayback';
 import MediaLoadingState from './MediaLoadingState.vue';
 
 const props = defineProps<{
@@ -36,7 +44,27 @@ const props = defineProps<{
 
 const mediaAttemptKey = ref(0);
 const nativeMediaFailed = ref(false);
-const { resolvedUrl, error: resourceError, loading, progress, refresh } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
+// In the phone apps a protected node video plays in the app's own player, by range (autobyteus-574 D-2): the page then
+// loads nothing itself; elsewhere it plays here, as before.
+const nativePlayback = useNativeVideoPlayback();
+const playbackMode = computed(() => nativePlayback.modeFor(props.url));
+const title = computed(() => (props.url ? videoTitleOf(props.url) : ''));
+const { resolvedUrl, error: resourceError, loading, progress, refresh } = useAuthorizedObjectUrl(
+  () => (playbackMode.value === 'page' ? props.url : null),
+  { revision: () => props.contentRevision ?? 0 },
+);
+
+const playNatively = (): void => {
+  if (props.url) nativePlayback.play(props.url, title.value);
+};
+
+// Opening a video opens the player at once (the viewer shown, another URL, or the app's answer arriving); Play opens it
+// again after it was closed. A reload of the same file (`contentRevision`: the file changed, or it was opened again)
+// never opens it by itself: the player may be open, or the user closed it (autobyteus-574 CR-001).
+watch([playbackMode, () => props.url], ([mode, url], previous) => {
+  const [previousMode, previousUrl] = previous ?? [];
+  if (mode === 'native' && (previousMode !== 'native' || previousUrl !== url)) playNatively();
+}, { immediate: true });
 const hasMediaFailure = computed(() => nativeMediaFailed.value || Boolean(resourceError.value));
 
 watch([() => props.url, () => props.contentRevision], () => {
@@ -82,6 +110,35 @@ const retry = async (): Promise<void> => {
 
 .error-placeholder {
   color: #9ca3af; /* gray-400 */
+}
+
+.native-video {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  color: #f3f4f6; /* gray-100 */
+  text-align: center;
+}
+
+.native-video-title {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.play-button {
+  min-width: 6rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  background-color: #f9fafb; /* gray-50 */
+  color: #111827; /* gray-900 */
+  font-weight: 600;
+}
+
+.play-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
 
 .video-loading {

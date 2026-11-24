@@ -61,7 +61,9 @@ class ShellBridgeMessagesTest {
         assertEquals(3, reply.getInt("nodeCount"))
         assertEquals("Pixel 8", reply.getString("deviceName"))
         assertEquals("Test Desktop", reply.getString("nodeName"))
-        assertEquals(setOf("type", "nodeCount", "deviceName", "nodeName"), reply.keys().asSequence().toSet())
+        // autobyteus-574 D-2: the app has its own video player.
+        assertEquals(true, reply.getBoolean("videoPlayer"))
+        assertEquals(setOf("type", "nodeCount", "deviceName", "nodeName", "videoPlayer"), reply.keys().asSequence().toSet())
     }
 
     @Test
@@ -149,6 +151,50 @@ class ShellBridgeMessagesTest {
         assertEquals(false, request.toString().contains("SECRET-BYTES-BASE64"))
         assertEquals(true, request.toString().contains("resume.pdf"))
     }
+
+    // autobyteus-574 D-2, D-5 (AC-003): a video to play is read only from the node's main frame, for a file route of that
+    // node; the credential goes nowhere else, and neither it nor the URL is ever printed.
+    @Test
+    fun readsAPlayVideoForAFileRouteOfTheNodeWithItsTitleAndCredential() {
+        val url = "$origin/rest/workspaces/agent_ws_ab12/content?path=demo%2Fplan.mp4"
+        assertEquals(ShellBridgeAction.PlayVideo(url, "plan.mp4", "mra_phone_credential"), read(play(url)))
+        // A title that is not a plain name is dropped, not trusted.
+        assertEquals(ShellBridgeAction.PlayVideo(url, "", "mra_phone_credential"), read(play(url, title = "../../etc/passwd")))
+    }
+
+    @Test
+    fun ignoresAPlayVideoForAnotherSiteAnotherRouteOrFromAnotherFrame() {
+        val url = "$origin/rest/node-files/content?path=%2Ftmp%2Fclip.mp4"
+        assertNull(read(play(url), isMainFrame = false))
+        assertNull(read(play(url), sourceOrigin = "http://192.168.1.25:8001"))
+        assertNull(read(play("https://videos.example.com/rest/workspaces/w/content?path=a.mp4")))
+        assertNull(read(play("http://192.168.1.25:8001/rest/workspaces/w/content?path=a.mp4")))
+        assertNull(read(play("https://192.168.1.25:29695/rest/workspaces/w/content?path=a.mp4")))
+        assertNull(read(play("$origin/mobile/index.html")))
+        assertNull(read(play("http://user:pass@192.168.1.25:29695/rest/files/a.mp4")))
+        assertNull(read(play("javascript:alert(1)")))
+    }
+
+    @Test
+    fun ignoresAPlayVideoWithoutACredentialOrWithOneThatIsNotOneToken() {
+        val url = "$origin/rest/files/videos/a.mp4"
+        assertNull(read(play(url, credential = "")))
+        assertNull(read(play(url, credential = "mra_a b")))
+        assertNull(read(play(url, credential = "mra_a\nInjected: header")))
+        assertNull(read(JSONObject().put("type", "playVideo").put("url", url).put("title", "a.mp4").toString()))
+        assertNull(read(JSONObject().put("type", "playVideo").put("title", "a.mp4").put("credential", "mra_x").toString()))
+    }
+
+    @Test
+    fun aPlayVideoNeverPrintsItsCredentialOrItsUrl() {
+        val request = ShellBridgeAction.PlayVideo("$origin/rest/workspaces/w/content?path=private%2Fplan.mp4", "plan.mp4", "mra_SECRET")
+        assertEquals(false, request.toString().contains("mra_SECRET"))
+        assertEquals(false, request.toString().contains("private"))
+        assertEquals(true, request.toString().contains("plan.mp4"))
+    }
+
+    private fun play(url: String, title: String = "plan.mp4", credential: String = "mra_phone_credential"): String =
+        JSONObject().put("type", "playVideo").put("url", url).put("title", title).put("credential", credential).toString()
 
     private fun read(data: String?, sourceOrigin: String = origin, isMainFrame: Boolean = true) =
         ShellBridgeMessages.read(data, sourceOrigin, isMainFrame, expectedOrigin = origin)

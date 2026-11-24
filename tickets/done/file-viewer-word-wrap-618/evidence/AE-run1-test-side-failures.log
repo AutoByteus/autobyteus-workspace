@@ -1,0 +1,14 @@
+# AE run1 (test-side failures, fixed before run2)
+# Command: the same as AE-001-002-rendered/probe-run.log with --output-dir=/tmp/ae618/run1
+# Commit: 7824c552b3 + the first MSP-110 draft
+# Date: 2026-11-24
+# Causes: (1) the highlighting check expected YAML tokens; languageDetector.ts maps .yaml to plaintext (pre-existing, FU-003); (2) MSP-110 pressed Escape, which leaves the maximized (Zen) view (FileExplorerTabs.vue:321), so the save notice was never shown in the maximized viewer.
+
+[mobile-shell] MSP-108 …
+[mobile-shell] MSP-108 Fail: desktop: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge; Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)
+[mobile-shell] MSP-110 …
+[mobile-shell] MSP-110 Fail: locator.waitFor: Timeout 15000ms exceeded.
+  - waiting for locator('#contentViewer:visible').first().getByText('Changes saved').first() to be visible
+[mobile-shell] MSP-109 …
+[mobile-shell] MSP-109 Fail: phone: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge, the page does not scroll sideways (AC-001)
+mobile-shell probe: Fail

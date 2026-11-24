@@ -48,10 +48,12 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       }
 
       return sendUserFile(reply, {
+        kind: "file",
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
-        body: fs.createReadStream(absolutePath),
+        path: absolutePath,
         size: stat.size,
-      });
+        modifiedMs: stat.mtimeMs,
+      }, request);
     } catch (error) {
       if (error instanceof WorkspaceAccessError) {
         logger.warn(`Refused ${filePath} in workspace ${workspaceId}: ${error.message}`);
@@ -99,10 +101,12 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       }
 
       return sendUserFile(reply, {
+        kind: "file",
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
-        body: fs.createReadStream(absolutePath),
+        path: absolutePath,
         size: stat.size,
-      });
+        modifiedMs: stat.mtimeMs,
+      }, request);
     } catch (error) {
       if (error instanceof WorkspaceAccessError) {
         logger.warn(`Refused ${filePath} in workspace ${workspaceId}: ${error.message}`);

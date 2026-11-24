@@ -1,0 +1,58 @@
+# IMP-11 (CR-001, CR-002; CRR-002, API/E2E F-1, F-2) the two Local Fixes, each red on the pre-fix code and green after
+# command: CR-001: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/fileExplorer/viewers/__tests__/VideoPlayer.native.spec.ts
+#            components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts (fix), and VideoPlayer.native.spec.ts with VideoPlayer.vue stashed (red);
+#            pnpm typecheck; the three guards; NUXT_TEST=true pnpm exec vitest run (the whole web suite)
+#          CR-002 Android: ./gradlew :app:testDebugUnitTest (fix), and --tests NodeVideoHttpTest with NodeVideoHttp.kt stashed (red);
+#            ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin :app:lintDebug
+#          CR-002 iOS: xcodebuild … -only-testing:AutoByteusMobileCoreTests test on a new dedicated simulator, with
+#            TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<the 23 MB MP4> (fix), and -only-testing:…/NodeVideoHTTPTests with NodeVideoURL.swift stashed (red)
+# commit: fb2357dc09 (CR-001), 6479a28f4b (CR-002); run on their working trees before committing (same files)
+# env: macOS arm64, Node v22.23.1; JDK 21; Xcode 26.1.1, iOS 26.1 simulator
+# date: 2026-11-24
+# result: Pass.
+#   - CR-001: a contentRevision change while the viewer is in native mode posts no playVideo; Play still does; nothing is
+#     downloaded. On the pre-fix viewer the new case fails (a second playVideo).
+#   - CR-002: on both platforms these paths are not node file routes, and a request for them is refused before anything
+#     is sent: /rest/../graphql, /rest/%2e%2e/graphql, /rest/../mobile/, /rest/a%2f..%2f..%2fgraphql, /rest/./files/a.mp4,
+#     /rest/%2E/files/a.mp4, /rest/files%5c..%5cgraphql. Android also refuses /rest/%zz/a.mp4, which does not parse; iOS
+#     encodes that as the literal segment %25zz, a plain path under /rest/. Allowed:
+#     /rest/workspaces/w/content?path=a%2F..%2Fb.mp4 (dots in the query) and /rest/files/videos/my..clip.mp4. On the
+#     pre-fix rule the new cases fail on both platforms.
+
+## CR-001 web: the fix
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+## CR-001 web: red (VideoPlayer.vue before the fix)
+   × a protected node video in the phone apps (autobyteus-574 D-2) > Files: a reload of the open video (contentRevision) posts no playVideo; Play still does 54ms
+      Tests  1 failed | 4 passed (5)
+## web typecheck, guards, whole suite
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+ Test Files  806 passed (806)
+      Tests  6153 passed | 2 skipped (6155)
+
+## CR-002 Android: the fix (JVM tests)
+total 8 tests, 2 failed (NodeVideoHttpTest: 8)
+## CR-002 Android: red (NodeVideoHttp.kt before the fix)
+> Task :app:testDebugUnitTest FAILED
+NodeVideoHttpTest > aDotSegmentUrlIsRefusedWithoutSendingAnything FAILED
+NodeVideoHttpTest > aPathWithDotSegmentsIsNotANodeFileUrl_dotsInTheQueryAre FAILED
+8 tests completed, 2 failed
+BUILD FAILED in 2s
+## Android build, androidTest compile, lint
+BUILD SUCCESSFUL in 17s
+
+## CR-002 iOS: the fix (the whole Core suite, with the video)
+** TEST SUCCEEDED **
+autobyteus-574 iOS: playing after 1.73 s; at the middle 0.99 s after the seek; cached [ClosedRange(0...1507329), ClosedRange(11730944...13565951)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2", "bytes=1507330-11730943:0", "bytes=1507330-11730943:589824", "bytes=2031616-2097151:65536", "bytes=2097152-2162687:65536", "bytes=2162688-2228223:65536", "bytes=13565952-23385261:655360"]; fetched again of the cached: 0
+result bundle Test-AutoByteusMobile-2026.11.24_18-39-21:
+      "failedTests" : 0,
+      "passedTests" : 75,
+      "skippedTests" : 0,
+## CR-002 iOS: red (NodeVideoURL.swift before the fix)
+Test Case '-[AutoByteusMobileCoreTests.NodeVideoHTTPTests testAPathWithDotSegmentsIsRefusedBeforeAnythingIsSent_dotsInTheQueryAreFine]' failed (0.397 seconds).
+** TEST FAILED **

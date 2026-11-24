@@ -1,0 +1,195 @@
+{
+ "workspaceContent": {
+  "full": {
+   "status": 200,
+   "ok": true,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": "bytes",
+    "etag": "\"22866620-1795528137327\"",
+    "cache-control": "no-cache",
+    "content-length": "22866620",
+    "content-type": "video/mp4"
+   }
+  },
+  "bytes=100-199": {
+   "status": 206,
+   "contentRange": "bytes 100-199/22866620",
+   "ok": true
+  },
+  "bytes=1000-": {
+   "status": 206,
+   "contentRange": "bytes 1000-22866619/22866620",
+   "ok": true
+  },
+  "bytes=-500": {
+   "status": 206,
+   "contentRange": "bytes 22866120-22866619/22866620",
+   "ok": true
+  },
+  "unsatisfiable": {
+   "status": 416,
+   "contentRange": "bytes */22866620",
+   "ok": true
+  },
+  "ifNoneMatch": {
+   "status": 304,
+   "ok": true
+  },
+  "multiRange": {
+   "status": 200,
+   "ok": true
+  },
+  "noCredential": {
+   "status": 401,
+   "ok": true
+  },
+  "cacheControl": "no-cache",
+  "ok": true
+ },
+ "workspaceStatic": {
+  "full": {
+   "status": 200,
+   "ok": true,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": "bytes",
+    "etag": "\"22866620-1795528137327\"",
+    "cache-control": "no-cache",
+    "content-length": "22866620",
+    "content-type": "video/mp4"
+   }
+  },
+  "bytes=100-199": {
+   "status": 206,
+   "contentRange": "bytes 100-199/22866620",
+   "ok": true
+  },
+  "bytes=1000-": {
+   "status": 206,
+   "contentRange": "bytes 1000-22866619/22866620",
+   "ok": true
+  },
+  "bytes=-500": {
+   "status": 206,
+   "contentRange": "bytes 22866120-22866619/22866620",
+   "ok": true
+  },
+  "unsatisfiable": {
+   "status": 416,
+   "contentRange": "bytes */22866620",
+   "ok": true
+  },
+  "ifNoneMatch": {
+   "status": 304,
+   "ok": true
+  },
+  "multiRange": {
+   "status": 200,
+   "ok": true
+  },
+  "noCredential": {
+   "status": 401,
+   "ok": true
+  },
+  "cacheControl": "no-cache",
+  "ok": true
+ },
+ "nodeFiles": {
+  "full": {
+   "status": 200,
+   "ok": true,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": "bytes",
+    "etag": "\"22866620-1795528138714\"",
+    "cache-control": "no-cache",
+    "content-length": "22866620",
+    "content-type": "video/mp4"
+   }
+  },
+  "bytes=100-199": {
+   "status": 206,
+   "contentRange": "bytes 100-199/22866620",
+   "ok": true
+  },
+  "bytes=1000-": {
+   "status": 206,
+   "contentRange": "bytes 1000-22866619/22866620",
+   "ok": true
+  },
+  "bytes=-500": {
+   "status": 206,
+   "contentRange": "bytes 22866120-22866619/22866620",
+   "ok": true
+  },
+  "unsatisfiable": {
+   "status": 416,
+   "contentRange": "bytes */22866620",
+   "ok": true
+  },
+  "ifNoneMatch": {
+   "status": 304,
+   "ok": true
+  },
+  "multiRange": {
+   "status": 200,
+   "ok": true
+  },
+  "noCredential": {
+   "status": 401,
+   "ok": true
+  },
+  "cacheControl": "no-cache",
+  "ok": true
+ },
+ "mediaFiles": {
+  "full": {
+   "status": 200,
+   "ok": true,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": "bytes",
+    "etag": "\"22866620-1795528138728\"",
+    "cache-control": "no-cache",
+    "content-length": "22866620",
+    "content-type": "video/mp4"
+   }
+  },
+  "bytes=100-199": {
+   "status": 206,
+   "contentRange": "bytes 100-199/22866620",
+   "ok": true
+  },
+  "bytes=1000-": {
+   "status": 206,
+   "contentRange": "bytes 1000-22866619/22866620",
+   "ok": true
+  },
+  "bytes=-500": {
+   "status": 206,
+   "contentRange": "bytes 22866120-22866619/22866620",
+   "ok": true
+  },
+  "unsatisfiable": {
+   "status": 416,
+   "contentRange": "bytes */22866620",
+   "ok": true
+  },
+  "ifNoneMatch": {
+   "status": 304,
+   "ok": true
+  },
+  "multiRange": {
+   "status": 200,
+   "ok": true
+  },
+  "noCredential": {
+   "status": 401,
+   "ok": true
+  },
+  "cacheControl": "no-cache",
+  "ok": true
+ }
+}
+AC005 PASS

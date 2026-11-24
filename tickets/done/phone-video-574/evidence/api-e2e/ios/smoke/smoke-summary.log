@@ -1,0 +1,13 @@
+Selected simulator: api574-smoke (iOS 26.1), UDID E839D1D9-B866-4871-BBAB-91A02E211CA8
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testFakeNodeOpensAndRestoresWithFakeMobileMarker]' passed (29.791 seconds).
+Test Case '-[AutoByteusMobileUITests.AutoByteusMobileUITests testUnreachableNodeShowsNativeDiagnosticWhenSmokeEnvironmentIsPresent]' passed (19.342 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 49.133 (49.134) seconds
+Test Case '-[AutoByteusMobileUITests.DemoUITests testAKeptShareIsUsedOnce]' passed (9.691 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testFirstScreen]' passed (6.168 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' passed (8.318 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoLinkOpensTheDemo]' passed (13.724 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTheDemoWebViewBlocksTheNetwork]' passed (6.376 seconds).
+Test Case '-[AutoByteusMobileUITests.DemoUITests testTryDemoThenLeaveDemoThenColdLaunch]' passed (17.537 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 61.814 (61.817) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 110.947 (110.952) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 110.947 (110.953) seconds

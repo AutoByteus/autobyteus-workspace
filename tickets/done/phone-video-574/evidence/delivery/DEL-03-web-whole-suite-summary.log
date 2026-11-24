@@ -1,0 +1,30 @@
+### web-whole: env NUXT_TEST=true pnpm -C autobyteus-web test:nuxt --run
+
+> autobyteus@1.5.14 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-web
+[...] full log not kept (the vitest summary, and the count of FAIL lines, follow)
+lines containing ' FAIL ': 0
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 2ms
+stdout | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (1 test) 2ms
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+    at loadExcel [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-web/[39mcomponents/fileExplorer/viewers/ExcelViewer.vue:89:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 27ms
+ ✓ composables/__tests__/useMarkdownSegments.wrapping.spec.ts (5 tests) 41ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts (10 tests) 119ms
+
+ Test Files  806 passed (806)
+      Tests  6156 passed | 2 skipped (6158)
+   Start at  21:30:31
+   Duration  330.20s (transform 31.81s, setup 2224.10s, collect 213.25s, tests 101.74s, environment 177.45s, prepare 103.95s)
+
+exit 0

@@ -20,10 +20,9 @@ export type OpenedNodeFile = Readonly<{
   ok: true;
   realPath: string;
   mimeType: string;
-  /** The file's content, streamed (never buffered whole); closing it releases the file. */
-  stream: NodeJS.ReadableStream;
-  /** Its length in bytes, from the opened handle (autobyteus-572 D-5). */
+  /** Its length in bytes and modification time, from the opened handle: its version (autobyteus-574 D-1). */
   size: number;
+  modifiedMs: number;
 }>;
 
 const refusal = (statusCode: 400 | 404, code: NodeFileRefusalCode, message: string): NodeFileRefusal =>
@@ -52,8 +51,9 @@ const isServablePathText = (value: unknown): value is string =>
 
 export class NodeFileReader {
   /**
-   * Opens one node file read-only: the path is resolved to its real path (symbolic links followed), opened, and
-   * served only when the opened file is a regular file. A refusal says why, never which part of the path failed.
+   * Checks one node file: the path is resolved to its real path (symbolic links followed), opened read-only, and
+   * servable only when the opened file is a regular file. The reply reads it from that real path, by range
+   * (autobyteus-574 D-1). A refusal says why, never which part of the path failed.
    */
   async open(requestedPath: unknown): Promise<OpenedNodeFile | NodeFileRefusal> {
     if (!isServablePathText(requestedPath)) return NODE_FILE_REFUSALS.pathInvalid;
@@ -65,28 +65,22 @@ export class NodeFileReader {
     } catch (error) {
       return refusalForError(error);
     }
-    let size: number;
+    let stat: fs.Stats;
     try {
-      const stat = await handle.stat();
-      if (stat.isDirectory()) {
-        await handle.close();
-        return NODE_FILE_REFUSALS.isFolder;
-      }
-      if (!stat.isFile()) {
-        await handle.close();
-        return NODE_FILE_REFUSALS.unreadable;
-      }
-      size = stat.size;
+      stat = await handle.stat();
     } catch (error) {
-      await handle.close().catch(() => undefined);
       return refusalForError(error);
+    } finally {
+      await handle.close().catch(() => undefined);
     }
+    if (stat.isDirectory()) return NODE_FILE_REFUSALS.isFolder;
+    if (!stat.isFile()) return NODE_FILE_REFUSALS.unreadable;
     return Object.freeze({
       ok: true,
       realPath,
       mimeType: (lookupMime(realPath) || "application/octet-stream").toString(),
-      stream: handle.createReadStream({ autoClose: true }),
-      size,
+      size: stat.size,
+      modifiedMs: stat.mtimeMs,
     });
   }
 }

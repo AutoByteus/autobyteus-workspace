@@ -1,0 +1,10 @@
+MARK tap 1795547261867
+MARK player 1795547263625
+MARK landscape 1795547263632
+MARK seek 1795547271156
+MARK seek-done 1795547272581
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 17 seconds elapsed, 13 seconds remaining
+POSITION +3s hidden
+MARK back 1795547277909
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.146 seconds).

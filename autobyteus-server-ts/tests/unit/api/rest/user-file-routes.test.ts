@@ -90,4 +90,36 @@ describe("user-file routes F3, F9–F15", () => {
       expect(response.headers["x-content-type-options"], file.name).toBe("nosniff");
     }
   });
+
+  // autobyteus-574 D-1 (AC-005): the routes that resolve a file serve it by range with its version; a run file change
+  // keeps its no-store. The message references have no file path and are sent whole, as before.
+  it.each([
+    ["F3 uploaded media", "no-cache"],
+    ["F9 run file change", "no-store"],
+    ["F10 team member file change", "no-store"],
+    ["F11 org member file change", "no-store"],
+  ])("%s: 206 for a Range, the ETag, 304 for it, and Cache-Control %s", async (label, cacheControl) => {
+    const urlFor = routes.find(([name]) => name === label)![1];
+    const file = FILES[0];
+    const ranged = await app.inject({ method: "GET", url: urlFor(file.name), headers: { range: "bytes=2-6" } });
+    expect(ranged.statusCode).toBe(206);
+    expect(ranged.body).toBe(file.body.slice(2, 7));
+    expect(ranged.headers["content-range"]).toBe(`bytes 2-6/${file.body.length}`);
+    expect(ranged.headers["accept-ranges"]).toBe("bytes");
+    expect(ranged.headers["cache-control"]).toBe(cacheControl);
+    expect(ranged.headers["content-security-policy"]).toBe("sandbox allow-scripts");
+    const etag = String(ranged.headers.etag);
+    expect(etag).toMatch(/^"\d+-\d+"$/);
+    expect((await app.inject({ method: "GET", url: urlFor(file.name), headers: { "if-none-match": etag } })).statusCode).toBe(304);
+  });
+
+  it.each(routes.filter(([label]) => label.includes("message reference")))("%s: sent whole, without ranges or a version", async (_label, urlFor) => {
+    const file = FILES[0];
+    const response = await app.inject({ method: "GET", url: urlFor(file.name), headers: { range: "bytes=2-6" } });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBe(file.body);
+    expect(response.headers["accept-ranges"]).toBeUndefined();
+    expect(response.headers.etag).toBeUndefined();
+    expect(response.headers["cache-control"]).toBe("no-store");
+  });
 });

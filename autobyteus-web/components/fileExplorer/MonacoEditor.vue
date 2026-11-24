@@ -77,10 +77,12 @@ watch(() => resolvedMetrics.value.editorFontPx, (nextFontPx) => {
 let containerKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
 let isUnmounted = false;
 
+// Files open wrapped at the editor's width (autobyteus-618): a long line never runs past the edge, on the phone or the desktop.
+// A caller's value wins; with none, "Toggle Word Wrap" switches this editor's own state.
 const initialWordWrap =
   normalizeWordWrapInput(props.wordWrap) ??
   normalizeWordWrapInput((props.options as Record<string, unknown>)?.wordWrap) ??
-  'off';
+  'on';
 
 const wordWrapState = ref<WordWrapSetting>(initialWordWrap);
 

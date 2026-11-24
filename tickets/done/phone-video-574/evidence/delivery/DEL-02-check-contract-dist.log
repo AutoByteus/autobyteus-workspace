@@ -1,0 +1,15 @@
+### contract-dist: pnpm check:contract-dist
+
+> autobyteus-workspace@ check:contract-dist /Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574
+> node scripts/check-contract-dist.mjs
+
+[check:contract-dist] building autobyteus-agent-presentation-contracts, autobyteus-collaboration-stream-contracts, autobyteus-team-stream-contracts
+Scope: 3 of 13 workspace projects
+autobyteus-agent-presentation-contracts build$ tsc -p tsconfig.build.json
+autobyteus-agent-presentation-contracts build: Done
+...byteus-collaboration-stream-contracts build$ tsc -p tsconfig.build.json
+...byteus-collaboration-stream-contracts build: Done
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts build: Done
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.
+exit 0

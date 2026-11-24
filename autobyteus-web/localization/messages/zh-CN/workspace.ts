@@ -362,6 +362,8 @@ const messages = {
   "workspace.pathRefusal.notAbsoluteWindows": "请输入完整路径，以盘符开头，例如 C:\\。",
   "workspace.pathRefusal.missing": "此路径下没有文件夹。",
   "workspace.pathRefusal.notAFolder": "此路径是文件，不是文件夹。",
+  "workspace.components.conversation.segments.MediaSegment.play_video": "播放视频",
+  "workspace.components.conversation.segments.MediaSegment.loading_video": "正在加载视频…",
 } satisfies TranslationCatalog;
 
 export default messages;

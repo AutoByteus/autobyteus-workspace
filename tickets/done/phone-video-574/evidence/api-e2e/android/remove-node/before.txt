@@ -1,0 +1,4 @@
+before Remove (15:18, app with the node saved):
+206960	cache/video-cache
+49 .exo files
+keys: 49 file rows, node prefix 7f61944c… = sha256(entry id http://10.0.2.2:<port>)

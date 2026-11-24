@@ -1,0 +1,78 @@
+[
+  {
+    "label": "another origin (port)",
+    "url": "http://10.0.2.2:<port>/rest/files/video/media-574.mp4",
+    "playersBefore": 0,
+    "playersAfter": 0,
+    "nodeRequests": [],
+    "foreignRequests": []
+  },
+  {
+    "label": "another origin (userinfo trick)",
+    "url": "http://10.0.2.2:<port>@10.0.2.2:<port>/rest/files/video/media-574.mp4",
+    "playersBefore": 0,
+    "playersAfter": 0,
+    "nodeRequests": [],
+    "foreignRequests": []
+  },
+  {
+    "label": "another scheme",
+    "url": "https://10.0.2.2:<port>/rest/files/video/media-574.mp4",
+    "playersBefore": 0,
+    "playersAfter": 0,
+    "nodeRequests": [],
+    "foreignRequests": []
+  },
+  {
+    "label": "same origin, not /rest/",
+    "url": "http://10.0.2.2:<port>/graphql",
+    "playersBefore": 0,
+    "playersAfter": 0,
+    "nodeRequests": [],
+    "foreignRequests": []
+  },
+  {
+    "label": "same origin, /rest/ by dot-segments",
+    "url": "http://10.0.2.2:<port>/rest/../graphql",
+    "playersBefore": 0,
+    "playersAfter": 1,
+    "nodeRequests": [
+      {
+        "path": "/graphql",
+        "range": "bytes=0-1",
+        "credential": "phone",
+        "status": 400
+      }
+    ],
+    "foreignRequests": []
+  },
+  {
+    "label": "same origin, static page path",
+    "url": "http://10.0.2.2:<port>/mobile/media-574.mp4",
+    "playersBefore": 0,
+    "playersAfter": 0,
+    "nodeRequests": [],
+    "foreignRequests": []
+  },
+  {
+    "label": "positive control: /rest/files/ media route",
+    "url": "http://10.0.2.2:<port>/rest/files/video/media-574.mp4",
+    "playersBefore": 0,
+    "playersAfter": 1,
+    "nodeRequests": [
+      {
+        "path": "/rest/files/video/media-574.mp4",
+        "range": "bytes=0-1",
+        "credential": "phone",
+        "status": 206
+      },
+      {
+        "path": "/rest/files/video/media-574.mp4",
+        "range": null,
+        "credential": "phone",
+        "status": 200
+      }
+    ],
+    "foreignRequests": []
+  }
+]

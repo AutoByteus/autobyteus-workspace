@@ -1,0 +1,5 @@
+Android (emulator-5580, app debug build b0a2eeacc0), credential read from the page's storage in memory only (mra_…), occurrences:
+{"logcat-now.txt":0,"logcat-all-buffers.txt (all buffers, 1.59 MB)":0,"proxy-log.json":0,"app-cache.tar (cache/video-cache + databases, 196 MB)":0,"opens/chat-1/logcat.txt":0,"opens/chat-wide-reopen/logcat.txt":0,"opens/files-tall-cold/logcat.txt":0,"stack-android/stdout.log":0}; "mra_" anywhere in logcat: 0; file requests in the proxy log: 32, all phone header, URL credential false
+iOS (simulator api574-iphone, iOS 26.1), credential read from the WebView's localStorage in memory only (mra_…):
+{"credentialRead":true,"filesScanned":2772,"nonzero":0,"scanned":["simulator log since 15:23 (92,787 lines)","proxy log","$C/Library/Caches/video-cache (8 files)","$C/Library/Preferences","$C/Documents","stack stdout and node.log","every ios-results file (xcresults, recordings, logs)"]}
+iOS file requests in the proxy log: 23, all phone header, URL credential false, all 206

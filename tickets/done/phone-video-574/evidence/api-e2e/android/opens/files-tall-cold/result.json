@@ -1,0 +1,13 @@
+{
+ "label": "files-tall-cold",
+ "tap": 1795528744723,
+ "tapToStart": 307,
+ "tapToDisplayed": 696,
+ "displayedToFirstVideoFrame": 2260,
+ "tapToFirstVideoFrame": 2956,
+ "recording": {
+  "blackAt": 4.234144,
+  "firstVideo": 6.494367
+ },
+ "playerError": false
+}

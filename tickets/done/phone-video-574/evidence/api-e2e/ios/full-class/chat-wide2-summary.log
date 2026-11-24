@@ -1,0 +1,8 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' started.
+MARK tap 1795530510341
+MARK player 1795530512109
+MARK landscape 1795530512116
+MARK seek 1795530519869
+MARK seek-done 1795530521303
+MARK back 1795530528329
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.477 seconds).

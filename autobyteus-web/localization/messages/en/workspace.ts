@@ -363,6 +363,8 @@ const messages = {
   "workspace.pathRefusal.notAbsoluteWindows": "Enter a full path, starting with a drive like C:\\.",
   "workspace.pathRefusal.missing": "No folder at this path.",
   "workspace.pathRefusal.notAFolder": "This path is a file, not a folder.",
+  "workspace.components.conversation.segments.MediaSegment.play_video": "Play video",
+  "workspace.components.conversation.segments.MediaSegment.loading_video": "Loading video…",
 } satisfies TranslationCatalog;
 
 export default messages;

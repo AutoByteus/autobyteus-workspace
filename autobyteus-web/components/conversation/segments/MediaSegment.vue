@@ -31,7 +31,22 @@
     <!-- Video Display -->
     <div v-if="segment.mediaType === 'video'" class="space-y-4">
       <div v-for="(url, index) in segment.urls" :key="index" class="relative">
-        <video v-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="rounded-lg w-full shadow-md">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2') }}</video>
+        <!-- In the phone apps a node video opens the app's own player (autobyteus-574 D-2); nothing is downloaded here. -->
+        <button
+          v-if="nativePlayback.modeFor(url) === 'native'"
+          type="button"
+          class="flex w-full items-center gap-3 rounded-lg bg-gray-900 p-4 text-left text-white shadow-md"
+          data-testid="native-video-tile"
+          @click="nativePlayback.play(url)"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 flex-none fill-current"><path d="M8 5v14l11-7z" /></svg>
+          <span class="min-w-0 flex-1">
+            <span class="block text-sm font-semibold">{{ $t('workspace.components.conversation.segments.MediaSegment.play_video') }}</span>
+            <span class="block truncate text-xs text-gray-300">{{ videoTitleOf(url) }}</span>
+          </span>
+        </button>
+        <p v-else-if="nativePlayback.modeFor(url) === 'pending'" class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">{{ $t('workspace.components.conversation.segments.MediaSegment.loading_video') }}</p>
+        <video v-else-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="rounded-lg w-full shadow-md">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2') }}</video>
         <p v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ resourceErrorsBySource[url] || 'Loading protected video…' }}</p>
       </div>
     </div>
@@ -54,6 +69,7 @@ import { ref, computed } from 'vue';
 import type { MediaSegment } from '~/types/segments';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
+import { useNativeVideoPlayback, videoTitleOf } from '~/composables/mobile/useNativeVideoPlayback';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
@@ -62,10 +78,15 @@ const props = defineProps<{
 
 const isModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
+const nativePlayback = useNativeVideoPlayback();
+// A video the app plays itself (or may, while it has not answered) is not downloaded by the page.
+const pageLoadedUrls = () => (props.segment.mediaType === 'video'
+  ? props.segment.urls.filter((url) => nativePlayback.modeFor(url) === 'page')
+  : props.segment.urls);
 const {
   errorsBySource: resourceErrorsBySource,
   resolveUrl: displayUrlFor,
-} = useAuthorizedObjectUrlMap(() => props.segment.urls);
+} = useAuthorizedObjectUrlMap(pageLoadedUrls);
 const selectedImageDisplayUrl = computed(() => {
   if (!selectedImageUrl.value) {
     return null;

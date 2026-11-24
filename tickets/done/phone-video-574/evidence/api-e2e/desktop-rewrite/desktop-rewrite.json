@@ -1,0 +1,65 @@
+{
+ "textFirst": {
+  "status": 200,
+  "etag": "\"26-1795531809800\"",
+  "cacheControl": "no-cache",
+  "length": 26,
+  "text": "FIRST VERSION of the notes"
+ },
+ "textAgainUnchanged": {
+  "status": 200,
+  "etag": "\"26-1795531809800\"",
+  "cacheControl": "no-cache",
+  "length": 26,
+  "text": "FIRST VERSION of the notes"
+ },
+ "textAfterRewrite": {
+  "status": 200,
+  "etag": "\"37-1795531810852\"",
+  "cacheControl": "no-cache",
+  "length": 37,
+  "text": "SECOND VERSION, rewritten by an agent"
+ },
+ "binFirst": {
+  "status": 200,
+  "etag": "\"300000-1795531809800\"",
+  "cacheControl": "no-cache",
+  "length": 300000,
+  "text": "\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"
+ },
+ "binAfterRewrite": {
+  "status": 200,
+  "etag": "\"200000-1795531810865\"",
+  "cacheControl": "no-cache",
+  "length": 200000,
+  "text": "\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002"
+ },
+ "responses": [
+  {
+   "url": "notes.txt",
+   "status": 200,
+   "fromCache": null
+  },
+  {
+   "url": "notes.txt",
+   "status": 200,
+   "fromCache": null
+  },
+  {
+   "url": "notes.txt",
+   "status": 200,
+   "fromCache": null
+  },
+  {
+   "url": "clip.bin",
+   "status": 200,
+   "fromCache": null
+  },
+  {
+   "url": "clip.bin",
+   "status": 200,
+   "fromCache": null
+  }
+ ],
+ "pass": true
+}

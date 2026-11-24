@@ -1,0 +1,13 @@
+{
+ "label": "chat-1",
+ "tap": 1795528612646,
+ "tapToStart": -673,
+ "tapToDisplayed": -247,
+ "displayedToFirstVideoFrame": 1015,
+ "tapToFirstVideoFrame": 768,
+ "recording": {
+  "blackAt": 3.375467,
+  "firstVideo": 4.390711
+ },
+ "playerError": false
+}

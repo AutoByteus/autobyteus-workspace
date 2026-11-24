@@ -64,6 +64,8 @@ Principle 11.
 
 - **Again in autobyteus-628 (delivery DR-001 Finding 2):** to make stored times equal live ones, the design had the memory recorder store each trace at its event's own time. The reload orders traces by that time. A trace built from several events (reasoning that continues after a tool card, a tool call whose arguments arrive at its result) then took another event's time, and post-card reasoning sorted before its card. Fix (SR-007): traces keep their write time, and only the user trace takes its admission time. Lesson: when a design changes a stored value, list what is derived from it; here the reload's order was derived from `ts`.
 
+- **Again in autobyteus-574 (ARCH-REV-001 AR-001):** the design added `ETag` and `Last-Modified` to every user-file reply so the phone's video cache could validate. It named no freshness rule. Browsers and the desktop's Electron window cache such a reply heuristically, so after an agent rewrote a file, a reopen could show the old copy without a request. Fix (SR-002): `Cache-Control: no-cache` (revalidate on every use), `Last-Modified` dropped, and the HTTP caches listed as readers. Lesson: a header that lets one client cache is read by every client's cache; list them.
+
 ### Case 4: Behavior By Absence (autobyteus-191, AR-007; autobyteus-349, AR-002)
 
 Principle 13.

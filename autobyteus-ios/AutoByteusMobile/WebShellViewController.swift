@@ -42,7 +42,7 @@ final class WebShellViewController: UIViewController, ShellBridgeDelegate {
     // MARK: ShellBridgeDelegate
 
     func shellBridgeHello() -> ShellHello {
-        ShellHello(nodeCount: bridgeActions.nodeCount(), deviceName: UIDevice.current.model, nodeName: entry.knownName ?? "")
+        ShellHello(nodeCount: bridgeActions.nodeCount(), deviceName: UIDevice.current.model, nodeName: entry.knownName ?? "", videoPlayer: true)
     }
 
     func shellBridge(didReceive message: ShellBridgeMessage) {
@@ -53,6 +53,11 @@ final class WebShellViewController: UIViewController, ShellBridgeDelegate {
         case .startScan: bridgeActions.onStartScan()
         case .desktopFullScreen(let on): fullScreen.set(on, for: self)
         case .saveFile(let fileName, let mimeType, let base64): ShellFileSaver.present(fileName: fileName, mimeType: mimeType, base64: base64, from: self)
+        case .playVideo(let request):
+            // The page's video in the app's player (autobyteus-574 D-4, D-5); the credential lives with that screen only.
+            present(NativeVideoPlayerViewController(playback: .init(
+                url: request.url, title: request.title, nodeID: entry.id, nodeOrigin: entry.origin, credential: request.credential
+            )), animated: true)
         case .hello, .leaveDemo: break
         }
     }

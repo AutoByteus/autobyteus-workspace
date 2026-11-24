@@ -1,0 +1,13 @@
+# IMP-02
+# Command: the same spec plus components/fileExplorer/__tests__ after the change; then MonacoEditor.vue temporarily ignoring the caller's value (restored)
+# Commit: 77045f2a5d (and the temporary control change)
+# Environment: macOS (Darwin 25.5.0); web unit tests
+# Date: 2026-11-24
+
+## after the change
+ Test Files  12 passed (12)
+      Tests  75 passed (75)
+## control: caller's value ignored
+   × MonacoEditor.vue > a value the caller passes still wins, as the prop or in options (AC-003) 16ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 5 passed (6)

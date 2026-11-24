@@ -1,0 +1,3 @@
+REALTIME delivered 1909407 bytes in 10.0 s; real-time playback needs at least 5346767
+/Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574/autobyteus-ios/AutoByteusMobileUITests/NativeVideoRealNodeUITests.swift:100: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink] : XCTAssertGreater
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' failed (18.807 seconds).

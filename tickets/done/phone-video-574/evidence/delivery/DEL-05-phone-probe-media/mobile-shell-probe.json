@@ -1,0 +1,2812 @@
+{
+  "startedAt": "2026-11-24T20:36:47.838Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 64643,
+      "nodeId": "srv_6y2D-TyfkriK9-k1943DnaGCV-c6rANX",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 64644,
+      "nodeId": "srv__MoP8BydQW6dWNIaSfV2jKIyeffIJc_m",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "epsilon": {
+      "port": 64892,
+      "nodeId": "srv_QUbWyf6zfZAP4gAON-bp1kQ45QzaVnl3",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "zeta": {
+      "port": 64893,
+      "nodeId": "srv_Lm8C25Me0lBl2KXUHAGAvr-tq8JdUiTy",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_ce564bc3295a47b1afb9f99f0329417a",
+    "writerRun": "release_notes_writer_1064cf5b086c4a04bdc9aad688e01199",
+    "squadRun": "docs_review_team_76214d9cb79f4262917da70b0a3b12bf",
+    "reviewer": "release_notes_writer_27ca65a27d844a9fb802cd3bf332533b",
+    "memberDelegated": "fact_checker_a4e6df7da34f4325b513df8acb1b65fd",
+    "remoteAgentRun": "publisher_2f75b04c132547daba589ab6c8ebe85d",
+    "remoteTeamRun": "studio_team_eaa7d5597dad4df4b7ae1308f0e233f4",
+    "plain": [
+      "fact_checker_065a1e9052f94fb5bc67b39bc6f041a9",
+      "fact_checker_5bbfaf5712964181ad13e594e69462da",
+      "fact_checker_d3028b5952c045bebdc3cc18ecf9250f"
+    ],
+    "org": "delivery_org_5483e512173b4784b6780deb739777e9",
+    "orgPlanner": "release_notes_writer_bcaa38a2aa034e5a9d4281b4e86e0833",
+    "reviewOrg": "review_org_395849c0230c403b882498238aae1be7",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_12620f60d40f41f3a49416a1abf06cb9",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_3f5edda0ec214cc596f89cc5f232493e",
+    "deliveryLead": "fact_checker_1147c2ead7f946a998f55d4b570e5563",
+    "deliveryMate": "release_notes_writer_98d2b1c44d8b4238aeef9ca21dc35133",
+    "leadDelegated": "changelog_helper_93c754d7671b4acc8729508abad0570e",
+    "approver": "approver_4d969d1c293945dcae2424c35f72e393",
+    "taskA": "launch-c37d2b-1",
+    "taskB": "launch-c37d2b-2"
+  },
+  "cases": {
+    "MSP-89": {
+      "result": "Pass",
+      "seconds": 38.1,
+      "sizes": {
+        "bigBytes": 9740736,
+        "bigShownAs": "9.7 MB"
+      },
+      "relativeLink": {
+        "fileControl": false,
+        "href": "media/rel-572.mp4"
+      },
+      "results": {
+        "insideVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.3,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 94,
+              "viewer": false
+            },
+            {
+              "at": 198,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "insideAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 76,
+              "viewer": false
+            },
+            {
+              "at": 181,
+              "viewer": true,
+              "text": "tone-572.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "outsideVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.3,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 75,
+              "viewer": false
+            },
+            {
+              "at": 177,
+              "viewer": true,
+              "text": "clip-572-out.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "outsideAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572-out.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 75,
+              "viewer": false
+            },
+            {
+              "at": 177,
+              "viewer": true,
+              "text": "tone-572-out.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "insideBig": {
+          "final": {
+            "viewer": true,
+            "text": "big-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 10.1,
+          "notAvailableShown": false,
+          "progress": [
+            "0.1 of 9.7 MB",
+            "0.2 of 9.7 MB",
+            "0.3 of 9.7 MB",
+            "0.4 of 9.7 MB",
+            "0.5 of 9.7 MB",
+            "0.6 of 9.7 MB",
+            "0.7 of 9.7 MB",
+            "0.8 of 9.7 MB",
+            "0.9 of 9.7 MB",
+            "1.0 of 9.7 MB",
+            "1.1 of 9.7 MB",
+            "1.2 of 9.7 MB",
+            "1.3 of 9.7 MB",
+            "1.4 of 9.7 MB",
+            "1.5 of 9.7 MB",
+            "1.6 of 9.7 MB",
+            "1.7 of 9.7 MB",
+            "1.8 of 9.7 MB",
+            "1.9 of 9.7 MB",
+            "2.0 of 9.7 MB",
+            "2.1 of 9.7 MB",
+            "2.2 of 9.7 MB",
+            "2.3 of 9.7 MB",
+            "2.5 of 9.7 MB",
+            "2.6 of 9.7 MB",
+            "2.7 of 9.7 MB",
+            "2.8 of 9.7 MB",
+            "2.9 of 9.7 MB",
+            "3.0 of 9.7 MB",
+            "3.1 of 9.7 MB",
+            "3.2 of 9.7 MB",
+            "3.3 of 9.7 MB",
+            "3.4 of 9.7 MB",
+            "3.5 of 9.7 MB",
+            "3.6 of 9.7 MB",
+            "3.7 of 9.7 MB",
+            "3.8 of 9.7 MB",
+            "4.0 of 9.7 MB",
+            "4.1 of 9.7 MB",
+            "4.2 of 9.7 MB",
+            "4.3 of 9.7 MB",
+            "4.4 of 9.7 MB",
+            "4.5 of 9.7 MB",
+            "4.6 of 9.7 MB",
+            "4.7 of 9.7 MB",
+            "4.8 of 9.7 MB",
+            "4.9 of 9.7 MB",
+            "5.0 of 9.7 MB",
+            "5.1 of 9.7 MB",
+            "5.2 of 9.7 MB",
+            "5.3 of 9.7 MB",
+            "5.4 of 9.7 MB",
+            "5.5 of 9.7 MB",
+            "5.6 of 9.7 MB",
+            "5.7 of 9.7 MB",
+            "5.8 of 9.7 MB",
+            "5.9 of 9.7 MB",
+            "6.0 of 9.7 MB",
+            "6.1 of 9.7 MB",
+            "6.2 of 9.7 MB",
+            "6.3 of 9.7 MB",
+            "6.4 of 9.7 MB",
+            "6.5 of 9.7 MB",
+            "6.6 of 9.7 MB",
+            "6.7 of 9.7 MB",
+            "6.9 of 9.7 MB",
+            "7.0 of 9.7 MB",
+            "7.1 of 9.7 MB",
+            "7.2 of 9.7 MB",
+            "7.3 of 9.7 MB",
+            "7.4 of 9.7 MB",
+            "7.5 of 9.7 MB",
+            "7.6 of 9.7 MB",
+            "7.7 of 9.7 MB",
+            "7.8 of 9.7 MB",
+            "7.9 of 9.7 MB",
+            "8.0 of 9.7 MB",
+            "8.1 of 9.7 MB",
+            "8.2 of 9.7 MB",
+            "8.3 of 9.7 MB",
+            "8.4 of 9.7 MB",
+            "8.5 of 9.7 MB",
+            "8.6 of 9.7 MB",
+            "8.7 of 9.7 MB",
+            "8.8 of 9.7 MB",
+            "8.9 of 9.7 MB",
+            "9.0 of 9.7 MB",
+            "9.1 of 9.7 MB",
+            "9.2 of 9.7 MB",
+            "9.3 of 9.7 MB",
+            "9.4 of 9.7 MB",
+            "9.5 of 9.7 MB",
+            "9.6 of 9.7 MB"
+          ],
+          "timeline": [
+            {
+              "at": 71,
+              "viewer": false
+            },
+            {
+              "at": 174,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video…",
+              "loading": true,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 275,
+              "viewer": true,
+              "text": "big-572.mp4 Loading video… 0.1 of 9.7 MB",
+              "loading": true,
+              "progress": "0.1 of 9.7 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 9729,
+              "viewer": true,
+              "text": "big-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 0,
+                "error": null,
+                "duration": null
+              }
+            },
+            {
+              "at": 9833,
+              "viewer": true,
+              "text": "big-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 20
+              }
+            }
+          ]
+        },
+        "outsideBig": {
+          "final": {
+            "viewer": true,
+            "text": "big-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 10.1,
+          "notAvailableShown": false,
+          "progress": [
+            "0.1 of 9.7 MB",
+            "0.2 of 9.7 MB",
+            "0.3 of 9.7 MB",
+            "0.4 of 9.7 MB",
+            "0.5 of 9.7 MB",
+            "0.6 of 9.7 MB",
+            "0.7 of 9.7 MB",
+            "0.8 of 9.7 MB",
+            "0.9 of 9.7 MB",
+            "1.0 of 9.7 MB",
+            "1.1 of 9.7 MB",
+            "1.2 of 9.7 MB",
+            "1.3 of 9.7 MB",
+            "1.4 of 9.7 MB",
+            "1.5 of 9.7 MB",
+            "1.6 of 9.7 MB",
+            "1.7 of 9.7 MB",
+            "1.8 of 9.7 MB",
+            "1.9 of 9.7 MB",
+            "2.0 of 9.7 MB",
+            "2.1 of 9.7 MB",
+            "2.2 of 9.7 MB",
+            "2.3 of 9.7 MB",
+            "2.5 of 9.7 MB",
+            "2.6 of 9.7 MB",
+            "2.7 of 9.7 MB",
+            "2.8 of 9.7 MB",
+            "2.9 of 9.7 MB",
+            "3.0 of 9.7 MB",
+            "3.1 of 9.7 MB",
+            "3.2 of 9.7 MB",
+            "3.3 of 9.7 MB",
+            "3.4 of 9.7 MB",
+            "3.5 of 9.7 MB",
+            "3.6 of 9.7 MB",
+            "3.7 of 9.7 MB",
+            "3.9 of 9.7 MB",
+            "4.0 of 9.7 MB",
+            "4.1 of 9.7 MB",
+            "4.2 of 9.7 MB",
+            "4.3 of 9.7 MB",
+            "4.4 of 9.7 MB",
+            "4.5 of 9.7 MB",
+            "4.6 of 9.7 MB",
+            "4.7 of 9.7 MB",
+            "4.8 of 9.7 MB",
+            "4.9 of 9.7 MB",
+            "5.0 of 9.7 MB",
+            "5.1 of 9.7 MB",
+            "5.2 of 9.7 MB",
+            "5.3 of 9.7 MB",
+            "5.4 of 9.7 MB",
+            "5.5 of 9.7 MB",
+            "5.6 of 9.7 MB",
+            "5.7 of 9.7 MB",
+            "5.8 of 9.7 MB",
+            "5.9 of 9.7 MB",
+            "6.0 of 9.7 MB",
+            "6.1 of 9.7 MB",
+            "6.2 of 9.7 MB",
+            "6.3 of 9.7 MB",
+            "6.4 of 9.7 MB",
+            "6.5 of 9.7 MB",
+            "6.6 of 9.7 MB",
+            "6.7 of 9.7 MB",
+            "6.9 of 9.7 MB",
+            "7.0 of 9.7 MB",
+            "7.1 of 9.7 MB",
+            "7.2 of 9.7 MB",
+            "7.3 of 9.7 MB",
+            "7.4 of 9.7 MB",
+            "7.5 of 9.7 MB",
+            "7.6 of 9.7 MB",
+            "7.7 of 9.7 MB",
+            "7.8 of 9.7 MB",
+            "7.9 of 9.7 MB",
+            "8.0 of 9.7 MB",
+            "8.1 of 9.7 MB",
+            "8.2 of 9.7 MB",
+            "8.3 of 9.7 MB",
+            "8.4 of 9.7 MB",
+            "8.5 of 9.7 MB",
+            "8.6 of 9.7 MB",
+            "8.7 of 9.7 MB",
+            "8.8 of 9.7 MB",
+            "8.9 of 9.7 MB",
+            "9.0 of 9.7 MB",
+            "9.1 of 9.7 MB",
+            "9.2 of 9.7 MB",
+            "9.3 of 9.7 MB",
+            "9.4 of 9.7 MB",
+            "9.5 of 9.7 MB",
+            "9.6 of 9.7 MB"
+          ],
+          "timeline": [
+            {
+              "at": 68,
+              "viewer": false
+            },
+            {
+              "at": 170,
+              "viewer": true,
+              "text": "big-572-out.mp4 Loading video…",
+              "loading": true,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 271,
+              "viewer": true,
+              "text": "big-572-out.mp4 Loading video… 0.1 of 9.7 MB",
+              "loading": true,
+              "progress": "0.1 of 9.7 MB",
+              "alert": null,
+              "retry": false,
+              "media": null
+            },
+            {
+              "at": 9727,
+              "viewer": true,
+              "text": "big-572-out.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 0,
+                "error": null,
+                "duration": null
+              }
+            },
+            {
+              "at": 9829,
+              "viewer": true,
+              "text": "big-572-out.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 20
+              }
+            }
+          ]
+        },
+        "missing": {
+          "final": {
+            "viewer": true,
+            "text": "gone-572.mp4 This video could not be played. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "This video could not be played. Retry",
+            "retry": true,
+            "media": null
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 67,
+              "viewer": false
+            },
+            {
+              "at": 170,
+              "viewer": true,
+              "text": "gone-572.mp4 This video could not be played. Retry",
+              "loading": false,
+              "progress": null,
+              "alert": "This video could not be played. Retry",
+              "retry": true,
+              "media": null
+            }
+          ]
+        },
+        "outsideMissing": {
+          "final": {
+            "viewer": true,
+            "text": "gone-572-out.mp4 This file was not found on the computer. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "This file was not found on the computer.",
+            "retry": true,
+            "media": null
+          },
+          "after": {
+            "viewer": true,
+            "text": "gone-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "backToConversation": true,
+          "seconds": 0.6,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 77,
+              "viewer": false
+            },
+            {
+              "at": 179,
+              "viewer": true,
+              "text": "gone-572-out.mp4 This file was not found on the computer. Retry",
+              "loading": false,
+              "progress": null,
+              "alert": "This file was not found on the computer.",
+              "retry": true,
+              "media": null
+            }
+          ]
+        },
+        "outsideFolder": {
+          "final": {
+            "viewer": true,
+            "text": "folder-572.mp4 This path is a folder, not a file.",
+            "loading": false,
+            "progress": null,
+            "alert": "This path is a folder, not a file.",
+            "retry": false,
+            "media": null
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 66,
+              "viewer": false
+            },
+            {
+              "at": 169,
+              "viewer": true,
+              "text": "folder-572.mp4 This path is a folder, not a file.",
+              "loading": false,
+              "progress": null,
+              "alert": "This path is a folder, not a file.",
+              "retry": false,
+              "media": null
+            }
+          ]
+        },
+        "delegatedVideo": {
+          "final": {
+            "viewer": true,
+            "text": "clip-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 80,
+              "viewer": false
+            },
+            {
+              "at": 184,
+              "viewer": true,
+              "text": "clip-572.mp4",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "video",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        },
+        "delegatedAudio": {
+          "final": {
+            "viewer": true,
+            "text": "tone-572-out.mp3",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "audio",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 3
+            }
+          },
+          "after": null,
+          "backToConversation": true,
+          "seconds": 0.4,
+          "notAvailableShown": false,
+          "progress": [],
+          "timeline": [
+            {
+              "at": 69,
+              "viewer": false
+            },
+            {
+              "at": 171,
+              "viewer": true,
+              "text": "tone-572-out.mp3",
+              "loading": false,
+              "progress": null,
+              "alert": null,
+              "retry": false,
+              "media": {
+                "tag": "audio",
+                "blob": true,
+                "readyState": 4,
+                "error": null,
+                "duration": 3
+              }
+            }
+          ]
+        }
+      },
+      "bigProgress": {
+        "insideBig": [
+          {
+            "loaded": 0.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.6,
+            "total": "9.7 MB"
+          }
+        ],
+        "outsideBig": [
+          {
+            "loaded": 0.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 0.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 1.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 2.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 3.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 4.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 5.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 6.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 7.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.6,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.7,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.8,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 8.9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.1,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.2,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.3,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.4,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.5,
+            "total": "9.7 MB"
+          },
+          {
+            "loaded": 9.6,
+            "total": "9.7 MB"
+          }
+        ]
+      },
+      "mediaReads": {
+        "count": 12,
+        "routes": [
+          "/rest/workspaces/…/content",
+          "/rest/node-files/content"
+        ],
+        "keyInHeader": 12,
+        "keyInUrl": []
+      },
+      "refused": [],
+      "mainFrameNodeNavigations": []
+    },
+    "MSP-91": {
+      "result": "Pass",
+      "seconds": 53.2,
+      "size": 9738284,
+      "inside": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572.mp4 This video could not be played. Retry",
+          "loading": false,
+          "progress": null,
+          "alert": "This video could not be played. Retry",
+          "retry": true,
+          "media": null
+        },
+        "timeline": [
+          {
+            "at": 1,
+            "viewer": false
+          },
+          {
+            "at": 103,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 205,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.1 of 9.7 MB",
+            "loading": true,
+            "progress": "0.1 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 306,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.2 of 9.7 MB",
+            "loading": true,
+            "progress": "0.2 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 3209,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 3.2 of 9.7 MB",
+            "loading": true,
+            "progress": "3.2 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 3311,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 3.3 of 9.7 MB",
+            "loading": true,
+            "progress": "3.3 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 3414,
+            "viewer": true,
+            "text": "retry-572.mp4 This video could not be played. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "This video could not be played. Retry",
+            "retry": true,
+            "media": null
+          }
+        ],
+        "notAvailableShown": false,
+        "wentOffline": 2538,
+        "servedAfterMs": 6,
+        "readsAfterRestart": [
+          [
+            6,
+            200
+          ]
+        ],
+        "progressBeforeOffline": [
+          "3.0 of 9.7 MB",
+          "3.2 of 9.7 MB",
+          "3.3 of 9.7 MB"
+        ]
+      },
+      "insideRetry": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572.mp4",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": {
+            "tag": "video",
+            "blob": true,
+            "readyState": 4,
+            "error": null,
+            "duration": 20
+          }
+        },
+        "timeline": [
+          {
+            "at": 1,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 103,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.0 of 9.7 MB",
+            "loading": true,
+            "progress": "0.0 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 205,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.1 of 9.7 MB",
+            "loading": true,
+            "progress": "0.1 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 307,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 0.2 of 9.7 MB",
+            "loading": true,
+            "progress": "0.2 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9517,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 9.6 of 9.7 MB",
+            "loading": true,
+            "progress": "9.6 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9618,
+            "viewer": true,
+            "text": "retry-572.mp4 Loading video… 9.7 of 9.7 MB",
+            "loading": true,
+            "progress": "9.7 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 9721,
+            "viewer": true,
+            "text": "retry-572.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          }
+        ],
+        "notAvailableShown": false
+      },
+      "outside": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572-out.mp4 The file preview could not be opened. Retry",
+          "loading": false,
+          "progress": null,
+          "alert": "The file preview could not be opened.",
+          "retry": true,
+          "media": null
+        },
+        "timeline": [
+          {
+            "at": 0,
+            "viewer": false
+          },
+          {
+            "at": 103,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 204,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.1 of 9.7 MB",
+            "loading": true,
+            "progress": "0.1 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 305,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 0.2 of 9.7 MB",
+            "loading": true,
+            "progress": "0.2 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 4188,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 4.2 of 9.7 MB",
+            "loading": true,
+            "progress": "4.2 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 4290,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 4.3 of 9.7 MB",
+            "loading": true,
+            "progress": "4.3 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 4391,
+            "viewer": true,
+            "text": "retry-572-out.mp4 The file preview could not be opened. Retry",
+            "loading": false,
+            "progress": null,
+            "alert": "The file preview could not be opened.",
+            "retry": true,
+            "media": null
+          }
+        ],
+        "notAvailableShown": false,
+        "wentOffline": 2528,
+        "servedAfterMs": 5,
+        "readsAfterRestart": [
+          [
+            5,
+            200
+          ]
+        ],
+        "progressBeforeOffline": [
+          "4.1 of 9.7 MB",
+          "4.2 of 9.7 MB",
+          "4.3 of 9.7 MB"
+        ]
+      },
+      "outsideAgain": {
+        "state": {
+          "viewer": true,
+          "text": "retry-572-out.mp4",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": {
+            "tag": "video",
+            "blob": true,
+            "readyState": 4,
+            "error": null,
+            "duration": 20
+          }
+        },
+        "timeline": [
+          {
+            "at": 1,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video…",
+            "loading": true,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 104,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 4.3 of 9.7 MB",
+            "loading": true,
+            "progress": "4.3 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 205,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 4.4 of 9.7 MB",
+            "loading": true,
+            "progress": "4.4 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 305,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 4.5 of 9.7 MB",
+            "loading": true,
+            "progress": "4.5 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5363,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 9.6 of 9.7 MB",
+            "loading": true,
+            "progress": "9.6 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5464,
+            "viewer": true,
+            "text": "retry-572-out.mp4 Loading video… 9.7 of 9.7 MB",
+            "loading": true,
+            "progress": "9.7 of 9.7 MB",
+            "alert": null,
+            "retry": false,
+            "media": null
+          },
+          {
+            "at": 5566,
+            "viewer": true,
+            "text": "retry-572-out.mp4",
+            "loading": false,
+            "progress": null,
+            "alert": null,
+            "retry": false,
+            "media": {
+              "tag": "video",
+              "blob": true,
+              "readyState": 4,
+              "error": null,
+              "duration": 20
+            }
+          }
+        ],
+        "notAvailableShown": false
+      },
+      "gate": {
+        "workspaceWithKey": {
+          "status": 200,
+          "bytes": 9738284,
+          "length": "9738284"
+        },
+        "workspaceNoKey": {
+          "status": 401,
+          "bytes": 142,
+          "length": "142"
+        },
+        "nodeFileNoKey": {
+          "status": 401,
+          "bytes": 142,
+          "length": "142"
+        },
+        "climbingWithKey": {
+          "status": 400,
+          "bytes": 73,
+          "length": "73"
+        },
+        "unknownFolderWithKey": {
+          "status": 404,
+          "bytes": 32,
+          "length": "32"
+        },
+        "keyRead": true
+      },
+      "zh": {
+        "loadingWords": true,
+        "progress": [
+          "0.0 / 9.7 MB",
+          "0.1 / 9.7 MB",
+          "0.2 / 9.7 MB",
+          "9.5 / 9.7 MB",
+          "9.6 / 9.7 MB",
+          "9.7 / 9.7 MB"
+        ],
+        "samples": 95,
+        "played": true,
+        "notAvailable": false
+      }
+    },
+    "MSP-92": {
+      "result": "Pass",
+      "seconds": 22.6,
+      "size": 9730034,
+      "teamRunId": "clip_team_73167ed3933a4f5ea4e7d531568eefc0",
+      "loadingTexts": [
+        null,
+        "ref-572.mp4 Loading reference file..."
+      ],
+      "playersLoadingView": false,
+      "final": {
+        "viewer": true,
+        "text": "ref-572.mp4",
+        "loading": false,
+        "progress": null,
+        "alert": null,
+        "retry": false,
+        "media": {
+          "tag": "video",
+          "blob": true,
+          "readyState": 4,
+          "error": null,
+          "duration": 20
+        }
+      },
+      "notAvailableShown": false,
+      "timeline": [
+        {
+          "at": 1,
+          "viewer": false
+        },
+        {
+          "at": 105,
+          "viewer": true,
+          "text": "ref-572.mp4 Loading reference file...",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": null
+        },
+        {
+          "at": 9691,
+          "viewer": true,
+          "text": "ref-572.mp4",
+          "loading": false,
+          "progress": null,
+          "alert": null,
+          "retry": false,
+          "media": {
+            "tag": "video",
+            "blob": true,
+            "readyState": 4,
+            "error": null,
+            "duration": 20
+          }
+        }
+      ]
+    },
+    "MSP-90": {
+      "result": "Pass",
+      "seconds": 11.2,
+      "media": {
+        "insideVideo": {
+          "src": "node URL",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4"
+        },
+        "insideAudio": {
+          "src": "node URL",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3"
+        },
+        "outsideVideo": {
+          "src": "blob",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3 clip-572-out.mp4"
+        },
+        "outsideAudio": {
+          "src": "blob",
+          "readyState": 4,
+          "error": null,
+          "duration": 3,
+          "text": "clip-572.mp4 tone-572.mp3 clip-572-out.mp4 tone-572-out.mp3"
+        }
+      },
+      "mediaReads": [
+        {
+          "route": "/rest/workspaces/…/content",
+          "file": "clip-572.mp4",
+          "status": 206
+        },
+        {
+          "route": "/rest/workspaces/…/content",
+          "file": "tone-572.mp3",
+          "status": 206
+        },
+        {
+          "route": "/rest/node-files/content",
+          "file": "clip-572-out.mp4",
+          "status": 200
+        },
+        {
+          "route": "/rest/node-files/content",
+          "file": "tone-572-out.mp3",
+          "status": 200
+        }
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-89",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: net::ERR_CONTENT_LENGTH_MISMATCH",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-collaboration/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/file-explorer/agent_ws_5c99506030e62a2bc5586959c1eefed609fc3fee179bff1637f03234380ae351?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/producer_0ced0cf7fcf746d395e2fbaf4f487fa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-collaboration/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/file-explorer/agent_ws_5c99506030e62a2bc5586959c1eefed609fc3fee179bff1637f03234380ae351?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/producer_0ced0cf7fcf746d395e2fbaf4f487fa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/producer_0ced0cf7fcf746d395e2fbaf4f487fa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/file-explorer/agent_ws_5c99506030e62a2bc5586959c1eefed609fc3fee179bff1637f03234380ae351?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-collaboration/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: net::ERR_CONTENT_LENGTH_MISMATCH",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/producer_0ced0cf7fcf746d395e2fbaf4f487fa2?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-package-definitions?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/projects?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/file-explorer/agent_ws_5c99506030e62a2bc5586959c1eefed609fc3fee179bff1637f03234380ae351?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: [FileExplorerStreaming] WebSocket error: Event",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/run-status?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent-collaboration/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: WebSocket connection to 'ws://192.168.77.40:64892/ws/agent/content_creator_07b4220969684340a7c3ce36b2bde76a?access_token=…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Agent WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.40:64892/mobile/_nuxt/CunOA9Bd.js:1165:5901)",
+      "known": true,
+      "cause": "MSP-89's missing videos and folder path (autobyteus-572 AC-006, D-7) / MSP-91 stopped the node mid-download on purpose"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-91",
+      "line": "phone-epsilon-zh console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-92",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/41bc2675-8979-44c0-b52c-1c50db1601f5",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/41bc2675-8979-44c0-b52c-1c50db1601f5",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/9af1d49c-57f3-479a-b857-cb8fae568aea",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-89",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/9af1d49c-57f3-479a-b857-cb8fae568aea",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "http://192.168.77.40:64892/rest/workspaces/agent_ws_5c99506030e62a2bc5586959c1eefed609fc3fee179bff1637f03234380ae351/content?path=media%2Fretry-572.mp4",
+      "error": "net::ERR_CONTENT_LENGTH_MISMATCH"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/8e8ced71-4172-481f-9361-2359a45c4c62",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/8e8ced71-4172-481f-9361-2359a45c4c62",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "http://192.168.77.40:64892/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-x1XW2T%2Fepsilon%2Foutside-media-572%2Fretry-572-out.mp4",
+      "error": "net::ERR_CONTENT_LENGTH_MISMATCH"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/4c4d9cd5-685f-436b-b7ef-54a007df7621",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-91",
+      "label": "phone-epsilon-zh",
+      "url": "blob:http://192.168.77.40:64892/c035def2-30ad-4891-873f-c03e45c124ac",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-92",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-92",
+      "label": "phone",
+      "url": "http://192.168.77.10:64643/rest/health",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-92",
+      "label": "phone-epsilon",
+      "url": "blob:http://192.168.77.40:64892/30a5ae3b-16fd-48ef-99f9-824ece6f469e",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileOpen": {
+    "runs": {
+      "run": "content_creator_07b4220969684340a7c3ce36b2bde76a",
+      "remoteRun": "publisher_eb9a01c3edd4499fadaf3d413e891cb8"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-89": "Pass",
+      "MSP-91": "Pass",
+      "MSP-92": "Pass",
+      "MSP-90": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-24T20:43:07.611Z"
+}

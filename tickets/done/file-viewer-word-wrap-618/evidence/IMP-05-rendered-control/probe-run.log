@@ -1,0 +1,12 @@
+# IMP-05
+# Command: pnpm -C autobyteus-web build:mobile-web; then env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR" USER="$USER" node autobyteus-web/tests/e2e/mobile-shell-probe.mjs --cases=MSP-108,MSP-109 --output-dir=<fresh>
+# Commit: 0f5e844087 with the editor default set back to off (restored after; phone bundle rebuilt from the control, then from the change)
+# Environment: macOS (Darwin 25.5.0); the probe's own synthetic nodes (alpha, beta) and the scripted AGY CLI; headless Chrome; desktop window = nuxt dev against alpha
+# Date: 2026-11-24
+# Note: Both cases Fail as expected: rows past the editor's edge, no line wraps (the shipped behavior). Two screenshots kept.
+
+[mobile-shell] MSP-108 …
+[mobile-shell] MSP-108 Fail: desktop: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge; Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)
+[mobile-shell] MSP-109 …
+[mobile-shell] MSP-109 Fail: phone: each file wraps at the editor's width with its indentation and line numbers, nothing past the edge, the page does not scroll sideways (AC-001)
+mobile-shell probe: Fail

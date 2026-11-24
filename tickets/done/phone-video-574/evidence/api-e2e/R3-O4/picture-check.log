@@ -1,0 +1,12 @@
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' started.
+NativeVideoRealNodeUITests.swift:49: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink] : XCTAssertTrue failed - the picture plays on after a scrub to the middle
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' failed (26.924 seconds).
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testBPlainFileScrub]' started.
+o4-assert.log:PICTURE-MOVES true
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testBPlainFileScrub]' passed (27.631 seconds).
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' started.
+o4-assert.log:PICTURE-MOVES true
+o4-assert.log:Test Case '-[AutoByteusMobileUITests.ScrubPlainControlUITests testELoaderScrubOnDemand]' passed (27.642 seconds).
+o4-clean-testA.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' started.
+NativeVideoRealNodeUITests.swift:49: error: -[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink] : XCTAssertTrue failed - the picture plays on after a scrub to the middle
+o4-clean-testA.log:Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' failed (26.656 seconds).
