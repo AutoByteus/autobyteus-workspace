@@ -3,7 +3,7 @@
     <div class="mb-4">
       <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.AgentPackagesManager.agent_packages') }}</h2>
       <p class="mt-1 text-sm text-gray-600">
-        Link a local package path or paste a public GitHub repository URL.
+        Link a local package path or paste a GitHub repository URL.
         GitHub packages are installed into app-managed storage, while local paths remain in place.
       </p>
     </div>
@@ -129,6 +129,7 @@
           {{ loading ? 'Working...' : 'Import Package' }}
         </button>
       </div>
+      <GitHubConnectionLine class="mt-3" />
     </div>
   </section>
 </template>
@@ -145,6 +146,7 @@ import type {
 } from '~/stores/agentPackagesStore'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
+import GitHubConnectionLine from '~/components/github/GitHubConnectionLine.vue'
 
 const store = useAgentPackagesStore()
 const { $t } = useNuxtApp()

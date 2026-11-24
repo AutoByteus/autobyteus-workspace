@@ -1,0 +1,6 @@
+# IMP-01 AR-001 measurement (autobyteus-627)
+# Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 pnpm -C autobyteus-server-ts exec vitest run tests/probe-627/ar001.probe.test.ts --no-watch (temporary read-only probe, removed after the run, never committed)
+# Commit: 6545fcfad3; Node v22.23.1; macOS; date 2026-11-24 06:23
+# What: the valid test token (GET /user 200) against a repository name it cannot read (non-existent, under the token's owner and under AutoByteus). REST Bearer, ls-refs Basic x-access-token, codeload Bearer; plus anonymous REST and ls-refs. Statuses only; no token, login or private repository name printed.
+# Result: ls-refs with a valid token and no access = 404 (not 401). The design's C-4 mapping holds (AR-001 closed, no Design Impact).
+{"userStatus":200,"tokenOwnerMissingRepo":{"restWithToken":404,"restAnonymous":404,"lsRefsWithToken":404,"lsRefsAnonymous":401,"codeloadWithToken":404},"otherOwnerMissingRepo":{"restWithToken":404,"restAnonymous":404,"lsRefsWithToken":404,"lsRefsAnonymous":401,"codeloadWithToken":404}}

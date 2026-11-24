@@ -2,10 +2,7 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
-import { publicGitHubRequest } from "../../integrations/github/public-github-request.js";
-import { buildGitHubRepositoryArchiveUrlForRef } from "../../integrations/github/github-repository-source.js";
+import type { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
 import { assertOwnedDirectory, isManagedId, managedRepositoryPath } from "./managed-skill-paths.js";
 import { extractSkillRepositoryArchive } from "./skill-repository-archive.js";
@@ -14,10 +11,7 @@ export type PreparedSkillRepository = { generation: string; rootPath: string };
 
 /** Owns repository bytes, never catalog activation. All destructive paths derive from UUIDs. */
 export class GitHubSkillRepository {
-  constructor(readonly root: string, private readonly options: {
-    fetchImpl?: typeof fetch;
-    download?: (metadata: GitHubRepositoryRevisionMetadata, destination: string) => Promise<void>;
-  } = {}) {}
+  constructor(readonly root: string, private readonly client: Pick<GitHubRepositoryClient, "downloadArchive">) {}
 
   /** Called once before this process starts preparing candidates. Interrupted, unpublished
    * imports have no registry row; inspect only this owner's UUID directories/staging. */
@@ -43,8 +37,7 @@ export class GitHubSkillRepository {
     const staging = fs.mkdtempSync(path.join(stagingParent, `${id}-`));
     try {
       const archive = path.join(staging, "repository.tar.gz");
-      if (this.options.download) await this.options.download(metadata, archive);
-      else await this.download(metadata, archive);
+      await this.client.downloadArchive(metadata.owner, metadata.repo, metadata.latestRevision, archive);
       assertOwnedDirectory(this.root, staging);
       const output = path.join(staging, "extracted");
       fs.mkdirSync(output, { mode: 0o700 });
@@ -88,14 +81,5 @@ export class GitHubSkillRepository {
       assertOwnedDirectory(this.root, target);
       await fsp.rm(target, { recursive: true });
     }
-  }
-
-  private async download(metadata: GitHubRepositoryRevisionMetadata, destination: string): Promise<void> {
-    const signal = AbortSignal.timeout(120_000);
-    const response = await publicGitHubRequest(buildGitHubRepositoryArchiveUrlForRef(
-      metadata.owner, metadata.repo, metadata.latestRevision), { fetchImpl: this.options.fetchImpl, signal });
-    if (!response.ok || !response.body) throw new Error(`GitHub archive download failed (HTTP ${response.status}).`);
-    await pipeline(Readable.fromWeb(response.body as Parameters<typeof Readable.fromWeb>[0]),
-      fs.createWriteStream(destination, { flags: "wx", mode: 0o600 }), { signal });
   }
 }

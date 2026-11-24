@@ -586,7 +586,8 @@ node has its own switch on the Nodes page).
   background checks with what it contacts (github.com for packages and skill
   sources; for runtimes GitHub (Codex), downloads.claude.ai, Antigravity's
   updater, xAI (Grok); GitHub downloads and each runtime's own update command
-  for automatic updates; no account or token; nothing sent to AutoByteus), an
+  for automatic updates; no account; the node's GitHub token goes only to
+  GitHub, only for private repositories; nothing sent to AutoByteus), an
   amber banner while GitHub asks the node to wait (a wait changes no setting and
   is announced by nothing, so the card re-reads the settings when it opens and
   drops the banner when the time passes) or while checks are off, "How
@@ -824,6 +825,24 @@ the opt-in agent tool
   (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
+
+## Settings: Agent Packages And Private GitHub Repositories
+
+The import box takes a local package path or a GitHub repository URL. Under it,
+`components/github/GitHubConnectionLine.vue` (with `stores/githubConnectionStore.ts`
+and `graphql/githubConnection.ts`) shows this node's **GitHub connection**, the
+one token the GitHub integration also uses: *GitHub · not connected — needed
+only for private repositories.* with **Connect GitHub**, or *GitHub · connected
+as @login* with **Replace token** and **Disconnect** and what the token is used
+for. Connect opens a password field with the guidance for a fine-grained token
+(only the repositories needed; Contents: Read-only) and a link to GitHub's token
+page; the server checks the token with GitHub before saving it, and coded
+refusals (`TOKEN_REQUIRED`, `TOKEN_REJECTED`, `TOKEN_CHECK_FAILED`,
+`VAULT_UNAVAILABLE`) have their own texts. The token is sent once and never shown. After connecting, the user presses **Import Package** again. A
+private repository's failed check shows the server's text as the row's status
+(for example "GitHub rejected this node's GitHub token … Reconnect GitHub on this
+node."), with the connection line in the same box to reconnect. See
+[Agent Packages](../../autobyteus-server-ts/docs/modules/agent_packages.md#private-github-repositories).
 
 ## Settings: Agent Packages Auto-Refresh
 

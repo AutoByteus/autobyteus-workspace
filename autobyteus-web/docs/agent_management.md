@@ -253,7 +253,7 @@ registered agent package are applied automatically while the package row shows
 Local path packages remain user-owned: edit or pull the folder outside
 AutoByteus, and press the package row's **Reload** only when the row is not
 auto-refreshing or to force a full rescan.
-Public GitHub package rows can **Check again** for default-branch drift and
+GitHub package rows (a public repository, or a private one through the node's GitHub connection) can **Check again** for default-branch drift and
 **Update** the AutoByteus-managed package when an update is available (a
 package whose installed revision is unknown cannot be updated; remove and import
 it again). These actions refresh the local agent catalog

@@ -1,26 +1,20 @@
-import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
+import type { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { downloadFileFromUrl } from "../../utils/download-utils.js";
-import type { GitHubRepositoryMetadata, GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../integrations/github/types.js";
+import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../integrations/github/types.js";
 import type { ManagedGitHubInstallResult } from "../types.js";
-import {
-  buildGitHubRepositoryArchiveUrl,
-  buildGitHubRepositoryArchiveUrlForRef,
-} from "../../integrations/github/github-repository-source.js";
 import { validatePackageRoot } from "../utils/package-root-summary.js";
 
 type AppConfigLike = {
   getAppDataDir(): string;
-  getDownloadDir(): string;
 };
 
-type FetchLike = typeof fetch;
-type DownloadFileFromUrlLike = typeof downloadFileFromUrl;
+/** The GitHub reads and downloads an install needs; the client owns the access rule. */
+type InstallerGitHubClient = Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata" | "downloadArchive">;
 type SpawnLike = typeof spawn;
 type TarExtractionCommandSpec = {
   executable: string;
@@ -35,11 +29,10 @@ export type ManagedGitHubPackageReplacement = ManagedGitHubInstallResult & {
 export class GitHubAgentPackageInstaller {
   constructor(
     private readonly options: {
+      githubClient: InstallerGitHubClient;
       config?: AppConfigLike;
-      fetchImpl?: FetchLike;
-      downloadFileFromUrlImpl?: DownloadFileFromUrlLike;
       extractArchiveImpl?: (archivePath: string, outputDir: string) => Promise<void>;
-    } = {},
+    },
   ) {}
 
   getManagedRoot(): string {
@@ -60,13 +53,13 @@ export class GitHubAgentPackageInstaller {
       );
     }
 
-    const metadata = await new GitHubRepositoryClient(this.options.fetchImpl).fetchRepositoryRevisionMetadata(source);
+    const metadata = await this.options.githubClient.fetchRepositoryRevisionMetadata(source);
     const stagingDir = await this.createStagingDirectory(source.installKey);
     const extractionDir = path.join(stagingDir, "extracted");
 
     try {
       await fsPromises.mkdir(extractionDir, { recursive: true });
-      const archivePath = await this.downloadRepositoryArchive(source, metadata, stagingDir);
+      const archivePath = await this.downloadArchive(metadata.owner, metadata.repo, metadata.latestRevision, stagingDir);
       await this.extractArchive(archivePath, extractionDir);
 
       const extractedRoot = await this.resolveExtractedRoot(extractionDir);
@@ -98,10 +91,6 @@ export class GitHubAgentPackageInstaller {
     return this.options.config ?? appConfigProvider.config;
   }
 
-  private getDownloadFileFromUrl(): DownloadFileFromUrlLike {
-    return this.options.downloadFileFromUrlImpl ?? downloadFileFromUrl;
-  }
-
   async stagePackageReplacement(
     source: GitHubRepositorySource,
     metadata: GitHubRepositoryRevisionMetadata,
@@ -122,7 +111,7 @@ export class GitHubAgentPackageInstaller {
 
     try {
       await fsPromises.mkdir(extractionDir, { recursive: true });
-      const archivePath = await this.downloadRepositoryArchive(source, metadata, stagingDir);
+      const archivePath = await this.downloadArchive(metadata.owner, metadata.repo, metadata.latestRevision, stagingDir);
       await this.extractArchive(archivePath, extractionDir);
 
       const extractedRoot = await this.resolveExtractedRoot(extractionDir);
@@ -195,10 +184,7 @@ export class GitHubAgentPackageInstaller {
   async downloadRevision(source: GitHubRepositorySource, revision: string, targetDir: string): Promise<string> {
     const extractionDir = path.join(targetDir, "extracted");
     await fsPromises.mkdir(extractionDir, { recursive: true });
-    const archivePath = await this.getDownloadFileFromUrl()(
-      buildGitHubRepositoryArchiveUrlForRef(source.owner, source.repo, revision),
-      path.join(targetDir, "download", source.installKey),
-    );
+    const archivePath = await this.downloadArchive(source.owner, source.repo, revision, targetDir);
     await this.extractArchive(archivePath, extractionDir);
     return this.resolveExtractedRoot(extractionDir);
   }
@@ -213,28 +199,13 @@ export class GitHubAgentPackageInstaller {
     return fsPromises.mkdtemp(path.join(parentDir, `${installKey}-${randomUUID()}-`));
   }
 
-  private async downloadRepositoryArchive(
-    source: GitHubRepositorySource,
-    metadata: GitHubRepositoryMetadata & { latestRevision?: string },
-    stagingDir: string,
-  ): Promise<string> {
-    const downloadDir = path.join(
-      stagingDir,
-      "download",
-      source.installKey,
-    );
-    const archiveUrl = metadata.latestRevision
-      ? buildGitHubRepositoryArchiveUrlForRef(
-          metadata.owner,
-          metadata.repo,
-          metadata.latestRevision,
-        )
-      : buildGitHubRepositoryArchiveUrl(
-          metadata.owner,
-          metadata.repo,
-          metadata.defaultBranch,
-        );
-    return this.getDownloadFileFromUrl()(archiveUrl, downloadDir);
+  /** The repository at `revision` as `<targetDir>/download/repository.tar.gz`, through the GitHub client. */
+  private async downloadArchive(owner: string, repo: string, revision: string, targetDir: string): Promise<string> {
+    const downloadDir = path.join(targetDir, "download");
+    await fsPromises.mkdir(downloadDir, { recursive: true });
+    const archivePath = path.join(downloadDir, "repository.tar.gz");
+    await this.options.githubClient.downloadArchive(owner, repo, revision, archivePath);
+    return archivePath;
   }
 
   private async extractArchive(

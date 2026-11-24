@@ -1,0 +1,26 @@
+# API-11 SR-003 / AC-008 (IR-002, 12651e48f7): the Update checks card text
+# HEAD 12651e48f7; 2026-11-24T07:46:09Z
+## the texts against AC-008 (requirements-doc.md row, parsed)
+en exact match with AC-008: True
+zh-CN exact match with AC-008: True
+## old wording in tracked files (outside tickets): only AboutSettingsManager.autoCheck.description, the app's own version check, left alone by the handoff
+## NUXT_TEST=true pnpm exec vitest run components/settings (autobyteus-web)
+stderr | components/settings/__tests__/UpdateChecksCard.spec.ts
+stdout | components/settings/__tests__/UpdateChecksCard.spec.ts
+ ✓ components/settings/__tests__/UpdateChecksCard.spec.ts (8 tests) 152ms
+stderr | components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts
+stdout | components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts
+ ✓ components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts (1 test) 44ms
+ Test Files  59 passed (59)
+      Tests  399 passed (399)
+EXIT 0
+## pnpm -C autobyteus-web guard:localization-boundary; audit:localization-literals
+[guard:localization-boundary] Passed.
+EXIT 0
+[audit:localization-literals] Passed with zero unresolved findings.
+EXIT 0
+## both typechecks
+web-tc.log:[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+web-tc.log:[typecheck] PASS
+server-tc.log:[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+server-tc.log:[typecheck] PASS

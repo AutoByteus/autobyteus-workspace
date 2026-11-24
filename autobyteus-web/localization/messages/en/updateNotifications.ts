@@ -104,7 +104,7 @@ const updateNotificationsMessages = {
   'settings.notifications.runtime.details': 'Runs {{name}}\'s own update on this computer, as in Settings → Agent Runtimes.',
   'settings.notifications.setting.summaryOwn': 'Find new versions of your GitHub agent packages, skill sources and agent runtimes.',
   'settings.notifications.setting.label': 'Check for updates in the background',
-  'settings.notifications.setting.description': 'No account or token is used. Nothing is sent to AutoByteus.',
+  'settings.notifications.setting.description': 'No account is used. This node\'s GitHub token is sent only to GitHub, and only for private repositories. Nothing is sent to AutoByteus.',
   'settings.notifications.setting.network.title': 'Contacts',
   'settings.notifications.setting.network.packages': 'Packages and skill sources: github.com',
   'settings.notifications.setting.network.runtimes': 'Agent runtimes: GitHub (Codex), downloads.claude.ai, Antigravity\'s updater, xAI (Grok)',

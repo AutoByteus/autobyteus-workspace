@@ -1,0 +1,17 @@
+# IMP-05 server-integration (autobyteus-627 IR-001)
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit: 3a83f76325 (branch codex/private-github-packages-627)
+# Environment: Node v22.23.1, macOS 26.5.2, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627; no AUTOBYTEUS_TEST_VAULT
+# Date: 2026-11-24 07:04:16 CET
+
+
+> autobyteus-server-ts@0.1.1 test:integration /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration .integration.test.ts
+
+Integration test prerequisites are missing:
+  - autobyteus-application-frontend-sdk/dist/index.js
+  - autobyteus-application-devkit/dist/cli.js
+  - applications/brief-studio/dist/importable-package/applications/brief-studio/application.json
+Build them from the repository root with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

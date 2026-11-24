@@ -11,6 +11,7 @@ import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/ag
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
 import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/integrations/github/types.js";
 import type { RepositoryHead } from "../../../src/integrations/github/git-ls-refs.js";
+import { UNUSED_GITHUB_CLIENT } from "../../helpers/unused-github-client.js";
 
 const parseAdditionalRoots = (): string[] => {
   const raw = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS ?? "";
@@ -169,7 +170,7 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       reloadAgentPackageDefinitions: async () => undefined,
     });
 
@@ -230,7 +231,7 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       reloadAgentPackageDefinitions: async () => {
         throw new Error("refresh failed");
       },
@@ -303,7 +304,7 @@ describe("AgentPackageService", () => {
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
       }),
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       reloadAgentPackageDefinitions: async () => {
         if (shouldFailRefresh) {
           throw new Error("refresh failed");
@@ -415,6 +416,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         return { defaultBranch: "main", latestRevision: "new-sha" };
       }
@@ -428,7 +430,7 @@ describe("AgentPackageService", () => {
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       githubClient,
       reloadAgentPackageDefinitions: async () => undefined,
     });
@@ -481,6 +483,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         return { defaultBranch: "main", latestRevision: "new-sha" };
       }
@@ -511,7 +514,7 @@ describe("AgentPackageService", () => {
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       githubClient,
       reloadAgentPackageDefinitions: async () => undefined,
     });
@@ -568,6 +571,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         return { defaultBranch: "main", latestRevision: "new-sha" };
       }
@@ -607,7 +611,7 @@ describe("AgentPackageService", () => {
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       githubClient,
       reloadAgentPackageDefinitions: async () => {
         throw new Error("refresh failed");
@@ -663,6 +667,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         throw new Error("metadata unavailable");
       }
@@ -676,7 +681,7 @@ describe("AgentPackageService", () => {
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       githubClient,
       reloadAgentPackageDefinitions: async () => undefined,
     });
@@ -741,6 +746,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
+      ...UNUSED_GITHUB_CLIENT,
       async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         return { defaultBranch: "main", latestRevision: "new-sha" };
       }
@@ -758,7 +764,7 @@ describe("AgentPackageService", () => {
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
-      installer: new MockInstaller(),
+      installer: new MockInstaller({ githubClient: UNUSED_GITHUB_CLIENT }),
       githubClient,
       reloadAgentPackageDefinitions: async () => undefined,
     });

@@ -6,6 +6,9 @@ import { buildLsRefsHeadRequest, LS_REFS_HEADERS, parseLsRefsHead } from "../../
 import { GitHubRepositoryClient } from "../../../../src/integrations/github/github-repository-client.js";
 import { GitHubRateLimitGate, setGitHubRateLimitGateForTests } from "../../../../src/integrations/github/github-rate-limit-gate.js";
 
+/** A node without a GitHub connection: public reads never ask, private ones get the "connect GitHub" text. */
+const clientOver = (fetchImpl: typeof fetch) => new GitHubRepositoryClient({ readToken: async () => null, fetchImpl });
+
 /** The request bytes and answers recorded against github.com in evidence/IMP-00-ls-refs-probe.txt. */
 const RECORDED_REQUEST = "0014command=ls-refs\n0015agent=autobyteus\n0017object-format=sha1\n0001000csymrefs\n0014ref-prefix HEAD\n0000";
 const RECORDED_MAIN = "0050d705e9a367ff6b43f00c47335890b2866dd5f4c3 HEAD symref-target:refs/heads/main\n0000";
@@ -46,7 +49,7 @@ describe("GitHubRepositoryClient quota-free reads", () => {
 
   it("fetchDefaultBranchHead posts ls-refs to the repository's git service, never api.github.com", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(RECORDED_MAIN, { status: 200 }));
-    expect(await new GitHubRepositoryClient(fetchImpl).fetchDefaultBranchHead("AutoByteus", "autobyteus-agents"))
+    expect(await clientOver(fetchImpl).fetchDefaultBranchHead("AutoByteus", "autobyteus-agents"))
       .toEqual({ defaultBranch: "main", latestRevision: "d705e9a367ff6b43f00c47335890b2866dd5f4c3" });
     expect(fetchImpl).toHaveBeenCalledOnce();
     const [url, init] = fetchImpl.mock.calls[0]!;
@@ -54,24 +57,25 @@ describe("GitHubRepositoryClient quota-free reads", () => {
     expect(init).toMatchObject({ method: "POST", body: RECORDED_REQUEST, headers: expect.objectContaining(LS_REFS_HEADERS) });
   });
 
-  it.each([401, 404])("fetchDefaultBranchHead names a missing or private repository for HTTP %s", async (status) => {
+  it.each([401, 404])("fetchDefaultBranchHead names a missing or private repository for HTTP %s on a node without GitHub", async (status) => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status }));
-    await expect(new GitHubRepositoryClient(fetchImpl).fetchDefaultBranchHead("acme", "skills")).rejects.toThrow(
-      "GitHub repository not found or not public: https://github.com/acme/skills. For private repositories, clone locally and import the local path.",
+    await expect(clientOver(fetchImpl).fetchDefaultBranchHead("acme", "skills")).rejects.toThrow(
+      "GitHub repository not found, or it is private: https://github.com/acme/skills. To use a private repository, connect GitHub on this node.",
     );
+    expect(fetchImpl).toHaveBeenCalledOnce();
   });
 
   it("fetchDefaultBranchHead reports other failures and refuses unsafe names without a request", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 500, statusText: "Server Error" }));
-    await expect(new GitHubRepositoryClient(fetchImpl).fetchDefaultBranchHead("acme", "skills")).rejects.toThrow("HTTP 500");
-    await expect(new GitHubRepositoryClient(fetchImpl).fetchDefaultBranchHead("..", "skills")).rejects.toThrow("Invalid");
+    await expect(clientOver(fetchImpl).fetchDefaultBranchHead("acme", "skills")).rejects.toThrow("HTTP 500");
+    await expect(clientOver(fetchImpl).fetchDefaultBranchHead("..", "skills")).rejects.toThrow("Invalid");
     expect(fetchImpl).toHaveBeenCalledOnce();
   });
 
   it("fetchLatestReleaseTag reads the tag from the releases/latest redirect without following it", async () => {
     const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 302, headers: {
       location: "https://github.com/openai/codex/releases/tag/rust-v0.50.0" } }));
-    expect(await new GitHubRepositoryClient(fetchImpl).fetchLatestReleaseTag("openai", "codex")).toBe("rust-v0.50.0");
+    expect(await clientOver(fetchImpl).fetchLatestReleaseTag("openai", "codex")).toBe("rust-v0.50.0");
     expect(fetchImpl).toHaveBeenCalledOnce();
     expect(fetchImpl.mock.calls[0]![0]).toBe("https://github.com/openai/codex/releases/latest");
   });
@@ -83,7 +87,7 @@ describe("GitHubRepositoryClient quota-free reads", () => {
       new Response(null, { status: 302, headers: { location: "https://github.com/other/codex/releases/tag/v1" } }),
       new Response(null, { status: 302, headers: { location: "https://evil.example/openai/codex/releases/tag/v1" } }),
     ]) {
-      await expect(new GitHubRepositoryClient(vi.fn().mockResolvedValue(response)).fetchLatestReleaseTag("openai", "codex")).rejects.toThrow();
+      await expect(clientOver(vi.fn().mockResolvedValue(response)).fetchLatestReleaseTag("openai", "codex")).rejects.toThrow();
     }
   });
 });

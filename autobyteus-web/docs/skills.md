@@ -34,14 +34,18 @@ opens and Tab stays inside it. After a confirmation, an operation or a
 duplicate-name dialog ends, focus comes back into the dialog. Esc is ignored
 while a confirmation is open.
 
-The **Add skill source** input takes either a folder path or a public HTTPS
-GitHub repository-root URL. A value starting with `http://`, `https://`,
+The **Add skill source** input takes either a folder path or an HTTPS GitHub
+repository-root URL. A value starting with `http://`, `https://`,
 `www.` or `github.com/` is imported as a GitHub repository, and the hint then
 shows the trust warning; any other value is added as a local folder. In the
 desktop app, **Browse…** opens the native folder picker and fills the input
 without adding it. The input is cleared after a successful add and kept when
-the add fails. GitHub imports use the default branch; private repositories,
-branch/tree URLs and subfolder selection are not supported. A root `SKILL.md`
+the add fails. GitHub imports use the default branch; branch/tree URLs and
+subfolder selection are not supported. A private repository needs this node's
+GitHub connection: under the hint, the GitHub connection line (the same component
+as in Settings → Agent Packages, see
+[Settings](./settings.md#settings-agent-packages-and-private-github-repositories))
+connects, replaces or disconnects it. A root `SKILL.md`
 imports one skill. Otherwise, immediate skill folders and conventional nested
 `skills/` collections are discovered. Invalid collection candidates are
 reported as skipped; an empty or conflicting repository is rejected as a whole.

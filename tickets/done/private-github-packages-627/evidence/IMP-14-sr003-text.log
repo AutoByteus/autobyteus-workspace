@@ -1,0 +1,47 @@
+# IMP-14 SR-003 Update checks card text (autobyteus-627 IR-002, AC-008)
+# Command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings/__tests__/UpdateChecksCard.spec.ts; pnpm -C autobyteus-web guard:localization-boundary; pnpm -C autobyteus-web audit:localization-literals
+# Commit: 8d30998e89 + the IR-002 work tree (committed next); Node v22.23.1, macOS 26.5.2
+# Date: 2026-11-24 08:40:34 CET
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+stderr | components/settings/__tests__/UpdateChecksCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/UpdateChecksCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/UpdateChecksCard.spec.ts (8 tests) 367ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  08:40:38
+   Duration  9.27s (transform 4.76s, setup 7.92s, collect 232ms, tests 367ms, environment 239ms, prepare 196ms)
+
+spec exit=0
+
+> autobyteus@1.5.14-beta.10 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+guard exit=0
+
+> autobyteus@1.5.14-beta.10 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:11847) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+audit exit=0

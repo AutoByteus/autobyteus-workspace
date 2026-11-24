@@ -1,0 +1,5 @@
+# API-07 iOS demo build: autobyteus-ios/scripts/prepare-demo-web.sh --build (then autobyteus-web/dist-mobile-demo removed, TESTING.md)
+# 2026-11-24T07:25:58Z; HEAD 35a2f84fbf
+Demo web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-web/dist-mobile-demo/public
+Demo web content copied to /Users/normy/autobyteus_org/autobyteus-worktrees/private-github-packages-627/autobyteus-ios/DemoWeb ( 13M).
+EXIT 0

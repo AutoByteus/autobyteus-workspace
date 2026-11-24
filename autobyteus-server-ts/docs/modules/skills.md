@@ -25,7 +25,14 @@ data is preserved and reported without disabling unrelated local skills.
 Existing local settings and disabled-name storage require no migration.
 
 GitHub transport lives in `integrations/github` and is shared with the agent
-package installer. Skills use a separate patched tar extraction boundary:
+package installer: `SkillSourceService` builds one `GitHubRepositoryClient` with
+`readNodeGitHubToken` and gives it to `GitHubSkillRepository`, whose `prepare`
+downloads the commit through the client's `downloadArchive`. A private repository
+(Skill sources and integration sources alike) imports and updates with this
+node's GitHub connection through the client's access rule: without a token first,
+the token only after GitHub answers "not visible"; failures name "connect GitHub",
+"token rejected" or "no access" (see
+[Agent Packages](agent_packages.md#private-github-repositories)). Skills use a separate patched tar extraction boundary:
 effective paths and link graphs are validated before regular extraction;
 internal links are deferred, privileged bits are discarded, and scripts are
 never executed. Managed paths derive only from validated source/generation IDs.
@@ -71,7 +78,7 @@ While the node's Update checks setting is on, the
 within the skill sources' interval (default 30 minutes). A check and an update
 read the default branch and its head commit through git (`ls-refs`, one
 `github.com` request, no REST API quota); importing still reads the REST API
-for the repository's identity and visibility. Any check that finds a newer
+for the repository's identity. Any check that finds a newer
 revision (also the check when Manage skill sources opens) becomes that source's
 notification; Update from the notification shows the same confirmation and runs
 `updateGitHubSkillSource`. With automatic updates for skill sources on (off by

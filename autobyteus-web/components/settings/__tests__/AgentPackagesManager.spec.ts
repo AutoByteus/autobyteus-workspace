@@ -108,6 +108,14 @@ describe('AgentPackagesManager', () => {
     expect(store.fetchAgentPackages).toHaveBeenCalledTimes(1)
   })
 
+  it('shows the GitHub connection line in the import box, and the intro no longer limits imports to public repositories', async () => {
+    const { wrapper } = await mountComponent()
+    const importBox = wrapper.get('[data-testid="agent-package-source-input"]').element.closest('.bg-gray-50')!
+    expect(importBox.querySelector('[data-testid="github-connection-line"]')).not.toBeNull()
+    expect(wrapper.text()).toContain('Link a local package path or paste a GitHub repository URL.')
+    expect(wrapper.text()).not.toContain('public GitHub')
+  })
+
   it('imports a local path and shows success feedback', async () => {
     const { wrapper, store } = await mountComponent()
 

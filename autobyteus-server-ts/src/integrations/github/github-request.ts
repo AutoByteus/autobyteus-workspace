@@ -1,7 +1,8 @@
+import type { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { getGitHubRateLimitGate, GitHubRateLimitError, type GitHubGateFamily } from "./github-rate-limit-gate.js";
 import { isGitHubIdentitySegment } from "./github-repository-source.js";
 
-export type PublicGitHubRequestOptions = Readonly<{
+export type GitHubRequestOptions = Readonly<{
   method?: "GET" | "POST";
   body?: string;
   /** Merged over the defaults (`Accept: application/vnd.github+json`, `User-Agent: AutoByteus`). */
@@ -10,6 +11,8 @@ export type PublicGitHubRequestOptions = Readonly<{
   followRedirects?: boolean;
   fetchImpl?: typeof fetch;
   signal?: AbortSignal;
+  /** When given, sent as each hop's credential header (`credentialHeader`); revealed only while the header is built. */
+  token?: SecretValue;
 }>;
 
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
@@ -35,11 +38,26 @@ const familyOf = (url: URL): GitHubGateFamily => {
 };
 
 /**
- * Follow GitHub's legitimate public redirects, never arbitrary hosts or paths. Every request obeys
- * GitHub's limits for its host family: none is made before a learned reset time, and a limiting
- * answer throws `GitHubRateLimitError`.
+ * The token as the credential header GitHub expects on an allowed host: a Bearer token for api.github.com and
+ * codeload.github.com, and Basic `x-access-token` for github.com (git smart HTTP and the latest-release redirect).
+ * Never part of a URL.
  */
-export async function publicGitHubRequest(input: string, options: PublicGitHubRequestOptions = {}): Promise<Response> {
+const credentialHeader = (url: URL, token: SecretValue): Readonly<Record<string, string>> => {
+  const value = token.revealToTrustedConsumer();
+  return {
+    Authorization: url.hostname === "github.com"
+      ? `Basic ${Buffer.from(`x-access-token:${value}`).toString("base64")}`
+      : `Bearer ${value}`,
+  };
+};
+
+/**
+ * Follow GitHub's legitimate redirects, never arbitrary hosts or paths. With a token, each hop carries the
+ * credential header of its own host, computed after the hop passed the host check. Every request obeys GitHub's
+ * limits for its host family: none is made before a learned reset time, and a limiting answer throws
+ * `GitHubRateLimitError`.
+ */
+export async function gitHubRequest(input: string, options: GitHubRequestOptions = {}): Promise<Response> {
   const fetchImpl = options.fetchImpl ?? fetch;
   const signal = options.signal ?? AbortSignal.timeout(30_000);
   const gate = getGitHubRateLimitGate();
@@ -52,7 +70,12 @@ export async function publicGitHubRequest(input: string, options: PublicGitHubRe
       body: options.body,
       redirect: "manual",
       signal,
-      headers: { Accept: "application/vnd.github+json", "User-Agent": "AutoByteus", ...options.headers },
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "AutoByteus",
+        ...options.headers,
+        ...(options.token ? credentialHeader(url, options.token) : {}),
+      },
     });
     const resetAt = gate.learnFrom(family, response);
     if (resetAt) {

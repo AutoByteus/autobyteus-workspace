@@ -4,7 +4,7 @@ import { gzipSync } from "node:zlib";
 import { Header, Pax } from "tar";
 import { afterEach, describe, expect, it } from "vitest";
 import { extractSkillRepositoryArchive } from "../../../../src/skills/installers/skill-repository-archive.js";
-import { publicGitHubRequest } from "../../../../src/integrations/github/public-github-request.js";
+import { gitHubRequest } from "../../../../src/integrations/github/github-request.js";
 import { fixture } from "./fixtures.js";
 
 type Spec = { path: string; type?: "File" | "Directory" | "SymbolicLink" | "Link" | "FIFO"; linkpath?: string; body?: string; mode?: number; pax?: string };
@@ -108,7 +108,7 @@ describe("public GitHub redirects", () => {
   it("rejects off-host redirects without requesting the target", async () => {
     const urls: string[] = [];
     const fake = (async (url: string) => { urls.push(url); return new Response(null, { status: 302, headers: { location: "http://127.0.0.1/private" } }); }) as typeof fetch;
-    await expect(publicGitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake })).rejects.toThrow("Unsupported");
+    await expect(gitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake })).rejects.toThrow("Unsupported");
     expect(urls).toHaveLength(1);
   });
   it("allows HTTPS codeload redirects and propagates cancellation", async () => {
@@ -117,6 +117,6 @@ describe("public GitHub redirects", () => {
       expect(init.signal).toBe(signal);
       return ++calls === 1 ? new Response(null, { status: 302, headers: { location: "https://codeload.github.com/a/b/tar.gz/sha" } }) : new Response("data");
     }) as typeof fetch;
-    expect(await (await publicGitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake, signal })).text()).toBe("data");
+    expect(await (await gitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake, signal })).text()).toBe("data");
   });
 });

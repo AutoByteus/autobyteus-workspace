@@ -100,6 +100,11 @@ describe('SkillSourcesModal', () => {
   })
 
   describe('opening and list', () => {
+    it('shows the GitHub connection line in the add-source area', async () => {
+      const { wrapper } = await mountComponent()
+      expect(wrapper.find('.add-source-section [data-testid="github-connection-line"]').exists()).toBe(true)
+    })
+
     it('loads sources, then checks GitHub sources automatically on every open', async () => {
       const { sourcesStore } = await mountComponent()
       expect(sourcesStore.fetchSkillSources).toHaveBeenCalledOnce()

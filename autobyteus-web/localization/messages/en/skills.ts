@@ -60,7 +60,7 @@ const skillMessages = {
   "skills.sources.github": "GitHub",
   "skills.sources.close": "Close",
   "skills.sources.working": "Working…",
-  "skills.sources.trust": "Import only sources you trust. Public repository roots and the default branch only. Updates replace the whole managed copy; use a local folder to maintain your own edits.",
+  "skills.sources.trust": "Import only sources you trust. Repository roots and the default branch only; a private repository needs GitHub connected on this node. Updates replace the whole managed copy; use a local folder to maintain your own edits.",
   "skills.sources.tryAgain": "Try again",
   "skills.sources.update": "Update",
   "skills.sources.remove": "Remove",
@@ -97,7 +97,7 @@ const skillMessages = {
   "skills.sources.addSource": "Add skill source",
   "skills.sources.add": "Add",
   "skills.sources.inputPlaceholder": "Folder path or GitHub repository URL",
-  "skills.sources.inputHint": "A folder on this computer that contains skills, or a public GitHub repository URL.",
+  "skills.sources.inputHint": "A folder on this computer that contains skills, or a GitHub repository URL.",
 } satisfies TranslationCatalog;
 
 export default skillMessages;

@@ -166,7 +166,7 @@ describe('Integrations page', () => {
     await flushPromises()
     const input = byTestId('integration-import-input') as HTMLInputElement
     expect(document.activeElement).toBe(input)
-    expect(byTestId('integration-import-hint')!.textContent).toContain('A public GitHub repository, or a folder on this computer')
+    expect(byTestId('integration-import-hint')!.textContent).toContain('A GitHub repository, or a folder on this computer')
     input.value = '/Users/alex/my-integrations'
     input.dispatchEvent(new Event('input'))
     await flushPromises()

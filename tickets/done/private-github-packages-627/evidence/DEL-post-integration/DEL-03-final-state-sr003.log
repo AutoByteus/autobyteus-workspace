@@ -1,0 +1,18 @@
+# Final state b14be62209 (SR-003: 12651e48f7 and API/E2E's documents; the base did not move, origin/personal c2f21f18ba)
+# Command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings/__tests__/UpdateChecksCard.spec.ts
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+exit=0
+
+# Command: pnpm -C autobyteus-web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit=0
+
+# Command: pnpm -C autobyteus-web codegen:check
+autobyteus-web/generated/graphql.ts is current.
+exit=0
+
+# Old wording ('No account or token' / 不使用任何账号或令牌) in tracked web files:
+autobyteus-web/localization/messages/zh-CN/settings.ts
+autobyteus-web/localization/messages/en/settings.ts

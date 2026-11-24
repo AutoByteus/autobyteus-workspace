@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
+import { GitHubRepositoryClient } from "../../../src/integrations/github/github-repository-client.js";
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
@@ -87,8 +88,9 @@ describe("GitHub agent package import integration (live)", () => {
       const installer = new GitHubAgentPackageInstaller({
         config: {
           getAppDataDir: () => appDataRoot,
-          getDownloadDir: () => path.join(appDataRoot, "download"),
         },
+        // A public repository: the access rule never asks for a token.
+        githubClient: new GitHubRepositoryClient({ readToken: async () => null }),
       });
 
       const service = new AgentPackageService({

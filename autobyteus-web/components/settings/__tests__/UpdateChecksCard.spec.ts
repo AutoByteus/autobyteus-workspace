@@ -51,11 +51,11 @@ beforeEach(() => {
 afterEach(() => { wrapper?.unmount(); wrapper = null; document.body.innerHTML = '' })
 
 describe('UpdateChecksCard', () => {
-  it('shows the switch with what is contacted, no account or token, nothing sent to AutoByteus (REQ-016)', async () => {
+  it('shows the switch with what is contacted, no account, the GitHub token only to GitHub for private repositories, nothing sent to AutoByteus (REQ-016; autobyteus-627 REQ-008)', async () => {
     await mountCard()
     expect(capability.ensureResolved).toHaveBeenCalled()
     expect(automation.ensureResolved).toHaveBeenCalled()
-    expect(find('update-checks-description').text()).toBe('No account or token is used. Nothing is sent to AutoByteus.')
+    expect(find('update-checks-description').text()).toBe('No account is used. This node\'s GitHub token is sent only to GitHub, and only for private repositories. Nothing is sent to AutoByteus.')
     const network = find('update-checks-network').text()
     expect(network).toContain('Packages and skill sources: github.com')
     expect(network).toContain('Agent runtimes: GitHub (Codex), downloads.claude.ai, Antigravity\'s updater, xAI (Grok)')

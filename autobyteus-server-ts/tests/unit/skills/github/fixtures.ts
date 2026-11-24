@@ -28,10 +28,6 @@ export function fixture() {
   const catalog = new SkillService({ config, sourceStore: store,
     isRuntimeDefaultSkillFolder: directory => directory.endsWith("runtime-default") });
   let downloads = 0;
-  const repository = new GitHubSkillRepository(store.root, { download: async (_metadata, target) => {
-    downloads++;
-    await create({ gzip: true, file: target, cwd: root, portable: true }, ["wrapper"]);
-  } });
   const metadata = async () => {
     if (metadataError) throw metadataError;
     return { owner: "acme", repo: "skills", canonicalUrl: "https://github.com/acme/skills",
@@ -41,7 +37,12 @@ export function fixture() {
     fetchDefaultBranchHead: async (_owner: string, _repo: string) => {
       const { defaultBranch, latestRevision } = await metadata();
       return { defaultBranch, latestRevision };
+    },
+    downloadArchive: async (_owner: string, _repo: string, _revision: string, target: string) => {
+      downloads++;
+      await create({ gzip: true, file: target, cwd: root, portable: true }, ["wrapper"]);
     } };
+  const repository = new GitHubSkillRepository(store.root, client);
   const service = new SkillSourceService({ config, catalog, store, repository, client, invalidateWorkspaces: async () => {},
     updateSetting: (_key, value) => { localPaths = value.split(",").filter(Boolean); return [true, ""]; } });
   return { root, data, upstream, skills, config, store, catalog, service, repository, client,

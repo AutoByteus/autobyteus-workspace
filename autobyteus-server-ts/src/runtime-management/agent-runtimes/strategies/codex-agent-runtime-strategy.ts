@@ -7,6 +7,7 @@ import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { GitHubRepositoryClient } from "../../../integrations/github/github-repository-client.js";
+import { readNodeGitHubToken } from "../../../integrations/github/node-github-token.js";
 import { parseCodexUsageLimits } from "../usage-limits/codex-usage-limits.js";
 
 type CodexClientLeases = Pick<CodexAppServerClientManager, "beginAcquire">;
@@ -41,7 +42,7 @@ export const createCodexAgentRuntimeStrategy = (dependencies: Readonly<{
   resolveExecutable: resolveLaunchCommand,
   readVersion: readRuntimeVersion,
   async readLatestVersion() {
-    const tag = await (dependencies.githubClient ?? new GitHubRepositoryClient()).fetchLatestReleaseTag("openai", "codex");
+    const tag = await (dependencies.githubClient ?? new GitHubRepositoryClient({ readToken: readNodeGitHubToken })).fetchLatestReleaseTag("openai", "codex");
     // Tags look like "rust-v0.163.0".
     const version = extractRuntimeVersion(tag);
     if (!version) throw new Error("Codex release has no version.");

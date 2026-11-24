@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
 import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
+import { readNodeGitHubToken } from "../../integrations/github/node-github-token.js";
 import { parseGitHubSkillRepository } from "../../integrations/github/github-repository-source.js";
 import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
 import type { GitHubSourceStateListener, GitHubSourceUpdateState } from "../../integrations/github/github-source-update-state.js";
@@ -17,7 +18,7 @@ import { SkillService } from "./skill-service.js";
 
 type Options = {
   config?: SkillService["config"]; catalog?: SkillService; store?: GitHubSkillSourceStore;
-  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata" | "fetchDefaultBranchHead">;
+  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata" | "fetchDefaultBranchHead" | "downloadArchive">;
   repository?: GitHubSkillRepository;
   invalidateWorkspaces?: () => Promise<void>;
   updateSetting?: (key: string, value: string) => [boolean, string];
@@ -43,8 +44,8 @@ export class SkillSourceService {
     this.config = options.config ?? appConfigProvider.config;
     this.store = options.store ?? new GitHubSkillSourceStore(this.config.getAppDataDir());
     this.catalog = options.catalog ?? SkillService.getInstance();
-    this.client = options.client ?? new GitHubRepositoryClient();
-    this.repository = options.repository ?? new GitHubSkillRepository(this.store.root);
+    this.client = options.client ?? new GitHubRepositoryClient({ readToken: readNodeGitHubToken });
+    this.repository = options.repository ?? new GitHubSkillRepository(this.store.root, this.client);
   }
 
   getRegistryError(): string | null { return this.store.getDiagnostic(); }
