@@ -49,3 +49,5 @@ Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to 
 - Design: the file name is an explicit input from its owner. `FileViewer` passes `file.path` to the players, and `MediaSegment` passes its URL's file name. The URL guess is removed, which also replaces round 2's N-4 rule. Walks: an mp4 and an m4a reference, a workspace file, a chat media URL, an iOS `.ogg`.
 - Requirements: unchanged. Classification: unchanged, `Large` / `High`. Routing: architecture review.
 - Design case: docs/design-cases.md Case 5 (a claim that every media URL names its file, taken on trust).
+
+Review note: ARCH-REV-004 passed SR-004, with SR-003 (2026-11-24). The reviewer routed it to `/implementation_engineer` (IR-002). N-6 (the chat tile label uses the same file name) is for implementation.
