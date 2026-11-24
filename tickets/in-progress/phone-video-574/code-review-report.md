@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 2). Round 1, CRR-001, was an implementation review (Pass); its sections below stay as recorded except where this round updates them.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/phone-video-574/requirements-doc.md` (SR-001; REQ-001…005, AC-001…006, DEC-001 (b) and DEC-002 (a) approved by the user)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (P1–P3)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001, SR-002)
@@ -16,14 +16,25 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer, IR-001 (initial), Large / High
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Failure-origin fields: N/A
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `N/A` (failure-origin round). Round 1 was a `Full Review`.
+- Review Scope Evidence (round >1): the code head is unchanged (`b0a2eeacc0`). Only the two failing areas were re-read: `VideoPlayer.vue` with the paths that bump `contentRevision`, and both platforms' route check.
+- Trigger: API/E2E round 1 (API-REV-001) failed with F-1 and F-2 (commit `cf3d344ff4`).
+- Prior Review Round Reviewed: round 1 (CRR-001)
+- Latest Authoritative Round: 2
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-001
+- Delivery fields: N/A
+- Failing Scenario IDs: AND-9 and IOS-11 (F-1); AND-8 and IOS-9 (F-2)
+- Exact Failing Commands / Execution Mode:
+  - `NativeVideoRealNodeUITests/testDARewriteDoesNotOpenThePlayerByItself` (iOS, real node);
+  - the Android rewrite journey (adb + CDP);
+  - `ac003.mjs` (Android bridge);
+  - a temporary route-check XCTest against the real proxy (iOS).
+- Failure Evidence Paths: `evidence/api-e2e/android/rewrite/*.png`, `ios/strips/f1-*.png`, `android/ac003/ac003-android-2.json`, `ios/route-check/route-check.txt`
 
 ## Routing Classification Review
 
@@ -110,7 +121,8 @@
 | C-4 | iOS `MediaRangeCache.write` reads every entry's map (`evict` → `entries()`) on each received chunk | S-1, S-2 | Every network chunk | Disk work per chunk grows with the number of entries (bounded by 500 MB) | `MediaRangeCache.swift` | Hold for Evidence | — | No measured cost; the empty-cache start time is not explained by it. Hint for API/E2E if the iOS start time misses 2 s (R-3) |
 | C-5 | `NodeFileReader` closes its handle and the reply re-opens the real path (it used to stream the checked handle) | S-4 | A local swap of the path between the check and the read | The route serves whatever is now at that path; it already serves any absolute node path to an owner or phone | `node-file-reader.ts`; design Interface Boundary Mapping | Reject | — | The design approved it; no access is gained. The workspace routes already used stat-then-open |
 | C-6 | Android: a read at position 0 has no `Range`/`If-Range`; a file changed between the probe and that read caches new bytes under the old key | S-2 | An agent rewrites the file in that window | That key is never served again (the next probe gives a new ETag); later ranged reads fail loudly | `NodeVideoDataSource.open` | Reject | — | Nothing stale is ever shown. Not worth machinery |
-| C-7 | The `/rest/` prefix check accepts `/rest/../x` or an encoded path | S-5 | Only the node's own page can send it | Same origin only; the page already holds the credential | `isNodeFileUrl` on both platforms | Reject | — | The origin is the security boundary; the prefix check is extra and not an escalation |
+| C-7 | The `/rest/` prefix check accepts `/rest/../x` or an encoded path | S-5, AC-003 | A page's `playVideo` with dot segments | **Round 2:** the URL is normalized (Android, OkHttp) or sent as is (iOS), so `GET /graphql` and `GET /mobile/` reach the node with the phone's header | API/E2E AND-8, IOS-9 | **Promote (round 2; was Reject)** | This ticket | AC-003 is an explicit contract: "another route: refused, and no request is sent". Rejecting it on impact grounds ignored that contract (review gap, CRR-002). → CR-002 |
+| C-10 | `VideoPlayer.vue` re-opens the native player whenever `contentRevision` changes | S-1 | An agent rewrites the open file: live refresh (`fileExplorerTreeActions.ts:94` → `_reloadOpenFile` → `contentRevision += 1`) | The player opens by itself, or a second Android player stacks on top | API/E2E AND-9, IOS-11; code read | **Promote (round 2)** | This ticket | → CR-001. Round 1 trusted `FileViewer`'s comment ("an explicit open bumps `contentRevision`") without tracing the tree-change caller (review gap, CRR-002) |
 | C-8 | iOS loader, cache and HTTP placed in `AutoByteusMobileCore` (design: the app) | Design file map | — | Enables the N-3 XCTests; only Foundation, AVFoundation and CryptoKit are used | handoff Important Assumptions | Reject (deviation holds) | — | Pass, deviation recorded, reason holds |
 | C-9 | Android uses its own `NodeVideoDataSource` instead of `DefaultHttpDataSource` | N-1 | — | `DefaultHttpDataSource` re-sends properties on a same-protocol redirect; the design allowed "a custom redirect check in the data source" | handoff; `NodeVideoHttp` | Reject (deviation holds) | — | Pass, deviation recorded, reason holds |
 
@@ -191,7 +203,34 @@ None new or reclassified.
 
 ## Findings
 
-None.
+### CR-001: a rewrite of the open video re-opens the native player by itself (F-1)
+
+- **Severity:** Medium. A user-visible regression of D-2 on both apps.
+- **Where:** `autobyteus-web/components/fileExplorer/viewers/VideoPlayer.vue:62-65`, the watcher on `[playbackMode, url, contentRevision]`. It treats every `contentRevision` change as "reopened".
+- **Cause:** `contentRevision` is bumped by two paths:
+  - an explicit re-open of an open file (`fileExplorerContentActions.ts:139`);
+  - live refresh when the file changes (`fileExplorerTreeActions.ts:94`), both through `_reloadOpenFile` (`:160`).
+- **Consequence:** an agent rewriting the file:
+  - Android, with the player open: a second `VideoPlayerActivity` stacks on top, so it takes two Backs to leave.
+  - Both apps, after Back with the viewer still showing: the full-screen player pops up by itself (AND-9, IOS-11).
+- **Required action (Local Fix, implementation):**
+  - Open the player automatically only when the viewer first reaches `native` for a URL: on mount, on a URL change, or on the `pending` → `native` transition. Not on `contentRevision`.
+  - The Play button stays for any later open.
+  - Add a web spec: a `contentRevision` change while mounted in `native` mode posts no `playVideo`.
+  - An explicit re-tap of the same, already-open file in Files then shows the viewer with Play. That is acceptable: the store cannot tell the two bumps apart, and the viewer must not guess.
+  - `NativeVideoRealNodeUITests.testDARewriteDoesNotOpenThePlayerByItself` is the end-to-end check.
+
+### CR-002: the route check in both apps lets dot segments through (F-2)
+
+- **Severity:** Medium. AC-003's refusal leg fails. The credential stays on the same node, but it is sent to routes the contract excludes.
+- **Where:**
+  - Android: `NodeVideoHttp.isNodeFileUrl` (`rawPath.startsWith("/rest/")`).
+  - iOS: `NodeVideoURL.isNodeFileURL` (`url.path`/`percentEncodedPath` `hasPrefix("/rest/")`).
+- **Consequence:** `/rest/../graphql`, `/rest/%2e%2e/graphql` and `/rest/../mobile/` pass. Android's HTTP stack normalizes them, and iOS sends them unchanged, so the node receives `GET /graphql` and `GET /mobile/` with the phone's `Authorization` header (AND-8, IOS-9).
+- **Required action (Local Fix, implementation), in each platform's one owner of the rule:**
+  - Refuse a path when any segment, after percent-decoding, is `.` or `..` or contains `/` or `\`.
+  - Then check the `/rest/` prefix on the raw path. Refusing is simpler and safer than normalizing, because the bridge, the probe and every read use the same check.
+  - Add unit cases on both platforms: the three URLs above, an encoded slash `/rest/a%2f..%2f..%2fgraphql`, and a control (a legitimate `/rest/workspaces/…/content?path=a%2F..%2Fb.mp4`, whose dots are in the query and must stay allowed).
 
 ## Follow-ups
 
@@ -199,11 +238,13 @@ None.
 
 ## Classification
 
-N/A (Pass).
+`Local Fix`, for both CR-001 and CR-002, owned by implementation.
+- The design's rules are right: "a tapped video opens the player" (D-2), and "a non-`/rest/` URL is ignored, nothing is sent" (D-5, AC-003).
+- The code does not meet them. No requirement or design change is needed.
 
 ## Recommended Recipient
 
-`/api_e2e_engineer` (implementation review pass).
+`/implementation_engineer`. After the fixes, the route is code review (a targeted delta) and then API/E2E.
 
 ## Residual Risks
 
@@ -219,13 +260,16 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail`. The failure origin is implementation (CR-001, CR-002).
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 2)
+- Failure Origin: implementation defects, `Local Fix`. Both were review gaps of mine in round 1, recorded in CRR-002.
+- Recommended Recipient: `/implementation_engineer`
+- Round 1 result (CRR-001, superseded):
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 / 10; every category ≥ 9.3
-- Failure Origin: N/A
-- Recommended Recipient: `/api_e2e_engineer`
+- Score Summary: 9.4 / 10 in round 1. A failure-origin round has no scorecard. CR-001 and CR-002 lower "Runtime Correctness And Behavioral Fidelity" below 9.2 until they are fixed.
 - Notes: the credential path holds on both platforms:
   - checked against the page's origin and `/rest/` at the bridge, and again before every send;
   - sent only as a header, with no redirect followed;
