@@ -138,3 +138,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape: th
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/phone-video-574`: committed (tip `1e25d5a14b`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/phone-video-574` (`0ee8e7fb8b..1e25d5a14b`, a fast-forward of the tip pushed earlier for the build-only release runs). Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 38 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `6cdd1b7bd4`, which the ticket branch already contained (merge `0ee8e7fb8b`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/phone-video-574` (from `origin/personal` `6cdd1b7bd4`), `git merge --no-ff codex/phone-video-574` = `7cbab1f7c2` (parents `6cdd1b7bd4` and `1e25d5a14b`; the merged tree equals the ticket branch's tree, `4ddebaabc1`). Secret Gate on the merged state: `PASS`, 39 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (105 151 tracked files).
+- Push: `git push origin HEAD:personal` `6cdd1b7bd4..7cbab1f7c2`; `origin/personal` = `7cbab1f7c2` afterwards.
+- Release: none (no tag, no version bump, no pipeline beyond the two build-only runs, which published nothing).
+- This record: committed on `finalize/phone-video-574` and pushed to `origin/personal` as the commit that follows `7cbab1f7c2`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/phone-video-574` (only git-ignored and untracked build output remains, including API/E2E's untracked `autobyteus-web/test-results/`, whose evidence is under `evidence/api-e2e/`), `git worktree prune`, delete the local branches `finalize/phone-video-574` and `codex/phone-video-574`, and delete delivery's own `/tmp/del574` and the two scratch lists `/tmp/del574-*.txt`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). API/E2E keeps `/tmp/api574` until the Solution Designer asks. The result is in the terminal message.
