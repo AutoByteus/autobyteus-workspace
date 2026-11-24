@@ -39,3 +39,7 @@ All under `tickets/in-progress/idle-run-discovery-638/`:
 ## Next
 
 Architecture review. On pass, route to implementation; findings come back to the Solution Designer.
+
+## Route recorded
+
+- 2026-11-24: sent to `/architecture_reviewer` (run `architecture_reviewer_1ac68040fe614b05b08ff5c51a313119`), delivered.
