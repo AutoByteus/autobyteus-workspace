@@ -18,6 +18,11 @@ vi.mock('~/composables/useAuthorizedObjectUrl', () => ({
     refresh,
   }),
 }));
+// Outside the phone apps (VideoPlayer.native.spec.ts covers the apps' player).
+vi.mock('~/composables/mobile/useNativeVideoPlayback', () => ({
+  useNativeVideoPlayback: () => ({ modeFor: () => 'page', play: () => false }),
+  videoTitleOf: () => 'clip.mp4',
+}));
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({ t: (_key: string, params?: Record<string, string>) => `${params?.loaded} of ${params?.total}` }),
 }));

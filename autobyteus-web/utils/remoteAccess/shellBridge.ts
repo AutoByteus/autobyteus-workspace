@@ -3,8 +3,10 @@
  * the open origin (Android: androidx.webkit; iOS: a `WKScriptMessageHandler`, autobyteus-279, with the same contract).
  * The page tells the app it is ready or paired, asks it to show its node list or its scanner, turns the VNC Viewer's
  * desktop full screen (landscape, hidden system bars) on or off, hands it a PDF or image to save to the phone's
- * Downloads (autobyteus-472), or (in the iOS demo) asks it to leave the demo; the app's `hello` reply tells the page about
- * this phone and the open node. It carries no credential. In a browser there is no bridge.
+ * Downloads (autobyteus-472), hands it a protected node video to play in its own player (autobyteus-574), or (in the iOS
+ * demo) asks it to leave the demo; the app's `hello` reply tells the page about this phone, the open node and what the
+ * app can do. Only `playVideo` carries the phone's credential, for that one playback (node access model NA-8). In a
+ * browser there is no bridge.
  */
 export type ShellHello = {
   /** Saved nodes on this phone, for "N nodes on this phone". */
@@ -13,6 +15,8 @@ export type ShellHello = {
   deviceName: string;
   /** The app's name for the open node, as its first page shows it; `''` when the app has none (autobyteus-433). */
   nodeName: string;
+  /** The app plays a protected node video in its own player (autobyteus-574 D-2); an app older than that says nothing. */
+  videoPlayer: boolean;
 };
 
 export type ShellBridge = {
@@ -33,6 +37,12 @@ export type ShellBridge = {
    */
   saveFile(file: ShellSaveFile): void;
   /**
+   * Plays a protected node video in the app's own player (autobyteus-574 D-2, D-5): the app reads it by range with the
+   * credential only as `Authorization: Bearer` to this node's origin, and drops the credential when the player closes.
+   * Only when `hello().videoPlayer`; there is no reply.
+   */
+  playVideo(video: ShellPlayVideo): void;
+  /**
    * Leave demo (autobyteus-279, UIS-004): the iOS app closes the demo and shows its first screen, forgetting everything
    * the demo held. Only the iOS demo sends it; the Android app has no demo.
    */
@@ -41,6 +51,12 @@ export type ShellBridge = {
 
 /** A file the page hands the app to save: its bytes as base64, never a URL or a credential. */
 export type ShellSaveFile = { fileName: string; mimeType: string; base64: string };
+
+/**
+ * A video the page hands the app to play: its absolute URL on this node, its file name for the player's title, and the
+ * phone's credential for this playback. Never logged.
+ */
+export type ShellPlayVideo = { url: string; title: string; credential: string };
 
 type ShellMessageEvent = { data: unknown };
 type ShellWebMessageObject = {
@@ -61,12 +77,15 @@ const readShellObject = (): ShellWebMessageObject | null => {
 
 const parseHello = (data: unknown): ShellHello | null => {
   try {
-    const message = JSON.parse(String(data)) as { type?: string; nodeCount?: unknown; deviceName?: unknown; nodeName?: unknown };
+    const message = JSON.parse(String(data)) as {
+      type?: string; nodeCount?: unknown; deviceName?: unknown; nodeName?: unknown; videoPlayer?: unknown;
+    };
     if (message.type !== 'shell') return null;
     return {
       nodeCount: typeof message.nodeCount === 'number' ? message.nodeCount : 0,
       deviceName: typeof message.deviceName === 'string' ? message.deviceName : '',
       nodeName: typeof message.nodeName === 'string' ? message.nodeName : '',
+      videoPlayer: message.videoPlayer === true,
     };
   } catch {
     return null;
@@ -100,6 +119,7 @@ export const getShellBridge = (): ShellBridge | null => {
     startScan: () => post({ type: 'startScan' }),
     desktopFullScreen: (on) => post({ type: 'desktopFullScreen', on }),
     saveFile: ({ fileName, mimeType, base64 }) => post({ type: 'saveFile', fileName, mimeType, base64 }),
+    playVideo: ({ url, title, credential }) => post({ type: 'playVideo', url, title, credential }),
     leaveDemo: () => post({ type: 'leaveDemo' }),
   };
 };
