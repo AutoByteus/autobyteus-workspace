@@ -47,6 +47,22 @@ xcodebuild \
   test
 ```
 
+The video loader's AVPlayer test (`AuthorizedMediaLoaderTests`, autobyteus-574) reads a 20+ MB MP4 from the host and is
+skipped without it: add `TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<path>` before `xcodebuild` (the `TEST_RUNNER_` prefix passes it
+to the tests). The app's video player on the simulator (`NativeVideoPlayerUITests`) needs the fake node started with a
+wide MP4, and is not part of the smoke run:
+
+```bash
+python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29874 --video <a wide MP4> &
+xcodebuild \
+  -project autobyteus-ios/AutoByteusMobile.xcodeproj \
+  -scheme AutoByteusMobile \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:AutoByteusMobileUITests/NativeVideoPlayerUITests \
+  AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29874/mobile \
+  test
+```
+
 Simulator smoke path with a fake AutoByteus node:
 
 ```bash
