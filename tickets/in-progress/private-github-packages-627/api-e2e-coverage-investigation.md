@@ -67,3 +67,7 @@ A private GitHub repository imports as an Agent Package or a Skill source with t
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage added: `Yes`. Reroute: `No`.
+
+## Round 2 (SR-003, direct Small/Low)
+
+- AC-008: the Update checks card's text in en and zh-CN, and `autobyteus-web/docs/settings.md`. Text only (IR-002). Plan: compare both catalogues with AC-008's texts; search for the old text; run the settings specs, the localization guards and both typechecks (TESTING.md: any TypeScript change). A browser run adds nothing for a text change the spec renders. Round 1's cases are not affected.

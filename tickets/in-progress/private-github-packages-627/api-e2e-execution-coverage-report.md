@@ -2,7 +2,8 @@
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md`; revision record `api-e2e-revision-record.md`, `API-REV-001`; progress log `api-e2e-test-progress.md`
+- Coverage investigation: `api-e2e-coverage-investigation.md`; revision record `api-e2e-revision-record.md`, `API-REV-002`; progress log `api-e2e-test-progress.md`
+- **Round 2** (direct, Small/Low): SR-003, the Update checks card text (AC-008), IR-002 `12651e48f7`, from the implementation engineer without code review. Text only, no code path. Case API-11. Round 1's cases stand: nothing they exercise changed (delivery's base merge `6d2a3e88bf` is delivery's integration refresh, with its own merged-state evidence).
 - Round 1; trigger: the code reviewer's CRR-001 Pass (code `30fcc50ec7`). The live cases ran first, because the GitHub test token expires 2026-11-25.
 - Deviations from the plan:
   - The token's one private repository holds no package (API-00), so real GitHub proves the transport, the token-save path, the refusals and the validation reached. A private package's install, update and revocation run against the emulated GitHub on the built server (BS-E1).
@@ -35,6 +36,7 @@
 | API-08 | — | build inputs (`autobyteus-web/package.json`) | fresh clone of `35a2f84fbf`, `pnpm install --frozen-lockfile`, both typechecks | ENV-1 | Pass | `API-08-fresh-start.log` | `install exit 0`; server `972 … (baseline 972 …)` PASS; web `86 … (baseline 86 …)` PASS | — |
 | API-09 | AC-005 | the branch's commits | `scripts/check_secrets.sh origin/personal..HEAD` | ENV-1 | Pass | `API-09-secret-gate.log` | `secret gate: PASS (no secrets found)` over 9 commits | — |
 | API-10 | — | tracked imports; server typecheck after the new tests | checker; `pnpm -C autobyteus-server-ts typecheck` | ENV-1 | Pass | `API-10-imports-typecheck.log` | `Tracked-import check passed`; `972 in 299 files (baseline 972 in 299 files)` | — |
+| API-11 (round 2) | AC-008 | web: the Update checks card's text, en + zh-CN; docs | the texts parsed from AC-008's row and compared with both catalogues; a repository search for the old text; `NUXT_TEST=true pnpm exec vitest run components/settings`; `guard:localization-boundary`, `audit:localization-literals`; both typechecks | ENV-1 | Pass | `API-11-sr003-text.log` | `en exact match with AC-008: True`, `zh-CN … True`; `UpdateChecksCard.spec.ts (8 tests)`; `Tests  399 passed (399)`; both guards `Passed`; typechecks at baseline (web 86, server 972) | The old wording remains only in `AboutSettingsManager.autoCheck.description`, the desktop app's own version check, which uses no node token; the handoff leaves it. No browser run: a text-only change; the spec renders the real component with the real catalogue |
 | Reused | AC-002 … AC-005, AC-007 | unit, integration, web unit, guards, typechecks | IMP-04 (whole unit 9035), IMP-12 (whole integration 523), IMP-07/IMP-11 (typechecks), IMP-08 (web 6121), IMP-09 (guards, demo coverage) | — | Pass | (handoff) | — | No `src` change since `30fcc50ec7` |
 
 ## Acceptance-Criteria Proof
@@ -47,6 +49,7 @@
 | AC-004 | Yes | API-01 (no access, rejected: live), API-04 (not connected after Disconnect, rejected after a revocation: the package stays) | Proven | — |
 | AC-005 | Yes | API-02, API-03, API-04 (answers, output, every file of the node), API-06 (custody), API-09 (branch) | Proven | Downloaded repository content is excluded from the `token=` scan only (the token-value scan covers it) |
 | AC-006 | Yes | API-03 | Proven | — |
+| AC-008 (round 2) | Yes | API-11 | Proven | en asserted by the card spec; zh-CN exact at its source; `docs/settings.md` says the same |
 | AC-007 | Yes | API-02 (public package with a valid token saved), API-04 (with a revoked token saved), API-05 and the reused suites (no token) | Proven | — |
 
 ## Observations For Review
@@ -111,4 +114,5 @@ None.
 - Result: `Pass`.
 - Criteria not proven, user-only or accepted as unverified risk: `None`.
 - Evidence decisions requested: `None`.
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (test-code review).
+- Round 2 result: **Pass** (API-REV-002, 95%). Route: direct Small/Low, test-code review `Not Required — direct low-risk route` (no durable test changed by API/E2E; the implementation's spec edit asserts the approved text). Next recipient from `get_handoff_rules`: `/delivery_engineer`.
+- Round 1 next recipient: `/code_reviewer` (test-code review).

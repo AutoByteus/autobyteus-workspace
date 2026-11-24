@@ -16,3 +16,4 @@
 | — | API-02/04 | Completed | Pass | one full run, 3/3 |
 | 08:01 start | API-05 | Completed | Pass | 574 passed |
 | — | API-07, API-08, API-10 | Completed | Pass | demo build, fresh clone, imports |
+| 07:46 | API-11 | Completed | Pass | round 2, SR-003 text: exact en + zh-CN, 399 settings specs, guards, typechecks |
