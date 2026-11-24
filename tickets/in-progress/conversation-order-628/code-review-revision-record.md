@@ -10,6 +10,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, CR-001 fix) | Fail | Pass | CR-001 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | Pass (CRR-002, source) | Pass | None |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003: SR-007, DR-001 Finding 1) | Pass (CRR-003) | Pass | CR-001 (server half superseded) |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E round 2 Pass (API-REV-002) | Pass (CRR-004) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -135,3 +136,27 @@ None (no prior test-review findings).
 - Material score or classification changes: none material; Runtime Correctness stays 9.4 on the new basis
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: N-6; MSP-106/107 not rerun on the merged tree; FU-002, FU-004, FU-005
+
+### CRR-005 — Test-code review after API/E2E round 2: Not Applicable
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002)
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-004 source; CRR-003 test review)
+- Current authoritative result: Not Applicable. No durable test file changed (`git diff --stat 2d3f46b223..43e2d47da1 -- . ':!tickets'` is empty). Round 1's Pass for the live cases stands.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None
+- Recommended recipient: `/delivery_engineer` (DR-002)
+- Remaining risks or uncertainty: N-5 unit only; N-6; Codex not run live; no physical phone; FU-002, FU-004, FU-005; 609 FU-006 and FU-007 on the base

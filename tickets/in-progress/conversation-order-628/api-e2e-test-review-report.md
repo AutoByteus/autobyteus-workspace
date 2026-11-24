@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 1
+- Review Round: 2 (round 1: CRR-003 Pass on `ea6505c3eb`)
 - Trigger: API/E2E Engineer, API-REV-001 Pass (95.1%). Durable test commit `ea6505c3eb`; reports and evidence `b54922c23f`. Code under test: the reviewed tree `a9e22b4ea4` (source through `eaebb94304`).
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-005; AC-001, AC-002, AC-003, AC-006)
 - Investigation Notes Reviewed As Context: N/A for this bounded review
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-002
 - Original Code Review Report: `code-review-report.md` (CRR-002 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-005`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -66,10 +66,22 @@ Non-blocking notes (no action required):
 
 - Follow-ups this review added: None.
 
+## Round 2 (API-REV-002): Not Applicable
+
+- Trigger: API/E2E round 2 Pass (95.1%) on the merged tree `2d3f46b223` (IR-003: SR-007, DR-001 Finding 1).
+- Changed durable test files since round 1: none. `git diff --stat 2d3f46b223..43e2d47da1 -- . ':!tickets'` is empty; the commit holds only the report, the revision record and evidence. MSP-105/106/107 are as reviewed in round 1.
+- The round's results, recorded for delivery (not re-reviewed as code):
+  - R2-CS-1: the three contract suites pass, 24, 39 and 14 tests with 0 failures (DR-001 Finding 1).
+  - R2-MSP-105…107: in order live and reopened on Claude and native. The phone's state times are −11 to +4 ms from the stored times live and 0 reopened, with the phone clock 2 s off (SR-007).
+  - R2-WS-1: 97 of 103 phone cases pass; the same 6 fail on the base too (FU-002, 609 FU-006).
+  - R2-SI-1: integration 92 files / 523 tests.
+  - R2-SE-1: e2e 125 pass (609 FU-007 on the base).
+  - R2-FS-1: fresh-start build of the merged commit.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the two listed above
+- Result: `Not Applicable` (round 2: no durable test file changed; round 1 `Pass` stands for `mobile-conversation-order-live-cases.mjs` and its registration)
+- Changed durable test paths reviewed: none in round 2 (round 1: the two listed above)
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
 - Notes:
