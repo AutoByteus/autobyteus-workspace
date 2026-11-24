@@ -28,6 +28,8 @@ final class NativeMediaPlayerViewController: UIViewController {
     private var playback: Playback?
     private let playerController = AVPlayerViewController()
     private var loader: AuthorizedMediaLoader?
+    /// Playback for media while this screen shows, so the Ring/Silent switch does not mute it (642 SR-005).
+    private let audioSession = MediaAudioSession()
     private var sizeObservation: NSKeyValueObservation?
     private var statusObservation: NSKeyValueObservation?
     private var landscape = false
@@ -54,6 +56,7 @@ final class NativeMediaPlayerViewController: UIViewController {
         playerController.view.frame = view.bounds
         playerController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         playerController.didMove(toParent: self)
+        audioSession.begin()
         if kind == .audio { addAudioPlaceholder(title: playback?.title ?? "") }
         addBackButton(title: playback?.title ?? "")
         guard let playback else { return showCouldNotPlay() }
@@ -212,6 +215,8 @@ final class NativeMediaPlayerViewController: UIViewController {
         playerController.player = nil
         loader?.invalidate()
         loader = nil
+        // Whatever took the screen away (Back, a swipe down, AVKit's own close) ends the session here (642 N-7).
+        audioSession.end()
         playback = nil
         sizeObservation = nil
         statusObservation = nil
