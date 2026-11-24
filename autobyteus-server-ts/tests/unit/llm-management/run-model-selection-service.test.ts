@@ -7,7 +7,9 @@ import { NO_ON_DEMAND_MODELS } from "../../helpers/explicit-host-collaborators.j
 
 const catalogView = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
-const context = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, currentModelIdentifier: 'current', workspaceRootPath: '/workspace' };
+// `handOver: 'available'` is a harmless default for every external-runtime use below (autobyteus-53): the external
+// branch always lists every offered model and always continues same_session, whatever the capability.
+const context = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, currentModelIdentifier: 'current', workspaceRootPath: '/workspace', handOver: 'available' as const };
 const selection = { llmModelIdentifier: 'target', llmConfig: null };
 const harness = (current: number | null = 128000, target: number | null = 128000) => {
   const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(catalogView(['current', 'target'].map(model_identifier => ({ model_identifier, config_schema: null })))) };
@@ -73,7 +75,8 @@ describe('RunModelSelectionService', () => {
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
     await expect(service.listOptions(context)).resolves.toEqual({ currentModelIdentifier: 'current', modelListReadable: true, currentModel: null,
       replacements: [], unavailableReason: null });
-    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    // `unavailable`: this record cannot hand over, so an unverified current capacity still refuses replacements (AC-009).
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'unavailable' as const };
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current', config_schema: null }]));
     nativeCapacity.resolveMany.mockReturnValue({});
     const unverified = await service.listOptions(native);
@@ -98,21 +101,36 @@ describe('RunModelSelectionService', () => {
       const { service, nativeCapacity } = harness(null, null);
       const scoped = { ...context, runtimeKind };
       expect((await service.listOptions(scoped)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
-      await expect(service.validate({ context: scoped, selection })).resolves.toEqual({ kind: 'valid', selection });
+      // An external runtime always continues same_session, whatever its hand-over capability (autobyteus-53 REQ-003).
+      await expect(service.validate({ context: scoped, selection })).resolves.toEqual({ kind: 'valid', selection, continuation: 'same_session' });
       expect(nativeCapacity.resolveMany).not.toHaveBeenCalled();
     });
 
-  it.each([128000, 272000])('accepts native verified equal/larger context %s', async target => {
+  it.each([128000, 272000])('accepts native verified equal/larger context %s, same session, even when the record cannot hand over', async target => {
     const { service } = harness(128000, target);
-    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
-    await expect(service.validate({ context: native, selection })).resolves.toEqual({ kind: 'valid', selection });
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'unavailable' as const };
+    await expect(service.validate({ context: native, selection })).resolves.toEqual({ kind: 'valid', selection, continuation: 'same_session' });
     expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
   });
-  it.each([null, 127999])('rejects native unknown or decreasing target %s', async target => {
+  // AC-009: a record that cannot hand over at all still refuses a native capacity mismatch, with today's two messages.
+  it.each([null, 127999])('rejects native unknown or decreasing target %s when the record cannot hand over (AC-009)', async target => {
     const { service } = harness(128000, target);
-    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'unavailable' as const };
     expect((await service.validate({ context: native, selection })).kind).toBe('invalid');
     expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([]);
+  });
+  // autobyteus-53 AC-001, AC-004, AC-005: the same mismatch hands over instead of being refused once the record can.
+  it.each([null, 127999])('hands over instead of refusing native unknown or decreasing target %s when the record can (AC-001, AC-004, AC-005)', async target => {
+    const { service } = harness(128000, target);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'available' as const };
+    await expect(service.validate({ context: native, selection })).resolves.toEqual({ kind: 'valid', selection, continuation: 'hand_over' });
+    expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
+  });
+  it('lists every offered native model, not only capacity-fitting ones, when there is no session to continue (DEC-007)', async () => {
+    const { service } = harness(128000, null);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'no_session' as const };
+    await expect(service.validate({ context: native, selection })).resolves.toEqual({ kind: 'valid', selection, continuation: 'same_session' });
+    expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
   });
   it('keeps native same-model settings editable without capacity evidence', async () => {
     const { service, nativeCapacity } = harness(null, null);
@@ -122,7 +140,7 @@ describe('RunModelSelectionService', () => {
   });
   it('uses fresh catalog and saved baseline on Save, not earlier option evidence', async () => {
     const { service, catalog, nativeCapacity } = harness(128000, 272000);
-    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'unavailable' as const };
     await service.listOptions(native);
     await expect(service.validate({ context: native, selection })).resolves.toMatchObject({ kind: 'valid' });
     nativeCapacity.resolveMany.mockReturnValue({ current: 128000, target: 64000 });
@@ -139,7 +157,7 @@ describe('RunModelSelectionService', () => {
       { path: 'llmConfig.effort', message: 'Value is not one of the supported options.' },
     ] });
     await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'high', old: true } } })).resolves.toEqual({ kind: 'valid',
-      selection: { llmModelIdentifier: 'target', llmConfig: { effort: 'high' } } });
+      selection: { llmModelIdentifier: 'target', llmConfig: { effort: 'high' } }, continuation: 'same_session' });
     await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
       { path: 'llmConfig.effort', message: 'Required value is missing.' },
     ] });
@@ -147,12 +165,12 @@ describe('RunModelSelectionService', () => {
 
   // claude-anthropic-effort-control SR-005 examples table: a saved Opus 5.5 config still holding the removed display setting.
   it.each([
-    [{ reasoning_effort: 'high', thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: { reasoning_effort: 'high' } } }],
+    [{ reasoning_effort: 'high', thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: { reasoning_effort: 'high' } }, continuation: 'same_session' }],
     [{ reasoning_effort: 'ultra', thinking_display: 'omitted' }, { kind: 'invalid', errors: [
       { path: 'llmConfig.reasoning_effort', message: 'Value is not one of the supported options.' }] }],
-    [{ thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
-    [{}, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: {} } }],
-    [null, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
+    [{ thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null }, continuation: 'same_session' }],
+    [{}, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: {} }, continuation: 'same_session' }],
+    [null, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null }, continuation: 'same_session' }],
   ] as const)('canonicalizes %j against an effort-only schema', async (llmConfig, expected) => {
     const { service, catalog } = harness();
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
@@ -164,13 +182,14 @@ describe('RunModelSelectionService', () => {
     const { service, catalog } = harness();
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: null }]));
     await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'valid',
-      selection: { llmModelIdentifier: 'target', llmConfig: null } });
+      selection: { llmModelIdentifier: 'target', llmConfig: null }, continuation: 'same_session' });
     await expect(service.validate({ context, selection: { ...selection, llmConfig: 'not an object' } })).resolves.toEqual({ kind: 'invalid', errors: [
       { path: 'llmConfig', message: 'Model configuration must be null or an object.' }] });
   });
   it('validates mixed-runtime scopes independently against fresh catalog evidence', async () => {
     const { service, catalog, nativeCapacity } = harness(128000, 64000);
-    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    // `unavailable`: isolates this test's refusal path from autobyteus-53's hand-over outcome.
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS, handOver: 'unavailable' as const };
     const results = await service.validateMany([
       { context, selection },
       { context: native, selection },

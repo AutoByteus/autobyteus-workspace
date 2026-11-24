@@ -717,9 +717,12 @@ tree write may remain registered, but that does not represent partial run
 configuration success and never moves or deletes files.
 
 The injected `RunModelSelectionService` enforces same-runtime catalog membership
-and schema-valid settings. AutoByteus replacements additionally require verified
-positive, non-decreasing context capacity; Claude Agent SDK, Codex App Server,
-and Antigravity CLI replacements have no platform capacity gate. For Claude,
+and schema-valid settings. An AutoByteus replacement with verified positive,
+non-decreasing context capacity keeps the member's session; a smaller or unknown one
+is a model hand-over (the next message starts a fresh session from the Work Journal),
+and an Org's default launch row (nothing to continue) takes any offered model.
+Claude Agent SDK, Codex App Server, and Antigravity CLI replacements have no platform
+capacity gate. For Claude,
 a proven redundant `default` is omitted from new offers, while a scope already
 saved as exact `default` retains a separately resolved current descriptor for
 same-model settings and unaffected-scope continuity. Model options

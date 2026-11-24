@@ -11,8 +11,10 @@ const stopped = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata =>
 });
 const input = (runtimeKind: RuntimeKind, llmModelIdentifier = "gpt-5") => ({ agentRunId: "run-1", runtimeKind, llmModelIdentifier, llmConfig: null });
 
-const updater = (metadata: AgentRunMetadata, options: { active?: boolean; archived?: boolean; validation?: unknown; committed?: unknown } = {}) => {
-  const validate = vi.fn(async ({ selection }: { selection: unknown }) => options.validation ?? { kind: "valid", selection });
+const updater = (metadata: AgentRunMetadata, options: { active?: boolean; archived?: boolean; validation?: unknown; committed?: unknown; continuation?: "same_session" | "hand_over" } = {}) => {
+  // `continuation` defaults to `hand_over`, matching every switch-flavored test below; a model-only-edit test either
+  // overrides it or does not read `commitRunRuntimeSwitch`'s exact call (autobyteus-53 REQ-003).
+  const validate = vi.fn(async ({ selection }: { selection: unknown }) => options.validation ?? { kind: "valid", selection, continuation: options.continuation ?? "hand_over" });
   const commitRunRuntimeSwitch = vi.fn(async () => options.committed ?? { kind: "committed", metadata: { ...metadata, runtimeKind: RuntimeKind.CODEX_APP_SERVER, pendingRuntimeSwitch: { switchId: "x", from: {} } } });
   const instance = new StandaloneStoppedRunSelectionUpdater({
     agentRunManager: { getActiveRun: vi.fn(() => options.active ? ({} as never) : null) },
@@ -37,19 +39,20 @@ describe("which stopped runs may switch their agent runtime (REQ-013)", () => {
 
 describe("the selection context (a fresh selection of another agent runtime)", () => {
   it("keeps the stored model as the current one only on the run's own agent runtime", () => {
-    expect(selectionContextFor(stopped(), { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK })).toEqual({
-      runtimeKind: "claude_agent_sdk", currentModelIdentifier: "sonnet", workspaceRootPath: "/work" });
-    expect(selectionContextFor(stopped(), { runtimeKind: RuntimeKind.CODEX_APP_SERVER })).toEqual({
-      runtimeKind: "codex_app_server", currentModelIdentifier: null, workspaceRootPath: "/work" });
+    expect(selectionContextFor(stopped(), { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }, "available")).toEqual({
+      runtimeKind: "claude_agent_sdk", currentModelIdentifier: "sonnet", workspaceRootPath: "/work", handOver: "available" });
+    expect(selectionContextFor(stopped(), { runtimeKind: RuntimeKind.CODEX_APP_SERVER }, "available")).toEqual({
+      runtimeKind: "codex_app_server", currentModelIdentifier: null, workspaceRootPath: "/work", handOver: "available" });
   });
 
-  it("has no current model while a switch is pending: the pending model has never run (CRR-002 F-3)", () => {
+  it("while a switch is pending, the reference model is the pending switch's `from` (DEC-005, autobyteus-53): no current model on the pending (never-run) binding's own runtime, but the session's model on the reference's runtime", () => {
     const pending = stopped({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "lmstudio:qwen", platformAgentRunId: null, pendingRuntimeSwitch: {
       switchId: "switch-1",
       from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null, platformAgentRunId: "session-1" } } });
-    expect(selectionContextFor(pending, { runtimeKind: RuntimeKind.AUTOBYTEUS })).toEqual({
-      runtimeKind: "autobyteus", currentModelIdentifier: null, workspaceRootPath: "/work" });
-    expect(selectionContextFor(pending, { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).currentModelIdentifier).toBeNull();
+    expect(selectionContextFor(pending, { runtimeKind: RuntimeKind.AUTOBYTEUS }, "available")).toEqual({
+      runtimeKind: "autobyteus", currentModelIdentifier: null, workspaceRootPath: "/work", handOver: "available" });
+    // Re-selecting the reference's own agent runtime sees its model as current (the undo case).
+    expect(selectionContextFor(pending, { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }, "available").currentModelIdentifier).toBe("sonnet");
   });
 });
 
@@ -58,20 +61,28 @@ describe("StandaloneStoppedRunSelectionUpdater (AC-001)", () => {
     const { instance, validate, commitRunRuntimeSwitch } = updater(stopped());
     const result = await instance.update("run-1", input(RuntimeKind.CODEX_APP_SERVER));
     expect(validate).toHaveBeenCalledWith({
-      context: { runtimeKind: "codex_app_server", currentModelIdentifier: null, workspaceRootPath: "/work" },
+      context: { runtimeKind: "codex_app_server", currentModelIdentifier: null, workspaceRootPath: "/work", handOver: "available" },
       selection: { llmModelIdentifier: "gpt-5", llmConfig: null },
     });
     expect(commitRunRuntimeSwitch).toHaveBeenCalledWith({
-      runId: "run-1", selection: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null },
+      runId: "run-1", selection: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null, continuation: "hand_over" },
       switchId: expect.stringMatching(/^[0-9a-f-]{36}$/),
     });
     expect(result).toMatchObject({ success: true, outcome: "UPDATED", message: expect.stringContaining("next message") });
   });
 
+  it("autobyteus-53 AC-001: a native model hand-over (same agent runtime) makes a pending switch too, with its own Save message", async () => {
+    const native = stopped({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "qwen-removed@lmstudio" });
+    const { instance } = updater(native, { committed: { kind: "committed", metadata: { ...native, llmModelIdentifier: "qwen-small@lmstudio", platformAgentRunId: null,
+      pendingRuntimeSwitch: { switchId: "x", from: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "qwen-removed@lmstudio", llmConfig: null, platformAgentRunId: "session-1" } } } } });
+    const result = await instance.update("run-1", input(RuntimeKind.AUTOBYTEUS, "qwen-small@lmstudio"));
+    expect(result).toMatchObject({ success: true, outcome: "UPDATED", message: "Model saved. Your next message starts a fresh session on the new model, which continues from the work journal." });
+  });
+
   it("a model-only edit on the run's own agent runtime validates against the stored model as before", async () => {
     const { instance, validate } = updater(stopped(), { committed: { kind: "committed", metadata: stopped({ llmModelIdentifier: "opus" }) } });
     const result = await instance.update("run-1", input(RuntimeKind.CLAUDE_AGENT_SDK, "opus"));
-    expect(validate).toHaveBeenCalledWith(expect.objectContaining({ context: { runtimeKind: "claude_agent_sdk", currentModelIdentifier: "sonnet", workspaceRootPath: "/work" } }));
+    expect(validate).toHaveBeenCalledWith(expect.objectContaining({ context: { runtimeKind: "claude_agent_sdk", currentModelIdentifier: "sonnet", workspaceRootPath: "/work", handOver: "available" } }));
     expect(result).toMatchObject({ success: true, outcome: "UPDATED", message: expect.stringContaining("Model settings updated") });
   });
 
@@ -124,6 +135,6 @@ describe("a second save while a switch is pending (CRR-002 F-3)", () => {
       from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null, platformAgentRunId: "session-1" } } });
     const { instance, validate } = updater(pending, { committed: { kind: "committed", metadata: pending } });
     await instance.update("run-1", input(RuntimeKind.AUTOBYTEUS, "lmstudio:other"));
-    expect(validate).toHaveBeenCalledWith(expect.objectContaining({ context: { runtimeKind: "autobyteus", currentModelIdentifier: null, workspaceRootPath: "/work" } }));
+    expect(validate).toHaveBeenCalledWith(expect.objectContaining({ context: { runtimeKind: "autobyteus", currentModelIdentifier: null, workspaceRootPath: "/work", handOver: "available" } }));
   });
 });

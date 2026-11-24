@@ -22,6 +22,7 @@ import { AgyStreamEventConverter, type AgyStreamEventConverterOptions } from "..
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
 import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
 import { readAgyNativeToolArguments } from "../stream/agy-native-tool-arguments-reader.js";
+import { readAgyNativeToolResult } from "../stream/agy-native-tool-result-reader.js";
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
 import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
@@ -55,7 +56,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private turnId: string | null = null;
   private phase: AgentRuntimeLifecycleSnapshot["phase"] = "idle";
   private cancelled = false;
-  private argumentLookup: AbortController | null = null;
+  private stepLookup: AbortController | null = null;
   private toolExposure: RuntimeAgentToolExposure;
   private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
   /** Skill adds, one after another. */
@@ -113,7 +114,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     } catch {
       if (this.active) {
         this.cancelled = true; this.active = false; this.processAlive = false; this.phase = "error";
-        this.argumentLookup?.abort();
+        this.stepLookup?.abort();
         void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
         this.enqueue(async () => { await this.deliver(this.converter.interrupt()); this.turnId = null; });
         this.backgroundTasks.stopAll();
@@ -130,7 +131,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   async interrupt(turnId: string | null): Promise<AgentOperationResult> {
     if (!turnId || this.turnId !== turnId) return { accepted: false, code: NO_ACTIVE_TURN, message: "AGY has no matching active turn." };
     this.cancelled = true; this.active = false; this.processAlive = false;
-    this.argumentLookup?.abort();
+    this.stepLookup?.abort();
     const stopped = this.process.stop();
     this.enqueue(async () => {
       await this.deliver(this.converter.interrupt());
@@ -180,7 +181,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   async terminate(): Promise<AgentOperationResult> {
     if (this.turnId) return this.interrupt(this.turnId);
     this.active = false;
-    this.argumentLookup?.abort();
+    this.stepLookup?.abort();
     await this.process.stop();
     this.processAlive = false;
     this.backgroundTasks.stopAll();
@@ -192,23 +193,36 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     if (!this.turnId || this.cancelled) return;
     const turnId = this.turnId;
     const lookup = this.converter.getPendingNativeToolArgumentLookup(message);
+    const resultLookup = this.converter.getPendingNativeToolResultLookup(message);
     let nativeArguments: Record<string, unknown> | null = null;
-    if (lookup) {
+    let nativeResult: { text: string } | null = null;
+    if (lookup || resultLookup) {
       if (!this.isActive()) return;
       const controller = new AbortController();
-      this.argumentLookup = controller;
+      this.stepLookup = controller;
       try {
-        nativeArguments = await readAgyNativeToolArguments(this.context.runtimeContext.conversationId, lookup,
-          { signal: controller.signal });
-      } catch {
         // Optional observability must not turn a valid provider event into process failure.
-        nativeArguments = null;
+        if (lookup) {
+          try {
+            nativeArguments = await readAgyNativeToolArguments(this.context.runtimeContext.conversationId, lookup,
+              { signal: controller.signal });
+          } catch { nativeArguments = null; }
+        }
+        if (resultLookup && !controller.signal.aborted) {
+          try {
+            const read = await readAgyNativeToolResult(this.context.runtimeContext.conversationId, resultLookup,
+              { signal: controller.signal });
+            if ("text" in read) nativeResult = read;
+            else if (!controller.signal.aborted) console.warn(
+              `AGY_TOOL_RESULT_UNRECOVERED run=${this.runId} step=${resultLookup.stepIndex} tool=${resultLookup.toolName} reason=${read.reason}`);
+          } catch { nativeResult = null; }
+        }
       } finally {
-        this.argumentLookup = null;
+        this.stepLookup = null;
       }
       if (controller.signal.aborted || this.turnId !== turnId || this.cancelled || !this.isActive()) return;
     }
-    const events = this.converter.convert(message, nativeArguments);
+    const events = this.converter.convert(message, nativeArguments, nativeResult);
     if (message.event === "result") {
       this.turnId = null;
       this.phase = this.processAlive ? "idle" : "error";
@@ -225,7 +239,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     this.eventQueue = this.eventQueue.then(task).catch(() => {
       // Source-listener failures stop this backend; the app still owns public delivery.
       this.active = false; this.processAlive = false; this.phase = "error";
-      this.argumentLookup?.abort();
+      this.stepLookup?.abort();
       void this.process.stop().catch((error) => console.warn("AGY_EXACT_STOP_FAILED", error));
       this.backgroundTasks.stopAll();
     });
@@ -237,8 +251,8 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   }
 
   private handleClose(): void {
-    const hadPendingLookup = this.argumentLookup !== null;
-    this.argumentLookup?.abort();
+    const hadPendingLookup = this.stepLookup !== null;
+    this.stepLookup?.abort();
     if (!this.processAlive) return;
     this.processAlive = false;
     this.backgroundTasks.stopAll();

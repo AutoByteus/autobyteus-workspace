@@ -1,0 +1,10 @@
+# Case: API-03c (LN-06)
+# Command: the live command with -t "LN-0(1|6)"; Commit dbfae1e493 (code 7069972efe); real agy 1.5.15, same environment as API-03
+# Date: 2026-11-23
+
+LN-06 toolsUsed=run_command,read_file
+ ✓ tests/e2e/runtime/agy-native-tool-result-content-live.e2e.test.ts (6 tests | 4 skipped) 29584ms
+     ✓ LN-01: a ranged read_file records the lines read; the journal shows them as cat -n lines  8941ms
+     ✓ LN-06: grep_search / find_by_name / view_file when the CLI offers them: the result holds the content; otherwise the tool names used are reported  11471ms
+      Tests  2 passed | 4 skipped (6)
+tools the real agy called when asked for find_by_name, grep_search and view_file: run_command, read_file (see API-03c-live-run3/LN-06-raw-tool-records.jsonl)

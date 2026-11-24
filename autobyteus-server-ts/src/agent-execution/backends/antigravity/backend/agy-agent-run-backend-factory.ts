@@ -10,6 +10,7 @@ import { AgyAgentRunContext } from "./agy-agent-run-context.js";
 import { AgyAgentRunBackend } from "./agy-agent-run-backend.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { createAgyRunCapsule, restoreAgyRunCapsule, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
+import { agyNativeToolsMissingFromRegistry } from "../capsule/agy-native-tool-policy.js";
 import {
   AGY_COMPACTION_DETECTION_MIN_VERSION,
   isAgyCompactionDetectionSupported,
@@ -130,6 +131,9 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       if (cwd !== await fs.realpath(capsule.path)) throw new Error("AGY_PROJECT_MISMATCH: CLI did not use the run capsule.");
       // AGY always runs with auto-approve (skip-permissions), whatever the stored or submitted setting.
       if (init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
+      // A newer CLI that renamed a tool of the allowlist would drop it silently: say so once, never fail the start.
+      const unregistered = agyNativeToolsMissingFromRegistry(init.init.tools);
+      if (unregistered.length > 0) console.warn(`AGY_CAPSULE_TOOL_NOT_IN_REGISTRY run=${runId} names=${unregistered.join(",")}`);
       assertAccepting();
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
         runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process, { compactionDetection },

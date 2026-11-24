@@ -20,7 +20,7 @@ const messages = {
   "workspace.runModelConfig.selectedModelUnavailable": "所选模型在当前运行时中不可用。",
   "workspace.runModelConfig.retry": "重试",
   "workspace.runModelConfig.noAdjustableSettings": "此模型没有可调整的设置。",
-  "workspace.runModelConfig.nativeModelHelp": "请选择已验证且上下文容量不小于已保存模型的模型。",
+  "workspace.runModelConfig.nativeModelHelp": "上下文窗口更小或未知的模型会开启新会话，并从工作日志继续。",
   "workspace.runModelConfig.externalModelHelp": "可选择此运行时提供的任意模型。恢复运行时由该运行时处理上下文限制。",
   "workspace.runModelConfig.unknownModelHelp": "此运行时的替换模型不可用。",
   "workspace.runModelConfig.optionsUnavailable": "运行时模型选项暂不可用。请刷新此运行后重试；已保存的模型标识仍可查看。",

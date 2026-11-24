@@ -1,0 +1,4 @@
+# IMP-03 full unit suite. Command: pnpm test:unit (autobyteus-server-ts). Commit 7069972efe. macOS 25.5 (darwin arm64), node v22.21.1, pnpm. 2026-11-23. Excerpt (full output not kept).
+ Test Files  1078 passed | 5 skipped (1083)
+      Tests  8991 passed | 9 skipped (9000)
+exit 0

@@ -1,0 +1,16 @@
+# Case: API-01
+# Command: cd autobyteus-server-ts && pnpm build; env -i ... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/agy-native-tool-result-content-scripted-agy.e2e.test.ts tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts --no-watch
+# Commit: dbfae1e493 (code = 7069972efe; the new live e2e file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, private HOME, scripted Antigravity CLI, host load average 39-45
+# Date: 2026-11-23
+
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5879ms
+     ✓ E-001 captures complete typed first STARTED before terminal, then reopens without provider evidence  1351ms
+     ✓ E-002 retains the truthful summary and completion when the transcript holds no detail  879ms
+     ✓ E-002b records the full arguments of a step of a two-call planner response by its position  867ms
+     ✓ E-003 actually restores the bound conversation, captures future calls, and leaves old summary bytes unchanged  2310ms
+ ✓ tests/e2e/runtime/agy-native-tool-result-content-scripted-agy.e2e.test.ts (4 tests) 1849ms
+     ✓ NR-01 FULL: real content in the success event and the raw trace; the journal shows cat -n lines without timestamps  323ms
+     ✓ NR-03 GAP: the stream's result stays, one warning names the reason, the journal keeps `content not recorded`  489ms
+ Test Files  2 passed (2)
+      Tests  8 passed (8)

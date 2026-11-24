@@ -48,6 +48,6 @@ describe("run model selection refusal wording (REQ-013, AC-013)", () => {
     expect(isUnavailableModelSelection({ kind: "model_list_unavailable" })).toBe(true);
     expect(isUnavailableModelSelection({ kind: "schema_unavailable" })).toBe(true);
     expect(isUnavailableModelSelection({ kind: "invalid", errors: [] })).toBe(false);
-    expect(isUnavailableModelSelection({ kind: "valid", selection: { llmModelIdentifier: "m", llmConfig: null } })).toBe(false);
+    expect(isUnavailableModelSelection({ kind: "valid", selection: { llmModelIdentifier: "m", llmConfig: null }, continuation: "same_session" })).toBe(false);
   });
 });

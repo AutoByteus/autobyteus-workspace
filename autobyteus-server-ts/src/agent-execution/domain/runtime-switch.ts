@@ -41,13 +41,18 @@ export const buildRuntimeSwitchBetween = (input: {
   const from: RuntimeSwitchSide = { runtimeKind: input.pending.from.runtimeKind, llmModelIdentifier: input.pending.from.llmModelIdentifier };
   const to: RuntimeSwitchSide = { runtimeKind: input.to.runtimeKind, llmModelIdentifier: input.to.llmModelIdentifier };
   const key = `runtime_switch:${input.runId}:${input.pending.switchId}`;
+  // DEC-008, N-4: a model hand-over (both sides the same agent runtime) names the model it changed, but only when the
+  // model actually differs — a stored same-runtime, same-model pending switch (P-002) keeps today's text.
+  const modelHandOver = from.runtimeKind === to.runtimeKind && from.llmModelIdentifier !== to.llmModelIdentifier;
   return Object.freeze({
     key,
     markerTraceId: runtimeSwitchMarkerTraceId(key),
     runId: input.runId,
     from,
     to,
-    markerText: `Agent runtime changed from ${label(from)} to ${label(to)}.`,
+    markerText: modelHandOver
+      ? `Model changed from ${from.llmModelIdentifier} to ${to.llmModelIdentifier}.`
+      : `Agent runtime changed from ${label(from)} to ${label(to)}.`,
   });
 };
 

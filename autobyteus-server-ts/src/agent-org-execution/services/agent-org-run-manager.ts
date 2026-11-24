@@ -8,7 +8,7 @@ import { isDeepStrictEqual } from "node:util";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentOrgRunConfig, AgentOrgRunConfigResult } from "../domain/agent-org-run-config.js";
-import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
+import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, previewAgentOrgLaunchConfigurations, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
 import { runModelConfigEditability } from "../../run-history/domain/run-model-config.js";
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -231,7 +231,8 @@ export class AgentOrgRunManager {
               message: error instanceof Error ? error.message : String(error) }]);
         }
       }
-      const proposed = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
+      // A preview only (CRR-001 CR-001): no continuation is decided yet, so this must not go through the switch rule.
+      const proposed = previewAgentOrgLaunchConfigurations(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
       const originals = new Map(listAgentOrgRunSelectionScopes(tree).map(scope => [scope.scopeAddress, scope]));
       const modelAddresses = new Set(modelTargets.map(target => target.patch.scopeAddress));
       const workspaceAddresses = new Set<string>(normalizedWorkspaces.flatMap(patch => {
@@ -242,11 +243,12 @@ export class AgentOrgRunManager {
         modelAddresses.has(scope.scopeAddress) || workspaceAddresses.has(scope.scopeAddress));
       let validations;
       try {
-        validations = await this.modelSelectionValidator.validateMany(targets.map(({ scopeAddress, launchConfiguration }) => ({
-          // The saved agent runtime of the scope is the current one; another runtime (or a pending switch) is a fresh selection.
+        validations = await this.modelSelectionValidator.validateMany(targets.map(({ scopeKind, scopeAddress, launchConfiguration }) => ({
+          // The reference is the session the scope last ran on (DEC-005); a configured Agent can hand over, a default
+          // scope (Org or a mounted Team) has no session to continue (DEC-007).
           context: selectionContextFor({ ...originals.get(scopeAddress)!.launchConfiguration,
             workspaceRootPath: launchConfiguration.workspaceRootPath, pendingRuntimeSwitch: originals.get(scopeAddress)!.pendingRuntimeSwitch },
-            { runtimeKind: launchConfiguration.runtimeKind }),
+            { runtimeKind: launchConfiguration.runtimeKind }, scopeKind === "CONFIGURED_AGENT" ? "available" : "no_session"),
           selection: { llmModelIdentifier: launchConfiguration.llmModelIdentifier, llmConfig: launchConfiguration.llmConfig },
         })));
       } catch { return result("INTERNAL_ERROR", "Model validation is unavailable."); }
@@ -267,7 +269,9 @@ export class AgentOrgRunManager {
       // Validation of unchanged models must not normalize those models as a side effect of a workspace edit.
       const normalized = modelTargets.map(target => {
         const validation = validations[targets.findIndex(scope => scope.scopeAddress === target.patch.scopeAddress)]!;
-        return { ...target, patch: { ...target.patch, ...(validation.kind === 'valid' ? validation.selection : {}) } };
+        return { ...target, patch: { ...target.patch, ...(validation.kind === 'valid' ? validation.selection : {}) },
+          // The continuation decided for this scope (REQ-003); a default scope never reaches the switch rule.
+          continuation: validation.kind === 'valid' ? validation.continuation : 'same_session' as const };
       });
       const expected = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
       if (checkOnly || isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");

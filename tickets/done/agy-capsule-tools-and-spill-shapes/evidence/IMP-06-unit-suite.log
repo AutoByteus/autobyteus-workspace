@@ -1,0 +1,4 @@
+# IMP-06 full unit suite. Command: pnpm test:unit (autobyteus-server-ts). Run on the tree of 0f74222c52 before a test-typing-only edit of agy-agent-run-backend-factory.test.ts (that file re-run alone: 31 passed). macOS, node v22.21.1. 2026-11-23. Excerpt.
+ Test Files  1078 passed | 5 skipped (1083)
+      Tests  8995 passed | 9 skipped (9004)
+exit 0

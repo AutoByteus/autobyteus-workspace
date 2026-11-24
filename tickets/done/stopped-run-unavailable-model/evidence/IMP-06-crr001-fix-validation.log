@@ -1,0 +1,25 @@
+IMP-06 — CRR-001 CR-001 fix validation (IR-002)
+Commands:
+  pnpm -C autobyteus-server-ts typecheck
+  pnpm -C autobyteus-server-ts build
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts --no-watch
+  npx vitest run tests/unit/agent-org-execution tests/integration/agent-org-execution (from autobyteus-server-ts)
+  npx vitest run tests/unit/agent-org-execution/agent-org-run-manager-model-selection-save.test.ts --no-watch (new regression test, 3 cases)
+  pnpm -C autobyteus-server-ts test:unit
+  pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+  pnpm -C autobyteus-web typecheck
+Commit: on top of 14c28a91f9 (worktree HEAD; uncommitted IR-002 diff on top)
+Environment: macOS (Darwin 25.5.0)
+Date: 2026-11-23
+Check ID: IMP-06
+
+Key lines:
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+Built-in agents bootstrap smoke check passed. (build exit 0)
+tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts: Test Files  1 passed (1); Tests  1 passed (1)
+tests/unit/agent-org-execution + tests/integration/agent-org-execution: Test Files  16 passed (16); Tests  100 passed (100)
+agent-org-run-manager-model-selection-save.test.ts: Test Files  1 passed (1); Tests  3 passed (3)
+Full server unit suite: Test Files  1073 passed | 5 skipped (1078); Tests  8930 passed | 9 skipped (8939)
+Full server integration suite: Test Files  92 passed | 21 skipped (113); Tests  523 passed | 71 skipped (594)
+Web typecheck: production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files); PASS

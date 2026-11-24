@@ -1,0 +1,8 @@
+# Case: API-01
+# Command: cd autobyteus-server-ts && pnpm build; env -i ... pnpm exec vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts --no-watch (BEFORE the fixture change: the scripted CLI emitted tools: [])
+# Commit: b55965acf0 (code = 0f74222c52; the new e2e file and the fixture default are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, BUILT server (pnpm build exit 0), test-owned data root and database, private HOME, scripted Antigravity CLI
+# Date: 2026-11-24
+
+   1       Tests  10 passed (10)
+  12 AGY_CAPSULE_TOOL_NOT_IN_REGISTRY run=<id> names=view_file,write_to_file,replace_file_content,grep_search,list_dir,find_by_name,run_command,generate_image

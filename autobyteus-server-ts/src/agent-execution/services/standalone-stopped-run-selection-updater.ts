@@ -10,8 +10,9 @@ import {
 } from "../../run-history/domain/run-model-config.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunManager } from "./agent-run-manager.js";
-import { canSwitchRuntime } from "./standalone-agent-run-eligibility.js";
+import { canSwitchRuntime, stoppedRunHandOver } from "./standalone-agent-run-eligibility.js";
 import { selectionContextFor } from "./stopped-run-selection-context.js";
+import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
 
 export type StoppedRunSelectionInput = Readonly<{
   agentRunId: string;
@@ -54,22 +55,26 @@ export class StandaloneStoppedRunSelectionUpdater {
   async update(runId: string, input: StoppedRunSelectionInput): Promise<UpdateResult> {
     const planned = await this.plan(runId, input);
     if (planned.kind === "refused") return planned.result;
-    const { metadata, selection } = planned;
+    const { metadata, selection, continuation } = planned;
     const committed = await this.deps.historyCatalogService.commitRunRuntimeSwitch({
       runId,
-      selection: { runtimeKind: input.runtimeKind, ...selection },
+      selection: { runtimeKind: input.runtimeKind, ...selection, continuation },
       switchId: randomUUID(),
     });
     if (committed.kind === "committed" || committed.kind === "unchanged") {
+      const modelHandOver = Boolean(committed.metadata.pendingRuntimeSwitch
+        && committed.metadata.pendingRuntimeSwitch.from.runtimeKind === committed.metadata.runtimeKind);
       return this.result({
         outcome: committed.kind === "committed" ? "UPDATED" : "UNCHANGED",
         message: committed.kind !== "committed"
           ? "Model settings are already up to date."
-          : committed.metadata.pendingRuntimeSwitch
-            ? "Agent runtime and model saved. The agent runtime changes when you send your next message."
-            : input.runtimeKind !== metadata.runtimeKind
-              ? "The agent runtime change was cancelled."
-              : "Model settings updated. They will be used when this run resumes.",
+          : modelHandOver
+            ? "Model saved. Your next message starts a fresh session on the new model, which continues from the work journal."
+            : committed.metadata.pendingRuntimeSwitch
+              ? "Agent runtime and model saved. The agent runtime changes when you send your next message."
+              : input.runtimeKind !== metadata.runtimeKind
+                ? "The agent runtime change was cancelled."
+                : "Model settings updated. They will be used when this run resumes.",
         metadata: committed.metadata,
         active: false,
       });
@@ -96,7 +101,7 @@ export class StandaloneStoppedRunSelectionUpdater {
 
   private async plan(runId: string, input: StoppedRunSelectionInput): Promise<
     | Readonly<{ kind: "refused"; result: UpdateResult }>
-    | Readonly<{ kind: "planned"; metadata: AgentRunMetadata; selection: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }> }>> {
+    | Readonly<{ kind: "planned"; metadata: AgentRunMetadata; selection: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }>; continuation: RunContinuation }>> {
     const refused = (result: UpdateResult) => ({ kind: "refused" as const, result });
     const state = await this.deps.metadataService.readMetadataState(runId);
     const metadata = state.kind === "present" ? state.metadata : null;
@@ -133,7 +138,7 @@ export class StandaloneStoppedRunSelectionUpdater {
       }));
     }
     const validation = await this.modelSelectionValidator.validate({
-      context: selectionContextFor(metadata, input),
+      context: selectionContextFor(metadata, input, stoppedRunHandOver(metadata)),
       selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig },
     });
     if (validation.kind !== "valid") {
@@ -148,7 +153,7 @@ export class StandaloneStoppedRunSelectionUpdater {
         fieldErrors: validation.kind === "invalid" ? validation.errors : [],
       }));
     }
-    return { kind: "planned", metadata, selection: validation.selection };
+    return { kind: "planned", metadata, selection: validation.selection, continuation: validation.continuation };
   }
 
   private result(input: {

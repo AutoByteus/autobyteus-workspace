@@ -9,7 +9,9 @@ const stopped = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata =>
   llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, autoExecuteTools: true,
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, platformAgentRunId: "session-1", startedAt: "2026-10-29T09:00:00.000Z", ...overrides,
 });
-const codex = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null };
+// `continuation: "hand_over"` matches every bare use below (another agent runtime than the session the run last ran
+// on); a case that resumes the session states its own continuation (autobyteus-53 REQ-003).
+const codex = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null, continuation: "hand_over" as const };
 
 describe("the metadata a settings save of a stopped run writes (AC-001)", () => {
   it("a switch replaces the binding, drops the session and records the previous binding and the switch ID", () => {
@@ -25,7 +27,7 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
     const first = buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT });
     const second = buildRuntimeSwitchMetadata({
       metadata: first, switchId: "switch-2",
-      selection: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini", llmConfig: null },
+      selection: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini", llmConfig: null, continuation: "hand_over" },
     });
     expect(second).toMatchObject({ runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", platformAgentRunId: null });
     expect(second.pendingRuntimeSwitch).toEqual(first.pendingRuntimeSwitch);
@@ -35,13 +37,15 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
     const pending = buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT });
     const same = buildRuntimeSwitchMetadata({
       metadata: pending, switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" } },
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, continuation: "same_session" },
     });
     // Back at its original binding; the edits are recorded as the user's (V-11).
     expect(same).toEqual(stopped({ launchSource: { origin: "settings", fallbacks: [] } as never }));
+    // Another model on the same (external) agent runtime as the session it resumes is still same_session: capacity
+    // comparison applies only to the native runtime, and the external branch always continues (autobyteus-53 REQ-003).
     const otherModel = buildRuntimeSwitchMetadata({
       metadata: pending, switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null },
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, continuation: "same_session" },
     });
     expect(otherModel).toMatchObject({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null, platformAgentRunId: "session-1" });
     expect(Object.hasOwn(otherModel, "pendingRuntimeSwitch")).toBe(false);
@@ -49,11 +53,11 @@ describe("the metadata a settings save of a stopped run writes (AC-001)", () => 
 
   it("the run's own agent runtime is a model-only edit; a pending switch stays", () => {
     const edited = buildRuntimeSwitchMetadata({ metadata: stopped(), switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } });
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, continuation: "same_session" } });
     expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null, launchSource: { origin: "settings", fallbacks: [] } as never }));
     const pending = buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT });
     const model = buildRuntimeSwitchMetadata({ metadata: pending, switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-6", llmConfig: null } });
+      selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-6", llmConfig: null, continuation: "hand_over" } });
     expect(model).toMatchObject({ llmModelIdentifier: "gpt-6", pendingRuntimeSwitch: pending.pendingRuntimeSwitch });
   });
 });
@@ -63,7 +67,7 @@ describe("a run's recorded launch source after a settings save (CR-461-078, desi
   const settings = { origin: "settings", fallbacks: [] };
   it("an edit becomes the run's own launch, recorded as the Settings edit, for a model edit and for a switch", () => {
     const edited = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } });
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, continuation: "same_session" } });
     expect(edited).toEqual(stopped({ llmModelIdentifier: "opus", llmConfig: null, launchSource: settings as never }));
     expect(buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), selection: codex, switchId: AT }).launchSource).toEqual(settings);
     // A run that had no source (one the user started, or one recorded before sources) records the edit too.
@@ -72,7 +76,7 @@ describe("a run's recorded launch source after a settings save (CR-461-078, desi
 
   it("a save of the same selection changes nothing: the source stays", () => {
     const same = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" } } });
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, continuation: "same_session" } });
     expect(same).toEqual(stopped({ launchSource: source }));
   });
 });

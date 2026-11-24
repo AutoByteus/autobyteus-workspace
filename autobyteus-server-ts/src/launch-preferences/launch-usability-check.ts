@@ -160,6 +160,8 @@ export class LaunchUsabilityCheck {
           runtimeKind: launch.runtimeKind,
           currentModelIdentifier: launch.llmModelIdentifier,
           workspaceRootPath: launch.workspaceRootPath ?? process.cwd(),
+          // A launch usability check has no session yet to continue (AR-002, autobyteus-53).
+          handOver: "no_session",
         },
         selection: { llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig },
       })));

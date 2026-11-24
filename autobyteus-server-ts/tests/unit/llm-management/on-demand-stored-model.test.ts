@@ -54,8 +54,10 @@ const world = (providers: Record<string, ProviderLoad>) => {
 const startRefusal = (selection: RunModelSelectionService, llmModelIdentifier: string) => storedModelStartRefusal(
   { agentDefinitions: EXISTING_AGENT_DEFINITIONS, storedModels: selection },
   { agentDefinitionId: "writer-def", agentName: "writer", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier });
+// Not about autobyteus-53's hand-over capability; `unavailable` keeps this file's pre-existing capacity-gated options
+// shape (none of its assertions read `replacements`).
 const options = (selection: RunModelSelectionService, currentModelIdentifier: string) =>
-  selection.listOptions({ runtimeKind: RuntimeKind.AUTOBYTEUS, currentModelIdentifier, workspaceRootPath: "/work" });
+  selection.listOptions({ runtimeKind: RuntimeKind.AUTOBYTEUS, currentModelIdentifier, workspaceRootPath: "/work", handOver: "unavailable" });
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 

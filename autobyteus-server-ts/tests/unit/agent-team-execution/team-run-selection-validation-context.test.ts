@@ -17,7 +17,9 @@ const tree = (pending?: unknown) => ({
   },
 } as never);
 const plan = async (current: never, runtimeKind: RuntimeKind) => {
-  const validateMany = vi.fn(async (inputs: unknown[]) => inputs.map((input: any) => ({ kind: "valid" as const, selection: { llmModelIdentifier: input.selection.llmModelIdentifier, llmConfig: null } })));
+  // `continuation` here is arbitrary: this suite asserts the context built for validation, not the committed tree
+  // (autobyteus-53 REQ-003 owns that decision; `hand_over` never throws regardless of the chosen runtimes).
+  const validateMany = vi.fn(async (inputs: unknown[]) => inputs.map((input: any) => ({ kind: "valid" as const, selection: { llmModelIdentifier: input.selection.llmModelIdentifier, llmConfig: null }, continuation: "hand_over" as const })));
   const result = await planStoppedTeamLaunchSave({
     tree: current, validator: { validate: vi.fn(), validateMany } as never,
     configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/agent", runtimeKind, llmModelIdentifier: "target", llmConfig: null }],
@@ -28,12 +30,12 @@ const plan = async (current: never, runtimeKind: RuntimeKind) => {
 describe("validation context of a Team member's save", () => {
   it("the saved runtime again: the saved model is the current one", async () => {
     const { context } = await plan(tree(), RuntimeKind.CODEX_APP_SERVER);
-    expect(context).toEqual({ runtimeKind: "codex_app_server", currentModelIdentifier: "gpt", workspaceRootPath: "/workspace" });
+    expect(context).toEqual({ runtimeKind: "codex_app_server", currentModelIdentifier: "gpt", workspaceRootPath: "/workspace", handOver: "available" });
   });
 
   it("another runtime is a fresh selection of that runtime", async () => {
     const { context, result } = await plan(tree(), RuntimeKind.CLAUDE_AGENT_SDK);
-    expect(context).toEqual({ runtimeKind: "claude_agent_sdk", currentModelIdentifier: null, workspaceRootPath: "/workspace" });
+    expect(context).toEqual({ runtimeKind: "claude_agent_sdk", currentModelIdentifier: null, workspaceRootPath: "/workspace", handOver: "available" });
     expect(result.kind).toBe("planned");
   });
 

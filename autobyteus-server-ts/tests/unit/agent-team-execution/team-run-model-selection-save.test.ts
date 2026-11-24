@@ -75,25 +75,43 @@ describe('configured Team model selection Save', () => {
     expect(h.write).not.toHaveBeenCalled();
     expect(h.capacity.resolveMany).not.toHaveBeenCalled();
   });
-  it('validates every native original baseline before writing and does not omit incompatible children', async () => {
-    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+  it('validates every native original baseline independently: a decreasing model on a configured member hands over instead of being refused (autobyteus-53 AC-004, AC-008), while the Team default (no session, DEC-007) is checked but never reads capacity', async () => {
+    const h = await harness('committed', 'ok', 'autobyteus');
     const result = await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [
       { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null },
       { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null },
     ] });
-    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'selectionPatches[/member].llmModelIdentifier' }] });
-    expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
-    expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
+    expect(result).toMatchObject({ outcome: 'UPDATED', success: true, fieldErrors: [] });
+    expect(h.write).toHaveBeenCalledTimes(1);
+    const member = h.saved().rootTeam.members[0];
+    expect(member.launchConfiguration).toMatchObject({ llmModelIdentifier: 'equal' });
+    expect(member.platformAgentRunId).toBeNull();
+    expect(member.pendingRuntimeSwitch).toEqual({ switchId: expect.any(String),
+      from: { runtimeKind: 'autobyteus', llmModelIdentifier: 'large', llmConfig: null, platformAgentRunId: 'retained-provider-id' } });
+    // Only the member's (not-`no_session`) scope reads native capacity; the Team default accepts its own edit directly.
+    expect(h.capacity.resolveMany).toHaveBeenCalledTimes(1);
   });
-  it('commits one native tree preserving configured identities and task records; later Save uses new baseline', async () => {
+  it('an unavailable model on one scope refuses the whole save and writes nothing, independently of another scope’s valid selection (does not omit an incompatible child)', async () => {
+    const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
+    const result = await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [
+      { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null },
+      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'missing', llmConfig: null },
+    ] });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false,
+      message: expect.stringContaining("'missing' is not offered by AutoByteus now") });
+    expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
+  });
+  it('commits one native tree preserving configured identities and task records; later Save uses new baseline, and a decreasing Team default (no session) is still accepted directly (DEC-007)', async () => {
     const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
     const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null };
     expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);
     // The edit is the team's own launch, recorded as the Settings edit (V-11).
     expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchSource: SETTINGS, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
-    expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
-    expect(h.write).toHaveBeenCalledTimes(1);
+    const decreased = await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [{ ...patch, llmModelIdentifier: 'small' }] });
+    expect(decreased.outcome).toBe('UPDATED');
+    expect(h.write).toHaveBeenCalledTimes(2);
+    expect(h.saved().rootTeam.defaultLaunchConfiguration).toMatchObject({ llmModelIdentifier: 'small' });
   });
   it.each(['committed', 'finalization_indeterminate', 'not_committed'].flatMap(physicalOutcome =>
     ['ok', 'throws', 'missing'].map(readback => ({ physicalOutcome, readback }))))(

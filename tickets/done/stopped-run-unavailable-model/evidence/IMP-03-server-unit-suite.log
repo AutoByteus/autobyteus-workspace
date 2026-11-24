@@ -1,0 +1,10 @@
+IMP-03 — Full server unit suite (pnpm test:unit: tests/unit, tests/app-data-migrations, tests/architecture, tests/agent-work-journal)
+Command: pnpm -C autobyteus-server-ts test:unit
+Commit: 1f761bc8db8625709b4513108d293c6a964fcb4d (worktree HEAD; uncommitted source changes on top)
+Environment: macOS (Darwin 25.5.0)
+Date: 2026-11-23
+Check ID: IMP-03
+
+Key line:
+Test Files  1072 passed | 5 skipped (1077)
+     Tests  8926 passed | 9 skipped (8935)

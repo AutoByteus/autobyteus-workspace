@@ -33,10 +33,11 @@ const createMemoryDir = async (): Promise<string> => {
 };
 
 const modelSelectionValidator = Object.freeze({
-  validateMany: async (inputs: Parameters<RunModelSelectionValidator["validateMany"]>[0]) => inputs.map(({ selection }) => ({ kind: "valid" as const, selection })),
+  validateMany: async (inputs: Parameters<RunModelSelectionValidator["validateMany"]>[0]) => inputs.map(({ selection }) => ({ kind: "valid" as const, selection, continuation: "same_session" as const })),
   validate: vi.fn(async ({ selection }: Parameters<RunModelSelectionValidator["validate"]>[0]) => ({
     kind: "valid" as const,
     selection,
+    continuation: "same_session" as const,
   })),
 });
 
@@ -429,6 +430,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const validate: RunModelSelectionValidator["validate"] = vi.fn(async ({ selection }) => ({
       kind: "valid" as const,
       selection,
+      continuation: "same_session" as const,
     }));
     const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
@@ -508,7 +510,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const validationBarrier = new Promise<void>((resolve) => { releaseValidation = resolve; });
     const validate: RunModelSelectionValidator["validate"] = vi.fn(async ({ selection }) => {
       await validationBarrier;
-      return { kind: "valid" as const, selection };
+      return { kind: "valid" as const, selection, continuation: "same_session" as const };
     });
     const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,
@@ -569,6 +571,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const validate: RunModelSelectionValidator["validate"] = vi.fn(async ({ selection }) => ({
       kind: "valid" as const,
       selection,
+      continuation: "same_session" as const,
     }));
     const manager = new AgentTeamRunManager({ ...teamMembershipTestCollaborators(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       memoryDir,

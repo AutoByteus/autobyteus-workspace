@@ -1,0 +1,26 @@
+# Case: API-03
+# Command: cd autobyteus-server-ts && env -i PATH HOME USER LOGNAME TMPDIR RUN_AGY_RESULT_CONTENT_LIVE_E2E=1 AGY_RESULT_CONTENT_EVIDENCE_DIR=<dir> pnpm exec vitest run tests/e2e/runtime/agy-native-tool-result-content-live.e2e.test.ts --no-watch (run 1: LN-01..04; run 2: LN-01..05)
+# Commit: dbfae1e493 (code = 7069972efe; the new live e2e file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, BUILT server (pnpm build exit 0), test-owned data root and database, REAL agy 1.5.15 on the host login with the real HOME/USER/LOGNAME, synthetic scratch workspace
+# Date: 2026-11-23
+
+## run 1
+LN-02 steps=60 recovered=60 summaryOnly=0 warnings=0
+LN-03 writeCalls=2 editCalls=1
+ ✓ tests/e2e/runtime/agy-native-tool-result-content-live.e2e.test.ts (4 tests) 87930ms
+     ✓ LN-01: a ranged read_file records the lines read; the journal shows them as cat -n lines  10023ms
+     ✓ LN-02: 30 read_file steps in one turn, twice, all recovered; the miss share is reported  49409ms
+     ✓ LN-03: a write/edit batch asked in one response: full arguments and Write file / Edit file journal lines  10437ms
+     ✓ LN-04: run_command with a non-zero exit code shows the exit code as the outcome  7973ms
+      Tests  4 passed (4)
+## run 2
+LN-02 steps=60 recovered=60 summaryOnly=0 warnings=0
+LN-03 writeCalls=2 editCalls=1
+LN-05 recordedBytes=46474
+ ✓ tests/e2e/runtime/agy-native-tool-result-content-live.e2e.test.ts (5 tests) 88390ms
+     ✓ LN-01: a ranged read_file records the lines read; the journal shows them as cat -n lines  6399ms
+     ✓ LN-02: 30 read_file steps in one turn, twice, all recovered; the miss share is reported  49828ms
+     ✓ LN-03: a write/edit batch asked in one response: full arguments and Write file / Edit file journal lines  9441ms
+     ✓ LN-04: run_command with a non-zero exit code shows the exit code as the outcome  5970ms
+     ✓ LN-05: a read of a large file records a bounded result and the turn completes  6805ms
+      Tests  5 passed (5)

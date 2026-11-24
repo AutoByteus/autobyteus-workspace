@@ -437,7 +437,10 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   It applies to a standalone Agent run, a Team member, an Org member (a direct Agent
   or an Agent of a mounted Team) and a delegated run (a task Agent, or a member of a
   task Team, each switched as the run of its own it is); a Team's or an Org's own default launch is not switched. It is made real
-  at the Agent's next input.
+  at the Agent's next input. The agent runtime can stay the same (a **model hand-over**,
+  autobyteus-53): choosing another AutoByteus model whose context window is smaller
+  or unknown than the one the run last ran on switches the same way, because there
+  is no saved context to resume into unchecked.
 - **Lost runtime session:** a run's saved external runtime session that its
   runtime itself reports as not existing when the run is restored (for example
   Claude Code's "No conversation found with session ID", Codex's "no rollout
@@ -452,8 +455,15 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   It happens at activation, for a standalone run, a Team or Org member and a
   delegated run alike, in the studio, in application-scope runs and on the
   standalone application host; the user sees the marker, not an error.
-- **Pending agent runtime switch:** the user's saved choice of another agent
-  runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
+- **Continuation** (`continuation`): how a stopped record's save continues the
+  run (autobyteus-53, REQ-003): `same_session` (the session the record last ran
+  on goes on with the new model — an undo, a re-edit, or a plain model-only
+  edit) or `hand_over` (a pending switch is made or kept; the next input makes
+  it a model hand-over or an agent runtime switch). Decided once, by
+  `RunModelSelectionService`, from the model the record's session last ran on
+  (DEC-005) and whether the record can hand over at all.
+- **Pending agent runtime switch:** the user's saved choice of another model or
+  agent runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
   a member's node in the run's execution tree) until that input.
 - **Hand-over notice:** the system notice the new agent receives with that input:
   where the Work Journals are and how they are laid out. It names the newest closed
@@ -461,11 +471,12 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   for a complete read of it before replying (autobyteus-583). It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
   and the Work Journal show it. After an agent runtime switch it reads "Agent
-  runtime changed from … to …"; after a session renewal, "The saved … session of
-  this run was no longer available, so a new session continues from the work
-  journal." Both are stored the same way (a `runtime_switch` segment, sender
-  `system.runtime_handover`); only the key differs (`runtime_switch:<runId>:<switchId>`
-  or `session_renewal:<runId>:<lost session ID>`).
+  runtime changed from … to …"; after a model hand-over (the agent runtime stays
+  the same but the model differs), "Model changed from … to …."; after a session
+  renewal, "The saved … session of this run was no longer available, so a new
+  session continues from the work journal." All three are stored the same way (a
+  `runtime_switch` segment, sender `system.runtime_handover`); only the key differs
+  (`runtime_switch:<runId>:<switchId>` or `session_renewal:<runId>:<lost session ID>`).
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
   (wording toward the agent; in code, the earlier raw-trace segment).
 - **Offered models:** the models an agent runtime offers now, read from the

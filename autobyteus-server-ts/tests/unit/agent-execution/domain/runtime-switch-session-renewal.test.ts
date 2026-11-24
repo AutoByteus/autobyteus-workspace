@@ -59,6 +59,30 @@ describe("buildSessionRenewal", () => {
     expect(change.key).toBe("runtime_switch:run-1:switch-1");
     expect(change.markerText).toBe("Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).");
   });
+
+  // autobyteus-53 DEC-008: a model hand-over keeps the same agent runtime on both sides; the marker names the model change.
+  it("autobyteus-53 DEC-008: a model hand-over (same agent runtime, a different model) reads 'Model changed from … to …'", () => {
+    const change = buildRuntimeSwitch({
+      runId: "run-1", agentDefinitionId: "a", workspaceRootPath: "/w", memoryDir: "/m", llmModelIdentifier: "qwen-small@lmstudio", llmConfig: null,
+      autoExecuteTools: false, runtimeKind: RuntimeKind.AUTOBYTEUS, platformAgentRunId: null, startedAt: "2026-10-29T09:00:00.000Z",
+      pendingRuntimeSwitch: { switchId: "switch-1",
+        from: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "qwen-removed@lmstudio", llmConfig: null, platformAgentRunId: "session-1" } },
+    })!;
+    expect(change.markerText).toBe("Model changed from qwen-removed@lmstudio to qwen-small@lmstudio.");
+  });
+
+  // N-4 (design review ARCH-REV-002, non-blocking): a stored same-runtime, same-model pending switch (this node's Memory
+  // Sync imports hold such records) must not read "Model changed from sonnet to sonnet."; it keeps today's text.
+  it("N-4: a stored same-runtime, same-model pending switch keeps today's 'Agent runtime changed' text, never 'Model changed from sonnet to sonnet'", () => {
+    const change = buildRuntimeSwitch({
+      runId: "run-1", agentDefinitionId: "a", workspaceRootPath: "/w", memoryDir: "/m", llmModelIdentifier: "sonnet", llmConfig: null,
+      autoExecuteTools: false, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, platformAgentRunId: null, startedAt: "2026-10-29T09:00:00.000Z",
+      pendingRuntimeSwitch: { switchId: "switch-1",
+        from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null, platformAgentRunId: "session-1" } },
+    })!;
+    expect(change.markerText).toBe("Agent runtime changed from Claude Agent SDK (sonnet) to Claude Agent SDK (sonnet).");
+    expect(change.markerText).not.toContain("Model changed");
+  });
 });
 
 describe("SavedRuntimeSessionMissingError", () => {

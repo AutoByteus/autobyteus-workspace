@@ -467,8 +467,9 @@ Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
 and validates current catalog membership and target schema. External runtime
-models are not capacity-gated; AutoByteus still requires verified positive
-non-decreasing context capacity. Same-model settings require a current
+models are not capacity-gated; an AutoByteus model with verified positive
+non-decreasing context capacity keeps the session, and one with a smaller or unknown
+capacity starts a fresh session that continues from the work journal. Same-model settings require a current
 model/schema, but no replacement-capacity check.
 Stopped options carry backend current/replacement descriptors. A proven
 redundant Claude `default` is omitted from new offers, while an exact saved

@@ -1,7 +1,7 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { MODEL_LIST_READ_MS, createReadDeadline, raceDeadline } from "../../runtime-management/read-deadline.js";
 import type { RunModelConfigFieldError } from "../../run-history/domain/run-model-config.js";
-import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext, RunModelValidationContext } from "../domain/run-model-selection.js";
+import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext, RunModelValidationContext, RunContinuation } from "../domain/run-model-selection.js";
 import type { ModelCatalogService, RuntimeModelSelectionCatalog } from "./model-catalog-service.js";
 import type { ModelAvailabilityService } from "./model-availability-service.js";
 import type { ModelInfoWithSelectionPresentation } from "../domain/model-selection-presentation.js";
@@ -23,7 +23,7 @@ type CatalogDiagnostic = AgyDiscoveryDiagnostic | GrokBuildDiagnostic | DeepSeek
  * be read, so nothing is known about the model; `catalogDiagnostic` is the runtime's own reason where it has one.
  */
 export type RunModelSelectionValidationResult =
-  | Readonly<{ kind: "valid"; selection: RunModelSelection }>
+  | Readonly<{ kind: "valid"; selection: RunModelSelection; continuation: RunContinuation }>
   | Readonly<{ kind: "model_unavailable" }>
   | Readonly<{ kind: "model_list_unavailable"; catalogDiagnostic?: CatalogDiagnostic }>
   | Readonly<{ kind: "schema_unavailable" }>
@@ -117,15 +117,39 @@ export class RunModelSelectionService {
     const model = unchanged ? catalog.findExactCurrent(selection.llmModelIdentifier)
       : catalog.offeredModels.find((row) => row.model_identifier === selection.llmModelIdentifier);
     if (!model) return { kind: "model_unavailable" };
-    if (context.runtimeKind === RuntimeKind.AUTOBYTEUS && !unchanged && context.currentModelIdentifier !== null) {
-      const capacities = evidence.nativeCapacity.resolveMany(catalog.offeredModels);
-      const current = capacities[context.currentModelIdentifier];
-      const target = capacities[selection.llmModelIdentifier];
-      if (current == null || target == null) return invalid("Both models need verified context capacities before replacement.");
-      if (target < current) return invalid("The replacement model must have at least the current model's context capacity.");
-    }
+    const decision = this.continuationFor(context, selection.llmModelIdentifier, unchanged, catalog.offeredModels, evidence);
+    if (typeof decision !== "string") return decision;
     const result = validateModelConfigSchema(model, selection.llmConfig);
-    return result.kind === "valid" ? { kind: "valid", selection: { llmModelIdentifier: model.model_identifier, llmConfig: result.config } } : result;
+    return result.kind === "valid"
+      ? { kind: "valid", selection: { llmModelIdentifier: model.model_identifier, llmConfig: result.config }, continuation: decision }
+      : result;
+  }
+
+  /**
+   * REQ-003 (autobyteus-53): whether this save continues the session the record last ran on (`same_session`) or
+   * makes/keeps a pending hand-over (`hand_over`). `context.currentModelIdentifier` is that session's reference model
+   * on this runtime, or `null` when the last session ran on another runtime (`selectionContextFor`, DEC-005 owns that
+   * reference). Native capacity is the only evidence that can refuse the save instead of handing over, and only when
+   * this record cannot make a pending switch at all (`handOver === "unavailable"`, AC-009).
+   */
+  private continuationFor(
+    context: RunModelValidationContext,
+    targetModelIdentifier: string,
+    unchanged: boolean,
+    offeredModels: readonly ModelInfo[],
+    evidence: SelectionEvidence,
+  ): RunContinuation | RunModelSelectionValidationResult {
+    if (unchanged || context.handOver === "no_session") return "same_session";
+    if (context.currentModelIdentifier === null) return "hand_over";
+    if (context.runtimeKind !== RuntimeKind.AUTOBYTEUS) return "same_session";
+    const capacities = evidence.nativeCapacity.resolveMany(offeredModels);
+    const current = capacities[context.currentModelIdentifier];
+    const target = capacities[targetModelIdentifier];
+    if (current != null && target != null && target >= current) return "same_session";
+    if (context.handOver === "available") return "hand_over";
+    return current == null || target == null
+      ? invalid("Both models need verified context capacities before replacement.")
+      : invalid("The replacement model must have at least the current model's context capacity.");
   }
 
   /** Fresh, request-local catalog evidence shared across configured scopes, never across Saves. */
@@ -172,7 +196,7 @@ export class RunModelSelectionService {
     const models = catalog.offeredModels;
     const answer = { currentModelIdentifier: context.currentModelIdentifier, modelListReadable: true,
       currentModel: currentModel ? toChoice(currentModel) : null };
-    if (isExternalProviderRuntimeKind(context.runtimeKind)) return { ...answer,
+    if (isExternalProviderRuntimeKind(context.runtimeKind) || context.handOver !== "unavailable") return { ...answer,
       replacements: models.filter((model) => model.model_identifier !== context.currentModelIdentifier).map(toChoice),
       unavailableReason: null };
     const capacities = evidence.nativeCapacity.resolveMany(models);

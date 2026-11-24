@@ -31,8 +31,10 @@ export const planStoppedTeamLaunchSave = async (input: {
       fieldErrors: [{ path: "selectionPatches", message: error instanceof Error ? error.message : String(error) }] };
   }
   const results = await input.validator.validateMany(targets.map((target) => ({
-    // The saved agent runtime of the scope is the current one; another runtime (or a pending switch) is a fresh selection.
-    context: selectionContextFor({ ...target.launchConfiguration, pendingRuntimeSwitch: target.pendingRuntimeSwitch }, target.patch),
+    // The reference is the session the scope last ran on (DEC-005); a configured Agent can hand over, a Team's own
+    // default scope has no session to continue (DEC-007).
+    context: selectionContextFor({ ...target.launchConfiguration, pendingRuntimeSwitch: target.pendingRuntimeSwitch }, target.patch,
+      target.patch.scopeKind === "CONFIGURED_AGENT" ? "available" : "no_session"),
     selection: target.patch,
   })));
   const validations = targets.map((target, index) => ({ target, result: results[index]! }));
@@ -48,9 +50,14 @@ export const planStoppedTeamLaunchSave = async (input: {
         ? result.errors.map((error) => ({ path: `selectionPatches[${target.patch.scopeAddress}].${error.path}`, message: error.message }))
         : []) };
   }
-  const normalizedTargets = targets.map((target, index) => ({
-    ...target,
-    patch: { ...target.patch, ...(validations[index]!.result.kind === "valid" ? validations[index]!.result.selection : target.patch) },
-  }));
+  const normalizedTargets = targets.map((target, index) => {
+    const result = validations[index]!.result;
+    return {
+      ...target,
+      patch: { ...target.patch, ...(result.kind === "valid" ? result.selection : target.patch) },
+      // The continuation decided for this scope (REQ-003); a Team's own default scope never reaches the switch rule.
+      continuation: result.kind === "valid" ? result.continuation : "same_session" as const,
+    };
+  });
   return { kind: "planned", nextTree: applyTeamRunSelectionPatches(tree, normalizedTargets) };
 };

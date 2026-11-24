@@ -20,7 +20,7 @@ const messages = {
   "workspace.runModelConfig.selectedModelUnavailable": "The selected model is unavailable for the current runtime.",
   "workspace.runModelConfig.retry": "Retry",
   "workspace.runModelConfig.noAdjustableSettings": "This model has no adjustable settings.",
-  "workspace.runModelConfig.nativeModelHelp": "Choose a verified model with at least the saved model’s context capacity.",
+  "workspace.runModelConfig.nativeModelHelp": "A model with a smaller or unknown context window starts a fresh session that continues from the work journal.",
   "workspace.runModelConfig.externalModelHelp": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes.",
   "workspace.runModelConfig.unknownModelHelp": "Replacement models for this runtime are unavailable.",
   "workspace.runModelConfig.optionsUnavailable": "Runtime model options are unavailable. Refresh this run to retry; its saved model identity remains visible.",

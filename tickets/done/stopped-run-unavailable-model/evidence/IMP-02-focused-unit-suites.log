@@ -1,0 +1,10 @@
+IMP-02 — Focused unit suites over the changed code
+Command: cd autobyteus-server-ts && npx vitest run tests/unit/llm-management tests/unit/run-history tests/unit/agent-execution tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/launch-preferences tests/unit/model-routing
+Commit: 1f761bc8db8625709b4513108d293c6a964fcb4d (worktree HEAD; uncommitted source changes on top)
+Environment: macOS (Darwin 25.5.0)
+Date: 2026-11-23
+Check ID: IMP-02
+
+Key line (final run, after fixing all affected tests, including the new AC-001/AC-004/AC-005/AC-006/AC-007/AC-009/DEC-007 cases):
+Test Files  310 passed | 4 skipped (314)
+     Tests  2698 passed | 6 skipped (2704)
