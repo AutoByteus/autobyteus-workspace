@@ -1,4 +1,4 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import java.io.BufferedReader
 import java.io.Closeable
@@ -12,8 +12,8 @@ import java.util.Collections
 import kotlin.concurrent.thread
 
 /**
- * A stand-in for a node file route on the device (autobyteus-574's contract, D-1): `/rest/files/clip.mp4` answers by one
- * byte range with a strong ETag ([version]), `If-Range` by version, 401 without the expected [credential] (any request
+ * A stand-in for a node file route on the device (autobyteus-574's contract, D-1): `/rest/files/<name>` (a video, or an
+ * audio file of [contentType], autobyteus-642) answers by one byte range with a strong ETag ([version]), `If-Range` by version, 401 without the expected [credential] (any request
  * when it is `null`, as for a page's own `<video>`), 404 for any other path, at about [bytesPerSecond] (the AC's
  * throttled node). [page] is served at `/mobile/page.html`. Every request is recorded with what was sent.
  */
@@ -23,6 +23,8 @@ class RangeFileServer(
     private val credential: String?,
     private val bytesPerSecond: Long = 1_500_000,
     private val page: String? = null,
+    private val name: String = "videos/clip.mp4",
+    private val contentType: String = "video/mp4",
 ) : Closeable {
     /** One request, recorded when it arrives; [sent] grows while its bytes go out. */
     class Served(val range: String?, val authorization: String?, val status: Int, val start: Long) {
@@ -31,7 +33,7 @@ class RangeFileServer(
 
     private val socket = ServerSocket(0, 50, InetAddress.getByName("127.0.0.1"))
     val origin: String = "http://127.0.0.1:${socket.localPort}"
-    val url: String = "$origin/rest/files/videos/clip.mp4"
+    val url: String = "$origin/rest/files/$name"
     val served: MutableList<Served> = Collections.synchronizedList(mutableListOf())
 
     init {
@@ -69,14 +71,14 @@ class RangeFileServer(
             out.write(body)
             return
         }
-        if (target.substringBefore('?') != "/rest/files/videos/clip.mp4") {
+        if (target.substringBefore('?') != "/rest/files/$name") {
             head(404, emptyMap(), 0); served += Served(range, authorization, 404, 0); return
         }
         if (credential != null && authorization != "Bearer $credential") {
             head(401, emptyMap(), 0); served += Served(range, authorization, 401, 0); return
         }
         val size = file.length()
-        val common = mapOf("Content-Type" to "video/mp4", "Accept-Ranges" to "bytes", "ETag" to version, "Cache-Control" to "no-cache")
+        val common = mapOf("Content-Type" to contentType, "Accept-Ranges" to "bytes", "ETag" to version, "Cache-Control" to "no-cache")
         val match = range?.let { Regex("""bytes=(\d+)-(\d*)""").matchEntire(it) }
         val ifRange = headers["if-range"]
         val start: Long

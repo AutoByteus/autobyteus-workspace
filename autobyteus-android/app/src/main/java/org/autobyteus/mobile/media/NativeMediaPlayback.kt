@@ -1,14 +1,14 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import java.util.UUID
 
 /**
- * The handoff of one video to the player screen (autobyteus-574 D-5): the page's credential stays in memory, never in
- * an Intent's extras, a saved state, a URL or a log. The opener puts the playback here and passes only a random token;
- * the player takes it once. One playback is pending at a time: a new one replaces it. A player recreated after Android
+ * The handoff of one video or audio file to the player screen (autobyteus-574 D-5, autobyteus-642 D-2): the page's
+ * credential stays in memory, never in an Intent's extras, a saved state, a URL or a log. The opener puts the playback
+ * here and passes only a random token; the player takes it once. One playback is pending at a time: a new one replaces it. A player recreated after Android
  * ended the process finds nothing and says it could not play.
  */
-object NativeVideoPlayback {
+object NativeMediaPlayback {
     /** One playback: the node it belongs to, the file's URL and name, and the credential for this playback only. */
     class Request(
         val nodeId: String,
@@ -17,7 +17,7 @@ object NativeVideoPlayback {
         val title: String,
         val credential: String,
     ) {
-        override fun toString(): String = "NativeVideoPlayback.Request(nodeId=$nodeId, title=$title, credential=<redacted>)"
+        override fun toString(): String = "NativeMediaPlayback.Request(nodeId=$nodeId, title=$title, credential=<redacted>)"
     }
 
     private var pending: Pair<String, Request>? = null

@@ -1,6 +1,8 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -30,14 +32,15 @@ import org.autobyteus.mobile.ui.DesktopFullScreenController
 import java.util.concurrent.Executors
 
 /**
- * The app's video player (autobyteus-574 D-3, UC-001…UC-003): one protected node video, streamed by range with the
- * credential in the header ([NodeVideoHttp]), its fetched bytes kept by version ([VideoCache]), so a reopen of an
- * unchanged file reads nothing again. Full screen turns the phone to landscape with the system bars hidden (432's
- * controller) and back to portrait; the activity handles the rotation itself, so the position is kept. The credential
- * lives in memory from [NativeVideoPlayback.take] until the screen closes; nothing logs a URL or a header.
+ * The app's media player (autobyteus-574 D-3, autobyteus-642 D-2): one protected node video or audio file, streamed by
+ * range with the credential in the header ([NodeMediaHttp]), its fetched bytes kept by version ([MediaCache]), so a
+ * reopen of an unchanged file reads nothing again. A video's full screen turns the phone to landscape with the system
+ * bars hidden (432's controller) and back to portrait; the activity handles the rotation itself, so the position is
+ * kept. An audio file has no full screen: its title and controls stay shown. The credential lives in memory from
+ * [NativeMediaPlayback.take] until the screen closes; nothing logs a URL or a header.
  */
 @OptIn(UnstableApi::class)
-class VideoPlayerActivity : Activity() {
+class MediaPlayerActivity : Activity() {
     private var player: ExoPlayer? = null
     private lateinit var playerView: PlayerView
     private lateinit var topBar: LinearLayout
@@ -45,14 +48,16 @@ class VideoPlayerActivity : Activity() {
     private val probes = Executors.newSingleThreadExecutor()
     private val mainThread = Handler(Looper.getMainLooper())
     private var closed = false
+    private lateinit var kind: MediaKind
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fullScreen = DesktopFullScreenController.forActivity(this)
-        val request = NativeVideoPlayback.take(intent.getStringExtra(EXTRA_PLAYBACK))
+        kind = requireNotNull(MediaKind.ofWire(intent.getStringExtra(EXTRA_KIND))) { "The player is opened with its kind." }
+        val request = NativeMediaPlayback.take(intent.getStringExtra(EXTRA_PLAYBACK))
         setContentView(buildScreen(request?.title.orEmpty()))
         if (request == null) return showCouldNotPlay()
-        val http = NodeVideoHttp(request.nodeOrigin, request.credential)
+        val http = NodeMediaHttp(request.nodeOrigin, request.credential)
         probes.execute {
             val version = probeVersion(http, request.url)
             mainThread.post { if (!closed) version.fold({ start(http, request, it) }, { showCouldNotPlay() }) }
@@ -61,29 +66,29 @@ class VideoPlayerActivity : Activity() {
 
     /**
      * The file's version, from a two-byte read (`Range: bytes=0-1`): the cache's key for this playback. `null` when the
-     * node sends none (the video then plays without the cache).
+     * node sends none (the file then plays without the cache).
      */
-    private fun probeVersion(http: NodeVideoHttp, url: String): Result<String?> = runCatching {
+    private fun probeVersion(http: NodeMediaHttp, url: String): Result<String?> = runCatching {
         http.open(url, position = 0, length = 2).use { answer ->
             if (answer.status != 200 && answer.status != 206) throw IllegalStateException("probe answered ${answer.status}")
             answer.etag
         }
-    }.onFailure { Log.w(TAG, "The video could not be opened (${it.javaClass.simpleName}).") }
+    }.onFailure { Log.w(TAG, "The ${kind.wire} could not be opened (${it.javaClass.simpleName}).") }
 
-    private fun start(http: NodeVideoHttp, request: NativeVideoPlayback.Request, version: String?) {
-        val upstream = NodeVideoDataSource.Factory(http, version)
+    private fun start(http: NodeMediaHttp, request: NativeMediaPlayback.Request, version: String?) {
+        val upstream = NodeMediaDataSource.Factory(http, version)
         val dataSource: DataSource.Factory = if (version == null) upstream else CacheDataSource.Factory()
-            .setCache(VideoCache.get(this))
+            .setCache(MediaCache.get(this))
             .setUpstreamDataSourceFactory(upstream)
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
         val item = MediaItem.Builder()
             .setUri(request.url)
-            .apply { if (version != null) setCustomCacheKey(VideoCacheKeys.keyFor(request.nodeId, request.url, version)) }
+            .apply { if (version != null) setCustomCacheKey(MediaCacheKeys.keyFor(request.nodeId, request.url, version)) }
             .build()
         val created = ExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(dataSource)).build()
         created.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
-                Log.w(TAG, "The video stopped: ${error.errorCodeName}")
+                Log.w(TAG, "The ${kind.wire} stopped: ${error.errorCodeName}")
                 showCouldNotPlay()
             }
         })
@@ -98,8 +103,18 @@ class VideoPlayerActivity : Activity() {
         val root = FrameLayout(this).apply { setBackgroundColor(Color.BLACK) }
         playerView = PlayerView(this).apply {
             layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            setFullscreenButtonClickListener { on -> setFullScreen(on) }
-            setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility -> topBar.visibility = visibility })
+            when (kind) {
+                // A video's controls and bar hide while it plays; its full-screen button turns the phone to landscape.
+                MediaKind.VIDEO -> {
+                    setFullscreenButtonClickListener { on -> setFullScreen(on) }
+                    setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility -> topBar.visibility = visibility })
+                }
+                // Audio has nothing to watch: the title and controls stay shown, and there is no full screen.
+                MediaKind.AUDIO -> {
+                    controllerShowTimeoutMs = 0
+                    controllerHideOnTouch = false
+                }
+            }
         }
         topBar = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -107,7 +122,7 @@ class VideoPlayerActivity : Activity() {
             setBackgroundColor(0x80000000.toInt())
             layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP)
             addView(backButton())
-            addView(TextView(this@VideoPlayerActivity).apply {
+            addView(TextView(this@MediaPlayerActivity).apply {
                 text = title
                 setTextColor(Color.WHITE)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
@@ -134,7 +149,7 @@ class VideoPlayerActivity : Activity() {
         setOnClickListener { finish() }
     }
 
-    /** "This video could not be played." with Back: a missing or changed file, a refused credential, a network failure. */
+    /** "This video could not be played." (or audio) with Back: a missing or changed file, a refused credential, a failure. */
     private fun showCouldNotPlay() {
         player?.release()
         player = null
@@ -143,8 +158,8 @@ class VideoPlayerActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
             setBackgroundColor(Color.BLACK)
-            addView(TextView(this@VideoPlayerActivity).apply {
-                text = COULD_NOT_PLAY
+            addView(TextView(this@MediaPlayerActivity).apply {
+                text = couldNotPlay(kind)
                 setTextColor(Color.WHITE)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                 gravity = Gravity.CENTER
@@ -180,9 +195,16 @@ class VideoPlayerActivity : Activity() {
     }
 
     companion object {
-        /** The token of the playback in [NativeVideoPlayback]: the only extra (never the credential or the URL). */
-        const val EXTRA_PLAYBACK = "org.autobyteus.mobile.video.PLAYBACK"
-        const val COULD_NOT_PLAY = "This video could not be played."
-        private const val TAG = "AutoByteusVideo"
+        /** The token of the playback in [NativeMediaPlayback] (never the credential or the URL). */
+        const val EXTRA_PLAYBACK = "org.autobyteus.mobile.media.PLAYBACK"
+        /** The [MediaKind] (its wire name): it chooses the screen, and outlives the process, unlike the playback. */
+        const val EXTRA_KIND = "org.autobyteus.mobile.media.KIND"
+
+        fun couldNotPlay(kind: MediaKind): String = "This ${kind.wire} could not be played."
+
+        /** Opens the player for the playback [token] names, of [kind]. */
+        fun intent(context: Context, token: String, kind: MediaKind): Intent =
+            Intent(context, MediaPlayerActivity::class.java).putExtra(EXTRA_PLAYBACK, token).putExtra(EXTRA_KIND, kind.wire)
+        private const val TAG = "AutoByteusMedia"
     }
 }

@@ -15,7 +15,7 @@ import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.SavedNodeEntry
 import org.autobyteus.mobile.connection.SavedNodeStore
 import org.autobyteus.mobile.ui.DesktopFullScreenController
-import org.autobyteus.mobile.video.RangeFileServer
+import org.autobyteus.mobile.media.RangeFileServer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

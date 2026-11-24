@@ -1,4 +1,4 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import android.net.Uri
 import androidx.annotation.OptIn
@@ -15,22 +15,22 @@ import java.io.IOException
 import java.io.InputStream
 
 /**
- * Media3's reader of one node video (autobyteus-574 D-3): each read is a byte range through [NodeVideoHttp] (the
- * credential in the header, to the node's origin only, no redirect). [version] is the file's ETag at the start of the
+ * Media3's reader of one node video or audio file (autobyteus-574 D-3): each read is a byte range through
+ * [NodeMediaHttp] (the credential in the header, to the node's origin only, no redirect). [version] is the file's ETag at the start of the
  * playback: a range is asked with `If-Range`, so a file changed meanwhile answers 200 and the read fails loudly instead
  * of mixing two versions' bytes.
  */
 @OptIn(UnstableApi::class)
-class NodeVideoDataSource(
-    private val http: NodeVideoHttp,
+class NodeMediaDataSource(
+    private val http: NodeMediaHttp,
     private val version: String?,
 ) : BaseDataSource(/* isNetwork= */ true) {
-    class Factory(private val http: NodeVideoHttp, private val version: String?) : DataSource.Factory {
-        override fun createDataSource(): DataSource = NodeVideoDataSource(http, version)
+    class Factory(private val http: NodeMediaHttp, private val version: String?) : DataSource.Factory {
+        override fun createDataSource(): DataSource = NodeMediaDataSource(http, version)
     }
 
     private var uri: Uri? = null
-    private var response: NodeVideoHttp.Response? = null
+    private var response: NodeMediaHttp.Response? = null
     private var body: InputStream? = null
     private var bytesRemaining: Long = C.LENGTH_UNSET.toLong()
     private var opened = false
@@ -103,13 +103,13 @@ class NodeVideoDataSource(
         body = null
     }
 
-    private fun rangeLength(range: NodeVideoHttp.ContentRange?): Long {
+    private fun rangeLength(range: NodeMediaHttp.ContentRange?): Long {
         val first = range?.first ?: return C.LENGTH_UNSET.toLong()
         val last = range.last ?: return C.LENGTH_UNSET.toLong()
         return last - first + 1
     }
 
-    private fun invalidResponse(answer: NodeVideoHttp.Response, dataSpec: DataSpec): HttpDataSource.InvalidResponseCodeException {
+    private fun invalidResponse(answer: NodeMediaHttp.Response, dataSpec: DataSpec): HttpDataSource.InvalidResponseCodeException {
         val headers = answer.headers
         closeQuietly()
         return HttpDataSource.InvalidResponseCodeException(answer.status, null, null, headers, dataSpec, ByteArray(0))

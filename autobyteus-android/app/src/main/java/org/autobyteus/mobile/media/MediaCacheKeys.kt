@@ -1,15 +1,15 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import java.net.URI
 import java.security.MessageDigest
 
 /**
- * The video cache's keys (autobyteus-574 DEC-003, design N-4): an entry is one version of one node file, named by node,
+ * The media cache's keys (autobyteus-574 DEC-003, design N-4): an entry is one version of one node file, named by node,
  * file URL (path and query) and ETag. A changed file has a new ETag and so a new key: the old bytes are never served.
  * The key is hashed (SHA-256 hex), so the cache's index never spells out a path; its first part is the node's own hash,
  * so a node's entries can be found when the node is removed (D-7).
  */
-object VideoCacheKeys {
+object MediaCacheKeys {
     fun keyFor(nodeId: String, url: String, etag: String): String {
         val uri = URI(url)
         val pathAndQuery = uri.rawPath.orEmpty() + (uri.rawQuery?.let { "?$it" } ?: "")

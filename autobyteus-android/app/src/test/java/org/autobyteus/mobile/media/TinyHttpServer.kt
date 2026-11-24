@@ -1,4 +1,4 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import java.io.BufferedReader
 import java.io.Closeable

@@ -1,7 +1,6 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.view.View
@@ -29,16 +28,16 @@ import java.util.UUID
  * about 1.5 MB/s plays in under 2 s, a seek to the middle plays within 2 s by one range from there, every request carries
  * the credential in the header, a reopen reads nothing again of what it played, a changed file (new ETag) is read again,
  * full screen turns to landscape with the bars hidden and back to portrait at the same position, and a missing file says
- * it could not be played. Production: VideoPlayerActivity, NativeVideoPlayback, NodeVideoHttp, NodeVideoDataSource,
- * VideoCache (Media3's SimpleCache), DesktopFullScreenController; the node's file route is [RangeFileServer] on the
+ * it could not be played. Production: MediaPlayerActivity, NativeMediaPlayback, NodeMediaHttp, NodeMediaDataSource,
+ * MediaCache (Media3's SimpleCache), DesktopFullScreenController; the node's file route is [RangeFileServer] on the
  * device.
  *
  * Needs the test video on the device: `adb push <a 20+ MB MP4> /data/local/tmp/autobyteus-574-video.mp4` (the evidence
  * README says how it is made); without it the test is skipped. Runs held in portrait:
- * `./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.autobyteus.mobile.video.VideoPlayerActivityTest`.
+ * `./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.autobyteus.mobile.media.MediaPlayerActivityTest`.
  */
 @RunWith(AndroidJUnit4::class)
-class VideoPlayerActivityTest {
+class MediaPlayerActivityTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
     private val credential = "mra_video_test_credential"
     private lateinit var video: File
@@ -138,8 +137,7 @@ class VideoPlayerActivityTest {
         }
         open(server.url, credential = "mra_revoked").use { scenario -> awaitWindow(scenario, "could not play") { couldNotPlayShown(it) } }
         // A recreated player (after the process ended) finds no playback and says so too.
-        ActivityScenario.launch<VideoPlayerActivity>(Intent(instrumentation.targetContext, VideoPlayerActivity::class.java)
-            .putExtra(VideoPlayerActivity.EXTRA_PLAYBACK, "gone")).use { scenario ->
+        ActivityScenario.launch<MediaPlayerActivity>(MediaPlayerActivity.intent(instrumentation.targetContext, "gone", MediaKind.VIDEO)).use { scenario ->
             awaitWindow(scenario, "could not play") { couldNotPlayShown(it) }
         }
     }
@@ -153,14 +151,14 @@ class VideoPlayerActivityTest {
         for (nodeId in listOf(removed, kept)) {
             open(server.url, nodeId = nodeId).use { scenario -> awaitPlayer(scenario, "playing for $nodeId") { it.isPlaying && it.currentPosition > 300 } }
         }
-        val cache = VideoCache.get(instrumentation.targetContext)
-        val keyOf = { nodeId: String -> VideoCacheKeys.keyFor(nodeId, server.url, server.version) }
+        val cache = MediaCache.get(instrumentation.targetContext)
+        val keyOf = { nodeId: String -> MediaCacheKeys.keyFor(nodeId, server.url, server.version) }
         awaitTrue("both nodes have cached bytes") { cache.getCachedBytes(keyOf(removed), 0, 1_000) > 0 && cache.getCachedBytes(keyOf(kept), 0, 1_000) > 0 }
 
-        VideoCache.deleteNode(instrumentation.targetContext, removed)
-        awaitTrue("the removed node's video is gone") { cache.keys.none { it.startsWith(VideoCacheKeys.nodePrefix(removed)) } }
+        MediaCache.deleteNode(instrumentation.targetContext, removed)
+        awaitTrue("the removed node's video is gone") { cache.keys.none { it.startsWith(MediaCacheKeys.nodePrefix(removed)) } }
         assertTrue("the other node's video stays", cache.getCachedBytes(keyOf(kept), 0, 1_000) > 0)
-        report("node removal: ${cache.keys.count { it.startsWith(VideoCacheKeys.nodePrefix(kept)) }} entry left for the other node")
+        report("node removal: ${cache.keys.count { it.startsWith(MediaCacheKeys.nodePrefix(kept)) }} entry left for the other node")
     }
 
     private fun awaitTrue(what: String, condition: () -> Boolean) {
@@ -172,19 +170,18 @@ class VideoPlayerActivityTest {
         throw AssertionError("$what: not within 10 s")
     }
 
-    private fun open(url: String, credential: String = this.credential, nodeId: String = server.origin): ActivityScenario<VideoPlayerActivity> {
-        val token = NativeVideoPlayback.put(NativeVideoPlayback.Request(
+    private fun open(url: String, credential: String = this.credential, nodeId: String = server.origin): ActivityScenario<MediaPlayerActivity> {
+        val token = NativeMediaPlayback.put(NativeMediaPlayback.Request(
             nodeId = nodeId, nodeOrigin = server.origin, url = url, title = "clip.mp4", credential = credential,
         ))
-        return ActivityScenario.launch(Intent(instrumentation.targetContext, VideoPlayerActivity::class.java)
-            .putExtra(VideoPlayerActivity.EXTRA_PLAYBACK, token))
+        return ActivityScenario.launch(MediaPlayerActivity.intent(instrumentation.targetContext, token, MediaKind.VIDEO))
     }
 
     private fun servedBytes(): Long = server.served.sumOf { it.sent }
 
-    /** The measured numbers, for the evidence (`adb logcat -s VideoPlayerActivityTest`); no credential or path. */
+    /** The measured numbers, for the evidence (`adb logcat -s MediaPlayerActivityTest`); no credential or path. */
     private fun report(line: String) {
-        android.util.Log.i("VideoPlayerActivityTest", line)
+        android.util.Log.i("MediaPlayerActivityTest", line)
     }
 
     /** [cachedRanges] once the released player has written its last span (the release finishes on its own thread). */
@@ -202,8 +199,8 @@ class VideoPlayerActivityTest {
     /** The byte ranges the player's cache holds for this version of the file (the parts it read). */
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun cachedRanges(): List<LongRange> {
-        val key = VideoCacheKeys.keyFor(server.origin, server.url, server.version)
-        return VideoCache.get(instrumentation.targetContext).getCachedSpans(key)
+        val key = MediaCacheKeys.keyFor(server.origin, server.url, server.version)
+        return MediaCache.get(instrumentation.targetContext).getCachedSpans(key)
             .filter { it.isCached }
             .map { it.position until it.position + it.length }
     }
@@ -227,13 +224,13 @@ class VideoPlayerActivityTest {
     }
 
     private fun couldNotPlayShown(activity: Activity): Boolean =
-        findText(activity.window.decorView, VideoPlayerActivity.COULD_NOT_PLAY) && findText(activity.window.decorView, "Back")
+        findText(activity.window.decorView, MediaPlayerActivity.couldNotPlay(MediaKind.VIDEO)) && findText(activity.window.decorView, "Back")
 
-    private fun onPlayer(scenario: ActivityScenario<VideoPlayerActivity>, action: (Player) -> Unit) {
+    private fun onPlayer(scenario: ActivityScenario<MediaPlayerActivity>, action: (Player) -> Unit) {
         scenario.onActivity { activity -> findPlayerView(activity.window.decorView)?.player?.let(action) }
     }
 
-    private fun clickFullScreen(scenario: ActivityScenario<VideoPlayerActivity>) {
+    private fun clickFullScreen(scenario: ActivityScenario<MediaPlayerActivity>) {
         scenario.onActivity { activity ->
             val view = findPlayerView(activity.window.decorView)!!
             view.showController()
@@ -241,7 +238,7 @@ class VideoPlayerActivityTest {
         }
     }
 
-    private fun orientation(scenario: ActivityScenario<VideoPlayerActivity>): Int {
+    private fun orientation(scenario: ActivityScenario<MediaPlayerActivity>): Int {
         var value = Configuration.ORIENTATION_UNDEFINED
         scenario.onActivity { value = it.resources.configuration.orientation }
         return value
@@ -254,7 +251,7 @@ class VideoPlayerActivityTest {
         return if (status == navigation) status else null
     }
 
-    private fun awaitPlayer(scenario: ActivityScenario<VideoPlayerActivity>, what: String, condition: (Player) -> Boolean) {
+    private fun awaitPlayer(scenario: ActivityScenario<MediaPlayerActivity>, what: String, condition: (Player) -> Boolean) {
         val deadline = System.currentTimeMillis() + 20_000
         while (System.currentTimeMillis() < deadline) {
             var met = false
@@ -265,7 +262,7 @@ class VideoPlayerActivityTest {
         throw AssertionError("$what: not within 20 s")
     }
 
-    private fun awaitWindow(scenario: ActivityScenario<VideoPlayerActivity>, what: String, condition: (Activity) -> Boolean) {
+    private fun awaitWindow(scenario: ActivityScenario<MediaPlayerActivity>, what: String, condition: (Activity) -> Boolean) {
         val deadline = System.currentTimeMillis() + 10_000
         while (System.currentTimeMillis() < deadline) {
             instrumentation.waitForIdleSync()

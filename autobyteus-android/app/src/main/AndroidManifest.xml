@@ -40,9 +40,10 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <!-- The app's video player (autobyteus-574 D-3): it handles rotation itself, so full screen keeps the position. -->
+        <!-- The app's video and audio player (autobyteus-574 D-3, autobyteus-642 D-2): it handles rotation itself, so full
+             screen keeps the position. -->
         <activity
-            android:name=".video.VideoPlayerActivity"
+            android:name=".media.MediaPlayerActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:exported="false" />
     </application>

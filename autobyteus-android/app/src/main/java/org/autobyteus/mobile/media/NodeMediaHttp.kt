@@ -1,4 +1,4 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import java.io.Closeable
 import java.io.IOException
@@ -9,19 +9,19 @@ import java.net.URL
 import java.net.URLDecoder
 
 /**
- * The video player's one way to read a node file (autobyteus-574 D-3, D-5): a byte range of a URL on the open node's
+ * The media player's one way to read a node file (autobyteus-574 D-3, D-5): a byte range of a URL on the open node's
  * origin, with the phone's credential only as `Authorization: Bearer`. It never follows a redirect (node file routes
  * never redirect; a redirect could carry the header elsewhere, design N-1) and refuses any URL off the node's origin or
  * outside its `/rest/` routes, before anything is sent. Nothing here logs a URL or a header.
  */
-class NodeVideoHttp(
+class NodeMediaHttp(
     private val nodeOrigin: String,
     private val credential: String,
     private val connectTimeoutMs: Int = 15_000,
     private val readTimeoutMs: Int = 20_000,
 ) {
     /** A request this player must not send: off the node's origin, or not a node file route. */
-    class RefusedUrl : IOException("Refused a video URL that is not a file route of the open node.")
+    class RefusedUrl : IOException("Refused a media URL that is not a file route of the open node.")
 
     /** The node answered with a redirect; it is not followed, so the credential goes nowhere else. */
     class RedirectRefused(val status: Int) : IOException("The node answered $status (a redirect); not followed.")

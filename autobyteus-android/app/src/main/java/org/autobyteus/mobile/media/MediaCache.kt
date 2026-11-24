@@ -1,4 +1,4 @@
-package org.autobyteus.mobile.video
+package org.autobyteus.mobile.media
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -10,14 +10,14 @@ import java.io.File
 import java.util.concurrent.Executors
 
 /**
- * The app's one video cache (autobyteus-574 DEC-003, D-7): the bytes of node videos already fetched, by version
- * ([VideoCacheKeys]), in the app's private cache folder, at most [MAX_BYTES] with the least recently used dropped first.
- * It holds only video bytes: never a credential. A node's entries are deleted when the node is removed from the app.
+ * The app's one media cache (autobyteus-574 DEC-003, D-7): the bytes of node videos and audio files already fetched, by
+ * version ([MediaCacheKeys]), in the app's private cache folder, at most [MAX_BYTES] with the least recently used dropped
+ * first. It holds only media bytes: never a credential. A node's entries are deleted when the node is removed from the app.
  */
 @OptIn(UnstableApi::class)
-object VideoCache {
+object MediaCache {
     const val MAX_BYTES: Long = 500L * 1024 * 1024
-    private const val FOLDER = "video-cache"
+    private const val FOLDER = "media-cache"
 
     private var cache: SimpleCache? = null
     private val deletions = Executors.newSingleThreadExecutor()
@@ -30,7 +30,7 @@ object VideoCache {
         StandaloneDatabaseProvider(context.applicationContext),
     ).also { cache = it }
 
-    /** Deletes every cached video of [nodeId], off the main thread (a removed node's files leave the phone). */
+    /** Deletes every cached file of [nodeId], off the main thread (a removed node's files leave the phone). */
     fun deleteNode(context: Context, nodeId: String) {
         val appContext = context.applicationContext
         deletions.execute { removeNode(get(appContext), nodeId) }
@@ -38,7 +38,7 @@ object VideoCache {
 
     /** Removes the keys of [nodeId] from [cache]; other nodes' entries stay. */
     internal fun removeNode(cache: SimpleCache, nodeId: String) {
-        val prefix = VideoCacheKeys.nodePrefix(nodeId)
+        val prefix = MediaCacheKeys.nodePrefix(nodeId)
         cache.keys.filter { it.startsWith(prefix) }.forEach { key -> cache.removeResource(key) }
     }
 }
