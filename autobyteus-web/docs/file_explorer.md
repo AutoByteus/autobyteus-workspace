@@ -929,6 +929,16 @@ workspace metadata is unavailable; the layout renders feedback and mounts
 neither the tree nor editor, preventing stale reads, keyboard saves, or writes
 against another workspace.
 
+`FileExplorerLayout` also decides, from its own measured width, whether the
+tree sits beside the file viewer or above it (autobyteus-642). The file viewer
+is never narrower than 400 px (`MIN_VIEWER_WIDTH`) beside the tree: the tree
+and viewer split only when a 150 px tree, the 1 px divider and a 400 px viewer
+fit, so the default 400–450 px right panel shows them stacked. In split the
+tree is shown at the user's dragged width or at what leaves the viewer 400 px,
+whichever is smaller, and the divider stops there; the dragged width comes back
+when the panel widens. The phone's layout (`layout="stacked"`) is always
+stacked.
+
 ### Visible Live Session Lifecycle
 
 `FileExplorer.vue` activates the requested metadata first, then watches the
