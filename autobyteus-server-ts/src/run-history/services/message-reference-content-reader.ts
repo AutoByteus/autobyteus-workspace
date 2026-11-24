@@ -19,10 +19,12 @@ export class MessageReferenceContentError extends Error {
   }
 }
 
+/** The referenced file, as the route serves it by range (autobyteus-642 D-1): its path, and its version from one `stat`. */
 export type ResolvedMessageReferenceContent = Readonly<{
-  absolutePath: string;
   mimeType: string;
-  stream: fs.ReadStream;
+  path: string;
+  size: number;
+  modifiedMs: number;
 }>;
 
 const required = (value: string, name: string): string => {
@@ -31,17 +33,21 @@ const required = (value: string, name: string): string => {
   return normalized;
 };
 
-/** A regular file this process can read; a file it may not read is refused as such, anything else is unavailable. */
-const isReadableFile = (absolutePath: string): boolean => {
+/**
+ * The `stat` of a regular file this process can read, or `null`; a file it may not read is refused as such, anything else
+ * is unavailable.
+ */
+const readableFileStat = (absolutePath: string): fs.Stats | null => {
   try {
-    if (!fs.statSync(absolutePath).isFile()) return false;
+    const stat = fs.statSync(absolutePath);
+    if (!stat.isFile()) return null;
     fs.accessSync(absolutePath, fs.constants.R_OK);
-    return true;
+    return stat;
   } catch (error) {
     if ((error as NodeJS.ErrnoException | undefined)?.code === "EACCES") {
       throw new MessageReferenceContentError("REFERENCE_CONTENT_FORBIDDEN", "The referenced file is not readable.");
     }
-    return false;
+    return null;
   }
 };
 
@@ -67,13 +73,15 @@ export class MessageReferenceContentReader {
     if (!path.isAbsolute(filePath)) {
       throw new MessageReferenceContentError("INVALID_REFERENCE_PATH", "The stored reference path is invalid.");
     }
-    if (!isReadableFile(filePath)) {
+    const stat = readableFileStat(filePath);
+    if (!stat) {
       throw new MessageReferenceContentError("REFERENCE_CONTENT_UNAVAILABLE", "The referenced file is not available.");
     }
     return Object.freeze({
-      absolutePath: filePath,
       mimeType: String(lookupMime(filePath) || "text/plain"),
-      stream: fs.createReadStream(filePath),
+      path: filePath,
+      size: stat.size,
+      modifiedMs: stat.mtimeMs,
     });
   }
 }

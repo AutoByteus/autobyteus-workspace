@@ -82,7 +82,6 @@ const sendDraftRouteError = (error: unknown, reply: { code(status: number): { se
 const contextFileContent = (filePath: string): UserFileContent => {
   const stat = fs.statSync(filePath);
   return {
-    kind: "file",
     mimeType: String(lookupMime(filePath) || "application/octet-stream"),
     path: filePath,
     size: stat.size,

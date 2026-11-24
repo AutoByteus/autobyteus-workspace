@@ -39,7 +39,12 @@ describe("MessageReferenceContentReader", () => {
       openRunsBelow: (view: { rootRunId: string }) => (view.rootRunId === "host" ? [{ teamRunId: "team-1" }] : []) as never };
     return new MessageReferenceContentReader({ views: new RunViewMessagesReader({ records, delegatedRunAgents }) });
   };
-  const read = async (stream: fs.ReadStream) => { let text = ""; for await (const chunk of stream) text += String(chunk); return text; };
+  /** The resolved file's text, after checking that the version it names is the file's own. */
+  const read = (resolved: { path: string; size: number; modifiedMs: number }) => {
+    const stat = fs.statSync(resolved.path);
+    expect({ size: resolved.size, modifiedMs: resolved.modifiedMs }).toEqual({ size: stat.size, modifiedMs: stat.mtimeMs });
+    return fs.readFileSync(resolved.path, "utf8");
+  };
   const resolve = (rootKind: CollaborationRootKind, rootRunId: string, messageId: string, filePath: string) =>
     reader().resolve({ rootKind, rootRunId, messageId, referenceId: messageReferenceId(messageId, filePath) });
 
@@ -51,22 +56,22 @@ describe("MessageReferenceContentReader", () => {
     const plan = file("plan.md");
     logs = { host: { messages: [message("m-own", "manager", "lead", [plan])], agents: ["manager"] }, "team-1": { messages: [], agents: ["lead", "worker"] } };
     const resolved = await resolve("agent", "host", "m-own", plan);
-    expect({ path: resolved.absolutePath, mime: resolved.mimeType, text: await read(resolved.stream) })
+    expect({ path: resolved.path, mime: resolved.mimeType, text: read(resolved) })
       .toEqual({ path: plan, mime: "text/markdown", text: "plan.md body\n" });
   });
 
   it("opens a file of a root's message stored in a delegated run's log (root and delegated run, AC-002)", async () => {
     const brief = file("brief.md");
     logs = { host: { messages: [], agents: ["manager"] }, "team-1": { messages: [message("m-cross", "lead", "manager", [brief])], agents: ["lead", "worker"] } };
-    expect(await read((await resolve("agent", "host", "m-cross", brief)).stream)).toBe("brief.md body\n");
+    expect(read(await resolve("agent", "host", "m-cross", brief))).toBe("brief.md body\n");
   });
 
   it("opens a file of a message between a delegated team's members, in that team's own view (the observed case, AC-001)", async () => {
     const spec = file("spec.md");
     logs = { host: { messages: [], agents: ["manager"] }, "team-1": { messages: [message("m-team", "lead", "worker", [spec])], agents: ["lead", "worker"] } };
-    expect(await read((await resolve("agent_team", "team-1", "m-team", spec)).stream)).toBe("spec.md body\n");
+    expect(read(await resolve("agent_team", "team-1", "m-team", spec))).toBe("spec.md body\n");
     // The host's view lists it too (both agents are of its tree), so its Messages tab opens it the same way.
-    expect(await read((await resolve("agent", "host", "m-team", spec)).stream)).toBe("spec.md body\n");
+    expect(read(await resolve("agent", "host", "m-team", spec))).toBe("spec.md body\n");
   });
 
   it.each([

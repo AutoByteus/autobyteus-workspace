@@ -9,29 +9,17 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 const USER_FILE_SANDBOX = "sandbox allow-scripts";
 
 /**
- * A user file a route answers with. A `file` (a regular file the route resolved) is served by byte range with its
- * version (autobyteus-574 D-1); a `stream` (content without a file path) is sent whole, as it comes.
+ * A user file a route answers with: a regular file the route resolved, served by byte range with its version
+ * (autobyteus-574 D-1).
  */
-export type UserFileContent =
-  | Readonly<{
-    kind: "file";
-    mimeType: string;
-    /** The resolved path the route checked; read here, from the requested offset. */
-    path: string;
-    /** Length in bytes and modification time, from the route's `stat`: together the file's version. */
-    size: number;
-    modifiedMs: number;
-  }>
-  | Readonly<{
-    kind: "stream";
-    mimeType: string;
-    body: NodeJS.ReadableStream;
-    /**
-     * The length in bytes, declared as `Content-Length` so a client can show how much has arrived (autobyteus-572
-     * D-5); `null` where the route does not know it. Nothing compresses these replies, so it is the body's length.
-     */
-    size: number | null;
-  }>;
+export type UserFileContent = Readonly<{
+  mimeType: string;
+  /** The resolved path the route checked; read here, from the requested offset. */
+  path: string;
+  /** Length in bytes and modification time, from the route's `stat`: together the file's version. */
+  size: number;
+  modifiedMs: number;
+}>;
 
 type ByteRange = Readonly<{ start: number; end: number }>;
 
@@ -76,11 +64,11 @@ const requestedRange = (request: FastifyRequest, size: number, version: string):
   return parsed === "ignore" ? null : parsed;
 };
 
-const sendFile = (
-  reply: FastifyReply,
-  content: Extract<UserFileContent, { kind: "file" }>,
-  request: FastifyRequest,
-): FastifyReply => {
+/** The one way a node route answers with a user file's content. Route-specific headers (cache) stay with the route. */
+export const sendUserFile = (reply: FastifyReply, content: UserFileContent, request: FastifyRequest): FastifyReply => {
+  reply.header("Content-Security-Policy", USER_FILE_SANDBOX);
+  reply.header("X-Content-Type-Options", "nosniff");
+  reply.type(content.mimeType);
   const version = versionOf(content);
   reply.header("Accept-Ranges", "bytes");
   reply.header("ETag", version);
@@ -101,14 +89,4 @@ const sendFile = (
   reply.header("Content-Range", `bytes ${range.start}-${range.end}/${content.size}`);
   reply.header("Content-Length", String(range.end - range.start + 1));
   return reply.code(206).send(fs.createReadStream(content.path, { start: range.start, end: range.end }));
-};
-
-/** The one way a node route answers with a user file's content. Route-specific headers (cache) stay with the route. */
-export const sendUserFile = (reply: FastifyReply, content: UserFileContent, request: FastifyRequest): FastifyReply => {
-  reply.header("Content-Security-Policy", USER_FILE_SANDBOX);
-  reply.header("X-Content-Type-Options", "nosniff");
-  reply.type(content.mimeType);
-  if (content.kind === "file") return sendFile(reply, content, request);
-  if (content.size !== null) reply.header("Content-Length", String(content.size));
-  return reply.send(content.body);
 };

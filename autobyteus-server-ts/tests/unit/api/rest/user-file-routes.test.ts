@@ -39,7 +39,10 @@ describe("user-file routes F3, F9–F15", () => {
     absolutePath: pathOf(url),
     isActiveRun: false,
   });
-  const referenceContent = (url: string) => ({ mimeType: fileOf(url).mime, stream: fs.createReadStream(pathOf(url)) });
+  const referenceContent = (url: string) => {
+    const stat = fs.statSync(pathOf(url));
+    return { mimeType: fileOf(url).mime, path: pathOf(url), size: stat.size, modifiedMs: stat.mtimeMs };
+  };
 
   beforeAll(async () => {
     root = fs.mkdtempSync(path.join(os.tmpdir(), "user-file-routes-"));
@@ -92,12 +95,15 @@ describe("user-file routes F3, F9–F15", () => {
   });
 
   // autobyteus-574 D-1 (AC-005): the routes that resolve a file serve it by range with its version; a run file change
-  // keeps its no-store. The message references have no file path and are sent whole, as before.
+  // keeps its no-store, and so do the message references (autobyteus-642 D-1, AC-001).
   it.each([
     ["F3 uploaded media", "no-cache"],
     ["F9 run file change", "no-store"],
     ["F10 team member file change", "no-store"],
     ["F11 org member file change", "no-store"],
+    ["F13 message reference, Team root", "no-store"],
+    ["F14 message reference, Org root", "no-store"],
+    ["F15 message reference, standalone root", "no-store"],
   ])("%s: 206 for a Range, the ETag, 304 for it, and Cache-Control %s", async (label, cacheControl) => {
     const urlFor = routes.find(([name]) => name === label)![1];
     const file = FILES[0];
@@ -113,13 +119,20 @@ describe("user-file routes F3, F9–F15", () => {
     expect((await app.inject({ method: "GET", url: urlFor(file.name), headers: { "if-none-match": etag } })).statusCode).toBe(304);
   });
 
-  it.each(routes.filter(([label]) => label.includes("message reference")))("%s: sent whole, without ranges or a version", async (_label, urlFor) => {
+  // autobyteus-642 AC-001: a message reference answers a range outside the file with 416, and the whole file (200, its
+  // length) without a range or for several ranges.
+  it.each(routes.filter(([label]) => label.includes("message reference")))("%s: 416 outside the file, 200 whole otherwise", async (_label, urlFor) => {
     const file = FILES[0];
-    const response = await app.inject({ method: "GET", url: urlFor(file.name), headers: { range: "bytes=2-6" } });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toBe(file.body);
-    expect(response.headers["accept-ranges"]).toBeUndefined();
-    expect(response.headers.etag).toBeUndefined();
-    expect(response.headers["cache-control"]).toBe("no-store");
+    const outside = await app.inject({ method: "GET", url: urlFor(file.name), headers: { range: `bytes=${file.body.length}-` } });
+    expect(outside.statusCode).toBe(416);
+    expect(outside.headers["content-range"]).toBe(`bytes */${file.body.length}`);
+    for (const headers of [{}, { range: "bytes=0-1,3-4" }]) {
+      const whole = await app.inject({ method: "GET", url: urlFor(file.name), headers });
+      expect(whole.statusCode).toBe(200);
+      expect(whole.body).toBe(file.body);
+      expect(whole.headers["content-length"]).toBe(String(file.body.length));
+      expect(whole.headers["accept-ranges"]).toBe("bytes");
+      expect(whole.headers["cache-control"]).toBe("no-store");
+    }
   });
 });

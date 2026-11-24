@@ -14,7 +14,7 @@ export async function registerNodeFileRoutes(app: FastifyInstance, reader: NodeF
       return reply.code(opened.statusCode).send({ code: opened.code, message: opened.message });
     }
     return sendUserFile(reply, {
-      kind: "file", mimeType: opened.mimeType, path: opened.realPath, size: opened.size, modifiedMs: opened.modifiedMs,
+      mimeType: opened.mimeType, path: opened.realPath, size: opened.size, modifiedMs: opened.modifiedMs,
     }, request);
   });
 }

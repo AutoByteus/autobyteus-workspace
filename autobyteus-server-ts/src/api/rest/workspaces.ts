@@ -48,7 +48,6 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       }
 
       return sendUserFile(reply, {
-        kind: "file",
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
         path: absolutePath,
         size: stat.size,
@@ -101,7 +100,6 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       }
 
       return sendUserFile(reply, {
-        kind: "file",
         mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
         path: absolutePath,
         size: stat.size,
