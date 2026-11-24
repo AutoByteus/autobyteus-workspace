@@ -7,6 +7,7 @@
 | ARCH-REV-001 | Round 1 / Architecture Design Complete, revised SR-004 (2026-11-23) | SR-001…SR-004 | N/A | Fail (Design Impact; Requirement Gap) | AR-001, AR-002 |
 | ARCH-REV-002 | Round 2 / Design revised SR-005 (2026-11-23) | SR-005 | Fail | Pass | AR-001, AR-002 (resolved) |
 | ARCH-REV-003 | Round 3 / Design revised SR-006 after implementation's Design Impact (2026-11-23) | SR-006 | Pass | Pass | None (N-4, N-5 non-blocking) |
+| ARCH-REV-004 | Round 4 / Design revised SR-007 after delivery DR-001 Blocked (2026-11-24) | SR-007 | Pass | Pass | None (N-6 non-blocking) |
 
 ## Revision Entries
 
@@ -86,3 +87,32 @@ None.
 - Material classification changes: None (Large / High).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: rule 12 as before.
+
+### ARCH-REV-004 — Stored traces keep their write time: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/tickets/in-progress/conversation-order-628/design-review-report.md`
+- Review round and trigger: round 4; `handoff-design-revised-sr-007.md` (local branch head `3b95d9b080`), after delivery DR-001 Blocked (Finding 2: with distinct event times, 7 of 25 accumulator tests fail).
+- Triggering role, report path, and finding IDs: Solution Designer (from delivery's Finding 2); `design-spec.md` SR-007; N/A.
+- Relevant solution revision IDs: SR-007.
+- Prior authoritative decision: Pass (ARCH-REV-003).
+- Current authoritative decision: Pass.
+- What changed in the review result: SR-007 is verified.
+  - D-3's "trace `ts` = `occurredAt`" broke the write order for traces built from several events. Reverting to the write time (payload time, else `Date.now()`, as on the base) restores it.
+  - The user trace keeps `acceptedAt` (SR-006).
+  - REQ-004 holds: payload times are node-local, and the write time is on the node's clock.
+  - D-2 rule (a) holds by construction.
+  - Reload equals live for a message queued during a turn: both split that turn's reply around "You" (`segmentHandler.ts:255-270`; reload `ts` sort).
+  - This supersedes the round-1 data-contract row "External runtimes' trace `ts` from `occurredAt`" (marked in the report).
+  - Non-blocking N-6: keep payload times node-local (comment at `extractTimestamp`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Resolved | — | Unchanged by SR-007 |
+| AR-002 | Resolved | Resolved | — | Unchanged by SR-007 |
+
+- New or remaining finding IDs: None blocking; N-6 non-blocking (N-1, N-2, N-4, N-5 as recorded).
+- Material classification changes: None (Large / High).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: rule 12 as before; delivery re-runs its integrated checks after implementation.

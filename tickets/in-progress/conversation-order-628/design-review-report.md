@@ -7,14 +7,22 @@
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/tickets/in-progress/conversation-order-628/solution-revision-record.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/tickets/in-progress/conversation-order-628/design-spec.md` (SR-005: D-3 rewritten per stream boundary; D-1, D-2 unchanged and passed in round 1)
 - Supplemental Task Artifacts Reviewed: `probes/clock-order-reproduction.spec.ts` (+ `.run.log`); `follow-ups.md` (FU-001); `handoff-architecture-design-complete.md`; `handoff-design-revised-sr-004.md`; `handoff-design-revised-sr-005.md`; implementation evidence IMP-01…IMP-05 (D-1/D-2)
-- Relevant Solution Revision IDs: SR-001…SR-006
+- Relevant Solution Revision IDs: SR-001…SR-007
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/tickets/in-progress/conversation-order-628/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
 - Trigger: Solution Designer's revised design SR-005 after ARCH-REV-001 (`handoff-design-revised-sr-005.md`, branch head `b45ef33694`), 2026-11-23
 - Round 3 trigger: SR-006 after implementation's Design Impact (branch head `d035533502`; D-1, D-2 and D-3 built at `33a75a4ae4`…`87d7321915`), 2026-11-23
-- Prior Review Round Reviewed: 2 (ARCH-REV-002, Pass)
-- Latest Authoritative Round: 3
+- Round 4 trigger: SR-007 after delivery DR-001 Blocked, Finding 2 (`handoff-design-revised-sr-007.md`, local branch head `3b95d9b080` on delivery's merge `54cee15c8e`), 2026-11-24
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, Pass)
+- Latest Authoritative Round: 4
+- Current-State Evidence Basis (round 4):
+  - `evidence/delivery/DEL-BLOCK-accumulator-distinct-event-times/distinct-times-run.log` (7 of 25 accumulator tests fail with distinct event times);
+  - base `1f761bc8db` `runtime-memory-event-payload.ts:36-40` (`extractTimestamp`: payload `ts`/`timestamp`/`createdAt`/`created_at`) and `external-runtime-memory-writer.ts:14` (`Date.now()` fallback);
+  - current `runtime-memory-event-payload.ts:26-29` (`extractEventTime` from `occurredAt`, D-3, to be reverted);
+  - runtime converters setting payload times (`claude-session.ts:240,522` `nowTimestampSeconds()`, `claude-system-instruction-capture.ts:25`): node-local only;
+  - web `segmentHandler.ts:255-270` (`findOrCreateAIMessage` opens a new AI message when the last row is a user row);
+  - `raw-trace-record-normalizer.ts:115-133` (reload sort by `ts`, then turn, then `seq`).
 - Current-State Evidence Basis (round 3): `agent-run-command-observer-dispatch.ts:15-40` (`forwardedAt: new Date()` when the observers are notified), `agent-run-input-admission-state.ts:24,120,372` (`acceptedAt` set at `admit`, sent as `accepted_at`), `runtime-memory-event-accumulator.ts:75-87`, `rg forwardedAt` over `src` (one reader: the accumulator).
 - Current-State Evidence Basis (round 2): branch head `b45ef33694`. Additionally opened: `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts:10-60` (every Team member payload is the shared `agentPresentationPayloadSchemas.<TYPE>` extended with `change_sequence`/`agent_run_id`, and the content batch items extend `SEGMENT_CONTENT`), web `handlers/compactionActivityProjection.ts:190-220` (`now ?? provider_timestamp ?? new Date()`), `handlers/userMessageProjection.ts:134-150` (`applyPendingUserMessage` keeps `existing.timestamp`), `protocol/messageParser.ts` (no user echo on `/ws/agent`).
 - Round 1 basis: branch `codex/conversation-order-628`, documents at `fe77389ced`; D-1/D-2 built at `d67b58c740`, `1c6f493625`, `2bb11e0874` (not yet handed off). Opened:
@@ -93,7 +101,7 @@
 | `/ws/agent` `ServerMessage` (standalone, delegated, snapshot turn frames, peer-run relay) | Pass (mapper writes it; `messageParser.ts` exact keys) | Pass | Pass | Pass | Pass | Pass |
 | `/ws/agent-team` member DTOs (strict) | Pass (inherited from the shared payload schemas) | Pass | Pass (the founder's case walked) | Pass | Pass | Pass |
 | Own send `UserMessage.timestamp: Date \| null` and `accepted_at` on pending entries | Pass (null until confirmed; readers to be listed by type) | Pass | Pass (new run, reconnect walked) | N/A | Pass, given N-1's merge rule | Pass |
-| External runtimes' trace `ts` from `occurredAt` | Pass (D-2 rule (a) still holds, see basis) | Pass | Partial: the user trace keeps `forwardedAt` while the live echo shows `received_at`, so "stored = live" does not hold for user rows | N/A | Pass | Pass with note |
+| External runtimes' trace `ts` | Superseded at SR-007: each trace keeps its write time (payload time, else `Date.now()`); only the user trace takes `acceptedAt` (SR-006) | Pass | Pass (round 4: write order, D-2 rule (a), queued message, reopen) | Pass (delivery's distinct-times suite) | Pass | Pass |
 
 ## Spine Inventory Verdict
 
@@ -213,7 +221,7 @@ None. AR-001 rests on the approved scenarios themselves (SCN-001/SCN-002, a Team
 
 ## Review Decision
 
-`Pass` (round 3)
+`Pass` (round 4)
 
 ## Findings
 
@@ -280,6 +288,14 @@ Implementation Engineer (`/implementation_engineer`); informational pass notice 
 
 ## Residual Risks
 
+- Round 4 (SR-007), verified:
+  - **The finding is real.** A trace built from several events (a reasoning trace from its first segment event, a tool call written at its result) took one event's `occurredAt`. The reload sorts by `ts` (`raw-trace-record-normalizer.ts:121-130`), so the stored order stopped being the write order. Delivery's distinct-times run shows it: 7 of 25 tests fail.
+  - **Reverting to the write time is the right cut.** REQ-004 is about the app never using its own clock. Stored write times and live `occurred_at` are both the node's, ms apart, and the payload times that the converters set are node-local (`nowTimestampSeconds`).
+  - **D-2 rule (a)** holds: the notice is written after the dispatch that follows admission, so `u.ts` (`acceptedAt`) < `n.ts`.
+  - **A user message queued during a running turn** is stored at admission, so a reopen places it inside that turn's traces by time. Live shows the same split: the own send is appended at send, and later segments open a new AI message after a user row (`segmentHandler.ts:255-270`). Reload and live agree, as SR-007 states.
+  - Finding 1 (the contract fixtures and the contract suites in TESTING.md) is a Local Fix with no design effect.
+- N-6 (round 4, non-blocking): the stored time again reads the payload's `ts`/`timestamp`/`createdAt`/`created_at` before the write time. All current producers set node-local values. A future runtime that passes a provider's own time in those keys would bring a second clock back into the reload order. A one-line comment at `extractTimestamp` stating "node-local times only" would keep that visible.
+
 - Round 3 (SR-006), non-blocking:
   - N-4: after the change, `rg forwardedAt` over `autobyteus-server-ts/src` finds only the accumulator as a reader. Remove `AgentRunUserMessageForwardedPayload.forwardedAt` and its `new Date()` (Principle 7), unless implementation finds another reader (tests are not readers, rule 11).
   - N-5: D-2's text says an own-turn notice "is followed, if at all, by a user message received later, so it is not moved". With `ts = acceptedAt`, a message admitted earlier (queued during a previous turn) and appended into a notice's turn would be moved before that notice. That matches live order, since the user's own send and a non-sender's echo show at admission, so the outcome is right (REQ-001/REQ-002). Update the sentence so it says so, and add that case to the D-2 test if it is reachable on a runtime that appends (Claude, Codex).
@@ -294,7 +310,9 @@ Implementation Engineer (`/implementation_engineer`); informational pass notice 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 3, SR-006)
+- Review Decision: `Pass` (round 4, SR-007)
+- Round 4 notes: SR-007 returns the memory recorder to each trace's write time and keeps only the user trace at `acceptedAt` (SR-006). Stored order is write order again, D-2 rule (a) holds by construction, REQ-004 holds (all server times), and reload equals live for a queued message. N-6 is non-blocking. Round 3 (SR-006) also passed.
+- Round 3 decision: `Pass` (SR-006)
 - Round 3 notes: SR-006 stores the external user trace at its admission time (`acceptedAt`, the same value as D-3's `accepted_at`). It needs no new stored field, keeps D-2 rule (a) true by construction, and leaves native, old traces and live unchanged. The rejected tolerance window and preface link were rightly rejected. It also corrects my round-1 basis statement (above). N-4 and N-5 are non-blocking.
 - Round 2 decision: `Pass`
 - Material-Premise Gate: `Pass` (no added premise)
