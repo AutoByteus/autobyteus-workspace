@@ -103,6 +103,32 @@ class NodeVideoHttpTest {
         assertFalse(NodeVideoHttp.isNodeFileUrl("http://192.168.1.20:29695", "not a url"))
     }
 
+    // CR-002 (API/E2E F-2): a path that resolves outside /rest/ is not a node file route, however it is spelled; dots in
+    // the query (the file's own path) are fine.
+    @Test
+    fun aPathWithDotSegmentsIsNotANodeFileUrl_dotsInTheQueryAre() {
+        val node = "http://192.168.1.20:29695"
+        for (path in listOf("/rest/../graphql", "/rest/%2e%2e/graphql", "/rest/../mobile/", "/rest/a%2f..%2f..%2fgraphql",
+            "/rest/./files/a.mp4", "/rest/%2E/files/a.mp4", "/rest/files%5c..%5cgraphql", "/rest/%zz/a.mp4")) {
+            assertFalse(path, NodeVideoHttp.isNodeFileUrl(node, "$node$path"))
+        }
+        assertTrue(NodeVideoHttp.isNodeFileUrl(node, "$node/rest/workspaces/w/content?path=a%2F..%2Fb.mp4"))
+        assertTrue(NodeVideoHttp.isNodeFileUrl(node, "$node/rest/files/videos/my..clip.mp4"))
+    }
+
+    @Test
+    fun aDotSegmentUrlIsRefusedWithoutSendingAnything() {
+        val http = NodeVideoHttp(node.origin, "mra_phone_credential")
+        for (path in listOf("/rest/../graphql", "/rest/%2e%2e/graphql", "/rest/../mobile/")) {
+            try {
+                http.open("${node.origin}$path")
+                fail("refused: $path")
+            } catch (_: NodeVideoHttp.RefusedUrl) {
+            }
+        }
+        assertTrue(node.requests.isEmpty())
+    }
+
     /** A byte-range answer like the node's file routes: the ETag, and If-Range by version. */
     private fun serveRange(request: TinyHttpServer.Request): TinyHttpServer.Response {
         val headers = mapOf("ETag" to etag, "Accept-Ranges" to "bytes")

@@ -6,6 +6,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
+import java.net.URLDecoder
 
 /**
  * The video player's one way to read a node file (autobyteus-574 D-3, D-5): a byte range of a URL on the open node's
@@ -97,7 +98,9 @@ class NodeVideoHttp(
 
         /**
          * Whether [url] is a file route of the node at [nodeOrigin]: the same scheme, host and port (the scheme's default
-         * when absent) and a path under `/rest/`. Anything that does not parse is not.
+         * when absent) and a path under `/rest/` with no dot segment (`.`, `..`, or a segment that decodes to one or holds a
+         * separator), so a path that resolves outside `/rest/` (`/rest/../graphql`) is never sent (autobyteus-574 CR-002).
+         * Dots in the query are the file's path and stay allowed. Anything that does not parse is not.
          */
         fun isNodeFileUrl(nodeOrigin: String, url: String): Boolean {
             val target = runCatching { URI(url) }.getOrNull() ?: return false
@@ -108,7 +111,14 @@ class NodeVideoHttp(
             if (target.host == null || !target.host.equals(node.host, ignoreCase = true)) return false
             if (effectivePort(target) != effectivePort(node)) return false
             if (target.rawUserInfo != null) return false
-            return target.rawPath?.startsWith("/rest/") == true
+            val path = target.rawPath ?: return false
+            return path.startsWith("/rest/") && path.split('/').drop(1).none(::isDotOrSlashSegment)
+        }
+
+        /** A path segment that, percent-decoded, is `.` or `..` or holds a separator; one that does not decode counts too. */
+        private fun isDotOrSlashSegment(raw: String): Boolean {
+            val decoded = runCatching { URLDecoder.decode(raw.replace("+", "%2B"), "UTF-8") }.getOrNull() ?: return true
+            return decoded == "." || decoded == ".." || decoded.contains('/') || decoded.contains('\\')
         }
 
         private fun effectivePort(uri: URI): Int = when {

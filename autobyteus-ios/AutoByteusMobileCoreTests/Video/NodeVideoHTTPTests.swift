@@ -54,6 +54,29 @@ final class NodeVideoHTTPTests: XCTestCase {
         XCTAssertEqual(StubNodeProtocol.served, [])
     }
 
+    /// CR-002 (API/E2E F-2): a path that resolves outside /rest/ is not a node file route, however it is spelled, and is
+    /// refused before anything is sent; dots in the query (the file's own path) are fine.
+    func testAPathWithDotSegmentsIsRefusedBeforeAnythingIsSent_dotsInTheQueryAreFine() async {
+        let paths = ["/rest/../graphql", "/rest/%2e%2e/graphql", "/rest/../mobile/", "/rest/a%2f..%2f..%2fgraphql",
+                     "/rest/./files/a.mp4", "/rest/%2E/files/a.mp4", "/rest/files%5c..%5cgraphql"]
+        // (An invalid escape such as `%zz` is not a case here: `URL(string:)` encodes it as the literal `%25zz`, a plain
+        // segment under /rest/.)
+        for path in paths {
+            guard let url = URL(string: "\(node)\(path)") else { continue }
+            XCTAssertFalse(NodeVideoURL.isNodeFileURL(url, nodeOrigin: node), path)
+            do {
+                _ = try await http().probe(url)
+                XCTFail("refused: \(path)")
+            } catch {
+                XCTAssertEqual(error as? NodeVideoHTTP.Failure, .refusedURL, path)
+            }
+        }
+        XCTAssertEqual(StubNodeProtocol.served, [])
+        XCTAssertTrue(NodeVideoURL.isNodeFileURL(URL(string: "\(node)/rest/workspaces/w/content?path=a%2F..%2Fb.mp4")!, nodeOrigin: node))
+        XCTAssertTrue(NodeVideoURL.isNodeFileURL(URL(string: "\(node)/rest/files/videos/my..clip.mp4")!, nodeOrigin: node))
+        XCTAssertEqual(NodeVideoPlayRequest.read(["url": "\(node)/rest/../graphql", "title": "a.mp4", "credential": "mra_x"])?.isFor(nodeOrigin: node), false)
+    }
+
     func testARefusedCredentialOrAMissingFileFailsTheProbe() async {
         let refused = NodeVideoHTTP(nodeOrigin: node, credential: "mra_revoked", configuration: StubNodeProtocol.configuration())
         do { _ = try await refused.probe(URL(string: "\(node)/rest/files/videos/clip.mp4")!); XCTFail("refused") } catch {

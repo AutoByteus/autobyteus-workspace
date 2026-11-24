@@ -7,7 +7,9 @@ public enum NodeVideoURL {
     public static let assetSchemePrefix = "abmedia-"
 
     /// Whether `url` is a file route of the node at `nodeOrigin` (`scheme://host[:port]`): the same scheme, host and port
-    /// (the scheme's default when absent), no user info, and a path under `/rest/`.
+    /// (the scheme's default when absent), no user info, and a path under `/rest/` with no dot segment (`.`, `..`, or a
+    /// segment that decodes to one or holds a separator), so a path that resolves outside `/rest/` (`/rest/../graphql`)
+    /// is never sent (autobyteus-574 CR-002). Dots in the query are the file's path and stay allowed.
     public static func isNodeFileURL(_ url: URL, nodeOrigin: String) -> Bool {
         guard let node = URL(string: nodeOrigin),
               let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https",
@@ -16,7 +18,14 @@ public enum NodeVideoURL {
               effectivePort(url) == effectivePort(node),
               url.user == nil, url.password == nil
         else { return false }
-        return url.path.hasPrefix("/rest/") || (URLComponents(url: url, resolvingAgainstBaseURL: false)?.percentEncodedPath.hasPrefix("/rest/") ?? false)
+        guard let path = URLComponents(url: url, resolvingAgainstBaseURL: false)?.percentEncodedPath, path.hasPrefix("/rest/") else { return false }
+        return !path.split(separator: "/", omittingEmptySubsequences: false).dropFirst().contains(where: isDotOrSeparatorSegment)
+    }
+
+    /// A path segment that, percent-decoded, is `.` or `..` or holds a separator; one that does not decode counts too.
+    private static func isDotOrSeparatorSegment(_ raw: Substring) -> Bool {
+        guard let decoded = String(raw).removingPercentEncoding else { return true }
+        return decoded == "." || decoded == ".." || decoded.contains("/") || decoded.contains("\\")
     }
 
     /// The URL AVFoundation is given for `url`: the same URL under the app's scheme, so AVFoundation asks the loader.
