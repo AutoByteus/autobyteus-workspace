@@ -8,4 +8,4 @@
   - One Codex file changed since beta.10: `codex-agent-runtime-strategy.ts` (the latest-version check gets the GitHub token reader, 627) — not the run path.
 - Options: (a) waive Codex for stable v1.5.14; (b) wait for the reset (Nov 27, 7:43 AM) and rerun the smoke; (c) free Codex earlier (credits or another signed-in Codex account).
 - Solution Designer's recommendation: (b), or (c) if Codex can be freed sooner; (a) only if stable cannot wait three days.
-- Status: waiting for the founder's answer.
+- Status: **answered** by the founder on 2026-11-24, directly to the delivery engineer: "Waive codex I trust it works" (see `codex-waiver.md`). Codex waived for stable v1.5.14 only.

@@ -1,0 +1,89 @@
+# v1.5.14 (STABLE) published state, 2026-11-24T10:18:31Z
+## workflow runs (final)
+Desktop Release run 45367547467: completed success, attempt 1
+Server Docker Release run 45367547491: completed success, attempt 1
+Android APK Release run 45367547482: completed success, attempt 1
+iOS App Store Connect Release run 45367548396: completed success, attempt 1
+## jobs of run 45367547467
+  Resolve Release Metadata: success
+  Build macOS Intel x64: success
+  Build Linux ARM64: success
+  Build macOS ARM64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+## jobs of run 45367547491
+  Resolve Release Metadata: success
+  Build Server Image (linux/amd64): success
+  Build Server Image (linux/arm64): success
+  Publish Server Image: success
+  Publish Server Package (linux/amd64): success
+  Publish Server Package (linux/arm64): success
+## jobs of run 45367547482
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+## jobs of run 45367548396
+  Resolve iOS Release Metadata: success
+  Build And Test iOS App: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## release
+name v1.5.14; prerelease false draft false tag v1.5.14 target 4b73fccae2786b5b04e73dd2269dcaab57ff663c
+GitHub Latest: v1.5.14
+assets: 27
+2026-11-24T09:48:32Z	AutoByteus_personal_android-1.5.14-release.apk
+2026-11-24T09:48:32Z	AutoByteus_personal_android-1.5.14-release.apk.sha256
+2026-11-24T09:50:03Z	autobyteus-server-1.5.14-linux-arm64.tar.gz
+2026-11-24T09:50:05Z	autobyteus-server-1.5.14-linux-x64.tar.gz
+2026-11-24T09:50:10Z	autobyteus-server-1.5.14-linux-arm64.json
+2026-11-24T09:50:11Z	autobyteus-server-1.5.14-linux-arm64.json.sig
+2026-11-24T09:50:12Z	autobyteus-server-1.5.14-linux-x64.json
+2026-11-24T09:50:14Z	autobyteus-server-1.5.14-linux-x64.json.sig
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-arm64-1.5.14.AppImage
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-arm64-1.5.14.AppImage.release.json
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-arm64-1.5.14.AppImage.release.json.sig
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-x64-1.5.14.AppImage
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-x64-1.5.14.AppImage.release.json
+2026-11-24T10:10:29Z	AutoByteus_personal_linux-x64-1.5.14.AppImage.release.json.sig
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-arm64-1.5.14.dmg
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-arm64-1.5.14.dmg.blockmap
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-arm64-1.5.14.zip
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-arm64-1.5.14.zip.blockmap
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-x64-1.5.14.dmg
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-x64-1.5.14.dmg.blockmap
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-x64-1.5.14.zip
+2026-11-24T10:10:29Z	AutoByteus_personal_macos-x64-1.5.14.zip.blockmap
+2026-11-24T10:10:29Z	AutoByteus_personal_windows-1.5.14.exe
+2026-11-24T10:10:52Z	latest-linux-arm64.yml
+2026-11-24T10:10:52Z	latest-linux.yml
+2026-11-24T10:10:52Z	latest-mac.yml
+2026-11-24T10:10:52Z	latest.yml
+## docker (registry API)
+autobyteus/autobyteus-server:1.5.14 -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:latest -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:beta -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:1.5.13 -> sha256:13df73db926a646237143db070bec31cc2a9742a94069cb71814cd6a730a20de
+autobyteus/autobyteus-server:1.5.14-beta.10 -> sha256:0f283df89d410fea850bb80e4b24f7cf71871d5ed6688e4139937e4099920d7a
+  index entry linux/amd64 sha256:dff9416658361d37c20f3b8cc2c3ffe56548d779a68b7503e1414dfee9cc20bc
+  index entry linux/arm64 sha256:0a6f8cc07443893c2ff2d3ead2c078351af7311f96959ea75aaca8ff3ae6bc5f
+## docker run log: system level and digests
+  Resolve Release Metadata | autobyteus/autobyteus-server:latest
+  Build Server Image (linux/amd64) | 2026-11-24T09:43:01.6722195Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/amd64) | 2026-11-24T09:45:54.9649853Z #46 15.83 Wrote server-package.json: 1.5.14 linux-x64, Node modules 127, system level 2, 66 migrations
+  Build Server Image (linux/arm64) | 2026-11-24T09:42:57.4339986Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/arm64) | 2026-11-24T09:46:00.4711781Z #46 20.54 Wrote server-package.json: 1.5.14 linux-arm64, Node modules 127, system level 2, 66 migrations
+  Publish Server Image | ***/***-server:latest
+  Publish Server Image | 2026-11-24T09:48:33.4193218Z #1 1.700 pushing sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f to docker.io/***/***-server:latest
+  Publish Server Image | 2026-11-24T09:48:35.0921569Z The pushed ***/***-server:1.5.14 index lists linux/amd64 sha256:dff9416658361d37c20f3b8cc2c3ffe56548d779a68b7503e1414dfee9cc20bc and linux/arm64 sha256:0a6f8cc07443893c2ff2d3ead2c078351af7311f96959ea75aaca8ff3ae6bc5f.
+  Publish Server Image | 2026-11-24T09:48:37.1024604Z [36;1m  docker buildx imagetools create -t "${IMAGE_NAME}:beta" "${IMAGE_NAME}:${NORMALIZED_TAG}"[0m
+  Publish Server Image | 2026-11-24T09:48:37.1025223Z [36;1m  DECISION="Moved \`${IMAGE_NAME}:beta\` to \`${IMAGE_NAME}:${NORMALIZED_TAG}\`."[0m
+  Publish Server Image | 2026-11-24T09:48:37.1025984Z [36;1m  DECISION="Left \`${IMAGE_NAME}:beta\` unchanged: \`${RELEASE_TAG}\` is not the newest recognized release tag."[0m
+  Publish Server Image | 2026-11-24T09:48:38.0567878Z #1 0.423 pushing sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f to docker.io/***/***-server:beta
+  Publish Server Image | 2026-11-24T09:48:39.4117259Z Moved `***/***-server:beta` to `***/***-server:1.5.14`.
+## released server package descriptions: systemLevel
+  x64 1.5.14 systemLevel 2
+  arm64 1.5.14 systemLevel 2
+## release body
+first line: ## What you need to do; length 18334; Full Changelog lines: 0
