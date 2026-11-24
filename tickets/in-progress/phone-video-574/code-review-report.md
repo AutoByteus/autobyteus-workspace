@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 4, API-REV-003 F-3). The earlier rounds:
+- Review Entry Point: `Implementation Review` (round 5, IR-003, a Targeted Delta Review of `fa72e74e90..03c4495955`). The only source change is `c3ff688979`, three lines in `AuthorizedMediaLoader.swift`. Round 4 was the `API/E2E Failure-Origin Review` (API-REV-003 F-3). The earlier rounds:
   - round 1 (CRR-001, Pass): implementation review;
   - round 2 (CRR-002, Fail): failure-origin review;
   - round 3 (CRR-003, Pass): targeted delta review;
@@ -22,8 +22,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: `4` (failure-origin). The entries for round 3 follow.
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `5` (targeted delta). The entries for rounds 4 and 3 follow.
 - Round 4 scope and trigger:
   - API/E2E round 3 (API-REV-003, commit `ef3107bb3e`, on top of delivery `ad813b4e6d`) failed with F-3. Delivery DR-001 had asked API/E2E to attribute O-4.
   - Product code is unchanged since `64a99bbcd2`.
@@ -294,6 +294,17 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
 - **Consider, not required:** for a cached video, a to-end request is answered by pushing the whole file in one synchronous loop: 22.9 MB in 17 ms, per `loader-requests-during-scrub.txt`. A cancel cannot arrive until the loop ends, so a large cached video is handed to AVFoundation all at once. If you touch this area, serving the cache in bounded steps (re-entering `advance` through `queue.async`) lets a cancel in between. I held this for evidence (no memory measurement), so it is not part of the finding.
 - **Review gap:** round 1 read these content-information lines and did not compare their declaration with what the loader actually supports. The symptom shows only in an interactive scrub, which no review or unit test exercised. Recorded in CRR-005.
 
+**Round 5 (CRR-006): CR-003 is Resolved.**
+- **The change:** `information.isEntireLengthAvailableOnDemand = true` is set next to `isByteRangeAccessSupported`, with its reason. No availability check is needed (iOS 17 target).
+- **Evidence (IMP-12):** the durable `testAWideVideoFromTheChatLink` (`pictureMoves`, line 49):
+  - passes on a first open (run 1) and cached (run 2, which fetched 0 bytes already held);
+  - fails with the fix stashed (run 3: the clock 16 → 18 s, the picture frozen);
+  - passes again with the fix restored (run 4).
+
+  The Core suite passes, 75/75, and the reopen fetches 0 cached bytes. The credential is only in the header, never in a video URL.
+- **Note for API/E2E (hold, not a finding):** with the flag, AVFoundation asks for many small ranges (the Core reopen shows 275–567-byte reads). Each uncached one is its own ranged request. On the throttled real node, watch the request count and the seek and start times; they met AC-001 in the Core test (0.94 s).
+- The optional bounded serving of cached bytes was not done. It stays a held residual risk.
+
 ### Test-code note for the next test review (T-2, non-blocking)
 
 `pictureMoves` compares two full-screen screenshots. If the player's controls are still showing, the moving time label alone makes them differ, which would be a false pass. On the defect it did fail (2/2), so the controls were hidden at this timing. Making it robust is cheap: compare a crop of the video's centre, or wait until the scrubber is gone or not hittable first. That is for API/E2E; I will review it after the next pass.
@@ -310,6 +321,14 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 5, CRR-006). CR-003 is resolved; CR-001 and CR-002 stay resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.4 / 10. Runtime correctness is back to 9.3.
+- Recommended Recipient: `/api_e2e_engineer`:
+  - rerun the iOS scrub (`testAWideVideoFromTheChatLink`, first open and cached) and the round-2 iOS journeys;
+  - watch the request count and timings under the on-demand mode;
+  - then the proportional test review of `ef3107bb3e`'s test change (with T-2).
+- Round 4 result (CRR-005, superseded):
 - Review Decision: `Fail` (round 4, CRR-005). The failure origin is implementation: CR-003, `Local Fix` in the iOS loader.
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Recommended Recipient: `/implementation_engineer`. After the fix: a targeted delta code review, then an API/E2E rerun (`testAWideVideoFromTheChatLink` on a first open and cached; the iOS journeys of round 2).

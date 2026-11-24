@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001, CR-002 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass; test code `cf3d344ff4`) | Pass (CRR-003) | Pass | None |
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-003 F-3) | Pass (CRR-003/004) | Fail: implementation Local Fix | CR-003 (new) |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 5 (IR-003), Targeted Delta | Fail | Pass | CR-003 (resolved) |
 
 ## Revision Entries
 
@@ -173,4 +174,36 @@ None (first test review).
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty:
   - Simulator only. The fix should also settle the physical-device question, and a physical iPhone check stays recommended.
+  - R-1 and R-2 are unchanged.
+
+### CRR-006: targeted delta review of IR-003 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` of `fa72e74e90..03c4495955`. The only source change is `c3ff688979` (`AuthorizedMediaLoader.swift`, +3).
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003); CR-003
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-005)
+- Current authoritative result: Pass, 9.4 / 10
+- What changed in the review result and why: the fix is the declaration CRR-005 named. IMP-12 shows the durable scrub check red without it and green with it, on a first open and cached; Core is 75/75.
+- Supported product scenario / material-premise basis changes: none. Held for API/E2E to observe: the many small range requests under the on-demand mode.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (CRR-005) | Resolved | IR-003, `c3ff688979` | IMP-12 runs 1–4 (red with the fix stashed, green with it); Core 75/75 |
+| CR-001, CR-002 | Resolved | Resolved | — | Unaffected (web and route rule unchanged) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness back to 9.3.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - simulator only, so a physical iPhone check stays recommended;
+  - the bounded cache serving is held;
+  - T-2 (`pictureMoves` false-pass risk) is for the next test review;
   - R-1 and R-2 are unchanged.
