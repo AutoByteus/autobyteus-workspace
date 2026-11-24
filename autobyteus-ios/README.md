@@ -47,8 +47,8 @@ xcodebuild \
   test
 ```
 
-The video loader's AVPlayer test (`AuthorizedMediaLoaderTests`, autobyteus-574) reads a 20+ MB MP4 from the host and is
-skipped without it: add `TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<path>` before `xcodebuild` (the `TEST_RUNNER_` prefix passes it
+The video loader's AVPlayer test (`AuthorizedMediaLoaderTests`, autobyteus-574) reads a 20+ MB MP4 longer than 31 s (it
+seeks to 30 s) from the host and is skipped without it: add `TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<path>` before `xcodebuild` (the `TEST_RUNNER_` prefix passes it
 to the tests). The app's video player on the simulator (`NativeVideoPlayerUITests`) needs the fake node started with a
 wide MP4, and is not part of the smoke run:
 
