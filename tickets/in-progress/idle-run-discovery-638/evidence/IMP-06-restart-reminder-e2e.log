@@ -1,0 +1,153 @@
+# IMP-06 restart-reminder-e2e (autobyteus-638 IR-001)
+# Command: bash -c cd autobyteus-server-ts && env -i PATH="/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/" USER="normy" RUN_RESTART_REMINDER_E2E=1 pnpm exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts --no-watch
+# Commit: ae1e36cded (branch codex/idle-run-discovery-638)
+# Environment: Node v22.23.1, macOS 26.5.2, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638; no AUTOBYTEUS_TEST_VAULT
+# Date: 2026-11-24 21:34:26 CET
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/idle-run-discovery-638/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ [31m❯[39m tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m4 skipped[39m[2m)[22m[33m 152717[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing [33m 21319[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-02: forced kill: no shutdownAt; the next input carries 'an unexpected stop' [33m 15233[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-03: update: the idle run is woken with 'an update to' this release, and its next input carries nothing [33m 25229[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-04: update with a run mid-turn that also has a background task: one reminder with the interrupted-turn line [33m 25089[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-05: update with input sent the moment the node answers: exactly one reminder between the wake and the input [33m 26149[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-12: update: a Team member idle with a background task is woken once with 'an update to' this release; its next input carries nothing (autobyteus-500 round 5, the member path of the merged restart resumer) [33m 18024[2mms[22m[39m
+     [33m[2m✓[22m[39m RR-06: Antigravity idle with an open daemon step is recorded and reminded with its next input [33m 6581[2mms[22m[39m
+[31m     [31m×[31m RR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)[39m[33m 13293[2mms[22m[39m
+     [2m[90m↓[39m[22m RR-11: a run restored twice before the fix keeps its stored ids; its next turn continues after the highest (autobyteus-526 DEC-003)
+     [2m[90m↓[39m[22m RR-07 (live): Claude idle with a background Bash command is recorded and reminded with its next input
+     [2m[90m↓[39m[22m RR-08 (live): Codex idle with a background terminal is recorded at the graceful stop and reminded with its next input
+     [2m[90m↓[39m[22m RR-09 (live): a native agent killed while its build runs is told the build may still run untracked, and checks it
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts[2m > [22mRestart reminder across real restarts of the built server[2m > [22mRR-10: a native run restarted twice keeps one id per turn; each reminder and each reply has its own turn in the conversation (autobyteus-526)
+[31m[1mAssertionError[22m: expected [ …(8) ] to deeply equal [ …(8) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "user:Start the build in the background.",[22m
+[2m    "assistant:REPLY_ONE@turn_0001",[22m
+[32m-   "reminder",[39m
+[2m    "user:Start the build again.",[22m
+[32m-   "assistant:REPLY_TWO@turn_0002",[39m
+[2m    "reminder",[22m
+[31m+   "assistant:REPLY_TWO@turn_0002",[39m
+[2m    "user:And now?",[22m
+[31m+   "reminder",[39m
+[2m    "assistant:REPLY_THREE@turn_0003",[22m
+[2m  ][22m
+
+[36m [2m❯[22m tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts:[2m728:19[22m[39m
+    [90m726|[39m     // As the app loads it (inputs and notices carry no turn id there;…
+    [90m727|[39m     // once, in order, and each reply in its own turn, so a view group…
+    [90m728|[39m     expect(shown).toEqual(["user:Start the build in the background.", …
+    [90m   |[39m                   [31m^[39m
+    [90m729|[39m       "assistant:REPLY_TWO@turn_0002", "reminder", "user:And now?", "a…
+    [90m730|[39m   }[33m,[39m [34m600_000[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m7 passed[39m[22m[2m | [22m[33m4 skipped[39m[90m (12)[39m
+[2m   Start at [22m 21:34:28
+[2m   Duration [22m 153.56s[2m (transform 109ms, setup 97ms, import 80ms, tests 152.72s, environment 0ms)[22m
+
+exit=1
