@@ -1,34 +1,36 @@
-# Requirements Document — autobyteus-638 Find and wake a user's sleeping runs
+# Requirements Document — autobyteus-638 A restart keeps a person's runs running
 
 ## Document Status
 
-- Status: `Ready for Approval` (waiting for the founder's decisions DEC-003 and DEC-005)
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002`
 - Package identifier: `idle-run-discovery-638`
 - Request / ticket: autobyteus-638, "Cross-node & local agent discovery: find and wake idle-stopped user runs instead of spawning duplicates"
 - Requested by: `/project_task_manager` (for the founder)
 - Requirements owner: Solution Designer
 - Date: 2026-11-24
-- Approved by and reference: not yet
+- Approved by and reference: **User (the founder)**, in this conversation on 2026-11-24.
+  - He asked: "Is it possible for earlier idle ones after restart we bring them back to idle as well, would that solve the problem, they will never be released again right?"
+  - Then: "If it's simpler then let's use the simple approach also I think it's more natural, earlier it's idle, after restart it's also idle. would be great"
+- Approved baseline: SR-002. SR-001's approach (list sleeping runs, wake on a message, rename the tool) is replaced. Its DEC-003 and DEC-005 are no longer needed.
 - Behavior-defining supplements: none. Evidence: [investigation-notes.md](investigation-notes.md)
 
 ## Problem And Desired Outcome
 
-- **Problem:** an agent that wants to message a user's existing run (the founder's Project Task Manager on docker-8001) can't find it once the run is no longer loaded.
-  - `list_running_agents` lists only live runs, and `send_message_to` refuses a run that isn't live.
-  - So the agent delegates a duplicate.
-  - In the incident the runs were unloaded by the node's restart for the 1.5.14 update, not by the 10-minute idle timer, which applies only to delegated runs (investigation-notes §1).
-- **Desired outcome:** a run a person started stays findable and reachable until the person stops or archives it, whether or not it is loaded right now. A message to it wakes it. Runs whose work ended (a person's Stop, an archive, a delegated run whose Tasks closed) stay unreachable.
-- **Success:** after a restart, `list_running_agents(node: "docker-8001")` returns the founder's Project Task Managers as `sleeping` with workspace and last activity. A message to one of them wakes it with its conversation, and no duplicate is needed.
+- **Problem:** after a node restarts (an update, Restart server, `docker stop`/start, a crash), the runs a person started come back only if they were busy. Idle ones stay unloaded (grey).
+  - `list_running_agents` doesn't list them, and `send_message_to` refuses them.
+  - So other agents start duplicates: the incident on docker-8001, investigation-notes §1.
+  - The 10-minute idle timer is not involved: it stops only delegated runs.
+- **Desired outcome:** "earlier it's idle, after restart it's also idle". Every run a person started that was running when the node stopped is running again after the node starts. That holds for an Agent run, and for a Team run with its coordinator.
+- **Success:** after docker-8001 restarts, the founder's Project Task Managers that were running before show green (idle), `list_running_agents(node: "docker-8001")` lists them, and a message reaches them.
 
 ## Relevant Current And Desired Behavior
 
 | ID | Kind | Current | Desired | Preserved | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Contract | The list holds only live runs a person started | Also holds that kind's **sleeping** runs (not live, not stopped by a person, not archived), marked `sleeping`, with last activity | Delegated runs, Team members and Org runs are never listed; the caller's own run is left out | notes §2 |
-| BEH-002 | Contract | A message by run ID to a run that isn't live is refused "not running" unless a Task relates the two | A message to a **sleeping** run a person started wakes it with its conversation, from any sender, on this node or a paired node | Waiting for the receiver's turn; never interrupting | notes §2 |
-| BEH-003 | Contract | A run a person stopped, an archived run, a delegated run whose Tasks are all closed: refused | Unchanged (DEC-003 asks about the person's Stop) | `TASK_AGENT_RESOURCE_CLOSED`, the assigner's reopen | notes §2 |
-| BEH-004 | Contract | A delegated run with an open Task, idle-shut-down: woken by related runs only | Unchanged | CM-5 | notes §2 |
+| BEH-001 | Operational | After a restart, only busy runs are brought back (after an update), or told on their next input. An idle run a person started stays unloaded | Every run a person started that was running at the stop is running again after the start: idle, with its conversation, without any input | Restart reminders: who is told and when (autobyteus-448), the update wake | notes §1, §2; `docs/modules/restart_resume.md` |
+| BEH-002 | Contract | `list_running_agents` / `send_message_to` see only running runs | Unchanged; they now see these runs because they are running | autobyteus-492 entirely | notes §2 |
+| BEH-003 | Operational | Delegated runs: idle shutdown, restart resume bottom-up | Unchanged | CM-6, CM-7 | notes §2 |
 
 ## Scope Guardrail
 
@@ -36,26 +38,28 @@
 
 | ID | Use case | Scenarios |
 | --- | --- | --- |
-| UC-001 | An agent lists the user's runs on this node or a peer and sees sleeping ones | SCN-001 |
-| UC-002 | An agent messages a sleeping run (an Agent, or a Team through its coordinator) and it wakes | SCN-002 |
-| UC-003 | A message to a run that is retired is refused with a clear reason | SCN-003 |
+| UC-001 | A node stops (gracefully or not) and starts again; the runs a person started that were running come back running | SCN-001, SCN-002 |
+| UC-002 | A run that must not come back stays unloaded: archived or stopped by a person in the meantime, removed, or not started by a person | SCN-003 |
 
 ### Out Of Scope
 
-- When runs are unloaded: the idle-shutdown timer, restart resume, and restoring runs after a restart (option B).
-- Org runs and Team members in the list.
-- The run list UI (the grey "offline" dot stays as it is).
-- Who may *start* work (`delegate_task`).
-- The security layer follow-up from autobyteus-587.
+- Runs that were already unloaded before the stop (they come back when the person opens or messages them, as today).
+- `list_running_agents` / `send_message_to` rules (autobyteus-492).
+- The 10-minute idle shutdown of delegated runs.
+- Org runs and their units (CM-3: a message to a unit restores it).
+- Application-owned and system-owned runs.
+- The run list UI.
 
 ### Non-Goals
 
-- Ranking or choosing "the right" run for the agent. The entries give workspace, project and last activity; the agent chooses.
+- Waking anything: no input is posted, so no model call happens and no tokens are spent.
 
 ### Preserved Behavior Boundary
 
-- autobyteus-492 REQ-003 (who is listed: runs a person started), REQ-010 (never interrupt; wait for the turn), REQ-011 (Task wake, reopen, closed-Task refusal, fenced remote runs) and CM-5/CM-6/CM-7, except the "never wakes" part of CM-13 for sleeping runs a person started.
-- 492 REQ-004 ("only live roots are listed") and DEC-003 are replaced by this ticket.
+- Restart resume and reminders (autobyteus-285, -448): BEH-001 preserved column.
+- autobyteus-492 REQ-001..REQ-012.
+- Delegated-run lifecycle (CM-6, CM-7, CM-10).
+- DESIGN.md rule 7: one run that cannot come back is left out, named in the log; the node starts and other runs are unaffected.
 
 ### Prerequisites
 
@@ -69,80 +73,74 @@ As the template states.
 
 | ID | Requirement | Behavior | Priority | Rationale | Feasibility | Source |
 | --- | --- | --- | --- | --- | --- | --- |
-| REQ-001 | A run a person started is **sleeping** when its agent isn't live and the run is not archived and was not stopped by a person (DEC-003). The list includes sleeping runs as `state: "sleeping"` | BEH-001 | Must | The founder's direction | Data exists: `archivedAt`, `terminatedAt`, `delegatedFrom` (notes §2) | Task comment; DEC-002 |
-| REQ-002 | Every entry has `last_active_at`. Entries are ordered newest activity first. The `state` filter accepts `sleeping` | BEH-001 | Must | Several runs of one definition exist (4 Project Task Managers on docker-8001) | `lastActivityAt` exists (notes §2) | DEC-006 |
-| REQ-003 | A message by run ID to a sleeping run (an Agent's agent, or a sleeping Team's coordinator) wakes it with its conversation and delivers the message, on this node or from a paired node (`node`) | BEH-002 | Must | No duplicate needed | Restore exists (`resolveOrRestore`) | Task comment; DEC-007 |
-| REQ-004 | A message to a run a person stopped (per DEC-003), an archived run, or a delegated run whose Tasks are all closed is refused, and the text says why and what to do (for example "it was stopped by its owner; delegate_task starts new work") | BEH-003 | Must | Retired runs stay retired | — | Task comment |
-| REQ-005 | Delegated runs stay out of the list, and their wake rule is unchanged | BEH-004 | Must | Founder: closed task agents stay retired | — | Task comment |
-| REQ-006 | The tool's description and the collaboration model say: sleeping runs are listed and wake on a message; message an existing run before delegating a new one | All | Must | Agents act on the tool text | — | Task goal |
-| REQ-007 | The tool name follows DEC-005 | All | Must | The name must say what it lists (Principle 15) | — | DEC-005 |
+| REQ-001 | When the node stops, gracefully or by a crash, it knows which runs a person started were running. A crash loses at most the last few seconds | BEH-001 | Must | The founder: "earlier it's idle" | The busy-run record already does this for busy runs (2 s live record + final write) | Founder 2026-11-24 |
+| REQ-002 | After the node starts, each of those runs is running again, idle: an Agent run's agent, or a Team run's coordinator. No input is posted | BEH-001 | Must | "after restart it's also idle" | Restore without posting exists for standalone hosts (`ensureAgentReady`, used by restart resume today); a Team coordinator needs the same (design) | Founder |
+| REQ-003 | A run is not brought back when it was archived, was stopped by a person, is gone, or was not started by a person (delegated, an Org unit) | BEH-001, BEH-003 | Must | Retired runs stay retired | `rootHistory` states exist (`restart-resume-composition.ts`) | Task comment |
+| REQ-004 | A run that fails to come back is logged with its name and reason; the start and every other run go on | BEH-001 | Must | DESIGN.md rule 7 | — | DESIGN.md |
+| REQ-005 | Restart reminders and the update wake behave as today; a run brought back idle still gets its reminder with its next input when it was busy at the stop | BEH-001 | Must | No regression | — | autobyteus-448 |
 
 ## Acceptance Criteria
 
-| ID | Req | Trigger | Expected | Failure / alternate | Verification |
+| ID | Req | Trigger | Expected | Alternate | Verification |
 | --- | --- | --- | --- | --- | --- |
-| AC-001 | REQ-001, REQ-002 | Node restarted; a run a person started was idle before | Listed as `sleeping` with `last_active_at`, newest first; live runs still `running`/`idle` | Archived run: not listed; stopped by a person: per DEC-003 | Server test + two-server E2E across a restart |
-| AC-002 | REQ-003 | Agent on node A messages a sleeping run on node B (with `node`) | The run wakes with its conversation, the message is delivered, and a later list shows it live | A sleeping Team, messaged through its coordinator: the Team wakes | Two-server E2E |
-| AC-003 | REQ-004 | Message to a stopped / archived / closed-Task run | Refused with the reason; nothing woken | — | Server tests |
-| AC-004 | REQ-005 | Delegated run idle-shut-down, open Task; an unrelated sender | Not listed; the message refused as today; a related sender wakes it as today | — | Existing suites green |
-| AC-005 | REQ-006, REQ-007 | Tool text and docs | Say the rule plainly | — | Prompt-wording test |
+| AC-001 | REQ-001, REQ-002 | A run a person started is idle; the node is restarted gracefully | After the start it is running (idle), listed by `list_running_agents` (locally and from a peer), and a message to it is delivered | A Team run: its coordinator is running and listed | Server tests; built-server E2E across a real restart |
+| AC-002 | REQ-001, REQ-002 | Same, but the node is killed (crash) | The same | — | Built-server E2E with a kill |
+| AC-003 | REQ-003 | A recorded run was archived or stopped by a person before the start; a delegated run; an Org unit | Not brought back | — | Server tests |
+| AC-004 | REQ-004 | A recorded run cannot be restored (its runtime is missing, its file unreadable) | Logged with name and reason; the others come back; the server serves | — | Server test |
+| AC-005 | REQ-005 | A run busy at an update; a run busy at a plain restart | The update wake as today; the plain-restart reminder rides its next input as today, and the run is now also running idle | — | Existing restart-resume suites green, plus one case |
+| AC-006 | REQ-002 | A run that was unloaded before the stop | Stays unloaded | — | Server test |
 
 ## Relevant Scenarios
 
-| ID | Kind | Actor | Goal | Steps | Outcome | Validity |
-| --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | Contract | An agent with the tool (here the Project Task Manager on the Mac) | Find the user's existing agent on a node | List with `node` | Sees running, idle and sleeping runs with workspace, project and last activity | Supported Normal (the incident) |
-| SCN-002 | Contract | Same | Hand work to the existing agent | `send_message_to` its run ID with `node` | It wakes and answers | Supported Normal |
-| SCN-003 | Contract | Any agent | Message a run whose work ended | `send_message_to` | Refused with the reason | Supported Normal |
+| ID | Kind | Actor / event | Steps | Outcome | Validity |
+| --- | --- | --- | --- | --- | --- |
+| SCN-001 | Operational | Node update or restart (docker-8001, 10:56 UTC) | The node stops, then starts | The person's running runs are running again; other nodes' agents find and message them | Supported Normal (the incident) |
+| SCN-002 | Operational | Crash or forced kill | As SCN-001 | As SCN-001 (up to ~2 s lost) | Supported Normal |
+| SCN-003 | Operational | A run is archived or stopped by its owner | Restart | Stays retired | Supported Normal |
 
 ## UI, Interaction, And Experience Requirements
 
-- Applicable: No (agent tools only). Product design: N/A, not applicable.
+- Applicable: No. Product design: N/A, not applicable.
 
 ## Quality And Non-Functional Requirements
 
 | ID | Req | Area | Constraint |
 | --- | --- | --- | --- |
-| QR-001 | REQ-001 | Performance | Listing reads only the not-archived, not-stopped rows a person started (4 + 1 on docker-8001, 2 on this Mac): no full scan of stored runs per call |
-| QR-002 | REQ-003 | Cost | A run wakes only on a message to it; listing never wakes anything |
+| QR-001 | REQ-002 | Performance | Memory after a start equals the memory those runs used before the stop. Measured on docker-8001: one loaded Claude run ≈ 270 MB, one Antigravity run ≈ 330 MB (investigation-notes §3a). No run that was unloaded is loaded |
+| QR-002 | REQ-002 | Operability | At most 3 runs are brought back at a time (as restart resume); the server serves requests meanwhile |
 
 ## Data Continuity
 
-- Persisted data affected: no stored shape changes, except DEC-005 (the stored `toolNames` of agent definitions, if the tool is renamed).
+- Persisted data affected: one new transient file (the record of REQ-001), read once at the start and rewritten while the node runs. Absent or invalid means "nothing to bring back". No change to run files or history.
 
 ## Decisions
 
 | ID | Question | Why it matters | Options | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Cause | The Task says the 10-min idle timer stopped the user's runs | — | Evidence: the timer applies only to delegated runs. The user's runs were unloaded by the restart for the 1.5.14 update (notes §1). The founder's fix still fits and covers restarts, crashes and updates too | Solution Designer | Decided (founder informed) |
-| DEC-002 | Which runs are "sleeping"? | Defines what is listed and woken | — | Runs a person started that aren't live, aren't archived and weren't stopped by a person: exactly the runs that are still the person's working agents. Delegated runs never (REQ-005) | Solution Designer | Decided |
-| DEC-003 | A run the person **stopped** with Stop: sleeping (listed, wakeable) or retired? | Waking it undoes the person's own action and spends tokens | (a) retired: not listed, a message refused "stopped by its owner"; (b) sleeping like the others | Stop is the person's explicit "end this". An agent should not undo it, and the person can still open the run and send to it. **Recommend (a).** | Founder | Needs user |
-| DEC-004 | Option for the whole fix | — | A list + wake; B restore after restart; C separate tool; D text only | A is the founder's direction and the only one that fixes the problem without starting unused runtimes (notes §4). **A** | Solution Designer | Decided |
-| DEC-005 | Keep the name `list_running_agents`? | It will list agents that are not running | (a) keep; (b) rename to `list_reachable_agents` (every entry can be messaged now), with a one-time migration of agent definitions that select the tool | A name that says less than it does misleads agents into thinking sleeping runs are missing. The tool is a week old and opt-in, so the migration is small. **Recommend (b).** | Founder | Needs user |
-| DEC-006 | How to tell several runs of one definition apart | 4 Project Task Managers on docker-8001 | — | Add `last_active_at`; newest first; workspace and project are already there | Solution Designer | Decided |
-| DEC-007 | Who may wake a sleeping run? | Cost | any sender with its run ID (local or paired node) vs related only | The founder's direction: discoverable and wakeable so duplicates are not spawned. Paired nodes are trusted (autobyteus-587). **Any sender** | Solution Designer | Decided |
+| DEC-001 | Cause | The Task blamed the 10-minute idle timer | — | The restart for the update unloaded the runs (notes §1) | Solution Designer | Decided (founder informed) |
+| DEC-002 | Approach | — | A: list sleeping runs and wake them on a message; B: bring running runs back after a restart | B keeps every rule as it is and matches "earlier idle, after restart idle" | Founder | Decided (B), 2026-11-24 |
+| DEC-003 | Which runs come back: those running at the stop (1), or every unarchived, unstopped run a person started (2)? | Memory: each loaded run is a runtime process of ≈270–330 MB (notes §3a); option 2 would load runs untouched for weeks (2 on docker-8001 are 7–30 days old) | (1), (2) | I offered (2) first. The founder's words, "earlier it's idle, after restart it's also idle", are (1), and the measurement shows (2) would use more memory than before the restart. (1) restores exactly what was there. **(1)**; founder informed, and he can ask for (2) | Solution Designer within the founder's direction | Decided |
+| DEC-004 | Which run kinds | — | Agent and Team runs a person started; Orgs; delegated | The same set `list_running_agents` lists (one definition of "a run a person started"). Orgs restore their units on a message (CM-3); delegated runs have their own lifecycle | Solution Designer | Decided |
+| DEC-005 | Which restart causes | — | update / restart / crash | All three: the founder's goal is that a restart changes nothing | Solution Designer | Decided |
 
 ## Traceability
 
 | Req | UC | BEH | AC | SCN |
 | --- | --- | --- | --- | --- |
-| REQ-001 | UC-001 | BEH-001 | AC-001 | SCN-001 |
-| REQ-002 | UC-001 | BEH-001 | AC-001 | SCN-001 |
-| REQ-003 | UC-002 | BEH-002 | AC-002 | SCN-002 |
-| REQ-004 | UC-003 | BEH-003 | AC-003 | SCN-003 |
-| REQ-005 | UC-003 | BEH-004 | AC-004 | — |
-| REQ-006 | all | all | AC-005 | — |
-| REQ-007 | all | all | AC-005 | — |
+| REQ-001 | UC-001 | BEH-001 | AC-001, AC-002 | SCN-001, SCN-002 |
+| REQ-002 | UC-001 | BEH-001 | AC-001, AC-002, AC-006 | SCN-001 |
+| REQ-003 | UC-002 | BEH-001, BEH-003 | AC-003 | SCN-003 |
+| REQ-004 | UC-001 | BEH-001 | AC-004 | — |
+| REQ-005 | UC-001 | BEH-001 | AC-005 | SCN-001 |
 
 ## Architecture Phase Input
 
-- Contract first (Principle 17): the list entry (`state: sleeping`, `last_active_at`), the peer wire shape, and the refusal texts.
+- Contract first: the record's file and entry shape.
 - To verify:
-  - restore of a sleeping Team through its coordinator;
-  - the unlinked remote message path (`/rest/remote/run-messages`) restoring a root on the peer;
-  - the restart reminder riding the wake.
+  - shutdown must not mark runs terminated;
+  - a Team coordinator can be made ready without input;
+  - the order relative to the update wake.
 
 ## Readiness Check
 
-- Content ready for approval: Yes
-- Remaining blocker: founder decisions DEC-003, DEC-005
+- Content ready: Yes. Approval recorded: Yes (founder, SR-002). Ready for design: Yes.

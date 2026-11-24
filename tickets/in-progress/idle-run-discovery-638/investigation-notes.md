@@ -59,6 +59,36 @@ Runs a person started that are not archived, not stopped, and would therefore be
 
 People archive what they finish, so the list stays small and needs no cap or window. It may hold several runs of one definition (4 Project Task Managers on docker-8001, in different workspaces), so entries need what tells them apart: workspace, project and the last activity.
 
+## 3a. Memory of a loaded run (measured on docker-8001, read-only `ps`/`docker stats`, 2026-11-24)
+
+- Container `autobyteus-server-0`: 6.7 GiB used of 15.35 GiB (most of it Chromium for computer use).
+- Live runtime processes, children of the server process:
+  - `/usr/bin/claude … --resume=<session>`: 274 MB and 270 MB RSS. The first resumes `0d7cc700…`, the platform run of `project_task_manager_2f41a1df…` (it is live again since the founder used it);
+  - `agy --conversation …`: 330 MB.
+  - Total: 3 processes, 851 MB.
+- A loaded idle run of an external runtime therefore costs a runtime process of about 270–330 MB. Bringing back only the runs that were loaded keeps memory where it was before the stop. Bringing back every unarchived run a person started would load runs untouched for weeks (2 of the 4 on docker-8001 are 7–30 days old).
+
+## 3b. Architecture-phase code facts (2026-11-24)
+
+- Startup order: `server-runtime.ts:212-216`, then `:240-241`.
+  1. `takePreviousSession()` before `recorder.startSession()`.
+  2. Cleanup: `recorder.record()` first, then `app.close()`.
+  3. After listen and `recoverAfterListen`: `void restartResumer.resumeAfterRestart(previousSession)`.
+- `BusyRunRecorder` (`restart-resume/busy-run-recorder.ts`):
+  - checks every 2 s and rewrites `busy-runs.json` only on change;
+  - its final write runs at the graceful stop;
+  - it records only busy runs (`busyStatusOf(run).busy`).
+- `RestartResumer.resumeOne` (`restart-resume/restart-resumer.ts`) restores a root without posting: `rootResolver.resolveOrRestore(root)`, then `root.ensureAgentReady()` for a standalone host. This is the path that runs in production after an update (docker-8001 log line 758285).
+- Root history states: `present | terminated | archived | gone`, from the catalogs (`compositions/restart-resume-composition.ts:39-45`).
+  - `terminatedAt` is written only by a person's Stop (`agent-run-service.ts:160,173`; `standalone-agent-run-lifecycle-service.ts:137`) and by Task closure (`:328`).
+  - A shutdown does not write it: docker-8001's Project Task Managers have `terminatedAt: null` after the restart.
+- Who counts as a run a person started: `RunOwnAgentsReader.listingFactsOf(root).startedByPerson` (no `delegatedFrom`, no `containedIn`; `run-history/store/run-own-agents-reader.ts:162-174`). `RunningAgentsListing` uses it.
+- Is the entry agent live: `RunningAgents.statusesOf(root)` and `teamCoordinatorOf(teamRunId)` (synchronous; `running-agents.ts`).
+- A Team member made ready without input:
+  - `ConfiguredAgentExecutionHandle.getOrCreateAgentRun()` is public (`configured-agent-execution-handle.ts:134`);
+  - `FlatTeamExecutionManager` holds the handles (`getDirectAgent`, `flat-team-execution-manager.ts:105-130`);
+  - `RootTeamRun` has no `ensureAgentReady` yet. The one `TeamRunBackend` is `flat-team-run-backend.ts`.
+
 ## 4. Options
 
 | # | Option | Verdict |
