@@ -11,6 +11,7 @@ import type { StandaloneAgentRunRoot } from "../standalone-agent-run-root/domain
 import { readBusyRunRecord, removeBusyRunRecord, type BusyRunEntry } from "./busy-run-record.js";
 import { buildRestartNotice, restartNoticeLifecycleObserver } from "./restart-notice.js";
 import { restartCauseOf } from "./restart-cause.js";
+import { createConcurrencyLimiter } from "./concurrency-limiter.js";
 import type { PendingRestartReminder } from "./restart-reminder-record.js";
 import type { ClaimedRestartReminder, RestartReminderService } from "./restart-reminder-service.js";
 
@@ -27,18 +28,6 @@ export type ResumeReport = Readonly<{ recorded: number; reminded: number; skippe
 export const RESTART_RESUME_CONCURRENCY = 3;
 
 type Outcome = Readonly<{ kind: "resumed"; displayName: string } | { kind: "skipped" } | { kind: "failed" }>;
-
-/** A semaphore over posts: the work holds a slot only while it runs. */
-const createPostLimiter = (limit: number) => {
-  let running = 0;
-  const waiting: Array<() => void> = [];
-  return async <T>(work: () => Promise<T>): Promise<T> => {
-    if (running >= limit) await new Promise<void>((resolve) => waiting.push(resolve));
-    running += 1;
-    try { return await work(); }
-    finally { running -= 1; waiting.shift()?.(); }
-  };
-};
 
 /**
  * Tells the runs of the previous session that they were restarted (autobyteus-448, extending autobyteus-285 D3).
@@ -123,7 +112,7 @@ export class RestartResumer {
   }
 
   private async resumeEntries(entries: readonly BusyRunEntry[]): Promise<Outcome[]> {
-    const limit = createPostLimiter(this.dependencies.concurrency ?? RESTART_RESUME_CONCURRENCY);
+    const limit = createConcurrencyLimiter(this.dependencies.concurrency ?? RESTART_RESUME_CONCURRENCY);
     const tree = this.dependencies.tree;
     const parentKeyOf = (root: RootExecutionIdentity): string | null => {
       const reference = runReferenceOf(root);

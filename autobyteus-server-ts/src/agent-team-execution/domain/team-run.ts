@@ -29,6 +29,8 @@ export class TeamRun {
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.backend.executeDirectAgentCommand(agentRunId, command);
   }
+  /** This direct member's agent, made ready without input (activated, restored, or the live run). */
+  ensureDirectAgentReady(agentRunId: string) { return this.backend.ensureDirectAgentReady(agentRunId); }
   /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */
   followMembership(leavingAgentRunIds: readonly string[], stopped: (agentRunId: string) => void): void { this.backend.followMembership(leavingAgentRunIds, stopped); }
   liveExecutionIds(): ReadonlySet<string> { return this.backend.liveExecutionIds(); }

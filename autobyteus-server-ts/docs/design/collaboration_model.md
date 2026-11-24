@@ -59,7 +59,10 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
 - **Running agent**: an agent whose own live root reports it with a live status
   now (`RunningAgents`, since autobyteus-492). A host ended by idle shutdown, a
   Team member not started yet and a stopped run are not running, even while a
-  root is registered.
+  root is registered. A restart doesn't end the running of a run a person
+  started (since autobyteus-638): its Agent run's agent, or its Team's
+  coordinator, is running again, idle, after the node starts
+  ([Restart Resume](../modules/restart_resume.md#running-runs-come-back)).
 - **Run started by a person**: a run whose own file has no `delegatedFrom`
   (neither a local delegation nor a peer's). `list_running_agents` lists the
   running ones of this kind.

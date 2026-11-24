@@ -1,5 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
@@ -22,6 +23,8 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
+  /** This direct member's agent, made ready without input; refuses an agent that is not a direct member. */
+  ensureDirectAgentReady(agentRunId: string): Promise<AgentRun>;
   /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */
   followMembership(leavingAgentRunIds: readonly string[], stopped: (agentRunId: string) => void): void;
   /** The members whose execution is live (a handle that has not stopped); a plain synchronous read (N-14). */

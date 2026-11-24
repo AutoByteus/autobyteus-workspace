@@ -31,6 +31,11 @@ const mocks = vi.hoisted(() => {
       takePreviousSession: vi.fn(async () => previousSession),
       resumeAfterRestart: vi.fn(async () => ({ recorded: 0, reminded: 0, skipped: 0, resumed: 0, failed: 0 })),
     },
+    // autobyteus-638: the running runs are taken after the busy record, recorded, and restored after the wake.
+    runningRuns: {
+      recorder: { startSession: vi.fn(), record: vi.fn(async () => undefined) },
+      restorer: { take: vi.fn(async () => undefined), restore: vi.fn(async () => ({ restored: 0, skipped: 0, failed: 0 })) },
+    },
   };
   // autobyteus-524 FU-007: the shutdown cleanup ends the studio's file watches for the exit before the close.
   const stopFileWatchesForProcessExit = vi.fn();
@@ -244,6 +249,15 @@ describe("Studio app-data migration startup", () => {
       expect(resumer.resumeAfterRestart.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.scheduleStudioBackgroundTasks.mock.invocationCallOrder[0]!);
       expect(mocks.restartResume.recorder.record).not.toHaveBeenCalled();
+      // autobyteus-638: the running runs are taken after the busy record and before either recorder starts; they are
+      // restored after the wake has finished.
+      const { recorder: runningRecorder, restorer } = mocks.restartResume.runningRuns;
+      expect(resumer.takePreviousSession.mock.invocationCallOrder[0]).toBeLessThan(restorer.take.mock.invocationCallOrder[0]!);
+      expect(restorer.take.mock.invocationCallOrder[0]).toBeLessThan(recorder.startSession.mock.invocationCallOrder[0]!);
+      expect(restorer.take.mock.invocationCallOrder[0]).toBeLessThan(runningRecorder.startSession.mock.invocationCallOrder[0]!);
+      await vi.waitFor(() => expect(restorer.restore).toHaveBeenCalledOnce());
+      expect(resumer.resumeAfterRestart.mock.invocationCallOrder[0]).toBeLessThan(restorer.restore.mock.invocationCallOrder[0]!);
+      expect(runningRecorder.record).not.toHaveBeenCalled();
       expect(mocks.scheduleStudioBackgroundTasks).toHaveBeenCalledTimes(1);
       expect(mocks.closeSecretVault).not.toHaveBeenCalled();
       expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
@@ -356,6 +370,12 @@ describe("Studio app-data migration startup", () => {
         expect(mocks.restartResume.recorder.record).toHaveBeenCalledOnce();
         expect(mocks.restartResume.recorder.record.mock.invocationCallOrder[0])
           .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
+        // autobyteus-638: then the running runs, still before the close.
+        expect(mocks.restartResume.runningRuns.recorder.record).toHaveBeenCalledOnce();
+        expect(mocks.restartResume.runningRuns.recorder.record.mock.invocationCallOrder[0])
+          .toBeGreaterThan(mocks.restartResume.recorder.record.mock.invocationCallOrder[0]!);
+        expect(mocks.restartResume.runningRuns.recorder.record.mock.invocationCallOrder[0])
+          .toBeLessThan(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0]!);
         // autobyteus-524 FU-007: record, then the file watches end for the exit, then the close.
         expect(mocks.stopFileWatchesForProcessExit).toHaveBeenCalledOnce();
         expect(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0])

@@ -30,6 +30,7 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.manager.executeDirectAgentCommand(agentRunId, command);
   }
+  ensureDirectAgentReady(agentRunId: string) { return this.manager.ensureDirectAgentReady(agentRunId); }
   followMembership(leavingAgentRunIds: readonly string[], stopped: (agentRunId: string) => void) { this.manager.applyMembership(leavingAgentRunIds, stopped); }
   liveExecutionIds() { return this.manager.liveExecutionIds(); }
   removeStoppedHandle(agentRunId: string) { this.manager.removeStoppedHandle(agentRunId); }
