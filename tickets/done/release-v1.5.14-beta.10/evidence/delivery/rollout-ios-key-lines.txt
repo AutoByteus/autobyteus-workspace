@@ -1,0 +1,16 @@
+# iOS App Store Connect Release run 45324022523 attempt 1: key lines of the run log (job | line)
+Build And Test iOS App | 2026-11-24T04:09:55.5108560Z Selected Xcode app: /Applications/Xcode_27.2.app
+Build And Test iOS App | 2026-11-24T04:09:55.5119340Z Selected iPhoneOS SDK: 27.2
+Build And Test iOS App | 2026-11-24T04:11:18.9499860Z [ios-icon] all 18 slots match the logo (on #1E3A8A).
+Build And Test iOS App | 2026-11-24T04:12:17.4055050Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Build And Test iOS App | 2026-11-24T04:12:17.7458450Z   MARKETING_VERSION: 1.5.14
+Build And Test iOS App | 2026-11-24T04:12:17.7458710Z   CURRENT_PROJECT_VERSION: 356
+Build And Test iOS App | 2026-11-24T04:28:50.2714710Z iOS build number: 356
+Archive And Upload To App Store Connect | 2026-11-24T04:41:36.4259860Z Selected Xcode app: /Applications/Xcode_27.2.app
+Archive And Upload To App Store Connect | 2026-11-24T04:41:36.4402250Z Selected iPhoneOS SDK: 27.2
+Archive And Upload To App Store Connect | 2026-11-24T04:44:08.9243620Z The demo answers all 252 compiled operations (handled or listed as unreachable).
+Archive And Upload To App Store Connect | 2026-11-24T04:46:22.6280240Z UPLOAD SUCCEEDED with no errors
+Archive And Upload To App Store Connect | 2026-11-24T04:46:22.6384870Z Delivery UUID: 7d1ffc60-e4aa-4875-8dbb-9a128fa5750d
+Build And Test iOS App | 	 Executed 56 tests, with 0 failures (0 unexpected) in 13.062 (21.004) seconds
+Build And Test iOS App | Test Suite 'Selected tests' passed at 2026-11-24 04:28:42.883.
+ITMS lines in the iOS log: 0
