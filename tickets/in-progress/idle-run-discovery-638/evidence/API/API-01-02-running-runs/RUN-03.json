@@ -1,0 +1,47 @@
+{
+  "signal": "SIGTERM",
+  "runIds": [
+    "person_agent_93d821e0_8299278c43ed4a07b144fdba8cc2a4ae",
+    "person_agent_d7d6dfde_5e518401be4d4413b2ed4f1b8c6b0ead",
+    "person_agent_c6c3a7f3_2e6b71a76416443a88fc358f0a539b9b",
+    "person_agent_8182615b_5c0ea8b88923427187fceb7620128b10",
+    "person_agent_8a7f259a_f55abc49cea542cf9e9a35b38bde3ebf",
+    "person_agent_6b1cc044_d9c3a6fc2b594cae8fe56c4f397cf3c7",
+    "person_agent_bf3d513d_ea960a2d021a45f7842230f4033b4609"
+  ],
+  "restoreDoneWhenStopped": false,
+  "modelListRequestsDuringRestore": 2,
+  "afterInterrupted": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_6b1cc044_d9c3a6fc2b594cae8fe56c4f397cf3c7"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_8182615b_5c0ea8b88923427187fceb7620128b10"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_8a7f259a_f55abc49cea542cf9e9a35b38bde3ebf"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_93d821e0_8299278c43ed4a07b144fdba8cc2a4ae"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_bf3d513d_ea960a2d021a45f7842230f4033b4609"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_c6c3a7f3_2e6b71a76416443a88fc358f0a539b9b"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "person_agent_d7d6dfde_5e518401be4d4413b2ed4f1b8c6b0ead"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 7 brought back, 0 skipped, 0 failed"
+}

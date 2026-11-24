@@ -1,0 +1,3 @@
+# API-08 server typecheck after the new and changed tests
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

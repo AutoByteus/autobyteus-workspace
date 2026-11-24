@@ -1,0 +1,7 @@
+# API-05 AC-005 plus one case: RR-01 of the restart-reminder suite gains 'both runs running again, idle, before any input'
+# 2026-11-24T21:00:00Z; code ae1e36cded; tests as edited in this round; Node 22.23.1; macOS 26
+# env -i PATH HOME=<fresh temp> TMPDIR USER RUN_RESTART_REMINDER_E2E=1 pnpm exec vitest run tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts --no-watch -t RR-01
+ ✓ tests/e2e/restart-resume/restart-reminder-built-server.e2e.test.ts (12 tests | 11 skipped) 18544ms
+     ✓ RR-01: graceful restart: recorded live, reminded once with the next input as 'a restart', nothing woken; an idle run without a task gets nothing  18471ms
+      Tests  1 passed | 11 skipped (12)
+EXIT 0

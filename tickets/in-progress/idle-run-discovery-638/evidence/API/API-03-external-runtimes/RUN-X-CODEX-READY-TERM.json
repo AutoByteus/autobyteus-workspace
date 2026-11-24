@@ -1,0 +1,21 @@
+{
+  "caseId": "RUN-X-CODEX-READY-TERM",
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-6.1-terra",
+  "signal": "SIGTERM",
+  "runId": "run_x_codex_ready_term_ea83bb_7df71afa96bc4519ac763eadd18e1c6a",
+  "first": "",
+  "session": "01a20f56-f7d6-7d81-902e-419b0f827222",
+  "sessionAfter": "01a20f57-0c15-7423-b11b-dc2870141a70",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_codex_ready_term_ea83bb_7df71afa96bc4519ac763eadd18e1c6a"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 1 brought back, 0 skipped, 0 failed",
+  "unchanged": false,
+  "answer": ""
+}

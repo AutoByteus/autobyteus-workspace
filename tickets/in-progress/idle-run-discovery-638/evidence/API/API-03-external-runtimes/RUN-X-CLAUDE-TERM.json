@@ -1,0 +1,21 @@
+{
+  "caseId": "RUN-X-CLAUDE-TERM",
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "signal": "SIGTERM",
+  "runId": "run_x_claude_term_0cc4b7_22de32b0021a44e8aefc1fda2a9281d8",
+  "first": "OK",
+  "session": "c66b3bab-d732-40d5-85fe-9483209a1a2d",
+  "sessionAfter": "c66b3bab-d732-40d5-85fe-9483209a1a2d",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_claude_term_0cc4b7_22de32b0021a44e8aefc1fda2a9281d8"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 1 brought back, 0 skipped, 0 failed",
+  "unchanged": true,
+  "answer": "ORCHID-D04EA2"
+}
