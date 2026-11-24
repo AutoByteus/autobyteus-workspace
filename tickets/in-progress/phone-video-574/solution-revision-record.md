@@ -28,3 +28,5 @@
 - Design case: docs/design-cases.md Case 3 (an HTTP cache as a reader of a changed reply).
 
 Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to `/implementation_engineer`.
+
+Evidence decision (2026-11-24): DEC-006, AC-001's media-message entry accepted as low-risk unverified (option a). API/E2E's request; the `/rest/files/` URL form was established by Read. Routed to `/api_e2e_engineer`.
