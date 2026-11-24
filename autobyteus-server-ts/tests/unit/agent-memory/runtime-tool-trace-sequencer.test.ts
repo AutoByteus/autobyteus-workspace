@@ -25,6 +25,8 @@ const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): 
   runId: "run-1",
   payload,
   statusHint: null,
+  // The node's delivery time, as AgentRun stamps every event it delivers to the recorder (autobyteus-628 D-3).
+  occurredAt: Date.now(),
 });
 
 const createSequencer = (

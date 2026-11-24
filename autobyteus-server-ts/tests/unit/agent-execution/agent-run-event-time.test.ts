@@ -3,7 +3,14 @@
 // message on the three streams (`/ws/agent`, `/ws/agent-team`, the Org presentation) carries that time as `occurred_at`;
 // an input entry carries `accepted_at`. Production: AgentRun, AgentRunEventMessageMapper, TeamAgentEventAdapter +
 // projectTeamAgentEventMessage, AgentRunPresentationAdapter + projectAgentPresentationMessage. The backend is a double.
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { SKILL_UPDATE_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
+import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -133,5 +140,29 @@ describe("the run's one time for each event it delivers (autobyteus-628 D-3)", (
     expect(() => new AgentRunEventMessageMapper().map(unstamped)).toThrow(/no occurredAt/);
     const execution = createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity("team-628"), memberAddress: createAgentTeamAddress(["lead"]), agentRunId: RUN });
     expect(new TeamAgentEventAdapter(() => execution).adapt(unstamped)).toMatchObject({ kind: "rejected" });
+  });
+
+  // CR-001: the memory recorder reads the same one time, with no runtime or provider clock in its place.
+  it("an event that no run delivered is refused by the memory recorder too, even with a payload or provider time", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-event-time-"));
+    try {
+      const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
+      const accumulator = new RuntimeMemoryEventAccumulator({ runId: RUN, writer, toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups() });
+      accumulator.recordRunEvent({ ...event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }), occurredAt: 1795452909000 });
+      expect(() => accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+        sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, content: "[Platform notice — skill updated]", turn_id: "turn-1", ts: 1795452900 })))
+        .toThrow(/SYSTEM_TASK_NOTIFICATION event has no occurredAt/);
+      expect(() => accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+        kind: "provider_compaction_boundary", runtime_kind: "codex_app_server", provider: "codex", source_surface: "codex.thread_compacted",
+        boundary_key: "codex:thread-1:c1", provider_timestamp: 1795452900, turn_id: "turn-1", rotation_eligible: false, semantic_compaction: false })))
+        .toThrow(/COMPACTION_STATUS event has no occurredAt/);
+      // Stamped, the same notice is stored at the run's time, not the payload's.
+      accumulator.recordRunEvent({ ...event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+        sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, content: "[Platform notice — skill updated]", turn_id: "turn-1", ts: 1795452900 }), occurredAt: 1795452909697 });
+      expect(new RunMemoryFileStore(memoryDir).listRawTraceDicts().map((trace) => [trace.trace_type, trace.ts]))
+        .toEqual([["system_task_notification", 1795452909.697]]);
+    } finally {
+      await fs.rm(memoryDir, { recursive: true, force: true });
+    }
   });
 });

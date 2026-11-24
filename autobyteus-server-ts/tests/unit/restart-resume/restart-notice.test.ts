@@ -110,10 +110,10 @@ describe("restart notice in a run's memory", () => {
     const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
     const accumulator = new RuntimeMemoryEventAccumulator({ runId: "host-1", writer, toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups() });
     const notice = buildRestartNotice({ agentRunId: "host-1", facts: facts(), resumedDelegated: [] });
-    accumulator.recordRunEvent({ eventType: AgentRunEventType.TURN_STARTED, runId: "host-1", payload: { turn_id: "turn-9" }, statusHint: null });
+    accumulator.recordRunEvent({ eventType: AgentRunEventType.TURN_STARTED, runId: "host-1", payload: { turn_id: "turn-9" }, statusHint: null, occurredAt: Date.now() });
     accumulator.recordForwardedUserMessage({ runId: "host-1", runtimeKind: "codex_app_server" as never, config: {} as never,
       platformAgentRunId: null, message: notice, result: { accepted: true, turnId: "turn-9" }, acceptedAt: new Date() });
-    accumulator.recordRunEvent({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "host-1", statusHint: null,
+    accumulator.recordRunEvent({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "host-1", statusHint: null, occurredAt: Date.now(),
       payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: notice.content, turn_id: "turn-9" } });
 
     const traces = new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))

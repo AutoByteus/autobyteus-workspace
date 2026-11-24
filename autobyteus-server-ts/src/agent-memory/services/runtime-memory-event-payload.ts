@@ -1,4 +1,5 @@
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import { serverTimeMsOf } from "../../agent-execution/domain/agent-run-event.js";
 import { partitionRawTraceAttachments } from "autobyteus-ts/memory/models/raw-trace-attachments.js";
 
 export const asRecord = (value: unknown): Record<string, unknown> | null =>
@@ -12,18 +13,6 @@ export const asString = (value: unknown): string | null =>
 const asContentString = (value: unknown): string | null =>
   typeof value === "string" && value.length > 0 ? value : null;
 
-const normalizeTimestampSeconds = (value: unknown): number | null => {
-  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
-    return value > 10_000_000_000 ? value / 1000 : value;
-  }
-  const text = asString(value);
-  if (!text) {
-    return null;
-  }
-  const parsed = Date.parse(text);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed / 1000 : null;
-};
-
 export const extractTurnId = (payload: Record<string, unknown>): string | null =>
   asString(payload["turnId"]) ?? asString(payload["turn_id"]);
 
@@ -35,16 +24,10 @@ export const extractContentDelta = (payload: Record<string, unknown>): string | 
 
 /**
  * A recorded event's trace time, epoch seconds (autobyteus-628 D-3): the run's `occurredAt`, the one time the streams show
- * for the event too; an event without one (a producer that set its own payload time) keeps its payload's time.
+ * for the event too. An event without it fails here, as on the streams: no runtime or provider clock stands in.
  */
-export const extractEventTime = (event: Readonly<{ payload: Record<string, unknown>; occurredAt?: number }>): number | null =>
-  event.occurredAt !== undefined ? event.occurredAt / 1000 : extractTimestamp(event.payload);
-
-export const extractTimestamp = (payload: Record<string, unknown>): number | null =>
-  normalizeTimestampSeconds(payload["ts"]) ??
-  normalizeTimestampSeconds(payload["timestamp"]) ??
-  normalizeTimestampSeconds(payload["createdAt"]) ??
-  normalizeTimestampSeconds(payload["created_at"]);
+export const extractEventTime = (event: Readonly<{ eventType: string; occurredAt?: number }>): number =>
+  serverTimeMsOf(event) / 1000;
 
 export const extractInvocationId = (payload: Record<string, unknown>): string | null =>
   asString(payload["invocation_id"]) ??

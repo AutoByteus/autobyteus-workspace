@@ -55,8 +55,8 @@ const externalWriter = (memoryDir: string) => {
   const accumulator = new RuntimeMemoryEventAccumulator({ runId: "run-1", writer, toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups() });
   return {
     notice: (turnId: string, senderId: string, content: string, ts: number) => accumulator.recordRunEvent({
-      eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "run-1", statusHint: null,
-      payload: { sender_id: senderId, content, message_id: `notice-${ts}`, turn_id: turnId, ts },
+      eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "run-1", statusHint: null, occurredAt: ts * 1000,
+      payload: { sender_id: senderId, content, message_id: `notice-${ts}`, turn_id: turnId },
     }),
     input: (turnId: string, content: string, acceptedAtSeconds: number) => accumulator.recordForwardedUserMessage({
       runId: "run-1", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, config: {} as never, platformAgentRunId: null,

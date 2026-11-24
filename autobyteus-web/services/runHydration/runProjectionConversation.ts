@@ -28,12 +28,9 @@ export interface RunProjectionConversationEntry {
   ts?: number | null;
 }
 
-const toDate = (seconds?: number | null): Date => {
-  if (typeof seconds === 'number' && Number.isFinite(seconds) && seconds > 0) {
-    return new Date(seconds * 1000);
-  }
-  return new Date();
-};
+/** A stored row's time is the node's `ts`; a row stored without one has no time, never the viewer's clock (autobyteus-628). */
+const toServerTime = (seconds?: number | null): Date | null =>
+  typeof seconds === 'number' && Number.isFinite(seconds) && seconds > 0 ? new Date(seconds * 1000) : null;
 
 const asRecord = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -317,7 +314,7 @@ const collectReasoning = (segments: AIResponseSegment[]): string | null => {
   return reasoning || null;
 };
 
-const createAIMessage = (timestamp: Date): AIMessage => ({
+const createAIMessage = (timestamp: Date | null): AIMessage => ({
   type: 'ai',
   text: '',
   timestamp,
@@ -353,7 +350,7 @@ export const buildConversationFromProjection = (
   };
 
   dedupeProjectionEntries(entries).forEach((entry, index) => {
-    const timestamp = toDate(entry.ts);
+    const timestamp = toServerTime(entry.ts);
 
     if (entry.kind === 'compaction') {
       return;

@@ -69,7 +69,11 @@ export const stampForDelivery = (event: AgentRunEvent): AgentRunEvent =>
  * always has one; a producer outside the run stamps its own (`occurredAt: Date.now()`). A timed event without one is a
  * producer's mistake and fails here, so no row is ever timed by the viewer's clock.
  */
-export const serverTimeOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): string => {
+export const serverTimeOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): string =>
+  new Date(serverTimeMsOf(event)).toISOString();
+
+/** The event's node time, epoch ms, for every reader (the streams, the memory recorder): no other clock stands in for it. */
+export const serverTimeMsOf = (event: Readonly<{ eventType: string; occurredAt?: number }>): number => {
   if (event.occurredAt === undefined) throw new Error(`${event.eventType} event has no occurredAt: its producer did not stamp it.`);
-  return new Date(event.occurredAt).toISOString();
+  return event.occurredAt;
 };

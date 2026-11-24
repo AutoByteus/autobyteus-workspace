@@ -138,8 +138,8 @@ const createCompactionEvent = (
  * A platform notice the node delivered in front of a user's input (the preface, `agent-run-input-preface-dispatch.ts`)
  * shows right after that input, as it does live (autobyteus-628 D-2). Each writer stores the pair notice first, in one
  * turn, and the pair is recognized by what it stores:
- * - external runtimes (`RuntimeMemoryEventAccumulator`): the input is stamped when it was forwarded and the notice when
- *   it was published after forwarding, so the input's time is not later than the notice's. A notice that opened its
+ * - external runtimes (`RuntimeMemoryEventAccumulator`): the input is stamped when the node admitted it (SR-006) and the
+ *   notice when it was delivered, after admission, so the input's time is not later than the notice's. A notice that opened its
  *   own turn (a restart or task notice) and an input appended to that turn later keep their order;
  * - native (`MemoryIngestInputProcessor`): both carry its input source event, and it writes a notice there only as a
  *   preface. Their times are two consecutive clock reads, so they cannot tell the pair apart.

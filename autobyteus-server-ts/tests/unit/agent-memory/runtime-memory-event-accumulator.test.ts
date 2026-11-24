@@ -31,6 +31,8 @@ const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): 
   runId: "run-1",
   payload,
   statusHint: null,
+  // The node's delivery time, as AgentRun stamps every event it delivers to the recorder (autobyteus-628 D-3).
+  occurredAt: Date.now(),
 });
 
 const readView = (memoryDir: string, includeArchive = false) =>
@@ -1114,7 +1116,8 @@ describe("RuntimeMemoryEventAccumulator", () => {
       turnId: "turn-compact",
       content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
       sourceEvent: AgentRunEventType.COMPACTION_STATUS,
-      ts: 2,
+      // A node time after the text's (both are the node's delivery times, autobyteus-628 D-3).
+      ts: Date.now() / 1000 + 1,
       correlationId: boundaryKey,
     });
 

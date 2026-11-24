@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
-import { AgentRunEventType, type AgentRunEvent } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery, type AgentRunEvent } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import type { JsonObject } from "../../../../../../src/agent-execution/backends/codex/codex-app-server-json.js";
 import { AgentSegmentLifecycleEventTransformer } from "../../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
@@ -55,7 +55,7 @@ const recordIntoMemory = async (events: AgentRunEvent[]) => {
   for (const event of events) {
     lifecycleState.observeEvent(event);
     for (const item of transformer.transform({ runContext: {} as never, events: [event], lifecycleState, segmentLifecycleState }))
-      accumulator.recordRunEvent(item);
+      accumulator.recordRunEvent(stampForDelivery(item));
   }
   const store = new RunMemoryFileStore(memoryDir);
   const markers = [...store.listArchiveTurnRawTracesOrdered(), ...store.listTurnRawTracesOrdered()]
