@@ -77,3 +77,5 @@ Review note: ARCH-REV-003 passed SR-006 (2026-11-23). The reviewer routed it to 
 - Classification: unchanged, `Large` / `High`. Routing: architecture review of SR-007. Then implementation applies SR-007 and Finding 1, then code review, API/E2E and delivery.
 - The check a later stage caught: the contract packages' own suites belong in the implementation and API/E2E plans for a contract change. TESTING.md "Other packages" names the command. API/E2E (owner of TESTING.md) makes it a rule for any change to a contract package.
 - Design case: docs/design-cases.md Case 3 (a reader of derived data left out: the stored order derived from trace `ts`).
+
+Review note: ARCH-REV-004 passed SR-007 (2026-11-24). The reviewer routed it to `/implementation_engineer`. N-6 (keep payload times node-local, with a comment at `extractTimestamp`) is for implementation.
