@@ -26,3 +26,5 @@
   - rule 12 noted.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review.
 - Design case: docs/design-cases.md Case 3 (a fact decided by a reader that does not own it).
+
+Review note: ARCH-REV-002 passed SR-002 (2026-11-24). The reviewer routed it to `/implementation_engineer`. N-4 (take the extension from the file path the URL names, its `path` query) is for implementation; N-5 (the iOS `.webm` correction) is recorded.
