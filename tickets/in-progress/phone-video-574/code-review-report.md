@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 2). Round 1, CRR-001, was an implementation review (Pass); its sections below stay as recorded except where this round updates them.
+- Review Entry Point: `Implementation Review` (round 3, IR-002). Round 1 (CRR-001, Pass) was an implementation review and round 2 (CRR-002, Fail) a failure-origin review. Their sections below stay as recorded except where a later round updates them.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/phone-video-574/requirements-doc.md` (SR-001; REQ-001…005, AC-001…006, DEC-001 (b) and DEC-002 (a) approved by the user)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (P1–P3)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001, SR-002)
@@ -16,13 +16,17 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2`
-- Review Scope: `N/A` (failure-origin round). Round 1 was a `Full Review`.
-- Review Scope Evidence (round >1): the code head is unchanged (`b0a2eeacc0`). Only the two failing areas were re-read: `VideoPlayer.vue` with the paths that bump `contentRevision`, and both platforms' route check.
-- Trigger: API/E2E round 1 (API-REV-001) failed with F-1 and F-2 (commit `cf3d344ff4`).
-- Prior Review Round Reviewed: round 1 (CRR-001)
-- Latest Authoritative Round: 2
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `3`
+- Review Scope: `Targeted Delta Review`. Round 1 was a `Full Review`; round 2 was failure-origin.
+- Review Scope Evidence (round >1): the source delta `b0a2eeacc0..64a99bbcd2` is two fix commits:
+  - `fb2357dc09`: `VideoPlayer.vue` and its spec;
+  - `6479a28f4b`: `NodeVideoHttp.kt`, `NodeVideoURL.swift` and their tests.
+
+  No other source changed: API/E2E's `cf3d344ff4` added only tests, scripts and a README. A delta review suffices because the rest of the round-1 audit is untouched.
+- Trigger: the implementation engineer, IR-002 (the fixes for CR-001 and CR-002).
+- Prior Review Round Reviewed: round 2 (CRR-002)
+- Latest Authoritative Round: 3
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
@@ -203,6 +207,8 @@ None new or reclassified.
 
 ## Findings
 
+Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below are kept as found in round 2.
+
 ### CR-001: a rewrite of the open video re-opens the native player by itself (F-1)
 
 - **Severity:** Medium. A user-visible regression of D-2 on both apps.
@@ -258,8 +264,23 @@ None new or reclassified.
   - Apple's simulator log shows the request path, never the credential (a device redacts it).
 - **Not run by me:** the Android and iOS suites (IMP-03…06 evidence used).
 
+## Round 3 Delta Verification (CRR-003)
+
+| Finding | Fix | Verification |
+| --- | --- | --- |
+| CR-001 | `VideoPlayer.vue` watches `[playbackMode, url]` only. It plays when the mode becomes `native` or the URL changes (`immediate` covers mount); `contentRevision` no longer triggers anything, and Play still does | The new spec case (two `contentRevision` bumps: no `playVideo`; Play: one; no download) fails on the pre-fix code (IMP-11) and passes. I re-ran `VideoPlayer.native.spec.ts`: 5 passed |
+| CR-002 | One rule per platform (`NodeVideoHttp.isNodeFileUrl`, `NodeVideoURL.isNodeFileURL`), used by the bridge, the probe and every read. It refuses a raw-path segment that percent-decodes to `.` or `..`, contains `/` or `\`, or does not decode, then checks `/rest/`. Android keeps `+` literal (`replace("+","%2B")` before `URLDecoder`) | The cases include all three API/E2E URLs, encoded slash and backslash, `.`/`%2E`, a query with dots and `my..clip.mp4` (allowed), and on Android "nothing sent" against a real local server. They fail on the old rule on both platforms (IMP-11). I re-ran Android `NodeVideoHttpTest` (8) and `ShellBridgeMessagesTest` (17): all pass. For iOS I used IMP-11 (75 Core tests, 0 failed) |
+
+- **Structure:** the fix stays in each platform's existing single owner of the rule, with no new mechanism. Sizes are unchanged in effect (`NodeVideoHttp.kt` 110 → about 118).
+- **Cosmetic, not a finding:** the iOS test's `guard let url = URL(string:) else { continue }` would skip a case silently if a URL did not parse. All listed URLs do parse.
+
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 3, CRR-003). CR-001 and CR-002 are resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.4 / 10. Runtime correctness is back to 9.3 now that both findings are fixed; the other categories are as in round 1.
+- Recommended Recipient: `/api_e2e_engineer`. Rerun AND-8, AND-9, IOS-9 and IOS-11 (including `testDARewriteDoesNotOpenThePlayerByItself`).
+- Round 2 result (CRR-002, superseded):
 - Review Decision: `Fail`. The failure origin is implementation (CR-001, CR-002).
 - Review Entry Point: `API/E2E Failure-Origin Review` (round 2)
 - Failure Origin: implementation defects, `Local Fix`. Both were review gaps of mine in round 1, recorded in CRR-002.

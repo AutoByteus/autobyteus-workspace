@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1, F-2) | Pass | Fail: implementation Local Fix | CR-001, CR-002 (new) |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001, CR-002 (resolved) |
 
 ## Revision Entries
 
@@ -79,3 +80,31 @@ None (CRR-001 had no findings).
 - Remaining risks or uncertainty:
   - O-4 (iOS simulator scrubber drag) is unattributed; API/E2E recommends a check on a physical iPhone.
   - The test code in `cf3d344ff4` is reviewed after a passing API/E2E round, not here.
+
+### CRR-003: targeted delta review of IR-002 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review` of `b0a2eeacc0..64a99bbcd2`: fix commits `fb2357dc09` (CR-001) and `6479a28f4b` (CR-002). No other source changed.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002); CR-001, CR-002
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-002)
+- Current authoritative result: Pass, 9.4 / 10
+- What changed in the review result and why: both fixes do what CRR-002 asked, in the owners it named, and each new test fails on the pre-fix code (IMP-11). I re-ran the web spec (5) and the Android `NodeVideoHttpTest` (8) and `ShellBridgeMessagesTest` (17); for iOS I relied on IMP-11 (75 Core tests).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (CRR-002) | Resolved | IR-002, `fb2357dc09` | The watcher is on `[playbackMode, url]`. The spec "a reload of the open video posts no playVideo; Play still does" is red before the fix and green after; re-run green |
+| CR-002 | Open (CRR-002) | Resolved | IR-002, `6479a28f4b` | Dot and separator segments are refused, raw or encoded, in the one rule per platform. JVM and XCTest cases are red before and green after; Android re-run green |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness back to 9.3; no classification.
+- Recommended recipient: `/api_e2e_engineer`, to rerun AND-8, AND-9, IOS-9 and IOS-11.
+- Remaining risks or uncertainty: R-1 and R-2 (confirmed, non-blocking) and O-4 (to check on a physical iPhone) are unchanged.
