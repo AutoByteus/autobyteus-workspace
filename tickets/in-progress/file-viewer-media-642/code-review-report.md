@@ -14,12 +14,19 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Trigger: implementation engineer, IR-001 (initial), Large / High
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2` (round 1 below stays as recorded except where round 2 updates it)
+- Review Scope: round 2 is a `Targeted Delta Review` of `4313640f6e..26ebb05729`. Round 1 was a `Full Review`.
+- Round 2 scope evidence: the source delta is two commits.
+  - `dc350be435` (web): `CollaborationMessageReferenceViewer.vue`, `useNativeMediaPlayback.ts`, `VideoPlayer.vue`, `AudioPlayer.vue`, `FileViewer.vue`, `MediaSegment.vue`, and their specs.
+  - `fff1b0af0c` (iOS): `NativeMediaPlayer.swift` and its UI test.
+
+  The server, Android, iOS Core, layout and highlighting code is unchanged since round 1.
+- Trigger: implementation engineer, IR-002, implementing:
+  - SR-003, after CRR-001 CR-001 and C-2;
+  - SR-004, after ARCH-REV-003 AR-002 (ARCH-REV-004 Pass).
+- Prior Review Round Reviewed: round 1 (CRR-001)
+- Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -53,6 +60,50 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 2 Delta Review (CRR-002)
+
+**CR-001 (round 1) is Resolved, and C-2 is resolved.**
+
+- **The reference viewer (SR-003):** a Video or Audio reference sends one probe, `Range: bytes=0-0`. The 404 / `REFERENCE_NOT_FOUND` handling is unchanged. The probe's body is cancelled, and `contentUrl` itself goes to `FileViewer`, so the players' own paths apply:
+  - desktop: the URL is streamed by range;
+  - phone app: the native player, through `playMedia`;
+  - phone browser: a blob, as before.
+
+  Text, PDF and image references are unchanged.
+- **The file name as input (SR-004):** `modeFor(url, fileName)` and `play(url, fileName)`. The URL-derived name is removed, and every caller passes the name it owns:
+  - `FileViewer` passes `file.path` to the players;
+  - `MediaSegment.fileNameOf` passes its `/rest/files/…` URL's last segment, decoded.
+
+  `git grep` finds no other caller of `modeFor`, `play`, `VideoPlayer` or `AudioPlayer`.
+- **C-2 (iOS):** audio gets a black, non-interactive cover with a `waveform` symbol and the file name over `contentOverlayView`. The screenshot `IMP-12-audio-playing.png` shows it: never blank, and a tap still reaches AVKit.
+- **Re-run by me:** the web specs (collaboration, composables, fileExplorer, segments), 48 files and 397 tests passed.
+
+### CR-002: on the phone, the native player re-opens by itself whenever the open reference's message list updates (Local Fix)
+
+- **Severity:** Medium. 574's F-1 symptom (a player opening without a tap, and on Android a second player stacked on top) comes back by a new route, introduced by SR-003's native path for references.
+- **Where:** `autobyteus-web/components/workspace/collaboration/CollaborationMessageReferenceViewer.vue:252-256`:
+  `watch(() => [props.contentPath, props.reference.referenceId, props.reference.path, props.reference.type, props.reference.updatedAt, props.refreshSignal ?? 0], () => { void syncReferenceView(); }, { immediate: true })`.
+- **Mechanism:**
+  1. The getter returns a new array, and Vue fires a getter-source watch whenever the getter re-runs (`hasChanged` on a new array). The getter re-runs whenever `props.reference` is a new object, even one with the same values.
+  2. The phone's host `MobileMessages.openReference` is a computed over `messagesView.listMessages()`. That re-projects every row, with new frozen reference objects (`participantMessageRows.ts:30`), whenever the participant messages change: a new message, or a counterpart or identity update.
+  3. Each such update therefore runs `syncReferenceView` → `fetchContent`. Through `isLoading` that unmounts and remounts `FileViewer`.
+  4. A remounted `VideoPlayer`/`AudioPlayer` in `native` mode calls `playNatively()` from its `immediate` watch.
+- **Scenario:** S-1, the phone app. A user opens a video or audio reference while the team is still running, and the next message in that view arrives.
+  - Android: a second `MediaPlayerActivity` starts over the first, so two Backs are needed.
+  - Both apps, after Back: the player opens again by itself.
+
+  Before IR-002 the same refetch only re-downloaded a blob into the page player.
+- **Evidence:** a throwaway spec, deleted, not committed. It mounted the viewer for a video reference, then gave it `setProps({ reference: { ...reference } })` (equal values, new object). Probe fetches went 1 → 2 and `FileViewer` mounts went 2 → 3. With 574's `VideoPlayer` native spec (mount in `native` → `playMedia`), that is the re-open.
+- **Required action (Local Fix, implementation):**
+  - Make the viewer refetch only when a value changes, for example `watch([() => props.contentPath, () => props.reference.referenceId, () => props.reference.path, () => props.reference.type, () => props.reference.updatedAt, () => props.refreshSignal ?? 0], …)` (multi-source: each compared by value).
+  - That also stops today's needless refetch of a text, PDF or image reference on every message.
+  - Add a viewer spec: an equal new `reference` object neither refetches nor remounts the viewer, while a new `updatedAt` or `refreshSignal` does.
+  - Keep desktop's explicit re-click (`referenceRefreshSignal`) working.
+- **Not part of this:** desktop's `CollaborationMessagesPanel` passes the selected reference the same way. The value-compare fix covers it too (today a refetch there restarts the `<video>` element).
+- **Held, not findings:**
+  - A zero-byte media reference answers the `bytes=0-0` probe with 416, which shows as an error rather than as "could not be played". Contrived: an empty media file.
+  - The iOS Back bar sits over AVKit's top buttons when the controls show, as for video since 574 (handoff Known Risks).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -210,6 +261,11 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 2, CRR-002). CR-001 is resolved; CR-002 is a new `Local Fix`, owned by implementation.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.1 / 10. Runtime correctness is 8.5 (CR-002); data-flow spine is back to 9.3 (CR-001 resolved).
+- Recommended Recipient: `/implementation_engineer`, then a targeted delta code review.
+- Round 1 result (CRR-001, superseded):
 - Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Fail` (S-1 not reached)

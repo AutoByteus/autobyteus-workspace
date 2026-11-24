@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail: Requirement Gap | CR-001 (new) |
+| CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002), Targeted Delta | Fail | Fail: Local Fix | CR-001 (resolved), CR-002 (new) |
 
 ## Revision Entries
 
@@ -42,3 +43,38 @@ None.
   - C-2;
   - C-6 (ship 574 and 642 together);
   - the cosmetic `video-loader` queue label.
+
+### CRR-002: targeted delta review of IR-002 (Fail, Local Fix)
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 2 Delta Review")
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review` of `4313640f6e..26ebb05729` (`dc350be435` web, `fff1b0af0c` iOS)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002): SR-003 (CR-001, C-2) and SR-004 (AR-002)
+- Relevant solution revision IDs: SR-003, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-001)
+- Current authoritative result: Fail, 9.1 / 10. CR-002 is a `Local Fix`.
+- What changed in the review result and why:
+  - The reference viewer now hands media to the players' own paths, the file name is an explicit input, and the iOS audio screen is never blank.
+  - But the viewer's refetch watch fires on any new `reference` object with equal values. The phone re-projects references on every message update, so a refetch remounts the player, which opens the native player again by itself (Android stacks a second one).
+  - This was confirmed with a throwaway spec (fetches 1 → 2, mounts 2 → 3), since deleted.
+  - My web re-run: 397 tests passed.
+- Supported product scenario / material-premise basis changes: S-1 now includes the phone app's native path for references. Held: the 416 for a zero-byte media reference, and the iOS Back bar over AVKit's buttons.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (CRR-001) | Resolved | SR-003, SR-004, IR-002 `dc350be435` | The viewer probes and passes `contentUrl`; the players stream (desktop), go native (app) or download (browser); IMP-11's 8 new cases are red on IR-001; I re-ran green |
+| C-2 (held) | Held (CRR-001) | Resolved | SR-003, IR-002 `fff1b0af0c` | `IMP-12-audio-playing.png`: symbol and name, never blank |
+
+- New or remaining finding IDs: CR-002
+- Material score or classification changes: data-flow spine 8.0 → 9.3; runtime correctness 8.0 → 8.5 (CR-002).
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty:
+  - C-6: ship 574 and 642 together;
+  - the zero-byte 416 (held);
+  - the iOS Back bar over AVKit's buttons.
