@@ -202,6 +202,7 @@ describe('TeamExecutionViewState', () => {
 describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
   const item = (agentRunId: string, delta: string) => ({
     agent_run_id: agentRunId, segment_id: `segment-${agentRunId}`, turn_id: 'turn-1', segment_type: 'text' as const, delta,
+    occurred_at: '2026-11-23T16:55:09.697Z',
   });
   const batch = (first: number, through: number, ...items: ReturnType<typeof item>[]): Extract<TeamStreamServerMessage, { type: 'SEGMENT_CONTENT_BATCH' }> => ({
     type: 'SEGMENT_CONTENT_BATCH', payload: { change_sequence: first, change_sequence_through: through, items },
@@ -212,10 +213,10 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
     const result = state.applyMessage(batch(1, 6, item('teacher-run', 'xy'), item('root-student-run', '12')));
     expectApplied(result);
     expect(result.effects).toEqual([
-      { kind: 'dispatch_agent', agentRunId: 'teacher-run', message: { type: 'SEGMENT_CONTENT', payload: {
+      { kind: 'dispatch_agent', agentRunId: 'teacher-run', message: { type: 'SEGMENT_CONTENT', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         change_sequence: 1, agent_run_id: 'teacher-run', segment_id: 'segment-teacher-run', turn_id: 'turn-1', segment_type: 'text', delta: 'xy',
       } } },
-      { kind: 'dispatch_agent', agentRunId: 'root-student-run', message: { type: 'SEGMENT_CONTENT', payload: {
+      { kind: 'dispatch_agent', agentRunId: 'root-student-run', message: { type: 'SEGMENT_CONTENT', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         change_sequence: 1, agent_run_id: 'root-student-run', segment_id: 'segment-root-student-run', turn_id: 'turn-1', segment_type: 'text', delta: '12',
       } } },
     ]);

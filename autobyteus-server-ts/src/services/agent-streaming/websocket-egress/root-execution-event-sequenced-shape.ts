@@ -12,6 +12,8 @@ type RootContentItem = Readonly<{
   segment_id: string;
   turn_id: string;
   segment_type: string;
+  /** The time the segment's text first appeared in the window (autobyteus-628 D-3). */
+  occurred_at: string;
 }>;
 
 const presentationOf = (message: CollaborationStreamServerMessage) => {
@@ -30,10 +32,10 @@ export const rootExecutionEventSequencedShape: SequencedStreamShape<Collaboratio
     const presentation = presentationOf(message);
     if (!presentation || presentation.event.message.type !== "SEGMENT_CONTENT") return null;
     const { envelope, event } = presentation;
-    const { segment_id, turn_id, segment_type, delta } = presentation.event.message.payload;
+    const { segment_id, turn_id, segment_type, delta, occurred_at } = presentation.event.message.payload;
     const item: RootContentItem = {
       root_subject_kind: envelope.root_subject_kind, root_run_id: envelope.root_run_id,
-      member_address: event.member_address, agent_run_id: event.agent_run_id, segment_id, turn_id, segment_type,
+      member_address: event.member_address, agent_run_id: event.agent_run_id, segment_id, turn_id, segment_type, occurred_at,
     };
     return {
       identityKey: JSON.stringify([item.root_subject_kind, item.root_run_id, item.agent_run_id, item.member_address, segment_id, turn_id, segment_type]),
@@ -64,6 +66,7 @@ export const rootExecutionEventSequencedShape: SequencedStreamShape<Collaboratio
             agent_run_id: item.agent_run_id,
             message: { type: "SEGMENT_CONTENT", payload: {
               segment_id: item.segment_id, turn_id: item.turn_id, segment_type: item.segment_type, delta: text,
+              occurred_at: item.occurred_at,
             } },
           })),
         },

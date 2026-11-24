@@ -20,6 +20,7 @@ import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/service
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import {
   AgentRunEventType,
+  stampForDelivery,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { JsonObject } from "../../../src/agent-execution/backends/codex/codex-app-server-json.js";
@@ -359,7 +360,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,
       });
-      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(stampForDelivery(canonicalEvent)));
       return canonicalEvents;
     };
 
@@ -607,7 +608,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,
       });
-      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(stampForDelivery(canonicalEvent)));
     };
 
     recordCanonicalEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
@@ -821,7 +822,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,
       });
-      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(stampForDelivery(canonicalEvent)));
       return canonicalEvents;
     };
     const completedReasoning = (turnId: string, itemId: string, text: string): AgentRunEvent => {

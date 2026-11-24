@@ -67,7 +67,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     const conversation = createConversation('run-live-1');
     const context = createContext('run-live-1', conversation);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'failed',
       turn_id: 'turn-live-1',
       error_message: 'Backend compaction quota exceeded',
@@ -86,7 +86,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     const conversation = createConversation('run-requested-hidden');
     const context = createContext('run-requested-hidden', conversation);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'requested',
       turn_id: 'turn-requested',
       compaction_operation_id: 'operation-requested-hidden',
@@ -116,12 +116,12 @@ describe('AgentEventMonitor live compaction flow', () => {
     const professorContext = createContext('professor-run-1', professorConversation);
     const studentContext = createContext('student-run-1', studentConversation);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'failed',
       turn_id: 'turn-professor',
       error_message: 'Professor compaction failed',
     }, professorContext as any);
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'failed',
       turn_id: 'turn-student',
       error_message: 'Student compaction failed',
@@ -139,7 +139,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     const conversation = createConversation('run-native-deferred');
     const context = createContext('run-native-deferred', conversation);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'requested',
       turn_id: 'turn-2',
       compaction_operation_id: 'operation-native-1',
@@ -147,7 +147,7 @@ describe('AgentEventMonitor live compaction flow', () => {
       selected_block_count: null,
       compacted_block_count: null,
     }, context as any);
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'started',
       turn_id: 'turn-3',
       compaction_operation_id: 'operation-native-1',
@@ -158,7 +158,7 @@ describe('AgentEventMonitor live compaction flow', () => {
       compaction_invocation_id: 'child-run-1',
       summarizer_provider: 'openai',
     }, context as any);
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'failed',
       turn_id: 'turn-3',
       compaction_operation_id: 'operation-native-1',
@@ -199,7 +199,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     const conversation = createConversation('run-split-ai-block');
     const context = createContext('run-split-ai-block', conversation);
 
-    handleSegmentStart({
+    handleSegmentStart({ occurred_at: '2026-11-23T16:55:09.697Z',
       id: 'segment-before-compaction',
       turn_id: 'turn-1',
       segment_type: 'text',
@@ -212,7 +212,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     }
     expect(firstAIMessage.isComplete).toBe(false);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'requested',
       provider: 'codex',
       compaction_operation_id: 'operation-split-ai-block',
@@ -220,7 +220,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     }, context as any);
     expect(firstAIMessage.isComplete).toBe(false);
 
-    handleCompactionStatus({
+    handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z',
       phase: 'started',
       provider: 'codex',
       compaction_operation_id: 'operation-split-ai-block',
@@ -229,7 +229,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     }, context as any);
     expect(firstAIMessage.isComplete).toBe(true);
 
-    handleSegmentStart({
+    handleSegmentStart({ occurred_at: '2026-11-23T16:55:09.697Z',
       id: 'segment-after-compaction',
       turn_id: 'turn-2',
       segment_type: 'text',

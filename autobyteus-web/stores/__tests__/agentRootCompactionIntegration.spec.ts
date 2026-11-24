@@ -38,7 +38,7 @@ beforeEach(() => {
 afterEach(() => { useAgentRunCollaborationStore().release('host-run') })
 const seed = (context: AgentContext, operation = context.state.runId, phase: any = 'started') => {
   context.state.inputProjection = { runInstanceId: `instance-${context.state.runId}`, revision: 3 }
-  handleCompactionStatus({ phase, compaction_operation_id: operation, turn_id: 't', raw_trace_count: 12,
+  handleCompactionStatus({ occurred_at: '2026-11-23T16:55:09.697Z', phase, compaction_operation_id: operation, turn_id: 't', raw_trace_count: 12,
     requested_turn_id: 'r', execution_turn_id: 'e', compaction_model_identifier: 'model' }, context)
 }
 const setup = async () => {

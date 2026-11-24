@@ -42,7 +42,7 @@ export const teamMemberPresentationOf = (event: TeamRunEvent): Readonly<{ agentR
   const { recipientAgentRunId, ...details } = event.payload;
   return {
     agentRunId: recipientAgentRunId,
-    message: projectAgentPresentationMessage({ eventType: "MEMBER_INPUT_MESSAGE", details, statusHint: null }),
+    message: projectAgentPresentationMessage({ eventType: "MEMBER_INPUT_MESSAGE", details, statusHint: null, occurredAt: Date.parse(details.receivedAt) }),
   };
 };
 

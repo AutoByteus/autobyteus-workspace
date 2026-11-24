@@ -26,7 +26,7 @@ describe("the identity of a stored external-runtime user message", () => {
   });
   afterEach(() => { fs.rmSync(root, { recursive: true, force: true }); });
 
-  const forward = (message: AgentInputUserMessage, turnId: string, forwardedAt: number) => {
+  const forward = (message: AgentInputUserMessage, turnId: string, acceptedAt: number) => {
     const writer = new ExternalRuntimeMemoryWriter({ memoryDir: runDir });
     new RuntimeMemoryEventAccumulator({
       runId: "run-1", writer, toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
@@ -40,7 +40,7 @@ describe("the identity of a stored external-runtime user message", () => {
       platformAgentRunId: "session-1",
       message,
       result: { accepted: true, turnId },
-      forwardedAt: new Date(forwardedAt),
+      acceptedAt: new Date(acceptedAt),
     });
   };
   const userRecords = () => fs.readdirSync(runDir)

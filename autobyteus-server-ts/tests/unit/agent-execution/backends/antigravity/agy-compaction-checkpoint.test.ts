@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgyStreamEventConverter } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
 import { parseAgyStreamMessage, type AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
-import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentSegmentLifecycleEventTransformer } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { AgentSegmentLifecycleState } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { AgentTurnLifecycleState } from "../../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
@@ -63,7 +63,7 @@ const recordIntoMemory = async (events: AgentRunEvent[]) => {
   for (const event of events) {
     lifecycleState.observeEvent(event);
     const canonical = transformer.transform({ runContext: {} as never, events: [event], lifecycleState, segmentLifecycleState });
-    for (const item of canonical) accumulator.recordRunEvent(item);
+    for (const item of canonical) accumulator.recordRunEvent(stampForDelivery(item));
   }
   const store = new RunMemoryFileStore(memoryDir);
   return {

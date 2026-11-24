@@ -20,7 +20,7 @@ export function handleSystemTaskNotification(
 ): boolean {
   const messageId = typeof payload.message_id === 'string' && payload.message_id ? payload.message_id : null;
   if (messageId && showsNotice(context, messageId)) return false;
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, payload.occurred_at);
 
   const segment: SystemTaskNotificationSegment = {
     type: 'system_task_notification',

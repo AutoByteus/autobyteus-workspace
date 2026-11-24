@@ -4,7 +4,7 @@ import { CollaborationStreamServerMessageSchema, RootExecutionEventDtoSchema } f
 
 const item = (agentRunId, delta) => ({
   member_address: `/${agentRunId}`, agent_run_id: agentRunId,
-  message: { type: "SEGMENT_CONTENT", payload: { segment_id: `segment-${agentRunId}`, turn_id: "turn-1", segment_type: "text", delta } },
+  message: { type: "SEGMENT_CONTENT", payload: { segment_id: `segment-${agentRunId}`, turn_id: "turn-1", segment_type: "text", delta, occurred_at: "2026-11-23T16:55:09.697Z" } },
 });
 const envelope = (rootKind, extra) => ({ root_subject_kind: rootKind, root_run_id: "root-run-1", change_sequence: 21, ...extra });
 const batchEvent = { kind: "agent_presentation_batch", items: [item("agent-a", "xy"), item("agent-b", "12")] };

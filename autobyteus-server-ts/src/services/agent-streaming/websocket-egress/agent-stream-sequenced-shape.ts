@@ -1,7 +1,7 @@
 import { ServerMessage, ServerMessageType } from "../models.js";
 import type { SequencedStreamShape } from "./sequenced-stream-shape.js";
 
-type AgentContentItem = Readonly<{ id: unknown; turn_id: unknown; segment_type: unknown }>;
+type AgentContentItem = Readonly<{ id: unknown; turn_id: unknown; segment_type: unknown; occurred_at: unknown }>;
 
 /**
  * An agent run's own stream (`/ws/agent`, autobyteus-461 SR-087): its frames carry their number in the run's
@@ -11,9 +11,10 @@ export const agentStreamSequencedShape: SequencedStreamShape<ServerMessage, Agen
   sequenceOf: (message) => message.sequence ?? null,
   contentOf: (message) => {
     if (message.type !== ServerMessageType.SEGMENT_CONTENT) return null;
-    const { id, turn_id, segment_type, delta } = message.payload;
+    const { id, turn_id, segment_type, delta, occurred_at } = message.payload;
     if (typeof delta !== "string") return null;
-    return { identityKey: JSON.stringify([id, turn_id, segment_type]), item: { id, turn_id, segment_type }, delta };
+    // A batch item keeps the time its segment's text first appeared in the window (autobyteus-628 D-3).
+    return { identityKey: JSON.stringify([id, turn_id, segment_type]), item: { id, turn_id, segment_type, occurred_at }, delta };
   },
   statusOf: (message) => message.type === ServerMessageType.AGENT_STATUS
     ? { agentRunId: "run", comparable: message.payload }

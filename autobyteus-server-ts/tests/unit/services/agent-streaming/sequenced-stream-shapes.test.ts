@@ -5,7 +5,7 @@ import { teamStreamSequencedShape } from "../../../../src/services/agent-streami
 import { rootExecutionEventSequencedShape } from "../../../../src/services/agent-streaming/websocket-egress/root-execution-event-sequenced-shape.js";
 import { streamPayloadsEqual } from "../../../../src/services/agent-streaming/websocket-egress/stream-payload-equality.js";
 
-const segment = { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text" as const };
+const segment = { segment_id: "segment-1", turn_id: "turn-1", segment_type: "text" as const, occurred_at: "2026-11-23T16:55:09.697Z" };
 const runningStatus = { status: "running" as const, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null };
 
 describe("teamStreamSequencedShape", () => {

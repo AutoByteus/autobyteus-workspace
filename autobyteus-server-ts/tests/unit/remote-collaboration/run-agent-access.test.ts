@@ -11,7 +11,7 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-te
 const OWNER = { nodeName: "alpha" };
 const post = { kind: "post_message" as const, content: "status?", messageId: "m1", dedupeKey: "d1" };
 const statusEvent = (runId: string, status: string): AgentRunEvent =>
-  ({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status }, statusHint: status === "running" ? "ACTIVE" : "IDLE" }) as AgentRunEvent;
+  ({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status }, statusHint: status === "running" ? "ACTIVE" : "IDLE", occurredAt: 1795452909697 }) as AgentRunEvent;
 
 const fakeHost = (runId: string) => {
   const listeners = new Set<(event: AgentRunEvent) => void>();
@@ -123,7 +123,7 @@ const teamRoot = (members: string[]) => {
 const agentEvent = (agentRunId: string): TeamRunEvent => ({
   eventSourceType: TeamRunEventSourceType.AGENT,
   execution: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity("team-run"), memberAddress: `/team/${agentRunId}` as never, agentRunId }),
-  payload: { eventType: "TURN_STARTED", details: { turnId: "t1" }, statusHint: null },
+  payload: { eventType: "TURN_STARTED", details: { turnId: "t1" }, statusHint: null, occurredAt: 1795452909697 },
 } as never);
 
 describe("TeamRunAgentAccess (a remote Team)", () => {

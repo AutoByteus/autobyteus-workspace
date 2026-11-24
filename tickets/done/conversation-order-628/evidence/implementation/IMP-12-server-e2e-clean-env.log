@@ -1,0 +1,21 @@
+# IMP-12 the whole server e2e folder on the final code, in the clean environment TESTING.md asks for
+# command: pnpm -C autobyteus-server-ts build ; pnpm -C autobyteus-server-ts test:integration:prepare (Brief Studio's package) ;
+#          cd autobyteus-server-ts && env -i PATH="$PATH" HOME=<resolved temp dir> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e
+# commit: 6ad8920bd6
+# env: macOS arm64, Node v22.23.1, scripted runtimes; no provider keys
+# date: 2026-11-24
+# result: Pass: 127 files, 573 tests, 0 failed (165 files skipped by their own gates).
+# Correction of an earlier report: my earlier server e2e runs (on D-3 and on the base) ran without `env -i`, in a shell
+#   that carries the live app's variables (its agent package roots, server host, empty application package roots, the
+#   real HOME). Three files failed there identically on the base and the branch (memory-collaboration-graphql,
+#   request-origin-and-phone-routes, agent-runtime-update-notifications), and the three Brief Studio runtime/* files
+#   failed. That was the environment: in the clean environment all pass. FU-003 is therefore not a product failure.
+#   Those runs wrote nothing to the live app's data: every test file sets its own DATABASE_URL (tests/setup/prisma-env.ts),
+#   no memory folder was created in ~/.autobyteus/server-data/memory during the run windows, and the agent and skill
+#   repositories the roots name have no file changed since the first run. They did read the agent definitions in
+#   those repositories (the memory-collaboration test listed them).
+
+## result
+ Test Files  127 passed | 165 skipped (292)
+      Tests  573 passed | 784 skipped (1357)
+   Duration  1164.93s (transform 14.79s, setup 6.01s, import 344.54s, tests 789.47s, environment 15ms)

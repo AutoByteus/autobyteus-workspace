@@ -19,7 +19,7 @@ describe("Team SYSTEM_INSTRUCTIONS_SUPPLIED admission", () => {
       eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
       runId,
       payload: { trace_id: "raw-team-system-id", content, ts: 42.25 },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     };
 
     const admitted = new TeamAgentEventAdapter(() => execution).adapt(event);
@@ -28,7 +28,7 @@ describe("Team SYSTEM_INSTRUCTIONS_SUPPLIED admission", () => {
     expect(admitted.event).toEqual({
       eventType: "SYSTEM_INSTRUCTIONS_SUPPLIED",
       details: { traceId: "raw-team-system-id", content, ts: 42.25 },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
     expect(projectTeamAgentEventMessage(execution, admitted.event, 7)).toEqual({
       type: "SYSTEM_INSTRUCTIONS_SUPPLIED",
@@ -47,7 +47,7 @@ describe("Team SYSTEM_INSTRUCTIONS_SUPPLIED admission", () => {
       eventType: AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED,
       runId,
       payload: { trace_id: "raw-team-system-id", content: "prompt", ts: 42.25, turn_id: "turn-1" },
-      statusHint: null,
+      statusHint: null, occurredAt: 1795452909697,
     });
 
     expect(admitted).toEqual(expect.objectContaining({ kind: "rejected" }));

@@ -20,6 +20,8 @@ type InputEntry = {
   readonly sequence: number;
   readonly message: AgentInputUserMessage;
   readonly observer: AgentRunInputLifecycleObserver | null;
+  /** When the node admitted the input, ISO 8601 (autobyteus-628 D-3): the time the app shows for its message. */
+  readonly acceptedAt: string;
   state: EntryState;
   dispatchKind: AgentRunBackendInputDispatch["kind"] | null;
   associatedTurnId: string | null;
@@ -115,6 +117,7 @@ export class AgentRunInputAdmissionState {
       sequence: this.nextSequence++,
       message,
       observer,
+      acceptedAt: new Date().toISOString(),
       state: "reserved",
       dispatchKind: null,
       associatedTurnId: null,
@@ -256,6 +259,7 @@ export class AgentRunInputAdmissionState {
       kind: "forwarded",
       dispatchKind: claim.dispatch.kind,
       turnId: entry.associatedTurnId,
+      acceptedAt: entry.acceptedAt,
     });
     if (entry.associatedTurnId) {
       safeNotify(entry.observer, {
@@ -366,6 +370,7 @@ export class AgentRunInputAdmissionState {
       file_attachments: (entry.message.recordingFileAttachments ?? entry.message.contextFiles ?? []).map(file => ({
         uri: file.uri, file_type: file.fileType, file_name: file.fileName,
       })),
+      accepted_at: entry.acceptedAt,
     }));
   }
 

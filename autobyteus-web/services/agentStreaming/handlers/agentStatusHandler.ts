@@ -131,7 +131,7 @@ export function handleError(
   context: AgentContext
 ): RecentEventMonitorEffect {
   if (payload.error_effect === 'diagnostic') {
-    const aiMessage = findOrCreateAIMessage(context);
+    const aiMessage = findOrCreateAIMessage(context, payload.occurred_at);
     aiMessage.segments.push({
       type: 'error',
       code: payload.code,
@@ -151,7 +151,7 @@ export function handleError(
 
   terminalizeOpenToolSegmentsForError(payload, context);
 
-  const aiMessage = findOrCreateAIMessage(context);
+  const aiMessage = findOrCreateAIMessage(context, payload.occurred_at);
 
   const errorSegment: ErrorSegment = {
     type: 'error',

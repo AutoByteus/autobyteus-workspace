@@ -115,7 +115,7 @@ it('BEH-004: concurrent and already-stopped duplicate Stop sends one command', a
 })
 it('BEH-001/003: a retained old approval after Stop restores nothing: it goes over the kept stream, whose server refuses it for a stopped member (SR-045, SR-046)', async () => {
   const t = setup()
-  t.emit('TOOL_APPROVAL_REQUESTED', { change_sequence: 1, agent_run_id: 'lead', invocation_id: 'pending', tool_name: 'send_message_to', turn_id: 'turn', arguments: { message: 'pending' } })
+  t.emit('TOOL_APPROVAL_REQUESTED', { occurred_at: '2026-11-23T16:55:09.697Z', change_sequence: 1, agent_run_id: 'lead', invocation_id: 'pending', tool_name: 'send_message_to', turn_id: 'turn', arguments: { message: 'pending' } })
   await t.store.terminateTeamRun(ROOT)
   t.stored(); await flushPromises()
   await t.store.postToolExecutionApproval('pending', true)
@@ -168,7 +168,7 @@ it('BEH-003: a later Send goes over the kept stream; the Team starts on it and c
   expect(messages.filter(m => m.text === 'deliberate next work')).toHaveLength(1)
   // No rehydration: the retained conversation is the same one, with the new input once.
   expect(adopted.view.getAgentContext('lead')!.conversation).toBe(conversation)
-  t.emit('TOOL_EXECUTION_SUCCEEDED', { change_sequence: 2, agent_run_id: 'lead', invocation_id: 'next-work', tool_name: 'send_message_to', turn_id: 'next-turn', arguments: { message: 'new work' }, result: 'new result' })
+  t.emit('TOOL_EXECUTION_SUCCEEDED', { occurred_at: '2026-11-23T16:55:09.697Z', change_sequence: 2, agent_run_id: 'lead', invocation_id: 'next-work', tool_name: 'send_message_to', turn_id: 'next-turn', arguments: { message: 'new work' }, result: 'new result' })
   await nextTick()
   expect(useAgentActivityStore().getToolActivities('lead').map(a => a.invocationId)).toEqual(['lead-invocation', 'next-work'])
   expect(wrapper!.text()).toContain('3 Events')

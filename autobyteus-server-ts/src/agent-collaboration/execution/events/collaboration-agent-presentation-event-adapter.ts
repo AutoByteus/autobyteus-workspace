@@ -25,6 +25,12 @@ const publish = (event: AgentPresentationEvent): CollaborationAgentPresentationA
 });
 
 /** The only admission boundary from raw collaboration-Agent events to presentation. */
+/** The node's receipt of a member input, epoch ms; now when its receipt time was not recorded. */
+const receivedAtOf = (receivedAt: string | null | undefined): number => {
+  const parsed = receivedAt ? Date.parse(receivedAt) : Number.NaN;
+  return Number.isFinite(parsed) ? parsed : Date.now();
+};
+
 export class CollaborationAgentPresentationEventAdapter {
   private readonly agentRuns: AgentRunPresentationAdapter;
 
@@ -63,6 +69,8 @@ export class CollaborationAgentPresentationEventAdapter {
           messageId: null,
         }),
         statusHint: null,
+        // Shown at the node's receipt of the input (autobyteus-628 D-3).
+        occurredAt: receivedAtOf(rawEvent.receivedAt),
       }));
       return publish(buildMemberInputPresentationEvent({
         execution, message: rawEvent.message, receivedAt: rawEvent.receivedAt,
@@ -85,6 +93,7 @@ export class CollaborationAgentPresentationEventAdapter {
           errorDetails: null, recoverableBlock: rawEvent.snapshot.details.recoverableBlock,
         }),
         statusHint: rawEvent.snapshot.statusHint,
+        occurredAt: Date.now(),
       }));
     }
     if (rawEvent.kind === "readiness_failure") {
@@ -98,6 +107,7 @@ export class CollaborationAgentPresentationEventAdapter {
           turnId: null,
         }),
         statusHint: "ERROR",
+        occurredAt: Date.now(),
       }));
     }
     const unhandled: never = rawEvent;

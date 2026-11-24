@@ -99,7 +99,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
       messageId: 'message-rejected', dedupeKey: 'dedupe-rejected',
     }).catch((error) => { rejected = true; throw error; });
     callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'ERROR', payload: {
+      type: 'ERROR', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'TEAM_SEND_MESSAGE_REJECTED', message: 'wrong target',
         change_sequence: null, agent_run_id: 'worker-run',
         error_scope: null, error_effect: null, turn_id: null,
@@ -108,7 +108,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     await Promise.resolve();
     expect(rejected).toBe(false);
     callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'ERROR', payload: {
+      type: 'ERROR', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'TEAM_SEND_MESSAGE_REJECTED', message: 'runtime is stopping',
         change_sequence: null, agent_run_id: 'reviewer-run',
         error_scope: null, error_effect: null, turn_id: null,
@@ -144,7 +144,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
       mentions: [{ kind: 'agent_team', definition_id: 'marketing-team' }],
     });
     callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'ERROR', payload: {
+      type: 'ERROR', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team',
         change_sequence: null, agent_run_id: 'worker-run', error_scope: null, error_effect: null, turn_id: null,
       },
@@ -205,7 +205,7 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
   it('tracks a tool request to its exact AgentRun when no explicit decision target is supplied', () => {
     const { callbacks, service, wsClient } = createHarness();
     callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'TOOL_APPROVAL_REQUESTED', payload: {
+      type: 'TOOL_APPROVAL_REQUESTED', payload: { occurred_at: '2026-11-23T16:55:09.697Z',
         change_sequence: 1, agent_run_id: 'reviewer-run', invocation_id: 'invocation-tracked',
         tool_name: 'run_bash', turn_id: 'turn-1', arguments: { command: 'pwd' },
       },

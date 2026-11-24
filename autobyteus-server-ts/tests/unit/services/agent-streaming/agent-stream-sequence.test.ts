@@ -8,7 +8,7 @@ import type { RunProjectionConversationEntry } from "../../../../src/run-history
 
 const RUN = "run-1";
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent =>
-  ({ runId: RUN, eventType, payload, statusHint: null });
+  ({ runId: RUN, eventType, payload, statusHint: null, occurredAt: 1795452909697 });
 const segment = (turnId: string, id: string, segmentType = "text") => [
   event(AgentRunEventType.SEGMENT_START, { id, turn_id: turnId, segment_type: segmentType }),
   event(AgentRunEventType.SEGMENT_CONTENT, { id, turn_id: turnId, segment_type: segmentType, delta: `${id}-text` }),
@@ -168,7 +168,7 @@ describe("AgentStreamSequence snapshot", () => {
     const order: string[] = [];
     const inputState = { run_instance_id: "instance-1", revision: 2, recoverableBlock: null, entries: [{ sequence: 1,
       message_id: "client_msg-2", dedupe_key: "client_msg-2", turn_id: null, state: "queued" as const, content: "next",
-      sender_type: "user" as const, file_attachments: [] }] };
+      sender_type: "user" as const, file_attachments: [], accepted_at: "2026-11-23T16:55:09.000Z" }] };
     const connection = await run.sequence.connect((base) => activeRunSnapshot(run.sequence, base,
       async (runId) => { order.push("stored"); return buildRunProjectionBundle(runId, [], []); },
       () => { order.push("input_state"); return inputState; }));

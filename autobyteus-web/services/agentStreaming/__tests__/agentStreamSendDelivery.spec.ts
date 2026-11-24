@@ -71,7 +71,7 @@ describe('agent stream send delivery (autobyteus-540)', () => {
   const inputState = (entries: Array<{ messageId: string; content: string }>) => ({
     run_instance_id: 'instance-1', revision: 3, recoverableBlock: null,
     entries: entries.map((entry, index) => ({ sequence: index + 1, message_id: entry.messageId, dedupe_key: entry.messageId,
-      turn_id: null, state: 'queued', content: entry.content, sender_type: 'user', file_attachments: [] })),
+      turn_id: null, state: 'queued', content: entry.content, sender_type: 'user', accepted_at: '2026-11-23T16:55:09.000Z', file_attachments: [] })),
   });
   /** A bound stream, then a send from the composer through the store; returns the send's message id. */
   const sendBound = async (text: string) => {

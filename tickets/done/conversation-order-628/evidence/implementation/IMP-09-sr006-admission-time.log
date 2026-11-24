@@ -1,0 +1,154 @@
+# IMP-09 (SR-006) the external user trace is stored at the input's admission time (acceptedAt); forwardedAt removed (ARCH-REV-003 N-4)
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose <the 5 files below>
+#          red check: the 5 SR-006 source files stashed (git stash push -- <src files>), the same tests run, the stash restored
+#          then, one at a time: pnpm test:unit (server) ; NUXT_TEST=true pnpm exec vitest run (web) ; both typechecks ;
+#          the three web guards ; pnpm check:contract-dist
+# commit: the SR-006 commit (run on its working tree before committing; same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-23
+# result: Pass. On the pre-SR-006 source 11 of the 62 tests in the red run fail (the new admission-time test, the 5 lifecycle
+#   expectations, and the 5 external read-back cases, whose user trace then has no admission time); with SR-006 all pass.
+#   The admission-time test was added after the whole-suite run; it ran alone and in the focused and red runs.
+#   `rg forwardedAt` over autobyteus-server-ts src and tests: no match (only ticket documents of other tickets mention it).
+
+## focused tests (SR-006)
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > admits an onlyAsFirstInput input as the first input; refuses it once the instance reserved or admitted any input 5ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > counts a reserved input (a teammate's delivery) as earlier input; an invalid input does not 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > decides concurrent inputs in the run's dispatch queue: whichever is admitted first wins 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > normalizes only the private provider dispatch while observers retain the admitted message 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > returns admission before an idle start dispatch settles and records forwarding once 53ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > claims exact active Codex append and exposes only that atomic turn id 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > appends input posted while an earlier input's turn is running (IMP-DI-001, AC-015) 2ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > starts a definitely-undelivered append as the next turn instead of failing it (AC-016) 23ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > resolves a requeued append only at the next turn's terminal when the old turn ended mid-dispatch (CR-001) 77ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > admits Claude/AutoByteus input while active and starts it only after terminal 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > retains anonymous-turn input until the canonical terminal instead of guessing 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > keeps several next-turn inputs FIFO and one provider invocation at a time 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > orders synchronous start and terminal facts behind forwarding result 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > does not retry or convert a rejected append 61ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > settles reject-after-start as one protocol failure without retry 56ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > keeps append-capable input FIFO-owned through interrupt acceptance until terminal 66ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > resumes exact active-turn append after interrupt rejection 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > resumes exact active-turn append after interrupt failure 57ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > reserves one no-id interrupt and lets a canonical terminal win provider-result ordering 56ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > rejects an interrupt target mismatch before provider I/O 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > passes an anonymous canonical active turn as exact null provider mechanics 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > keeps an earlier reservation intact until its owner commits and the released input terminates 105ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > keeps quiescence pending until an earlier reservation owner cancels 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > keeps admission closed after committed provider termination rejects 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > retries the same prepared AgentRun after a nonterminal provider termination result 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > drains claimed and queued inputs in FIFO order before provider termination 113ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > returns null without side effects when quiescent preparation sees an active turn 2ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > prepares an already-quiescent run and ordinary cancellation reopens admission 2ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > root shutdown silently invalidates reservations and cancels admitted pre-forward input once 2ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > tracks provider-started pre-turn work through canonical interruption before completing the root fence 53ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > interrupts an already-active approval-wait turn before the root fence completes 55ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > waits for the provider interrupt request even when canonical terminal truth arrives first 52ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > is not quiescent for idle shutdown while the runtime reports a running background task, and admission stays open 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > prepares an idle run once its background task has ended 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > explicit termination and the root-shutdown fence never wait for a running background task (AC-007) 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > does not reopen root-fenced admission when an earlier prepared termination is cancelled 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > fails retained input once and closes admission on a runtime-global terminal error 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > rejects input while the runtime is offline 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > rejects invalid typed input without provider effect 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input admission > preserves source callback order and rejects cross-run publication 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun root shutdown attempts (SR-006, F-1–F-4) > settles accepted when the turn completes after a rejected interrupt, with no second interrupt (F-1) 52ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun root shutdown attempts (SR-006, F-1–F-4) > ends a failed attempt at the bound, keeps input fenced, and lets the next call start a new attempt (F-2, F-3) 5ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun root shutdown attempts (SR-006, F-1–F-4) > shares one pending attempt between concurrent callers and keeps an accepted result latched (F-3) 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun root shutdown attempts (SR-006, F-1–F-4) > fails only the attempt whose interrupt throws; the next call interrupts again (F-3) 55ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun termination delegation keeps coalescing (agent-run-termination-extraction) > shares one preparation promise, one try-if-quiescent promise and one backend termination 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun termination delegation keeps coalescing (agent-run-termination-extraction) > logs the current turn's pending segment rejection count once during termination (AC-005c) 3ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > sends no already-delivered revision after content batches and broadcasts a queued input once (AC-002) 54ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > gives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a) 108ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > broadcasts a revision first produced by a pull read on the next publish (AC-004b) 58ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > broadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b) 105ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun background-task view > answers an event-stream run with its current tasks, read when asked 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun background-task view > keeps the unsupported answer for a runtime that reports no background tasks 0ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool 5ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps the first boundary for an unseen insufficient terminal when readiness arrives later 3ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records the sender of a forwarded agent-to-agent delivery on its user trace (RD-004) 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity 0ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity 0ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists optional provider compaction details only when the provider reports them 58ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rotates once for an Antigravity checkpoint boundary and ignores the same boundary again 68ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > stores the RuntimeKind value in the manifest entry and records no boundary whose runtime is not a RuntimeKind (AC-001) 48ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives 46ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records 80ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists 70ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > registers the typed lifecycle observer before admission and never subscribes to raw events 5ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > admits distinct commands concurrently while preserving duplicate replay 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > settles dispatch failure and cancellation from the entry-bound lifecycle 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > admits concurrent distinct commands after the lifecycle owner resolves one shared activation 54ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps activation-only status overlay and clears it before live admission 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps activation failure as one failed record and error overlay 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > returns a rejected ACK when AgentRun refuses admission 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > DS-15: a run whose Task is closed is refused with base's text before anything is resolved, restored or shown 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > CR-461-070 (F-50): a delegated run that cannot be restored is refused with base's code and text in the ack, before anything is resolved 1ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 6ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > external, the notice stored first with the same time as its input (the read path's time sort keeps the stored order at a tie): input, notice, reply 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > external, already stored input first (the notice's publication came after the input's write): unchanged 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > external, an input admitted before a notice opened its own turn, then appended into that turn: input first, as it showed live (SR-006, ARCH-REV-003 N-5) 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > external, a notice that opened its own turn and an input appended to that turn later: unchanged 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > native AutoByteus: the notice and its input written one after the other > in the same millisecond: input, notice, reply 3ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > native AutoByteus: the notice and its input written one after the other > a millisecond apart: input, notice, reply 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > native AutoByteus: the notice and its input written one after the other > far apart (a slow write): input, notice, reply 2ms
+ ✓ tests/unit/run-history/projection/preface-notice-order.test.ts > a preface notice reads back after the input it came with (autobyteus-628 D-2) > native AutoByteus: the notice and its input written one after the other > a native notice written under another source event (not a preface) keeps its place 2ms
+ ✓ tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > stores message_id and dedupe_key from the forwarded message's metadata, and the projection returns them 6ms
+ ✓ tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > writes no identity keys for a message without identity, and an older record without them still loads 2ms
+ Test Files  5 passed (5)
+      Tests  97 passed (97)
+
+## new: agent-run.test.ts > tells the forwarding observers the input's admission time, not the time it was forwarded
+      Tests  1 passed | 52 skipped (53)
+
+## red check on the pre-SR-006 source (tests/unit/agent-execution/agent-run.test.ts, preface-notice-order.test.ts)
+     × returns admission before an idle start dispatch settles and records forwarding once 61ms
+     × tells the forwarding observers the input's admission time, not the time it was forwarded 52ms
+     × orders synchronous start and terminal facts behind forwarding result 56ms
+     × keeps an earlier reservation intact until its owner commits and the released input terminates 1059ms
+     × drains claimed and queued inputs in FIFO order before provider termination 1004ms
+     × tracks provider-started pre-turn work through canonical interruption before completing the root fence 1005ms
+     × external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 5ms
+     × external, the notice stored first with the same time as its input (the read path's time sort keeps the stored order at a tie): input, notice, reply 2ms
+     × external, already stored input first (the notice's publication came after the input's write): unchanged 1ms
+     × external, an input admitted before a notice opened its own turn, then appended into that turn: input first, as it showed live (SR-006, ARCH-REV-003 N-5) 1ms
+     × external, a notice that opened its own turn and an input appended to that turn later: unchanged 1ms
+      Tests  11 failed | 51 passed (62)
+
+## server unit suite (pnpm test:unit)
+ Test Files  1074 passed | 5 skipped (1079)
+      Tests  8925 passed | 9 skipped (8934)
+
+## web unit suite
+ Test Files  803 passed (803)
+      Tests  6123 passed | 2 skipped (6125)
+
+## server typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## contract dist
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.

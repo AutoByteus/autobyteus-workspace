@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { nonEmptyStringSchema, nullableNonEmptyStringSchema } from "./schema-helpers.js";
+import { nonEmptyStringSchema, nullableNonEmptyStringSchema, serverTimeSchema } from "./schema-helpers.js";
 
 export const compactionRecoveryIdentitySchema = z.object({
   operationId: nonEmptyStringSchema, failureEpoch: z.number().int().positive(),
@@ -21,6 +21,8 @@ export const agentPendingInputSchema = z.object({
   state: z.enum(["queued", "held", "forwarded"]), content: z.string(),
   sender_type: z.enum(["user", "agent", "system"]),
   file_attachments: z.array(z.object({ uri: nonEmptyStringSchema, file_type: nonEmptyStringSchema, file_name: z.string().nullable() }).strict()),
+  /** When the run's node admitted the input (autobyteus-628 D-3): the time of the user message the app shows for it. */
+  accepted_at: serverTimeSchema,
 }).strict();
 /** Transient projection of one live AgentRun FIFO, never a delivery outbox. */
 export const agentInputStateSchema = z.object({

@@ -110,6 +110,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
                     file_type: z.ZodString;
                     file_name: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>>;
+                accepted_at: z.ZodISODateTime;
             }, z.core.$strict>>;
             recoverableBlock: z.ZodNullable<z.ZodObject<{
                 operationId: z.ZodString;
@@ -464,6 +465,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"SEGMENT_START">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -482,6 +484,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"SEGMENT_CONTENT">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         segment_id: z.ZodString;
         turn_id: z.ZodString;
         segment_type: z.ZodEnum<{
@@ -516,6 +519,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         change_sequence: z.ZodNumber;
         change_sequence_through: z.ZodNumber;
         items: z.ZodArray<z.ZodObject<{
+            occurred_at: z.ZodISODateTime;
             segment_id: z.ZodString;
             turn_id: z.ZodString;
             segment_type: z.ZodEnum<{
@@ -570,6 +574,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"COMPACTION_STATUS">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         phase: z.ZodNullable<z.ZodString>;
         kind: z.ZodNullable<z.ZodString>;
         status: z.ZodNullable<z.ZodString>;
@@ -683,6 +688,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 file_type: z.ZodString;
                 file_name: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>>;
+            accepted_at: z.ZodISODateTime;
         }, z.core.$strict>>;
         recoverableBlock: z.ZodNullable<z.ZodObject<{
             operationId: z.ZodString;
@@ -940,6 +946,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_APPROVAL_REQUESTED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -950,6 +957,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_APPROVED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         reason: z.ZodNullable<z.ZodString>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -960,6 +968,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_DENIED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         reason: z.ZodNullable<z.ZodString>;
         error: z.ZodNullable<z.ZodString>;
@@ -972,6 +981,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_EXECUTION_STARTED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -982,6 +992,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_EXECUTION_SUCCEEDED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         result: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         invocation_id: z.ZodString;
@@ -993,6 +1004,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_EXECUTION_FAILED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         error: z.ZodString;
         invocation_id: z.ZodString;
@@ -1004,6 +1016,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_EXECUTION_INTERRUPTED">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         arguments: z.ZodNullable<z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>;
         reason: z.ZodString;
         invocation_id: z.ZodString;
@@ -1015,6 +1028,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TOOL_LOG">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         log_entry: z.ZodString;
         tool_invocation_id: z.ZodString;
         tool_name: z.ZodString;
@@ -1055,6 +1069,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"SYSTEM_TASK_NOTIFICATION">;
     payload: z.ZodObject<{
+        occurred_at: z.ZodISODateTime;
         sender: z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"system">;
         }, z.core.$strict>, z.ZodObject<{
@@ -1219,6 +1234,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                         file_type: z.ZodString;
                         file_name: z.ZodNullable<z.ZodString>;
                     }, z.core.$strict>>;
+                    accepted_at: z.ZodISODateTime;
                 }, z.core.$strict>>;
                 recoverableBlock: z.ZodNullable<z.ZodObject<{
                     operationId: z.ZodString;
@@ -1613,6 +1629,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         error_scope: z.ZodNull;
         error_effect: z.ZodNull;
         turn_id: z.ZodNull;
+        occurred_at: z.ZodISODateTime;
         code: z.ZodString;
         message: z.ZodString;
         details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1629,6 +1646,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             terminal: "terminal";
         }>;
         turn_id: z.ZodString;
+        occurred_at: z.ZodISODateTime;
         code: z.ZodString;
         message: z.ZodString;
         details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1642,6 +1660,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         error_scope: z.ZodLiteral<"runtime">;
         error_effect: z.ZodLiteral<"terminal">;
         turn_id: z.ZodNull;
+        occurred_at: z.ZodISODateTime;
         code: z.ZodString;
         message: z.ZodString;
         details: z.ZodOptional<z.ZodNullable<z.ZodString>>;

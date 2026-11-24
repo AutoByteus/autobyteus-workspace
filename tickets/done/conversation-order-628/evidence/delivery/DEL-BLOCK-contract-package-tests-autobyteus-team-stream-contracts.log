@@ -1,0 +1,163 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: autobyteus-448: a team member's status carries the required running background task count
+ok 1 - autobyteus-448: a team member's status carries the required running background task count
+  ---
+  duration_ms: 5.081792
+  type: 'test'
+  ...
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 2 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 2.167708
+  type: 'test'
+  ...
+# Subtest: the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+ok 3 - the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+  ---
+  duration_ms: 1.466875
+  type: 'test'
+  ...
+# Subtest: a Team stream carries no remote rows or their summaries: a peer run is a row of the Team's tree (autobyteus-461 SR-084)
+ok 4 - a Team stream carries no remote rows or their summaries: a peer run is a row of the Team's tree (autobyteus-461 SR-084)
+  ---
+  duration_ms: 1.134791
+  type: 'test'
+  ...
+# Subtest: a Team stream takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+ok 5 - a Team stream takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+  ---
+  duration_ms: 0.119458
+  type: 'test'
+  ...
+# Subtest: team stream (autobyteus-461 SR-084): the tree snapshot after the view snapshot, then numbered tree changes
+ok 6 - team stream (autobyteus-461 SR-084): the tree snapshot after the view snapshot, then numbered tree changes
+  ---
+  duration_ms: 8.324292
+  type: 'test'
+  ...
+# Subtest: a content batch covers a contiguous sequence range with ordered per-segment items
+not ok 7 - a content batch covers a contiguous sequence range with ordered per-segment items
+  ---
+  duration_ms: 3.138875
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/tests/team-segment-content-batch.test.mjs:10:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "expected": "string",
+        "code": "invalid_type",
+        "path": [
+          "payload",
+          "items",
+          0,
+          "occurred_at"
+        ],
+        "message": "Invalid input: expected string, received undefined"
+      },
+      {
+        "expected": "string",
+        "code": "invalid_type",
+        "path": [
+          "payload",
+          "items",
+          1,
+          "occurred_at"
+        ],
+        "message": "Invalid input: expected string, received undefined"
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    parseTeamStreamServerMessage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/dist/team-stream-server-message.js:66:57)
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/tests/team-segment-content-batch.test.mjs:11:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: a content batch rejects an inverted range, no items and unknown fields
+ok 8 - a content batch rejects an inverted range, no items and unknown fields
+  ---
+  duration_ms: 5.763375
+  type: 'test'
+  ...
+# Subtest: an ordinary Team message keeps its single sequence and does not accept a range
+not ok 9 - an ordinary Team message keeps its single sequence and does not accept a range
+  ---
+  duration_ms: 0.432833
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/tests/team-segment-content-batch.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "expected": "string",
+        "code": "invalid_type",
+        "path": [
+          "payload",
+          "occurred_at"
+        ],
+        "message": "Invalid input: expected string, received undefined"
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    parseTeamStreamServerMessage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/dist/team-stream-server-message.js:66:57)
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts/tests/team-segment-content-batch.test.mjs:29:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 10 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.805417
+  type: 'test'
+  ...
+# Subtest: carries the summary revision and compaction threshold and keeps unknown keys rejected
+ok 11 - carries the summary revision and compaction threshold and keeps unknown keys rejected
+  ---
+  duration_ms: 0.979833
+  type: 'test'
+  ...
+# Subtest: team token event carries whether it reports a model call
+ok 12 - team token event carries whether it reports a model call
+  ---
+  duration_ms: 0.498875
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 13 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 1.244916
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 14 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.839875
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 12
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 135.451041
+ ELIFECYCLE  Test failed. See above for more details.
+exit 1

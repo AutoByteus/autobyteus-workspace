@@ -264,9 +264,9 @@ describe("AgentStreamHandler", () => {
     await vi.waitFor(() => expect(snapshotsOf(connection)).toHaveLength(1));
     const emit = activeRun.subscribeToEvents.mock.calls[0][0];
     emit({ runId: "agent-123", eventType: AgentRunEventType.SEGMENT_START,
-      payload: { id: "item-1", turn_id: "turn-1", segment_type: "text" }, statusHint: null });
+      payload: { id: "item-1", turn_id: "turn-1", segment_type: "text" }, statusHint: null, occurredAt: 1795452909697 });
     emit({ runId: "agent-123", eventType: AgentRunEventType.SEGMENT_CONTENT,
-      payload: { id: "item-1", turn_id: "turn-1", delta: "hello", segment_type: "text" }, statusHint: null });
+      payload: { id: "item-1", turn_id: "turn-1", delta: "hello", segment_type: "text" }, statusHint: null, occurredAt: 1795452909697 });
     vi.advanceTimersByTime(500);
 
     const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
@@ -274,12 +274,12 @@ describe("AgentStreamHandler", () => {
     expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.SEGMENT_START, sequence: 1 }));
     // Coalesced content keeps the range of frames it covers.
     expect(messages).toContainEqual({ type: ServerMessageType.SEGMENT_CONTENT_BATCH, sequence: 2, sequence_through: 2,
-      payload: { items: [{ id: "item-1", turn_id: "turn-1", segment_type: "text", delta: "hello" }] } });
+      payload: { items: [{ id: "item-1", turn_id: "turn-1", segment_type: "text", occurred_at: "2026-11-23T16:55:09.697Z", delta: "hello" }] } });
   });
 
   it("carries the active run's current input state in its snapshot, so a reconnecting page sees queued input (autobyteus-540 D-8)", async () => {
     const queued = { sequence: 1, message_id: "client_msg-2", dedupe_key: "client_msg-2", turn_id: null, state: "queued" as const,
-      content: "and then this", sender_type: "user" as const, file_attachments: [] };
+      content: "and then this", sender_type: "user" as const, file_attachments: [], accepted_at: "2026-11-23T16:55:09.000Z" };
     const inputState = { run_instance_id: "instance-1", revision: 4, entries: [queued], recoverableBlock: null };
     const activeRun = createActiveRun({ getInputStateSnapshot: vi.fn(() => inputState) });
     const handler = new AgentStreamHandler(
@@ -311,7 +311,7 @@ describe("AgentStreamHandler", () => {
     await handler.connect(first, "agent-123");
     await vi.waitFor(() => expect(snapshotsOf(first)).toHaveLength(1));
     const emit = activeRun.subscribeToEvents.mock.calls[0][0];
-    emit({ runId: "agent-123", eventType: AgentRunEventType.TURN_STARTED, payload: { turnId: "turn-3" }, statusHint: "ACTIVE" });
+    emit({ runId: "agent-123", eventType: AgentRunEventType.TURN_STARTED, payload: { turnId: "turn-3" }, statusHint: "ACTIVE", occurredAt: 1795452909697 });
 
     const second = { send: vi.fn(), close: vi.fn() };
     await handler.connect(second, "agent-123");

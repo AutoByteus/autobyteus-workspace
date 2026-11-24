@@ -356,6 +356,39 @@ internal callers (termination, the root shutdown fence). Every other answer that
 is not `accepted` is a real failure. A malformed command or a target that is not
 a member of the addressed root stays rejected.
 
+## Row Times
+
+The node records the time of every row a client shows, and a client only shows it
+(autobyteus-628). A viewer's own clock never places or stamps a row, so a phone
+whose clock is behind still draws the user's message above the agent's reply.
+
+- **`occurred_at`** (ISO 8601 UTC, `serverTimeSchema` in
+  `@autobyteus/agent-presentation-contracts`) is the time the run's node recorded
+  the event. It is required on the messages a client turns into a row:
+  `SEGMENT_START`, `SEGMENT_CONTENT` (and each item of a Team `SEGMENT_CONTENT_BATCH`),
+  `TOOL_APPROVAL_REQUESTED`, `TOOL_APPROVED`, `TOOL_DENIED`,
+  `TOOL_EXECUTION_STARTED`, `TOOL_EXECUTION_SUCCEEDED`, `TOOL_EXECUTION_FAILED`,
+  `TOOL_EXECUTION_INTERRUPTED`, `TOOL_LOG`, `SYSTEM_TASK_NOTIFICATION`, `INTER_AGENT_MESSAGE`, `ERROR` and
+  `COMPACTION_STATUS`, on `/ws/agent` (including the snapshot's `turn_frames`),
+  `/ws/agent-team` and the Org and collaboration streams, which share the per-type
+  payload schemas. A timed message a stream handler builds itself, without an
+  `AgentRunEvent` (a stream's own `ERROR`, such as `createErrorMessage`'s), is stamped by
+  that producer with the node's time when it builds it.
+- **`accepted_at`** (ISO 8601 UTC) on each entry of an `AGENT_INPUT_STATE` is the
+  time the node admitted that input. `MEMBER_INPUT_MESSAGE` keeps its `received_at`.
+- **One stamp, one place.** `AgentRun` stamps every event it delivers to its
+  listeners exactly once (`stampForDelivery`, `AgentRunEvent.occurredAt`, epoch
+  ms): the processed pipeline, the input state, the canonical status and the
+  subscribe snapshot all pass through one delivery method, and an event that
+  already has a time keeps it. The three mappers only format it. A timed event
+  without a time is a producer bug and fails loudly.
+- **A client refuses a timed message without `occurred_at`** (the web's
+  `messageParser`) and stamps nothing with its own clock. A peer run's frames are
+  relayed unchanged, so its times are its own node's.
+- This is a clean cut across versions (DESIGN.md rule 9): a client of an earlier
+  release cannot read a node of this one, and the reverse. The desktop app, its web
+  UI and the node ship from one release.
+
 ## Connection And Restore
 
 A standalone connection binds to the durable run ID, emits `CONNECTED`, projects

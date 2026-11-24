@@ -16,6 +16,8 @@ type Correlated<T extends string, D> = Readonly<{
   eventType: T;
   details: Readonly<D>;
   statusHint: AgentRunStatusHint;
+  /** The node's time of the event, epoch ms (autobyteus-628 D-3): the run's `AgentRunEvent.occurredAt`, or its producer's. */
+  occurredAt: number;
 }>;
 
 export type AgentPresentationContextPath = Readonly<{
@@ -139,3 +141,8 @@ export type AgentPresentationEvent =
   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: AgentRunFileChangeArtifactType; status: AgentRunFileChangeStatus; sourceTool: AgentRunFileChangeSourceTool; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
   | Correlated<"MEMBER_INPUT_MESSAGE", { messageId: string; dedupeKey: string; content: string; inputOrigin: "user_message" | "inter_agent_delivery"; receivedAt: string; contextFilePaths: readonly AgentPresentationContextPath[]; senderAgentRunId: string | null; parentCommunicationMessageId: string | null }>
   | Correlated<"ERROR", AgentPresentationErrorDetails>;
+
+/** A presentation event before its time is attached: what an adapter builds from an event's payload. */
+export type UntimedAgentPresentationEvent = AgentPresentationEvent extends infer E
+  ? E extends AgentPresentationEvent ? Omit<E, "occurredAt"> : never
+  : never;

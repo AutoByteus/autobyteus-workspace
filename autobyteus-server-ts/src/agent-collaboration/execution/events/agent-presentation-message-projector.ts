@@ -1,5 +1,6 @@
 import { agentPresentationMessageSchema, type AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import type { AgentPresentationEvent, AgentPresentationTokenUsageDetails } from "./agent-presentation-event.js";
+import { serverTimeOf } from "../../../agent-execution/domain/agent-run-event.js";
 
 const tokenPayload = (details: AgentPresentationTokenUsageDetails) => ({
   usage_event_id: details.usageEventId, idempotency_key: details.idempotencyKey, observed_at: details.observedAt,
@@ -43,8 +44,8 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent): 
     case "TURN_STARTED": return parse({ type, payload: { turn_id: event.details.turnId } });
     case "TURN_COMPLETED": return parse({ type, payload: { turn_id: event.details.turnId, reason: event.details.reason } });
     case "TURN_INTERRUPTED": return parse({ type, payload: { turn_id: event.details.turnId, reason: event.details.reason } });
-    case "SEGMENT_START": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
-    case "SEGMENT_CONTENT": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
+    case "SEGMENT_START": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata, occurred_at: serverTimeOf(event) } });
+    case "SEGMENT_CONTENT": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta, occurred_at: serverTimeOf(event) } });
     case "SEGMENT_END": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
     case "AGENT_STATUS": return parse({ type, payload: { status: event.details.status, background_tasks_running: event.details.backgroundTasksRunning, trigger: event.details.trigger, tool_name: event.details.toolName, error_message: event.details.errorMessage, error_details: event.details.errorDetails, recoverableBlock: event.details.recoverableBlock } });
     case "AGENT_INPUT_STATE": return parse({ type, payload: event.details });
@@ -63,19 +64,20 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent): 
       provider_event_id: event.details.providerEventId, provider_session_id: event.details.providerSessionId,
       provider_thread_id: event.details.providerThreadId, provider_timestamp: event.details.providerTimestamp,
       trigger: event.details.trigger, pre_tokens: event.details.preTokens, rotation_eligible: event.details.rotationEligible,
+      occurred_at: serverTimeOf(event),
     } });
     case "TOKEN_USAGE_UPDATED": return parse({ type, payload: tokenPayload(event.details) });
     case "ASSISTANT_COMPLETE": return parse({ type, payload: { content: event.details.content, reasoning: event.details.reasoning, usage: event.details.usage, image_urls: [...event.details.imageUrls], audio_urls: [...event.details.audioUrls], video_urls: [...event.details.videoUrls] } });
-    case "TOOL_APPROVAL_REQUESTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
-    case "TOOL_APPROVED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, reason: event.details.reason } });
-    case "TOOL_DENIED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason, error: event.details.error } });
-    case "TOOL_EXECUTION_STARTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments } });
-    case "TOOL_EXECUTION_SUCCEEDED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, result: event.details.result } });
-    case "TOOL_EXECUTION_FAILED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error } });
-    case "TOOL_EXECUTION_INTERRUPTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
-    case "TOOL_LOG": return parse({ type, payload: { log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
+    case "TOOL_APPROVAL_REQUESTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, occurred_at: serverTimeOf(event) } });
+    case "TOOL_APPROVED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, reason: event.details.reason, occurred_at: serverTimeOf(event) } });
+    case "TOOL_DENIED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason, error: event.details.error, occurred_at: serverTimeOf(event) } });
+    case "TOOL_EXECUTION_STARTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, occurred_at: serverTimeOf(event) } });
+    case "TOOL_EXECUTION_SUCCEEDED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, result: event.details.result, occurred_at: serverTimeOf(event) } });
+    case "TOOL_EXECUTION_FAILED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error, occurred_at: serverTimeOf(event) } });
+    case "TOOL_EXECUTION_INTERRUPTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason, occurred_at: serverTimeOf(event) } });
+    case "TOOL_LOG": return parse({ type, payload: { log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, occurred_at: serverTimeOf(event) } });
     case "BACKGROUND_TASK_UPDATED": return parse({ type, payload: { task_id: event.details.taskId, kind: event.details.kind, description: event.details.description, command: event.details.command, status: event.details.status, summary: event.details.summary, end_reason: event.details.endReason, exit_code: event.details.exitCode, started_at: event.details.startedAt } });
-    case "SYSTEM_TASK_NOTIFICATION": return parse({ type, payload: { sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: { agent_run_id: event.details.sender.identity.agentRunId, member_address: event.details.sender.identity.memberAddress } }, content: event.details.content, message_id: event.details.messageId } });
+    case "SYSTEM_TASK_NOTIFICATION": return parse({ type, payload: { sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: { agent_run_id: event.details.sender.identity.agentRunId, member_address: event.details.sender.identity.memberAddress } }, content: event.details.content, message_id: event.details.messageId, occurred_at: serverTimeOf(event) } });
     case "ARTIFACT_PERSISTED": return parse({ type, payload: { artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
     case "FILE_CHANGE": return parse({ type, payload: { file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
     case "MEMBER_INPUT_MESSAGE": return parse({ type, payload: {
@@ -92,6 +94,7 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent): 
         ...(event.details.providerStatus !== undefined ? { provider_status: event.details.providerStatus } : {}),
         ...(event.details.providerCode !== undefined ? { provider_code: event.details.providerCode } : {}),
         ...(event.details.providerRequestId !== undefined ? { provider_request_id: event.details.providerRequestId } : {}),
+        occurred_at: serverTimeOf(event),
       };
       if (event.details.errorScope === "turn") return parse({ type, payload: {
         ...common, error_scope: "turn", error_effect: event.details.errorEffect, turn_id: event.details.turnId,

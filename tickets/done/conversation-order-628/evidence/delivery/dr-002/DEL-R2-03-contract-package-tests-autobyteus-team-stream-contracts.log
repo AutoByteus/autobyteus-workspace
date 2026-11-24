@@ -1,0 +1,104 @@
+### contracts-autobyteus-team-stream-contracts: pnpm -C autobyteus-team-stream-contracts test
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: autobyteus-448: a team member's status carries the required running background task count
+ok 1 - autobyteus-448: a team member's status carries the required running background task count
+  ---
+  duration_ms: 8.412417
+  type: 'test'
+  ...
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 2 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 2.56875
+  type: 'test'
+  ...
+# Subtest: the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+ok 3 - the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+  ---
+  duration_ms: 1.479875
+  type: 'test'
+  ...
+# Subtest: a Team stream carries no remote rows or their summaries: a peer run is a row of the Team's tree (autobyteus-461 SR-084)
+ok 4 - a Team stream carries no remote rows or their summaries: a peer run is a row of the Team's tree (autobyteus-461 SR-084)
+  ---
+  duration_ms: 1.260167
+  type: 'test'
+  ...
+# Subtest: a Team stream takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+ok 5 - a Team stream takes no Retry: a peer row's Retry goes over /ws/run-status (autobyteus-461 SR-090)
+  ---
+  duration_ms: 0.139084
+  type: 'test'
+  ...
+# Subtest: team stream (autobyteus-461 SR-084): the tree snapshot after the view snapshot, then numbered tree changes
+ok 6 - team stream (autobyteus-461 SR-084): the tree snapshot after the view snapshot, then numbered tree changes
+  ---
+  duration_ms: 4.628875
+  type: 'test'
+  ...
+# Subtest: a content batch covers a contiguous sequence range with ordered per-segment items
+ok 7 - a content batch covers a contiguous sequence range with ordered per-segment items
+  ---
+  duration_ms: 2.749792
+  type: 'test'
+  ...
+# Subtest: a content batch rejects an inverted range, no items and unknown fields
+ok 8 - a content batch rejects an inverted range, no items and unknown fields
+  ---
+  duration_ms: 0.883917
+  type: 'test'
+  ...
+# Subtest: an ordinary Team message keeps its single sequence and does not accept a range
+ok 9 - an ordinary Team message keeps its single sequence and does not accept a range
+  ---
+  duration_ms: 0.445584
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 10 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 10.580792
+  type: 'test'
+  ...
+# Subtest: carries the summary revision and compaction threshold and keeps unknown keys rejected
+ok 11 - carries the summary revision and compaction threshold and keeps unknown keys rejected
+  ---
+  duration_ms: 1.367209
+  type: 'test'
+  ...
+# Subtest: team token event carries whether it reports a model call
+ok 12 - team token event carries whether it reports a model call
+  ---
+  duration_ms: 0.549375
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 13 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.999583
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 14 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.795958
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 157.425791
+exit 0

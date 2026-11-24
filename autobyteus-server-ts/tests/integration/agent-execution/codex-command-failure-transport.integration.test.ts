@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
@@ -27,10 +27,12 @@ describe("Codex command failure transport integration", () => {
         },
       },
     });
-    const failure = converted.find(
+    const found = converted.find(
       (event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED,
     );
-    if (!failure) throw new Error("Expected a failed command runtime event.");
+    if (!found) throw new Error("Expected a failed command runtime event.");
+    // Delivered as the run delivers it, with the node's time (autobyteus-628 D-3).
+    const failure = stampForDelivery(found);
 
     const expectedFailurePayload = {
       invocation_id: "exec-command-failure",
@@ -72,6 +74,7 @@ describe("Codex command failure transport integration", () => {
         change_sequence: 17,
         agent_run_id: runId,
         ...expectedFailurePayload,
+        occurred_at: new Date(failure.occurredAt!).toISOString(),
       },
     });
 

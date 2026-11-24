@@ -28,7 +28,7 @@ describe('segmentHandler', () => {
 
   describe('handleSegmentStart', () => {
     it('creates a tool_call conversation segment and seeds Activity state from metadata', () => {
-      const payload: SegmentStartPayload = {
+      const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'test-id',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -60,7 +60,7 @@ describe('segmentHandler', () => {
     });
 
     it('hydrates tool_call arguments from metadata.arguments/query fields', () => {
-      const payload: SegmentStartPayload = {
+      const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'search-call-1',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -83,7 +83,7 @@ describe('segmentHandler', () => {
     });
 
     it('hydrates tool_call arguments when metadata.arguments is serialized JSON', () => {
-      const payload: SegmentStartPayload = {
+      const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'image-call-1',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -105,7 +105,7 @@ describe('segmentHandler', () => {
 
     it('does not treat missing tool_name as an Activity-store backend bug', () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const payload: SegmentStartPayload = {
+      const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'test-id-missing',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -148,7 +148,7 @@ describe('segmentHandler', () => {
       } as any);
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'send-msg-1',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -183,7 +183,7 @@ describe('segmentHandler', () => {
 
     it('creates write_file/edit_file/run_bash transcript segments from metadata', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'test-id-kf',
           turn_id: 'turn-1',
           segment_type: 'write_file',
@@ -192,7 +192,7 @@ describe('segmentHandler', () => {
         mockContext,
       );
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'test-id-pf',
           turn_id: 'turn-1',
           segment_type: 'edit_file',
@@ -201,7 +201,7 @@ describe('segmentHandler', () => {
         mockContext,
       );
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'test-id-bash',
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -245,7 +245,7 @@ describe('segmentHandler', () => {
     });
 
     it('deduplicates repeated SEGMENT_START with same id', () => {
-      const payload: SegmentStartPayload = {
+      const payload: SegmentStartPayload = { occurred_at: '2026-11-23T16:55:09.697Z',
         id: 'dup-send-message',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
@@ -274,7 +274,7 @@ describe('segmentHandler', () => {
 
     it('deduplicates cross-type start collisions and keeps a single segment', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'dup-cross-type',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -287,7 +287,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'dup-cross-type',
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -309,7 +309,7 @@ describe('segmentHandler', () => {
   describe('handleSegmentContent', () => {
     it('appends adjacent reasoning updates with one normalized id to one think segment', () => {
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'reasoning-block:test:1',
           turn_id: 'turn-1',
           delta: 'first',
@@ -318,7 +318,7 @@ describe('segmentHandler', () => {
         mockContext,
       );
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'reasoning-block:test:1',
           turn_id: 'turn-1',
           delta: '\n\nsecond',
@@ -337,7 +337,7 @@ describe('segmentHandler', () => {
 
     it('streams write_file content into the segment state', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-write',
           turn_id: 'turn-1',
           segment_type: 'write_file',
@@ -347,7 +347,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-write',
           turn_id: 'turn-1',
           delta: 'hello',
@@ -362,7 +362,7 @@ describe('segmentHandler', () => {
 
     it('creates a typed late-subscriber segment when canonical content arrives before segment start', () => {
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-fallback',
           turn_id: 'turn-1',
           delta: 'hello from fallback',
@@ -386,7 +386,7 @@ describe('segmentHandler', () => {
 
     it('rejects a conflicting type for the same turn and segment id without mutation', () => {
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-shared',
           turn_id: 'turn-1',
           delta: 'reasoning burst',
@@ -396,7 +396,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-shared',
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -415,7 +415,7 @@ describe('segmentHandler', () => {
 
     it('preserves text-tool-text order when text segment ids differ around a tool', () => {
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'turn-1:claude-text:msg-pre:0',
           turn_id: 'turn-1',
           delta: 'Pre-tool answer. ',
@@ -432,7 +432,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'tool-bash-1',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -457,7 +457,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'turn-1:claude-text:msg-post:0',
           turn_id: 'turn-1',
           delta: 'Post-tool answer.',
@@ -481,7 +481,7 @@ describe('segmentHandler', () => {
   describe('handleSegmentEnd', () => {
     it('marks a non-empty reasoning segment presentation-complete through the generic end contract', () => {
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'reasoning-block:test:1',
           turn_id: 'turn-1',
           delta: 'inspect the tool result',
@@ -507,7 +507,7 @@ describe('segmentHandler', () => {
 
     it('retains write_file content when the segment ends', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-write-end',
           turn_id: 'turn-1',
           segment_type: 'write_file',
@@ -517,7 +517,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-write-end',
           turn_id: 'turn-1',
           delta: 'done',
@@ -540,7 +540,7 @@ describe('segmentHandler', () => {
 
     it('removes empty think segment on end', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-think-empty',
           turn_id: 'turn-1',
           segment_type: 'reasoning',
@@ -562,7 +562,7 @@ describe('segmentHandler', () => {
 
     it('applies end metadata path/patch to edit_file segment only', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-edit-meta',
           turn_id: 'turn-1',
           segment_type: 'edit_file',
@@ -594,7 +594,7 @@ describe('segmentHandler', () => {
 
     it('applies end metadata command to run_bash segment only', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-bash-meta',
           turn_id: 'turn-1',
           segment_type: 'run_bash',
@@ -623,7 +623,7 @@ describe('segmentHandler', () => {
 
     it('applies end metadata arguments to tool_call segment only', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-meta',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -661,11 +661,11 @@ describe('segmentHandler', () => {
     it('names a native call_tool card after the found tool, with its real arguments, at end (autobyteus-515)', () => {
       // The native runtime streams a searchable tool's call as call_tool {name, arguments}; its END names the real tool.
       handleSegmentStart(
-        { id: 'seg-call-tool', turn_id: 'turn-1', segment_type: 'tool_call', metadata: { tool_name: 'call_tool' } },
+        { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-call-tool', turn_id: 'turn-1', segment_type: 'tool_call', metadata: { tool_name: 'call_tool' } },
         mockContext,
       );
       handleSegmentContent(
-        { id: 'seg-call-tool', turn_id: 'turn-1', delta: '{"name":"update_task","arguments":{"task_id":"autobyteus-77","status":"DONE"}}', segment_type: 'tool_call' },
+        { occurred_at: '2026-11-23T16:55:09.697Z', id: 'seg-call-tool', turn_id: 'turn-1', delta: '{"name":"update_task","arguments":{"task_id":"autobyteus-77","status":"DONE"}}', segment_type: 'tool_call' },
         mockContext,
       );
       handleSegmentEnd(
@@ -682,7 +682,7 @@ describe('segmentHandler', () => {
 
     it('does not downgrade an already-approved tool segment back to parsed on end', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-approved',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -720,7 +720,7 @@ describe('segmentHandler', () => {
 
     it('marks tool segment interrupted from segment-end interruption metadata', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-interrupted',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -732,7 +732,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-interrupted',
           turn_id: 'turn-1',
           delta: '{"query":"partial',
@@ -761,7 +761,7 @@ describe('segmentHandler', () => {
 
     it('marks partial tool segment failed from segment-end failure metadata', () => {
       handleSegmentStart(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-failed',
           turn_id: 'turn-1',
           segment_type: 'tool_call',
@@ -773,7 +773,7 @@ describe('segmentHandler', () => {
       );
 
       handleSegmentContent(
-        {
+        { occurred_at: '2026-11-23T16:55:09.697Z',
           id: 'seg-tool-failed',
           turn_id: 'turn-1',
           delta: '{"query":"partial',

@@ -68,7 +68,8 @@ const createNativeRun = async () => {
 };
 
 describe("native AutoByteus skill update notice history", () => {
-  it("replays a notice combined into the user's input as a system notice, then the message as sent", async () => {
+  // autobyteus-628 D-2 (REQ-002): the notice delivered with the message reads back right after it, as it shows live.
+  it("replays a notice combined into the user's input as the message as sent, then the system notice", async () => {
     const run = await createNativeRun();
     const combined = new AgentInputUserMessage(`${NOTICE}\n\nReview PR 12.`, SenderType.USER, null, {
       ...platformInputPrefaceMetadata({ content: NOTICE, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: "Review PR 12.", noticeId: "notice-1" }),
@@ -77,9 +78,9 @@ describe("native AutoByteus skill update notice history", () => {
     await run.ingest(combined, "turn_0001");
 
     expect(run.conversation()).toEqual([
+      expect.objectContaining({ role: "user", content: "Review PR 12." }),
       // autobyteus-526: the stored notice keeps its one id, so the conversation shows it once beside its live copy.
       expect.objectContaining({ kind: "system_task_notification", senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: NOTICE, messageId: "notice-1" }),
-      expect.objectContaining({ role: "user", content: "Review PR 12." }),
     ]);
   });
 

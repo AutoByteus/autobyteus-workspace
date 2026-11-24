@@ -178,6 +178,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         file_type: z.ZodString;
                         file_name: z.ZodNullable<z.ZodString>;
                     }, z.core.$strict>>;
+                    accepted_at: z.ZodISODateTime;
                 }, z.core.$strict>>;
                 recoverableBlock: z.ZodNullable<z.ZodObject<{
                     operationId: z.ZodString;
@@ -391,6 +392,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         file_type: z.ZodString;
                         file_name: z.ZodNullable<z.ZodString>;
                     }, z.core.$strict>>;
+                    accepted_at: z.ZodISODateTime;
                 }, z.core.$strict>>;
                 recoverableBlock: z.ZodNullable<z.ZodObject<{
                     operationId: z.ZodString;
@@ -460,6 +462,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             message: z.ZodObject<{
                 type: z.ZodLiteral<"SEGMENT_CONTENT">;
                 payload: z.ZodObject<{
+                    occurred_at: z.ZodISODateTime;
                     segment_id: z.ZodString;
                     turn_id: z.ZodString;
                     segment_type: z.ZodEnum<{
@@ -1090,6 +1093,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             file_type: z.ZodString;
                             file_name: z.ZodNullable<z.ZodString>;
                         }, z.core.$strict>>;
+                        accepted_at: z.ZodISODateTime;
                     }, z.core.$strict>>;
                     recoverableBlock: z.ZodNullable<z.ZodObject<{
                         operationId: z.ZodString;
@@ -1156,6 +1160,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 message: z.ZodObject<{
                     type: z.ZodLiteral<"SEGMENT_CONTENT">;
                     payload: z.ZodObject<{
+                        occurred_at: z.ZodISODateTime;
                         segment_id: z.ZodString;
                         turn_id: z.ZodString;
                         segment_type: z.ZodEnum<{

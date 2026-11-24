@@ -84,14 +84,20 @@ export interface SystemInstructionsSuppliedPayload {
   ts: number;
 }
 
-export interface SegmentStartPayload {
+/**
+ * `occurred_at`: the time the run's node recorded the event, ISO 8601 (autobyteus-628 D-3). The messages whose reader
+ * creates or times a conversation row carry it; the app takes a row's time from it and never from its own clock.
+ */
+export type ServerTimed = Readonly<{ occurred_at: string }>;
+
+export interface SegmentStartPayload extends ServerTimed {
   id: string;
   turn_id: string;
   segment_type: SegmentType;
   metadata?: JsonValue;
 }
 
-export interface SegmentContentPayload {
+export interface SegmentContentPayload extends ServerTimed {
   id: string;
   turn_id: string;
   delta: string;
@@ -119,21 +125,21 @@ export interface AgentStatusPayload {
   error_details?: string | null;
 }
 
-export interface ToolApprovalRequestedPayload {
+export interface ToolApprovalRequestedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments: Record<string, any>;
 }
 
-export interface ToolApprovedPayload {
+export interface ToolApprovedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   reason?: string | null;
 }
 
-export interface ToolDeniedPayload {
+export interface ToolDeniedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
@@ -142,14 +148,14 @@ export interface ToolDeniedPayload {
   error?: string | null;
 }
 
-export interface ToolExecutionStartedPayload {
+export interface ToolExecutionStartedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
   arguments?: Record<string, any>;
 }
 
-export interface ToolExecutionSucceededPayload {
+export interface ToolExecutionSucceededPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
@@ -158,7 +164,7 @@ export interface ToolExecutionSucceededPayload {
 }
 
 
-export interface ToolExecutionFailedPayload {
+export interface ToolExecutionFailedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
@@ -166,7 +172,7 @@ export interface ToolExecutionFailedPayload {
   error: string;
 }
 
-export interface ToolExecutionInterruptedPayload {
+export interface ToolExecutionInterruptedPayload extends ServerTimed {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
@@ -174,7 +180,7 @@ export interface ToolExecutionInterruptedPayload {
   reason: string;
 }
 
-export interface ToolLogPayload {
+export interface ToolLogPayload extends ServerTimed {
   log_entry: string;
   tool_invocation_id: string;
   tool_name: string;
@@ -208,7 +214,7 @@ export interface BackgroundTaskUpdatedPayload {
   started_at: string;
 }
 
-export interface InterAgentMessagePayload {
+export interface InterAgentMessagePayload extends ServerTimed {
   message_id?: string;
   team_run_id?: string;
   sender_agent_id: string;
@@ -223,7 +229,7 @@ export interface InterAgentMessagePayload {
   updated_at?: string;
 }
 
-export interface SystemTaskNotificationPayload {
+export interface SystemTaskNotificationPayload extends ServerTimed {
   sender_id: string;
   content: string;
   /** The notice's one id (autobyteus-526); null when it has none. */
@@ -262,7 +268,7 @@ export type ErrorPayload = Readonly<{
   provider_status?: number | string | null;
   provider_code?: string | null;
   provider_request_id?: string | null;
-}> & (
+}> & ServerTimed & (
   | Readonly<{ error_scope: 'turn'; error_effect: 'diagnostic' | 'terminal'; turn_id: string }>
   | Readonly<{ error_scope: 'runtime'; error_effect: 'terminal'; turn_id: null }>
   | Readonly<{ error_scope: null; error_effect: null; turn_id: null }>

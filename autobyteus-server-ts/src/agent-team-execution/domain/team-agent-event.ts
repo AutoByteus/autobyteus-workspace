@@ -17,6 +17,8 @@ type Correlated<T extends string, D> = Readonly<{
   eventType: T;
   details: Readonly<D>;
   statusHint: AgentRunStatusHint;
+  /** The node's time of the event, epoch ms (autobyteus-628 D-3). */
+  occurredAt: number;
 }>;
 
 type TeamAgentErrorEvidence =

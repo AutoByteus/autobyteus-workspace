@@ -1,0 +1,83 @@
+# IMP-18 (SR-007, DR-001 Findings 1 and 2; ARCH-REV-004 N-6) stored traces keep their write time; the contract packages' own suites pass
+# command: cd autobyteus-server-ts && pnpm exec vitest run --reporter=verbose tests/unit/agent-memory tests/unit/run-history tests/unit/agent-execution tests/unit/restart-resume ;
+#          red check: the 5 SR-007 source files stashed (git stash push -- <files>), then
+#            pnpm exec vitest run tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts
+#              tests/unit/agent-execution/agent-run-event-time.test.ts tests/unit/run-history/projection/preface-notice-order.test.ts ; the stash restored ;
+#          pnpm test:unit ; pnpm typecheck ; env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:integration ;
+#          pnpm -C autobyteus-agent-presentation-contracts test ; pnpm -C autobyteus-collaboration-stream-contracts test ;
+#          pnpm -C autobyteus-team-stream-contracts test ; pnpm check:contract-dist
+# commit: ba25165c1e (SR-007), 2dbfe43c28 (contract fixtures); run on their working tree before committing (same files)
+# env: macOS arm64, Node v22.23.1
+# date: 2026-11-24
+# result: Pass.
+#   - The accumulator, sequencer and notice test helpers now stamp strictly increasing, distinct delivery times (7 ms
+#     apart, delivery's DR-001 shape), so no test passes by a millisecond tie.
+#   - Red on the pre-SR-007 recorder (it read occurredAt): delivery's same 7 accumulator tests fail (reasoning closure,
+#     post-card reasoning, tool results, the boundary marker), and so do the new write-time case and the D-2 external
+#     cases (that recorder refused their unstamped notices). With SR-007 all pass.
+#   - The three contract packages' own suites first failed 2, 4 and 2 tests (fixtures without occurred_at / accepted_at);
+#     with the fields they pass, and agent-presentation-contracts gains a case refusing a timed message without
+#     occurred_at or with a number. Their tracked dist/ is unchanged (check:contract-dist PASS).
+
+## focused server tests (SR-007)
+ Test Files  266 passed | 4 skipped (270)
+      Tests  2560 passed | 6 skipped (2566)
+
+## red: the pre-SR-007 recorder
+     × persists run-owned reasoning closure exactly once before the next tool 11ms
+     × keeps reasoning open across a matching result and flushes one trace at the next tool 2ms
+     × preserves post-card reasoning when authoritative call arguments arrive only at result 2ms
+     × keeps the first boundary for an unseen insufficient terminal when readiness arrives later 3ms
+     × keeps reasoning open across matching TOOL_EXECUTION_FAILED updates 2ms
+     × keeps reasoning open across matching TOOL_DENIED updates 1ms
+     × retries rotation from an existing provider boundary marker when no complete segment exists 54ms
+     × the memory recorder stores each trace at its write time, never at the event's delivery time 6ms
+     × external, the founder's stored shape: notice (seq 1, .697) then input (seq 2, .696) reads input, notice, reply 6ms
+     × external, the notice stored first with the same time as its input (the read path's time sort keeps the stored order at a tie): input, notice, reply 1ms
+     × external, already stored input first (the notice's publication came after the input's write): unchanged 1ms
+     × external, an input admitted before a notice opened its own turn, then appended into that turn: input first, as it showed live (SR-006, ARCH-REV-003 N-5) 1ms
+     × external, a notice that opened its own turn and an input appended to that turn later: unchanged 1ms
+ Test Files  3 failed | 1 passed (4)
+      Tests  13 failed | 37 passed (50)
+
+## server unit suite (pnpm test:unit)
+ Test Files  1081 passed | 5 skipped (1086)
+      Tests  9028 passed | 9 skipped (9037)
+
+## server typecheck
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+
+## server integration suite (clean environment)
+ Test Files  92 passed | 21 skipped (113)
+      Tests  523 passed | 71 skipped (594)
+
+## contract packages, before (the failing tests)
+# autobyteus-agent-presentation-contracts
+not ok 2 - accepts a strict root-neutral message and rejects root identity
+not ok 4 - compaction carries direct diagnostics separately from provider-native identity
+# pass 21
+# fail 2
+# autobyteus-collaboration-stream-contracts
+not ok 1 - a agent_org batch envelope covers a contiguous range
+not ok 3 - a agent_org single event keeps its one sequence and rejects a range
+not ok 14 - current versionless Org snapshot carries exact live held/queued state
+not ok 15 - rejects duplicate/unowned input projections and missing live input field
+# pass 35
+# fail 4
+# autobyteus-team-stream-contracts
+not ok 7 - a content batch covers a contiguous sequence range with ordered per-segment items
+not ok 9 - an ordinary Team message keeps its single sequence and does not accept a range
+# pass 12
+# fail 2
+
+## contract packages, after
+# pass 24
+# fail 0
+# pass 39
+# fail 0
+# pass 14
+# fail 0
+
+## contract dist
+[check:contract-dist] PASS: the tracked dist/ of 3 contract packages matches their source.

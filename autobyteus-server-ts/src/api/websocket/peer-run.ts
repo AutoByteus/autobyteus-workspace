@@ -16,7 +16,7 @@ export async function registerPeerRunWebsocket(app: FastifyInstance, channel: Re
     const { nodeId, runKind, runId, agentRunId } = req.params;
     if (runKind !== "agent" && runKind !== "agent_team") {
       socket.send(JSON.stringify({ type: "ERROR", payload: { code: "PEER_RUN_UNAVAILABLE", message: "This peer run cannot be opened here.",
-        error_scope: null, error_effect: null, turn_id: null } }));
+        error_scope: null, error_effect: null, turn_id: null, occurred_at: new Date().toISOString() } }));
       socket.close(4004);
       return;
     }

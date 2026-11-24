@@ -9,7 +9,7 @@ import { ExternalRuntimeMemoryWriter } from "../../../../../src/agent-memory/sto
 import { normalizeRawTraceRecords } from "../../../../../src/agent-memory/services/raw-trace-record-normalizer.js";
 import { buildHistoricalReplayEvents } from "../../../../../src/run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
 import { buildRunProjectionActivities } from "../../../../../src/run-history/projection/transformers/historical-replay-events-to-activities.js";
-import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, stampForDelivery } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 
 const roots: string[] = [];
@@ -47,7 +47,7 @@ describe("native first-input snapshot through the existing saved-history boundar
       step_index: 2, step_type: "tool", state: "ACTIVE", tool_name: "write_to_file", tool_info: { parameters: summary } } };
     const lookup = converter.getPendingNativeToolArgumentLookup(message); expect(lookup).not.toBeNull();
     const resolved = await readAgyNativeToolArguments(conversationId, lookup!, { brainRoot }); expect(resolved).toEqual(args);
-    const started = converter.convert(message, resolved)[0]!;
+    const started = stampForDelivery(converter.convert(message, resolved)[0]!);
     sequencer.recordCallObservation(started, "new-turn");
     const firstSaved = new RunMemoryFileStore(memoryDir).listRawTraceDicts().at(-1);
     expect(firstSaved).toMatchObject({ trace_type: "tool_call", source_event: "TOOL_EXECUTION_STARTED",
@@ -58,7 +58,7 @@ describe("native first-input snapshot through the existing saved-history boundar
       tool_info: { parameters: summary, output: "unchanged result" } } })[0]!;
     expect(terminal.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
     expect(terminal.payload.arguments).toEqual(started.payload.arguments);
-    sequencer.recordTerminal(terminal, "new-turn");
+    sequencer.recordTerminal(stampForDelivery(terminal), "new-turn");
     const diskBytes = fs.readFileSync(memoryFile, "utf8"); expect(diskBytes.startsWith(oldBytes)).toBe(true);
     const rawRecords = diskBytes.trim().split("\n").map((line) => JSON.parse(line));
     const activities = buildRunProjectionActivities(buildHistoricalReplayEvents(normalizeRawTraceRecords(rawRecords, null)));

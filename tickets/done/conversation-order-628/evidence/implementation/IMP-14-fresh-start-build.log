@@ -1,0 +1,55 @@
+# IMP-14 (DESIGN.md rule 12; TESTING.md "Fresh-start build") the desktop build from a fresh clone with `pnpm install --frozen-lockfile` alone
+# command: git clone --no-local <worktree> <tmp>/fresh ; git checkout 3e4c6322a4 ; pnpm install --frozen-lockfile ;
+#          cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal
+#            PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false
+#            GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 ;
+#          then, from the clone's root, release-desktop.yml's "Verify bundled Prisma ARM64 engine target" and
+#          "Verify packaged terminal runtime ARM64" steps (their commands, unchanged). Run under env -i (PATH, HOME, TMPDIR, USER, LOGNAME).
+# commit: 3e4c6322a4 (code = 6ad8920bd6; the commit after it only adds documents)
+# env: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2
+# date: 2026-11-24
+# result: Pass. Why this check: the change touches build inputs (the three contract packages' src and tracked dist).
+#   The build ran the three guards, the web typecheck (test-file errors at the baseline, 86 in 36), prepare-server,
+#   generate:electron and packaging. Not tested here: signing, notarization, other operating systems and x64 (IMP-15).
+
+== clone
+3e4c6322a4 docs(conversation-order-628): implementation handoff and revision record IR-001; evidence IMP-10 to IMP-13 (autobyteus-628)
+== install
+install=0
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.2s using pnpm v10.28.2
+== build
+build=0
+  '<tmp>/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.9.dmg.blockmap',
+  '<tmp>/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.9.dmg',
+  '<tmp>/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.9.zip.blockmap',
+  '<tmp>/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.14-beta.9.zip'
+]
+== Verify bundled Prisma ARM64 engine target
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+verify-prisma=0
+== Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: <tmp>/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+verify-terminal=0
+
+## gates inside the build
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 35.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.6s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS

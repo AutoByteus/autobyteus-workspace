@@ -572,7 +572,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.
     const changes = () => statuses.filter((message) => message.type === "RUN_STATUS_CHANGED");
     expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "idle" } });
-    b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
+    b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE", occurredAt: 1795452909697 });
     await settle();
     expect(changes().at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "running" } });
 

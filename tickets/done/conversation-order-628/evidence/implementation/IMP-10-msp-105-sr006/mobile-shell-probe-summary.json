@@ -1,0 +1,236 @@
+{
+  "startedAt": "2026-11-23T22:10:52.018Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50376,
+      "nodeId": "srv_ZJrRY4V0RMNuLHaCek8tbi_Xkn4zZjF6",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 50375,
+      "nodeId": "srv_VTm2-gj3BKlvujMeO_PfEMpzSzrvCaZZ",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_2cc430a1f8a1405d80a5e4584973f6e1",
+    "writerRun": "release_notes_writer_289c6c815f6448729009d79ab00317f4",
+    "squadRun": "docs_review_team_a51895ff1c3b46d98d7c40485f8ddf5f",
+    "reviewer": "release_notes_writer_9cbbb7086372425c8549653e4d3eafbc",
+    "memberDelegated": "fact_checker_d9110973baed417b8e24f78d2227b401",
+    "remoteAgentRun": "publisher_134adfe0581a484fbb568814ff5ffc82",
+    "remoteTeamRun": "studio_team_588deff059b64623b638de9ea9744625",
+    "plain": [
+      "fact_checker_91cc05ed63e04c14a1f14f1aaac83dec",
+      "fact_checker_582e2462ce4a4398a8c1a706425f65bc",
+      "fact_checker_9f2b9b3e8ac94d9eae9066871a82e147"
+    ],
+    "org": "delivery_org_8853d27365354f92b0381d3ce10a124a",
+    "orgPlanner": "release_notes_writer_5e034fb4f0434e879d2568eb7a85a48f",
+    "reviewOrg": "review_org_a381dbd6c57a44b7b733215684a6d734",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_bd42e29949144ed6b60b7e5877066eb7",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_68786bbe5055449e8d63b441b15dbfc7",
+    "deliveryLead": "fact_checker_00868d2d135d45f8b4df14eea0eda6a6",
+    "deliveryMate": "release_notes_writer_ade1ceaab415495cb68c637c67d53e03",
+    "leadDelegated": "changelog_helper_18d1f2f1bac446239acf7cbffbfddc8e",
+    "approver": "approver_8cbad457d6944fa4beb8cbd436f70a36",
+    "taskA": "launch-e610fa-1",
+    "taskB": "launch-e610fa-2"
+  },
+  "cases": {
+    "MSP-105": {
+      "result": "Pass",
+      "seconds": 27.7,
+      "team": "order_team_48f3237b901b45dc8c07798a0004004f",
+      "lead": "order_lead_164b04cd26ea455c8d96ff581f5afbf4",
+      "rounds": [
+        {
+          "label": "phone-order-behind-sends",
+          "offsetMs": -2000,
+          "clockOffsetMs": -2001,
+          "sender": "phone",
+          "marker": "ORDER-628-65e07641",
+          "live": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 2,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "nodeOrder": [
+            "message:assistant@1795471885.941",
+            "message:user@1795471891.01",
+            "system_task_notification@1795471891.013",
+            "message:assistant@1795471891.018"
+          ],
+          "nodeNoticeAfterMessage": true
+        },
+        {
+          "label": "phone-order-ahead-sends",
+          "offsetMs": 2000,
+          "clockOffsetMs": 1998,
+          "sender": "phone",
+          "marker": "ORDER-628-3acac56c",
+          "live": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated No longer available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 5,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated No longer available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "nodeOrder": [
+            "message:assistant@1795471891.018",
+            "message:user@1795471899.398",
+            "system_task_notification@1795471899.405",
+            "message:assistant@1795471899.414"
+          ],
+          "nodeNoticeAfterMessage": true
+        },
+        {
+          "label": "phone-order-behind-watches",
+          "offsetMs": -2000,
+          "clockOffsetMs": -2000,
+          "sender": "another client",
+          "marker": "ORDER-628-ff5d8f6b",
+          "live": {
+            "message": 8,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "reopened": {
+            "message": 8,
+            "before": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "next": {
+              "speaker": "system",
+              "notice": "Tools updated",
+              "text": "Tools updated Now available: list_project_tasks."
+            },
+            "after": {
+              "speaker": "agent",
+              "notice": null,
+              "text": "L lead lead OK"
+            },
+            "ok": true
+          },
+          "nodeOrder": [
+            "message:assistant@1795471899.414",
+            "message:user@1795471908.209",
+            "system_task_notification@1795471908.214",
+            "message:assistant@1795471908.225"
+          ],
+          "nodeNoticeAfterMessage": true
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-105": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-23T22:12:08.462Z"
+}

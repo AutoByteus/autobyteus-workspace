@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.14-beta.9 test:e2e:mobile-shell ~/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api628/live-3 --cases=MSP-106,MSP-107
+
+[mobile-shell] MSP-106 …
+[mobile-shell] MSP-106 Pass
+[mobile-shell] MSP-107 …
+[mobile-shell] MSP-107 Pass
+mobile-shell probe: Pass

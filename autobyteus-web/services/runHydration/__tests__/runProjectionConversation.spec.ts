@@ -22,6 +22,19 @@ describe('runProjectionConversation', () => {
     expect(aiText).not.toContain('Background task completed');
   });
 
+  // autobyteus-628 CR-001: a reloaded row's time is the node's stored ts; one stored without it has none, never the viewer's.
+  it('a stored row without a ts hydrates with no time, not the viewer\'s clock; the conversation\'s times come from the timed rows', () => {
+    const conversation = buildConversationFromProjection('run-untimed', [
+      { kind: 'message', role: 'user', content: 'first', ts: 1795452909.696 },
+      { kind: 'message', role: 'assistant', content: 'stored without a time' },
+      { kind: 'message', role: 'user', content: 'second', ts: null },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'haiku' });
+    expect(conversation.messages.map((message) => [message.type, message.timestamp?.toISOString() ?? null])).toEqual([
+      ['user', '2026-11-23T16:55:09.696Z'], ['ai', null], ['user', null],
+    ]);
+    expect([conversation.createdAt, conversation.updatedAt]).toEqual(['2026-11-23T16:55:09.696Z', '2026-11-23T16:55:09.696Z']);
+  });
+
   it('autobyteus-526: a stored notice without an id (older history) hydrates with messageId null', () => {
     const conversation = buildConversationFromProjection('run-old-notice', [
       { kind: 'system_task_notification', role: null, senderId: 'system.restart_resume', content: 'Restarted.', ts: 1 },
@@ -229,7 +242,7 @@ describe('runProjectionConversation', () => {
     if (conversation.messages[1]?.type !== 'ai') {
       throw new Error('expected AI message');
     }
-    expect(conversation.messages[1].timestamp.toISOString()).toBe('1970-01-01T00:00:02.000Z');
+    expect(conversation.messages[1].timestamp?.toISOString()).toBe('1970-01-01T00:00:02.000Z');
     expect(conversation.messages[1].segments).toEqual([
       {
         type: 'think',
@@ -387,12 +400,12 @@ describe('runProjectionConversation', () => {
       type: 'user',
       text: 'You received a message from sender name: program_manager',
     });
-    expect(conversation.messages[0]?.timestamp.toISOString()).toBe('1970-01-01T00:01:40.000Z');
+    expect(conversation.messages[0]?.timestamp?.toISOString()).toBe('1970-01-01T00:01:40.000Z');
     expect(conversation.messages[1]).toMatchObject({
       type: 'ai',
       text: 'FRONTEND_PARENT_TO_SUBTEAM',
     });
-    expect(conversation.messages[1]?.timestamp.toISOString()).toBe('1970-01-01T00:01:41.000Z');
+    expect(conversation.messages[1]?.timestamp?.toISOString()).toBe('1970-01-01T00:01:41.000Z');
   });
 
   it('preserves repeated no-id no-timestamp projection rows', () => {

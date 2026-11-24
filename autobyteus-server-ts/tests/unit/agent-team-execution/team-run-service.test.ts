@@ -215,6 +215,7 @@ describe("TeamRunService current root lifecycle", () => {
       }),
       payload: {
         eventType: "ERROR",
+        occurredAt: 1795452909697,
         details: { code: "TURN_FAILED", message: "terminal failure", errorScope: "runtime", errorEffect: "terminal", turnId: null },
         statusHint: "ERROR",
       },

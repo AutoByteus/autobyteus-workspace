@@ -1,0 +1,164 @@
+### contracts-autobyteus-agent-presentation-contracts: pnpm -C autobyteus-agent-presentation-contracts test
+
+> @autobyteus/agent-presentation-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-agent-presentation-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-order-628/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: normalized tagged primary identity never bridges secondary tokens
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+  ---
+  duration_ms: 0.707208
+  type: 'test'
+  ...
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 2 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 13.759041
+  type: 'test'
+  ...
+# Subtest: a timed message requires the node's occurred_at
+ok 3 - a timed message requires the node's occurred_at
+  ---
+  duration_ms: 2.502167
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+ok 4 - accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+  ---
+  duration_ms: 14.948667
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 5 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 3.288625
+  type: 'test'
+  ...
+# Subtest: live token event carries the model-call fact, compaction threshold and summary revision
+ok 6 - live token event carries the model-call fact, compaction threshold and summary revision
+  ---
+  duration_ms: 4.781542
+  type: 'test'
+  ...
+# Subtest: live token event carries one model call's TPS or null
+ok 7 - live token event carries one model call's TPS or null
+  ---
+  duration_ms: 9.294542
+  type: 'test'
+  ...
+# Subtest: autobyteus-448: AGENT_STATUS carries the required running background task count, a non-negative integer
+ok 8 - autobyteus-448: AGENT_STATUS carries the required running background task count, a non-negative integer
+  ---
+  duration_ms: 3.641083
+  type: 'test'
+  ...
+# Subtest: each runtime kind has its full name (autobyteus-320, AC-005)
+ok 9 - each runtime kind has its full name (autobyteus-320, AC-005)
+  ---
+  duration_ms: 0.802125
+  type: 'test'
+  ...
+# Subtest: an unknown kind is shown as given, including object keys
+ok 10 - an unknown kind is shown as given, including object keys
+  ---
+  duration_ms: 0.073583
+  type: 'test'
+  ...
+# Subtest: composes one line per mention, each with its own guidance, and parses it back (wording §8)
+ok 11 - composes one line per mention, each with its own guidance, and parses it back (wording §8)
+  ---
+  duration_ms: 1.485041
+  type: 'test'
+  ...
+# Subtest: every presence composes its own line and parses back to the same presence
+ok 12 - every presence composes its own line and parses back to the same presence
+  ---
+  duration_ms: 0.353
+  type: 'test'
+  ...
+# Subtest: a delegate suggestion is never composed for the agent itself, its team or the agent the user started
+ok 13 - a delegate suggestion is never composed for the agent itself, its team or the agent the user started
+  ---
+  duration_ms: 1.061875
+  type: 'test'
+  ...
+# Subtest: a line whose guidance does not match its presence is not parsed
+ok 14 - a line whose guidance does not match its presence is not parsed
+  ---
+  duration_ms: 0.299083
+  type: 'test'
+  ...
+# Subtest: the composed note names no task tool and never tells the agent to close a task_id
+ok 15 - the composed note names no task tool and never tells the agent to close a task_id
+  ---
+  duration_ms: 0.263667
+  type: 'test'
+  ...
+# Subtest: notes saved by the previous release in every combination keep parsing (saved heading, suffixes, guidance)
+ok 16 - notes saved by the previous release in every combination keep parsing (saved heading, suffixes, guidance)
+  ---
+  duration_ms: 0.795834
+  type: 'test'
+  ...
+# Subtest: a saved note whose guidance does not match its entries, or from neither release, is not parsed
+ok 17 - a saved note whose guidance does not match its entries, or from neither release, is not parsed
+  ---
+  duration_ms: 0.140792
+  type: 'test'
+  ...
+# Subtest: notes saved with the collaborator-messaging guidances still parse
+ok 18 - notes saved with the collaborator-messaging guidances still parse
+  ---
+  duration_ms: 0.078833
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 19 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.352958
+  type: 'test'
+  ...
+# Subtest: no mentions leaves the text unchanged; foreign text is not parsed
+ok 20 - no mentions leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.596875
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 21 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.372708
+  type: 'test'
+  ...
+# Subtest: composes the three worked examples of the complete views (§11) exactly
+ok 22 - composes the three worked examples of the complete views (§11) exactly
+  ---
+  duration_ms: 0.171459
+  type: 'test'
+  ...
+# Subtest: a peer's agent status is one of the agent status words
+ok 23 - a peer's agent status is one of the agent status words
+  ---
+  duration_ms: 0.718708
+  type: 'test'
+  ...
+# Subtest: the summary argument keys by kind, the one list of the web's summary and the node's page cards (autobyteus-609 D-E)
+ok 24 - the summary argument keys by kind, the one list of the web's summary and the node's page cards (autobyteus-609 D-E)
+  ---
+  duration_ms: 0.725375
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.074875
+exit 0
