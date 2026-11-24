@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 6, API-REV-004 F-4, commit `bb80c1cc9e`). Product code is unchanged since IR-003 (`c3ff688979`). Round 5 was the `Implementation Review` of IR-003 (Targeted Delta, CRR-006, Pass); round 4 was the `API/E2E Failure-Origin Review` of API-REV-003 F-3 (CRR-005). The earlier rounds:
+- Review Entry Point: `Implementation Review` (round 7, IR-004, a Targeted Delta Review of `f052d097f7..2abf38c91e`; the source fix is `d92abaeaa2`). Round 6 was the `API/E2E Failure-Origin Review` of API-REV-004 F-4 (commit `bb80c1cc9e`; product code unchanged since IR-003, `c3ff688979`). Round 5 was the `Implementation Review` of IR-003 (Targeted Delta, CRR-006, Pass); round 4 was the `API/E2E Failure-Origin Review` of API-REV-003 F-3 (CRR-005). The earlier rounds:
   - round 1 (CRR-001, Pass): implementation review;
   - round 2 (CRR-002, Fail): failure-origin review;
   - round 3 (CRR-003, Pass): targeted delta review;
@@ -22,8 +22,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/phone-video-574/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: `6` (failure-origin). The entries for rounds 5, 4 and 3 follow.
+- Current Code Review Revision ID: `CRR-008`
+- Current Review Round: `7` (targeted delta). The entries for rounds 6, 5, 4 and 3 follow.
 - Round 6 scope and trigger:
   - API/E2E round 4 (API-REV-004) failed with F-4.
   - Re-read: `AuthorizedMediaLoader.swift` (how it serves requests under the on-demand declaration) and `evidence/api-e2e/R4/`:
@@ -285,6 +285,39 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
   - Apple's simulator log shows the request path, never the credential (a device redacts it).
 - **Not run by me:** the Android and iOS suites (IMP-03…06 evidence used).
 
+## Round 7 Delta Verification (CRR-008)
+
+**CR-004 and CR-003 are Resolved together.**
+
+- **The change (`d92abaeaa2`):** `AuthorizedMediaLoader.swift` grows from 143 to 225 effective lines, still under 500.
+  - The on-demand declaration stays.
+  - A read is served from the cache first, in 1 MB steps, each re-entering through `queue.async` (CRR-005's held note).
+  - Past the cache, the read waits for a running fetch within `readAheadReach` (1 MB), or starts one fetch from its first missing byte. That fetch ends at the next cached byte, at the start of a later running fetch, or at the end of the file.
+  - Arriving bytes are cached whether or not a read still waits for them, and answer every read they reach.
+  - A cancelled read leaves its fetch running. Fetches no read waits for are stopped when a new fetch starts.
+  - `If-Range`, the 206 and `Content-Range` checks, the route rule and the header-only credential are unchanged.
+- **Logic traced:**
+  - the loops iterate over a copy of `serving`, so `finish`/`fail` may remove items safely;
+  - a fetch is stopped only when no read waits on it;
+  - a stopped fetch's late callbacks are ignored, because it is already removed from `fetches`;
+  - `didComplete` resumes waiting reads from the cache or starts the next gap.
+- **`MediaRead`:** a protocol with one production implementation (`LoadingRequestRead`) and the test's. Pass, deviation recorded, reason holds: AVFoundation's loading requests cannot be constructed in a test, and the serving logic is what CR-004 needed proven. It is not a forwarding-only layer.
+- **Tests:**
+  - `AuthorizedMediaLoaderReadAheadTests` has 7 cases, matching the 4 CRR-007 asked for plus gap, bounded steps and changed file.
+  - `AuthorizedMediaLoaderTests` now waits for decoded frames (`AVPlayerItemVideoOutput`), not for the clock. That is correct: under on-demand reads a player with no output decodes nothing and only its clock runs, which explains round 4's "past 30.3 s". It also asserts at most 6 requests.
+- **Evidence (IMP-13):**
+  - outcomes 1–6 hold;
+  - the scrub passes 7 times, from 0 to 50 ms and from 1.5 down to 0.5 MB/s;
+  - at 50 ms, 14.0 MB is delivered in 10 s against 5.34 MB needed, where IR-003 gave 2.03 MB (red);
+  - the middle seek makes 3 requests, and the idle `0-` fetch stopped at about 1 MB (the cache holds `0…983039`);
+  - a reopen fetches 0 bytes;
+  - Core 82/82.
+- **Re-run by me** on my own simulator (`cr574-review`, since deleted): `AuthorizedMediaLoaderReadAheadTests`, `MediaRangeCacheTests` and `NodeVideoHTTPTests`, 21/21 passed. I did not re-run the AVPlayer test with a video.
+- **Held, not findings:**
+  - **H-1:** a far read (beyond the reach) while another read still waits on a running fetch would start an overlapping fetch. The older one keeps its original end, so bytes after the new start would be fetched twice. Under on-demand mode AVFoundation reads strictly one after another (round 4), so a far read means the near one ended and its fetch is idle and stopped. Unreached; a cheap hardening would shorten the older fetch's end to the new fetch's start.
+  - **H-2:** a fetch runs to the end of its gap while the player is open, as the single stream did before IR-003. This is bounded by the file and the cache.
+  - **H-3:** on a link slower than the bitrate (0.5 MB/s), the picture moved after the scrub. Whether it keeps up with the clock was not measured. AC-001's link is faster than the bitrate.
+
 ## Round 6 Failure-Origin Finding (CRR-007)
 
 ### CR-004: under the on-demand declaration, iOS playback falls below real time on any link with a round trip (F-4)
@@ -373,6 +406,17 @@ Round 3 status: **CR-001 and CR-002 are Resolved** (CRR-003). The texts below ar
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 7, CRR-008). CR-003 and CR-004 are resolved; CR-001 and CR-002 stay resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.4 / 10. Runtime correctness is back to 9.3 (H-1…H-3 held).
+- Recommended Recipient: `/api_e2e_engineer`. Rerun:
+  - the scrub (first open and cached);
+  - `testBDeliversInRealTimeOverASlowerLink` at 20 and 50 ms;
+  - the AVPlayer Core test with a 60 s video;
+  - the round-2 iOS journeys.
+
+  Then the proportional test review of `ef3107bb3e`, `bb80c1cc9e` and IR-004's test changes.
+- Round 6 result (CRR-007, superseded):
 - Review Decision: `Fail` (round 6, CRR-007). The failure origin is implementation: CR-004, `Local Fix` in the iOS loader, with a stop rule to the Solution Designer.
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - CR-003's symptom (the scrub freeze) is fixed by IR-003, but its fix causes CR-004. The two are closed together: the next fix must pass both checks.

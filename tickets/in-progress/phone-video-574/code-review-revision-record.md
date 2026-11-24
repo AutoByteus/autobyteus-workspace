@@ -11,6 +11,7 @@
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-003 F-3) | Pass (CRR-003/004) | Fail: implementation Local Fix | CR-003 (new) |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 5 (IR-003), Targeted Delta | Fail | Pass | CR-003 (resolved) |
 | CRR-007 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-004 F-4) | Pass (CRR-006) | Fail: implementation Local Fix (stop rule to the Solution Designer) | CR-004 (new); CR-003 reopened with it |
+| CRR-008 | `code-review-report.md` | Implementation Review, round 7 (IR-004), Targeted Delta | Fail | Pass | CR-003, CR-004 (resolved) |
 
 ## Revision Entries
 
@@ -248,3 +249,44 @@ None (first test review).
   - a physical iPhone check stays recommended;
   - test-code review of `ef3107bb3e` and `bb80c1cc9e` is pending;
   - R-1 and R-2 are unchanged.
+
+### CRR-008: targeted delta review of IR-004 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/phone-video-574/code-review-report.md` ("Round 7 Delta Verification")
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Targeted Delta Review` of `f052d097f7..2abf38c91e`:
+  - the source fix `d92abaeaa2` (`AuthorizedMediaLoader.swift`);
+  - the tests `AuthorizedMediaLoaderReadAheadTests.swift` (new) and `AuthorizedMediaLoaderTests.swift`;
+  - the iOS README.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-004); CR-004 with CR-003
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Fail (CRR-007)
+- Current authoritative result: Pass, 9.4 / 10
+- What changed in the review result and why:
+  - Direction (a) is implemented in the loader owner: the declaration plus a read-ahead, bytes cached on arrival, the cache served in bounded steps, and idle fetches stopped.
+  - The serving logic traces correctly.
+  - The AVPlayer test now checks decoded frames rather than the clock, and caps the request count.
+  - IMP-13 meets outcomes 1–6, red on IR-003 and green on IR-004.
+  - I re-ran 21 Core tests on my own simulator: all passed.
+- Supported product scenario / material-premise basis changes: none. H-1 (an overlapping fetch while a read still waits; unreached under serial reads), H-2 and H-3 are held.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-004 | Open (CRR-007) | Resolved | IR-004, `d92abaeaa2` | IMP-13 outcome 2 (14.0 MB delivered against 5.34 MB needed at 50 ms; IR-003 2.03 MB); outcome 3 (3 requests, middle frames at 0.6 s); read-ahead unit cases (re-run 7/7) |
+| CR-003 | Reopened with CR-004 (CRR-007) | Resolved | IR-003, IR-004 | IMP-13 outcome 1: the scrub picture passes 7 runs, from 0 to 50 ms and from 1.5 down to 0.5 MB/s, on a first open and cached |
+| CR-001, CR-002 | Resolved | Resolved | — | Unaffected; the real-node class passes |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness back to 9.3.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - H-1…H-3;
+  - a physical iPhone check is still recommended;
+  - the test-code review is pending (`ef3107bb3e`, `bb80c1cc9e`, IR-004's tests);
+  - R-1 and R-2.
