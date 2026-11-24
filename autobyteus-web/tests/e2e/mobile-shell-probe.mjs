@@ -156,6 +156,10 @@
 //                  the phone's conversation and file viewer at 390 and 360 px; copied text equals the source; inline
 //                  code, links, URLs, long words and headings wrap too, with nothing past the edge (autobyteus-24):
 //                  `mobile-code-wrap-cases.mjs` (on alpha, last; its agent answers with the scripted runtime's `REPLY_FILE:`).
+//   MSP-108…109 autobyteus-618  Text and code files open with word wrap on in the file viewer's editor: the desktop Files
+//                  tab at 1440 px and the phone file viewer at 390 px; a long line wraps at the editor's width with its
+//                  indentation, line numbers stay, nothing scrolls sideways; Toggle Word Wrap turns it off and on again:
+//                  `mobile-file-word-wrap-cases.mjs` (on alpha, after the code-wrap cases).
 //   MSP-53…55 autobyteus-workspace-6  Context-file size limits on the phone, in zh-CN: a 26 MiB video (above the old 25 MiB
 //                  limit) attaches with a visible percentage, Send blocked meanwhile, and is sent (draft and final file whole on
 //                  the node); over-limit picks are refused before any upload as one line per limit, the same pick attaches
@@ -236,6 +240,7 @@ import { runConversationOrderCases } from './mobile-conversation-order-cases.mjs
 import { runConversationOrderLiveCases } from './mobile-conversation-order-live-cases.mjs';
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
+import { runFileWordWrapCases } from './mobile-file-word-wrap-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
@@ -2693,6 +2698,7 @@ const runCases = async () => {
   await runLiveFileRefreshCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView, sendOver });
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runFileWordWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runContextFileSizeCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runRestoredRunCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedDelegationCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, beta, stack, desktopRunsView });
