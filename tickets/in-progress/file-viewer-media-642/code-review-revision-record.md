@@ -11,6 +11,7 @@
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-005, SR-006), Targeted Delta | Pass | Pass | None |
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-003 (new) |
 | CRR-007 | `code-review-report.md` | Implementation Review, round 7 (IR-006), Targeted Delta | Fail | Pass | CR-003 (resolved) |
+| CRR-008 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass) | Pass (CRR-007) | Pass | None |
 
 ## Revision Entries
 
@@ -255,5 +256,42 @@ None open. CR-001 and CR-002 stay resolved (API-REV-001 confirms both).
   - a cold-start outlier (4.31 s once);
   - the physical-iPhone check;
   - C-6;
+  - the zero-byte 416;
+  - the iOS Back bar.
+
+### CRR-008: proportional review of the API/E2E test code (Pass)
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/api-e2e-test-review-report.md` (new)
+- Review entry point and round: API/E2E test-code review, round 1
+- Review scope: `N/A` (test review) of `8dc9abb9f6`, `216bc68baf` and `37aafd3eda`:
+  - `NativeMediaRealNodeUITests.swift`;
+  - `mobile-file-viewer-media-cases.mjs` and its registration;
+  - `native-video-node.mjs`;
+  - `ios-simulator-smoke.sh`, the iOS README.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass, 93.4%)
+- Relevant solution revision IDs: SR-001…SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-007, implementation)
+- Current authoritative result: Pass (test code)
+- What changed in the review result and why:
+  - The tests enter through real triggers. Since `216bc68baf` that includes AVKit's real scrubber, not the volume slider.
+  - The assertions prove each AC's property: the seek by range with an implicit time bound, the start, no re-open, the layout pixels, and the token counts.
+  - The evidence is clean of credentials.
+  - Notes: T-1 (the fixture rebuilds the server's reference-ID rule) and T-2 (checks that depend on the English locale).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - C-6 (ship 574 and 642 together);
+  - the physical-iPhone check;
   - the zero-byte 416;
   - the iOS Back bar.
