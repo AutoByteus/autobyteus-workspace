@@ -1,0 +1,27 @@
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.330 seconds).
+MARK tap 1795564460764
+MARK player 1795564462635
+MARK landscape 1795564462642
+MARK seek 1795564470141
+MARK seek-done 1795564471611
+POSITION +1s 16 seconds elapsed, 14 seconds remaining
+POSITION +2s 17 seconds elapsed, 13 seconds remaining
+POSITION +3s hidden
+MARK back 1795564476926
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.693 seconds).
+REALTIME delivered 13697026 bytes in 10.0 s; real-time playback needs at least 5344386
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' passed (19.484 seconds).
+MARK skip 1795564512261
+POSITION after skip 18 seconds elapsed, 12 seconds remaining
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (21.929 seconds).
+MARK tap 1795564528822
+MARK player 1795564530726
+MARK back 1795564537917
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (19.404 seconds).
+MARK rewrite-while-open 1795564554250
+MARK rewrite-while-closed 1795564565192
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' passed (37.416 seconds).
+MARK close 1795564591699
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (17.653 seconds).
+MARK removed 1795564605668
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.648 seconds).

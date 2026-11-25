@@ -83,6 +83,15 @@ xcodebuild \
   test
 ```
 
+`NativeMediaRealNodeUITests` (autobyteus-642 API/E2E) runs the same way on its own fresh stack
+(`-only-testing:AutoByteusMobileUITests/NativeMediaRealNodeUITests`). It covers:
+
+- node audio (MP3 from a chat link, its reopen, an M4A over a slower link with a seek);
+- a Team's message references (video and audio in the app's player, CR-002's no re-open, the other types in the page);
+- Ogg and WebM kept in the page;
+- each way to leave the player;
+- node removal.
+
 Simulator smoke path with a fake AutoByteus node:
 
 ```bash

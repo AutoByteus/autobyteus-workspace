@@ -11,7 +11,8 @@ CURRENT_PROJECT_VERSION="${CURRENT_PROJECT_VERSION:-1}"
 # Every UI test runs on the iPhone simulator and none may skip, except `DemoIPadUITests` (iPad layout, autobyteus-279),
 # which needs an iPad destination: `xcodebuild … -only-testing:AutoByteusMobileUITests/DemoIPadUITests test`, and
 # `NativeMediaPlayerUITests` (autobyteus-574), which needs the fake node started with a video (its file says how), and
-# `NativeVideoRealNodeUITests` (autobyteus-574 API/E2E), which needs a real node (`native-video-node.mjs`; its file says how).
+# `NativeVideoRealNodeUITests` (autobyteus-574 API/E2E) and `NativeMediaRealNodeUITests` (autobyteus-642 API/E2E), which
+# need a real node (`native-video-node.mjs`; their files say how).
 mkdir -p "$EVIDENCE_DIR"
 
 if [[ ! "$MARKETING_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -45,6 +46,7 @@ xcodebuild \
   -skip-testing:AutoByteusMobileUITests/DemoIPadUITests \
   -skip-testing:AutoByteusMobileUITests/NativeMediaPlayerUITests \
   -skip-testing:AutoByteusMobileUITests/NativeVideoRealNodeUITests \
+  -skip-testing:AutoByteusMobileUITests/NativeMediaRealNodeUITests \
   IOS_BUNDLE_ID="$IOS_BUNDLE_ID" \
   IOS_SHARE_EXTENSION_BUNDLE_ID="$IOS_SHARE_EXTENSION_BUNDLE_ID" \
   MARKETING_VERSION="$MARKETING_VERSION" \

@@ -1,0 +1,4 @@
+iOS (own simulator api642-iphone, iOS 26.1, app Debug af2b65c2c0). The phone's credential read from the WebView's localStorage in memory only (mra_…):
+{"credentialRead":true,"startsWithMra":true,"filesScanned":2766,"nonzero":[]}
+Scanned: the app's log for the last 2 h (103,460 lines), the proxy log, $C/Library/Caches/media-cache, Preferences, Documents, the stack's stdout, every test result and recording.
+File requests in the proxy log: 25, all `credential: phone`, `urlCredential: false`. Cache folder: Library/Caches/media-cache.

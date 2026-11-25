@@ -1,0 +1,5 @@
+REFERENCE ref-642.mp4 ["bytes=0-0:206:1", "bytes=0-1:206:2"]
+REFERENCE ref-642.m4a ["bytes=0-0:206:1", "bytes=0-1:206:2"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testDATeamsMediaReferencesPlayInTheAppsPlayer]' passed (29.965 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testFTheOtherReferencesShowInThePage]' passed (45.031 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testGOggAndWebMStayInThePage]' passed (25.441 seconds).

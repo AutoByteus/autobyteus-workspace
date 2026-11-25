@@ -1,0 +1,3 @@
+simlog-r2: lines   123716, 'AutoByteusMedia: the audio session' lines 0, MoviePlayback mode lines 7
+simlog-r3: lines    25628, 'AutoByteusMedia: the audio session' lines 0, MoviePlayback mode lines 3
+simlog-r4: lines    28995, 'AutoByteusMedia: the audio session' lines 0, MoviePlayback mode lines 3

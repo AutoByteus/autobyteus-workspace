@@ -1,0 +1,28 @@
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (11.466 seconds).
+MARK tap-mp3 1795565783419
+MARK player 1795565784992
+POSITION  at 18.7 s
+REQUESTS ["bytes=0-1:206:2", "bytes=0-2881452:206:2881453"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testAAnMP3FromTheChatLinkPlaysInTheAppsPlayer]' passed (28.756 seconds).
+REOPEN []
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testBTheMP3ReopenedFetchesOnlyTheProbe]' passed (15.983 seconds).
+MARK tap-m4a 1795565829666
+MARK player 1795565832204
+MARK seek 1795565836705
+POSITION after seek hidden
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:655360"]
+/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/autobyteus-ios/AutoByteusMobileUITests/NativeMediaRealNodeUITests.swift:100: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange] : XCTAssertFalse failed - the seek reads from the mid
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' failed (22.970 seconds).
+REFERENCE ref-642.mp4 ["bytes=0-0:206:1", "bytes=0-1:206:2", "bytes=0-15520464:206:15520465"]
+REFERENCE ref-642.m4a ["bytes=0-0:206:1", "bytes=0-1:206:2", "bytes=0-930830:206:930831"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testDATeamsMediaReferencesPlayInTheAppsPlayer]' passed (30.162 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testEAMediaReferenceStaysAsItIsWhileMessagesArrive]' passed (28.796 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testFTheOtherReferencesShowInThePage]' passed (44.931 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testGOggAndWebMStayInThePage]' passed (25.423 seconds).
+MARK close-back 1795565984767
+CLOSE back closed=true
+/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/autobyteus-ios/AutoByteusMobileUITests/NativeMediaRealNodeUITests.swift:183: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt] : XCTAssertTrue failed - the chat's link to the MP3
+<unknown>:0: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt] : Failed to tap "Open memo-642.mp3 in Files" Button: No matches found for Elements matching predicate '"Open memo-642.mp3 in Files" IN identifiers' from input {(
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' failed (107.364 seconds).
+MARK removed 1795566091443
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.465 seconds).
