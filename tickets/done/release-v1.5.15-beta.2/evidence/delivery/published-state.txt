@@ -1,0 +1,84 @@
+# v1.5.15-beta.2 (BETA) published state, 2026-11-25T15:21:46Z
+## workflow runs (final)
+Desktop Release run 45629380472: completed success, attempt 2
+Server Docker Release run 45629380553: completed success, attempt 2
+Android APK Release run 45629388332: completed success, attempt 1
+iOS App Store Connect Release run 45629381562: completed success, attempt 2
+## jobs of run 45629380472 (latest attempt)
+  Build macOS ARM64: success
+  Build macOS Intel x64: success
+  Resolve Release Metadata: success
+  Sign authenticated Linux desktop releases: success
+  Build Linux ARM64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Publish GitHub Release: success
+## jobs of run 45629380553 (latest attempt)
+  Build Server Image (linux/arm64): success
+  Build Server Image (linux/amd64): success
+  Resolve Release Metadata: success
+  Publish Server Image: success
+  Publish Server Package (linux/amd64): success
+  Publish Server Package (linux/arm64): success
+## jobs of run 45629388332 (latest attempt)
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+## jobs of run 45629381562 (latest attempt)
+  Build And Test iOS App: success
+  Resolve iOS Release Metadata: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## release
+name v1.5.15-beta.2; prerelease true draft false tag v1.5.15-beta.2 target 02021647300a010217359b8cc9492e3ebe0a566c
+GitHub Latest: v1.5.14
+assets: 27
+2026-11-25T14:07:59Z	AutoByteus_personal_android-1.5.15-beta.2-release.apk
+2026-11-25T14:07:59Z	AutoByteus_personal_android-1.5.15-beta.2-release.apk.sha256
+2026-11-25T14:32:11Z	autobyteus-server-1.5.15-beta.2-linux-arm64.tar.gz
+2026-11-25T14:32:16Z	autobyteus-server-1.5.15-beta.2-linux-x64.tar.gz
+2026-11-25T14:32:19Z	autobyteus-server-1.5.15-beta.2-linux-arm64.json
+2026-11-25T14:32:20Z	autobyteus-server-1.5.15-beta.2-linux-arm64.json.sig
+2026-11-25T14:32:21Z	autobyteus-server-1.5.15-beta.2-linux-x64.json
+2026-11-25T14:32:22Z	autobyteus-server-1.5.15-beta.2-linux-x64.json.sig
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-arm64-1.5.15-beta.2.AppImage
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-arm64-1.5.15-beta.2.AppImage.release.json
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-arm64-1.5.15-beta.2.AppImage.release.json.sig
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-x64-1.5.15-beta.2.AppImage
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-x64-1.5.15-beta.2.AppImage.release.json
+2026-11-25T14:49:09Z	AutoByteus_personal_linux-x64-1.5.15-beta.2.AppImage.release.json.sig
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-arm64-1.5.15-beta.2.dmg
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-arm64-1.5.15-beta.2.dmg.blockmap
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-arm64-1.5.15-beta.2.zip
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-arm64-1.5.15-beta.2.zip.blockmap
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-x64-1.5.15-beta.2.dmg
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-x64-1.5.15-beta.2.dmg.blockmap
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-x64-1.5.15-beta.2.zip
+2026-11-25T14:49:09Z	AutoByteus_personal_macos-x64-1.5.15-beta.2.zip.blockmap
+2026-11-25T14:49:09Z	AutoByteus_personal_windows-1.5.15-beta.2.exe
+2026-11-25T14:49:36Z	latest-linux-arm64.yml
+2026-11-25T14:49:36Z	latest-linux.yml
+2026-11-25T14:49:36Z	latest-mac.yml
+2026-11-25T14:49:36Z	latest.yml
+ORDER: 27 assets; 6 server files, last 2026-11-25T14:32:22Z ; latest*.yml 4 first 2026-11-25T14:49:36Z ; every latest*.yml newer than all server files: True
+## docker (registry API)
+autobyteus/autobyteus-server:1.5.15-beta.2 -> sha256:218d2f1f1c9cd62009cf33f3215f2aec9ef6ec5a55f019000af413a396748123
+autobyteus/autobyteus-server:beta -> sha256:218d2f1f1c9cd62009cf33f3215f2aec9ef6ec5a55f019000af413a396748123
+autobyteus/autobyteus-server:latest -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:1.5.14 -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:1.5.15-beta.1 -> sha256:55d11b2ca40599552b01967d85222edd275e2cb56d06a44d8ae58c7901709f6f
+  index entry linux/amd64 sha256:3527dd2e17aae51c2a85e8d39a94cff9e73d61b96c5bc58de87174b4eb44bbfd
+  index entry linux/arm64 sha256:c4f0faefdb987a85fedfd1d82f43eda893359723837c637e40e7b2b51083619a
+## docker run logs (attempt 1 amd64 build; attempt 2 arm64 build and publish): system level and digests
+  Build Server Image (linux/arm64) | 2026-11-25T14:25:34.0572019Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/arm64) | 2026-11-25T14:28:23.8573690Z #43 19.37 Wrote server-package.json: 1.5.15-beta.2 linux-arm64, Node modules 127, system level 2, 66 migrations
+  Build Server Image (linux/amd64) | 2026-11-25T14:02:07.8538511Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/amd64) | 2026-11-25T14:05:13.8003956Z #46 16.40 Wrote server-package.json: 1.5.15-beta.2 linux-x64, Node modules 127, system level 2, 66 migrations
+  Publish Server Image | 2026-11-25T14:30:33.2062711Z The pushed ***/***-server:1.5.15-beta.2 index lists linux/amd64 sha256:3527dd2e17aae51c2a85e8d39a94cff9e73d61b96c5bc58de87174b4eb44bbfd and linux/arm64 sha256:c4f0faefdb987a85fedfd1d82f43eda893359723837c637e40e7b2b51083619a.
+  Publish Server Image | 2026-11-25T14:30:41.2248503Z Moved `***/***-server:beta` to `***/***-server:1.5.15-beta.2`.
+  Build Server Image (linux/arm64) | 2026-11-25T14:02:03.2770385Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+## released server package descriptions: systemLevel
+  x64 1.5.15-beta.2 systemLevel 2
+  arm64 1.5.15-beta.2 systemLevel 2
+## release body (generated)
+first line: **Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.15-beta.1...v1.5.15-beta.2; length 222; Full Changelog lines: 2

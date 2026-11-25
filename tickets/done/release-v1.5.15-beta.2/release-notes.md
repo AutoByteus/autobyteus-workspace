@@ -1,7 +1,7 @@
 ## What you need to do
 
 - **From v1.5.15-beta.1: a normal update.** Nothing else to do. This beta adds no data conversion and no Docker system change (the server image is still system level 2, as in v1.5.14).
-- **iPhone and iPad: update AutoByteus from TestFlight to the new build, version 1.5.15 (build @@IOS_BUILD@@).** The iPhone's video and audio player now uses iOS's own screen, and that change is in the app, so it needs the new build; an older build keeps the player of beta.1 with the app's Back bar over its buttons. It is a TestFlight beta only, and nothing is sent for App Store review. Every other change below reaches the phone with your node and the desktop app.
+- **iPhone and iPad: update AutoByteus from TestFlight to the new build, version 1.5.15 (build 363).** The iPhone's video and audio player now uses iOS's own screen, and that change is in the app, so it needs the new build; an older build keeps the player of beta.1 with the app's Back bar over its buttons. It is a TestFlight beta only, and nothing is sent for App Store review. Every other change below reaches the phone with your node and the desktop app.
 - **Android:** the app itself has no change since beta.1; the file viewer changes arrive with your node. Install the APK of this release if you want the matching version number.
 - **Docker nodes:** a node already on v1.5.14 or on beta.1 updates in place. A node that is still on an older image (v1.5.13 or older) must be recreated once before it takes this beta: run `autobyteus-docker upgrade --all --tag beta`. The stable `:latest` image stays on v1.5.14.
 - **Desktop:** with **Settings > Updates > Receive beta updates** on, the app updates itself to this beta.
