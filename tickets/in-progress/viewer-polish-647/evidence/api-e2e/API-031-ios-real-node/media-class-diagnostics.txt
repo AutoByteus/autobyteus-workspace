@@ -1,0 +1,54 @@
+11:16:05.898ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:16:06.875ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:16:26.113ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:16:26.113ation) API647DIAG host teardown runs
+11:16:26.117ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:16:26.124ation) API647DIAG host deinit
+11:16:35.317ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:16:36.276ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:16:44.167ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:16:44.167ation) API647DIAG host teardown runs
+11:16:44.171ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:16:44.179ation) API647DIAG host deinit
+11:16:55.258ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:16:57.156ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:17:07.958ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:17:07.959ation) API647DIAG host teardown runs
+11:17:07.962ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:17:07.969ation) API647DIAG host deinit
+11:17:18.925ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:17:19.974ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:17:27.851ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:17:27.851ation) API647DIAG host teardown runs
+11:17:27.855ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:17:27.862ation) API647DIAG host deinit
+11:17:31.314ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:17:32.275ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:17:40.224ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:17:40.224ation) API647DIAG host teardown runs
+11:17:40.227ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:17:40.235ation) API647DIAG host deinit
+11:17:53.200ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:17:54.176ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:18:04.036ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:18:04.036ation) API647DIAG host teardown runs
+11:18:04.040ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:18:04.046ation) API647DIAG host deinit
+11:18:53.214tion) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:18:53.251tion) AutoByteusMedia: the file could not be opened (Failure)
+11:18:59.659tion) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:18:59.659tion) API647DIAG host teardown runs
+11:18:59.660tion) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:18:59.661tion) API647DIAG host deinit
+11:19:35.662ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:19:36.644ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:19:41.033ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:19:41.033ation) API647DIAG host teardown runs
+11:19:41.037ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:19:41.043ation) API647DIAG host deinit
+11:19:44.947ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:19:45.910ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:19:51.708ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:19:51.708ation) API647DIAG host teardown runs
+11:19:51.711ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:19:51.719ation) API647DIAG host deinit

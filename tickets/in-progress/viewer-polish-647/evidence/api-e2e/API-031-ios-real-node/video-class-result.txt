@@ -1,0 +1,11 @@
+	 Executed 8 tests, with 0 failures (0 unexpected) in 171.728 (171.735) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 171.728 (171.737) seconds
+	 Executed 8 tests, with 0 failures (0 unexpected) in 171.728 (171.738) seconds
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.821 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (26.911 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' passed (21.339 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBSkipForwardPlaysOn]' passed (24.206 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testCTallVideoFromFilesStaysPortrait]' passed (21.037 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testDARewriteDoesNotOpenThePlayerByItself]' passed (39.259 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testEThePlayersOwnCloseButton]' passed (17.363 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.793 seconds).

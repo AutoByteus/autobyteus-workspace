@@ -1,5 +1,5 @@
 // Text and code files open with word wrap on (autobyteus-618): in the shared file viewer's editor (Monaco), a long line
-// wraps at the editor's width, its wrapped rows keep its indentation, line numbers stay, nothing scrolls sideways; the
+// wraps at the editor's width, its wrapped rows keep its indentation, nothing scrolls sideways; the
 // editor's own "Toggle Word Wrap" turns wrap off (the line runs past the edge again) and on again. Cases of
 // `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after the code-wrap cases
 // (`--cases=MSP-108,MSP-109,MSP-110` runs only these).
@@ -18,9 +18,11 @@
 //                  on disk is the old text with exactly those edits, and the editor still wraps, the new line included.
 //   MSP-109 AC-001  The phone (production bundle at /mobile) at 390×844: each file opened from the run's Files screen, in the
 //                  phone file viewer (the same editor, read-only).
-// Per file and surface: no row of text ends past the editor's right edge; at least one line wraps (rows without a line
-// number); each wrapped row starts where its line's first non-space character does; line numbers are shown; the page
-// does not scroll sideways; the JSON file is highlighted (more than one Monaco token class).
+// Per file and surface: no row of text ends past the editor's right edge; at least one line wraps (a line drawn on more
+// than one row, the rows matched to the file's lines by their text); each wrapped row starts where its line's first
+// non-space character does; the page does not scroll sideways; the JSON file is highlighted (more than one Monaco token
+// class). Since autobyteus-647 (AC-001) also: no line numbers, fold controls or glyph margin, the margin before the text
+// at most 10 px, and the first character within 12 px of the editor's left edge.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
@@ -57,9 +59,14 @@ const FILES = Object.freeze({
   ].join('\n'),
 });
 
-/** In the page: what the cases assert about one Monaco editor (`.monaco-editor`). */
-const measureEditor = (editor) => {
+/**
+ * In the page: what the cases assert about one Monaco editor (`.monaco-editor`). `lines` is the file's text by line: the
+ * editor shows no line numbers (autobyteus-647 D-1), so a row's line is found by its text, each line's rows in order
+ * adding up (whitespace aside) to that line's text.
+ */
+const measureEditor = (editor, lines) => {
   const isSpace = ch => /[\s\u00a0]/.test(ch);
+  const compact = s => s.replace(/[\s\u00a0]+/g, '');
   const scrollable = editor.querySelector('.monaco-scrollable-element.editor-scrollable') ?? editor.querySelector('.monaco-scrollable-element');
   const box = scrollable.getBoundingClientRect();
   const verticalBar = scrollable.querySelector(':scope > .scrollbar.vertical');
@@ -77,36 +84,61 @@ const measureEditor = (editor) => {
     }
     return out;
   };
-  const numbers = [...editor.querySelectorAll('.margin .line-numbers')]
-    .map(el => ({ text: el.textContent.trim(), top: Math.round(el.getBoundingClientRect().top) })).filter(n => n.text);
+  // What the editor draws left of the text (autobyteus-647 AC-001): line numbers with text, fold controls, the glyph
+  // margin, and the whole margin's width.
+  const editorLeft = editor.getBoundingClientRect().left;
+  const visibleWidth = el => (el && getComputedStyle(el).display !== 'none' ? Math.round(el.getBoundingClientRect().width) : 0);
+  const gutter = {
+    lineNumbers: [...editor.querySelectorAll('.margin .line-numbers')].map(el => el.textContent.trim()).filter(Boolean).length,
+    foldControls: editor.querySelectorAll('.margin .cldr.codicon-folding-expanded, .margin .cldr.codicon-folding-collapsed, .margin [class*="folding"]').length,
+    glyphMarginWidth: visibleWidth(editor.querySelector('.margin .glyph-margin')),
+    marginWidth: visibleWidth(editor.querySelector('.margin')),
+  };
   const rows = [...editor.querySelectorAll('.view-lines .view-line')]
     .map((el) => {
       const top = Math.round(el.getBoundingClientRect().top);
       const text = chars(el);
       const firstText = text.find(c => !isSpace(c.ch));
       const indent = text.findIndex(c => !isSpace(c.ch));
-      return { top, number: numbers.find(n => Math.abs(n.top - top) <= 2)?.text ?? null, chars: text.length, indent,
-        lefts: text.map(c => Math.round(c.left)),
+      return { top, number: null, chars: text.length, indent, compact: compact(text.map(c => c.ch).join('')),
+        lefts: text.map(c => Math.round(c.left)), firstLeft: text.length ? Math.round(text[0].left) : null,
         firstTextLeft: firstText ? Math.round(firstText.left) : null, right: text.length ? Math.round(Math.max(...text.map(c => c.right))) : null,
         start: text.map(c => c.ch).join('').slice(0, 24) };
     })
     .sort((a, b) => a.top - b.top);
-  // A row without a line number continues the line above it (a wrapped row).
-  let line = null;
+  // Each line's rows, from the top (the editor is scrolled to the top and shows the whole file): the first row starts
+  // the line, more rows continue it (wrapped rows) until their text adds up to the line's. An empty line is one row.
   const wrapped = [];
-  for (const row of rows) {
-    if (row.number) { line = row; continue; }
-    if (!line || !row.chars || row.indent < 0) continue; // a row of spaces only: the line broke at spaces
-    const at = row.indent >= line.indent ? row.lefts[line.indent] : row.lefts[0];
-    wrapped.push({ line: line.number, lineTextLeft: line.firstTextLeft, rowTextLeft: at, start: row.start });
+  let unmapped = null;
+  for (let at = 0, lineIndex = 0; at < rows.length && lineIndex < lines.length; lineIndex += 1) {
+    const want = compact(lines[lineIndex]);
+    const first = rows[at];
+    first.number = String(lineIndex + 1);
+    let got = first.compact;
+    at += 1;
+    while (got.length < want.length && at < rows.length) {
+      const row = rows[at];
+      row.number = null;
+      got += row.compact;
+      at += 1;
+      if (!row.chars || row.indent < 0) continue; // a row of spaces only: the line broke at spaces
+      const left = row.indent >= first.indent ? row.lefts[first.indent] : row.lefts[0];
+      wrapped.push({ line: first.number, lineTextLeft: first.firstTextLeft, rowTextLeft: left, start: row.start });
+    }
+    // The editor draws only the rows in view: a line cut off at the last drawn row is not a mismatch.
+    const cutOff = at >= rows.length && want.startsWith(got);
+    if (got !== want && !cutOff && !unmapped) unmapped = { line: lineIndex + 1, want: want.slice(0, 40), got: got.slice(0, 40) };
   }
   const de = document.documentElement;
   // Monaco colors tokens with `mtk<N>` classes: one class only means the text is not highlighted.
   const tokenClasses = [...new Set([...editor.querySelectorAll('.view-lines .view-line span[class*="mtk"]')]
     .flatMap(el => [...el.classList].filter(c => /^mtk\d+$/.test(c))))].sort();
   return {
-    editorWidth: Math.round(box.width), contentRight: Math.round(contentRight), tokenClasses,
-    rows: rows.length, numberedRows: rows.filter(r => r.number).length, lineNumbers: numbers.map(n => n.text),
+    editorWidth: Math.round(box.width), contentRight: Math.round(contentRight), tokenClasses, gutter, unmapped,
+    // The first line's first character, from the editor's left edge (AC-001: within 12 px).
+    firstCharOffset: rows[0]?.firstLeft == null ? null : Math.round(rows[0].firstLeft - editorLeft),
+    rows: rows.length, lineRows: rows.filter(r => r.number).length,
+    lineTops: Object.fromEntries(rows.filter(r => r.number).map(r => [r.number, r.top])),
     past: rows.filter(r => r.right !== null && r.right > contentRight + 1).map(r => ({ number: r.number, right: r.right, start: r.start.replace(/\u00a0/g, ' ') })),
     wrapped: wrapped.map(w => ({ ...w, start: w.start.replace(/\u00a0/g, ' ') })), misindented: wrapped.filter(w => w.lineTextLeft === null || w.rowTextLeft === null || Math.abs(w.rowTextLeft - w.lineTextLeft) > 2),
     pageScrollsSideways: de.scrollWidth > de.clientWidth + 1,
@@ -115,7 +147,15 @@ const measureEditor = (editor) => {
 
 const failuresOf = (measured, expectWrapped, expectHighlighted) => {
   const failures = [];
-  if (!measured.numberedRows) failures.push('no line numbers');
+  // autobyteus-647 AC-001: no line numbers, folding or glyph margin; the margin before the text at most 10 px, the first
+  // character within 12 px of the editor's left edge.
+  const { gutter } = measured;
+  if (gutter.lineNumbers) failures.push(`line numbers shown: ${gutter.lineNumbers}`);
+  if (gutter.foldControls) failures.push(`fold controls shown: ${gutter.foldControls}`);
+  if (gutter.glyphMarginWidth) failures.push(`a glyph margin of ${gutter.glyphMarginWidth} px`);
+  if (gutter.marginWidth > 10) failures.push(`a margin of ${gutter.marginWidth} px before the text (at most 10)`);
+  if (measured.firstCharOffset === null || measured.firstCharOffset > 12) failures.push(`the first character ${measured.firstCharOffset} px from the editor's left edge (at most 12)`);
+  if (measured.unmapped) failures.push(`rows do not add up to the file's lines: ${JSON.stringify(measured.unmapped)}`);
   if (expectHighlighted && measured.tokenClasses.length < 2) failures.push(`not highlighted: token classes ${JSON.stringify(measured.tokenClasses)}`);
   if (measured.pageScrollsSideways) failures.push('the page scrolls sideways');
   if (expectWrapped) {
@@ -158,8 +198,10 @@ export const runFileWordWrapCases = async (probe) => {
     page.on('requestfailed', request => evidence.failedRequests.push({ case: currentCase, label, url: redact(request.url()), error: request.failure()?.errorText ?? null }));
   };
   const shot = async (page, name) => { await page.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined); return `${name}.png`; };
+  /** A file's text as the editor shows it: on disk (MSP-110 edits `draft-v1.txt`, and the cases may run in any order). */
+  const onDisk = name => fs.readFile(path.join(dir, name), 'utf8');
   /** Waits for the editor showing `marker`'s file in `scope`, measures it, and screenshots the page. */
-  const check = async (page, scope, name, marker, expectWrapped = true) => {
+  const check = async (page, scope, name, marker, text, expectWrapped = true) => {
     // The visible one: each open file keeps its own tab and editor.
     const editor = scope.locator('.monaco-editor:visible').first();
     await editor.waitFor({ timeout: 30_000 });
@@ -168,7 +210,7 @@ export const runFileWordWrapCases = async (probe) => {
     await waitFor(`${name}: the file in the editor`, async () => (await shown()).includes(marker.replace(/\s+/g, '')), 30_000)
       .catch(async (error) => { await shot(page, `${name}-not-shown`); error.details = { editorText: (await shown()).slice(0, 400) }; throw error; });
     await sleep(600);
-    const measured = await editor.evaluate(measureEditor);
+    const measured = await editor.evaluate(measureEditor, text.replace(/\n$/, '').split('\n'));
     const viewport = page.viewportSize();
     // The JSON file is highlighted. `getLanguage` opens YAML and plain text as `plaintext`, which has nothing to highlight.
     const highlighted = /\.json$/.test(name);
@@ -218,11 +260,11 @@ export const runFileWordWrapCases = async (probe) => {
         await sleep(800);
         // A text file opens in the editor; should it open in preview, the tab's Edit Mode shows the editor.
         if (!(await viewer.locator('.monaco-editor:visible').count())) await viewer.locator('[title="Edit Mode"]:visible').first().click().catch(() => undefined);
-        results.push(await check(deskPage, viewer, `MSP-108-desktop-1440-panel-${name}`, markers[name]));
+        results.push(await check(deskPage, viewer, `MSP-108-desktop-1440-panel-${name}`, markers[name], await onDisk(name)));
         // The viewer maximized: the editor at the window's width.
         await viewer.locator('button[title="Maximize view"]').first().click();
         await sleep(800);
-        results.push(await check(deskPage, viewer, `MSP-108-desktop-1440-maximized-${name}`, markers[name]));
+        results.push(await check(deskPage, viewer, `MSP-108-desktop-1440-maximized-${name}`, markers[name], await onDisk(name)));
         if (name !== 'draft-v1.txt') {
           await deskPage.locator('#contentViewer:visible button[title="Restore view"], #contentViewer:visible button[title="Exit full view"]').first().click();
           await sleep(800);
@@ -238,12 +280,12 @@ export const runFileWordWrapCases = async (probe) => {
         await sleep(600);
       };
       await toggle();
-      const off = await check(deskPage, viewer, 'MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off', markers['draft-v1.txt'], false);
+      const off = await check(deskPage, viewer, 'MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off', markers['draft-v1.txt'], await onDisk('draft-v1.txt'), false);
       await toggle();
-      const onAgain = await check(deskPage, viewer, 'MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again', markers['draft-v1.txt']);
+      const onAgain = await check(deskPage, viewer, 'MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again', markers['draft-v1.txt'], await onDisk('draft-v1.txt'));
       const all = [...results, off, onAgain];
-      const details = { summary: all.map(r => ({ name: r.name, failures: r.failures, editorWidth: r.measured.editorWidth, rows: r.measured.rows, numberedRows: r.measured.numberedRows, wrapped: r.measured.wrapped.length, past: r.measured.past.length })), results: all };
-      assert(all.every(r => r.failures.length === 0), 'desktop: each file wraps at the editor\'s width with its indentation and line numbers, nothing past the edge; Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)', details);
+      const details = { summary: all.map(r => ({ name: r.name, failures: r.failures, editorWidth: r.measured.editorWidth, rows: r.measured.rows, lineRows: r.measured.lineRows, gutter: r.measured.gutter, firstCharOffset: r.measured.firstCharOffset, wrapped: r.measured.wrapped.length, past: r.measured.past.length })), results: all };
+      assert(all.every(r => r.failures.length === 0), 'desktop: each file wraps at the editor\'s width with its indentation, nothing past the edge, no line numbers and a margin of at most 10 px (647 AC-001); Toggle Word Wrap turns it off (lines past the edge) and on again (AC-001, AC-002)', details);
       return details;
     });
 
@@ -260,19 +302,21 @@ export const runFileWordWrapCases = async (probe) => {
       if (!(await viewer.locator('.monaco-editor:visible').count())) await viewer.locator('[title="Edit Mode"]:visible').first().click().catch(() => undefined);
       await viewer.locator('button[title="Maximize view"]').first().click();
       await sleep(800);
-      const before = await check(deskPage, viewer, 'MSP-110-desktop-1440-before-edit', markers[name]);
       const original = await fs.readFile(file, 'utf8');
+      const before = await check(deskPage, viewer, 'MSP-110-desktop-1440-before-edit', markers[name], original);
       // The user clicks past the end of line 4 ("A short line."), types, and adds a new line long enough to wrap.
       // Each typed text ends with "." (not a word character), which closes Monaco's word suggestions, so Enter makes a new
       // line and accepts no suggestion. Escape would also leave the maximized view (`FileExplorerTabs.vue`, Zen mode).
       const editor = viewer.locator('.monaco-editor:visible').first();
-      const lineFour = await editor.evaluate((el) => {
-        const number = [...el.querySelectorAll('.margin .line-numbers')].find(n => n.textContent.trim() === '4');
+      // Line 4's row, found by its text (no line numbers since autobyteus-647 D-1).
+      const lineFourTop = before.measured.lineTops['4'];
+      const lineFour = lineFourTop === undefined ? null : await editor.evaluate((el, top) => {
         const lines = el.querySelector('.view-lines').getBoundingClientRect();
-        const box = number?.getBoundingClientRect();
+        const row = [...el.querySelectorAll('.view-lines .view-line')].find(r => Math.abs(Math.round(r.getBoundingClientRect().top) - top) <= 1);
+        const box = row?.getBoundingClientRect();
         return box ? { x: lines.right - 40, y: box.top + box.height / 2 } : null;
-      });
-      assert(lineFour, 'line 4 is shown', before.measured.lineNumbers);
+      }, lineFourTop);
+      assert(lineFour, 'line 4 is shown', before.measured.lineTops);
       await deskPage.mouse.click(lineFour.x, lineFour.y);
       const added = ' EDITED-618.';
       const newLine = 'NEW-618 a line typed into the wrapped editor, ' + 'long enough to wrap at the width of a maximized desktop editor, '.repeat(4) + 'and saved.';
@@ -288,11 +332,11 @@ export const runFileWordWrapCases = async (probe) => {
       const expected = original.replace('A short line.\n', `A short line.${added}\n${newLine}\n`);
       let saved = '';
       await waitFor('the edited text on disk', async () => (saved = await fs.readFile(file, 'utf8')) === expected, 15_000).catch(() => undefined);
-      const after = await check(deskPage, viewer, 'MSP-110-desktop-1440-after-save', 'NEW-618');
+      const after = await check(deskPage, viewer, 'MSP-110-desktop-1440-after-save', 'NEW-618', expected);
       const newLineWraps = after.measured.wrapped.some(w => w.line === '5');
       const details = {
         before: { failures: before.failures, wrapped: before.measured.wrapped.length, screenshot: before.screenshot },
-        after: { failures: after.failures, wrapped: after.measured.wrapped.length, lineNumbers: after.measured.lineNumbers, newLineWraps, screenshot: after.screenshot },
+        after: { failures: after.failures, wrapped: after.measured.wrapped.length, gutter: after.measured.gutter, firstCharOffset: after.measured.firstCharOffset, newLineWraps, screenshot: after.screenshot },
         savedEqualsExpected: saved === expected, savedBytes: Buffer.byteLength(saved), expectedBytes: Buffer.byteLength(expected),
         ...(saved === expected ? {} : { saved, expected }),
       };
@@ -326,10 +370,10 @@ export const runFileWordWrapCases = async (probe) => {
         await phone.locator('[data-testid="mobile-files-row"]').filter({ hasText: name }).first().click();
         const viewer = phone.locator('[data-testid="mobile-file-viewer"]');
         await viewer.waitFor({ timeout: 20_000 });
-        results.push(await check(phone, viewer, `MSP-109-phone-390-${name}`, markers[name]));
+        results.push(await check(phone, viewer, `MSP-109-phone-390-${name}`, markers[name], await onDisk(name)));
       }
-      const details = { summary: results.map(r => ({ name: r.name, failures: r.failures, editorWidth: r.measured.editorWidth, rows: r.measured.rows, numberedRows: r.measured.numberedRows, wrapped: r.measured.wrapped.length, past: r.measured.past.length })), results };
-      assert(results.every(r => r.failures.length === 0), 'phone: each file wraps at the editor\'s width with its indentation and line numbers, nothing past the edge, the page does not scroll sideways (AC-001)', details);
+      const details = { summary: results.map(r => ({ name: r.name, failures: r.failures, editorWidth: r.measured.editorWidth, rows: r.measured.rows, lineRows: r.measured.lineRows, gutter: r.measured.gutter, firstCharOffset: r.measured.firstCharOffset, wrapped: r.measured.wrapped.length, past: r.measured.past.length })), results };
+      assert(results.every(r => r.failures.length === 0), 'phone: each file wraps at the editor\'s width with its indentation, nothing past the edge, no line numbers and a margin of at most 10 px (647 AC-001), the page does not scroll sideways (AC-001)', details);
       return details;
     });
   } finally {

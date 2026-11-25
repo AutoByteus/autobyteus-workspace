@@ -1,0 +1,12 @@
+node android-647.mjs 9647 <out> pdf   (Android 15 emulator api647_api35, debug APK of 812760b2ec, WebView of the paired node's /mobile page)
+session {"instrumented":true,"viewport":[412,839,2.625]}
+AC-005 {"rounds":["alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4","alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4"],"session":{"workers":[{"scheme":"blob","type":"module"}],"workerErrors":0,"jsBlobs":1,"blobTypes":["application/pdf","text/javascript;charset=utf-8","application/pdf","application/pdf","application/pdf","application/pdf","application/pdf"]}}
+AC-001 {"editorWidth":412,"lineNumbers":0,"foldControls":0,"glyphMarginWidth":0,"marginWidth":6,"firstChar":{"ch":"{","offset":6}}
+refs: page after tapping empty-642.mp4: fetchError false; `dumpsys activity activities | grep -c 'Hist .*MediaPlayerActivity'` = 1; uiautomator texts: "This video could not be played.", "BACK"
+
+Rerun (fresh stack, app data cleared, re-paired), with a pixel check per canvas and a real-screen adb screencap:
+session {"instrumented":true,"viewport":[412,839,2.625]}
+SCREENCAP-NOW
+AC-005 {"rounds":["alpha-647.pdf:3/3 inked 3 beta-647.pdf:2/2 inked 2 gamma-647.pdf:4/4 inked 4","alpha-647.pdf:3/3 inked 3 beta-647.pdf:2/2 inked 2 gamma-647.pdf:4/4 inked 4"],"session":{"workers":[{"scheme":"blob","type":"module"}],"workerErrors":0,"jsBlobs":1,"blobTypes":["application/pdf","text/javascript;charset=utf-8","application/pdf","application/pdf","application/pdf","application/pdf","application/pdf"]}}
+AC-001 {"editorWidth":412,"lineNumbers":0,"foldControls":0,"glyphMarginWidth":0,"marginWidth":6,"firstChar":{"ch":"{","offset":6}}
+android-gamma-screencap.png: adb screencap while gamma shows (the CDP screenshot of the first run came out blank grey: a capture artifact, removed)

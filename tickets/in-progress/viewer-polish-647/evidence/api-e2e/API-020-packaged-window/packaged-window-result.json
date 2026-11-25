@@ -1,0 +1,95 @@
+{
+  "steps": [
+    {
+      "step": "window-bounds-error",
+      "message": "cdpSession.send: Protocol error (Browser.getWindowForTarget): 'Browser.getWindowForTarget' wasn't found"
+    },
+    {
+      "step": "window",
+      "url": "file://…/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+      "viewport": {
+        "w": 1440,
+        "h": 868
+      },
+      "instrumented": true
+    },
+    {
+      "step": "workspace",
+      "workspaceId": true
+    },
+    {
+      "step": "AC-005",
+      "rounds": [
+        "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+        "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+        "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+        "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+        "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4"
+      ],
+      "switches": [
+        "alpha-647.pdf:3/3",
+        "beta-647.pdf:2/2",
+        "alpha-647.pdf:3/3",
+        "gamma-647.pdf:4/4",
+        "beta-647.pdf:2/2"
+      ],
+      "session": {
+        "workers": [
+          {
+            "scheme": "blob",
+            "type": "module"
+          }
+        ],
+        "workerErrors": 0,
+        "jsBlobs": 1,
+        "blobTypes": [
+          "text/javascript;charset=utf-8",
+          "application/pdf",
+          "application/pdf",
+          "application/pdf",
+          "application/pdf",
+          "application/pdf"
+        ],
+        "globalWorkerOptions": {
+          "workerPort": false,
+          "workerSrc": ""
+        }
+      },
+      "pdfConsoleErrors": []
+    },
+    {
+      "step": "AC-001",
+      "gutter": {
+        "editorWidth": 450,
+        "lineNumbers": 0,
+        "foldControls": 0,
+        "glyphMarginWidth": 0,
+        "marginWidth": 6,
+        "firstChar": {
+          "ch": "{",
+          "offset": 6
+        },
+        "tokenClasses": 4
+      },
+      "after": {
+        "editorWidth": 450,
+        "lineNumbers": 0,
+        "foldControls": 0,
+        "glyphMarginWidth": 0,
+        "marginWidth": 6,
+        "firstChar": {
+          "ch": "{",
+          "offset": 6
+        },
+        "tokenClasses": 4
+      },
+      "savedOnDisk": true,
+      "savedIsOriginalPlusEdit": false,
+      "savedShown": true
+    },
+    {
+      "step": "errors",
+      "distinct": []
+    }
+  ]
+}

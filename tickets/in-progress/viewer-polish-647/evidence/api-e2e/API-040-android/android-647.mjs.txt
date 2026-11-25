@@ -1,0 +1,122 @@
+// API/E2E autobyteus-647, temporary: the Android app's page (WebView) over raw CDP (adb-forwarded
+// localabstract:webview_devtools_remote_<pid>). Usage: node android-647.mjs <cdpPort> <outDir>
+// Steps: instrumentation registered for new documents, the page reloaded (the session starts there); pair if asked;
+// AC-005: the run's Files → pdf-647 → alpha, beta, gamma, Back between, two rounds; worker and blob counts.
+// AC-001: sample-647.json in the phone viewer: line numbers, margin, first character. AC-002: the Team's Messages →
+// empty-642.mp4 (zero bytes) and gone-642.mp4: the page's text after each (the native player is checked from adb).
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const [port, out, step = 'all'] = process.argv.slice(2);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
+const page = targets.find(t => t.type === 'page' && /\/mobile/.test(t.url)) ?? targets.find(t => t.type === 'page');
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
+let id = 0; const pending = new Map();
+ws.onmessage = (m) => { const msg = JSON.parse(m.data); if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id); } };
+const send = (method, params = {}) => new Promise((resolve) => { const i = ++id; pending.set(i, resolve); ws.send(JSON.stringify({ id: i, method, params })); });
+const evaluate = async (expression) => {
+  const r = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, userGesture: true });
+  if (r.result?.exceptionDetails) throw new Error(JSON.stringify(r.result.exceptionDetails).slice(0, 300));
+  return r.result?.result?.value;
+};
+const waitFor = async (label, expression, ms = 30000) => {
+  const end = Date.now() + ms;
+  while (Date.now() < end) { if (await evaluate(expression).catch(() => false)) return true; await sleep(400); }
+  throw new Error(`timeout: ${label}`);
+};
+const click = sel => evaluate(`(() => { const e = ${sel}; if (!e) return false; e.click(); return true; })()`);
+const result = { steps: [] };
+const log = (s, d) => { result.steps.push({ step: s, ...d }); console.log(s, JSON.stringify(d).slice(0, 500)); };
+const instrument = `(() => { try { if (window.__vp647) return; const rec = { blobs: [], workers: [], workerErrors: 0 };
+  const c = URL.createObjectURL.bind(URL); URL.createObjectURL = (o) => { const u = c(o); rec.blobs.push({ type: o && o.type !== undefined ? o.type : typeof o }); return u; };
+  const W = window.Worker; if (W) { const P = function (url, opts) { const w = new W(url, opts); rec.workers.push({ scheme: String(url).split(':')[0], type: (opts && opts.type) || 'classic' }); w.addEventListener('error', () => { rec.workerErrors += 1; }); return w; }; P.prototype = W.prototype; window.Worker = P; }
+  window.__vp647 = rec; } catch (e) {} })();`;
+
+await send('Page.enable');
+await send('Runtime.enable');
+if (step === 'all' || step === 'pdf') {
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: instrument });
+  await send('Page.reload', { ignoreCache: false });
+  await sleep(4000);
+  await waitFor('the page', `Boolean(document.querySelector('[data-testid="mobile-run-tree"], [data-testid="mobile-run-list"], [data-testid="mobile-pair-button"]'))`, 60000);
+  if (await evaluate(`Boolean(document.querySelector('[data-testid="mobile-pair-button"]'))`)) { await click(`document.querySelector('[data-testid="mobile-pair-button"]')`); }
+  await waitFor('the run tree', `Boolean(document.querySelector('[data-testid="mobile-run-tree"]'))`, 60000);
+  log('session', { instrumented: await evaluate('Boolean(window.__vp647)'), viewport: await evaluate('[innerWidth, innerHeight, devicePixelRatio]') });
+  const runOpen = `[...document.querySelectorAll('[data-testid^="mobile-run-row-agent:"]')].find(r => /Video Checker/.test(r.textContent))?.querySelector('[data-testid="mobile-run-open"]')`;
+  await waitFor('the run row', `Boolean(${runOpen})`, 30000);
+  await click(runOpen);
+  await waitFor('the run screen', `Boolean(document.querySelector('[data-testid="mobile-run-menu-button"]'))`);
+  await sleep(800);
+  await click(`document.querySelector('[data-testid="mobile-run-menu-button"]')`);
+  await waitFor('the menu', `Boolean(document.querySelector('[data-testid="mobile-run-menu-files"]'))`);
+  await click(`document.querySelector('[data-testid="mobile-run-menu-files"]')`);
+  await waitFor('the files list', `Boolean(document.querySelector('[data-testid="mobile-files-list"]'))`);
+  const row = name => `[...document.querySelectorAll('[data-testid="mobile-files-row"]')].find(r => r.textContent.includes(${JSON.stringify(name)}))`;
+  await waitFor('pdf-647', `Boolean(${row('pdf-647')})`);
+  await click(row('pdf-647'));
+  await waitFor('in pdf-647', `(document.querySelector('[data-testid="mobile-files-path"]')?.textContent ?? '').includes('pdf-647')`);
+  const viewer = `document.querySelector('[data-testid="mobile-file-viewer"]')`;
+  const inList = `!${viewer} && (document.querySelector('[data-testid="mobile-files-path"]')?.textContent ?? '').includes('pdf-647')`;
+  const back = async () => {
+    for (let i = 0; i < 4 && !(await evaluate(inList)); i += 1) {
+      await click(`[...document.querySelectorAll('[data-testid="mobile-screen-back"]')].filter(b => b.offsetParent).pop()`);
+      await sleep(800);
+    }
+  };
+  const PDFS = { 'alpha-647.pdf': 3, 'beta-647.pdf': 2, 'gamma-647.pdf': 4 };
+  const rounds = [];
+  for (let round = 0; round < 2; round += 1) {
+    const opened = [];
+    for (const [name, pages] of Object.entries(PDFS)) {
+      await click(row(name));
+      await waitFor(`${name} viewer`, `Boolean(${viewer})`);
+      const state = `(() => { const v = ${viewer}; const c = [...(v?.querySelectorAll('.vue-pdf-embed__page canvas') ?? [])].filter(x => x.width > 0 && x.getBoundingClientRect().width > 0); const a = v?.querySelector('[role="alert"]'); const inked = c.filter(x => { try { const d = x.getContext('2d').getImageData(0, 0, x.width, Math.min(x.height, 400)).data; for (let i = 0; i < d.length; i += 4 * 97) { if (d[i + 3] > 0 && (d[i] < 200 || d[i + 1] < 200 || d[i + 2] < 200)) return true; } return false; } catch (e) { return false; } }).length; return { pages: c.length, inked, error: a ? a.textContent.trim().slice(0, 160) : null }; })()`;
+      await waitFor(`${name} drawn`, `(${state}).pages >= ${pages} || Boolean((${state}).error)`, 30000).catch(() => undefined);
+      await sleep(800);
+      const s = await evaluate(state);
+      opened.push(`${name}:${s.pages}/${pages} inked ${s.inked}${s.error ? `:ERROR ${s.error}` : ''}`);
+      if (round === 0 && name === 'gamma-647.pdf') { console.log('SCREENCAP-NOW'); await sleep(4000); const shot = await send('Page.captureScreenshot', { format: 'png' }); await fs.writeFile(path.join(out, 'android-gamma-after-alpha-beta.png'), Buffer.from(shot.result.data, 'base64')); }
+      await back();
+    }
+    rounds.push(opened.join(' '));
+  }
+  log('AC-005', { rounds, session: await evaluate(`({ workers: window.__vp647.workers, workerErrors: window.__vp647.workerErrors, jsBlobs: window.__vp647.blobs.filter(b => /javascript/.test(b.type)).length, blobTypes: window.__vp647.blobs.map(b => b.type) })`) });
+  // AC-001: the JSON file.
+  await click(row('sample-647.json'));
+  await waitFor('the JSON editor', `Boolean(document.querySelector('[data-testid="mobile-file-viewer"] .monaco-editor .view-line'))`);
+  await sleep(1500);
+  log('AC-001', await evaluate(`(() => { const el = document.querySelector('[data-testid="mobile-file-viewer"] .monaco-editor'); const left = el.getBoundingClientRect().left;
+    const vis = e => (e && getComputedStyle(e).display !== 'none' ? Math.round(e.getBoundingClientRect().width) : 0);
+    const first = el.querySelector('.view-lines .view-line'); let firstChar = null;
+    if (first) { const w = document.createTreeWalker(first, NodeFilter.SHOW_TEXT); const n = w.nextNode(); if (n) { const r = document.createRange(); r.setStart(n, 0); r.setEnd(n, 1); firstChar = { ch: n.nodeValue[0], offset: Math.round(r.getBoundingClientRect().left - left) }; } }
+    return { editorWidth: Math.round(el.getBoundingClientRect().width), lineNumbers: [...el.querySelectorAll('.margin .line-numbers')].map(e => e.textContent.trim()).filter(Boolean).length,
+      foldControls: el.querySelectorAll('.margin [class*="folding"]').length, glyphMarginWidth: vis(el.querySelector('.margin .glyph-margin')), marginWidth: vis(el.querySelector('.margin')), firstChar }; })()`));
+  const shot = await send('Page.captureScreenshot', { format: 'png' });
+  await fs.writeFile(path.join(out, 'android-json.png'), Buffer.from(shot.result.data, 'base64'));
+  await back();
+}
+if (step === 'all' || step === 'refs') {
+  // Back to the run list, then the Team's Messages.
+  for (let i = 0; i < 5 && !(await evaluate(`Boolean(document.querySelector('[data-testid="mobile-run-tree"]')?.offsetParent)`)); i += 1) {
+    await click(`[...document.querySelectorAll('[data-testid="mobile-screen-back"], [aria-label="Back to runs"]')].filter(b => b.offsetParent).pop()`);
+    await sleep(900);
+  }
+  const teamOpen = `[...document.querySelectorAll('[data-testid^="mobile-run-row-team:"]')].find(r => /Reference Team/.test(r.textContent))?.querySelector('[data-testid="mobile-run-open"]')`;
+  await waitFor('the Team row', `Boolean(${teamOpen})`, 30000);
+  await click(teamOpen);
+  await waitFor('the Team screen', `Boolean(document.querySelector('[data-testid="mobile-run-menu-button"]'))`);
+  await sleep(800);
+  await click(`document.querySelector('[data-testid="mobile-run-menu-button"]')`);
+  await waitFor('Messages', `Boolean(document.querySelector('[data-testid="mobile-run-menu-messages"]'))`);
+  await click(`document.querySelector('[data-testid="mobile-run-menu-messages"]')`);
+  const ref = name => `[...document.querySelectorAll('[data-testid="mobile-team-reference-row"]')].find(r => r.textContent.includes(${JSON.stringify(name)}))`;
+  await waitFor('the references', `Boolean(${ref('empty-642.mp4')})`, 30000);
+  console.log('READY-EMPTY');
+  await click(ref('empty-642.mp4'));
+  await sleep(5000);
+  const pageAfterEmpty = await evaluate(`({ text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 300), fetchError: /Failed to fetch reference content/.test(document.body.innerText), viewer: Boolean(document.querySelector('[data-testid="mobile-team-reference-viewer"]')) })`);
+  log('AC-002-empty', pageAfterEmpty);
+  await fs.writeFile(path.join(out, 'android-result.json'), JSON.stringify(result, null, 2));
+}
+ws.close();

@@ -1,0 +1,26 @@
+{
+ "case": "MSP-110",
+ "result": "Pass",
+ "seconds": 5.3,
+ "before": {
+  "failures": [],
+  "wrapped": 2,
+  "screenshot": "MSP-110-desktop-1440-before-edit.png"
+ },
+ "after": {
+  "failures": [],
+  "wrapped": 3,
+  "gutter": {
+   "lineNumbers": 0,
+   "foldControls": 0,
+   "glyphMarginWidth": 0,
+   "marginWidth": 6
+  },
+  "firstCharOffset": 6,
+  "newLineWraps": true,
+  "screenshot": "MSP-110-desktop-1440-after-save.png"
+ },
+ "savedEqualsExpected": true,
+ "savedBytes": 857,
+ "expectedBytes": 857
+}

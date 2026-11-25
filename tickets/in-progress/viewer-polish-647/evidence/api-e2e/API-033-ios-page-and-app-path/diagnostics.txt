@@ -1,0 +1,12 @@
+11:26:36.172ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:26:37.223ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:26:47.707ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:26:47.707ation) API647DIAG host teardown runs
+11:26:47.711ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:26:47.719ation) API647DIAG host deinit
+11:26:57.157ation) API647DIAG session begin: active, category AVAudioSessionCategoryPlayback
+11:26:58.863ation) API647DIAG host viewDidDisappear isBeingDismissed=0 presenting=1
+11:27:04.995ation) API647DIAG host viewDidDisappear isBeingDismissed=1 presenting=0
+11:27:04.995ation) API647DIAG host teardown runs
+11:27:04.998ation) API647DIAG session end: deactivated=1, category now AVAudioSessionCategorySoloAmbient
+11:27:05.009ation) API647DIAG host deinit

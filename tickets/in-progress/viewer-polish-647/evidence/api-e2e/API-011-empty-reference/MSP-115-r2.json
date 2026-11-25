@@ -1,0 +1,90 @@
+{
+ "case": "MSP-115",
+ "result": "Fail",
+ "seconds": 73.9,
+ "error": "desktop: the empty video reference opens as an empty file (its player, no error); phone: the empty video reference opens as an empty file (its player, no error)",
+ "details": {
+  "teamRunId": "empty_refs_647_15964e497daa4b24aa56ac5f4ae41655",
+  "desktop": {
+   "empty": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [
+     "Error!Failed to fetch reference content (416)"
+    ],
+    "text": "empty-647.mp4 <probe-root>/alpha/workspace/refs-647/empty-647.mp4 Error!Failed to fetch reference content (416)",
+    "screenshot": "MSP-115-desktop-empty-647.mp4.png"
+   },
+   "gone": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [],
+    "text": "gone-647.mp4 <probe-root>/alpha/workspace/refs-647/gone-647.mp4 Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+    "screenshot": "MSP-115-desktop-gone-647.mp4.png"
+   }
+  },
+  "phone": {
+   "empty": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [
+     "This video could not be played.Retry"
+    ],
+    "text": "empty-647.mp4 This video could not be played. Retry",
+    "screenshot": "MSP-115-phone-empty-647.mp4.png"
+   },
+   "gone": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [],
+    "text": "gone-647.mp4 Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+    "screenshot": "MSP-115-phone-gone-647.mp4.png"
+   }
+  },
+  "referenceAnswers": {
+   "desktop": [
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_65lPmHKoFFHXvd8xtRMETTQns46-Bw5-/references/c3f8ec43d7d896bf3df26827713243773d0b00a8562124e6ef820edf59e25a02/content",
+     "range": "bytes=0-0",
+     "status": 416,
+     "contentRange": "bytes */0"
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_65lPmHKoFFHXvd8xtRMETTQns46-Bw5-/references/8f525212489d9b3d9de470e023555f0bd3769ec4c53f23ca507aba1751a3be29/content",
+     "range": "bytes=0-0",
+     "status": 404,
+     "contentRange": null
+    }
+   ],
+   "phone": [
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_65lPmHKoFFHXvd8xtRMETTQns46-Bw5-/references/c3f8ec43d7d896bf3df26827713243773d0b00a8562124e6ef820edf59e25a02/content",
+     "range": "bytes=0-0",
+     "status": 416,
+     "contentRange": "bytes */0"
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_65lPmHKoFFHXvd8xtRMETTQns46-Bw5-/references/c3f8ec43d7d896bf3df26827713243773d0b00a8562124e6ef820edf59e25a02/content",
+     "range": null,
+     "status": 200,
+     "contentRange": null
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_65lPmHKoFFHXvd8xtRMETTQns46-Bw5-/references/8f525212489d9b3d9de470e023555f0bd3769ec4c53f23ca507aba1751a3be29/content",
+     "range": "bytes=0-0",
+     "status": 404,
+     "contentRange": null
+    }
+   ]
+  }
+ }
+}
