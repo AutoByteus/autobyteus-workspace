@@ -35,8 +35,8 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["media.couldNotPlay"].exists, "it plays")
         attach(app, "audio-playing-controls-hidden")
         player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
-        XCTAssertTrue(app.sliders.firstMatch.waitForExistence(timeout: 5), "a tap shows AVKit's controls")
-        print("POSITION \(app.sliders.firstMatch.value ?? "-") at \(String(format: "%.1f", Date().timeIntervalSince(opened))) s")
+        XCTAssertTrue(scrubber(app).waitForExistence(timeout: 5), "a tap shows AVKit's controls")
+        print("POSITION \(scrubber(app).value ?? "-") at \(String(format: "%.1f", Date().timeIntervalSince(opened))) s")
         attach(app, "audio-controls-shown")
         let requests = try fileRequests(since: opened, named: "memo-642.mp3")
         print("REQUESTS \(requests.map { "\($0["range"] ?? "-"):\($0["status"] ?? "-"):\($0["bytes"] ?? "-")" })")
@@ -83,13 +83,13 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         mark("player")
         Thread.sleep(forTimeInterval: 3)
         player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
-        let slider = app.sliders.firstMatch
+        let slider = scrubber(app)
         XCTAssertTrue(slider.waitForExistence(timeout: 5), "the scrubber")
         let sought = Date()
         mark("seek")
         slider.adjust(toNormalizedSliderPosition: 0.5)
         Thread.sleep(forTimeInterval: 3)
-        print("POSITION after seek \(app.sliders.firstMatch.exists ? "\(app.sliders.firstMatch.value ?? "-")" : "hidden")")
+        print("POSITION after seek \(scrubber(app).exists ? "\(scrubber(app).value ?? "-")" : "hidden")")
         let size = Double(((try stack().info["sizes"] as? [String: Any])?["m4a"] as? NSNumber)?.intValue ?? 0)
         let requests = try fileRequests(since: opened, named: "note-642.m4a")
         print("REQUESTS \(requests.map { "\($0["range"] ?? "-"):\($0["status"] ?? "-"):\($0["bytes"] ?? "-")" })")
@@ -324,6 +324,13 @@ final class NativeMediaRealNodeUITests: XCTestCase {
     }
 
     /// The node's requests since `since` whose path contains `named`, from the stack's request log.
+    /// AVKit's scrubber (its position), by its identifier. On the audio screen the first slider is AVKit's volume slider
+    /// (identifier "Volume Slider", though its label also reads "Current position"), so `app.sliders.firstMatch` there
+    /// moves the volume, not the position.
+    private func scrubber(_ app: XCUIApplication) -> XCUIElement {
+        app.sliders.matching(NSPredicate(format: "identifier == %@", "Current position")).firstMatch
+    }
+
     private func fileRequests(since: Date, named: String) throws -> [[String: Any]] {
         let log = try controlJSON("/log?since=\(Int(since.timeIntervalSince1970 * 1000))") as? [[String: Any]] ?? []
         return log.filter { ($0["path"] as? String)?.contains(named) == true }
