@@ -2,19 +2,37 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/requirements-doc.md` (SR-001, Approved)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/requirements-doc.md` (SR-003, Approved; REQ-001/REQ-002/AC-001 revised within the direction after CRR-001)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/design-spec.md` (SR-001)
-- Supplemental Task Artifacts Reviewed: `handoff-architecture-design-complete.md`
-- Relevant Solution Revision IDs: SR-001
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/design-spec.md` (SR-006; round 6 reviews its SR-006 section)
+- Supplemental Task Artifacts Reviewed: `handoff-architecture-design-complete.md`; `code-review-report.md` (CRR-001, CR-001, C-2)
+- Relevant Solution Revision IDs: SR-001…SR-006
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/tickets/in-progress/file-viewer-media-642/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: Solution Designer's `Architecture Design Complete` (SR-001), 2026-11-24
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Current-State Evidence Basis: branch `codex/file-viewer-media-642` at `922e0f067f` (base `origin/personal` `5c0db3a801`). Checked:
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: 6
+- Trigger: Solution Designer's revised design SR-002 after ARCH-REV-001 (committed at `a5fd87067e`), 2026-11-24
+- Round 3 trigger: SR-003 after code review CRR-001 (committed at `f270e067dd`; implementation IR-001 at `fcc5aa5cd8`), 2026-11-24
+- Round 4 trigger: SR-004 after ARCH-REV-003 AR-002 (committed at `5de17dc4b4`), 2026-11-24
+- Round 5 trigger: SR-005 (DEC-007, iOS audio session) from API/E2E's evidence request (committed at `0bcba9ed6a`), 2026-11-25
+- Round 6 trigger: SR-006 (DEC-008) from API/E2E's Unclear on AC-004 (committed at `b0dcf5e94b`), 2026-11-25
+- Prior Review Round Reviewed: 5 (ARCH-REV-005, Pass)
+- Latest Authoritative Round: 6
+- Current-State Evidence Basis (round 6):
+  - `rg FileDisplay` and Nuxt auto-import names (`…RendererFileDisplay`): no template or dynamic use; only `tests/integration/app-font-size-fixed-px-audit.integration.test.ts:29` lists it;
+  - `rg getPrismLanguage`: `FileDisplay.vue:19,29` and the table's spec only;
+  - `utils/markdownItPrism.ts` (used by `composables/useMarkdownSegments.ts`) → `services/highlightService.ts:55-75` (`Prism.languages[lang.toLowerCase()] || plaintext`).
+- Current-State Evidence Basis (round 5): `git grep -n "setCategory\|AVAudioSession" -- autobyteus-ios` is empty, so the app runs in the default Solo Ambient category; `AutoByteusMobile/Media/NativeMediaPlayer.swift:12,29,205` (`NativeMediaPlayerViewController` owns the `AVPlayerViewController`; an explicit `dismiss` at `:205`).
+- Current-State Evidence Basis (round 4):
+  - web `components/conversation/segments/MediaSegment.vue:25-55` (audio and video tiles call `modeFor(url)`/`play(url)`; the title is from the URL today);
+  - `FileViewer.vue:39-40,86-87` (the only host of `VideoPlayer`/`AudioPlayer`);
+  - media segment sources: `runProjectionConversation.ts:184-190`, `eventMonitorActiveTraceBrowsePresentation.ts:57`, `segmentTypes.ts:185` (`ASSISTANT_COMPLETE` `*_urls`). These are node `/rest/files/<relativePath>` URLs (`media-storage-service.ts:241`) or external URLs.
+- Current-State Evidence Basis (round 3): implemented tree at `f270e067dd`.
+  - `api/rest/collaboration-message-references.ts:25` (route `…/messages/:messageId/references/:referenceId/content`: no file name in the URL);
+  - web `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue:60-72,111,124,177-205` (the viewer knows `reference.path` and passes it to `FileViewer` as `file.path`);
+  - `composables/mobile/useNativeMediaPlayback.ts:44-91` (`mediaTitleOf`/`mediaExtensionOf` read the URL's `path` query, else its pathname; `modeFor` answers `page` for an empty extension);
+  - `components/fileExplorer/viewers/VideoPlayer.vue:36-66` (`modeFor(props.url)`, `play(props.url, title)`).
+- Round 1 basis: branch `codex/file-viewer-media-642` at `922e0f067f` (base `origin/personal` `5c0db3a801`). Checked:
   - `git fetch --tags; git tag --contains 7cbab1f7c2`: empty, so 574 is unreleased;
   - web `utils/remoteAccess/shellBridge.ts:11-19,81-88` (`ShellHello` = `nodeCount`, `deviceName`, `nodeName`, `videoPlayer`; no platform field) and `composables/mobile/useNativeVideoPlayback.ts:57`.
   The investigation's citations for items 1, 3 and 4 were taken as read and are consistent with 574's merged code.
@@ -29,7 +47,7 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`, except REQ-002's platform rule, which the contract cannot express (AR-001).
+- Overall Basis Status: `Confirmed` (round 4: the file name is an explicit input from each caller; AR-002 resolved. Round 2: each app states the extensions its player plays per kind; REQ-002 matches; AR-001 resolved).
 - Approved requirements / intended behavior understood: Yes (REQ-001…004; DEC-001…003).
 - Relevant existing behavior and evidence confirmed: Yes. 574's native path, `sendUserFile`'s `kind: 'file'`, the split-by-mode layout and the one map with Prism names are all as described.
 - Scope guardrail confirmed: Yes.
@@ -40,8 +58,8 @@
 
 | Behavior / REQ | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| REQ-001 (ranged message references) | Contract | Pass | Pass | Pass | Confirmed | — |
-| REQ-002 (native audio, both apps; iOS-only exclusion) | User | Pass | Pass | Fail (the per-app format rule has no input on the page) | Needs Correction | AR-001 |
+| REQ-001 (SR-003: a reference's media not downloaded whole) | User | Pass | Pass | Pass (SR-004: `FileViewer` passes `file.path` = `reference.path`; mp4/m4a references native in the apps, ranged on the desktop) | Confirmed | AR-002 resolved |
+| REQ-002 (native audio by the app's stated types) | User | Pass | Pass | Pass (SR-002 walks: `.ogg` Android native, iOS page; `.mp3` both native; `.webm` video iOS page) | Confirmed | AR-001 resolved |
 | REQ-003 (Files layout by width) | User | Pass | Pass | Pass (note N-1) | Confirmed | — |
 | REQ-004 (one language table, two engine names) | User | Pass | Pass | Pass | Confirmed | — |
 
@@ -61,7 +79,7 @@ None beyond the handoff (consistent).
 | Record / Message | Each Field Has A Meaning, A Writer And A Reader? | Identities, Relationships And Lifecycle Are Explicit? | Each In-Scope Flow Walked Through It, With An Example Per Case? | Checked Against Existing Data And Real Dependencies It Relies On? | The Layers Above Follow It Without Mappings, Recomputed Facts Or Second Copies? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- |
 | Bridge `playMedia {kind,url,title,credential}` | Pass | Pass (574's lifecycle) | Pass for formats both players play | Pass | Pass | Pass |
-| Bridge `hello.mediaPlayer: boolean` | Fail: a boolean cannot tell the page which audio formats the app's player plays, and REQ-002 makes that differ by app (iOS excludes Ogg/Opus) | Pass | Fail: no walk for an Ogg on iOS vs Android | Pass | Fail: the composable would have to guess the platform, or apply one app's limits to both | Fail (AR-001) |
+| Bridge `hello.mediaPlayer: { video: string[], audio: string[] }` | Pass (each app writes its own player's extensions; the composable reads them) | Pass (absent = page path) | Pass (four walks) | Pass (lists to be confirmed against each platform by implementation) | Pass (the app owns the fact; no platform guess) | Pass |
 | `MessageReferenceContent` → `kind: 'file'` | Pass | Pass | Pass | Pass (`sendUserFile` from 574) | Pass | Pass |
 | Language table entry `{ext/names, monaco, prism}` | Pass | Pass | Pass (examples) | Pass (Monaco 0.52.2 basic languages; Prism components) | Pass (one table, two lookups) | Pass |
 
@@ -70,7 +88,7 @@ None beyond the handoff (consistent).
 | Spine ID | Scope | Readable? | Narrative Clear? | Facade Vs Owner? | Naming? | One Owner Per Node, In Order? | Off-Spine Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Reference read (D-1) | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| Audio play (D-2) | Primary | Pass | Fail (the native-or-page decision for a format) | Pass | Pass | Pass | Pass | Fail (AR-001) |
+| Media play (D-2) | Primary | Pass | Pass (native only when the extension is in the app's list for its kind) | Pass | Pass | Pass | Pass | Pass |
 | Files layout (D-3) | Local | Pass | Pass | N/A | Pass | Pass (the layout owns the rule) | Pass | Pass |
 | Highlighting (D-4) | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
@@ -170,7 +188,7 @@ Vocabulary: `Pass` (`media` for a player of video and audio; `getMonacoLanguage`
 
 | Topic | Needed? | Present? | Bad Shape? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `playMedia`, table rows | Yes | Pass | N/A | Pass | Add an example for the format rule (AR-001) |
+| `playMedia`, `hello.mediaPlayer`, table rows | Yes | Pass | N/A | Pass | — |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -178,18 +196,43 @@ None. AR-001 rests on the approved requirement itself (REQ-002's iOS-only exclus
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None beyond AR-001.
+None.
 
 ## Review Decision
 
-`Fail`
+`Pass` (round 6)
 
 ## Findings
 
+None open. AR-002 and AR-001 below are `Resolved` and kept for traceability.
+
+### AR-002 — A reference's media never reaches the native player: its URL names no file, and the composable takes the type from the URL
+
+- Status: `Resolved` (SR-004; verified in ARCH-REV-004)
+- Type: Design Impact
+- Severity: Medium (blocking in round 3; small fix)
+- Protects: REQ-001 (SR-003: "in the phone apps it plays in the native player"), AC-001 (the apps play a reference natively, with ranged requests), REQ-002 (the player's title is the file name).
+- Scope status: Within Approved Scope. Changes approved behavior: No.
+- Concrete problem: D-1b passes the reference's `contentUrl` to `FileViewer` → `VideoPlayer`/`AudioPlayer`, and says a phone app "uses `useNativeMediaPlayback` (`playMedia`)".
+  - The composable decides the type, and so native or page, from the file the URL names: its `path` query, else its pathname (`useNativeMediaPlayback.ts:44-62,77-82`). This is the rule my round-2 note N-4 asked for, without considering references.
+  - A reference URL is `…/messages/:messageId/references/:referenceId/content` (`collaboration-message-references.ts:25`). Its last segment is `content`, with no extension, so `modeFor` answers `page` (`:82`). The phone app then downloads the file whole through the page path, which is exactly what SR-003 removes.
+  - The native title would also be `content`.
+  - SR-003's validation row "Phone app: an `mp4` reference → `playMedia{kind:'video'}`" therefore does not hold.
+- Evidence: the files and lines above. The viewer already holds the real file path (`reference.path`, `:111`) and passes it as `file.path` (`:60-72`).
+- Required update: make the file's name an explicit input of the decision, written by the owner that knows it, instead of a fact recovered from the URL.
+  - Example: `useNativeMediaPlayback` takes the file name, as `modeFor(url, fileName)` and `play(url, fileName)`, or `VideoPlayer`/`AudioPlayer` take a `fileName` prop.
+  - `FileViewer` passes `file.path` to its players. The reference viewer already gives `reference.path` there; the workspace and node viewers give their file paths.
+  - The URL-based name stays only where no caller has one (for example a chat media URL), or is removed if every caller passes the name.
+  - Walk an `mp4` and an `m4a` reference on the phone app (native, title = file name), the same on the desktop (ranged), and a workspace file (unchanged).
+  - Add a viewer or composable spec with a reference URL.
+- Why proportionate: one argument, from the owner of the fact (Principle 11: do not recompute a fact from a URL that does not carry it).
+- Recommended recipient: Solution Designer.
+
 ### AR-001 — The page cannot apply REQ-002's per-app audio format rule: `hello.mediaPlayer` is a boolean and `hello` names no platform
 
+- Status: `Resolved` (SR-002; verified in ARCH-REV-002)
 - Type: Design Impact
-- Severity: Medium (blocking; small fix)
+- Severity: Medium (blocking in round 1; small fix)
 - Protects: REQ-002 ("In both apps, a node audio file plays through the app's native player … On iOS, a format AVPlayer cannot play (Ogg, Opus) keeps the page path"); AC-002.
 - Scope status: Within Approved Scope. Changes approved behavior: No.
 - Concrete problem: the native-or-page decision is made in the page (`useNativeMediaPlayback`). The design says its audio kind "accepts only types AVPlayer plays". But the page cannot tell the iOS app from the Android app: `ShellHello` has no platform, and `mediaPlayer` is a plain boolean. That leaves two outcomes, both wrong:
@@ -208,13 +251,45 @@ None beyond AR-001.
 
 ## Classification
 
-`Design Impact` (AR-001).
+N/A (Pass). Round 3: `Design Impact` (AR-002, resolved); round 1: `Design Impact` (AR-001, resolved).
 
 ## Recommended Recipient
 
-Solution Designer (`/solution_designer`).
+Implementation Engineer (`/implementation_engineer`); informational pass notice to the Solution Designer.
 
 ## Residual Risks
+
+- Round 6 (SR-006, DEC-008), verified:
+  - **The surface does not exist.** `FileDisplay.vue` is mounted nowhere: no template use, no Nuxt auto-import name, no dynamic reference. So `getPrismLanguage` has no product reader; SR-001's chat file preview was not a real surface. Removing both, the table's Prism column and the audit list entry is required by Principle 7 (dead code in a touched module), and nothing reachable changes.
+  - **The real chat path is code blocks.** `markdownItPrism` → `highlightService.highlight(code, fence)` looks the fence name up in `Prism.languages`, so the grammar loads and the two aliases Prism lacks (`rs` → rust, `zsh` → bash) belong in the highlighting service, the one owner. `yml`, `sh`, `shell` and `dockerfile` are Prism's own aliases.
+  - **The table** becomes extension/name → Monaco id with one reader (`getMonacoLanguage`). That is tighter than two columns, one of which was unread (Principle 11).
+  - **REQ-004 and AC-004** name the reachable surface (code blocks by language name) with the same intent.
+- N-9 (round 6, non-blocking): `highlightService.ts:28`'s comment still says "Chat file previews … `getPrismLanguage`"; update it to message code blocks.
+
+- Round 5 (SR-005, DEC-007), verified:
+  - **The problem is real.** No category is set anywhere in the iOS app, so the Ring/Silent switch silences the native player.
+  - **The owner is right.** `NativeMediaPlayer`, the player's lifetime owner, sets `.playback`/`.moviePlayback` and activates on present, then deactivates with `.notifyOthersOnDeactivation` on close.
+  - **Scope and verification.** No background mode, so lock and background stay out of scope (REQ-002 as revised). Android is unchanged. The physical-iPhone check is named for what a simulator cannot show.
+- N-7 (round 5, implementation precision): deactivate in the owner's disappearance (`viewDidDisappear`, or the presentation's dismissal callback), not only beside the explicit `dismiss(animated:)` at `NativeMediaPlayer.swift:205`. Then every way the player leaves (an interactive swipe-down, AVKit's own close, the app taking the screen) ends the session. A `setActive(false)` that fails because other audio is still running (`isBusy`) is logged and ignored, like the activation failure.
+- N-8 (round 5, non-blocking): the design deactivates but leaves the category at `.playback` after close. In-page media played later in the WebView (an iOS `.ogg` on the page path) would then also ignore the silent switch, unless WebKit sets its own category, which it may. Either restore the category in effect before present (read it on present, set it back on close), or record that in-page media after a native playback plays under `.playback`. The first keeps the change confined to the player, as DEC-007 intends.
+
+- Round 4 (SR-004), verified:
+  - `useNativeMediaPlayback` takes the type and title from the caller's file name (`modeFor(url, fileName)`, `play(url, fileName)`), and the URL-derived name is removed.
+  - `VideoPlayer`/`AudioPlayer` have a required `fileName`, filled by their only host `FileViewer` from `file.path`, which is `reference.path` in the reference viewer.
+  - `MediaSegment` names its own URLs. Its media URLs are generated-media `/rest/files/<relativePath>` (named by their last segment) or external (page path). 572's absolute paths open through the file viewer, not `MediaSegment`.
+  - The walks (mp4 and m4a references, a workspace file, chat media, an `.ogg` on iOS) hold.
+  - N-6 (non-blocking): `MediaSegment.vue:37` shows `mediaTitleOf(url)` as the tile's label. When the URL-derived helper is removed, the label should use the same name `MediaSegment` passes to `play`, so the label and the native title agree.
+
+- Round 3, otherwise verified:
+  - **The probe** (`Range: bytes=0-0`, `no-store`) keeps today's `REFERENCE_NOT_FOUND`/404 handling at one byte, against D-1's ranged route.
+  - **The desktop** hands the URL to the element (`useAuthorizedObjectUrl`: "else the URL itself"), so it streams by range.
+  - **Text, PDF and image** keep their whole read.
+  - **C-2:** the iOS audio overlay (symbol and file name) over AVKit's standard auto-hide is sound. Its title should come from AR-002's file name, not the URL.
+- Correction of my round-2 note N-4: "take the extension from the file path the URL names" holds only for URLs that name a file. A reference URL does not; AR-002 replaces the rule with an explicit name.
+
+- Round 2: N-1 (the split rule uses the tree minimum; in split the tree is `min(treeWidth, width − 401)`), N-2 (rule 12 for `project.yml`/Gradle) and N-3 (Monaco `shell`) are adopted in SR-002.
+- N-4 (round 2, implementation precision): the composable's extension check must read the file's name, not the URL path. For workspace content URLs the file is in the `path` query (`…/content?path=notes%2Fmemo.m4a`), and for `static/*` and node-file routes it is in the path or the `path` query. Take the extension from the file path the URL names, lowercase. A URL whose file has no extension takes the page path.
+- N-5 (round 2, recorded): `.webm` video on iOS now takes the page path, where 574 sent it to AVPlayer, which cannot play it. That changes 574's video behavior for that one type, which the Preserved list covers in general. It corrects a broken path, so the outcome is acceptable; note it in the implementation handoff and the iOS docs.
 
 - N-1 (non-blocking, D-3 precision): "split when `width ≥ treeWidth + 1 + 400`". State which tree width: the current, possibly dragged, width or the minimum (150).
   - With the current width, shrinking a 700 px panel to 600 px with a 250 px tree switches to stacked. Clamping the tree to 199 px would still give a 400 px viewer.
@@ -224,6 +299,15 @@ Solution Designer (`/solution_designer`).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 6, SR-006)
+- Round 6 notes: DEC-008 removes the unreachable `FileDisplay.vue` and `getPrismLanguage` with the table's Prism column (Principle 7), keeps the Prism grammars for message code blocks with the `rs`/`zsh` aliases in the highlighting service, and retargets AC-004 to the reachable surface. N-9 (a stale comment) is non-blocking.
+- Round 5 decision: `Pass` (SR-005)
+- Round 5 notes: DEC-007's audio session belongs to the player's lifetime owner, is scoped to the player being open, adds no background mode, and is verified on the test host plus the physical-iPhone check. N-7 (deactivate on every close path) and N-8 (restore the prior category) are implementation notes.
+- Round 4 decision: `Pass` (SR-004)
+- Round 4 notes: AR-002 resolved. The file name is an explicit input of the native decision, from each caller that owns it (`FileViewer` → players; `MediaSegment` for its own `/rest/files` URLs), and the URL-derived name is removed. With SR-003 (probe, desktop range, unchanged text/PDF/image, iOS C-2), the package is ready for implementation IR-002. N-6 is non-blocking.
+- Round 3 decision: `Fail` (SR-003, AR-002)
+- Round 2 decision: `Pass` (SR-002)
 - Material-Premise Gate: `Pass` (no added premise)
+- Round 2 notes: AR-001 is resolved with `hello.mediaPlayer: { video, audio }` extension lists written by each app and read by `useNativeMediaPlayback`, with REQ-002 revised to match. N-1…N-3 are adopted. N-4 (read the extension from the file path the URL names) and N-5 (the `.webm` correction) are notes. Classification Large / High.
+- Round 1 decision: `Fail`
 - Notes: D-1 (ranged references), D-3 (split by the layout's own width, one owner) and D-4 (one table, two engine names) pass. D-2's rename is clean, since 574 is unreleased (verified). Only the per-app audio format input is missing from the bridge contract.
