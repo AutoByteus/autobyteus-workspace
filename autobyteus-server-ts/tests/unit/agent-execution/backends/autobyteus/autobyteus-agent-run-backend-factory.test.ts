@@ -5,7 +5,7 @@ import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NATIVE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../src/agent-execution/prompt/long-running-command-sections.js";
+import { FILE_AND_DIRECTORY_PRACTICE_SECTION } from "../../../../../src/agent-execution/prompt/carpenter-prompt-sections.js";
 import { onTestFinished } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
@@ -370,8 +370,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
-    // autobyteus-483 AC-011: the native Long-Running Commands section ends the prompt.
-    expect(built.agentConfig.systemPrompt.endsWith(`\n\n${NATIVE_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+    // autobyteus-649 AC-001: no Long-Running Commands section; File And Directory Practice ends the Carpenter prompt.
+    expect(built.agentConfig.systemPrompt).toContain(`\n\n${FILE_AND_DIRECTORY_PRACTICE_SECTION}`);
+    expect(built.agentConfig.systemPrompt).not.toContain("Long-Running Commands");
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Addressing");
     expect(built.agentConfig.systemPrompt).toContain("## Working With Other Agents");

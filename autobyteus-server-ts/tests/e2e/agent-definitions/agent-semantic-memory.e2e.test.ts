@@ -136,18 +136,16 @@ describe("Semantic memory for every agent at the real server boundary", () => {
     return found!;
   };
   /**
-   * The composed prompt up to the runtime's Long-Running Commands section, which ends every composed prompt
-   * (autobyteus-483); the AGY capsule's own Working Environment block follows it and is cut here.
+   * The composed prompt, which ends with the semantic memory sections; the AGY capsule's own Working Environment block
+   * follows it and is cut here. No Long-Running Commands section (autobyteus-649).
    */
   const composedOf = async (agentRunId: string) => {
     const prompt = await h.promptOf(agentRunId);
     const capsuleBlock = prompt.lastIndexOf("\n\n## Working Environment\n- Agent workspace: `");
     expect(capsuleBlock, `capsule block of ${agentRunId}`).toBeGreaterThan(0);
     const composed = prompt.slice(0, capsuleBlock);
-    const longRunning = composed.lastIndexOf("\n\n## Long-Running Commands\n");
-    expect(longRunning, `Long-Running Commands section of ${agentRunId}`).toBeGreaterThan(0);
-    expect(composed.indexOf("\n## ", longRunning + 2), `nothing after the Long-Running Commands section of ${agentRunId}`).toBe(-1);
-    return composed.slice(0, longRunning);
+    expect(composed, `prompt of ${agentRunId}`).not.toContain("Long-Running Commands");
+    return composed;
   };
   const update = async (input: Rec) => (await h.graphql(docs.UpdateAgentDefinition!, { input })).updateAgentDefinition as Rec;
   const formInput = (loaded: Rec, edits: Rec = {}) => ({ id: loaded.id, name: loaded.name, role: loaded.role, description: loaded.description,

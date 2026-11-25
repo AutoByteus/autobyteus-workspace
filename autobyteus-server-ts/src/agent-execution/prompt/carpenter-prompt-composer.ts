@@ -13,9 +13,8 @@ import {
   renderTeamInstructionSection,
   renderWorkingEnvironmentSection,
 } from "./carpenter-prompt-sections.js";
-import { NATIVE_LONG_RUNNING_COMMAND_SECTION } from "./long-running-command-sections.js";
 
-type CarpenterPromptComposerInput = {
+export type SharedCarpenterPromptComposerInput = {
   agentDefinition: AgentDefinition;
   memberExecutionContext?: MemberExecutionContext | null;
   /** The Project the run was started under; its section is omitted when there is none. */
@@ -34,12 +33,7 @@ const absoluteFolderOrNull = (folder: string | null): string | null => {
   return folder;
 };
 
-export type SharedCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
-  /** The runtime's "Long-Running Commands" section (`long-running-command-sections.ts`); placed last. */
-  longRunningCommandSection: string;
-};
-
-export type NativeCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
+export type NativeCarpenterPromptComposerInput = SharedCarpenterPromptComposerInput & {
   workspaceRootPath: string;
 };
 
@@ -50,7 +44,7 @@ const assertNoUnresolvedPlaceholders = (prompt: string): void => {
 };
 
 const buildSharedCarpenterPromptSections = (
-  input: CarpenterPromptComposerInput,
+  input: SharedCarpenterPromptComposerInput,
 ): string[] => {
   if (!input.agentDefinition) {
     throw new Error("Agent definition is required to compose the carpenter prompt.");
@@ -80,13 +74,7 @@ const finalizeCarpenterPrompt = (sections: string[]): string => {
 
 export const composeSharedCarpenterPrompt = (
   input: SharedCarpenterPromptComposerInput,
-): string => {
-  const longRunningCommandSection = input.longRunningCommandSection?.trim() ?? "";
-  if (!longRunningCommandSection) {
-    throw new Error("The runtime's long-running command section is required to compose the carpenter prompt.");
-  }
-  return finalizeCarpenterPrompt([...buildSharedCarpenterPromptSections(input), longRunningCommandSection]);
-};
+): string => finalizeCarpenterPrompt(buildSharedCarpenterPromptSections(input));
 
 export const composeNativeAutoByteusPrompt = (
   input: NativeCarpenterPromptComposerInput,
@@ -101,6 +89,5 @@ export const composeNativeAutoByteusPrompt = (
     renderWorkingEnvironmentSection(workspaceRootPath),
     BASH_OPERATING_PRACTICE_SECTION,
     FILE_AND_DIRECTORY_PRACTICE_SECTION,
-    NATIVE_LONG_RUNNING_COMMAND_SECTION,
   ]);
 };

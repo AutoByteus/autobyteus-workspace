@@ -5,7 +5,6 @@ import {
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { renderCollaborationSections } from "../../../../src/agent-execution/prompt/collaboration-prompt-sections.js";
-import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import {
   MemberCollaborationContext,
   MemberExecutionContext,
@@ -62,12 +61,10 @@ const VIEWS: ReadonlyArray<readonly [string, Parameters<typeof context>[0]]> = [
   ["direct agent of an organization", { role: "org_agent", rootKind: "agent_org", address: "/project_task_manager", teamInstruction: "Org rules.", handoffs: true }],
 ];
 
-type PromptInput = Omit<Parameters<typeof composeSharedCarpenterPrompt>[0], "longRunningCommandSection">;
-const composeShared = (input: PromptInput) =>
-  composeSharedCarpenterPrompt({ ...input, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION });
+type PromptInput = Parameters<typeof composeSharedCarpenterPrompt>[0];
 
 describe.each([
-  ["shared (Codex, Claude, ACP, AGY)", composeShared],
+  ["shared (Codex, Claude, ACP, AGY)", composeSharedCarpenterPrompt],
   ["native AutoByteus", (input: PromptInput) =>
     composeNativeAutoByteusPrompt({ ...input, workspaceRootPath: "/tmp/workspace" })],
 ] as const)("collaboration prompt on the %s path", (_path, compose) => {
@@ -90,7 +87,7 @@ describe("collaboration prompt properties", () => {
   });
 
   it.each(VIEWS)("never states the agent's own address, nor uses a word the agent should not read (%s)", (_label, input) => {
-    const prompt = composeShared({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(input) });
+    const prompt = composeSharedCarpenterPrompt({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(input) });
     expect(prompt).not.toContain(input.address);
     expect(prompt).not.toMatch(/\b(your address|Your Agent address)\b/i);
     expect(renderCollaborationSections(context(input))).not.toMatch(/(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/);
@@ -128,7 +125,7 @@ describe("collaboration prompt properties", () => {
   });
 
   it("keeps the authored Team Instruction whenever the agent has one, before the collaboration sections", () => {
-    const prompt = composeShared({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
+    const prompt = composeSharedCarpenterPrompt({ semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
     expect(prompt.indexOf("## Team Instruction")).toBeGreaterThan(prompt.indexOf("## Agent Identity"));
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## Working With Other Agents"));
   });

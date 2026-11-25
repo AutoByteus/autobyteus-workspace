@@ -131,9 +131,10 @@ describe("AcpAgentRunBackendFactory", () => {
     const created = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir, storedKey } });
     backends.push(await created.factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare() as AcpAgentRunBackend);
     const rules = created.recorded().find((message) => message.method === "session/new").params._meta.rules as string;
-    // The sections follow every shared section; only the agent's Long-Running Commands section comes after them (autobyteus-483).
+    // The sections follow every shared section and end the rules; no Long-Running Commands section (autobyteus-649 AC-001).
     expect(rules).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${globalFolder}\`.`);
-    expect(rules.endsWith(`keep what only you need in your own semantic memory.\n\n${grokBuildSessionProfile.longRunningCommandSection}`)).toBe(true);
+    expect(rules.endsWith("keep what only you need in your own semantic memory.")).toBe(true);
+    expect(rules).not.toContain("Long-Running Commands");
     expect(fs.statSync(folder).isDirectory()).toBe(true);
     expect(fs.statSync(globalFolder).isDirectory()).toBe(true);
   });

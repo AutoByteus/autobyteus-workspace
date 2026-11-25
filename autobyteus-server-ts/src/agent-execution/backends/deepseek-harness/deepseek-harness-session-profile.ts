@@ -10,7 +10,6 @@ import type {
 import { buildDeepSeekHarnessCompactionStatusPayload } from "./deepseek-harness-compaction-status-payload.js";
 import { interpretDeepSeekHarnessProviderCall } from "./deepseek-harness-provider-calls.js";
 import { projectDeepSeekHarnessToolCall } from "./deepseek-harness-tool-projection.js";
-import { GENERIC_LONG_RUNNING_COMMAND_SECTION } from "../../prompt/long-running-command-sections.js";
 
 /**
  * The run's model and effort as dsh's standard config options, model first (the efforts belong to the model). A model
@@ -36,8 +35,6 @@ export const deepSeekHarnessConfigSelection = (
  * relay's reports of dsh's model calls (dsh sends no extension notifications).
  */
 export const deepSeekHarnessSessionProfile: AcpAgentSessionProfile = Object.freeze({
-  longRunningCommandSection: GENERIC_LONG_RUNNING_COMMAND_SECTION,
-
   newSessionMeta: () => undefined,
 
   mcpServers: (descriptor: AgentToolMcpDescriptor): McpServer[] => [

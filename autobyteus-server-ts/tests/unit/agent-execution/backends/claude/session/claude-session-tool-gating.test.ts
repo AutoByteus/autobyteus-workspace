@@ -11,7 +11,6 @@ import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-ki
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
 import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
-import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
@@ -92,7 +91,6 @@ const createSession = (requestedToolNames: string[] = [], input: {
     runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
         semanticMemoryPath: "/memory/semantic/agent-1", globalSemanticMemoryPath: "/memory/semantic-global",
-        longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
         agentDefinition: new AgentDefinition({
           name: "Test agent",
           description: "Tests Claude tooling.",

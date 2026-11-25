@@ -965,9 +965,7 @@ AutoByteus changes none of their limits: Codex, Grok, Antigravity (daemon and
 non-daemon) and the native runtime each ran a 35-minute background command to
 completion in the live check
 (`tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts`, gate
-`RUN_LONG_COMMAND_LIMITS_E2E`). Each runtime's system prompt teaches the long-job
-habit in its own tools' terms (see
-[Prompt Engineering](./prompt_engineering.md#long-running-commands-section)). An
+`RUN_LONG_COMMAND_LIMITS_E2E`). An
 operator's other environment passes through unchanged. If the server environment
 sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, Claude agents cannot run background
 commands, and a warning is logged at each process open. Unset it (and any
