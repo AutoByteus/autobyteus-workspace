@@ -25,7 +25,8 @@ import 'prismjs/components/prism-php';
 // Other languages
 import 'prismjs/components/prism-json';
 
-// Chat file previews of these types (autobyteus-642 D-4; `getPrismLanguage`); go and java depend on clike
+// Message code blocks of these languages (autobyteus-642 SR-006: `markdownItPrism` hands a fence's name here); go and
+// java depend on clike
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-toml';
 import 'prismjs/components/prism-bash';
@@ -34,6 +35,10 @@ import 'prismjs/components/prism-rust';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-ini';
 import 'prismjs/components/prism-docker';
+
+// Fence names these grammars do not register themselves (they do register yml, sh, shell and dockerfile).
+Prism.languages.rs = Prism.languages.rust;
+Prism.languages.zsh = Prism.languages.bash;
 
 /**
  * Service for code syntax highlighting using Prism.js
@@ -78,44 +83,6 @@ class HighlightService {
     this.manageCacheSize();
     
     return highlighted;
-  }
-
-  /**
-   * Highlight Vue single-file component code
-   * @param code The Vue component code
-   * @returns Highlighted HTML string
-   */
-  public highlightVue(code: string): string {
-    // Split Vue code into sections
-    const templateMatch = code.match(/<template>([\s\S]*?)<\/template>/);
-    const scriptMatch = code.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-    const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-
-    // Highlight each section separately
-    const templateCode = templateMatch 
-      ? this.highlight(templateMatch[1].trim(), 'markup')
-      : '';
-    const scriptCode = scriptMatch 
-      ? this.highlight(scriptMatch[1].trim(), 'typescript')
-      : '';
-    const styleCode = styleMatch 
-      ? this.highlight(styleMatch[1].trim(), 'css')
-      : '';
-
-    // Combine highlighted sections
-    return `
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
-${templateCode}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ts<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-${scriptCode}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span>
-${styleCode}
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
-    `.trim();
   }
 
   /**
