@@ -173,7 +173,7 @@ reads even if a bridge exists. A path of a run on another node shows "This file
 is on <node>, where this run runs." and opens nothing.
 `AgentEventMonitor` shows that status line (`filePreviewStatus`, a polite live
 region) in its own block, so a read-only conversation (a finished run, the
-phone's read-only run screen) shows the same text with no composer.
+phone's read-only run screen) shows the same text with no composer. The line clears when the shown run changes (`AgentEventMonitor` watches `effectiveRunId`, autobyteus-647 D-6): the monitor is reused across runs, and a message about one run's file does not stay on another.
 
 For embedded Electron binary previews, the action path uses the shared
 `local-file://local/<encoded-absolute-path>` codec and trusted default-session
@@ -203,11 +203,15 @@ unregistered icon name.
 
 ## Text And Code Wrapping
 
-Text and code files open in `MonacoEditor.vue` with word wrap on (autobyteus-618), on the phone and on the desktop, so a long line never runs past the editor's edge. A wrapped row keeps the indentation of its line, and line numbers appear once per line. A caller's value still wins: `wordWrap` as a prop or in `options`. With none, the editor's context-menu action "Toggle Word Wrap" turns wrap off and on again for that editor; the choice is not remembered between files. Editing, saving, line numbers and highlighting do not depend on it. The one user of `MonacoEditor.vue` is `FileViewer`, so the Files tab, the phone Files screen and the reference and artifact viewers share the default.
+Text and code files open in `MonacoEditor.vue` with word wrap on (autobyteus-618), on the phone and on the desktop, so a long line never runs past the editor's edge. A wrapped row keeps the indentation of its line. The editor shows no line numbers, folding column or glyph margin: only a 6 px margin before the text, so the content takes the width (autobyteus-647 D-1; `lineNumbers: 'off'`, `folding: false`, `glyphMargin: false`, `lineDecorationsWidth: 6`). A caller's `options` override these defaults. For wrap, a caller's value still wins too: `wordWrap` as a prop or in `options`. With none, the editor's context-menu action "Toggle Word Wrap" turns wrap off and on again for that editor; the choice is not remembered between files. Editing, saving and highlighting do not depend on it. The one user of `MonacoEditor.vue` is `FileViewer`, so the Files tab, the phone Files screen and the reference and artifact viewers share the default.
 
 ## Highlighted File Types
 
 The file viewer's language comes from one table, `utils/highlighting/languageDetector.ts` (`HIGHLIGHTED_FILE_TYPES`, autobyteus-642): a file matches by its whole name (`Dockerfile`) first, then by its extension, and a type that is not in the table opens as plain text. It highlights Python, TypeScript, JavaScript, Vue and HTML, PHP, Ruby, CSS, JSON and Markdown, and YAML (`yaml`, `yml`), TOML, shell (`sh`, `bash`, `zsh`), Go, Rust, Java, XML, INI and Dockerfile. The table names Monaco's languages, which has no TOML (its `ini` grammar is the closest) and no Vue (`html`). A message's code blocks use a different engine and vocabulary: PrismJS, by the fence's own language name (`services/highlightService.ts` registers the grammars; it adds `rs` for `rust` and `zsh` for `bash`, and Prism's own `yml`, `sh`, `shell` and `dockerfile`), so a new language needs its Monaco name in the table for the file viewer and its Prism grammar in the service for chat. No component outside these two readers maps a file type to a language: `FileDisplay.vue`, which once did, was mounted nowhere and was removed.
+
+## PDF Worker
+
+`PdfViewer.vue` loads every PDF through one shared pdf.js worker (autobyteus-647 D-5, DEC-002): `utils/pdf/sharedPdfWorker.ts` makes one inline module worker (a Vite `?worker&inline` import of `pdfjs-dist`'s worker script, its blob created once, so it also works in the packaged `file://` window) and one pdf.js `PDFWorker` wrapper on it, and each document is loaded as `{ url, worker }`. A loading task given a worker does not own it, so closing one PDF cannot destroy the worker the next one needs, and opening PDFs repeatedly creates no new worker blob (one `text/javascript` blob per session; before, one per document). The viewer imports `vue-pdf-embed/dist/index.essential.mjs`, whose own bundled pdf.js (4.10.38) is the one whose classes `getDocument` accepts, so `pdfjs-dist` is a direct dependency of the web at that same version (`autobyteus-web/package.json`; a different version would add a second pdf.js copy), and the wrapper is built from the essential build's `PDFWorker` on `globalThis.pdfjsLib`, not from `pdfjs-dist`'s. `GlobalWorkerOptions` stays unset, so a document loaded without the shared worker fails loudly instead of taking one over. A library upgrade that stops putting `PDFWorker` on `globalThis.pdfjsLib` fails with `PdfJsWorkerUnavailableError`.
 
 ## App-Wide Readability / Display Settings
 
