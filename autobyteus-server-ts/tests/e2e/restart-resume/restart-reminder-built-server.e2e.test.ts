@@ -11,7 +11,8 @@
  *   RR-01  graceful restart: a native run idle on a running `run_bash(run_in_background)` is in the live record within
  *          the 2 s check, without `shutdownAt`; the stop adds `shutdownAt`; the next start makes it a pending reminder,
  *          wakes nothing, and the run's next input carries "reason: a restart" once. An idle run without a background
- *          task is never recorded or reminded (AC-001, REQ-001..003, REQ-005)
+ *          task is never recorded or reminded (AC-001, REQ-001..003, REQ-005). Since autobyteus-638 (AC-005) both runs
+ *          are running again, idle, before any input: the restore brings them back without waking either
  *   RR-02  forced kill: the record has no `shutdownAt`; the next input carries "an unexpected stop" (AC-001)
  *   RR-03  update: the run is woken without any input, with "an update to v<this release>"; its next input carries
  *          nothing (AC-001, REQ-003)
@@ -284,6 +285,8 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(created.success, created.message).toBe(true);
     return created.runId as string;
   };
+  const isActive = async (session: Session, runId: string) =>
+    (await session.gql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: runId })).getAgentRunResumeConfig.isActive === true;
   const restore = async (session: Session, runId: string) => {
     const restored = (await session.gql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`, { id: runId })).restoreAgentRun;
     expect(restored.success, restored.message).toBe(true);
@@ -338,6 +341,9 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     const afterTake = { busyRuns: await readJson(node.busyRuns), reminders: await readJson(node.reminders) };
     await wait(8_000);
     const requestsBeforeInput = model.of("RR-01").length;
+    // autobyteus-638 (AC-005): both runs a person started that were running at the stop are running again, idle, before
+    // any input; the restore woke nothing (the request count above), and the reminder still rides the next input.
+    const runningBeforeInput = { busy: await isActive(session, runId), quiet: await isActive(session, quietRunId) };
 
     await restore(session, runId);
     const next = await channelOf(session, runId);
@@ -361,7 +367,7 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     const traceFile = execFileSync("find", [node.root, "-path", `*${runId}/raw_traces_active.jsonl`], { encoding: "utf8" }).trim().split("\n")[0] ?? "";
     const traces = traceFile ? (await fs.readFile(traceFile, "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line) as Json)
       .map((trace) => ({ turnId: trace.turn_id ?? null, type: trace.trace_type ?? null, content: String(trace.content ?? "").slice(0, 60) })) : [];
-    await record("RR-01", { runId, quietRunId, live, liveRecord, recordedAfterMs, liveAfterQuiet, stopped, leftAfterStop, afterTake, requestsBeforeInput,
+    await record("RR-01", { runId, quietRunId, live, liveRecord, recordedAfterMs, liveAfterQuiet, stopped, leftAfterStop, afterTake, requestsBeforeInput, runningBeforeInput,
       systemNotice, remindersAfter, conversation, traces, requests: digest("RR-01"), control: digest("RR-01C") });
     next.close(); quietNext.close(); channel.close(); quiet.close();
     await node.stop(session, "SIGTERM");
@@ -378,6 +384,7 @@ describe.skipIf(!ENABLED)("Restart reminder across real restarts of the built se
     expect(afterTake.busyRuns).toBeNull();
     expect(afterTake.reminders?.reminders).toEqual([expect.objectContaining({ agentRunId: runId, cause: "restart", interruptedTurn: false })]);
     expect(requestsBeforeInput).toBe(2);
+    expect(runningBeforeInput, "autobyteus-638: both runs running again, idle, before any input").toEqual({ busy: true, quiet: true });
     // The next input carries the reminder once.
     expect(reminded.lastUser).toContain(HEADER);
     expect(reminded.lastUser).toMatch(/The application restarted at \d{4}-\d\d-\d\d \d\d:\d\d UTC \(reason: a restart\)\./);

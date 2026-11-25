@@ -1,0 +1,35 @@
+# API-03 external runtimes across a real restart of the built server: tests/e2e/restart-resume/running-runs-external-runtimes.e2e.test.ts (new)
+# 2026-11-24T21:00:00Z; code ae1e36cded; tests as edited in this round; Node 22.23.1; macOS 26
+## AGY (scripted): env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs agy-failure-cli.mjs> … vitest run …external-runtimes…
+## runs 1-2: test-side (the fixture's default case answers with a failure: AGY_FAKE_CASE=linked_skills, as other suites; the scripted reply is 'OK', not 'REPLY:')
+ ✓ tests/e2e/restart-resume/running-runs-external-runtimes.e2e.test.ts (6 tests | 4 skipped) 18877ms
+     ✓ RUN-X-AGY-TERM: graceful restart  9050ms
+     ✓ RUN-X-AGY-KILL: kill  7765ms
+      Tests  2 passed | 4 skipped (6)
+EXIT 0
+## Claude (paid, haiku, vault key to the CLI child only): RUN_CLAUDE_E2E=1 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault …
+ ✓ tests/e2e/restart-resume/running-runs-external-runtimes.e2e.test.ts (6 tests | 4 skipped) 26268ms
+     ✓ RUN-X-CLAUDE-TERM: graceful restart  11017ms
+     ✓ RUN-X-CLAUDE-KILL: kill  10292ms
+      Tests  2 passed | 4 skipped (6)
+EXIT 0
+# anthropic key pattern matches in the full log: 0
+## Codex (RUN_CODEX_E2E=1, throwaway CODEX_HOME linked to the host login): the inference cases could not run
+     × RUN-X-CODEX-TERM: graceful restart 3936ms
+     × RUN-X-CODEX-KILL: kill 3523ms
+      Tests  2 failed | 4 skipped (6)
+EXIT 1
+You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 27th, 2026 7:43 AM.
+## Codex without inference (-t READY): a run started and not yet messaged
+ ✓ tests/e2e/restart-resume/running-runs-external-runtimes.e2e.test.ts (8 tests | 6 skipped) 18603ms
+     ✓ RUN-X-CODEX-READY-TERM: graceful restart of a run not yet messaged (no inference)  7597ms
+     ✓ RUN-X-CODEX-READY-KILL: kill, the same  7692ms
+      Tests  2 passed | 6 skipped (8)
+EXIT 0
+## per case (summary, the restore posted nothing / no model call, the same session, the answer)
+RUN-X-AGY-KILL | Running runs after the restart: 2 brought back, 0 skipped, 0 failed | unchanged: true | same session: true | answer: "OK"
+RUN-X-AGY-TERM | Running runs after the restart: 1 brought back, 0 skipped, 0 failed | unchanged: true | same session: true | answer: "OK"
+RUN-X-CLAUDE-KILL | Running runs after the restart: 2 brought back, 0 skipped, 0 failed | unchanged: true | same session: true | answer: "ORCHID-602969"
+RUN-X-CLAUDE-TERM | Running runs after the restart: 1 brought back, 0 skipped, 0 failed | unchanged: true | same session: true | answer: "ORCHID-D04EA2"
+RUN-X-CODEX-READY-KILL | Running runs after the restart: 2 brought back, 0 skipped, 0 failed | unchanged: false | same session: false | answer: ""
+RUN-X-CODEX-READY-TERM | Running runs after the restart: 1 brought back, 0 skipped, 0 failed | unchanged: false | same session: false | answer: ""

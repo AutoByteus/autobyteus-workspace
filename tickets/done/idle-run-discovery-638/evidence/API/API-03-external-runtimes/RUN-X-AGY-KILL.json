@@ -1,0 +1,25 @@
+{
+  "caseId": "RUN-X-AGY-KILL",
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "signal": "SIGKILL",
+  "runId": "run_x_agy_kill_f63b2f_f8859449cf964d11b37a40ef5d2f04b5",
+  "first": "OK",
+  "session": "c883128e-63fd-445d-8f55-b8c9b6191c97",
+  "sessionAfter": "c883128e-63fd-445d-8f55-b8c9b6191c97",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_agy_kill_f63b2f_f8859449cf964d11b37a40ef5d2f04b5"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_agy_term_51bc0e_a062f9825c584f34aab887c985579110"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 2 brought back, 0 skipped, 0 failed",
+  "unchanged": true,
+  "answer": "OK"
+}

@@ -25,6 +25,7 @@ const createBackend = (): TeamRunBackend => ({
   reserveDirectAgentInput: vi.fn(),
   deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
   executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
+  ensureDirectAgentReady: vi.fn(async () => ({ runId: "coordinator-run-1" }) as never),
   followMembership: vi.fn(),
   prepareTermination: vi.fn(),
   freezeForRootTermination: vi.fn(),
@@ -62,6 +63,15 @@ describe("TeamRun", () => {
 
     await expect(run.executeDirectAgentCommand("coordinator-run-1", command)).resolves.toEqual({ accepted: true });
     expect(backend.executeDirectAgentCommand).toHaveBeenCalledWith("coordinator-run-1", command);
+  });
+
+  it("makes the exact direct AgentRun ready through the backend, without input (autobyteus-638)", async () => {
+    const backend = createBackend();
+    const run = createRun(backend);
+
+    await expect(run.ensureDirectAgentReady("coordinator-run-1")).resolves.toEqual({ runId: "coordinator-run-1" });
+    expect(backend.ensureDirectAgentReady).toHaveBeenCalledWith("coordinator-run-1");
+    expect(backend.deliverToDirectAgent).not.toHaveBeenCalled();
   });
 
   it("keeps status and open work at the one local backend boundary", async () => {

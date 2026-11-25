@@ -193,6 +193,7 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
   let applicationRuntime!: Awaited<ReturnType<typeof buildStudioServer>>["applicationRuntime"];
   let restartResumer!: Awaited<ReturnType<typeof buildStudioServer>>["restartResume"]["resumer"];
   let previousSession: Awaited<ReturnType<typeof restartResumer.takePreviousSession>> = null;
+  let runningRunRestorer!: Awaited<ReturnType<typeof buildStudioServer>>["restartResume"]["runningRuns"]["restorer"];
   try {
     shutdown.checkpoint();
     const studioServer = await buildStudioServer({ appConfig: config, loggingConfig,
@@ -205,15 +206,25 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     app = studioServer.fastify;
     applicationRuntime = studioServer.applicationRuntime;
     const { recorder } = studioServer.restartResume;
+    const runningRecorder = studioServer.restartResume.runningRuns.recorder;
     restartResumer = studioServer.restartResume.resumer;
+    runningRunRestorer = studioServer.restartResume.runningRuns.restorer;
     // autobyteus-448: the previous session's record becomes pending restart reminders before this session records
-    // anything; then this session's live record starts, and its final write runs first at shutdown, before the close
-    // interrupts anything. Neither throws.
+    // anything; autobyteus-638: the running runs to bring back are taken too (the file stays until the recorder
+    // rewrites it). Then this session's live records start, and their final writes run first at shutdown, before the
+    // close interrupts anything. None throws.
     previousSession = await restartResumer.takePreviousSession();
+    await runningRunRestorer.take();
     recorder.startSession();
+    runningRecorder.startSession();
     // The process exits after this cleanup: the file watches end without closing their OS watches, which the exit
     // releases (autobyteus-524 FU-007); then the app closes.
-    shutdown.setCleanup(async () => { await recorder.record(); studioServer.stopFileWatchesForProcessExit(); await app.close(); });
+    shutdown.setCleanup(async () => {
+      await recorder.record();
+      await runningRecorder.record();
+      studioServer.stopFileWatchesForProcessExit();
+      await app.close();
+    });
     prismaInitializationStarted = false;
     vaultInitializationStarted = false;
     shutdown.checkpoint();
@@ -236,9 +247,10 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
   }
 
   // After an update restart, the runs that were busy are woken with their reminder (autobyteus-285, autobyteus-448); the
-  // others are told with their next input. In the background: never blocks or fails startup.
+  // others are told with their next input. Then the runs a person started that were running come back idle
+  // (autobyteus-638). In the background: never blocks or fails startup.
   shutdown.checkpoint();
-  void restartResumer.resumeAfterRestart(previousSession);
+  void restartResumer.resumeAfterRestart(previousSession).then(() => runningRunRestorer.restore());
   await shutdown.stage(() => scheduleStudioBackgroundTasks());
   } catch (error) {
     if (error instanceof StartupCancelled || shutdown.requested) return;

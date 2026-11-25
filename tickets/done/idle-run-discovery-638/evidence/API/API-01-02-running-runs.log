@@ -1,0 +1,19 @@
+# API-01/API-02 running-runs-built-server.e2e.test.ts, RUN-01…RUN-04 (RUN-03/04 new: a stop and a kill during the restore)
+# env -i PATH HOME=<fresh temp> TMPDIR USER RUN_RUNNING_RUNS_E2E=1 RUNNING_RUNS_E2E_EVIDENCE_DIR=<dir> pnpm exec vitest run tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts --no-watch
+# 2026-11-24T21:21:24Z; code ae1e36cded; tests as edited in this round
+## RUN-03 alone first:
+ ✓ tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts (4 tests | 3 skipped) 26743ms
+     ✓ RUN-03: a graceful stop during the restore loses no run: the record keeps all seven and the next start brings them back  26720ms
+      Tests  1 passed | 3 skipped (4)
+EXIT 0
+## the whole file:
+ ✓ tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts (4 tests) 71411ms
+     ✓ RUN-01: graceful restart: the idle Agent run and Team come back running, listed and reachable; the stopped run does not  12106ms
+     ✓ RUN-02: forced kill: the same from the live record  11332ms
+     ✓ RUN-03: a graceful stop during the restore loses no run: the record keeps all seven and the next start brings them back  25932ms
+     ✓ RUN-04: a kill during the restore: the same  21973ms
+      Tests  4 passed (4)
+   Duration  71.94s (transform 59ms, setup 59ms, import 41ms, tests 71.41s, environment 0ms)
+EXIT 0
+RUN-03 {"signal":"SIGTERM","restoreDoneWhenStopped":false,"recordAfterInterrupted":7,"summary":"Running runs after the restart: 7 brought back, 0 skipped, 0 failed"}
+RUN-04 {"signal":"SIGKILL","restoreDoneWhenStopped":false,"recordAfterInterrupted":7,"summary":"Running runs after the restart: 7 brought back, 0 skipped, 0 failed"}

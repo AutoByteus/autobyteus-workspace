@@ -1,0 +1,8 @@
+# API-04 Docker node across docker stop/start and docker kill/start: tests/e2e/restart-resume/running-runs-docker-node.e2e.test.ts (new)
+# 2026-11-24T21:00:00Z; code ae1e36cded; tests as edited in this round; Node 22.23.1; macOS 26
+# docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --platform linux/arm64 --output type=local,dest=<folder> . (EXIT 0)
+# RUN_RUNNING_RUNS_DOCKER_E2E=1 RUNNING_RUNS_DOCKER_SERVER_PACKAGE=<folder> pnpm exec vitest run tests/e2e/restart-resume/running-runs-docker-node.e2e.test.ts --no-watch
+# image autobyteus/autobyteus-server:beta (arm64); a test-owned container on 127.0.0.1, fresh anonymous volumes, the package and the scripted AGY mounted read-only; removed with docker rm -f -v (0 left); the user's node containers untouched
+      Tests  1 passed (1)
+   Duration  43.73s (transform 43ms, setup 51ms, import 29ms, tests 43.21s, environment 0ms)
+EXIT 0

@@ -1,0 +1,25 @@
+{
+  "caseId": "RUN-X-CODEX-READY-KILL",
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-6.1-terra",
+  "signal": "SIGKILL",
+  "runId": "run_x_codex_ready_kill_a31e9d_8c2269b136d74aae96ba16191a3001c6",
+  "first": "",
+  "session": "01a20f57-1573-76e2-afde-b0f093ad7f7e",
+  "sessionAfter": "01a20f57-2a12-7191-b39f-31c73128489b",
+  "afterStop": {
+    "runs": [
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_codex_ready_kill_a31e9d_8c2269b136d74aae96ba16191a3001c6"
+      },
+      {
+        "rootSubjectKind": "agent",
+        "rootRunId": "run_x_codex_ready_term_ea83bb_7df71afa96bc4519ac763eadd18e1c6a"
+      }
+    ]
+  },
+  "summary": "Running runs after the restart: 2 brought back, 0 skipped, 0 failed",
+  "unchanged": false,
+  "answer": ""
+}

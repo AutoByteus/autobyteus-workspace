@@ -10,6 +10,8 @@ import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RUN_NOT_ACTIVE, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
@@ -367,6 +369,19 @@ export class RootTeamRun {
         return { accepted: false, code: RUN_NOT_ACTIVE, message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
       }
       return (await this.requireContainingTeamRun(agentRunId)).executeDirectAgentCommand(agentRunId, command);
+    });
+  }
+
+  /**
+   * Makes this member's agent ready (activated or restored) without input, in this run's gate; the live run when it
+   * already runs (autobyteus-638: a restart brings a person's Team back with its coordinator). An unknown member:
+   * RUN_NOT_FOUND. Not called for delegated Teams, so the closed-Task fence does not apply.
+   */
+  ensureAgentReady(agentRunId: string): Promise<AgentRun> {
+    return this.materializationGate.run(async () => {
+      this.assertAdmitting();
+      if (!this.index.getAgent(agentRunId)) throw new CollaborationMemberNotFoundError(`RUN_NOT_FOUND: AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.`);
+      return (await this.requireContainingTeamRun(agentRunId)).ensureDirectAgentReady(agentRunId);
     });
   }
 

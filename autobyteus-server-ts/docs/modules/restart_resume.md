@@ -23,6 +23,9 @@ extending autobyteus-285).
 - **Exactly once**, whichever comes first: the wake or the next input. A run whose Task is closed, or whose root is
   archived, terminated or gone, gets none.
 
+Separately, every run a person started that was **running** at the stop comes back running, idle, without any input
+(autobyteus-638, [Running runs come back](#running-runs-come-back)).
+
 Out of scope: showing the user a run that could not resume (FU-002 of autobyteus-285), a failed Docker trial that
 restores a data copy (FU-003 of autobyteus-285), per-node settings (autobyteus-286), showing an agent with a running
 background task as such (part 2 of autobyteus-448).
@@ -49,8 +52,11 @@ background task as such (part 2 of autobyteus-448).
   the pending reminders and their delivery.
 - `src/restart-resume/restart-notice.ts` — `buildRestartNoticeText(...)` (one text for the wake and the next input) and
   `buildRestartNotice(...)` (the wake's SYSTEM input).
+- `src/restart-resume/running-run-record.ts`, `running-run-recorder.ts`, `running-run-restorer.ts` — the running-run
+  record, its only writer and its restorer (autobyteus-638, below); `concurrency-limiter.ts` — the 3-slot limiter the
+  resumer and the restorer share.
 - `src/compositions/restart-resume-composition.ts` — composes the recorder and resumer around the process's run
-  services. `build-studio-server.ts` creates the reminder service first and passes it to the notice slot
+  services, and the running-run restorer (first) and recorder (with the restorer's `pending`). `build-studio-server.ts` creates the reminder service first and passes it to the notice slot
   (`AgentRunPlatformNotices`: runtime hand-over, then the restart reminder, then tool list, skill and background task
   notices) and to this composition.
 - `src/compositions/collaboration-root-resolver.ts` — `CollaborationRootResolver.resolveOrRestore(root)`, the one
@@ -60,8 +66,10 @@ background task as such (part 2 of autobyteus-448).
 
 ## The startup order (`server-runtime.ts`)
 
-`buildStudioServer` → `takePreviousSession()` → `recorder.startSession()` → cleanup becomes `record(); app.close()` → …
-listen → `recoverAfterListen` → `resumeAfterRestart(previous)` (in the background) → background tasks.
+`buildStudioServer` → `takePreviousSession()` → `runningRunRestorer.take()` → `recorder.startSession()` and
+`runningRunRecorder.startSession()` → cleanup becomes `record(); runningRunRecorder.record(); app.close()` → … listen →
+`recoverAfterListen` → `resumeAfterRestart(previous).then(() => runningRunRestorer.restore())` (in the background) →
+background tasks.
 
 The previous session's record is taken before this session records anything, so it is never overwritten; a start that
 fails before the take leaves it for the next start.
@@ -159,3 +167,49 @@ If you started any background tasks, some may still be running: the application 
   when that input is forwarded. The sender is in memory's recorded set, so the reminder shows live and after a reload.
 - The member handle publishes no `member_input` for a platform notice (a message carrying a platform preface, read
   before the post), so a member's window shows it once, as a system notice.
+
+## Running runs come back
+
+After any restart (an update, Restart server, `docker stop`/start, a crash), every run a person started that was
+running at the stop is running again, idle, with its conversation (autobyteus-638; the founder: "earlier it's idle,
+after restart it's also idle"). No input is posted, so no model call happens; a restart reminder still rides the run's
+next input when it was busy at the stop. Without this, an idle run stayed unloaded, `list_running_agents` did not list
+it and `send_message_to` refused it, so other agents started duplicates.
+
+- **Which runs.** Agent and Team runs a person started (`RunOwnAgentsReader.listingFactsOf(root).startedByPerson`: no
+  `delegatedFrom`, no `containedIn`), whose entry agent runs: an Agent run's agent, a Team run's coordinator, with any
+  live status (`RunningAgents.statusesOf`: `initializing`, `running`, `idle` or `error`; an `error` run comes back like
+  the others and its start is retried). Never Org runs or their units, delegated runs (their own lifecycle), or runs
+  already unloaded before the stop (they come back when their person opens or messages them, as before).
+- **The record.** `<appDataDir>/restart-resume/running-runs.json` = `{ runs: [{ rootSubjectKind, rootRunId }] }`
+  (`agent` or `agent_team`; one entry per root, sorted). `RunningRunRecorder` is its only writer: every 2 s it records
+  `running ∪ pending` (the runs above, plus the runs the restorer has taken and not handled yet), rewriting the file
+  only when the set changed and removing it when the set is empty; its first check always writes or removes, so a stale
+  or invalid file never stays. Whether a person started a root is read once per root while it is live; a check skips
+  its write while such a read is in flight. At a graceful stop its `record()` runs right after the busy-run record's,
+  before the close, and writes the final set after waiting for the reads in flight (at most 1 s; a root left out is
+  logged). After a crash the file is at most 2 s old.
+- **The restore.** `RunningRunRestorer.take()` reads the file at startup, before the recorders start, without
+  removing it; the taken runs are `pending`. After the update wake, `restore()` works through them, at most 3 at a time:
+  history must be `present` (archived, stopped by a person or gone: skipped), a person must have started it, it must
+  not run already (the wake may have restored it); then `CollaborationRootResolver.resolveOrRestore(root)`, history read
+  again (a person's Archive or Stop meanwhile wins: skipped), and the entry agent made ready without input
+  (`StandaloneAgentRunRoot.ensureAgentReady()`; `RootTeamRun.ensureAgentReady(coordinator)`, in the Team's gate). A run
+  leaves `pending` once it is restored, skipped or failed, so a stop or crash during the restore keeps the runs not yet
+  handled in the record for the next start.
+- **Logging.** One line per start, `Running runs after the restart: N brought back, S skipped, F failed`, and one line
+  per skip (`Running run '<kind>:<id>' skipped: <reason>`) or failure (`Running run '<kind>:<id>' was not brought back:
+  <reason>`). A failure never stops the other runs or the server (DESIGN rule 7); a failed run is not tried again at
+  the next start: its person brings it back by opening or messaging it.
+- **Tests.** `tests/unit/restart-resume/running-run-record.test.ts`, `running-run-recorder.test.ts`,
+  `running-run-restorer.test.ts` (including a stop and a crash during the restore),
+  `tests/unit/agent-team-execution/team-root-ensure-agent-ready.test.ts`, and the built-server E2E
+  `tests/e2e/restart-resume/running-runs-built-server.e2e.test.ts` (`RUN_RUNNING_RUNS_E2E=1`: a graceful restart and a
+  kill, each with an Agent run and a Team run, found by `list_running_agents` and reached by `send_message_to`, and a
+  stop and a kill in the middle of the restore). Gated suites with real runtimes and a node:
+  `running-runs-external-runtimes.e2e.test.ts` (scripted Antigravity with `RUN_AGY_FAILURE_E2E=1` and
+  `ANTIGRAVITY_CLI_COMMAND`; the real Claude CLI with `RUN_CLAUDE_E2E=1` and the test vault; Codex with `RUN_CODEX_E2E=1`,
+  whose conversation cases spend inference) and `running-runs-docker-node.e2e.test.ts` (`RUN_RUNNING_RUNS_DOCKER_E2E=1`
+  and `RUNNING_RUNS_DOCKER_SERVER_PACKAGE=<folder>`: a test-owned Docker node after `docker stop`/`start` and
+  `docker kill`/`start`); `restart-reminder-built-server.e2e.test.ts` RR-01 also checks that both runs are running again,
+  idle, before any input.
