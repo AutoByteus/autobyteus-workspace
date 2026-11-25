@@ -1,0 +1,15 @@
+# git log --merges --first-parent v1.5.14..HEAD at 4a25b19dd7, 2026-11-25 (114 commits since v1.5.14)
+28c2509aa2 merge(file-viewer-media-642): audio and message references stream in the phone apps and on the desktop, the file viewer keeps 400 px, more languages are highlighted (autobyteus-642)
+c807d31108 Merge idle-run-discovery-638: a restart keeps a person's running agent and team runs running: after an update, Restart server, docker stop/start or a crash they come back running and idle with their conversations (no input, no model call), so other 
+7cbab1f7c2 merge(phone-video-574): the phone apps play node videos in their own player, by range, with a version cache; file routes answer ranges (autobyteus-574)
+e192ee216e Merge codex/file-viewer-word-wrap-618: text and code files wrap in the file viewer's editor (autobyteus-618)
+
+# direct (non-merge, first-parent) commits since v1.5.14
+4a25b19dd7 docs(file-viewer-media-642): record the finalization (autobyteus-642)
+45d1b4309c docs(delivery): record idle-run-discovery-638 finalization on personal, no release (autobyteus-638, DR-001)
+5c0db3a801 docs(phone-video-574): record the finalization (autobyteus-574)
+6cdd1b7bd4 docs(file-viewer-word-wrap-618): finalization record (autobyteus-618)
+c1147c8917 docs(release-v1.5.14): released and verified (4/4 workflows, 27/27 assets, Latest, iOS 1.5.14 (357), Docker :latest and :beta at system level 2; Codex waived by the founder) (autobyteus-635
+
+# app-data migrations, prisma, docker, workflows, scripts, RELEASE.md changed since v1.5.14 (non-ticket):        0 files (only test files: 1)
+# Codex-named files changed since v1.5.14 (non-ticket): 0
