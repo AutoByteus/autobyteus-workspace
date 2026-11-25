@@ -1,0 +1,47 @@
+# IMP-03 E2E suites that read composed prompts, without live providers
+# commit: 92d9b01ef3 content; load 14-47; 2026-11-25
+# run A: vitest run tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (+ the two AGY files, which failed at
+#        load because ANTIGRAVITY_CLI_COMMAND was not set: "The argument 'file' cannot be empty" - a run-setup mistake)
+# run B (their documented command): env -i PATH HOME TMPDIR RUN_AGY_FAILURE_E2E=1
+#        ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+#        pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts
+#        tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts --no-watch --reporter=verbose
+## run A (configured-skill-on-demand-loading: its 4 tests passed; the native prompt's headings end ... File And Directory Practice, Skills)
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in 
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assis
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new run of an imported agent with a configured skill
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > starts a brand-new team member of an imported agent with a configur
+ FAIL  tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts [ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts ]
+ FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts [ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts ]
+ Test Files  2 failed | 1 passed (3)
+      Tests  4 passed (4)
+   Duration  17.13s (transform 7.56s, setup 103ms, import 1.38s, tests 3.10s, environment 0ms)
+
+## run B (scripted AGY)
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-01 (AC-003, AC-004): every agent has its path; a stored key is read without it and dropp
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-02 (AC-002, AC-003): a package agent's file holding the key reads like any agent's; no p
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > SM-11 (AC-005, AC-006, AC-010, AC-011): the folder view's workspace through the API: read o
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-04 (AC-001, AC-009): a run under Project A is told 
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-05: a run under Project B, the agent as a shared te
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-06: a team-local agent with the same local name has
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-07 (AC-001): an agent whose package file says false
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-10: the Memory page, memory search and memory sync 
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-08 (REQ-010): deleting the agent leaves its semanti
+ ✓ tests/e2e/agent-definitions/agent-semantic-memory.e2e.test.ts > Semantic memory for every agent at the real server boundary > run start paths (scripted AGY CLI) > SM-12 (AC-014, DEC-015): when an agent's folder cannot
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; 
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (w
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the 
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging a running
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team me
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) th
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sen
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself a
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agen
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is r
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M5 Team root: the user mentions a member of the
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M7 C17-02: a run two hops down delegates to an 
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M6 a task agent's in-run set is what it reaches
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Duration  48.22s (transform 7.40s, setup 77ms, import 11.89s, tests 35.69s, environment 0ms)

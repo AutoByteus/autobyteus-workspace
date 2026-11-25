@@ -3,7 +3,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION } from "../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
@@ -125,8 +124,10 @@ describe("AGY backend capability admission and preserved bindings", () => {
     const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
     const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
     expect(markdown).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
-    // autobyteus-483 AC-011: Antigravity's own Long-Running Commands section ends the composed prompt (before the capsule's Working Environment).
-    expect(markdown).toContain(`${ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION}\n\n## Working Environment`);
+    // autobyteus-649 AC-001: no Long-Running Commands section; the global semantic memory section ends the composed
+    // prompt, right before the capsule's Working Environment.
+    expect(markdown).toMatch(/\n## Global Semantic Memory\n\n[^\n]+\n\n## Working Environment\n/);
+    expect(markdown).not.toContain("Long-Running Commands");
     await backend.terminate();
   });
 
