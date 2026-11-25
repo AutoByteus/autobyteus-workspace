@@ -7,23 +7,27 @@ Ticket autobyteus-647 (viewer-polish-647). Worktree `<worktree>` (`autobyteus-wo
 - Upstream review applicability and handoff-rule result: `Medium` / `Low`, direct implementation (no architecture review). The route is API/E2E.
 - Requirements doc: `tickets/in-progress/viewer-polish-647/requirements-doc.md` (REQ-001…REQ-006, AC-001…AC-006).
 - Investigation notes: `tickets/in-progress/viewer-polish-647/investigation-notes.md` (the D-5 premise corrected in SR-002).
-- Solution revision record: `tickets/in-progress/viewer-polish-647/solution-revision-record.md` (SR-001, SR-002).
-- Design spec: `tickets/in-progress/viewer-polish-647/design-spec.md` (D-1…D-6; D-5 revised in SR-002).
-- Triggering rework: my Design Impact DI-001 (IMP-003, first run), resolved as SR-002.
+- Solution revision record: `tickets/in-progress/viewer-polish-647/solution-revision-record.md` (SR-001, SR-002, SR-003).
+- Design spec: `tickets/in-progress/viewer-polish-647/design-spec.md` (D-1…D-6; D-5 revised in SR-002, D-2 in SR-003). REQ-002 and AC-002 restated in SR-003.
+- Triggering rework:
+  - IR-001: my Design Impact DI-001 (IMP-003, first run), resolved as SR-002.
+  - IR-002: API-REV-001 (Fail on AC-002, API-011), the code reviewer's failure-origin review CRR-001 (F-1 Design Impact, F-2 Requirement Gap), resolved as SR-003.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`, with one Design Impact returned and resolved (SR-002) before it finished.
+- Implementation cycle: `Rework` (IR-002, SR-003). IR-001 was the initial round.
 - Implementation revision record: `tickets/in-progress/viewer-polish-647/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
-- Related solution revision IDs: SR-001, SR-002.
-- Related architecture-review, code-review, API/E2E and delivery revision IDs: N/A.
-- Commits: `b3602c4156` (D-1, D-2, D-6), `0b88e1e761` (D-5 as SR-001), `9072eb89c4` (D-5 as SR-002), `da70e7f049` (D-3, D-4), and the docs commit carrying this handoff and the evidence.
+- Current implementation revision ID: `IR-002`.
+- Related solution revision IDs: SR-001, SR-002, SR-003.
+- Related code-review revision IDs: CRR-001 (failure-origin: Design Impact F-1, Requirement Gap F-2).
+- Related API/E2E revision IDs: API-REV-001 (Fail on AC-002).
+- Related architecture-review and delivery revision IDs: N/A.
+- Commits: `b3602c4156` (D-1, D-2, D-6), `0b88e1e761` (D-5 as SR-001), `9072eb89c4` (D-5 as SR-002), `da70e7f049` (D-3, D-4), `812760b2ec` (IR-001 docs); IR-002: `9e33adbf10` (D-2 as SR-003), `9278fca6ff` (MSP-115 to the restated AC-002), and the docs commit carrying this update.
 
 What the change does:
 
 - **D-1, the editor.** `MonacoEditor.vue` creates the editor with no line numbers, glyph margin or folding, and a 6 px decorations margin (`lineNumbers: 'off'`, `lineNumbersMinChars: 0`, `glyphMargin: false`, `folding: false`, `lineDecorationsWidth: 6`), before `...restOptions`. Desktop and phone share the component.
-- **D-2, an empty media reference.** `CollaborationMessageReferenceViewer` treats the probe's `416` with `Content-Range: bytes */0` as an empty file and hands the URL on as for a 206. Any other 416 or error is unchanged.
+- **D-2, an empty media reference (SR-003).** `CollaborationMessageReferenceViewer` treats a `416` to its media probe (`Range: bytes=0-0`) as an empty file. Only an empty file makes `0-0` unsatisfiable. The status alone decides, because the dev desktop cannot read `Content-Range` cross-origin (CRR-001 F-1). It hands the URL on as for a 206, and the media viewer reports that the file cannot be played (F-2, AC-002 restated). A 416 to a fetch with no Range, and every other error, is unchanged.
 - **D-3, iOS's own player screen.** `NativeMediaPlayer.swift`'s screen keeps the playback: the loader, the cache, the audio session, landscape and the failure. Once the item is ready and the screen has finished appearing, it presents `AVPlayerViewController` full screen, with iOS's close button and the file's name as its title (the item's `externalMetadata`). The app's Back bar is gone: Back shows only with "could not be played". When iOS's player closes, by its close button or a swipe down, the screen sees itself appear again and closes too. Landscape for a wide video is asked for once iOS's player shows, through the player's own window scene.
 - **D-4.** The loader's queue is `org.autobyteus.media-loader`.
 - **D-5, one pdf.js worker (SR-002).** `utils/pdf/sharedPdfWorker.ts`'s `getSharedPdfWorker()` makes, once, an inline module worker from `pdfjs-dist`'s worker script (4.10.38) and one `PDFWorker` wrapper on it, from the essential build's own pdf.js (`globalThis.pdfjsLib`). It throws `PdfJsWorkerUnavailableError` if that class is gone. `PdfViewer.vue` imports `vue-pdf-embed/dist/index.essential.mjs` and passes `source` as a computed `{ url, worker }` that changes only with the URL. `GlobalWorkerOptions` stays unset. `pdfjs-dist` 4.10.38 is a direct dependency, one copy (`pnpm why`).
@@ -46,7 +50,7 @@ What the change does:
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | REQ-001 / AC-001 | No line numbers; a 6 px margin; the text uses the width | `components/fileExplorer/MonacoEditor.vue` (create options) | IMP-001 spec (red → green); IMP-004 packaged window: margin 6 px, text 6 px from the edge, 0 line numbers, 0 fold controls |
-| REQ-002 / AC-002 | A zero-byte media reference opens; other 416s and errors unchanged | `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue` (`emptyMedia`) | IMP-001 specs (`bytes */0` opens, `bytes */2048` is an error); IMP-006 iOS: no page error, the app's player opens and says it could not be played |
+| REQ-002 / AC-002 (SR-003) | A zero-byte media reference: no fetch error; the media viewer is reached and reports that it cannot be played; not-found unchanged | `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue` (`emptyMedia = streams && status === 416`) | IMP-008: spec red → green, with an unreadable header; MSP-115 Pass (dev desktop cross-origin and phone page: "This video could not be played." with Retry, deleted still "unavailable"); packaged `file://`: probe 416, viewer could-not-play with Retry. IMP-006 iOS: the app's player says it could not be played |
 | REQ-003 / AC-003 | iOS's player screen with its close and title, no app bar; every close path ends the playback; landscape for wide video | `autobyteus-ios/AutoByteusMobile/Media/NativeMediaPlayer.swift` (`presentPlayerIfReady`, `viewDidAppear`, `applyOrientation`, `titleItem`, `showCouldNotPlay`, teardown in `viewDidDisappear`) | IMP-005 4/4, IMP-006 10/10 and 8/8; screenshots with controls shown; landscape seen in a real frame |
 | REQ-004 / AC-004 | Queue label | `autobyteus-ios/AutoByteusMobileCore/Media/AuthorizedMediaLoader.swift` | Code check; Core 91/91 |
 | REQ-005 / AC-005 | One worker, ≤ 1 JS blob, PDFs render on desktop (packaged) and phone | `utils/pdf/sharedPdfWorker.ts` → `components/fileExplorer/viewers/PdfViewer.vue` (`pdfSource`) | IMP-003 after SR-002: 5 rounds of fresh opens alpha:3 beta:2 gamma:4, 5 switches, 1 worker, 1 JS blob, no errors; IMP-006 phone PDF in WKWebView |
@@ -83,7 +87,17 @@ What the change does:
   - testH walks a swipe down, then iOS's close.
   - testF now checks the empty video (D-2): the app's player screen says it could not be played, and Back closes it.
   - Before this, testF's comment expected a page error, and its page-Back step got past that row only because the row was last.
-- **D-2 on iOS.** AC-002's "the native player opens (apps)" is met: the app's screen opens. A zero-byte file cannot play, so the screen shows its existing could-not-play state with Back.
+- **D-2 on iOS.** AC-002's "the apps show their native screen" is met: the app's screen opens. A zero-byte file cannot play, so the screen shows its existing could-not-play state with Back.
+- **D-2 after SR-003, on each surface (IMP-008):**
+  - Dev desktop (`http://` origin, cross-origin): `Content-Range` is unreadable, as F-1 found.
+  - Packaged `file://` window: every header is readable, so IR-001's header check would have passed there.
+  - Either way the status decides now.
+  - The apps were not run again: SR-003's condition matches wherever IR-001's did (IMP-006).
+- **MSP-115 (API/E2E's case), changed in IR-002 for the restated AC-002:**
+  - It asserts the media viewer's "could not be played" with Retry and no fetch error.
+  - It classifies the phone browser's `net::ERR_REQUEST_RANGE_NOT_SATISFIABLE` on the downloaded `blob:` as that outcome: the empty file reaching the player. It was API-REV-001's one unknown error.
+  - Its waits end on the viewer's answer.
+- **The D-2 spec (IR-002):** the "416 for a file with bytes is still an error" case was removed, since a 416 to the probe now means empty. A new case covers a 416 to a fetch that sent no Range.
 
 ## Known Risks
 
@@ -131,6 +145,10 @@ What the change does:
 | iOS `NativeMediaPlayerUITests` (fake node) | First run 1/4: two D-3 bugs, fixed. Then 4/4 | IMP-005 |
 | iOS real-node classes | 10/10, 8/8 | IMP-006 |
 | Build-only Desktop Release run (run 45584353228, `da70e7f049`) | all five builds success; sign and publish skipped | IMP-007 |
+| IR-002: D-2 spec red → green (unreadable header) | 1 red → collaboration 42 green | IMP-008 |
+| IR-002: whole web suite, typecheck | 810 files, 6264 passed, 2 skipped; typecheck PASS (baseline) | IMP-008 |
+| IR-002: MSP-115 (dev desktop cross-origin, phone page) | Pass, 0 unknown browser errors | IMP-008 |
+| IR-002: packaged `file://` (fresh clone at `9278fca6ff`) | probe 416 → the media viewer's "could not be played" with Retry | IMP-008 |
 | `bash scripts/check_secrets.sh` | PASS | before each push |
 
 Not run:
@@ -140,7 +158,11 @@ Not run:
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Desktop packaged window: the PDFs (`IMP-003/after-sr002-gamma.png`) and the editor without a gutter (`IMP-004/editor-no-gutter.png`).
+- Desktop packaged window:
+  - the PDFs (`IMP-003/after-sr002-gamma.png`);
+  - the editor without a gutter (`IMP-004/editor-no-gutter.png`);
+  - the empty video (`IMP-008/packaged-empty-video.png`).
+- Dev desktop and phone page: the empty and the deleted references (`IMP-008/MSP-115-*.png`).
 - iOS:
   - landscape with iOS's controls and title (`IMP-005/player-landscape-as-seen.png`);
   - the audio screen with its controls (`IMP-005/audio-controls.png`);
@@ -169,3 +191,4 @@ Not run:
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 - The hints above, and API/E2E's own coverage of AC-001…AC-006.
+- AC-002 in the packaged window through an actual message reference. I checked the probe request and the media viewer's answer for an empty video opened from Files; the reference viewer's own path ran on the dev desktop (MSP-115).

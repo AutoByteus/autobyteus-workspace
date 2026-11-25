@@ -20,3 +20,20 @@ Ticket autobyteus-647 (viewer-polish-647).
 - Test files of API/E2E's changed for D-2 and D-3: `NativeMediaRealNodeUITests.swift` and `NativeVideoRealNodeUITests.swift`. The handoff's Important Assumptions lists the changes.
 - Evidence: IMP-001…IMP-007.
 - Route: API/E2E.
+
+## IR-002 (2026-11-25): D-2 decides on the probe's 416 alone (SR-003)
+
+- Trigger:
+  - API-REV-001 failed on AC-002: on the desktop, the empty reference still showed "Failed to fetch reference content (416)" (API-011).
+  - The code reviewer's failure-origin review CRR-001 found F-1, a Design Impact (`Content-Range` is unreadable cross-origin), and F-2, a Requirement Gap (an empty file cannot "show the player").
+  - The Solution Designer resolved both as SR-003.
+- Commits:
+  - `9e33adbf10`: `emptyMedia = streams && status === 416`; the spec gains a 416 with an unreadable header (red on IR-001's code) and a 416 to a fetch with no Range (still an error).
+  - `9278fca6ff`: MSP-115 to the restated AC-002, in API/E2E's file. The handoff lists what changed.
+- Checks:
+  - the spec red → green; the whole web suite; the typecheck;
+  - MSP-115 Pass on the dev desktop (cross-origin) and the phone page;
+  - the packaged `file://` window from a fresh clone at `9278fca6ff`.
+  - Evidence: IMP-008.
+- Found: the packaged `file://` window can read every header, so F-1 applies to the dev desktop's `http://` origin. The status-only rule holds on both.
+- Route: API/E2E.
