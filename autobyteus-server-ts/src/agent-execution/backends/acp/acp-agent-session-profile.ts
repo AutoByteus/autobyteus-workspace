@@ -91,8 +91,6 @@ export type AcpConfigOptionValue = Readonly<{ configId: string; value: string }>
  * suppression, event emission and when effects apply.
  */
 export interface AcpAgentSessionProfile {
-  /** The agent's "Long-Running Commands" system-prompt section, in its own tools' terms (`long-running-command-sections.ts`). */
-  readonly longRunningCommandSection: string;
   newSessionMeta(input: Readonly<{ composedPrompt: string; autoExecuteTools: boolean }>): Record<string, unknown> | undefined;
   mcpServers(descriptor: AgentToolMcpDescriptor): McpServer[];
   /** Readiness the session must observe before activation completes, if the agent reports it. */

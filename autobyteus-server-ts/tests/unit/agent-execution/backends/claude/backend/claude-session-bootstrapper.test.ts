@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it, vi } from "vitest";
-import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
@@ -97,8 +96,10 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.autoExecuteTools).toBe(true);
     expect(runContext.config.memberExecutionContext).toBe(memberExecutionContext);
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
-    // autobyteus-483 AC-011: Claude's own Long-Running Commands section ends the prompt.
-    expect(runContext.runtimeContext.carpenterSystemPrompt.endsWith(`\n\n${CLAUDE_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+    // autobyteus-649 AC-001: no Long-Running Commands section; the global semantic memory section ends the prompt.
+    const prompt = runContext.runtimeContext.carpenterSystemPrompt;
+    expect(prompt.slice(prompt.lastIndexOf("\n\n## ") + 5)).toMatch(/^Global Semantic Memory\n/);
+    expect(prompt).not.toContain("Long-Running Commands");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Working With Other Agents");
     expect(runContext.runtimeContext.carpenterSystemPrompt.split("On receiving a request, follow your own instructions and skills.")).toHaveLength(2);

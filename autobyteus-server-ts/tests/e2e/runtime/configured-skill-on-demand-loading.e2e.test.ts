@@ -304,7 +304,6 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       "## Working Environment",
       "## Bash Operating Practice",
       "## File And Directory Practice",
-      "## Long-Running Commands",
       "## Skills",
     ]);
     expect(noReaderContext.processedSystemPrompt).toContain(

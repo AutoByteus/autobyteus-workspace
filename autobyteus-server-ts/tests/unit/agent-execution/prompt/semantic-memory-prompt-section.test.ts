@@ -8,7 +8,6 @@ import {
   renderGlobalSemanticMemorySection,
   renderSemanticMemorySection,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-sections.js";
-import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 /**
@@ -42,10 +41,6 @@ const operator = () => new AgentDefinition({
 });
 const project = { projectId: "project_abc", name: "Marketing" };
 
-/** The shared composer, as Codex uses it; its "Long-Running Commands" section follows every other one (autobyteus-483). */
-const composeShared = (input: Omit<Parameters<typeof composeSharedCarpenterPrompt>[0], "longRunningCommandSection">) =>
-  composeSharedCarpenterPrompt({ ...input, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION });
-
 const memberContext = () => testMemberExecutionContext({
   rootTeamRunId: "team-run",
   memberAddress: "/computer_use_operator", agentRunId: "run-operator",
@@ -68,11 +63,12 @@ describe("Semantic Memory section (semantic-memory-prompt-contract.md)", () => {
     expect(prompt.split("## Semantic Memory")).toHaveLength(2);
   });
 
-  it("§5.2: team member without a Project (shared composer): the section follows the collaboration sections, with the same folder; only the runtime's Long-Running Commands section comes after it (autobyteus-483)", () => {
-    const prompt = composeShared({
+  it("§5.2: team member without a Project (shared composer): the section follows the collaboration sections, with the same folder, and the global one ends the prompt", () => {
+    const prompt = composeSharedCarpenterPrompt({
       agentDefinition: operator(), memberExecutionContext: memberContext(), project: null, semanticMemoryPath: FOLDER, globalSemanticMemoryPath: GLOBAL,
     });
-    expect(prompt.endsWith(`\n\n${renderSemanticMemorySection(FOLDER)}\n\n${GLOBAL_SECTION}\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+    expect(prompt.endsWith(`\n\n${renderSemanticMemorySection(FOLDER)}\n\n${GLOBAL_SECTION}`)).toBe(true);
+    expect(prompt).not.toContain("Long-Running Commands"); // autobyteus-649
     expect(prompt.split("## Semantic Memory")).toHaveLength(2);
     expect(prompt.split("## Global Semantic Memory")).toHaveLength(2);
     expect(prompt.indexOf("## Working With Other Agents")).toBeLessThan(prompt.indexOf("## Semantic Memory"));
@@ -87,15 +83,15 @@ describe("Semantic Memory section (semantic-memory-prompt-contract.md)", () => {
     expect(renderGlobalSemanticMemorySection(GLOBAL)).toBe(GLOBAL_SECTION);
   });
 
-  it("autobyteus-554: every prompt carries both sections, the global one right after the agent's; on the shared path they sit between the Project section and the Long-Running Commands section", () => {
-    const prompt = composeShared({ agentDefinition: operator(), project, semanticMemoryPath: FOLDER, globalSemanticMemoryPath: GLOBAL });
-    expect(prompt.endsWith(`ask the user before working on another Project.\n\n${renderSemanticMemorySection(FOLDER)}\n\n${GLOBAL_SECTION}\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+  it("autobyteus-554: every prompt carries both sections, the global one right after the agent's; on the shared path they follow the Project section and end the prompt", () => {
+    const prompt = composeSharedCarpenterPrompt({ agentDefinition: operator(), project, semanticMemoryPath: FOLDER, globalSemanticMemoryPath: GLOBAL });
+    expect(prompt.endsWith(`ask the user before working on another Project.\n\n${renderSemanticMemorySection(FOLDER)}\n\n${GLOBAL_SECTION}`)).toBe(true);
   });
 
   it("§6: refuses a relative folder, the agent's or the global one", () => {
     for (const compose of [
-      () => composeShared({ agentDefinition: operator(), semanticMemoryPath: "memory/semantic/computer-use-operator", globalSemanticMemoryPath: GLOBAL }),
-      () => composeShared({ agentDefinition: operator(), semanticMemoryPath: FOLDER, globalSemanticMemoryPath: "memory/semantic-global" }),
+      () => composeSharedCarpenterPrompt({ agentDefinition: operator(), semanticMemoryPath: "memory/semantic/computer-use-operator", globalSemanticMemoryPath: GLOBAL }),
+      () => composeSharedCarpenterPrompt({ agentDefinition: operator(), semanticMemoryPath: FOLDER, globalSemanticMemoryPath: "memory/semantic-global" }),
       () => composeNativeAutoByteusPrompt({
         agentDefinition: operator(), workspaceRootPath: "/tmp/workspace", semanticMemoryPath: "memory/semantic/computer-use-operator",
         globalSemanticMemoryPath: GLOBAL,

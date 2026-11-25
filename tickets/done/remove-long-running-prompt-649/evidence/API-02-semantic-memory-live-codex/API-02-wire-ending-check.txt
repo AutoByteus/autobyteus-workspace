@@ -1,0 +1,3 @@
+SML-WRITE-codex.json thread/start tail == section(folder, globalFolder): True | contains Long-Running Commands: False
+SML-CODEX-TEAM.json thread/start tail == section(folder, globalFolder): True | contains Long-Running Commands: False
+SML-CODEX-TEAM.json thread/start tail == section(folder, globalFolder): True | contains Long-Running Commands: False

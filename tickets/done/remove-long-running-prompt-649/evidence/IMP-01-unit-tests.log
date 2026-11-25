@@ -1,0 +1,20 @@
+# IMP-01 unit tests
+# commit: 92d9b01ef3 content (the only later edit is in an E2E file, IMP-04); node v22.23.1; macOS 26.5.2; 2026-11-25
+# run 1 (before the snapshot update, the changed prompt and backend tests):
+#   vitest run tests/unit/agent-execution/prompt tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts
+#     .../claude/backend/claude-session-bootstrapper.test.ts .../claude/session/claude-session-tool-gating.test.ts
+#     .../codex/backend/codex-thread-bootstrapper.test.ts .../autobyteus/autobyteus-agent-run-backend-factory.test.ts
+#     .../antigravity/agy-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/acp --no-watch
+#   -> only the 20 snapshot cases of collaboration-prompt-sections.test.ts failed (10 shared, 10 native: the section left)
+  Snapshots  20 failed
+ Test Files  1 failed | 16 passed (17)
+      Tests  20 failed | 231 passed (251)
+
+# snapshot: vitest run tests/unit/agent-execution/prompt/collaboration-prompt-sections.test.ts -u -> "Snapshots  20 updated", "Tests  36 passed (36)"
+#   git diff of the .snap: 20 sections removed ("-## Long-Running Commands" x20 and their bullet lines); the 20 "+" lines are
+#   the previous last lines (Global Semantic Memory x10 shared, File And Directory Practice's last bullet x10 native) now
+#   carrying the snapshot's closing quote. No other line changed.
+# run 2: vitest run tests/unit/agent-execution tests/unit/agent-team-execution tests/unit/agent-memory --no-watch
+ Test Files  235 passed | 4 skipped (239)
+      Tests  2334 passed | 6 skipped (2340)
+   Duration  223.29s (transform 9.22s, setup 5.80s, import 97.44s, tests 97.70s, environment 13ms)
