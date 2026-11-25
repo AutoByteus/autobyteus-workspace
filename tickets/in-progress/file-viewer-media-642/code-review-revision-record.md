@@ -10,6 +10,7 @@
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-005), Targeted Delta | Pass | Pass | None |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-005, SR-006), Targeted Delta | Pass | Pass | None |
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-003 (new) |
+| CRR-007 | `code-review-report.md` | Implementation Review, round 7 (IR-006), Targeted Delta | Fail | Pass | CR-003 (resolved) |
 
 ## Revision Entries
 
@@ -217,3 +218,42 @@ None open. CR-001 and CR-002 stay resolved (API-REV-001 confirms both).
   - the zero-byte 416;
   - the iOS Back bar.
   - The test-code review of `8dc9abb9f6` follows a passing round.
+
+### CRR-007: targeted delta review of IR-006 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 7 Delta Verification")
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Targeted Delta Review` of `fe62667935..11ee0b3b20`:
+  - `243d269420`: `AuthorizedMediaLoader.swift`, the comment, and `StubNodeProtocol` plus the read-ahead tests;
+  - `216bc68baf`: `NativeMediaRealNodeUITests.swift`, its slider query.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-006); CR-003
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-006)
+- Current authoritative result: Pass, 9.3 / 10
+- What changed in the review result and why:
+  - The reach is now in time: 0.7 s at the fetch's or the link's measured rate, capped at 1 MB. It meets CRR-006's outcomes 1–3: the corrected M4A seek test, 574's video tests, the request cap, and the new unit cases red on IR-005.
+  - API/E2E's real-node test had moved the volume slider. Its corrected query is accepted here and re-checked in the test review.
+  - My re-run: Core 91 passed.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (CRR-006) | Resolved | IR-006 `243d269420` | IMP-16 (unit cases red on IR-005; the real-node seek at `964624-`; a Core trace showing `951831-` within 0.6 s); my Core re-run, 91 passed |
+| CR-001, CR-002 | Resolved | Resolved | — | Unaffected |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness back to 9.3.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the judgement values (0.7 s, 64 KB);
+  - a cold-start outlier (4.31 s once);
+  - the physical-iPhone check;
+  - C-6;
+  - the zero-byte 416;
+  - the iOS Back bar.

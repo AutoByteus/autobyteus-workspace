@@ -14,7 +14,10 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`. Round 6 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1 (commit `8dc9abb9f6`). Product code is unchanged since IR-005. Re-read: `AuthorizedMediaLoader.advance` (the reach) and `NativeMediaPlayer.viewDidDisappear` (the comment).
+- Current Code Review Revision ID: `CRR-007`. Round 7 is a `Targeted Delta Review` of `fe62667935..11ee0b3b20` (IR-006):
+  - `243d269420`: the loader and the comment;
+  - `216bc68baf`: API/E2E's real-node test, its slider query.
+- Previous: `CRR-006`. Round 6 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1 (commit `8dc9abb9f6`). Product code is unchanged since IR-005. Re-read: `AuthorizedMediaLoader.advance` (the reach) and `NativeMediaPlayer.viewDidDisappear` (the comment).
 - Previous: `CRR-005`. Round 5 is a `Targeted Delta Review` of `e4ce2f000b..0a605d1293`: SR-006 / DEC-008 and IR-005, with the source change in `339b8d0ddb`.
 - Round 4 (CRR-004) was a `Targeted Delta Review` of `190cd51bc3..73c3330c49` (SR-005, IR-004); its entry follows.
 - Previous: `CRR-003`
@@ -63,6 +66,33 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 7 Delta Verification (CRR-007)
+
+**CR-003 is Resolved.**
+
+- **The rule:** a read waits for a running fetch only if the fetch reaches it within `readAheadWait` (0.7 s), capped at `readAheadReach` (1 MB). The cap is also the reach before this link has a known rate. The speed used is, in order:
+  - the fetch's own measured rate, from its bytes and time since its first data, trusted after 64 KB;
+  - else the loader's last measured `linkRate`;
+  - else the cap.
+
+  The `linkRate` fallback keeps a scrub's later points from waiting on a fetch its first point just started.
+- **What this keeps and fixes:**
+  - Small sequential reads are at the stream's position, so they still wait (574 F-4).
+  - A distant seek starts its own fetch on any link, and the idle one stops (unchanged).
+- **The comment:** no longer names a swipe-down.
+- **The test change in API/E2E's `NativeMediaRealNodeUITests`:** `app.sliders.firstMatch` was AVKit's volume slider, so the earlier test never seeked. The query now takes the slider identified "Current position". This is the correct target (TESTING.md Rule 9) and will be re-checked in the test review. It also explains why F-1's real-node evidence read no middle request: the loader bug was confirmed separately by a Core trace (IR-005: about 14 s, nothing from the middle; IR-006: `bytes=951831-` within 0.6 s).
+- **Evidence (IMP-16):**
+  - 3 new unit cases at a 100 KB/s stub; 2 of them red on IR-005, and the within-reach case passing on both, as intended;
+  - Core 91/91;
+  - the AVPlayer test with a 60 s video: 3 requests, 0.75 s;
+  - the corrected real-node M4A test passes (`693716-` during the drag, `964624-` at its end) and is red on IR-005;
+  - 574's scrub and 50 ms real-time tests pass on a fresh stack (13.76 MB delivered against 5.35 MB needed);
+  - the credential stays in the header only.
+- **Re-run by me** on my own simulator (since deleted): Core 91 executed, 0 failures, 1 skipped (the host-video test).
+- **Held for API/E2E:**
+  - 0.7 s and 64 KB are judgement values. A wrong call costs one extra ranged request, or at most a 0.7 s wait.
+  - One cold first run of the AVPlayer test started in 4.31 s, and a rerun gave 1.37 s. Watch AC-002's under-2 s start on a fresh simulator.
 
 ## Round 6 Failure-Origin Finding (CRR-006)
 
@@ -343,6 +373,16 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 7, CRR-007). CR-001, CR-002 and CR-003 are resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.3 / 10.
+- Recommended Recipient: `/api_e2e_engineer`. Rerun:
+  - IOS-C with the corrected scrubber;
+  - the 574 video class on a fresh stack;
+  - AC-002's iOS start on a cold simulator.
+
+  Then the proportional test review of `8dc9abb9f6` and `216bc68baf`.
+- Round 6 result (CRR-006, superseded):
 - Review Decision: `Fail` (round 6, CRR-006). The failure origin is implementation: CR-003, `Local Fix` in the iOS loader's reach.
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Recommended Recipient: `/implementation_engineer`. Then a targeted delta review, then an API/E2E rerun of IOS-C and the 574 video checks.
