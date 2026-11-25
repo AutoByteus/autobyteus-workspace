@@ -1,0 +1,18 @@
+# iOS App Store Connect Release run 45556417580 attempt 1: key lines of the run log (job | line)
+Build And Test iOS App | 2026-11-25T05:55:43.0640650Z Selected Xcode app: /Applications/Xcode_27.2.app
+Build And Test iOS App | 2026-11-25T05:55:43.0648950Z Selected iPhoneOS SDK: 27.2
+Build And Test iOS App | 2026-11-25T05:57:14.1073890Z [ios-icon] all 18 slots match the logo (on #1E3A8A).
+Build And Test iOS App | 2026-11-25T05:58:34.8649130Z The demo answers all 255 compiled operations (handled or listed as unreachable).
+Build And Test iOS App | 2026-11-25T05:58:35.1577250Z   MARKETING_VERSION: 1.5.15
+Build And Test iOS App | 2026-11-25T05:58:35.1577570Z   CURRENT_PROJECT_VERSION: 361
+Build And Test iOS App | 2026-11-25T06:15:15.8496050Z iOS build number: 361
+Archive And Upload To App Store Connect | 2026-11-25T06:27:30.8579620Z Selected Xcode app: /Applications/Xcode_27.2.app
+Archive And Upload To App Store Connect | 2026-11-25T06:27:30.8900200Z Selected iPhoneOS SDK: 27.2
+Archive And Upload To App Store Connect | 2026-11-25T06:30:08.9513590Z The demo answers all 255 compiled operations (handled or listed as unreachable).
+Archive And Upload To App Store Connect | 2026-11-25T06:32:32.4295450Z UPLOAD SUCCEEDED with no errors
+Archive And Upload To App Store Connect | 2026-11-25T06:32:32.4368400Z Delivery UUID: e9c62b95-cfb3-47e4-b550-bc67e0efdf66
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T06:06:10.1640480Z 	 Executed 91 tests, with 1 test skipped and 0 failures (0 unexpected) in 21.886 (39.744) seconds
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T06:06:10.2568190Z Test Suite 'All tests' passed at 2026-11-25 06:05:46.918.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T06:14:55.9259020Z Test Suite 'Selected tests' passed at 2026-11-25 06:14:55.892.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T06:14:55.9260610Z 	 Executed 8 tests, with 0 failures (0 unexpected) in 296.729 (296.759) seconds
+ITMS lines in the iOS log: 0
