@@ -67,3 +67,5 @@ Review note: ARCH-REV-005 passed SR-005 (2026-11-25). The reviewer routed it to 
 - Requirements: REQ-004 and AC-004 now say chat code blocks by language name. The intent (common languages highlighted where the user reads code) is unchanged. DEC-008 by the Solution Designer within the direction; user informed.
 - Design: remove the dead `FileDisplay.vue`, `getPrismLanguage` and the Prism column; keep the grammar loads; add the `rs` and `zsh` aliases.
 - Classification: unchanged, `Large` / `High`. Routing: architecture review, then implementation. API/E2E is told the decision.
+
+Review note: ARCH-REV-006 passed SR-006 (2026-11-25). The reviewer routed it to `/implementation_engineer`. N-9 (the stale comment at `highlightService.ts:28`) is for implementation.
