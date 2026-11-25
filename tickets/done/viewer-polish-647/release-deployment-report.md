@@ -128,3 +128,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape: th
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/viewer-polish-647`: committed (tip `93114ccd77`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/viewer-polish-647` (`694896a154..93114ccd77`, a fast-forward of the tip pushed earlier for the build-only iOS run; the branch had been pushed by implementation up to `adcff4d2b2`, and API/E2E's commits `e931df7eb9` and `890f92bbb7` went up with delivery's first push). Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 16 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `2bdfea0444`, which the ticket branch already contained (merge `694896a154`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/viewer-polish-647` (from `origin/personal` `2bdfea0444`), `git merge --no-ff codex/viewer-polish-647` = `91cb17b06d` (parents `2bdfea0444` and `93114ccd77`; the merged tree equals the ticket branch's tree, `46683aa14c`). Secret Gate on the merged state: `PASS`, 17 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (105 565 tracked files).
+- Push: `git push origin HEAD:personal` `2bdfea0444..91cb17b06d`; `origin/personal` = `91cb17b06d` afterwards.
+- Release: none (no tag, no version bump, no pipeline beyond the one build-only iOS run, which published nothing).
+- This record: committed on `finalize/viewer-polish-647` and pushed to `origin/personal` as the commit that follows `91cb17b06d`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/viewer-polish-647` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/viewer-polish-647` and `codex/viewer-polish-647`, and delete delivery's own `/tmp/del647` and `/tmp/del647-*.txt`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). API/E2E keeps `/tmp/api647` (and its simulator `api647-iPhone17`) until the Solution Designer asks. The result is in the terminal message.
