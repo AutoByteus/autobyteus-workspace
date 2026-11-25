@@ -1,0 +1,7 @@
+# Release Report — release-v1.5.15-beta.2 (autobyteus-650): beta v1.5.15-beta.2
+
+Status: **in progress** (the pre-tag checks ran; the release smoke passed everything but Codex, whose usage limit the founder's advance waiver covers; the release commit, the tag and the rollout follow). This file is replaced by the final report after the four workflows finish.
+
+- Release request: `handoff-release.md` (the Solution Designer, 2026-11-25).
+- Base `origin/personal` @ `32aa87d429`.
+- **Codex waiver, the founder's words, verbatim (2026-11-25): "Version because we just finished one thing, waive for codex usage limits" and "Release a new beta version"** (`codex-waiver.md`).
