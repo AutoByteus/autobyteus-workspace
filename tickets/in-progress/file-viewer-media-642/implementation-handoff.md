@@ -17,12 +17,13 @@ Ticket autobyteus-642 (file-viewer-media-642, absorbs autobyteus-639). Worktree 
 
 - Implementation cycle: `Rework` (IR-001 was the initial round).
 - Implementation revision record: `tickets/in-progress/file-viewer-media-642/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-005` (SR-006, chat highlighting is message code blocks). IR-001 is the baseline; IR-002 was SR-003 and SR-004; IR-003 was CR-002; IR-004 was SR-005.
+- Current implementation revision ID: `IR-006` (CR-003, Local Fix). IR-001 is the baseline; IR-002 was SR-003 and SR-004; IR-003 was CR-002; IR-004 was SR-005; IR-005 was SR-006.
 - Related solution revision IDs: SR-001…SR-006.
 - Related architecture-review revision IDs: ARCH-REV-001…ARCH-REV-006.
-- Related code-review revision IDs: CRR-001 (Fail, CR-001), CRR-002 (CR-001 and C-2 resolved; Fail, CR-002), CRR-003 (Pass), CRR-004 (Pass).
-- Related API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A in IR-005 (SR-006; note N-9); N/A in IR-004 (SR-005; notes N-7, N-8); in IR-003 CR-002; in IR-002 CR-001, C-2, AR-002, N-6. In IR-001: N-4 and N-5 (N-1…N-3 were in SR-002); SR-004 replaces N-4's rule.
+- Related code-review revision IDs: CRR-001 (Fail, CR-001), CRR-002 (CR-001 and C-2 resolved; Fail, CR-002), CRR-003 (Pass), CRR-004 (Pass), CRR-005 (Pass), CRR-006 (failure-origin: implementation, CR-003).
+- Related API/E2E revision IDs: API/E2E round 1 (Fail: F-1).
+- Related delivery revision IDs: N/A.
+- Triggering finding IDs: CR-003 (F-1) in IR-006; N/A in IR-005 (SR-006; note N-9); N/A in IR-004 (SR-005; notes N-7, N-8); in IR-003 CR-002; in IR-002 CR-001, C-2, AR-002, N-6. In IR-001: N-4 and N-5 (N-1…N-3 were in SR-002); SR-004 replaces N-4's rule.
 
 What the change does:
 
@@ -116,6 +117,7 @@ What the change does:
   - A later change could build the list from `AVURLAsset.audiovisualTypes()` at run time. That is a product decision, not taken here.
 - **iOS audio controls hide while playing:** AVKit hides its own controls, as for a video, and a tap shows them. AVPlayerViewController has no public setting to keep them shown. Since IR-002 the screen shows an audio symbol and the name meanwhile (C-2). On Android they stay shown.
 - **iOS sound and the Ring/Silent switch** (SR-005) need a physical iPhone: a simulator plays no sound through the switch. The session's category and activation are checked in IMP-14.
+- **The iOS read-ahead's judgement values** (IR-006): a read waits for a running fetch only if it comes within 0.7 s at the link's last measured rate, measured after 64 KB. A wrong judgement costs one extra ranged request or a wait of at most 0.7 s.
 - **A zero-byte media reference** answers the probe with 416 and shows the error state (CRR-002, held).
 - **The desktop's ranged reading of a reference** was not rendered in IR-002: the viewer gives the element the route URL, as Files does, and the route answers by range (IMP-01). API/E2E checks it on the built stack.
 - **The Android audio start time in the instrumented test** reads "playing after 3 ms": it counts from `ActivityScenario.launch` returning, which already waits for the screen. The video case's 1.0 s is measured the same way, as in 574. AC-002's "under 2 s" in the app is API/E2E's measure.
@@ -173,6 +175,7 @@ What the change does:
 | IMP-10 | `mobile-shell-probe.mjs --cases=MSP-108,MSP-109,MSP-110` (618's cases); MSP-108 again with a temporary layout block | `4024239e07` | macOS, headless Chrome, probe-owned nodes | the Files tab, Monaco highlighting | UC-003, UC-004, AC-003, AC-004 (rendered) | Pass | `IMP-10-rendered-files-tab.log`, `IMP-10-*.png` | `"1440-default", "layout": "stacked", … "viewer": 450`; `"1280-panel-700-divider-dragged-right", "layout": "split", … "viewer": 400`; `mobile-shell probe: Pass` |
 
 | IMP-11 | IR-002 web: the reference viewer, composable, FileViewer and native viewer specs on the fix and with the six source files as at IR-001; the whole web suite; both typechecks; the web guards | `dc350be435` | macOS, Node 22 | `CollaborationMessageReferenceViewer`, `useNativeMediaPlayback`, `FileViewer`, the players, `MediaSegment` | UC-001, UC-002, SR-003, SR-004, N-6 | Pass (red before) | `IMP-11-ir002-web-reference-and-name.log` | red `Tests  8 failed \| 58 passed (66)`; `Tests  428 passed (428)`; first suite run `6 failed \| 801 passed` (missing contracts `dist/`, cause recorded), rerun `Test Files  6 passed (6)` |
+| IMP-16 | CR-003: the Core suite with the new read-ahead cases (and red on IR-005's loader); a seek traced in code on both loaders; the real-node M4A seek test on the fix and on IR-005's loader; the rest of the audio class; 574's scrub and 50 ms delivery tests | `243d269420`, `216bc68baf` | Xcode 26.1.1, iOS 26.1 simulator (own), the real node behind the throttled proxy | `AuthorizedMediaLoader`'s reach by rate; the real-node test's scrubber | REQ-002, AC-002 (iOS seek), CR-003, F-1; 574 AC-001 | Pass (red before) | `IMP-16-cr003-ios-seek-reach.log` | `Executed 91 tests, with 0 failures`; `testCAnM4AOverASlowerLinkSeeksByRange]' passed` with `bytes=964624-1867270`; red: only `bytes=0-1867270`; `REALTIME delivered 13762562 bytes in 10.0 s` |
 | IMP-15 | SR-006: the new fence spec on `highlightService` (and red without the `rs`/`zsh` aliases); the table's spec (Monaco only); the audit test; the whole web suite; both typechecks; the guards | `339b8d0ddb` | macOS, Node 22 | `highlightService`'s grammars and aliases, `markdownItPrism`, `languageDetector` | REQ-004, AC-004 (chat leg), SR-006, N-9 | Pass (red before) | `IMP-15-sr006-code-block-highlighting.log` | red: the `zsh`, `rs` and markdown-it cases `×`; `Tests  60 passed (60)`; `Test Files  808 passed (808)` |
 | IMP-14 | SR-005: the iOS Core suite with the new `MediaAudioSessionTests`; `NativeMediaPlayerUITests` against the fake node; the simulator log for session failures | `38f318021c` | Xcode 26.1.1, iOS 26.1 simulator (own) | `MediaAudioSession`, the player's present and teardown | REQ-002 (iOS), DEC-007, N-7, N-8 | Pass | `IMP-14-sr005-ios-audio-session.log` | `MediaAudioSessionTests testThePlayerSetsPlaybackWhileItShowsAndRestoresTheCategoryAfter]' passed`; `Executed 88 tests, with 0 failures`; UI `Executed 3 tests, with 0 failures`; log failure lines 0 |
 | IMP-13 | CR-002: the reference viewer spec's new case on the fix and on 26ebb05729's viewer; the collaboration, mobile and viewer folders; web typecheck | `36881a6734` | macOS, Node 22 | `CollaborationMessageReferenceViewer`'s reload watch | UC-001, UC-002, CR-002 | Pass (red before) | `IMP-13-cr002-reference-refetch.log` | red `expected { fetches: 3, mounts: 3 } to deeply equal { fetches: 1, mounts: 2 }`; `Tests  308 passed (308)` |

@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | Code Reviewer, code-review-report.md Round 2 Delta Review (CRR-002) | CR-002 | `Local Fix` | CRR-002 | The reference viewer reloads only when a reference changes by value; a native player no longer re-opens on a message update |
 | IR-004 | Architecture Reviewer, design-review-report.md ARCH-REV-005 (Pass); Solution Designer, design-spec.md SR-005 (DEC-007, from API/E2E's evidence request) | N/A (N-7, N-8 applied) | `Design Impact` (decided upstream; implemented here) | SR-005, ARCH-REV-005, CRR-003 | The iOS media player plays in the playback audio session while it shows; the switch no longer mutes it |
 | IR-005 | Architecture Reviewer, design-review-report.md ARCH-REV-006 (Pass); Solution Designer, design-spec.md SR-006 (DEC-008, from API/E2E's finding that FileDisplay is mounted nowhere) | N/A (N-9 applied) | `Design Impact` (decided upstream; implemented here) | SR-006, ARCH-REV-006, CRR-004 | Chat highlighting is message code blocks (with rs, zsh); FileDisplay and its now-dead path removed; the table is Monaco only |
+| IR-006 | Code Reviewer, code-review-report.md Round 6 Failure-Origin Finding (CRR-006), from API/E2E round 1 (F-1) | CR-003 | `Local Fix` | CRR-006, API/E2E round 1 | A seek starts its own ranged read unless the running fetch comes within 0.7 s at the link's rate; the real-node test moves the scrubber, not the volume |
 
 ## Revision Entries
 
@@ -149,4 +150,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The whole web suite (808 files), both typechecks and the guards pass.
 - Next recipient or routing: `/code_reviewer` (Large/High).
 - Remaining limitations or risks: none new.
+
+### IR-006 — An iOS seek waits for a running fetch only if it comes within 0.7 s at the link's rate
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` "Round 6 Failure-Origin Finding" (CRR-006), from API/E2E round 1 (`api-e2e-execution-coverage-report.md` F-1, IOS-C).
+- Triggering finding IDs: CR-003 (F-1), and the cosmetic note on `NativeMediaPlayer.swift:218`.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-005, CRR-005 Pass; API/E2E round 1 Fail (F-1); CRR-006 Fail with the origin in implementation.
+- Current authoritative result: fixed and checked; `Large` / `High`, back to code review for the delta, then an API/E2E rerun.
+- Related solution and architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-006.
+- Related API/E2E revision IDs: API/E2E round 1.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: the loader's read-ahead reach was a fixed 1 MB, about 0.7 s of 574's 6 Mbit/s video but over 30 s of 256 kbit/s audio. A seek in a small audio file therefore waited for the sequential stream.
+- Approved behavior or requirement IDs affected: REQ-002 / AC-002 (iOS: "seeks with a ranged request").
+- Implementation delta:
+  - `243d269420` in `AutoByteusMobileCore/Media/AuthorizedMediaLoader.swift`:
+    - each fetch records when its first bytes came and where it then stood;
+    - its rate is measured once 64 KB more have come (`rateSampleBytes`), and the loader keeps the link's last measured rate;
+    - a read waits for a fetch only if the fetch reaches it within `readAheadWait` (0.7 s) at the fetch's own rate, else the link's, at most `readAheadReach` (1 MB), which is also the reach before any rate is known.
+  - `NativeMediaPlayer.swift`'s comment no longer names a swipe down. `docs/ios_mobile_access.md` describes the rule and drops the swipe.
+  - Tests: `StubNodeProtocol.bytesPerSecond` is now settable (reset by `serve`), and three new cases are in `AuthorizedMediaLoaderReadAheadTests`.
+  - `216bc68baf`, a fix in a test (TESTING.md Rule 9): API/E2E's `NativeMediaRealNodeUITests` took `app.sliders.firstMatch`, which on the audio screen is AVKit's volume slider. Its M4A seek test therefore moved the volume and never seeked. It now takes the slider whose identifier is "Current position".
+- Two things found on the way:
+  - **The volume slider.** The UI test's failure was not the loader's: with the wrong slider no seek happened on either loader. The loader's bug was shown in code: a seek to 60 s took about 14 s on IR-005, and 0.6 s with a read from the middle on the fix.
+  - **A scrub's moving target.** The first version of the fix gave an unmeasured fetch the 1 MB cap. AVKit seeks during a drag, so the drag's last point waited on the fetch its first point had started. A fresh fetch is now judged by the link's rate.
+- Changed files or areas: the above.
+- Local validation and result: IMP-16.
+  - Unit: the beyond-reach and second-seek cases are red on IR-005 and green on the fix; the within-reach case passes on both. The Core suite passes 91 of 91; the AVPlayer test still makes 3 requests and reopens from the cache.
+  - Real node: `testCAnM4AOverASlowerLinkSeeksByRange` passes, and is red on IR-005's loader. The rest of the audio class passes. 574's scrub and 50 ms delivery tests pass on a fresh stack. The credential is in the header only.
+- Next recipient or routing: `/code_reviewer` (Large/High), the targeted delta review.
+- Remaining limitations or risks: the 0.7 s and the 64 KB sample are judgement values. A link whose rate swings widely is judged by its last measurement, and a wrong judgement costs one extra ranged request or a wait of at most 0.7 s.
 
