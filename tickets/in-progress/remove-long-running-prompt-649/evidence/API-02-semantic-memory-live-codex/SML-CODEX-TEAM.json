@@ -1,0 +1,43 @@
+{
+  "teamRunId": "sm_live_team_d859931e_513eb02e246441f7a09a51e33bfd0752",
+  "keeperRunId": "sm_live_keeper_codex_d859931e_b873f8e378304dd884b18c707e7065eb",
+  "reply": "",
+  "tools": [],
+  "approvals": [],
+  "wire": [
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic/sm-live-keeper-codex-d859931e",
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic-global"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic/sm-live-keeper-codex-d859931e`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic-global`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/ws-codex-team",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic/sm-live-keeper-codex-d859931e",
+          "/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic-global"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic/sm-live-keeper-codex-d859931e`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Global Semantic Memory\n\nThe global semantic memory of this node is the folder `/Users/normy/.autobyteus-e2e/semantic-memory-live-qVIsCX/app-data/memory/semantic-global`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
+    }
+  ]
+}
