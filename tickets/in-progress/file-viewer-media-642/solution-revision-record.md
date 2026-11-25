@@ -60,3 +60,10 @@ Review note: ARCH-REV-004 passed SR-004, with SR-003 (2026-11-24). The reviewer 
 - Classification: unchanged, `Large` / `High`. Routing: architecture review (a design change), then implementation. API/E2E is told the decision.
 
 Review note: ARCH-REV-005 passed SR-005 (2026-11-25). The reviewer routed it to `/implementation_engineer`. N-7 (deactivate in the existing `viewDidDisappear` teardown) and N-8 (restore the previous category) are for implementation.
+
+## SR-006 (2026-11-25)
+
+- Trigger: API/E2E Unclear on AC-004. The "chat file preview" (`FileDisplay.vue`) is mounted nowhere.
+- Requirements: REQ-004 and AC-004 now say chat code blocks by language name. The intent (common languages highlighted where the user reads code) is unchanged. DEC-008 by the Solution Designer within the direction; user informed.
+- Design: remove the dead `FileDisplay.vue`, `getPrismLanguage` and the Prism column; keep the grammar loads; add the `rs` and `zsh` aliases.
+- Classification: unchanged, `Large` / `High`. Routing: architecture review, then implementation. API/E2E is told the decision.

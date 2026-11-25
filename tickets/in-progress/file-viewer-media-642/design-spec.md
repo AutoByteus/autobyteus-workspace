@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-005 (SR-005: the iOS audio session while the native player is open; … SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
+- Current solution revision ID: SR-006 (SR-006: the chat leg of D-4 is Markdown code blocks; the dead `FileDisplay.vue` is removed; SR-005: the iOS audio session while the native player is open; … SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
 - Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
 - User approval of the design: not required
 - Design status: `Ready`
@@ -175,3 +175,17 @@
 - **Applies to:** both kinds (video sound, 574, and audio). `Info.plist` is unchanged: no background audio mode.
 - **Android:** unchanged. Media3 plays through the media stream, which the ringer mode does not silence.
 - **Tests:** a test-host check of the category and active state during and after the player. API/E2E keeps the frame. The physical-iPhone check before release covers the switch and the sound.
+
+## SR-006: The chat leg of highlighting is code blocks (DEC-008)
+
+- **Finding (API/E2E, verified):** `components/conversation/segments/renderer/FileDisplay.vue` is mounted nowhere. Only `tests/integration/app-font-size-fixed-px-audit.integration.test.ts:29` lists it. So `getPrismLanguage` (`languageDetector.ts:53`) has no reachable reader. SR-001 named it on trust.
+- **Change to D-4:**
+  - **Remove** `FileDisplay.vue`, `getPrismLanguage`, and the table's `prism` column. The table becomes extension/name → Monaco id, read by `getMonacoLanguage` alone. Remove the audit list entry.
+  - Keep the Prism grammar loads in `highlightService.ts` (yaml, toml, bash, go, rust, java, docker; xml through markup). They serve message code blocks through `utils/markdownItPrism.ts`.
+  - Register the fence names Prism lacks, beside those loads: `Prism.languages.rs = Prism.languages.rust` and `Prism.languages.zsh = Prism.languages.bash`. Prism already registers `yml`, `sh`, `shell` and `dockerfile`. One owner: the highlighting service.
+- **Validation:**
+  - A message with a fence of each listed name → token spans (desktop window and phone).
+  - A file of each type in the file viewer → Monaco tokens.
+  - Python, TypeScript, JSON, Markdown and `vue` unchanged.
+- **Derived consumers:** `markdownItPrism.ts` (unchanged; it gets the grammars); the audit test list; the table's spec (the Prism cases removed, fence cases added on `highlightService`).
+- **Design case:** docs/design-cases.md Case 5 (a surface named without checking that it is reachable).
