@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (waiting for the founder's decisions DEC-002..DEC-006; the Task asks for policy and data contract review before implementation)
-- Current solution revision ID: `SR-001`
+- Status: `Ready for Approval`. Direction set by the founder (SR-002); DEC-002, DEC-003, DEC-005 and DEC-006 carry my recommendations, which he confirms with the data contract review the Task requires before implementation
+- Current solution revision ID: `SR-002`
 - Package identifier: `usage-limit-fallback-646`
 - Request: autobyteus-646, "Smart runtime fallback on usage limit"
 - Requested by: `/project_task_manager` (for the founder)
@@ -70,8 +70,10 @@ None.
 | REQ-001 | A turn that ends in a terminal error caused by the runtime's usage limit is recognized as such, with the runtime, the model and the reset time when the runtime reports it | BEH-001 | Must | Codex: structured `usageLimitExceeded`; all runtimes: the live limits read after the error shows the model `blocked: {until}` (0 tokens) — notes §3 | Task 1 |
 | REQ-002 | The node remembers each exhausted runtime/model until its reset (or a cooldown when no reset time is known, DEC-006) | BEH-002 | Must | New small record (data contract in design) | Task 1 |
 | REQ-003 | A new delegated run does not start on a remembered-exhausted default; it starts on the fallback (REQ-004), with a launch note | BEH-002 | Must | Delegation layer order exists | Task 1, 2 |
-| REQ-004 | The fallback is a usable runtime and model (installed, signed in, not exhausted), ranked by DEC-004 | BEH-004 | Must | History countable from run files (notes §4) | Task 2 |
-| REQ-005 | A run whose turn fails on a usage limit switches to the fallback through the existing runtime switch and hand-over, and continues the work: the failed input is given again on the new runtime | BEH-003 | Must | Runtime switch + hand-over exist | Task 3 |
+| REQ-004 | The fallback is a usable runtime and model (installed, signed in, not exhausted). **The node's Model Router agent chooses it** when told of the event, given the usable runtimes now, the agent's runtime/model history and its earlier switches. When the router is off, busy past its budget, or itself exhausted, the agent's most-used usable runtime (last 30 days, with the model it last used there) is taken | BEH-004 | Must | Router exists (40 s budget); history countable from run files (notes §4) | Founder 2026-11-25; DEC-001, DEC-004 |
+| REQ-009 | A usage-limit failure is published as a **run event** (telemetry) on the node; reacting to it is the job of listeners, not of the run: the exhaustion memory and the Model Router. New event kinds and listeners can be added without changing runs | BEH-001 | Must | No node-wide run event stream exists yet (design) | Founder 2026-11-25 |
+| REQ-010 | The Model Router learns over time: its request includes the agent's history and the outcome of earlier switches, and its decisions are recorded like routing decisions | BEH-004 | Should | Router keeps `knowledge.md` and decision statistics | Founder 2026-11-25 |
+| REQ-005 | A run whose turn fails on a usage limit switches to the fallback through the existing runtime switch and hand-over, and is sent a short "continue" message. The input that failed is already in its conversation and is not sent again; the new runtime sees it through the hand-over | BEH-003 | Must | Runtime switch + hand-over exist | Task 3; founder 2026-11-25 |
 | REQ-006 | The conversation shows one notice row: "<Runtime> usage limit reached (resets <time>) — switched to <Runtime> · <model>" | BEH-003 | Must | Platform notice rows exist | Task 3 |
 | REQ-007 | When no fallback is usable, the run stays in Error with a message naming each exhausted runtime and its reset time | UC-004 | Must | — | Task |
 | REQ-008 | At most one switch per runtime per turn: a fallback that is exhausted too is skipped, and nothing loops | BEH-003 | Must | — | Safety |
@@ -89,12 +91,12 @@ None.
 
 | ID | Question | Why it matters | Options | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Who chooses the fallback | Speed and cost | A: history ranking; B: the Model Router agent | History answers at once, costs nothing and is what the founder described; the router is a 40 s LLM call that needs quota itself. **A**, with the router per DEC-004 | Solution Designer | Decided |
-| DEC-002 | Automatic or opt-in | A run changes runtime without being asked | (a) automatic, with a switch in Settings → Model Routing to turn it off; (b) opt-in, off by default | The point is that work doesn't stop; the notice row makes it visible and the person can switch back. **(a) on by default** | Founder | Needs user |
-| DEC-003 | Which runs | A person picked the runtime of a run they started | (a) every run (started by a person, delegated, Team members); (b) delegated runs and their members only | The same stop happens to a person's run, and the notice says what changed. **(a)** | Founder | Needs user |
-| DEC-004 | How to rank fallbacks | Predictability | (a) the agent's history: runtimes it used, most-used first (last 30 days), each with the model it last used there; then (b) when the agent has no usable history and Model Routing is on, the Model Router chooses; otherwise (c) the agent's own default order is unknown and the run stays in Error with the reason | History is the founder's own example and needs no setup; an explicit fallback-order setting can be added later if wanted. **(a) then (b)** | Founder | Needs user |
-| DEC-005 | When the first runtime's limit resets | Cost/quality preference | (a) the run stays on the fallback; new runs use the default again; (b) switch the run back | Switching back mid-work is a second hand-over for no gain. **(a)** | Founder | Needs user |
-| DEC-006 | No reset time known | — | cooldown 1 h, then usable again (a new failure records it again) | Avoids a runtime blocked forever on a wrong guess. **1 h** | Founder | Needs user |
+| DEC-001 | Who chooses the fallback | Speed, cost, learning, decoupling | A: history ranking; B: the Model Router agent, told through a run event | The founder chose B: the run reports, the router decides and learns over time ("it will be able to make really smart decisions"). History stays as the safety net when the router can't answer | Founder | Decided (B), 2026-11-25 |
+| DEC-002 | Automatic or opt-in | A run changes runtime without being asked | (a) automatic, with a switch in Settings → Model Routing to turn it off, active even while Model Routing (the delegation choice) is off; (b) opt-in, off by default | The point is that work doesn't stop; the notice row makes it visible and the person can switch back. **(a) on by default** | Founder | Recommended; to confirm with the contract |
+| DEC-003 | Which runs | A person picked the runtime of a run they started | (a) every run (started by a person, delegated, Team members); (b) delegated runs and their members only | The same stop happens to a person's run, and the notice says what changed. **(a)** | Founder | Recommended; to confirm with the contract |
+| DEC-004 | Fallback order | — | Router first; history when the router is off, past its 40 s budget or exhausted itself; Error when neither finds a usable runtime | Follows DEC-001 B | Founder | Decided, 2026-11-25 |
+| DEC-005 | When the first runtime's limit resets | Cost/quality preference | (a) the run stays on the fallback; new runs use the default again; (b) switch the run back | Switching back mid-work is a second hand-over for no gain. **(a)** | Founder | Recommended; to confirm with the contract |
+| DEC-006 | No reset time known | — | cooldown 1 h, then usable again (a new failure records it again) | Avoids a runtime blocked forever on a wrong guess. **1 h** | Founder | Recommended; to confirm with the contract |
 | DEC-007 | Several accounts per provider (autobyteus-498) | Future | Keyed per runtime now; per account when 498 lands | No accounts exist yet. **Later** | Solution Designer | Decided |
 
 ## Architecture Phase Input
@@ -110,4 +112,4 @@ None.
 
 ## Readiness Check
 
-- Content ready: Yes. Remaining: founder decisions DEC-002..DEC-006.
+- Content ready: Yes. Remaining: the founder's review of the data contract and policy (DEC-002, -003, -005, -006 recommended).
