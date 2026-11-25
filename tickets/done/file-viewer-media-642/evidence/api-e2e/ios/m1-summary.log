@@ -1,0 +1,15 @@
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (8.188 seconds).
+MARK tap-mp3 1795563531525
+MARK player 1795563533438
+POSITION  at 18.7 s
+REQUESTS ["bytes=0-1:206:2", "bytes=0-2881452:206:2881453"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testAAnMP3FromTheChatLinkPlaysInTheAppsPlayer]' passed (28.265 seconds).
+REOPEN []
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testBTheMP3ReopenedFetchesOnlyTheProbe]' passed (15.998 seconds).
+MARK tap-m4a 1795563577508
+MARK player 1795563579854
+MARK seek 1795563584323
+POSITION after seek hidden
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:1638020"]
+/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/autobyteus-ios/AutoByteusMobileUITests/NativeMediaRealNodeUITests.swift:97: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange] : XCTAssertFalse failed - the seek reads from the midd
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' failed (22.382 seconds).

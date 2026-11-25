@@ -7,8 +7,8 @@ import { describe, expect, it } from "vitest";
 /**
  * Every node route that answers with a user file's content does it through `sendUserFile`
  * (`src/api/rest/user-file-reply.ts`), which owns the headers that keep the file out of the node's origin
- * (autobyteus-416, REQ-007). A file stream under `src/api/rest/` may only be the `body` of the content handed
- * to it. Named exceptions:
+ * (autobyteus-416, REQ-007), which also opens the file: no other file under `src/api/rest/` streams one. Named
+ * exceptions:
  * - `application-bundles.ts`: installed application code, designed to run at the node's origin;
  * - `project-task-context-files.ts`: Task context files, already `nosniff` + `attachment` (F16).
  * `application-backends.ts` proxies installed application backends; it sends their response body, not a file
@@ -45,13 +45,6 @@ const isFileStream = (node: ts.Node): boolean =>
     || (ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === "createReadStream")))
   || (ts.isPropertyAccessExpression(node) && node.name.text === "stream");
 
-const isUserFileContentBody = (node: ts.Node): boolean =>
-  ts.isPropertyAssignment(node.parent)
-  && node.parent.initializer === node
-  && ts.isIdentifier(node.parent.name)
-  && node.parent.name.text === "body"
-  && ts.isObjectLiteralExpression(node.parent.parent);
-
 const visit = (file: string, onNode: (node: ts.Node, source: ts.SourceFile) => void) => {
   const source = parse(file);
   const walk = (node: ts.Node): void => {
@@ -67,11 +60,11 @@ const where = (file: string, node: ts.Node, source: ts.SourceFile) =>
 describe("user file replies (autobyteus-416)", () => {
   const governed = () => restFiles().filter((file) => file !== OWNER && !EXCEPTIONS.includes(file));
 
-  it("streams a file only as the body of the content given to sendUserFile", () => {
+  it("streams a file only in sendUserFile", () => {
     const bypasses: string[] = [];
     for (const file of governed()) {
       visit(file, (node, source) => {
-        if (isFileStream(node) && !isUserFileContentBody(node)) bypasses.push(where(file, node, source));
+        if (isFileStream(node)) bypasses.push(where(file, node, source));
       });
     }
     expect(bypasses).toEqual([]);

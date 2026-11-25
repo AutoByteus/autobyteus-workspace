@@ -1,0 +1,9 @@
+MARK close-back 1795566323255
+CLOSE back closed=true
+MARK close-swipe-down 1795566332432
+CLOSE swipe-down closed=false
+MARK close-avkit-close 1795566352116
+CLOSE avkit-close closed=true
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' passed (46.248 seconds).
+MARK removed 1795566369499
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.585 seconds).

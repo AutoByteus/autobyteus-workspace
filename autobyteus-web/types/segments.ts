@@ -6,13 +6,6 @@
  * the streaming service handlers and the UI components.
  */
 
-export interface ParsedFile {
-  path: string;
-  originalContent: string;
-  highlightedContent?: string;
-  language: string;
-}
-
 export type ToolInvocationStatus =
   | 'parsing'
   | 'parsed'
@@ -48,7 +41,6 @@ export interface WriteFileSegment extends ToolInvocationLifecycle {
   type: 'write_file';
   path: string;
   originalContent: string;
-  highlightedContent?: string;
   language: string;
 }
 

@@ -2,6 +2,7 @@ package org.autobyteus.mobile.web
 
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.SavedNodeEntry
+import org.autobyteus.mobile.media.MediaKind
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -61,9 +62,13 @@ class ShellBridgeMessagesTest {
         assertEquals(3, reply.getInt("nodeCount"))
         assertEquals("Pixel 8", reply.getString("deviceName"))
         assertEquals("Test Desktop", reply.getString("nodeName"))
-        // autobyteus-574 D-2: the app has its own video player.
-        assertEquals(true, reply.getBoolean("videoPlayer"))
-        assertEquals(setOf("type", "nodeCount", "deviceName", "nodeName", "videoPlayer"), reply.keys().asSequence().toSet())
+        // autobyteus-642 D-2: the file types the app's own player (Media3) plays, per kind.
+        val player = reply.getJSONObject("mediaPlayer")
+        val listed = { kind: String -> player.getJSONArray(kind).let { list -> List(list.length()) { list.getString(it) } } }
+        assertEquals(listOf("mp4", "m4v", "mov", "webm", "mkv", "3gp"), listed("video"))
+        assertEquals(listOf("mp3", "m4a", "aac", "wav", "ogg", "oga", "opus", "flac"), listed("audio"))
+        assertEquals(setOf("video", "audio"), player.keys().asSequence().toSet())
+        assertEquals(setOf("type", "nodeCount", "deviceName", "nodeName", "mediaPlayer"), reply.keys().asSequence().toSet())
     }
 
     @Test
@@ -152,18 +157,32 @@ class ShellBridgeMessagesTest {
         assertEquals(true, request.toString().contains("resume.pdf"))
     }
 
-    // autobyteus-574 D-2, D-5 (AC-003): a video to play is read only from the node's main frame, for a file route of that
-    // node; the credential goes nowhere else, and neither it nor the URL is ever printed.
+    // autobyteus-574 D-2, D-5 (AC-003), autobyteus-642 D-2: a file to play is read only from the node's main frame, for a
+    // file route of that node, of a kind the app plays; the credential goes nowhere else, and neither it nor the URL is
+    // ever printed.
     @Test
-    fun readsAPlayVideoForAFileRouteOfTheNodeWithItsTitleAndCredential() {
+    fun readsAPlayMediaForAFileRouteOfTheNodeWithItsKindTitleAndCredential() {
         val url = "$origin/rest/workspaces/agent_ws_ab12/content?path=demo%2Fplan.mp4"
-        assertEquals(ShellBridgeAction.PlayVideo(url, "plan.mp4", "mra_phone_credential"), read(play(url)))
+        assertEquals(ShellBridgeAction.PlayMedia(MediaKind.VIDEO, url, "plan.mp4", "mra_phone_credential"), read(play(url)))
+        val audio = "$origin/rest/workspaces/agent_ws_ab12/content?path=notes%2Fmemo.m4a"
+        assertEquals(
+            ShellBridgeAction.PlayMedia(MediaKind.AUDIO, audio, "memo.m4a", "mra_phone_credential"),
+            read(play(audio, title = "memo.m4a", kind = "audio")),
+        )
         // A title that is not a plain name is dropped, not trusted.
-        assertEquals(ShellBridgeAction.PlayVideo(url, "", "mra_phone_credential"), read(play(url, title = "../../etc/passwd")))
+        assertEquals(ShellBridgeAction.PlayMedia(MediaKind.VIDEO, url, "", "mra_phone_credential"), read(play(url, title = "../../etc/passwd")))
     }
 
     @Test
-    fun ignoresAPlayVideoForAnotherSiteAnotherRouteOrFromAnotherFrame() {
+    fun ignoresAPlayMediaWithoutAKindTheAppPlays_andTheRenamedPlayVideo() {
+        val url = "$origin/rest/files/videos/a.mp4"
+        assertNull(read(play(url, kind = "image")))
+        assertNull(read(play(url, kind = null)))
+        assertNull(read(JSONObject().put("type", "playVideo").put("url", url).put("title", "a.mp4").put("credential", "mra_x").toString()))
+    }
+
+    @Test
+    fun ignoresAPlayMediaForAnotherSiteAnotherRouteOrFromAnotherFrame() {
         val url = "$origin/rest/node-files/content?path=%2Ftmp%2Fclip.mp4"
         assertNull(read(play(url), isMainFrame = false))
         assertNull(read(play(url), sourceOrigin = "http://192.168.1.25:8001"))
@@ -176,25 +195,26 @@ class ShellBridgeMessagesTest {
     }
 
     @Test
-    fun ignoresAPlayVideoWithoutACredentialOrWithOneThatIsNotOneToken() {
+    fun ignoresAPlayMediaWithoutACredentialOrWithOneThatIsNotOneToken() {
         val url = "$origin/rest/files/videos/a.mp4"
         assertNull(read(play(url, credential = "")))
         assertNull(read(play(url, credential = "mra_a b")))
         assertNull(read(play(url, credential = "mra_a\nInjected: header")))
-        assertNull(read(JSONObject().put("type", "playVideo").put("url", url).put("title", "a.mp4").toString()))
-        assertNull(read(JSONObject().put("type", "playVideo").put("title", "a.mp4").put("credential", "mra_x").toString()))
+        assertNull(read(JSONObject().put("type", "playMedia").put("kind", "video").put("url", url).put("title", "a.mp4").toString()))
+        assertNull(read(JSONObject().put("type", "playMedia").put("kind", "video").put("title", "a.mp4").put("credential", "mra_x").toString()))
     }
 
     @Test
-    fun aPlayVideoNeverPrintsItsCredentialOrItsUrl() {
-        val request = ShellBridgeAction.PlayVideo("$origin/rest/workspaces/w/content?path=private%2Fplan.mp4", "plan.mp4", "mra_SECRET")
+    fun aPlayMediaNeverPrintsItsCredentialOrItsUrl() {
+        val request = ShellBridgeAction.PlayMedia(MediaKind.AUDIO, "$origin/rest/workspaces/w/content?path=private%2Fplan.mp3", "plan.mp3", "mra_SECRET")
         assertEquals(false, request.toString().contains("mra_SECRET"))
         assertEquals(false, request.toString().contains("private"))
-        assertEquals(true, request.toString().contains("plan.mp4"))
+        assertEquals(true, request.toString().contains("plan.mp3"))
     }
 
-    private fun play(url: String, title: String = "plan.mp4", credential: String = "mra_phone_credential"): String =
-        JSONObject().put("type", "playVideo").put("url", url).put("title", title).put("credential", credential).toString()
+    private fun play(url: String, title: String = "plan.mp4", credential: String = "mra_phone_credential", kind: String? = "video"): String =
+        JSONObject().put("type", "playMedia").apply { if (kind != null) put("kind", kind) }
+            .put("url", url).put("title", title).put("credential", credential).toString()
 
     private fun read(data: String?, sourceOrigin: String = origin, isMainFrame: Boolean = true) =
         ShellBridgeMessages.read(data, sourceOrigin, isMainFrame, expectedOrigin = origin)

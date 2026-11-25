@@ -1,0 +1,23 @@
+# IMP-09 (D-2 iOS, AC-002 on iOS) the app's player from a page's playMedia: video, a missing video, audio
+# command: python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29642 --video <the 60 s MP4> --audio <the MP3>;
+#   xcodebuild ... -only-testing:AutoByteusMobileUITests/NativeMediaPlayerUITests AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29642/mobile test
+# commit: 2e2a98a51e (before the cache folder rename folded into it; the UI tests do not read the folder)
+# env: Xcode 26.1.1, iOS 26.1 simulator (own)
+# date: 2026-11-24
+# result: Pass: 3 of 3. The audio file opens in the app's player, in portrait, with its name, and plays; the fake node
+#   saw a 2-byte probe and one streaming range, both with the credential. Screenshot IMP-09-audio-portrait.png (AVKit has
+#   hidden its controls by then, as it does for video; a tap shows them).
+#   Not run: a red run on the old app (it ignores playMedia, so Play audio would open nothing).
+
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testAMissingVideoSaysItCouldNotBePlayedWithBack]' passed (21.933 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed (21.101 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeVideoPlaysInTheAppsPlayerInLandscapeAndBackReturnsToThePageInPortrait]' passed (21.408 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.442 (64.444) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.442 (64.445) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 64.442 (64.446) seconds
+
+## the fake node's media requests (MEDIA lines; the credential is only reported as authorized)
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/audio/memo.mp3", "status": 206, "range": "bytes=0-3841579", "authorized": true, "bytes": 3841580}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-1", "authorized": true, "bytes": 2}
+{"path": "/rest/files/videos/clip.mp4", "status": 206, "range": "bytes=0-30536000", "authorized": true, "bytes": 9371648}

@@ -1,0 +1,288 @@
+{
+ "video": {
+  "size": 15531963,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"15531963-1795562830969\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "video/mp4"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 206,
+    "contentRange": "bytes 100-199/15531963",
+    "exact": true
+   },
+   "from": {
+    "status": 206,
+    "contentRange": "bytes 1000-15531962/15531963",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 15531463-15531962/15531963",
+    "exact": true
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */15531963"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "m4a": {
+  "size": 930831,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"930831-1795562832954\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "audio/mp4"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 206,
+    "contentRange": "bytes 100-199/930831",
+    "exact": true
+   },
+   "from": {
+    "status": 206,
+    "contentRange": "bytes 1000-930830/930831",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 930331-930830/930831",
+    "exact": true
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */930831"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "mp3": {
+  "size": 1441375,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"1441375-1795562833229\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "audio/mpeg"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 206,
+    "contentRange": "bytes 100-199/1441375",
+    "exact": true
+   },
+   "from": {
+    "status": 206,
+    "contentRange": "bytes 1000-1441374/1441375",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 1440875-1441374/1441375",
+    "exact": true
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */1441375"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "text": {
+  "size": 40,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"40-1795562833231\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "text/markdown"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 416,
+    "contentRange": "bytes */40",
+    "exact": true
+   },
+   "from": {
+    "status": 416,
+    "contentRange": "bytes */40",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 0-39/40",
+    "exact": true
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */40"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "pdf": {
+  "size": 388,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"388-1795562833232\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "application/pdf"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 206,
+    "contentRange": "bytes 100-199/388",
+    "exact": true
+   },
+   "from": {
+    "status": 416,
+    "contentRange": "bytes */388",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 0-387/388",
+    "exact": false
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */388"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "image": {
+  "size": 7504,
+  "plain": {
+   "status": 200,
+   "exact": true,
+   "etag": "\"7504-1795562833290\"",
+   "acceptRanges": "bytes",
+   "cacheControl": "no-store",
+   "contentType": "image/png"
+  },
+  "ranges": {
+   "a_b": {
+    "status": 206,
+    "contentRange": "bytes 100-199/7504",
+    "exact": true
+   },
+   "from": {
+    "status": 206,
+    "contentRange": "bytes 1000-7503/7504",
+    "exact": true
+   },
+   "suffix": {
+    "status": 206,
+    "contentRange": "bytes 7004-7503/7504",
+    "exact": true
+   }
+  },
+  "outside": {
+   "status": 416,
+   "contentRange": "bytes */7504"
+  },
+  "notModified": 304,
+  "multi": {
+   "status": 200,
+   "whole": true
+  },
+  "noCredential": 401
+ },
+ "empty": {
+  "plain": {
+   "status": 200,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": "bytes",
+    "etag": "\"0-1795562833293\"",
+    "cache-control": "no-store",
+    "content-length": "0",
+    "content-type": "video/mp4"
+   },
+   "length": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "probe": {
+   "status": 416,
+   "headers": {
+    "content-range": "bytes */0",
+    "accept-ranges": "bytes",
+    "etag": "\"0-1795562833293\"",
+    "cache-control": "no-store",
+    "content-length": "0",
+    "content-type": "video/mp4"
+   },
+   "length": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noCredential": 401
+ },
+ "gone": {
+  "plain": {
+   "status": 404,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": null,
+    "etag": null,
+    "cache-control": null,
+    "content-length": "89",
+    "content-type": "application/json; charset=utf-8"
+   },
+   "length": 89,
+   "sha256": "564eb1df04845c6d7d8794f58481c85c072faf6019bbafa25a9558b1dceb2c8e"
+  },
+  "probe": {
+   "status": 404,
+   "headers": {
+    "content-range": null,
+    "accept-ranges": null,
+    "etag": null,
+    "cache-control": null,
+    "content-length": "89",
+    "content-type": "application/json; charset=utf-8"
+   },
+   "length": 89,
+   "sha256": "564eb1df04845c6d7d8794f58481c85c072faf6019bbafa25a9558b1dceb2c8e"
+  },
+  "noCredential": 401
+ }
+}

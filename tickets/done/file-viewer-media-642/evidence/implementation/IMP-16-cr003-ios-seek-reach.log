@@ -1,0 +1,119 @@
+# IMP-16 (CR-003, CRR-006, API/E2E F-1) an iOS seek starts its own ranged read unless the running fetch comes within 0.7 s
+# command: TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<a 60 s MP4> xcodebuild ... -only-testing:AutoByteusMobileCoreTests test (own simulator);
+#   red: AuthorizedMediaLoaderReadAheadTests with AuthorizedMediaLoader.swift as at fe62667935 (IR-005), restored after;
+#   diagnosis (temporary, deleted): a Core test that plays a 120 s 1.88 MB M4A through the loader at 60 KB/s and seeks to
+#   60 s in code, on the fix and on IR-005; a temporary UI probe of the audio screen's sliders; loader read logging;
+#   real node: native-video-node.mjs at the LAN address (two stacks; the pairing link is one-time), builds of this
+#   commit (server, build:mobile-web); NativeMediaRealNodeUITests and NativeVideoRealNodeUITests via xcodebuild
+#   test-without-building, testCAnM4AOverASlowerLinkSeeksByRange also on IR-005's loader (red)
+# commit: 243d269420 (loader), 216bc68baf (the real-node test's scrubber)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this round and deleted after); the worktree's node behind
+#   the stack's proxy (1.5 MB/s; 60 KB/s and 50 ms for the M4A test; 50 ms for 574's delivery test)
+# date: 2026-11-25
+# result: Pass.
+#   - The loader bug is real, shown in code: on IR-005 a seek to 60 s in a 60 KB/s M4A took about 14 s (the await) and no
+#     read from the middle went out (the stream from 0 only); on the fix a read from bytes=951831- went out within 0.6 s and
+#     the idle stream stopped at 196608 bytes.
+#   - A defect in the durable UI test, found on the way (Rule 9, fixed as its own commit 216bc68baf): on the audio screen
+#     app.sliders.firstMatch is AVKit's volume slider (identifier "Volume Slider", label "Current position"), so
+#     testCAnM4AOverASlowerLinkSeeksByRange moved the volume and no seek happened, on either loader. It now takes the slider
+#     whose identifier is "Current position". The scrub then lands at 60 s of 120 s.
+#   - A gap in the first version of the fix, found by the corrected test: AVKit's scrubber seeks during the drag; a fetch an
+#     early point started had no rate of its own yet, so it got the 1 MB cap and the final point waited on it. A fresh fetch
+#     is now judged by the link's last measured rate (unit case 3).
+#   - Unit cases: a read beyond the fetch's reach at its rate starts its own fetch and the idle one stops; a read within it
+#     waits; a second seek before the first seek's fetch has a rate starts its own. The first and third are red on IR-005.
+#     The Core suite passes 91 of 91; the AVPlayer test with a 60 s video still makes 3 requests and reopens from the cache.
+#   - Real node: testCAnM4AOverASlowerLinkSeeksByRange passes (reads from 693716- during the drag and 964624- at its end);
+#     red on IR-005's loader (only the stream from 0). The rest of NativeMediaRealNodeUITests passes, node removal last.
+#     574: testAWideVideoFromTheChatLink (the scrub) and testBDeliversInRealTimeOverASlowerLink at 50 ms pass on a fresh stack
+#     (13762562 bytes delivered in 10 s, 5347659 needed). Every media request carries the phone credential in its header;
+#     none in a URL (47 on stack 1, 4 on stack 2).
+#   - Not here: the 574 video test run that failed in the first combined run did so because xcodebuild runs classes in name
+#     order and the audio class's testZ had removed the node; rerun on a fresh stack, it passes.
+
+## Core (fix)
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testABurstOfSmallSequentialReadsMakesOneRequest]' passed (1.090 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAChangedFileFailsTheReadInsteadOfMixingVersions]' passed (0.041 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAFarReadStartsItsOwnFetchAndTheIdleOneStops]' passed (0.480 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testAGapBetweenCachedBytesIsFetchedAlone]' passed (1.627 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testCachedBytesAreHandedOverInBoundedSteps]' passed (0.250 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testCancellingOneReadKeepsTheFetchAnotherReadWaitsFor]' passed (0.324 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkAReadBeyondTheFetchsRateStartsItsOwnFetchAndTheIdleOneStops]' passed (2.903 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkAReadTheFetchReachesWithinItsWaitWaitsForIt]' passed (1.998 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkASecondSeekBeforeTheFirstSeeksFetchHasARateIsJudgedByTheLinksRate]' passed (1.397 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testTheBytesOfACancelledReadAreCached]' passed (0.505 seconds).
+autobyteus-574 iOS: playing after 0.75 s; at the middle 0.61 s after the seek; requests ["bytes=0-1", "bytes=0-30543816", "bytes=15564672-30543816"]; cached [ClosedRange(0...983039), ClosedRange(15564672...16416639)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+	 Executed 91 tests, with 0 failures (0 unexpected) in 17.492 (17.538) seconds
+	 Executed 91 tests, with 0 failures (0 unexpected) in 17.492 (17.539) seconds
+
+## red (IR-005 loader)
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkAReadBeyondTheFetchsRateStartsItsOwnFetchAndTheIdleOneStops]' failed (16.389 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkAReadTheFetchReachesWithinItsWaitWaitsForIt]' passed (2.023 seconds).
+Test Case '-[AutoByteusMobileCoreTests.AuthorizedMediaLoaderReadAheadTests testOverASlowLinkASecondSeekBeforeTheFirstSeeksFetchHasARateIsJudgedByTheLinksRate]' failed (16.387 seconds).
+
+## diagnosis: a seek to 60 s in code, 60 KB/s M4A
+### fix
+DIAG before seek t=3.0364270210266113 clock=1.838424705 served=["bytes=0-1:2", "bytes=0-1884669:196608"] size=1884670
+DIAG after seek +0.6 clock=60.43 rate=1.0 tc=2 served=["bytes=0-1:2", "bytes=0-1884669:196608", "bytes=951831-1884669:65536"]
+DIAG after seek +1.1 clock=60.94 rate=1.0 tc=2 served=["bytes=0-1:2", "bytes=0-1884669:196608", "bytes=951831-1884669:65536"]
+### IR-005
+DIAG before seek t=3.05014705657959 clock=1.846869569 served=["bytes=0-1:2", "bytes=0-1884669:196608"] size=1884670
+DIAG after seek +14.0 clock=60.45 rate=1.0 tc=2 served=["bytes=0-1:2", "bytes=0-1884669:1048576"]
+DIAG after seek +14.6 clock=60.97 rate=1.0 tc=2 served=["bytes=0-1:2", "bytes=0-1884669:1114112"]
+
+## the audio screen's sliders (temporary probe)
+PROBE slider 0 id=Volume Slider label=Current position value= frame=(344.0, 80.0, 26.0, 8.0)
+PROBE slider 1 id=Current position label=Current position value=4 seconds elapsed, 1 minute, 56 seconds remaining frame=(77.99999999999999, 814.0, 237.66666666666663, 8.0)
+
+## where the scrub lands (temporary print)
+MARK seek 1795572609371
+TMPPOS right after 1 minute, 0 seconds elapsed, 1 minute, 0 seconds remaining at 1795572610.776036
+
+## real node: testC on the fix
+MARK tap-m4a 1795572807127
+MARK player 1795572809637
+MARK seek 1795572814156
+POSITION after seek hidden
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:458752", "bytes=693716-1867270:206:130687", "bytes=964624-1867270:206:65152"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' passed (22.150 seconds).
+
+## real node: testC on IR-005's loader (red)
+MARK tap-m4a 1795572847476
+MARK player 1795572849949
+MARK seek 1795572854470
+POSITION after seek hidden
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:589824"]
+<worktree>/autobyteus-ios/AutoByteusMobileUITests/NativeMediaRealNodeUITests.swift:100: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange] : XCTAssertFalse failed - the seek reads from the middle by range, with the header
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' failed (22.189 seconds).
+
+## real node: the audio class (the two video tests that ran after its testZ are rerun below)
+REQUESTS ["bytes=0-1:206:2"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testAAnMP3FromTheChatLinkPlaysInTheAppsPlayer]' passed (27.974 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testBTheMP3ReopenedFetchesOnlyTheProbe]' passed (15.885 seconds).
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:458752", "bytes=691308-1867270:206:130687", "bytes=944142-1867270:206:0"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' passed (22.322 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testDATeamsMediaReferencesPlayInTheAppsPlayer]' passed (29.939 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testEAMediaReferenceStaysAsItIsWhileMessagesArrive]' passed (28.855 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testFTheOtherReferencesShowInThePage]' passed (44.948 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testGOggAndWebMStayInThePage]' passed (25.475 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' passed (47.129 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.449 seconds).
+
+## real node, fresh stack: 574's video tests
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.400 seconds).
+MARK tap 1795573816827
+MARK player 1795573818760
+MARK landscape 1795573818768
+MARK seek 1795573826285
+MARK seek-done 1795573827712
+POSITION +1s 17 seconds elapsed, 13 seconds remaining
+POSITION +2s 18 seconds elapsed, 12 seconds remaining
+POSITION +3s hidden
+MARK back 1795573833085
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testAWideVideoFromTheChatLink]' passed (24.851 seconds).
+REALTIME delivered 13762562 bytes in 10.0 s; real-time playback needs at least 5347659
+Test Case '-[AutoByteusMobileUITests.NativeVideoRealNodeUITests testBDeliversInRealTimeOverASlowerLink]' passed (19.450 seconds).
+
+## credentials: every media request with the phone header True; with a credential in its URL 0 (stack 1: 47, stack 2: 4)

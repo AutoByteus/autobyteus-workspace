@@ -1,0 +1,47 @@
+# IMP-07 (D-2 Android, AC-002 on Android) the player on a real emulator: video as 574, MP3 and M4A audio
+# command: my own AVD ie642_api35 (system-images;android-35;google_apis;arm64-v8a, -port 5642, headless, host GPU), held in
+#   portrait; adb push the test files (a 60 s 30.5 MB MP4, a 30 s baseline page MP4, a 120 s 3.8 MB MP3 and 3.75 MB M4A,
+#   all ffmpeg lavfi); ANDROID_SERIAL=emulator-5642 ./gradlew :app:connectedDebugAndroidTest
+#   -Pandroid.testInstrumentationRunnerArguments.class=...MediaPlayerActivityTest,...MediaPlayerActivityAudioTest,...web.WebMediaFullScreenTest
+#   red: MediaPlayerActivityAudioTest with the audio screen made the video screen (restored, compared byte for byte)
+# commit: 18163b3c1b
+# env: macOS, Android emulator API 35 (arm64), Media3 1.5.1, the on-device RangeFileServer at about 1.5 MB/s
+# date: 2026-11-24
+# result: Pass: 7 of 7 (4 video, 2 audio, the in-page full screen). Audio: plays (the player is playing when the screen
+#   is up), name and controls shown, no full-screen button, the seek to the middle asks a range from there, every request
+#   with the credential header, a reopen reads 0 bytes again of what was cached. Red: both audio cases fail with
+#   "no full-screen button".
+#   Note: "playing after 3 ms" counts from ActivityScenario.launch returning, which already waits for the screen.
+
+## results
+MediaPlayerActivityTest aMissingFileOrARefusedCredentialSaysItCouldNotBePlayedWithBack passed
+MediaPlayerActivityTest playsAtOnceSeeksByRangeReopensFromTheCacheAndReadsAChangedFileAgain passed
+MediaPlayerActivityTest fullScreenTurnsToLandscapeWithTheBarsHiddenAndBackToPortraitAtTheSamePosition passed
+MediaPlayerActivityTest removingANodeDeletesItsCachedVideosAndNoOtherNodes passed
+MediaPlayerActivityAudioTest anM4aPlaysWithItsTitleAndControlsSeeksByRangeAndReopensFromTheCache passed
+MediaPlayerActivityAudioTest anMp3PlaysWithItsTitleAndControlsSeeksByRangeAndReopensFromTheCache passed
+WebMediaFullScreenTest anInPageVideosFullScreenButtonShowsItInLandscapeAndBackInPortraitAtTheSamePosition passed
+BUILD SUCCESSFUL in 38s
+
+## logcat (the tests' own report lines)
+I MediaPlayerActivityTest: first open: playing after 1036 ms; 1638402 of 30536001 bytes served by then
+I MediaPlayerActivityTest: seek to 30 s: playing there after 910 ms; ranges asked: [bytes=0-1, null, bytes=15564573-30536000]
+I MediaPlayerActivityTest: reopen: 5584181 bytes cached before; served on reopen [bytes=0-1:2, bytes=1643829-15564572:327680, bytes=19504925-30536000:458752]; read again of the cached: 0
+I MediaPlayerActivityTest: changed file: served [bytes=0-1:2, null:2031616]
+I MediaPlayerActivityTest: full screen: landscape at 693 ms; back to portrait at 1208 ms
+I MediaPlayerActivityTest: node removal: 1 entry left for the other node
+I MediaPlayerActivityAudioTest: memo.m4a: playing after 3 ms; 393218 of 3753546 bytes served by then
+I MediaPlayerActivityAudioTest: memo.m4a: seek to 60000 ms of 120000: playing there after 119 ms; ranges [bytes=0-1, null, bytes=1888012-3753545]
+I MediaPlayerActivityAudioTest: memo.m4a reopen: 2259261 bytes cached; served [bytes=0-1:2, bytes=393727-1888011:1376256]; read again of the cached: 0
+I MediaPlayerActivityAudioTest: memo.mp3: playing after 3 ms; 524290 of 3841580 bytes served by then
+I MediaPlayerActivityAudioTest: memo.mp3: seek to 60012 ms of 120024: playing there after 117 ms; ranges [bytes=0-1, null, bytes=1920812-3841579]
+I MediaPlayerActivityAudioTest: memo.mp3 reopen: 2425388 bytes cached; served [bytes=0-1:2, bytes=524588-1920811:1376256]; read again of the cached: 0
+
+## red (audio shown as video)
+org.autobyteus.mobile.media.MediaPlayerActivityAudioTest > anM4aPlaysWithItsTitleAndControlsSeeksByRangeAndReopensFromTheCache[ie642_api35(AVD) - 15] FAILED 
+	java.lang.AssertionError: no full-screen button
+org.autobyteus.mobile.media.MediaPlayerActivityAudioTest > anMp3PlaysWithItsTitleAndControlsSeeksByRangeAndReopensFromTheCache[ie642_api35(AVD) - 15] FAILED 
+	java.lang.AssertionError: no full-screen button
+Tests on ie642_api35(AVD) - 15 failed: There was 2 failure(s).
+> Task :app:connectedDebugAndroidTest FAILED
+BUILD FAILED in 12s

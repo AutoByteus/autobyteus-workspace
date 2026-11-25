@@ -26,7 +26,6 @@ const TARGETED_FILES = Array.from(new Set([
   'pages/settings.vue',
   'pages/chat.vue',
   'components/conversation/segments/renderer/MarkdownRenderer.vue',
-  'components/conversation/segments/renderer/FileDisplay.vue',
   'components/fileExplorer/FileItem.vue',
   'components/workspace/agent/ArtifactList.vue',
   'components/workspace/agent/ArtifactItem.vue',

@@ -33,9 +33,9 @@ import org.autobyteus.mobile.ui.connect.ScanScreen
 import org.autobyteus.mobile.ui.sheets.RemoveNodeSheet
 import org.autobyteus.mobile.ui.sheets.TypeAddressSheet
 import org.autobyteus.mobile.ui.start.StartScreen
-import org.autobyteus.mobile.video.NativeVideoPlayback
-import org.autobyteus.mobile.video.VideoCache
-import org.autobyteus.mobile.video.VideoPlayerActivity
+import org.autobyteus.mobile.media.NativeMediaPlayback
+import org.autobyteus.mobile.media.MediaCache
+import org.autobyteus.mobile.media.MediaPlayerActivity
 import org.autobyteus.mobile.web.AutoByteusWebView
 import org.autobyteus.mobile.web.DownloadsSaver
 import org.autobyteus.mobile.web.ShellBridge
@@ -250,15 +250,15 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             fullScreenRequest.onRequest(on, plainPageOnScreen = screen == Screen.Web && pageState.overlay == null)
         override fun onSaveFile(file: ShellBridgeAction.SaveFile) = downloadsSaver.save(file)
         /**
-         * The page's video, in the app's player (autobyteus-574 D-3, D-5): the credential goes to the player through
-         * memory only; the Intent carries a token.
+         * The page's video or audio file, in the app's player (autobyteus-574 D-3, D-5; autobyteus-642 D-2): the
+         * credential goes to the player through memory only; the Intent carries a token.
          */
-        override fun onPlayVideo(entryId: String, video: ShellBridgeAction.PlayVideo) {
+        override fun onPlayMedia(entryId: String, media: ShellBridgeAction.PlayMedia) {
             val entry = currentWebHost?.entry?.takeIf { it.id == entryId } ?: return
-            val token = NativeVideoPlayback.put(NativeVideoPlayback.Request(
-                nodeId = entry.id, nodeOrigin = entry.origin, url = video.url, title = video.title, credential = video.credential,
+            val token = NativeMediaPlayback.put(NativeMediaPlayback.Request(
+                nodeId = entry.id, nodeOrigin = entry.origin, url = media.url, title = media.title, credential = media.credential,
             ))
-            startActivity(Intent(this@MainActivity, VideoPlayerActivity::class.java).putExtra(VideoPlayerActivity.EXTRA_PLAYBACK, token))
+            startActivity(MediaPlayerActivity.intent(this@MainActivity, token, media.kind))
         }
     }
 
@@ -309,8 +309,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun openRemoveSheet(entry: SavedNodeEntry) {
         startScreen.showSheet(RemoveNodeSheet.build(ui, entry, onRemove = {
             savedNodeStore.removeEntry(entry.id)
-            // Its videos leave the phone with it (autobyteus-574 D-7).
-            VideoCache.deleteNode(this, entry.id)
+            // Its cached videos and audio leave the phone with it (autobyteus-574 D-7).
+            MediaCache.deleteNode(this, entry.id)
             if (currentWebHost?.entry?.id == entry.id) {
                 closePage()
                 showStart()

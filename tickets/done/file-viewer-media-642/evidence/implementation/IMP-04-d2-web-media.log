@@ -1,0 +1,29 @@
+# IMP-04 (D-2 web, REQ-002) useNativeMediaPlayback(kind), playMedia, hello.mediaPlayer, the audio viewer and chat tile
+# command: pnpm -C autobyteus-web exec vitest run components/fileExplorer/viewers composables/mobile utils/remoteAccess
+#            components/conversation/segments
+#          red: MediaViewers.native.spec.ts with the old AudioPlayer.vue (restored after)
+# commit: 8d27fb14f5
+# env: macOS, Node 22.23.1, vitest
+# date: 2026-11-24
+# result: Pass: 40 files, 302 tests. Red: the three audio viewer cases fail on the old AudioPlayer (it downloads the
+#   file and sends nothing to the app); every video case passes on both.
+
+## red
+   ✓ a protected node 'video' file in the phone apps > Files: opening it plays it in the app at once and leaves a Play button; the page downloads nothing 58ms
+   ✓ a protected node 'video' file in the phone apps > Files: opening another file hands that one to the app 43ms
+   ✓ a protected node 'video' file in the phone apps > Files: a reload of the open file (contentRevision) posts no playMedia; Play still does 40ms
+   ✓ a protected node 'video' file in the phone apps > chat: a media message shows a play tile, which plays it in the app; nothing is downloaded 13ms
+   ✓ a protected node 'video' file in the phone apps > an app without the player: the page downloads it and plays it in its own player, as today (574 AC-006) 47ms
+   × a protected node 'audio' file in the phone apps > Files: opening it plays it in the app at once and leaves a Play button; the page downloads nothing 43ms
+   × a protected node 'audio' file in the phone apps > Files: opening another file hands that one to the app 41ms
+   × a protected node 'audio' file in the phone apps > Files: a reload of the open file (contentRevision) posts no playMedia; Play still does 40ms
+   ✓ a protected node 'audio' file in the phone apps > chat: a media message shows a play tile, which plays it in the app; nothing is downloaded 12ms
+   ✓ a protected node 'audio' file in the phone apps > an app without the player: the page downloads it and plays it in its own player, as today (574 AC-006) 35ms
+   ✓ a type the app does not play (autobyteus-642 REQ-002) > AudioPlayer: an iOS app without it in its list keeps the page path (audio) 34ms
+   ✓ a type the app does not play (autobyteus-642 REQ-002) > VideoPlayer: an iOS app without it in its list keeps the page path (video) 35ms
+   ✓ a type the app does not play (autobyteus-642 REQ-002) > chat: an Ogg audio message on iOS plays in the page 9ms
+      Tests  3 failed | 10 passed (13)
+
+## green
+ Test Files  40 passed (40)
+      Tests  302 passed (302)

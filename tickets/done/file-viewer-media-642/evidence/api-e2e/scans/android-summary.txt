@@ -1,0 +1,4 @@
+Android (own AVD api642_media, app debug af2b65c2c0). The phone's credential read from the page's storage in memory only (mra_…); occurrences:
+logcat (all buffers): 0; app-cache.tar (cache/ + databases/): 0; the stack's proxy log: 0; the stack's stdout: 0; "mra_" anywhere in logcat: 0.
+File requests in the proxy log (content?path, references, /rest/files): 29, all `credential: phone`, `urlCredential: false`.
+Cache folder: cache/media-cache (32,548 KB, 17 files before node removal; 76 KB, 0 files after).

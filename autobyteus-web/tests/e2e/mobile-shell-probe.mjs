@@ -242,6 +242,7 @@ import { runConversationOrderLiveCases } from './mobile-conversation-order-live-
 import { runHeadingLinksCases } from './mobile-heading-links-cases.mjs';
 import { runCodeWrapCases } from './mobile-code-wrap-cases.mjs';
 import { runFileWordWrapCases } from './mobile-file-word-wrap-cases.mjs';
+import { runFileViewerMediaCases } from './mobile-file-viewer-media-cases.mjs';
 import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
@@ -2700,6 +2701,7 @@ const runCases = async () => {
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView, sendOver });
   await runCodeWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileWordWrapCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runFileViewerMediaCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runContextFileSizeCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runRestoredRunCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedDelegationCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, beta, stack, desktopRunsView });

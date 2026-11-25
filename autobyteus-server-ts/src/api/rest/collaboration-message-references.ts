@@ -17,7 +17,8 @@ const STATUS: Readonly<Record<MessageReferenceContentErrorCode, number>> = Objec
 /**
  * A reference file of a message of a run's view (autobyteus-615), by the identity its message list was read with
  * (`collaborationParticipantMessages`: root kind and run ID): the one route for every root kind, standalone, Team and Org
- * alike. A refusal answers `{ detail, code }`. The process reader is read per request, as the GraphQL resolver does.
+ * alike. The file is served by range with its version, like the other file routes, and never stored (autobyteus-642 D-1).
+ * A refusal answers `{ detail, code }`. The process reader is read per request, as the GraphQL resolver does.
  */
 export async function registerCollaborationMessageReferenceRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Params: { rootKind: string; rootRunId: string; messageId: string; referenceId: string } }>(
@@ -31,7 +32,7 @@ export async function registerCollaborationMessageReferenceRoutes(app: FastifyIn
       try {
         const content = await getMessageReferenceContentReader().resolve({ rootKind: rootKind.data, rootRunId, messageId, referenceId });
         reply.header("cache-control", "no-store");
-        return sendUserFile(reply, { kind: "stream", mimeType: content.mimeType, body: content.stream, size: null }, request);
+        return sendUserFile(reply, content, request);
       } catch (error) {
         if (error instanceof MessageReferenceContentError) {
           return reply.code(STATUS[error.code]).send({ detail: error.message, code: error.code });

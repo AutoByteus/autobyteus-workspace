@@ -19,9 +19,9 @@ vi.mock('~/composables/useAuthorizedObjectUrl', () => ({
   }),
 }));
 // Outside the phone apps (VideoPlayer.native.spec.ts covers the apps' player).
-vi.mock('~/composables/mobile/useNativeVideoPlayback', () => ({
-  useNativeVideoPlayback: () => ({ modeFor: () => 'page', play: () => false }),
-  videoTitleOf: () => 'clip.mp4',
+vi.mock('~/composables/mobile/useNativeMediaPlayback', () => ({
+  useNativeMediaPlayback: () => ({ modeFor: () => 'page', play: () => false }),
+  mediaTitleOf: () => 'clip.mp4',
 }));
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({ t: (_key: string, params?: Record<string, string>) => `${params?.loaded} of ${params?.total}` }),
@@ -41,7 +41,7 @@ const wrappers: VueWrapper[] = [];
 
 const mountSubject = (url: string | null): VueWrapper => {
   const wrapper = mount(VideoPlayer, {
-    props: { url },
+    props: { url, fileName: 'media/clip' },
     global: {
       mocks: {
         $t: (key: string) => translations[key] ?? key,

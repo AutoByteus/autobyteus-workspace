@@ -38,7 +38,6 @@ export async function registerFileRoutes(app: FastifyInstance): Promise<void> {
     }
 
     return sendUserFile(reply, {
-      kind: "file",
       mimeType: (lookupMime(resolvedPath) || "application/octet-stream").toString(),
       path: resolvedPath,
       size: stat.size,

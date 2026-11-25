@@ -174,12 +174,22 @@ const updateFileType = async () => {
   }
 };
 
+/**
+ * A video or audio reference is not read here: its viewer streams the route by range (the desktop element, the phone
+ * app's own player) or downloads it itself (a phone browser), autobyteus-642 SR-003. One byte is asked first, so a
+ * reference that is gone still says so.
+ */
+const streamsByUrl = () => fileType.value === 'Video' || fileType.value === 'Audio';
+
 const fetchContent = async () => {
   resetResolvedState();
   const currentToken = ++fetchToken;
   isFetchingContent.value = true;
   try {
-    const response = await authorizedFetch(contentUrl.value, { cache: 'no-store' });
+    const streams = streamsByUrl();
+    const response = await authorizedFetch(contentUrl.value, streams
+      ? { headers: { Range: 'bytes=0-0' }, cache: 'no-store' }
+      : { cache: 'no-store' });
     if (response.status === 404) {
       const body = await Promise.resolve().then(() => response.json()).catch(() => null) as { code?: unknown } | null;
       if (currentToken !== fetchToken) return;
@@ -189,6 +199,12 @@ const fetchContent = async () => {
     }
     if (!response.ok) {
       throw new Error(`Failed to fetch reference content (${response.status})`);
+    }
+    if (streams) {
+      void response.body?.cancel().catch(() => undefined);
+      if (currentToken !== fetchToken) return;
+      resolvedUrl.value = contentUrl.value;
+      return;
     }
     if (fileType.value === 'Text') {
       const text = await response.text();
@@ -233,8 +249,18 @@ onBeforeUnmount(() => {
   clearResolvedObjectUrl();
 });
 
+// Each source is compared by value: the phone's message list hands a new, equal reference object on every message
+// update, and a reload remounts the viewer, whose player in the phone app would open again by itself (autobyteus-642
+// CR-002). A changed file (`updatedAt`) or a re-click (`refreshSignal`) reloads it.
 watch(
-  () => [props.contentPath, props.reference.referenceId, props.reference.path, props.reference.type, props.reference.updatedAt, props.refreshSignal ?? 0],
+  [
+    () => props.contentPath,
+    () => props.reference.referenceId,
+    () => props.reference.path,
+    () => props.reference.type,
+    () => props.reference.updatedAt,
+    () => props.refreshSignal ?? 0,
+  ],
   () => { void syncReferenceView(); },
   { immediate: true },
 );

@@ -8,6 +8,12 @@ import ImageViewer from '../viewers/ImageViewer.vue';
 vi.mock('~/components/fileExplorer/MonacoEditor.vue', () => ({
   default: { name: 'MonacoEditor', template: '<div class="monaco-mock" />', props: ['modelValue', 'language', 'readOnly'] }
 }));
+vi.mock('~/components/fileExplorer/viewers/VideoPlayer.vue', () => ({
+  default: { name: 'VideoPlayer', template: '<div class="video-mock" />', props: ['url', 'fileName', 'contentRevision'] }
+}));
+vi.mock('~/components/fileExplorer/viewers/AudioPlayer.vue', () => ({
+  default: { name: 'AudioPlayer', template: '<div class="audio-mock" />', props: ['url', 'fileName', 'contentRevision'] }
+}));
 vi.mock('~/components/fileExplorer/viewers/ImageViewer.vue', () => ({
   default: { name: 'ImageViewer', template: '<div class="image-mock" />', props: ['url'] }
 }));
@@ -26,7 +32,7 @@ vi.mock('~/components/fileExplorer/viewers/HtmlPreviewer.vue', () => ({
   }
 }));
 vi.mock('~/utils/highlighting/languageDetector', () => ({
-  getLanguage: () => 'typescript'
+  getMonacoLanguage: () => 'typescript'
 }));
 
 describe('FileViewer.vue', () => {
@@ -116,5 +122,25 @@ describe('FileViewer.vue', () => {
     expect(preview.exists()).toBe(true);
     expect(preview.props('path')).toBe('docs/index.html');
     expect(preview.props('relativeResourceContext')).toEqual(relativeResourceContext);
+  });
+
+  // autobyteus-642 SR-004: the players name the file by its path, which the native player's type and title come from; a
+  // message reference's URL names no file.
+  it.each([
+    ['Video', 'VideoPlayer', 'demo/clip.mp4'],
+    ['Audio', 'AudioPlayer', '/tmp/memo.m4a'],
+  ] as const)('passes the %s file\'s path to %s as its fileName', (type, name, path) => {
+    const url = 'http://127.0.0.1:4100/rest/collaboration-messages/agent_team/t1/messages/m1/references/r1/content';
+    const wrapper = mount(FileViewer, { props: { file: { path, type, content: null, url }, mode: 'preview' } });
+    const player = wrapper.findComponent({ name });
+    expect(player.exists()).toBe(true);
+    expect({ url: player.props('url'), fileName: player.props('fileName') }).toEqual({ url, fileName: path });
+  });
+
+  it('gives fileName only to the media players', () => {
+    const wrapper = mount(FileViewer, {
+      props: { file: { path: 'diagram.svg', type: 'Image', content: null, url: 'http://example.com/diagram.svg' }, mode: 'preview' },
+    });
+    expect(wrapper.findComponent({ name: 'ImageViewer' }).attributes('filename')).toBeUndefined();
   });
 });

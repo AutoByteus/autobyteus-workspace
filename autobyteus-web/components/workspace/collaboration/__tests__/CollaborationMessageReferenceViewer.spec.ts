@@ -60,6 +60,9 @@ const storedSession = (): MobileNodeSession => ({
   },
 });
 
+/** How many times the FileViewer stub has mounted (a remount restarts the viewer's player). */
+let fileViewerMounts = 0;
+
 const mountSubject = (props: Record<string, unknown> = {}) => mount(CollaborationMessageReferenceViewer, {
   props: {
     contentPath: 'collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/ref%3Awith%2Fslash/content',
@@ -71,6 +74,7 @@ const mountSubject = (props: Record<string, unknown> = {}) => mount(Collaboratio
       Icon: true,
       FileViewer: {
         props: ['file', 'error', 'mode'],
+        mounted() { fileViewerMounts += 1; },
         template: '<div data-test="file-viewer"><span data-test="type">{{ file.type }}</span><span data-test="content">{{ file.content }}</span><span data-test="url">{{ file.url }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
       },
     },
@@ -119,8 +123,6 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
 
   it.each([
     ['image', 'Image', '/tmp/screenshot.png'],
-    ['audio', 'Audio', '/tmp/clip.mp3'],
-    ['video', 'Video', '/tmp/demo.mp4'],
     ['pdf', 'PDF', '/tmp/spec.pdf'],
     ['csv', 'Excel', '/tmp/data.csv'],
     ['excel', 'Excel', '/tmp/report.xlsx'],
@@ -170,6 +172,90 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
       expect(wrapper.get('[data-test="url"]').text()).toBe(`blob:${referenceType}-reference`);
     },
   );
+
+  // autobyteus-642 SR-003 (UC-001): a video or audio reference is not downloaded here. One byte is asked (so a gone
+  // reference still says so), and FileViewer gets the route's own URL, which its player streams by range (the desktop
+  // element, the phone app's player) or downloads itself (a phone browser).
+  it.each([
+    ['audio', 'Audio', '/tmp/clip.mp3'],
+    ['video', 'Video', '/tmp/demo.mp4'],
+  ] satisfies Array<[TeamReferenceFileType, FileDataType, string]>)(
+    'asks one byte of a %s reference and passes the route URL itself to FileViewer',
+    async (referenceType, expectedFileType, path) => {
+      mobileCredentialStorage.save(storedSession());
+      useMobileNodeSessionStore().initializeFromStorage();
+      const blob = vi.fn();
+      const cancel = vi.fn(async () => undefined);
+      vi.stubGlobal('fetch', vi.fn(async () => ({ status: 206, ok: true, blob, body: { cancel } })));
+      const createObjectURL = vi.fn();
+      Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectURL });
+      const url = `http://127.0.0.1:4100/rest/collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/${referenceType}-ref/content`;
+
+      const wrapper = mountSubject({
+        contentPath: `collaboration-messages/agent_team/team%20run%2F1/messages/message%2F1/references/${referenceType}-ref/content`,
+        reference: { ...baseReference, referenceId: `${referenceType}-ref`, path, type: referenceType },
+      });
+      await flushPromises();
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      const [requested, init] = vi.mocked(fetch).mock.calls[0];
+      expect(requested).toBe(url);
+      expect(init).toMatchObject({ cache: 'no-store' });
+      expect((init?.headers as Headers).get('Range')).toBe('bytes=0-0');
+      expect((init?.headers as Headers).get('Authorization')).toBe('Bearer mra_secret');
+      expect(blob).not.toHaveBeenCalled();
+      expect(createObjectURL).not.toHaveBeenCalled();
+      expect(cancel).toHaveBeenCalled();
+      expect(wrapper.get('[data-test="type"]').text()).toBe(expectedFileType);
+      expect(wrapper.get('[data-test="url"]').text()).toBe(url);
+    },
+  );
+
+  it.each([
+    ['REFERENCE_NOT_FOUND', { code: 'REFERENCE_NOT_FOUND' }, "This file's message could not be found in this conversation."],
+    ['REFERENCE_CONTENT_UNAVAILABLE', { code: 'REFERENCE_CONTENT_UNAVAILABLE' }, 'deleted, moved, or become unreadable'],
+  ])('a video reference whose probe answers 404 %s shows the unavailable state', async (_code, body, detail) => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 404, ok: false, json: async () => body })));
+    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/demo.mp4', type: 'video' } });
+    await flushPromises();
+    expect(wrapper.text()).toContain('Reference file unavailable');
+    expect(wrapper.text()).toContain(detail);
+    expect(wrapper.find('[data-test="file-viewer"]').exists()).toBe(false);
+  });
+
+  it('a video reference whose probe fails otherwise passes the error to FileViewer', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 403, ok: false })));
+    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/demo.mp4', type: 'video' } });
+    await flushPromises();
+    expect(wrapper.get('[data-test="error"]').text()).toContain('Failed to fetch reference content (403)');
+    expect(wrapper.get('[data-test="url"]').text()).toBe('');
+  });
+
+  // autobyteus-642 CR-002: the phone's message list re-projects every reference as a new object on each message update.
+  // An equal new reference neither refetches nor remounts the viewer, whose player in the phone app would open again by
+  // itself; a changed file (`updatedAt`) or a re-click (`refreshSignal`) does reload it.
+  it('an equal new reference object neither refetches nor remounts the viewer; a new updatedAt or refreshSignal does', async () => {
+    const reference = { ...baseReference, path: '/tmp/demo.mp4', type: 'video' as const };
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 206, ok: true, body: { cancel: async () => undefined } })));
+    fileViewerMounts = 0;
+    const wrapper = mountSubject({ reference, refreshSignal: 0 });
+    await flushPromises();
+    // The first load renders the viewer before its probe (no URL yet, so no player opens) and again after it.
+    const loaded = fileViewerMounts;
+    expect(vi.mocked(fetch).mock.calls.length).toBe(1);
+
+    await wrapper.setProps({ reference: { ...reference } });
+    await wrapper.setProps({ reference: Object.freeze({ ...reference }) });
+    await flushPromises();
+    expect({ fetches: vi.mocked(fetch).mock.calls.length, mounts: fileViewerMounts }).toEqual({ fetches: 1, mounts: loaded });
+
+    await wrapper.setProps({ reference: { ...reference, updatedAt: '2026-04-12T10:05:00.000Z' } });
+    await flushPromises();
+    expect(vi.mocked(fetch).mock.calls.length).toBe(2);
+    await wrapper.setProps({ refreshSignal: 1 });
+    await flushPromises();
+    expect(vi.mocked(fetch).mock.calls.length).toBe(3);
+  });
 
   // autobyteus-615 (REQ-003, AC-004, DEC-003): a 404 reads the node's code; only a missing message or reference reads as
   // such, and a missing file (or an answer without a code) keeps today's text.

@@ -1,0 +1,36 @@
+# IMP-14 (SR-005, DEC-007; N-7, N-8) the iOS audio session while the media player shows
+# command: TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<a 60 s MP4> xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj
+#   -scheme AutoByteusMobile -destination id=<own simulator> -only-testing:AutoByteusMobileCoreTests test;
+#   python3 autobyteus-ios/scripts/fake-mobile-server.py --port 29644 --video <the MP4> --audio <an MP3>;
+#   xcodebuild ... -only-testing:AutoByteusMobileUITests/NativeMediaPlayerUITests AUTOBYTEUS_TEST_NODE_URL=http://127.0.0.1:29644/mobile test;
+#   xcrun simctl spawn <sim> log show --last 10m --predicate 'eventMessage CONTAINS "AutoByteusMedia: the audio session"'
+# commit: 38f318021c
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this round and deleted after)
+# date: 2026-11-25
+# result: Pass.
+#   - MediaAudioSessionTests (the real AVAudioSession of the test host): while the player shows the category is
+#     .playback, mode .moviePlayback, and setActive(true) succeeds; after, setActive(false, .notifyOthersOnDeactivation)
+#     succeeds and the category in effect before (.ambient here) and its mode are back; a second begin or end changes
+#     nothing. iOS has no public "is active" getter, so activation is what setActive answers.
+#   - The Core suite: 88 tests, 0 failures (86 before, plus these 2).
+#   - The player with the session wired in: NativeMediaPlayerUITests 3 of 3 (video in landscape and Back, a missing video,
+#     audio in portrait); the simulator's log has no "AutoByteusMedia: the audio session ..." failure line (count 0).
+#   - Not here: the sound and the Ring/Silent switch (a simulator plays no sound through the switch); the physical-iPhone
+#     check before release covers them (SR-005).
+#   - Red: not applicable at unit level (MediaAudioSession is new). Before it the app set no category, which DEC-007 records.
+
+## Core
+Test Case '-[AutoByteusMobileCoreTests.MediaAudioSessionTests testEndingTwiceOrWithoutABeginChangesNothing]' passed (0.464 seconds).
+Test Case '-[AutoByteusMobileCoreTests.MediaAudioSessionTests testThePlayerSetsPlaybackWhileItShowsAndRestoresTheCategoryAfter]' passed (0.019 seconds).
+	 Executed 88 tests, with 0 failures (0 unexpected) in 14.420 (14.620) seconds
+	 Executed 88 tests, with 0 failures (0 unexpected) in 14.420 (14.621) seconds
+
+## UI (fake node)
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testAMissingVideoSaysItCouldNotBePlayedWithBack]' passed (21.698 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed (27.186 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeVideoPlaysInTheAppsPlayerInLandscapeAndBackReturnsToThePageInPortrait]' passed (21.496 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 70.380 (70.382) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 70.380 (70.383) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 70.380 (70.384) seconds
+
+## log lines of an audio session failure: 0

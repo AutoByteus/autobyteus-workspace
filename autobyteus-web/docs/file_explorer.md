@@ -333,21 +333,30 @@ they seek; a desktop window's workspace URL is a node file route, which answers
 Range requests (206 with an `ETag`, and `no-cache` so a rewritten file reloads
 new: [User Files](../../autobyteus-server-ts/docs/features/remote_access.md#user-files)),
 so it seeks too (autobyteus-574).
-Where the node key must travel in a request header (the phone), the viewer plays
-a video one of two ways, chosen by `useNativeVideoPlayback.modeFor(url)`
-(autobyteus-574). In the Android and iOS apps, whose `hello` reply says they have
-a video player (`videoPlayer`), a protected video of the open node is `native`:
-the page loads nothing itself, the viewer shows the file's name and a **Play**
-button, and the app's own player (Media3, AVPlayer) streams the file by range with
-the key in a header, never in a URL (the shell bridge's `playVideo`: [Phone
+Where the node key must travel in a request header (the phone), the video and
+audio viewers play a file one of two ways, chosen by
+`useNativeMediaPlayback(kind).modeFor(url)` (autobyteus-574, autobyteus-642). In
+the Android and iOS apps, whose `hello` reply lists the file extensions their own
+player plays per kind (`mediaPlayer: { video, audio }`), a protected file of the
+open node whose extension is listed is `native`. The extension is that of the
+file's name, which the caller gives (`modeFor(url, fileName)`, `play(url,
+fileName)`): `FileViewer` passes the file's path to `VideoPlayer` and
+`AudioPlayer` (`fileName`), and a chat media message the last segment of its own
+`/rest/files/<path>` URL. A URL need not name its file: a message reference's
+`…/references/<id>/content` does not (autobyteus-642 SR-004). The
+page loads nothing itself, the viewer shows the file's name and a **Play** button,
+and the app's own player (Media3, AVPlayer) streams the file by range with the key
+in a header, never in a URL (the shell bridge's `playMedia`: [Phone
 Access](./remote_access.md#shell-bridge-android-and-ios)). The player opens by
 itself when the viewer is first shown or another file is selected, never when the
 same file is reloaded (`contentRevision`: an agent rewrote it, or it was opened
 again): Back closes it, and **Play** opens it again on the file as it is then. A
-video in a chat media message shows a **Play video** tile that does the same
-(`MediaSegment.vue`). While the app has not yet said whether it has the player
-(`pending`), nothing is loaded. In a phone browser, in an older app, for another
-site's video or without a key (`page`), `useAuthorizedObjectUrl` downloads the
+video or audio file in a chat media message shows a **Play video** or **Play
+audio** tile that does the same (`MediaSegment.vue`). While the app has not yet
+said what its player plays (`pending`), nothing is loaded. In a phone browser, in
+an older app, for a type the app does not list (for example WebM video, or Ogg and
+Opus audio, on iOS), for another site's file or without a key (`page`),
+`useAuthorizedObjectUrl` downloads the
 whole file into an object URL first, as before;
 meanwhile the player shows `MediaLoadingState` (a spinner, "Loading video…", and
 "4.1 of 9.7 MB" when the node declared the file's length) instead of "Video URL
@@ -928,6 +937,16 @@ sentinel used by scoped surfaces such as an AgentOrg member whose canonical
 workspace metadata is unavailable; the layout renders feedback and mounts
 neither the tree nor editor, preventing stale reads, keyboard saves, or writes
 against another workspace.
+
+`FileExplorerLayout` also decides, from its own measured width, whether the
+tree sits beside the file viewer or above it (autobyteus-642). The file viewer
+is never narrower than 400 px (`MIN_VIEWER_WIDTH`) beside the tree: the tree
+and viewer split only when a 150 px tree, the 1 px divider and a 400 px viewer
+fit, so the default 400–450 px right panel shows them stacked. In split the
+tree is shown at the user's dragged width or at what leaves the viewer 400 px,
+whichever is smaller, and the divider stops there; the dragged width comes back
+when the panel widens. The phone's layout (`layout="stacked"`) is always
+stacked.
 
 ### Visible Live Session Lifecycle
 

@@ -1,0 +1,24 @@
+# IMP-08 (D-2 iOS) the Core suite: the rename, the kind, MediaKind's lists against AVFoundation, the loader's type
+# command: TEST_RUNNER_AUTOBYTEUS_574_VIDEO=<a 60 s 30.5 MB MP4> xcodebuild -project autobyteus-ios/AutoByteusMobile.xcodeproj
+#   -scheme AutoByteusMobile -destination id=<own simulator> -only-testing:AutoByteusMobileCoreTests test
+#   (after autobyteus-ios/scripts/prepare-demo-web.sh --build: the app build needs DemoWeb/)
+# commit: 2e2a98a51e (run twice: before and after folding the media-cache folder name into it)
+# env: Xcode 26.1.1, iOS 26.1 simulator (iPhone 17, created for this ticket)
+# date: 2026-11-24
+# result: Pass: 86 tests, 0 failures, both runs. MediaKindTests: every listed extension is a type AVURLAsset plays, and
+#   WebM is not. Observation: this iOS 26.1 also plays Ogg, Opus and FLAC; the list keeps them out because the app supports
+#   iOS 17, and REQ-002 has Ogg/Opus take the page path on iOS.
+
+autobyteus-574 iOS: playing after 1.33 s; at the middle 0.66 s after the seek; requests ["bytes=0-1", "bytes=0-30536000", "bytes=15564573-30536000"]; cached [ClosedRange(0...1572863), ClosedRange(15564573...16416540)]
+autobyteus-574 iOS: reopen served ["bytes=0-1:2"]; fetched again of the cached: 0
+Test Case '-[AutoByteusMobileCoreTests.MediaKindTests testEveryListedTypeIsOneAVFoundationPlays]' passed (0.002 seconds).
+Test Case '-[AutoByteusMobileCoreTests.MediaKindTests testNamesTheFileByThePathQueryOrThePath]' passed (0.003 seconds).
+autobyteus-642 iOS Version 26.1 (Build 23B86): AVURLAsset plays ["ogg: true", "oga: true", "opus: true", "flac: true", "mkv: false"]
+Test Case '-[AutoByteusMobileCoreTests.MediaKindTests testWebMIsNotListed_itIsNotATypeAVFoundationPlays]' passed (0.002 seconds).
+Test Suite 'MediaKindTests' passed at 2026-11-24 22:53:44.424.
+	 Executed 86 tests, with 0 failures (0 unexpected) in 15.399 (15.608) seconds
+	 Executed 86 tests, with 0 failures (0 unexpected) in 15.399 (15.609) seconds
+
+## second run
+	 Executed 86 tests, with 0 failures (0 unexpected) in 11.667 (11.719) seconds
+	 Executed 86 tests, with 0 failures (0 unexpected) in 11.667 (11.719) seconds

@@ -98,7 +98,7 @@ final class DemoWebViewController: UIViewController, WKNavigationDelegate, Shell
     // MARK: ShellBridgeDelegate
 
     func shellBridgeHello() -> ShellHello {
-        ShellHello(nodeCount: nodeCount, deviceName: UIDevice.current.model, nodeName: "Demo", videoPlayer: false)
+        ShellHello(nodeCount: nodeCount, deviceName: UIDevice.current.model, nodeName: "Demo", mediaPlayer: nil)
     }
 
     func shellBridge(didReceive message: ShellBridgeMessage) {
@@ -109,7 +109,7 @@ final class DemoWebViewController: UIViewController, WKNavigationDelegate, Shell
             fullScreen.set(on, for: self)
         case .saveFile(let fileName, let mimeType, let base64):
             ShellFileSaver.present(fileName: fileName, mimeType: mimeType, base64: base64, from: self)
-        case .hello, .pageReady, .paired, .showNodeList, .startScan, .playVideo:
+        case .hello, .pageReady, .paired, .showNodeList, .startScan, .playMedia:
             // The demo pairs nothing and switches to no node (Out of Scope); its page shows at once.
             break
         }

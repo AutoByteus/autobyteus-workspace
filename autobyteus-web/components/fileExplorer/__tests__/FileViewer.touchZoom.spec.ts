@@ -42,7 +42,8 @@ describe('FileViewer touch zoom (autobyteus-472)', () => {
   });
 
   it('gives other viewers, and every viewer on the desktop, only what they had before', () => {
-    expect(Object.keys(shown('Audio', '/w/a.mp3', true)).sort()).toEqual(['class', 'content', 'contentRevision', 'onSave', 'onUpdate:modelValue', 'url']);
+    // The media players also get the file's name (autobyteus-642 SR-004).
+    expect(Object.keys(shown('Audio', '/w/a.mp3', true)).sort()).toEqual(['class', 'content', 'contentRevision', 'fileName', 'onSave', 'onUpdate:modelValue', 'url']);
     expect(Object.keys(shown('PDF', '/w/a.pdf', false)).sort()).toEqual(['class', 'content', 'contentRevision', 'onSave', 'onUpdate:modelValue', 'url']);
     expect(Object.keys(shown('Image', '/w/a.png', false)).sort()).toEqual(['class', 'content', 'contentRevision', 'onSave', 'onUpdate:modelValue', 'url']);
   });

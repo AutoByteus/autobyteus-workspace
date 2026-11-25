@@ -1,0 +1,20 @@
+# IMP-06 (D-2 Android) JVM tests, build, androidTest compile, lint; the extension list checked against Media3 1.5.1
+# command: cd autobyteus-android; ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:lintDebug :app:testDebugUnitTest
+#            :app:assembleDebug :app:compileDebugAndroidTestKotlin
+#          list check: the class files of media3-common 1.5.1 (FileTypes) and media3-extractor 1.5.1 (mp4/Sniffer,
+#            DefaultExtractorsFactory) from the Gradle cache, their constant strings read
+# commit: 18163b3c1b
+# env: macOS, JDK 21, Gradle 8.13 (cache), Android SDK 35
+# date: 2026-11-24
+# result: Pass: JVM tests 130, 0 failed, 0 skipped; BUILD SUCCESSFUL; lint 0 errors (its warnings in the changed files
+#   are on lines as at the base: RequiresFeature on ShellBridge.kt's addWebMessageListener/postMessage, SetTextI18n on
+#   the player's literal texts, as 574 had them).
+# list: Media3 sniffs the container by its bytes. DefaultExtractorsFactory holds Mp4 (mp4, m4v, m4a, mov, 3gp), Matroska
+#   (webm, mkv), Mp3, Adts (aac), Wav, Ogg (ogg, oga, opus) and Flac extractors; the MP4 sniffer accepts the QuickTime
+#   brand `qt  ` and the 3GP brands. So every extension in MediaKind.kt has an extractor.
+
+DefaultExtractorsFactory: AmrExtractor AviExtractor AvifExtractor BmpExtractor FlacExtractor FlvExtractor HeifExtractor JpegExtractor MatroskaExtractor Mp3Extractor FragmentedMp4Extractor Mp4Extractor OggExtractor PngExtractor Ac3Extractor Ac4Extractor AdtsExtractor PsExtractor TsExtractor WavExtractor WebpExtractor
+mp4/Sniffer brands (printable): 3g2a 3g2b 3ge6 3gg6 3gr6 3gs6 M4A  M4V  M4VP MSNV av01 avc1 dby1 f4v  heic hev1 hvc1 isml iso2 iso3 iso4 iso5 iso6 iso9 isom kddi mp41 mp42 piff qt  
+
+BUILD SUCCESSFUL in 17s
+tests 130 skipped 0 failed 0

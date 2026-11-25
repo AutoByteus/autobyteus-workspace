@@ -205,6 +205,10 @@ unregistered icon name.
 
 Text and code files open in `MonacoEditor.vue` with word wrap on (autobyteus-618), on the phone and on the desktop, so a long line never runs past the editor's edge. A wrapped row keeps the indentation of its line, and line numbers appear once per line. A caller's value still wins: `wordWrap` as a prop or in `options`. With none, the editor's context-menu action "Toggle Word Wrap" turns wrap off and on again for that editor; the choice is not remembered between files. Editing, saving, line numbers and highlighting do not depend on it. The one user of `MonacoEditor.vue` is `FileViewer`, so the Files tab, the phone Files screen and the reference and artifact viewers share the default.
 
+## Highlighted File Types
+
+The file viewer's language comes from one table, `utils/highlighting/languageDetector.ts` (`HIGHLIGHTED_FILE_TYPES`, autobyteus-642): a file matches by its whole name (`Dockerfile`) first, then by its extension, and a type that is not in the table opens as plain text. It highlights Python, TypeScript, JavaScript, Vue and HTML, PHP, Ruby, CSS, JSON and Markdown, and YAML (`yaml`, `yml`), TOML, shell (`sh`, `bash`, `zsh`), Go, Rust, Java, XML, INI and Dockerfile. The table names Monaco's languages, which has no TOML (its `ini` grammar is the closest) and no Vue (`html`). A message's code blocks use a different engine and vocabulary: PrismJS, by the fence's own language name (`services/highlightService.ts` registers the grammars; it adds `rs` for `rust` and `zsh` for `bash`, and Prism's own `yml`, `sh`, `shell` and `dockerfile`), so a new language needs its Monaco name in the table for the file viewer and its Prism grammar in the service for chat. No component outside these two readers maps a file type to a language: `FileDisplay.vue`, which once did, was mounted nowhere and was removed.
+
 ## App-Wide Readability / Display Settings
 
 File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.

@@ -1,0 +1,26 @@
+# IMP-13 (CR-002, CRR-002) the reference viewer reloads only when a reference changes by value
+# command: pnpm -C autobyteus-web exec vitest run components/workspace/collaboration/__tests__/CollaborationMessageReferenceViewer.spec.ts
+#          (red: the new case on 26ebb05729's viewer); then components/workspace/collaboration components/mobile
+#          components/fileExplorer/viewers on the fix; env -i PATH HOME TMPDIR pnpm -C autobyteus-web typecheck
+# commit: 36881a6734
+# env: macOS (Darwin 25.5.0), Node 22.23.1
+# date: 2026-11-25
+# result: Pass.
+#   - Red before the fix: two equal new reference objects gave 3 probes and 3 viewer mounts, against 1 and 2. (The first
+#     load mounts the viewer twice in both versions: once before its probe, with no URL and so no player, and once after.)
+#   - Green: an equal new reference object neither refetches nor remounts; a new updatedAt and a refreshSignal bump each
+#     reload (the desktop's re-click). 31 files, 308 tests in the collaboration, mobile and viewer folders; web typecheck
+#     PASS (86 = baseline).
+
+## red
+   × CollaborationMessageReferenceViewer.vue > an equal new reference object neither refetches nor remounts the viewer; a new updatedAt or refreshSignal does 8ms
+AssertionError: expected { fetches: 3, mounts: 3 } to deeply equal { fetches: 1, mounts: 2 }
+      Tests  1 failed | 19 passed (20)
+
+## green
+ Test Files  31 passed (31)
+      Tests  308 passed (308)
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS

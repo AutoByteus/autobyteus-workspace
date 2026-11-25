@@ -19,6 +19,8 @@ const messages: TranslationCatalog = {
     'Play',
   'tools.components.fileExplorer.viewers.AudioPlayer.audio_could_not_be_played':
     'This audio could not be played.',
+  'tools.components.fileExplorer.viewers.AudioPlayer.play':
+    'Play',
   'tools.components.fileExplorer.viewers.AudioPlayer.retry':
     'Retry',
   'tools.components.fileExplorer.viewers.MediaLoadingState.loading_video':

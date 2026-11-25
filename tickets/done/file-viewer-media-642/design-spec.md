@@ -1,0 +1,191 @@
+# Design Spec
+
+## Solution And Approval Basis
+
+- Current solution revision ID: SR-006 (SR-006: the chat leg of D-4 is Markdown code blocks; the dead `FileDisplay.vue` is removed; SR-005: the iOS audio session while the native player is open; … SR-003 after CRR-001; SR-004 after ARCH-REV-003: the file name is an explicit input to the native-playback owner)
+- Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction, user informed)
+- User approval of the design: not required
+- Design status: `Ready`
+- Authorities read (this conversation):
+  - `references/architecture-design.md`
+  - `references/design-principles.md` (incl. Principle 17)
+  - `DESIGN.md`
+  - the node access model (NA-8)
+  - `docs/design-cases.md` (Cases 2, 3, 26)
+- Conflicts: none.
+
+## Task Size And Architectural Risk (Mandatory)
+
+- Task size: `Large`. Four items over the server, the web (two engines, a layout, the media handoff) and both apps (the rename plus audio).
+- Architectural risk: `High`. The web↔app bridge contract changes (`playVideo` → `playMedia`, `videoPlayer` → `mediaPlayer`) across three codebases. The change is clean because 574 is unreleased; there is no security change (the same handoff, NA-8 unchanged).
+- Escalation trigger: a shipped app or tag that contains `playVideo`; an audio format a native player cannot play that the page plays today.
+
+## Change Scope (Mandatory)
+
+- In scope: UC-001…UC-004.
+  - **Server:** the message-reference reader and route.
+  - **Web:** the language table; `FileViewer.vue` and `FileDisplay.vue` readers; the Prism loads in `highlightService.ts`; `FileExplorerLayout.vue`; the media handoff composable; `AudioPlayer.vue`; `MediaSegment.vue`.
+  - **Android:** `mobile/video/` → `mobile/media/`; the bridge.
+  - **iOS:** `Video/` → `Media/`; the core types; the bridge.
+- Derived consumers:
+  - **The bridge rename (Case 26):** every `playVideo` and `videoPlayer` reader and writer, on the web, Android (`ShellBridge.kt`, its JVM test) and iOS (`ShellBridgeHandler.swift`, `WebShellViewController.swift`, `DemoWebViewController.swift`, `NodeVideoPlayRequest` and its test). Docs: `autobyteus-web/docs/remote_access.md`, `file_explorer.md`, `docs/android_mobile_access.md`, `docs/ios_mobile_access.md`, NA-8's text.
+  - **The language table:** its two readers, Monaco and Prism.
+  - **The layout rule:** `RightSideTabs.vue:143` (mode); the stacked layout's other users.
+- Deliberately left alone: the cache formats and keys (unchanged; the key already names the file, not the kind); the HTTP contract (already 574's); phone layouts.
+- Follow-ups: none found.
+
+## Data Contract (Principle 17)
+
+| Record / Message | Boundary | Field | Meaning | Writer | Readers |
+| --- | --- | --- | --- | --- | --- |
+| Bridge `playMedia` (renames `playVideo`) | page → app | `kind: 'video' \| 'audio'`, `url`, `title`, `credential` | Play this protected node file natively. `kind` lets the player choose its screen: video can rotate to landscape; audio stays portrait with the title. The rules are 574's: same origin, header only, refuse redirects, never logged | `useNativeMediaPlayback` | Android `ShellBridgeMessages`, iOS `NodeMediaPlayRequest` |
+| Bridge `hello` reply | app → page | `mediaPlayer: { video: string[], audio: string[] }` (renames `videoPlayer`; SR-002) | The lowercase file extensions the app's own player plays, per kind. The app owns this fact; the page cannot tell platforms apart. Android (Media3): video `mp4, m4v, mov, webm, mkv, 3gp`; audio `mp3, m4a, aac, wav, ogg, oga, opus, flac`. iOS (AVPlayer): video `mp4, m4v, mov`; audio `mp3, m4a, aac, wav, aif, aiff, caf`. Implementation confirms each list against the platform's formats | both apps | the web composable: `native` only when the file's extension is in its kind's list |
+| `MessageReferenceContent` (server) | reader → route | `{ mimeType, path, size, modifiedMs }` (was `{ mimeType, stream }`) | The file to serve; the route builds `UserFileContent` `kind: 'file'` | the reader | the route |
+| Language table entry (web) | in-app | `{ extensions/names, monaco, prism }` | One file type; each engine's name | `utils/highlighting/languageDetector.ts` | `getMonacoLanguage(path)` (FileViewer), `getPrismLanguage(path)` (FileDisplay) |
+
+- **Examples:**
+  - `{"type":"playMedia","kind":"audio","url":"http://192.168.1.20:29695/rest/workspaces/agent_ws_ab12/content?path=notes%2Fmemo.m4a","title":"memo.m4a","credential":"<redacted>"}`
+  - Hello: `{"type":"shell",…,"mediaPlayer":{"video":["mp4","m4v","mov"],"audio":["mp3","m4a","aac","wav","aif","aiff","caf"]}}` (iOS).
+  - Table rows: `{ ext: ['yaml','yml'], monaco: 'yaml', prism: 'yaml' }`; `{ ext: ['sh','bash','zsh'], monaco: 'shell', prism: 'bash' }` (Monaco's id is `shell`, N-3); `{ ext: ['toml'], monaco: 'ini', prism: 'toml' }`; `{ ext: ['html'], monaco: 'html', prism: 'markup' }`; `{ ext: ['vue'], monaco: 'html', prism: 'vue' }` (Prism's `vue` goes to `highlightVue`, as today); `{ names: ['Dockerfile'], monaco: 'dockerfile', prism: 'docker' }`.
+
+### Validation
+
+| Use case | Step | Served? |
+| --- | --- | --- |
+| UC-001 | Reference → reader `{path,size,modifiedMs}` → `sendUserFile kind:'file'` → 206/304, keeping `no-store` | Yes |
+| UC-002 | Audio tile or viewer → `playMedia{kind:'audio'}` → native player (same data source, cache and redirect refusal) → portrait screen with title and controls | Yes (Media3 and AVPlayer play audio from the same sources) |
+| UC-002, older app | `hello` without `mediaPlayer` → the page path | Yes |
+| UC-002, `.ogg` on Android | `audio` includes `ogg` → `playMedia{kind:'audio'}` → Media3 | Yes |
+| UC-002, `.ogg` on iOS | `audio` lacks `ogg` → the page path (as today) | Yes |
+| UC-002, `.mp3` on both | listed → native | Yes |
+| UC-001 video `.webm` on iOS | `video` lacks `webm` → the page path (574 sent it natively, where AVPlayer could not play it; SR-002 corrects it) | Yes |
+| UC-003 | Width ≥ tree (250) + 1 + 400 → split, divider clamped; less → stacked | Yes |
+| UC-004 | Path → table → Monaco name / Prism name → highlighted | Yes |
+
+## Design
+
+- **D-1 (server).** `MessageReferenceContentReader.resolve` returns the file (path, size, `mtimeMs` from the same `statSync`). The route passes `{ kind: 'file', … }` and keeps `cache-control: no-store`.
+- **D-2 (media handoff rename and audio).**
+  - Web:
+    - `useNativeVideoPlayback` → `useNativeMediaPlayback(kind)`; the modes are unchanged;
+    - `shellBridge.ts`: `playMedia(request)` and `ShellHello.mediaPlayer`;
+    - `VideoPlayer.vue` and `AudioPlayer.vue` both use it (audio: open the native player at once, then a "Play" button, as video);
+    - `MediaSegment.vue`'s audio and video tiles both use it.
+  - Android: package `media/` (`NativeMediaPlayback`, `NodeMediaDataSource`, `NodeMediaHttp`, `MediaCache`, `MediaCacheKeys`, `MediaPlayerActivity`).
+    - The activity reads `kind`. Video: as today (fullscreen landscape). Audio: portrait, `PlayerView` with the title and audio controls, no fullscreen button.
+    - The manifest entry follows the rename.
+  - iOS: `Media/NativeMediaPlayer.swift`, plus core `NodeMediaHTTP`, `NodeMediaPlayRequest` (with `kind`) and `NodeMediaURL`. `AuthorizedMediaLoader` and `MediaRangeCache` already have neutral names. Audio: no forced landscape; AVPlayerViewController shows its audio UI with the title.
+  - The cache directories and keys keep their current form. 574 is unreleased, so there are no installed caches to migrate; the directory name may follow the rename.
+- **D-3 (layout).** `FileExplorerLayout.vue` measures its own width (a `ResizeObserver`).
+  - `split` (desktop mode) is used only when `width ≥ 150 (tree minimum) + 1 + 400`; otherwise the stacked layout (N-1: the rule uses the tree's minimum, not its current width).
+  - In split, the tree is shown at `min(treeWidth, width − 1 − 400)`, so a dragged-wide tree is clamped when the panel narrows, and the user's width comes back when there is room. The divider's maximum is `width − 1 − 400`.
+  - `RightSideTabs.vue` keeps passing the mode. The rule lives in the layout, its one owner, and the 400 px is a named constant.
+- **Build inputs (N-2):** if `project.yml` (iOS paths) or a Gradle file changes, DESIGN.md rule 12 applies: a fresh-start build and the build-only release runs.
+- **D-4 (highlighting).**
+  - `languageDetector.ts` becomes one table and two lookups: `getMonacoLanguage`, `getPrismLanguage`.
+  - Extension, plus file name for `Dockerfile`: py, ts, js, jsx, vue, html, php, rb, css, json, md (today's), plus yaml, yml, toml, sh, bash, zsh, go, rs, java, xml, ini, Dockerfile.
+  - `FileViewer.vue` uses `getMonacoLanguage`; `FileDisplay.vue` uses `getPrismLanguage`. The old single `getLanguage` is removed (Principle 8).
+  - `highlightService.ts` loads the Prism components for yaml, toml, bash, go, rust, java and docker (`markup` already covers xml).
+
+## Removal Plan
+
+- The `Video`-named files, types and messages are renamed, not kept.
+- `getLanguage` is removed.
+- No compatibility path for `playVideo`.
+
+## Final File Responsibility Mapping
+
+| Area | Files |
+| --- | --- |
+| Server | `run-history/services/message-reference-content-reader.ts`, `api/rest/collaboration-message-references.ts`, and their tests |
+| Web, media | `utils/remoteAccess/shellBridge.ts`; `composables/mobile/useNativeMediaPlayback.ts` (renamed); `components/fileExplorer/viewers/VideoPlayer.vue`, `AudioPlayer.vue`; `components/conversation/segments/MediaSegment.vue`; specs; localization (en, zh-CN) for the audio "Play" |
+| Web, layout | `components/fileExplorer/FileExplorerLayout.vue` and its spec |
+| Web, highlighting | `utils/highlighting/languageDetector.ts`, `components/fileExplorer/FileViewer.vue`, `components/conversation/segments/renderer/FileDisplay.vue`, `services/highlightService.ts`, and specs |
+| Android | `app/src/main/java/org/autobyteus/mobile/media/*` (renamed from `video/`), `web/ShellBridge.kt`, `MainActivity.kt`, `AndroidManifest.xml`, and tests |
+| iOS | `AutoByteusMobile/Media/NativeMediaPlayer.swift`, `AutoByteusMobileCore/Media/*` (renamed), `Shell/ShellBridgeHandler.swift`, `WebShellViewController.swift`, `Demo/DemoWebViewController.swift`, tests, and `project.yml` if paths are listed |
+| Docs | `node_access_model.md` NA-8 ("playMedia"); the four mobile and web docs |
+
+## Risks
+
+- The rename's breadth (43 files): every reader is listed above. Implementation runs both apps' test suites and the web suite.
+- Audio formats: decided by each app's `mediaPlayer` lists (SR-002). The page never guesses the platform.
+
+## Guidance For Implementation
+
+- Start from 574's code; the rename is mechanical, then audio is the `kind` branch.
+- Never log the credential or a URL with its query.
+- Test emulators and simulators of your own.
+
+## SR-003: The reference viewer stops downloading media whole (CRR-001 CR-001, C-2)
+
+- **The gap:** D-1 made the route ranged, but its only client reads the whole file into a blob for every type: `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue:177-205` (`fetchContent`, `authorizedFetch(contentUrl, { cache: 'no-store' })`). That client serves the desktop Messages panel (`CollaborationMessagesPanel.vue:224`) and the phone (`MobileTeamReferenceViewer.vue:18`).
+- **D-1b:** the viewer renders through `FileViewer` (`:60-72`), whose `VideoPlayer` and `AudioPlayer` already own each surface's path:
+  - the desktop gives the URL straight to the element, and Electron attaches the credential (NA-8);
+  - a phone app uses `useNativeMediaPlayback` (`playMedia`);
+  - a phone browser downloads as before.
+- **Change:** for a reference whose type is Video or Audio:
+  - `fetchContent` does not read the body;
+  - it sends one probe, `authorizedFetch(contentUrl, { headers: { Range: 'bytes=0-0' }, cache: 'no-store' })`, which keeps today's 404 handling (`REFERENCE_NOT_FOUND` → "not found", other 404 → "unavailable", other errors → the error state). The probe's body (one byte) is discarded;
+  - then it passes `contentUrl` itself as `url` to `FileViewer`.
+  - Text, PDF and image keep today's read.
+- **Data contract:** unchanged (the route's HTTP contract is D-1's; the viewer's `file.url` already exists).
+- **Derived consumers:** the two hosts above (no change; they pass the reference), and the viewer's spec (new cases).
+- **Validation:**
+  - Desktop: a video reference → ranged requests to `/rest/…/references/…` (206).
+  - Phone app: an `mp4` reference → `playMedia{kind:'video'}` with the reference URL (same origin, `/rest/`, allowed by the bridge).
+  - Phone browser: blob.
+  - Deleted: the probe's 404 with `REFERENCE_NOT_FOUND` → "not found".
+- **C-2 (iOS audio screen):** `NativeMediaPlayer` sets, for `kind: 'audio'`, a `contentOverlayView` with an audio symbol and the file name. AVKit's control auto-hide stays (a tap shows them). API/E2E captures the frame.
+- **Design case:** docs/design-cases.md Case 3 (a route changed without its client).
+
+## SR-004: The file name is an explicit input (ARCH-REV-003 AR-002)
+
+- **The gap:** `useNativeMediaPlayback` derived the type and title from the URL (its `path` query, else its pathname; `useNativeMediaPlayback.ts:44-62,77-82`). A reference URL ends in `…/references/:referenceId/content` (`collaboration-message-references.ts:25`), so it names no file: `modeFor` answered `page`, and the title would read "content".
+- **Decision:**
+  - `useNativeMediaPlayback` takes the file name from its caller: `modeFor(url, fileName)` and `play(url, fileName)`. The kind is decided by the extension of `fileName` against the app's lists (SR-002); the title is `fileName`'s base name.
+  - The URL-derived name is **removed** from the composable (Principle 13: no behavior from guessing). Each caller passes the name it owns:
+    - `VideoPlayer.vue` and `AudioPlayer.vue` get a required `fileName` prop, filled by `FileViewer.vue` from `file.path`. That covers the Files viewers and the reference viewer, which already passes `reference.path` as `file.path` (`CollaborationMessageReferenceViewer.vue:60-72,111`);
+    - `MediaSegment.vue` owns its URLs: a node media URL is `/rest/files/<relativePath>` (`media-storage-service.ts:241`), so it passes that path's last segment (decoded) as the name.
+  - This also replaces round 2's N-4 rule (the `path` query), which assumed that every media URL names its file.
+- **Data contract:** unchanged on the wire. `playMedia.title` is now the caller's file name.
+- **Derived consumers:**
+  - `FileViewer.vue` (passes `fileName`);
+  - `VideoPlayer.vue` and `AudioPlayer.vue` (props);
+  - `MediaSegment.vue` (its own name);
+  - the composable's spec;
+  - any other caller of `modeFor`/`play` (implementation lists them by search).
+- **Walks:**
+
+  | Case | Phone app | Desktop or browser |
+  | --- | --- | --- |
+  | An `mp4` reference (`reference.path` `demo/clip.mp4`) | `modeFor(url, 'demo/clip.mp4')` → `native` → `playMedia{kind:'video', title:'clip.mp4'}` with the reference URL | Ranged requests to the reference route |
+  | An `m4a` reference | `native` (`m4a` is in both apps' audio lists), title `memo.m4a` | Ranged |
+  | A workspace file `notes/a.mp3` (Files) | `FileViewer` passes `notes/a.mp3` → native, as before | Unchanged |
+  | A chat media `/rest/files/x/clip.mp4` | `MediaSegment` passes `clip.mp4` → native | Unchanged |
+  | An `.ogg` reference on iOS | `page` (not listed) | — |
+
+- **Tests:** a composable spec with a reference URL and an explicit name (native, title); a `FileViewer` spec showing `fileName` reaches the players; a `MediaSegment` spec for the name from its URL.
+
+## SR-005: iOS audio session (DEC-007)
+
+- **Owner:** `NativeMediaPlayer` (iOS), the one owner of the player's lifetime.
+  - On present: `AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)` and `setActive(true)`.
+  - On dismiss: `setActive(false, options: .notifyOthersOnDeactivation)`.
+  - A failure to set it is logged without the URL and does not block playback.
+- **Applies to:** both kinds (video sound, 574, and audio). `Info.plist` is unchanged: no background audio mode.
+- **Android:** unchanged. Media3 plays through the media stream, which the ringer mode does not silence.
+- **Tests:** a test-host check of the category and active state during and after the player. API/E2E keeps the frame. The physical-iPhone check before release covers the switch and the sound.
+
+## SR-006: The chat leg of highlighting is code blocks (DEC-008)
+
+- **Finding (API/E2E, verified):** `components/conversation/segments/renderer/FileDisplay.vue` is mounted nowhere. Only `tests/integration/app-font-size-fixed-px-audit.integration.test.ts:29` lists it. So `getPrismLanguage` (`languageDetector.ts:53`) has no reachable reader. SR-001 named it on trust.
+- **Change to D-4:**
+  - **Remove** `FileDisplay.vue`, `getPrismLanguage`, and the table's `prism` column. The table becomes extension/name → Monaco id, read by `getMonacoLanguage` alone. Remove the audit list entry.
+  - Keep the Prism grammar loads in `highlightService.ts` (yaml, toml, bash, go, rust, java, docker; xml through markup). They serve message code blocks through `utils/markdownItPrism.ts`.
+  - Register the fence names Prism lacks, beside those loads: `Prism.languages.rs = Prism.languages.rust` and `Prism.languages.zsh = Prism.languages.bash`. Prism already registers `yml`, `sh`, `shell` and `dockerfile`. One owner: the highlighting service.
+- **Validation:**
+  - A message with a fence of each listed name → token spans (desktop window and phone).
+  - A file of each type in the file viewer → Monaco tokens.
+  - Python, TypeScript, JSON, Markdown and `vue` unchanged.
+- **Derived consumers:** `markdownItPrism.ts` (unchanged; it gets the grammars); the audit test list; the table's spec (the Prism cases removed, fence cases added on `highlightService`).
+- **Design case:** docs/design-cases.md Case 5 (a surface named without checking that it is reachable).

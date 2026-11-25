@@ -1,5 +1,5 @@
 <template>
-  <div :class="layoutClasses">
+  <div ref="layoutRoot" :class="layoutClasses" :data-layout="isStacked ? 'stacked' : 'split'">
     <template v-if="props.workspaceId !== null">
       <!-- File Explorer Tree (Resizable) -->
       <div
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 const { t } = useLocalization();
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue';
@@ -48,10 +48,24 @@ const props = withDefaults(defineProps<{
 });
 
 
-const treeWidth = ref(250); // Default width
-const minWidth = 150;
-const maxWidth = 600;
-const isStacked = computed(() => props.layout === 'stacked');
+// The file viewer is never narrower than this beside the tree (autobyteus-642 D-3, REQ-003).
+const MIN_VIEWER_WIDTH = 400;
+const DIVIDER_WIDTH = 1;
+const MIN_TREE_WIDTH = 150;
+const MAX_TREE_WIDTH = 600;
+
+/** The width the user gave the tree (250 at first); shown narrower while the panel has no room for it. */
+const treeWidth = ref(250);
+/** The layout's own width, measured (0 until mounted). */
+const panelWidth = ref(0);
+const layoutRoot = ref<HTMLElement | null>(null);
+
+/** The widest tree that leaves the viewer its minimum. */
+const maxTreeWidth = computed(() => Math.min(MAX_TREE_WIDTH, panelWidth.value - DIVIDER_WIDTH - MIN_VIEWER_WIDTH));
+// Side by side only when the narrowest tree fits beside a viewer of its minimum width; otherwise the tree goes above.
+const isStacked = computed(() =>
+  props.layout === 'stacked' || panelWidth.value < MIN_TREE_WIDTH + DIVIDER_WIDTH + MIN_VIEWER_WIDTH);
+const shownTreeWidth = computed(() => Math.min(treeWidth.value, maxTreeWidth.value));
 const layoutClasses = computed(() =>
   isStacked.value
     ? 'flex h-full w-full flex-col overflow-hidden'
@@ -66,8 +80,20 @@ const treePaneClasses = computed(() => [
 const treePaneStyle = computed(() =>
   isStacked.value
     ? { height: '42%', minHeight: '180px', width: '100%' }
-    : { width: `${treeWidth.value}px` },
+    : { width: `${shownTreeWidth.value}px` },
 );
+
+let widthObserver: ResizeObserver | null = null;
+onMounted(() => {
+  const root = layoutRoot.value;
+  if (!root) return;
+  panelWidth.value = root.getBoundingClientRect().width;
+  widthObserver = new ResizeObserver((entries) => {
+    panelWidth.value = entries[entries.length - 1]?.contentRect.width ?? panelWidth.value;
+  });
+  widthObserver.observe(root);
+});
+onBeforeUnmount(() => { widthObserver?.disconnect(); });
 
 let stopResize: (() => void) | null = null;
 watch(() => [props.workspaceId, props.active], () => { stopResize?.(); });
@@ -78,13 +104,11 @@ const startResize = (event: MouseEvent) => {
   stopResize?.();
 
   const startX = event.clientX;
-  const startWidth = treeWidth.value;
+  const startWidth = shownTreeWidth.value;
 
+  // The divider stops where the tree reaches its minimum, or the viewer its own.
   const doDrag = (e: MouseEvent) => {
-    const newWidth = startWidth + (e.clientX - startX);
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
-      treeWidth.value = newWidth;
-    }
+    treeWidth.value = Math.max(MIN_TREE_WIDTH, Math.min(maxTreeWidth.value, startWidth + (e.clientX - startX)));
   };
 
   const stopDrag = () => {

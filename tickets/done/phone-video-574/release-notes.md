@@ -14,4 +14,3 @@
 - On iOS, the app's **Back** bar stays over a video in landscape; the player's own close button also closes it.
 - On Android, if the system switches dark mode while a video plays, the player shows "This video could not be played." Press **Back**, then **Play**: the video continues from what the app saved.
 - On a connection slower than the video itself, the iPhone plays at the speed of the connection, and the time bar can run a little ahead of the picture.
-- Audio files, and a video reached only through a message's list of reference files, still download completely before they play.

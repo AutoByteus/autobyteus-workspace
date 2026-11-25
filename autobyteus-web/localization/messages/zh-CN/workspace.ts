@@ -364,6 +364,8 @@ const messages = {
   "workspace.pathRefusal.notAFolder": "此路径是文件，不是文件夹。",
   "workspace.components.conversation.segments.MediaSegment.play_video": "播放视频",
   "workspace.components.conversation.segments.MediaSegment.loading_video": "正在加载视频…",
+  "workspace.components.conversation.segments.MediaSegment.play_audio": "播放音频",
+  "workspace.components.conversation.segments.MediaSegment.loading_audio": "正在加载音频…",
 } satisfies TranslationCatalog;
 
 export default messages;

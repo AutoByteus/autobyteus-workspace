@@ -1,0 +1,50 @@
+# IMP-11 (IR-002: SR-003 the reference viewer streams media; SR-004 the file name is the native player's input; N-6)
+# command: pnpm -C autobyteus-web exec vitest run components/fileExplorer components/conversation/segments
+#            components/workspace/collaboration composables/mobile utils/remoteAccess
+#          red: CollaborationMessageReferenceViewer.spec, useNativeMediaPlayback.spec, FileViewer.spec and
+#            MediaViewers.native.spec with the six changed source files as at IR-001 (git stash, restored after)
+#          env -i PATH HOME TMPDIR pnpm -C autobyteus-web test:nuxt; ... typecheck; pnpm -C autobyteus-server-ts typecheck;
+#          the three web guards
+# commit: dc350be435
+# env: macOS (Darwin 25.5.0), Node 22.23.1
+# date: 2026-11-25
+# result: Pass.
+#   - Affected specs: 56 files, 428 tests pass (one stale expectation updated: FileViewer.touchZoom.spec lists each
+#     viewer's exact props, and the audio player now also gets fileName).
+#   - Red: 8 of the new cases fail on IR-001: the reference viewer read the blob, the composable named the file from the
+#     URL (a reference URL names none), FileViewer passed no name.
+#   - Whole web suite: 801 files passed and 6 failed to load in the first run, all with
+#     `Failed to resolve entry for package "@autobyteus/application-sdk-contracts"`. Cause: my IR-001 cleanup deleted that
+#     package's untracked dist/; the web typecheck (run next) rebuilds it. Rerun of those 6 files alone after it: 6 passed,
+#     16 tests. Not caused by the change.
+#   - Web typecheck PASS (test files 86 = baseline); server typecheck PASS (972 = baseline); guards exit 0.
+
+## red (IR-001 source)
+   × FileViewer.vue > passes the Video file's path to VideoPlayer as its fileName
+   × FileViewer.vue > passes the Audio file's path to AudioPlayer as its fileName
+   × CollaborationMessageReferenceViewer.vue > asks one byte of a audio reference and passes the route URL itself to FileViewer
+   × CollaborationMessageReferenceViewer.vue > asks one byte of a video reference and passes the route URL itself to FileViewer
+   × useNativeMediaPlayback > reads the type from the name the caller gives, not the URL (autobyteus-642 SR-004)
+   × useNativeMediaPlayback > play hands the app the video file: its kind, absolute URL, base name and the credential, in one playMedia message
+   × useNativeMediaPlayback > play hands the app the audio file: its kind, absolute URL, base name and the credential, in one playMedia message
+   × useNativeMediaPlayback > play hands the app the video file: its kind, absolute URL, base name and the credential, in one playMedia message
+      Tests  8 failed | 58 passed (66)
+
+## affected specs (green)
+ Test Files  56 passed (56)
+      Tests  428 passed (428)
+
+## whole web suite, first run
+ Test Files  6 failed | 801 passed (807)
+      Tests  3 failed | 6236 passed | 2 skipped (6241)
+     → Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+
+## the 6 files rerun after the contracts' dist/ was rebuilt
+ Test Files  6 passed (6)
+      Tests  16 passed (16)
+
+## typechecks
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

@@ -1,0 +1,9 @@
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.406 seconds).
+MARK close-back 1795566218540
+CLOSE back closed=true
+MARK close-swipe-down 1795566227752
+CLOSE swipe-down closed=false
+/Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642/autobyteus-ios/AutoByteusMobileUITests/NativeMediaRealNodeUITests.swift:199: error: -[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt] : XCTAssertTrue failed - swipe-down closes the player
+MARK close-avkit-close 1795566247383
+CLOSE avkit-close closed=true
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' failed (46.574 seconds).
