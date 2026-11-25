@@ -18,7 +18,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-long-running-p
 - Implementation cycle: `Initial`. Revision record: `implementation-revision-record.md`. Current revision: `IR-001`. Related solution revisions: `SR-001`, `SR-002`. Other revision types: `N/A`. Triggering findings: `N/A`.
 - Commits:
   - `92d9b01ef3`: source, tests, snapshot and docs.
-  - Then the documents commit: the SD's ticket documents (uncommitted until now), this handoff, the revision record and the evidence. It also holds a two-line test-only follow-on in `agent-semantic-memory-live.e2e.test.ts`: the SML-WRITE summary's last-heading field reads the JSON-escaped wire (IMP-04).
+  - `4e635533e9`: the SD's ticket documents (uncommitted until now), this handoff, the revision record and the evidence.
+  - The SML-WRITE summary's last-heading field, which reads the JSON-escaped wire (IMP-04), is already in `92d9b01ef3`.
 
 ### Source (Intended Change; design-spec Change Scope)
 
@@ -137,7 +138,7 @@ Evidence: `tickets/in-progress/remove-long-running-prompt-649/evidence/`.
 | IMP-01 | changed unit tests (run 1), snapshot update (`-u`, diff checked), `vitest run tests/unit/agent-execution tests/unit/agent-team-execution tests/unit/agent-memory` (run 2) | `92d9b01ef3` content | macOS, Node 22 | composer, every backend's prompt, collaboration and memory sections | BEH-001; AC-001 | Pass | `IMP-01-unit-tests.log` | `Snapshots  20 updated`; `Tests  2334 passed \| 6 skipped (2340)` |
 | IMP-02 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck` | `92d9b01ef3` content | macOS, Node 22 | all TS | — | Pass | `IMP-02-typechecks.log` | `(baseline 972 in 299 files)` PASS; `(baseline 86 in 36 files)` PASS |
 | IMP-03 | `configured-skill-on-demand-loading.e2e`; with the scripted AGY (`RUN_AGY_FAILURE_E2E=1`, `ANTIGRAVITY_CLI_COMMAND=…/agy-failure-cli.mjs`): `collaboration-prompt-wording.e2e`, `agent-semantic-memory.e2e` | `92d9b01ef3` content | in-process server, no live provider | composed prompts through real roots | BEH-001; AC-001 | Pass | `IMP-03-e2e-prompt-suites.log` | `Tests  4 passed (4)` (run A, configured-skill); `Tests  24 passed (24)` (run B) |
-| IMP-04 | `RUN_CLAUDE_E2E=1 … agent-semantic-memory-live.e2e.test.ts -t "SML-WRITE"` (clean env, host login, test vault) | `92d9b01ef3` + the summary fix | live Claude haiku | the prompt the Claude CLI received (recorded wire) | AC-002 | Pass | `IMP-04-live-claude-prompt.log` | `"instructionsHaveLongRunningCommands":[false],"instructionsLastHeading":["## Global Semantic Memory"]`; ✓ |
+| IMP-04 | `RUN_CLAUDE_E2E=1 … agent-semantic-memory-live.e2e.test.ts -t "SML-WRITE"` (clean env, host login, test vault) | `92d9b01ef3` content | live Claude haiku | the prompt the Claude CLI received (recorded wire) | AC-002 | Pass | `IMP-04-live-claude-prompt.log` | `"instructionsHaveLongRunningCommands":[false],"instructionsLastHeading":["## Global Semantic Memory"]`; ✓ |
 
 - Not run, and why:
   - `claude-agent-websocket-interrupt-resume.e2e` and the other Claude live harness users (gated live). They only lost the input argument, and the typecheck covers them.
