@@ -42,10 +42,11 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import VuePdfEmbed from 'vue-pdf-embed'
+import VuePdfEmbed from 'vue-pdf-embed/dist/index.essential.mjs'
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl'
 import { usePdfPinchZoom } from '~/composables/usePdfPinchZoom'
 import type { ViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory'
+import { ensureSharedPdfWorker } from '~/utils/pdf/sharedPdfWorker'
 
 // Essential styles for vue-pdf-embed
 // index.css is no longer separate in v2, styles are injected or not needed for base
@@ -66,6 +67,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+// One pdf.js worker for every PDF, set before the first document loads (autobyteus-647 D-5).
+ensureSharedPdfWorker()
 const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 })
 
 const loading = ref(true)
