@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-003 (REQ-002 and AC-002 restated after CRR-001 F-2; Solution Designer within the direction, user informed 2026-11-25)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the founder
 - Approved by: Solution Designer within the direction (the Task fixes each outcome); user informed 2026-11-25
 - Baseline: this document at SR-001
@@ -13,7 +13,7 @@
 | ID | Requirement | Basis |
 | --- | --- | --- |
 | REQ-001 | The file viewer shows no line numbers, on the phone and the desktop. The left gutter keeps only a small margin, about 6 px: no folding column, no glyph margin. The content uses the reclaimed width. Editing on the desktop works as before | Founder via Task item 1 |
-| REQ-002 | A zero-byte media reference opens as an empty file (the player, no error), not "Failed to fetch reference content (416)". Other errors and not-found cases are unchanged | Task 2a |
+| REQ-002 | A zero-byte media reference is treated as a valid empty file, not as a fetch failure. It never shows "Failed to fetch reference content (416)" and reaches the media viewer, which reports that it cannot be played (an empty file has nothing to play). Other errors and not-found cases are unchanged | Task 2a; SR-003 |
 | REQ-003 | On iOS, the media player's top controls are never covered by an app bar. Close and the file's title come from iOS's own player screen. The player keeps 574/642's behavior: header-only credential, cache, landscape for wide video, the audio placeholder, the audio session ended on close. Every close path (its close button, a swipe down, the app) ends the playback and the session. Code comments state only real paths | Task 2b; DEC-001 |
 | REQ-004 | The iOS loader's queue label names media (`org.autobyteus.media-loader`) | Task 2c |
 | REQ-005 | Opening PDFs repeatedly does not grow memory: one pdf.js worker serves every PDF, and no per-document worker blob URL is created. PDFs render as today on the desktop (the packaged window included) and the phone | Task 3a (471 FU-001) |
@@ -24,7 +24,7 @@
 | AC | REQ | Expected | Verification |
 | --- | --- | --- | --- |
 | AC-001 | REQ-001 | Desktop at 1440×900 and the phone at 390×844: no line numbers; the gutter is ≤ 10 px; a JSON file's first character starts within 12 px of the editor's left edge; editing and save work (desktop) | Rendered probes with measured offsets and screenshots; web spec of the editor options |
-| AC-002 | REQ-002 | A zero-byte `.mp4` reference: no error text; the player shows (desktop; the phone's page path), or the native player opens (apps). A missing reference still shows "not found" | Web spec; a probe with a zero-byte reference |
+| AC-002 | REQ-002 | A zero-byte `.mp4` reference, on the desktop (dev and packaged, cross-origin to the node), the phone's page path and the apps: no "Failed to fetch reference content" text. The media viewer is reached: the page's players show "This video could not be played." with Retry; the apps show their native "could not be played" screen. A missing reference still shows "not found" | Web spec (a 416 whose `Content-Range` is not readable); a probe with a zero-byte reference on each surface |
 | AC-003 | REQ-003 | iOS simulator: a video and an audio file open in iOS's player screen with its close button and the title. No app bar over its controls (screenshot with controls shown). Close, swipe down and a failure each end the playback and deactivate the session; a wide video plays in landscape. 574/642's iOS tests pass | XCUITests and screenshots; the session check |
 | AC-004 | REQ-004 | Label string | Unit test or code check |
 | AC-005 | REQ-005 | Desktop (Electron build) and phone: open three PDFs. Each renders, and the count of `text/javascript` blob URLs created for workers is ≤ 1 for the whole session (471's measurement method) | Probe with `URL.createObjectURL` instrumentation; a packaged-window check |

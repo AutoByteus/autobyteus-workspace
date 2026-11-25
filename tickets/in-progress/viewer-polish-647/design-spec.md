@@ -2,7 +2,7 @@
 
 ## Basis
 
-- SR-002 (D-5 revised after implementation DI-001; requirements unchanged). Requirements approved by the Solution Designer within the direction.
+- SR-003 (D-2 revised after CRR-001 F-1; REQ-002/AC-002 restated, F-2). SR-002 revised D-5 after implementation DI-001. Requirements approved by the Solution Designer within the direction.
 - Authorities read (this conversation): architecture-design, design-principles (incl. 17), `DESIGN.md` (rules 11, 12), design cases.
 - Data contract: not affected. No stored or exchanged shape changes; the bridge and HTTP contracts are unchanged.
 
@@ -17,7 +17,7 @@
 | D | Owner | Change |
 | --- | --- | --- |
 | D-1 | `MonacoEditor.vue` (the editor's one owner) | The create options gain `lineNumbers: 'off'`, `glyphMargin: false`, `folding: false`, `lineDecorationsWidth: 6`, `lineNumbersMinChars: 0`, before `...restOptions` (a caller may still override). No other caller exists |
-| D-2 | `CollaborationMessageReferenceViewer.vue` | The media probe treats `416` with `Content-Range: bytes */0` as an empty file: it hands the URL to `FileViewer` as for a 206. Any other 416 or error keeps today's handling |
+| D-2 (revised in SR-003) | `CollaborationMessageReferenceViewer.vue` | A `416` answer to the media probe (`Range: bytes=0-0`) means an empty file. The viewer hands the URL to `FileViewer` as for a 206, and the player reports that it cannot be played. The status alone decides. A range starting at byte 0 is unsatisfiable only for an empty representation (RFC 9110 §14.1.1), and `user-file-reply.ts:53` answers 416 to `0-0` only when `size` is 0. `Content-Range` is not read: the desktop renderer calls the node cross-origin, and the node exposes no headers (`node-access-plugin.ts:44`). A 416 to a non-media fetch (no Range sent), and any other error, keeps today's handling. No server or CORS change |
 | D-3 | iOS `NativeMediaPlayer.swift` | See below |
 | D-4 | `AuthorizedMediaLoader.swift:35` | Label `org.autobyteus.media-loader` |
 | D-5 | Web PDF worker | See below |

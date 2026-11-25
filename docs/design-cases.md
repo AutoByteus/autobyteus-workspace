@@ -319,6 +319,8 @@ Principle 1 (trace through the real dependency).
 
 - **Again in autobyteus-647 (implementation DI-001):** the design said vue-pdf-embed's essential build "takes pdf.js from `pdfjs-dist`", read from the library's `package.json` dependencies. The shipped bundle carries its own pdf.js copy and checks `instanceof` against it. Lesson: a `package.json` dependency is not what a prebuilt bundle imports; read the file you will import.
 
+- **Again in autobyteus-647 (CRR-001 F-1):** the design decided "empty file" from the 416's `Content-Range: bytes */0`. The phone page and the apps are same-origin and read it, and the web spec's fetch double returned readable headers. The desktop renderer calls the node cross-origin, and the node's CORS exposes no headers, so the desktop read `null` and still failed. Fix (SR-003): decide on the status of the `bytes=0-0` probe alone, which only an empty file can make unsatisfiable. Lesson: a response header is part of the premise only if every caller's origin can read it; list each surface's origin (desktop dev and `file://` are cross-origin to the node).
+
 ### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)
 
 Principles 1 (several kinds) and 13 (one owner for a sequence).
