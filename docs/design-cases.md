@@ -317,6 +317,10 @@ Principle 1 (trace through the real dependency).
 
 - **Again in autobyteus-628 (implementation, SR-003):** to learn how a run reloads, the Solution Designer fed stored traces straight to the replay builder in a temporary test. The real read path sorts the traces by time first (`raw-trace-record-normalizer.ts:121-130`). So "the reload keeps stored order" was a premise checked on a stand-in. The decisions held, but for a different reason. Lesson: run a premise through the real entry point (here the run-view provider), not the function you expect to matter.
 
+- **Again in autobyteus-647 (implementation DI-001):** the design said vue-pdf-embed's essential build "takes pdf.js from `pdfjs-dist`", read from the library's `package.json` dependencies. The shipped bundle carries its own pdf.js copy and checks `instanceof` against it. Lesson: a `package.json` dependency is not what a prebuilt bundle imports; read the file you will import.
+
+- **Again in autobyteus-647 (CRR-001 F-1):** the design decided "empty file" from the 416's `Content-Range: bytes */0`. The phone page and the apps are same-origin and read it, and the web spec's fetch double returned readable headers. The desktop dev window (an `http://` origin) calls the node cross-origin, and the node's CORS exposes no headers, so it read `null` and still failed; the packaged `file://` window reads every header (measured in the same ticket), so the failure showed only in the dev window. Fix (SR-003): decide on the status of the `bytes=0-0` probe alone, which only an empty file can make unsatisfiable. Lesson: a response header is part of the premise only if every caller's origin can read it; list each surface's origin (desktop dev and `file://` are cross-origin to the node).
+
 ### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)
 
 Principles 1 (several kinds) and 13 (one owner for a sequence).
@@ -423,3 +427,13 @@ Principle 1 (several kinds: trace each composition root) and Principle 16 (one c
 - **The fix (SR-003):** a Compositions table, with the rule that every composition that runs external-runtime agents wires both parts or offers no renewal. All three now wire both, and each composition gets a test that the notice arrives after a renewal.
 - **Why it mattered:** a renewal without the notice looks like success but hands the user an agent with no memory of the work.
 - **Notice it by:** a design that reuses a mechanism "unchanged" when that mechanism is assembled in a composition root. List every composition root that builds the owners involved: studio, application scope, standalone host, tests' harnesses. Check each wires every collaborator the behavior needs. A default lookup (`getDefault…()`) can make one part work where the other is missing.
+
+### Case 31: A Shared Resource Handed Through A Library's Default Path, So Each Consumer's Lifecycle Owns It (autobyteus-647, implementation DI-001)
+
+Principle 11 (one owner per fact, here a lifetime) and Principle 1 (trace through the real dependency).
+
+- **The design said:** one pdf.js worker for every PDF. Create it once and set `GlobalWorkerOptions.workerPort`, "so every document reuses it".
+- **What the library does:** without an explicit `worker`, `getDocument` takes `PDFWorker.fromPort(port)`, a cached wrapper per port, and the loading task owns it. Its `destroy()` marks the wrapper as being destroyed, then destroys it. vue-pdf-embed calls that destroy on unmount without awaiting it. So the next PDF's viewer got the dying wrapper and failed: every PDF opened right after another was replaced.
+- **The fix (SR-002):** the app's own module creates one long-lived `PDFWorker` wrapper and passes it to every document as `worker`. pdf.js never destroys a worker it was given. The global default stays unset, so a caller that forgets the worker fails loudly instead of taking the shared wrapper.
+- **Why it mattered:** the leak was fixed, but the change broke opening PDFs one after another, the common path.
+- **Notice it by:** a design that shares a resource by setting a library's global or default, not by passing the instance. Ask who destroys it: trace the library's teardown for that default path. Then check whether consumers' teardowns can overlap, as with an unawaited destroy on unmount followed by an immediate mount. Give the shared resource one explicit owner for its lifetime, and give consumers a handle they cannot destroy.

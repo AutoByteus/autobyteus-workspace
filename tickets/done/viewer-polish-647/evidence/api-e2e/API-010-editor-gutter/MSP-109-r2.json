@@ -1,0 +1,432 @@
+{
+ "case": "MSP-109",
+ "result": "Pass",
+ "seconds": 5.1,
+ "summary": [
+  {
+   "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+   "failures": [],
+   "editorWidth": 384,
+   "rows": 20,
+   "lineRows": 7,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 12,
+   "past": 0
+  },
+  {
+   "name": "MSP-109-phone-390-tsconfig.json",
+   "failures": [],
+   "editorWidth": 384,
+   "rows": 29,
+   "lineRows": 17,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 11,
+   "past": 0
+  },
+  {
+   "name": "MSP-109-phone-390-draft-v1.txt",
+   "failures": [],
+   "editorWidth": 384,
+   "rows": 25,
+   "lineRows": 5,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 19,
+   "past": 0
+  }
+ ],
+ "results": [
+  {
+   "name": "MSP-109-phone-390-pnpm-workspace.yaml",
+   "viewport": "390x844",
+   "failures": [],
+   "measured": {
+    "editorWidth": 384,
+    "contentRight": 376,
+    "tokenClasses": [
+     "mtk1",
+     "mtk22",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 20,
+    "lineRows": 7,
+    "lineTops": {
+     "1": 48,
+     "2": 69,
+     "3": 216,
+     "4": 237,
+     "5": 258,
+     "6": 405,
+     "7": 426
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  a-package-folder-with-"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  that-keeps-going/past/"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  and-past-a-maximized-d"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  because-the-wrap-check"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  -than-any-window/with-"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  still-going/**\""
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  a-dependency-with-a-re"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  ckage-name-for-the-wra"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  3-beta.4+build."
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  5678-and-more-build-me"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  -past-the-edge-of-a-ma"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  tor-as-well-so-it-wrap"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-109-phone-390-pnpm-workspace.yaml.png"
+  },
+  {
+   "name": "MSP-109-phone-390-tsconfig.json",
+   "viewport": "390x844",
+   "failures": [],
+   "measured": {
+    "editorWidth": 384,
+    "contentRight": 376,
+    "tokenClasses": [
+     "mtk1",
+     "mtk20",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 29,
+    "lineRows": 17,
+    "lineTops": {
+     "1": 48,
+     "2": 69,
+     "3": 90,
+     "4": 111,
+     "5": 132,
+     "6": 153,
+     "7": 174,
+     "8": 216,
+     "9": 384,
+     "10": 405,
+     "11": 426,
+     "12": 447,
+     "13": 468,
+     "14": 489,
+     "15": 510,
+     "16": 594,
+     "17": 615
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "7",
+      "lineTextLeft": 57,
+      "rowTextLeft": 57,
+      "start": "      application-sdk-co"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        autobyteus-appli"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        s/src/"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        a-very-long-fold"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        ot-fit/in-a-narr"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        nor-in-a-maximiz"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        because-it-keeps"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        d-more-folders/*"
+     },
+     {
+      "line": "15",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    a-folder-with-a-long"
+     },
+     {
+      "line": "15",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    -sources-that-run-pa"
+     },
+     {
+      "line": "15",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    ts\""
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-109-phone-390-tsconfig.json.png"
+  },
+  {
+   "name": "MSP-109-phone-390-draft-v1.txt",
+   "viewport": "390x844",
+   "failures": [],
+   "measured": {
+    "editorWidth": 384,
+    "contentRight": 376,
+    "tokenClasses": [
+     "mtk1"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 25,
+    "lineRows": 5,
+    "lineTops": {
+     "1": 48,
+     "2": 216,
+     "3": 237,
+     "4": 363,
+     "5": 384
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "line, as a draft written"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "editor often is: it goes"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "edge of any phone and of"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "and even past the edge o"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "desktop editor, because "
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "with more and more words"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "to be read."
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    is also much longer "
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    wide, even when the "
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    maximized on a deskt"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    wrapped rows show wh"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    its indentation of f"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "editor, long enough to w"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "of a maximized desktop e"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "to wrap at the width of "
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "desktop editor, long eno"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "width of a maximized des"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "enough to wrap at the wi"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "desktop editor, and save"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-109-phone-390-draft-v1.txt.png"
+  }
+ ]
+}

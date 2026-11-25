@@ -1,0 +1,6 @@
+	 Executed 4 tests, with 0 failures (0 unexpected) in 81.253 (81.256) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 81.253 (81.258) seconds
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testAMissingVideoSaysItCouldNotBePlayedWithBack]' passed (15.232 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeAudioFilePlaysInTheAppsPlayerInPortraitWithItsTitle]' passed (24.614 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testANodeVideoPlaysInTheAppsPlayerInLandscapeAndItsCloseReturnsToThePageInPortrait]' passed (23.474 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaPlayerUITests testASwipeDownClosesThePlayerAndThePageShowsAgain]' passed (17.933 seconds).

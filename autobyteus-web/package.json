@@ -162,6 +162,7 @@
     "mermaid": "^11.17.2",
     "mime-types": "^3.0.2",
     "monaco-editor": "^0.52.2",
+    "pdfjs-dist": "4.10.38",
     "pinia": "^2.1.7",
     "prismjs": "^1.29.0",
     "qrcode": "^1.5.4",

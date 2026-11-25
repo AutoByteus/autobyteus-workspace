@@ -19,7 +19,7 @@ final class NativeVideoRealNodeUITests: XCTestCase {
     }
 
     /// From the chat's file link: the app's player opens, a wide video turns to landscape, the scrubber is moved to the
-    /// middle and the picture plays on from there, and Back returns to the page in portrait.
+    /// middle and the picture plays on from there, and its close returns to the page in portrait.
     func testAWideVideoFromTheChatLink() throws {
         let app = try openTheRun()
         let link = app.webViews.buttons["Open wide-574.mp4 in Files"]
@@ -47,8 +47,8 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         // screenshots a second apart differ while the video plays and are identical when its picture is frozen.
         XCTAssertTrue(wait(10) { !app.sliders.firstMatch.exists }, "the controls hide (so only the picture can change)")
         XCTAssertTrue(pictureMoves(app), "the picture plays on after a scrub to the middle")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(timeout) { !player.exists }, "its close closes the player")
         XCTAssertTrue(wait(timeout) { !self.isLandscape(app) }, "and the phone returns to portrait")
         mark("back")
     }
@@ -70,8 +70,8 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         skip.tap()
         print("POSITION after skip \(position(app))")
         Thread.sleep(forTimeInterval: 4)
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(timeout) { !player.exists }, "its close closes the player")
     }
 
     /// Over a slower link (50 ms before each answer's first byte, a Wi-Fi or tailnet round trip) the node delivers a
@@ -98,8 +98,8 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         let needed = bytesPerSecond * (elapsed - 3)
         print("REALTIME delivered \(Int(delivered)) bytes in \(String(format: "%.1f", elapsed)) s; real-time playback needs at least \(Int(needed))")
         XCTAssertGreaterThanOrEqual(delivered, needed, "the node delivers the video at least as fast as it plays, over a slower link")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(timeout) { !player.exists }, "its close closes the player")
     }
 
     /// From Files (More → Files → the file): the same player; a tall video stays in portrait.
@@ -115,8 +115,8 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 6)
         XCTAssertFalse(isLandscape(app), "a tall video stays in portrait")
         XCTAssertFalse(app.staticTexts["media.couldNotPlay"].exists, "the video plays")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(timeout) { !player.exists }, "its close closes the player")
         mark("back")
     }
 
@@ -133,17 +133,17 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         try control("POST", "/rewrite")
         Thread.sleep(forTimeInterval: 10)
         XCTAssertEqual(app.otherElements.matching(identifier: "media.player").count, 1, "one player while it plays")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(10) { !player.exists }, "one Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(10) { !player.exists }, "one close closes the player")
         mark("rewrite-while-closed")
         try control("POST", "/rewrite")
         Thread.sleep(forTimeInterval: 10)
         XCTAssertFalse(player.exists, "the player does not open by itself after a rewrite")
-        if player.exists { app.buttons["media.back"].tap() }
+        if player.exists { closePlayer(app) }
     }
 
-    /// The player's own Close (X), shown with its controls next to the app's Back, closes the player as Back does: the
-    /// page again, in portrait.
+    /// The player's own Close (X), shown with its controls (iOS's player screen since autobyteus-647 D-3), closes the
+    /// player: the page again, in portrait.
     func testEThePlayersOwnCloseButton() throws {
         let app = try openTheRun()
         let link = app.webViews.buttons["Open wide-574.mp4 in Files"]
@@ -161,7 +161,7 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         XCTAssertTrue(wait(10) { !player.exists }, "Close closes the player")
         XCTAssertTrue(wait(timeout) { !self.isLandscape(app) }, "and the phone returns to portrait")
         XCTAssertTrue(app.webViews.firstMatch.exists, "the page is shown again")
-        if player.exists { app.buttons["media.back"].tap() }
+        if player.exists { closePlayer(app) }
     }
 
     /// Removing the node from the app (the page's node → Switch node → its row's More → Remove) deletes its cached videos (D-7): the cache folder is
@@ -183,6 +183,15 @@ final class NativeVideoRealNodeUITests: XCTestCase {
         XCTAssertTrue(wait(20) { !app.buttons["start.row.more"].exists }, "the node is removed")
         mark("removed")
         Thread.sleep(forTimeInterval: 3)
+    }
+
+    /// Closes iOS's player screen with its own close button, its controls shown first (autobyteus-647 D-3: the app has no
+    /// bar over the player; Back exists only on the "could not be played" screen).
+    private func closePlayer(_ app: XCUIApplication) {
+        let close = app.buttons["Close Button"]
+        if !close.exists { app.otherElements["media.player"].coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap() }
+        _ = close.waitForExistence(timeout: 5)
+        close.tap()
     }
 
     // MARK: Helpers

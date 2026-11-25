@@ -1,0 +1,7 @@
+PRISMA_OK
+[terminal-runtime] ok selected helper: /private/tmp/api647/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api647/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+[mac-signing-policy] Command failed: codesign --verify --deep --strict --verbose=2 /private/tmp/api647/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+/private/tmp/api647/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+

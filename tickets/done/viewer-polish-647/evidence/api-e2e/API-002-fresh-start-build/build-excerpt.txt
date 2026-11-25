@@ -1,0 +1,17 @@
+43:[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 37.1s
+44:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+45:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+46:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.6s
+47:[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+48:[typecheck] PASS
+809:Starting electron-builder...
+810:  • electron-builder  version=25.1.8 os=25.5.0
+811:  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+812:To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+820:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.1.dmg
+821:  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.1.zip
+823:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.1.dmg.blockmap
+824:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.1.zip.blockmap
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.3s using pnpm v10.28.2

@@ -103,6 +103,11 @@ describe('MonacoEditor.vue', () => {
       expect.anything(),
       expect.objectContaining({ fontSize: 14 }),
     );
+    // autobyteus-647 D-1 (REQ-001): no line numbers, folding column or glyph margin; a 6 px margin before the text.
+    expect(mockMonaco.editor.create).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ lineNumbers: 'off', lineNumbersMinChars: 0, glyphMargin: false, folding: false, lineDecorationsWidth: 6 }),
+    );
   });
 
   it('updates monaco options when the app font size preset changes', async () => {

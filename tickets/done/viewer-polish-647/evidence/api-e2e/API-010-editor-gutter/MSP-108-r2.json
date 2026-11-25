@@ -1,0 +1,661 @@
+{
+ "case": "MSP-108",
+ "result": "Pass",
+ "seconds": 22.4,
+ "summary": [
+  {
+   "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+   "failures": [],
+   "editorWidth": 444,
+   "rows": 18,
+   "lineRows": 7,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 10,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+   "failures": [],
+   "editorWidth": 1434,
+   "rows": 10,
+   "lineRows": 7,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 2,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+   "failures": [],
+   "editorWidth": 444,
+   "rows": 21,
+   "lineRows": 15,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 6,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+   "failures": [],
+   "editorWidth": 1434,
+   "rows": 19,
+   "lineRows": 17,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 1,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+   "failures": [],
+   "editorWidth": 444,
+   "rows": 16,
+   "lineRows": 4,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 11,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+   "failures": [],
+   "editorWidth": 1434,
+   "rows": 7,
+   "lineRows": 4,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 2,
+   "past": 0
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+   "failures": [],
+   "editorWidth": 1434,
+   "rows": 5,
+   "lineRows": 4,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 0,
+   "past": 2
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+   "failures": [],
+   "editorWidth": 1434,
+   "rows": 7,
+   "lineRows": 4,
+   "gutter": {
+    "lineNumbers": 0,
+    "foldControls": 0,
+    "glyphMarginWidth": 0,
+    "marginWidth": 6
+   },
+   "firstCharOffset": 6,
+   "wrapped": 2,
+   "past": 0
+  }
+ ],
+ "results": [
+  {
+   "name": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 444,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1",
+     "mtk22",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 18,
+    "lineRows": 7,
+    "lineTops": {
+     "1": 459,
+     "2": 480,
+     "3": 606,
+     "4": 627,
+     "5": 648,
+     "6": 774,
+     "7": 795
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "2",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  a-package-folder-with-"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  that-keeps-going/past/"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  and-past-a-maximized-d"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  because-the-wrap-check"
+     },
+     {
+      "line": "2",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  ny-window/with-more-fo"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  a-dependency-with-a-re"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  ame-for-the-wrap-check"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  5678-and-more-build-me"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  he-edge-of-a-maximized"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 1013,
+      "rowTextLeft": 1013,
+      "start": "  -it-wraps-there-too\""
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-panel-pnpm-workspace.yaml.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 1434,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1",
+     "mtk22",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 10,
+    "lineRows": 7,
+    "lineTops": {
+     "1": 0,
+     "2": 21,
+     "3": 63,
+     "4": 84,
+     "5": 105,
+     "6": 147,
+     "7": 168
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "2",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  because-the-wrap-check"
+     },
+     {
+      "line": "5",
+      "lineTextLeft": 23,
+      "rowTextLeft": 23,
+      "start": "  5678-and-more-build-me"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-maximized-pnpm-workspace.yaml.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-panel-tsconfig.json",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 444,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1",
+     "mtk20",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 21,
+    "lineRows": 15,
+    "lineTops": {
+     "1": 459,
+     "2": 480,
+     "3": 501,
+     "4": 522,
+     "5": 543,
+     "6": 564,
+     "7": 585,
+     "8": 606,
+     "9": 753,
+     "10": 774,
+     "11": 795,
+     "12": 816,
+     "13": 837,
+     "14": 858,
+     "15": 879
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        src/"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        a-very-long-fold"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        in-a-narrow-pane"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        nor-in-a-maximiz"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        because-it-keeps"
+     },
+     {
+      "line": "8",
+      "lineTextLeft": 1063,
+      "rowTextLeft": 1063,
+      "start": "        folders/*.ts\""
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-panel-tsconfig.json.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-tsconfig.json",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 1434,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1",
+     "mtk20",
+     "mtk5"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 19,
+    "lineRows": 17,
+    "lineTops": {
+     "1": 0,
+     "2": 21,
+     "3": 42,
+     "4": 63,
+     "5": 84,
+     "6": 105,
+     "7": 126,
+     "8": 147,
+     "9": 189,
+     "10": 210,
+     "11": 231,
+     "12": 252,
+     "13": 273,
+     "14": 294,
+     "15": 315,
+     "16": 336,
+     "17": 357
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "8",
+      "lineTextLeft": 73,
+      "rowTextLeft": 73,
+      "start": "        because-it-keeps"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-maximized-tsconfig.json.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-panel-draft-v1.txt",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 444,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 16,
+    "lineRows": 4,
+    "lineTops": {
+     "1": 459,
+     "2": 606,
+     "3": 627,
+     "4": 753
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "as a draft written in a "
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "is: it goes on past the "
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "and of a narrow panel, a"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "a maximized desktop edit"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "going with more and more"
+     },
+     {
+      "line": "1",
+      "lineTextLeft": 996,
+      "rowTextLeft": 996,
+      "start": "to be read."
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 1030,
+      "rowTextLeft": 1030,
+      "start": "    also much longer tha"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 1030,
+      "rowTextLeft": 1030,
+      "start": "    even when the editor"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 1030,
+      "rowTextLeft": 1030,
+      "start": "    desktop window, so i"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 1030,
+      "rowTextLeft": 1030,
+      "start": "    whether they keep it"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 1030,
+      "rowTextLeft": 1030,
+      "start": "    spaces."
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-panel-draft-v1.txt.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 1434,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 7,
+    "lineRows": 4,
+    "lineTops": {
+     "1": 0,
+     "2": 42,
+     "3": 63,
+     "4": 105
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "and even past the edge o"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    whether they keep it"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 1434,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 5,
+    "lineRows": 4,
+    "lineTops": {
+     "1": 0,
+     "2": 21,
+     "3": 42,
+     "4": 63
+    },
+    "past": [
+     {
+      "number": "1",
+      "right": 2518,
+      "start": "DRAFT-618 This first par"
+     },
+     {
+      "number": "3",
+      "right": 1835,
+      "start": "    An indented line, fo"
+     }
+    ],
+    "wrapped": [],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-off.png"
+  },
+  {
+   "name": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again",
+   "viewport": "1440x900",
+   "failures": [],
+   "measured": {
+    "editorWidth": 1434,
+    "contentRight": 1426,
+    "tokenClasses": [
+     "mtk1"
+    ],
+    "gutter": {
+     "lineNumbers": 0,
+     "foldControls": 0,
+     "glyphMarginWidth": 0,
+     "marginWidth": 6
+    },
+    "unmapped": null,
+    "firstCharOffset": 6,
+    "rows": 7,
+    "lineRows": 4,
+    "lineTops": {
+     "1": 0,
+     "2": 42,
+     "3": 63,
+     "4": 105
+    },
+    "past": [],
+    "wrapped": [
+     {
+      "line": "1",
+      "lineTextLeft": 6,
+      "rowTextLeft": 6,
+      "start": "and even past the edge o"
+     },
+     {
+      "line": "3",
+      "lineTextLeft": 40,
+      "rowTextLeft": 40,
+      "start": "    whether they keep it"
+     }
+    ],
+    "misindented": [],
+    "pageScrollsSideways": false
+   },
+   "screenshot": "MSP-108-desktop-1440-maximized-draft-v1.txt-wrap-on-again.png"
+  }
+ ]
+}

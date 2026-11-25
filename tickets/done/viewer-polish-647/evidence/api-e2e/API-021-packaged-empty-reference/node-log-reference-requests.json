@@ -1,0 +1,23 @@
+[
+ {
+  "method": "GET",
+  "range": "bytes=0-0",
+  "status": 416,
+  "contentRange": "bytes */0",
+  "bytes": 0
+ },
+ {
+  "method": "GET",
+  "range": "bytes=0-",
+  "status": 416,
+  "contentRange": "bytes */0",
+  "bytes": 0
+ },
+ {
+  "method": "GET",
+  "range": "bytes=0-0",
+  "status": 404,
+  "contentRange": null,
+  "bytes": 89
+ }
+]

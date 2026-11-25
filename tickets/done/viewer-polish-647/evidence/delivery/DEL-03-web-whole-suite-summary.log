@@ -1,0 +1,30 @@
+### web-whole: env NUXT_TEST=true pnpm -C autobyteus-web test:nuxt --run
+
+> autobyteus@1.5.15-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/viewer-polish-647/autobyteus-web
+[...] full log not kept (the vitest summary, and the count of FAIL lines, follow)
+lines containing ' FAIL ': 0
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts (8 tests) 124ms
+ ✓ scripts/__tests__/buildIconBundle.spec.ts (3 tests) 297ms
+stdout | utils/workspace/__tests__/runnableWorkspaceKind.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/workspace/__tests__/runnableWorkspaceKind.spec.ts (4 tests) 2ms
+stdout | utils/__tests__/ownNodeWindow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/ownNodeWindow.spec.ts (1 test) 2ms
+stdout | services/runOpen/__tests__/runOpenStrategyPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/runOpenStrategyPolicy.spec.ts (3 tests) 2ms
+ ✓ utils/highlighting/__tests__/languageDetector.spec.ts (38 tests) 4000ms
+
+ Test Files  810 passed (810)
+      Tests  6264 passed | 2 skipped (6266)
+   Start at  14:07:33
+   Duration  294.50s (transform 29.90s, setup 1947.63s, collect 188.03s, tests 99.32s, environment 160.66s, prepare 98.30s)
+
+exit 0

@@ -1,0 +1,39 @@
+{
+ "case": "MSP-117",
+ "result": "Pass",
+ "seconds": 14.9,
+ "rounds": [
+  "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+  "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4",
+  "alpha-647.pdf:3/3 beta-647.pdf:2/2 gamma-647.pdf:4/4"
+ ],
+ "errors": [],
+ "session": {
+  "workers": [
+   {
+    "scheme": "blob",
+    "type": "module"
+   }
+  ],
+  "workerErrors": 0,
+  "jsBlobs": 1,
+  "blobTypes": [
+   "application/pdf",
+   "text/javascript;charset=utf-8",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf",
+   "application/pdf"
+  ],
+  "globalWorkerOptions": {
+   "workerPort": false,
+   "workerSrc": ""
+  }
+ },
+ "pdfConsoleErrors": [],
+ "screenshot": "MSP-117-phone-gamma-after-alpha-beta.png"
+}

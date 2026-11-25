@@ -32,7 +32,7 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
     /// The most cached bytes handed over in one step: the queue is free between steps, so a cancel takes effect there.
     static let cacheStep = 1 << 20
 
-    public let queue = DispatchQueue(label: "org.autobyteus.video-loader")
+    public let queue = DispatchQueue(label: "org.autobyteus.media-loader")
     private let http: NodeMediaHTTP
     private let url: URL
     private let probe: NodeMediaHTTP.Probe

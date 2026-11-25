@@ -1,0 +1,177 @@
+import XCTest
+
+/// TEMPORARY (API/E2E autobyteus-647, not committed): on a fresh native-video-node.mjs stack. testB: three PDFs opened one
+/// after another in the app's page (WKWebView), and a JSON file in its viewer. testY: "the app" close path: while iOS's
+/// player shows the MP3, a link (`autobyteus://demo`) makes the app replace its screen. The audio session is read from the
+/// simulator's unified log around the MARK lines; the node's bytes from the stack's `/log`.
+final class Viewer647TempUITests: XCTestCase {
+    private let timeout: TimeInterval = 90
+
+    func test0Pairs() throws {
+        let app = try launchAndPair()
+        let row = app.webViews.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Video Checker'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: timeout), "the paired node's run list")
+    }
+
+    func testBThreePDFsAndAJSONFileInThePage() throws {
+        let app = try openTheRun()
+        openFiles(app)
+        let folder = fileRow(app, "pdf-647")
+        folder.tap()
+        Thread.sleep(forTimeInterval: 1.5)
+        for round in 0..<2 {
+            for name in ["alpha-647.pdf", "beta-647.pdf", "gamma-647.pdf"] {
+                mark("open-\(name)-\(round)")
+                fileRow(app, name).tap()
+                Thread.sleep(forTimeInterval: 5)
+                let failed = app.webViews.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] 'error' OR label CONTAINS[c] 'could not'")).firstMatch.exists
+                print("PDF \(name) round \(round) errorText=\(failed)")
+                XCTAssertFalse(failed, "\(name): no error")
+                attach(app, "pdf-\(round)-\(name)")
+                tapPageBack(app)
+                Thread.sleep(forTimeInterval: 1.5)
+            }
+        }
+        fileRow(app, "sample-647.json").tap()
+        Thread.sleep(forTimeInterval: 4)
+        attach(app, "json-647")
+        tapPageBack(app)
+    }
+
+    /// The wide video in iOS's player, landscape, its controls shown (an off-centre tap), held 6 s for the screen recording.
+    func testCWideVideoControlsShown() throws {
+        let app = try openTheRun()
+        let link = app.webViews.buttons["Open wide-574.mp4 in Files"]
+        XCTAssertTrue(link.waitForExistence(timeout: timeout), "the chat's file link")
+        link.tap()
+        let player = app.otherElements["media.player"]
+        XCTAssertTrue(player.waitForExistence(timeout: timeout), "the app's player opens")
+        let frame = { app.windows.firstMatch.frame }
+        XCTAssertTrue(wait(timeout) { frame().width > frame().height }, "landscape")
+        Thread.sleep(forTimeInterval: 4)
+        player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
+        mark("video-controls-shown")
+        print("CONTROLS close=\(app.buttons["Close Button"].exists) scrubber=\(app.sliders.matching(NSPredicate(format: "identifier == %@", "Current position")).firstMatch.exists) title=\(app.staticTexts["wide-574.mp4"].exists) appBack=\(app.buttons["media.back"].exists)")
+        Thread.sleep(forTimeInterval: 2)
+        mark("video-controls-hold")
+        Thread.sleep(forTimeInterval: 1)
+        let close = app.buttons["Close Button"]
+        if !close.exists { player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap() }
+        _ = close.waitForExistence(timeout: 5)
+        close.tap()
+        XCTAssertTrue(wait(20) { !player.exists }, "closed")
+    }
+
+    func testYTheAppReplacingItsScreenWhileThePlayerShows() throws {
+        try control("POST", "/throttle?bps=60000")
+        try control("POST", "/touch?file=mp3")
+        let app = try openTheRun()
+        let link = app.webViews.buttons["Open memo-642.mp3 in Files"]
+        XCTAssertTrue(link.waitForExistence(timeout: timeout), "the chat's link to the MP3")
+        mark("tap-mp3")
+        link.tap()
+        let player = app.otherElements["media.player"]
+        XCTAssertTrue(player.waitForExistence(timeout: timeout), "the app's player opens")
+        Thread.sleep(forTimeInterval: 6)
+        attach(app, "player-before-app-close")
+        mark("app-close")
+        XCUIDevice.shared.system.open(URL(string: "autobyteus://demo")!)
+        let gone = wait(20) { !player.exists && !app.otherElements["media.host"].exists }
+        print("APPCLOSE gone=\(gone)")
+        Thread.sleep(forTimeInterval: 10)
+        mark("after-app-close")
+        attach(app, "after-app-close")
+        try control("POST", "/throttle?bps=1500000")
+    }
+
+    // MARK: Helpers (as NativeMediaRealNodeUITests)
+
+    private struct Stack { let info: [String: Any]; let pairingLink: String }
+
+    private func stack() throws -> Stack {
+        let environment = ProcessInfo.processInfo.environment
+        guard let infoPath = environment["AUTOBYTEUS_574_REAL_NODE_INFO"], let secretsPath = environment["AUTOBYTEUS_574_REAL_NODE_SECRETS"] else {
+            throw XCTSkip("no stack")
+        }
+        let info = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: infoPath))) as? [String: Any] ?? [:]
+        let secrets = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: secretsPath))) as? [String: Any] ?? [:]
+        guard let link = secrets["pairingLink"] as? String else { throw XCTSkip("no pairing link") }
+        return Stack(info: info, pairingLink: link)
+    }
+
+    private func launchAndPair() throws -> XCUIApplication {
+        let stack = try stack()
+        XCUIDevice.shared.orientation = .portrait
+        let app = XCUIApplication()
+        app.launchEnvironment["AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS"] = "60"
+        app.launchEnvironment["AUTOBYTEUS_RESET_SAVED_NODES"] = "1"
+        app.launch()
+        var components = URLComponents()
+        components.scheme = "autobyteus"
+        components.host = "open"
+        components.queryItems = [URLQueryItem(name: "input", value: stack.pairingLink)]
+        XCUIDevice.shared.system.open(components.url!)
+        return app
+    }
+
+    private func openTheRun() throws -> XCUIApplication {
+        _ = try stack()
+        XCUIDevice.shared.orientation = .portrait
+        let app = XCUIApplication()
+        app.launchEnvironment["AUTOBYTEUS_CONNECTION_TIMEOUT_SECONDS"] = "60"
+        app.launch()
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: timeout), "the node's page")
+        let row = app.webViews.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Video Checker'")).firstMatch
+        if row.waitForExistence(timeout: 20) { row.tap() }
+        XCTAssertTrue(app.webViews.buttons["Back to runs"].waitForExistence(timeout: timeout), "the run's conversation")
+        return app
+    }
+
+    private func openFiles(_ app: XCUIApplication) {
+        let more = app.webViews.otherElements["More"].exists ? app.webViews.otherElements["More"] : app.webViews.buttons["More"]
+        more.tap()
+        let files = app.webViews.menuItems["Files"]
+        XCTAssertTrue(files.waitForExistence(timeout: 10), "the menu's Files")
+        files.tap()
+    }
+
+    private func fileRow(_ app: XCUIApplication, _ name: String) -> XCUIElement {
+        let row = app.webViews.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 20), "\(name) in Files")
+        return row
+    }
+
+    private func tapPageBack(_ app: XCUIApplication) {
+        let backs = app.webViews.buttons.matching(NSPredicate(format: "label == 'Back'"))
+        _ = wait(5) { backs.allElementsBoundByIndex.contains { $0.isHittable } }
+        backs.allElementsBoundByIndex.first { $0.isHittable }?.tap()
+    }
+
+    private func control(_ method: String, _ path: String) throws {
+        let stack = try stack()
+        let port = stack.info["controlPort"].map { "\($0)" } ?? ""
+        var request = URLRequest(url: URL(string: "http://127.0.0.1:\(port)\(path)")!)
+        request.httpMethod = method
+        let done = expectation(description: "control \(path)")
+        URLSession.shared.dataTask(with: request) { _, _, _ in done.fulfill() }.resume()
+        wait(for: [done], timeout: 90)
+    }
+
+    private func mark(_ event: String) { print("MARK \(event) \(Int(Date().timeIntervalSince1970 * 1000))") }
+
+    private func wait(_ timeout: TimeInterval, until condition: @escaping () -> Bool) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return true }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        return false
+    }
+
+    private func attach(_ app: XCUIApplication, _ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+}

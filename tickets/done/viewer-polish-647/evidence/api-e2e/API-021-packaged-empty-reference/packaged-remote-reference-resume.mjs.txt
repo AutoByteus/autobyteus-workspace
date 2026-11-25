@@ -1,0 +1,62 @@
+// API/E2E autobyteus-647 round 2, temporary: AC-002 in the packaged window (file://, cross-origin to the node).
+// The desktop adds the real-node stack's node (Nodes: add, connect with a setup code the node issued, open its window),
+// then in that node's window opens the Team's messages and the zero-byte reference, then the deleted one.
+// Usage: SETUP_CODE=<from env, never printed> node packaged-remote-reference.mjs <controlEndpoint> <nodeBaseUrl> <outDir>
+import { createRequire } from 'node:module';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const require = createRequire(process.env.WEB_PKG ?? '<worktree>/autobyteus-web/package.json');
+const { chromium } = require('playwright-core');
+const [endpoint, nodeBaseUrl, out] = process.argv.slice(2);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const result = { steps: [] };
+const log = (step, data) => { result.steps.push({ step, ...data }); console.log(step, JSON.stringify(data).slice(0, 600)); };
+
+const browser = await chromium.connectOverCDP(endpoint);
+const pages = () => browser.contexts().flatMap(c => c.pages());
+const main = pages().find(p => p.url().includes('renderer/index.html'));
+if (!main) throw new Error('no app window');
+// Resume: the node window this script's first run opened (the node is already added and connected).
+let win = null;
+for (const p of pages()) { if (p.url().includes('renderer/index.html') && await p.locator('[data-test="workspace-row"]').count()) win = p; }
+const context = win ? await win.evaluate(async () => JSON.stringify(await window.electronAPI.getWindowContext?.() ?? null).replace(/"(credential|token)[^,}]*/gi, '"<redacted>"').slice(0, 300)) : null;
+if (!win) throw new Error('no node window');
+const errors = [];
+win.on('console', m => { if (m.type() === 'error') errors.push(m.text().split('\n')[0].slice(0, 200)); });
+const responses = [];
+win.on('response', r => { if (r.url().includes('/references/')) responses.push({ url: r.url().replace(/.*\/messages\//, '…/'), status: r.status(), range: r.request().headers().range ?? null, contentRange: r.headers()['content-range'] ?? null }); });
+log('node-window', { url: win.url().replace(/^file:\/\/.*\/AutoByteus\.app/, 'file://…/AutoByteus.app'), origin: await win.evaluate(() => location.origin), windowContext: context });
+// The workspace folder in the run list (collapsed), then the Team inside it.
+const definition = win.locator('[data-test="workspace-team-definition-row-reference-team"]').first();
+if (!(await definition.isVisible().catch(() => false))) { await win.locator('[data-test="workspace-row"]').first().click(); await sleep(1500); }
+// The Team's row, its "Team" tab, the references.
+if (!(await win.locator('[data-test^="workspace-team-row-"]').first().isVisible().catch(() => false))) { await definition.click(); await sleep(1500); }
+const teamRow = win.locator('[data-test^="workspace-team-row-"]').first();
+await teamRow.waitFor({ timeout: 60000 });
+await teamRow.click();
+await sleep(1500);
+if (!(await win.locator('[data-test="right-side-tab-list"]').count())) { const w = await win.evaluate(() => innerWidth); await win.mouse.click(w - 22, 21); await sleep(1500); }
+const tab = win.getByRole('tab', { name: 'Team', exact: true }).first();
+await tab.waitFor({ timeout: 60000 });
+for (let i = 0; i < 20 && (await tab.getAttribute('aria-selected')) !== 'true'; i += 1) { await tab.click(); await sleep(500); }
+const reference = name => win.locator('[data-test="team-communication-reference-row"]').filter({ hasText: name }).first();
+const viewer = win.locator('[data-test="team-reference-viewer-shell"]').first();
+const facts = async () => viewer.evaluate((el) => ({ text: el.innerText.replace(/\s+/g, ' ').trim().slice(0, 240), video: Boolean(el.querySelector('video')),
+  alerts: [...el.querySelectorAll('[role="alert"]')].map(a => a.textContent.replace(/\s+/g, ' ').trim()).filter(Boolean) }));
+await reference('empty-642.mp4').waitFor({ timeout: 60000 });
+await reference('empty-642.mp4').click();
+const end = Date.now() + 30000;
+let empty = null;
+while (Date.now() < end) { empty = await facts().catch(() => null); if (empty && /could not be played|Failed to fetch/i.test(empty.text)) break; await sleep(300); }
+await sleep(1000);
+empty = await facts();
+await win.screenshot({ path: path.join(out, 'packaged-remote-empty-reference.png') });
+await reference('gone-642.mp4').click();
+const end2 = Date.now() + 30000;
+let gone = null;
+while (Date.now() < end2) { gone = await facts().catch(() => null); if (gone && /unavailable|not found/i.test(gone.text)) break; await sleep(300); }
+await win.screenshot({ path: path.join(out, 'packaged-remote-gone-reference.png') });
+log('AC-002', { empty, gone, referenceResponses: responses, consoleErrors: [...new Set(errors)].slice(0, 10),
+  pass: !/Failed to fetch reference content/.test(empty.text) && /This video could not be played\.\s*Retry/.test(empty.text) && /unavailable|not found/i.test(gone.text) });
+await fs.writeFile(path.join(out, 'packaged-remote-reference-result.json'), JSON.stringify(result, null, 2));
+await browser.close().catch(() => undefined);

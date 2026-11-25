@@ -1,0 +1,81 @@
+{
+ "case": "MSP-114",
+ "result": "Pass",
+ "seconds": 15.8,
+ "teamRunId": "desk_refs_642_37a52f1623d646d381fd8877ccdcd004",
+ "video": {
+  "name": "desk-642.mp4",
+  "state": {
+   "currentTime": 1.0911,
+   "readyState": 4,
+   "src": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/055acf7dcfe7fee0e7544635806af4e5af139fc58489bfa6c04166d521fa3d21/content",
+   "error": null
+  },
+  "requests": [
+   {
+    "at": 1795611687321,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/055acf7dcfe7fee0e7544635806af4e5af139fc58489bfa6c04166d521fa3d21/content",
+    "range": "bytes=0-0",
+    "type": "fetch",
+    "status": 206
+   },
+   {
+    "at": 1795611687334,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/055acf7dcfe7fee0e7544635806af4e5af139fc58489bfa6c04166d521fa3d21/content",
+    "range": "bytes=0-",
+    "type": "media",
+    "status": 206
+   }
+  ],
+  "screenshot": "MSP-114-desk-642.mp4.png"
+ },
+ "audio": {
+  "name": "desk-642.m4a",
+  "state": {
+   "currentTime": 1.056859,
+   "readyState": 4,
+   "src": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/16d90e7d8256e61899bec043035be83de120ebe0c5967cf27147f875c8eae19f/content",
+   "error": null
+  },
+  "requests": [
+   {
+    "at": 1795611688603,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/16d90e7d8256e61899bec043035be83de120ebe0c5967cf27147f875c8eae19f/content",
+    "range": "bytes=0-0",
+    "type": "fetch",
+    "status": 206
+   },
+   {
+    "at": 1795611688615,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/055acf7dcfe7fee0e7544635806af4e5af139fc58489bfa6c04166d521fa3d21/content",
+    "range": "bytes=0-",
+    "type": "media",
+    "status": 206
+   },
+   {
+    "at": 1795611688616,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/16d90e7d8256e61899bec043035be83de120ebe0c5967cf27147f875c8eae19f/content",
+    "range": "bytes=0-",
+    "type": "media",
+    "status": 206
+   },
+   {
+    "at": 1795611688642,
+    "url": "\u2026/collabmsg_3Jshe0s9kJIfza98PWEbF3eHWGLmpYdg/references/16d90e7d8256e61899bec043035be83de120ebe0c5967cf27147f875c8eae19f/content",
+    "range": "bytes=262144-",
+    "type": "media",
+    "status": 206
+   }
+  ],
+  "screenshot": "MSP-114-desk-642.m4a.png"
+ },
+ "text": {
+  "shown": true,
+  "screenshot": "MSP-114-desk-642.md.png"
+ },
+ "gone": {
+  "unavailable": true,
+  "message": "Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+  "screenshot": "MSP-114-desk-gone-642.mp4.png"
+ }
+}
