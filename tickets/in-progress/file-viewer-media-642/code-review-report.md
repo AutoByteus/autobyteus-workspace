@@ -14,7 +14,8 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`. Round 4 is a `Targeted Delta Review` of `190cd51bc3..73c3330c49`: SR-005 / DEC-007 and IR-004, with the source change in `38f318021c`. Round 3's entry follows.
+- Current Code Review Revision ID: `CRR-005`. Round 5 is a `Targeted Delta Review` of `e4ce2f000b..0a605d1293`: SR-006 / DEC-008 and IR-005, with the source change in `339b8d0ddb`.
+- Round 4 (CRR-004) was a `Targeted Delta Review` of `190cd51bc3..73c3330c49` (SR-005, IR-004); its entry follows.
 - Previous: `CRR-003`
 - Current Review Round: `3`, a `Targeted Delta Review` of `292ea71db5..af2b65c2c0`. The only source change is `36881a6734`: `CollaborationMessageReferenceViewer.vue` and its spec. Rounds 1 and 2 below stay as recorded except where a later round updates them.
 - Review Scope: round 2 is a `Targeted Delta Review` of `4313640f6e..26ebb05729`. Round 1 was a `Full Review`.
@@ -61,6 +62,26 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 5 Delta Verification (CRR-005): chat highlighting is message code blocks (SR-006, DEC-008)
+
+- **As SR-006 says:**
+  - `FileDisplay.vue` (mounted nowhere), `getPrismLanguage` and the table's `prism` column are removed, and so is the audit list entry.
+  - The table is extension/name → Monaco id, read only by `getMonacoLanguage`.
+  - The Prism grammar loads are kept for `markdownItPrism`'s fences, and the service registers the aliases `rs` → rust and `zsh` → bash.
+  - The comment is updated (N-9).
+- **Extra removals (the implementation's call; checked):**
+  - `segmentHighlighter.ts`: its only production reader was `FileDisplay`;
+  - `highlightService.highlightVue`: called only by `segmentHighlighter`;
+  - `vueCodeHighlight.ts`: no caller at all;
+  - `WriteFileSegment.highlightedContent` and the unused `ParsedFile`: written and read only by `segmentHighlighter`.
+
+  All of it is dead with `FileDisplay`, in the highlighting module this ticket touches, so removing it is right (Principle 7). `git grep` finds no reference left; the only hits are the unrelated `activeFileDisplayMode`. `markdownItPrism` calls `highlight(content, lang)` and never `highlightVue`, so no fence changes rendering.
+- **Tests:**
+  - The new `highlightService.fences.spec.ts` covers each listed fence plus the aliases and the unchanged languages, a markdown-it `rs` block with spans, and an unknown fence left plain and escaped.
+  - It is red on `73c3330c49` for `zsh`, `rs` and markdown-it (IMP-15).
+  - Re-run by me: services, highlighting, utils, conversation and the font-size audit, 162 files and 1325 tests passed.
+- **Result:** Pass. No findings.
 
 ## Round 4 Delta Verification (CRR-004): the iOS audio session (SR-005, DEC-007)
 
@@ -293,6 +314,10 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 5, CRR-005, SR-006 / IR-005). No findings; CR-001 and CR-002 stay resolved.
+- Score Summary: 9.3 / 10. Cleanup completeness is 9.5, since the dead `FileDisplay` chain is gone.
+- Recommended Recipient: `/api_e2e_engineer`. AC-004's chat leg is now message code blocks: each listed fence, plus `rs` and `zsh`, rendered with token spans on desktop and phone, and Monaco for files. Plus the earlier rounds' list.
+- Round 4 result (CRR-004, superseded):
 - Review Decision: `Pass` (round 4, CRR-004, SR-005 / IR-004). CR-001 and CR-002 stay resolved; there are no new findings.
 - Score Summary: 9.3 / 10.
 - Recommended Recipient: `/api_e2e_engineer`. Run round 3's list, plus:

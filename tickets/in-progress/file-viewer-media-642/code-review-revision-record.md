@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002), Targeted Delta | Fail | Fail: Local Fix | CR-001 (resolved), CR-002 (new) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-003), Targeted Delta | Fail | Pass | CR-002 (resolved) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-005), Targeted Delta | Pass | Pass | None |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-005, SR-006), Targeted Delta | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -141,6 +142,42 @@ None open. CR-001 and CR-002 stay resolved.
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty:
   - the physical-iPhone Ring/Silent and sound check before release;
+  - C-6 (ship 574 and 642 together);
+  - the zero-byte 416;
+  - the iOS Back bar over AVKit's buttons.
+
+### CRR-005: targeted delta review of IR-005 (SR-006, chat highlighting as code blocks): Pass
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 5 Delta Verification")
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` of `e4ce2f000b..0a605d1293`. The source change `339b8d0ddb`:
+  - removes `FileDisplay.vue`, `segmentHighlighter.ts`, `vueCodeHighlight.ts` and `highlightVue`;
+  - narrows the table to Monaco;
+  - adds the Prism aliases;
+  - adjusts the types, the specs and the audit list.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-005); SR-006 / DEC-008; ARCH-REV-006 N-9
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass, 9.3 / 10
+- What changed in the review result and why:
+  - The dead `FileDisplay` chain is removed, and so are the extra pieces that only it kept alive. That is justified by Principle 7, and no reference remains.
+  - The fence aliases sit with the grammar owner, and N-9 is done.
+  - My re-run: 1325 tests passed.
+- Supported product scenario / material-premise basis changes: AC-004's chat leg is now message code blocks (DEC-008).
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: cleanup completeness 9.4 → 9.5
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the physical-iPhone check;
   - C-6 (ship 574 and 642 together);
   - the zero-byte 416;
   - the iOS Back bar over AVKit's buttons.
