@@ -11,9 +11,10 @@
 //
 // Cases:
 //   MSP-115 AC-002  The empty video reference (zero bytes; the node answers its probe 416 `bytes */0`): on the desktop
-//                  window (`nuxt dev`, 1440×900, the Team's "Team" tab) and on the phone (production bundle at /mobile,
-//                  390×844, the Team's Messages screen), it opens as an empty file: the viewer shows its video player
-//                  and no error. The deleted reference still says it is unavailable.
+//                  window (`nuxt dev`, 1440×900, cross-origin to the node, the Team's "Team" tab) and on the phone
+//                  (production bundle at /mobile, 390×844, the Team's Messages screen), it is treated as an empty file
+//                  (SR-003): no "Failed to fetch reference content"; the media viewer is reached and reports "This video
+//                  could not be played." with Retry. The deleted reference still says it is unavailable.
 //   MSP-116 AC-005  The desktop window: alpha, beta and gamma opened one after another from the Files tab's tree, all files
 //                  closed before each round ("Close all files"), five rounds; then switches between the open tabs. Each
 //                  PDF draws all its pages, with no load error; one worker for the session (a `nuxt dev` window loads the
@@ -108,8 +109,12 @@ export const runViewerPolishCases = async (probe) => {
       const favicon = /: Failed to load resource: the server responded with a status of 40[14] \((Unauthorized|Not Found)\)$/.test(redacted) && sourceUrl.startsWith(origin) && new URL(sourceUrl).pathname === '/favicon.ico';
       // By design: the deleted reference's probe answers 404 (shown as "unavailable"), the empty one's 416 (an empty file).
       const reference = currentCase === 'MSP-115' && /status of (404|416)/.test(redacted) && sourceUrl.includes('/references/');
-      evidence.browserErrors.push({ case: currentCase, line: redacted, known: favicon || reference, ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}),
-        ...(reference ? { cause: 'a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one' } : {}) });
+      // SR-003: the empty file reaches the phone browser's player, which plays it from a downloaded blob; Chrome's video
+      // element then asks that empty blob for a range, which it cannot satisfy, and the player says it could not be played.
+      const emptyBlob = currentCase === 'MSP-115' && /: Failed to load resource: net::ERR_REQUEST_RANGE_NOT_SATISFIABLE$/.test(redacted) && sourceUrl.startsWith('blob:');
+      evidence.browserErrors.push({ case: currentCase, line: redacted, known: favicon || reference || emptyBlob, ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}),
+        ...(reference ? { cause: 'a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one' } : {}),
+        ...(emptyBlob ? { cause: 'the empty file reached the player (SR-003): its video element asks the empty downloaded blob for a range' } : {}) });
     };
     page.on('console', message => { if (message.type() === 'error') line(message.text(), message.location()?.url ?? ''); });
     page.on('pageerror', error => line(`pageerror ${error.message}`));
@@ -229,7 +234,7 @@ export const runViewerPolishCases = async (probe) => {
       const deskViewer = deskPage.locator('[data-test="team-reference-viewer-shell"]').first();
       await deskReference('empty-647.mp4').waitFor({ timeout: 60_000 });
       await deskReference('empty-647.mp4').click();
-      await waitFor('desktop: the empty reference\'s player', async () => (await deskViewer.locator('video').count()) > 0, 30_000).catch(() => undefined);
+      await waitFor('desktop: the empty reference\'s viewer', async () => (await deskViewer.locator('video').count()) > 0 || /could not be played|Failed to fetch/i.test(await deskViewer.innerText().catch(() => '')), 30_000).catch(() => undefined);
       await sleep(1_500);
       const deskEmpty = { ...(await viewerFacts(deskViewer)), screenshot: await shot(deskPage, 'MSP-115-desktop-empty-647.mp4') };
       await deskReference('gone-647.mp4').click();
@@ -246,7 +251,7 @@ export const runViewerPolishCases = async (probe) => {
       const phoneViewer = phone.locator('[data-testid="mobile-team-reference-viewer"]');
       await phoneReference('empty-647.mp4').waitFor({ timeout: 30_000 });
       await phoneReference('empty-647.mp4').click();
-      await waitFor('phone: the empty reference\'s player', async () => (await phoneViewer.locator('video').count()) > 0, 30_000).catch(() => undefined);
+      await waitFor('phone: the empty reference\'s viewer', async () => (await phoneViewer.locator('video').count()) > 0 || /could not be played|Failed to fetch/i.test(await phoneViewer.innerText().catch(() => '')), 30_000).catch(() => undefined);
       await sleep(1_500);
       const phoneEmpty = { ...(await viewerFacts(phoneViewer)), screenshot: await shot(phone, 'MSP-115-phone-empty-647.mp4') };
       await phoneBackUntil('the Messages screen', async () => (await phoneViewer.count()) === 0);
@@ -258,12 +263,13 @@ export const runViewerPolishCases = async (probe) => {
       await phone.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
 
       const emptyProbe = log => log.filter(r => r.case === 'MSP-115');
-      const opensEmpty = facts => facts.video && facts.alerts.length === 0 && !ERROR.test(facts.text) && !/unavailable/i.test(facts.text);
+      // SR-003 (AC-002 restated): an empty file has nothing to play, so the media viewer it reaches reports it.
+      const opensEmpty = facts => !ERROR.test(facts.text) && /This video could not be played\.\s*Retry/.test(facts.text) && !/unavailable/i.test(facts.text);
       const details = { teamRunId: teamRun.teamRunId, desktop: { empty: deskEmpty, gone: deskGone }, phone: { empty: phoneEmpty, gone: phoneGone },
         referenceAnswers: { desktop: emptyProbe(deskReferences), phone: emptyProbe(phoneReferences) } };
       const failures = [
-        [opensEmpty(deskEmpty), 'desktop: the empty video reference opens as an empty file (its player, no error)'],
-        [opensEmpty(phoneEmpty), 'phone: the empty video reference opens as an empty file (its player, no error)'],
+        [opensEmpty(deskEmpty), 'desktop: the empty video reference reaches the media viewer, which says it could not be played (no fetch error)'],
+        [opensEmpty(phoneEmpty), 'phone: the empty video reference reaches the media viewer, which says it could not be played (no fetch error)'],
         [/unavailable|not found/i.test(deskGone.text) && !deskGone.video, 'desktop: the deleted reference still says it is unavailable'],
         [/unavailable|not found/i.test(phoneGone.text) && !phoneGone.video, 'phone: the deleted reference still says it is unavailable'],
         [[...deskReferences, ...phoneReferences].some(r => r.status === 416 && /^bytes \*\/0$/.test(r.contentRange ?? '')), 'the node answered the empty file\'s probe 416 bytes */0 (the case reaches D-2\'s path)'],
