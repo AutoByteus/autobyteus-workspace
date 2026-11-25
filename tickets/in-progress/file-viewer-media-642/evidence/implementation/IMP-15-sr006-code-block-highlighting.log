@@ -1,0 +1,39 @@
+# IMP-15 (SR-006, DEC-008; N-9) chat highlighting is message code blocks; the dead FileDisplay removed
+# command: pnpm -C autobyteus-web exec vitest run services/__tests__/highlightService.fences.spec.ts utils/highlighting
+#            tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+#          red: the new fence spec with highlightService.ts as at 73c3330c49 (the grammars, without the rs/zsh aliases)
+#          env -i PATH HOME TMPDIR pnpm -C autobyteus-web test:nuxt; ... typecheck; pnpm -C autobyteus-server-ts typecheck;
+#          the three web guards
+# commit: 339b8d0ddb
+# env: macOS (Darwin 25.5.0), Node 22.23.1
+# date: 2026-11-25
+# result: Pass.
+#   - Fences: a yaml/yml/toml/bash/sh/zsh/go/rust/rs/java/xml/ini/docker/dockerfile code block gives several Prism token
+#     classes, and so do python/typescript/json/markdown (unchanged); a message renders an rs block through markdownItPrism
+#     with token spans; an unknown fence stays plain, escaped text.
+#   - The table: each listed type's Monaco name and Monaco's own grammar tokens, as before (Monaco only).
+#   - Red: without the aliases, the zsh, rs and markdown-it cases fail.
+#   - Removal: no import of FileDisplay, getPrismLanguage, segmentHighlighter, highlightVue, vueCodeHighlight or ParsedFile
+#     remains (git grep); the web typecheck compiles every caller.
+#   - Whole web suite 808 files, 6258 tests; web typecheck PASS (86 = baseline); server typecheck PASS (972 = baseline);
+#     guards exit 0.
+
+## red
+   × highlightService: message code blocks by fence name (autobyteus-642 SR-006) > a ```zsh block is highlighted (several token classes)
+   × highlightService: message code blocks by fence name (autobyteus-642 SR-006) > a ```rs block is highlighted (several token classes)
+   × highlightService: message code blocks by fence name (autobyteus-642 SR-006) > reaches the grammar from a message, through markdownItPrism
+      Tests  3 failed | 17 passed (20)
+
+## green (affected)
+ Test Files  3 passed (3)
+      Tests  60 passed (60)
+
+## whole web suite
+ Test Files  808 passed (808)
+      Tests  6258 passed | 2 skipped (6260)
+
+## typechecks
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS

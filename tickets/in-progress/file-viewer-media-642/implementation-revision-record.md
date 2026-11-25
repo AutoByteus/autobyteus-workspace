@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Code Reviewer, code-review-report.md CRR-001 (CR-001, C-2) via Solution Designer SR-003; Architecture Reviewer ARCH-REV-003 (AR-002) via SR-004; ARCH-REV-004 Pass | CR-001, C-2, AR-002, N-6 | `Requirement Gap` (resolved upstream; implemented here) | CRR-001, SR-003, SR-004, ARCH-REV-003, ARCH-REV-004 | Message references stream video and audio; the native player takes the file name from its caller; the iOS audio screen shows a symbol and the name |
 | IR-003 | Code Reviewer, code-review-report.md Round 2 Delta Review (CRR-002) | CR-002 | `Local Fix` | CRR-002 | The reference viewer reloads only when a reference changes by value; a native player no longer re-opens on a message update |
 | IR-004 | Architecture Reviewer, design-review-report.md ARCH-REV-005 (Pass); Solution Designer, design-spec.md SR-005 (DEC-007, from API/E2E's evidence request) | N/A (N-7, N-8 applied) | `Design Impact` (decided upstream; implemented here) | SR-005, ARCH-REV-005, CRR-003 | The iOS media player plays in the playback audio session while it shows; the switch no longer mutes it |
+| IR-005 | Architecture Reviewer, design-review-report.md ARCH-REV-006 (Pass); Solution Designer, design-spec.md SR-006 (DEC-008, from API/E2E's finding that FileDisplay is mounted nowhere) | N/A (N-9 applied) | `Design Impact` (decided upstream; implemented here) | SR-006, ARCH-REV-006, CRR-004 | Chat highlighting is message code blocks (with rs, zsh); FileDisplay and its now-dead path removed; the table is Monaco only |
 
 ## Revision Entries
 
@@ -119,4 +120,33 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-14. `MediaAudioSessionTests` covers the category during, the restore after, and that repeated calls change nothing; the Core suite passes 88 of 88; `NativeMediaPlayerUITests` passes 3 of 3, with no session failure in the log.
 - Next recipient or routing: `/code_reviewer` (Large/High).
 - Remaining limitations or risks: the switch and the sound themselves need a physical iPhone, which is the check before release (SR-005).
+
+### IR-005 — Chat highlighting is message code blocks; the dead FileDisplay removed
+
+- Triggering role, report path, and round: Solution Designer, `design-spec.md` SR-006 (DEC-008, after API/E2E found `FileDisplay.vue` is mounted nowhere); Architecture Reviewer, `design-review-report.md` ARCH-REV-006 (Pass) with N-9.
+- Triggering finding IDs: N/A (a design change). Note applied: N-9 (the service's comment names message code blocks).
+- Classification: `Design Impact` (decided upstream; this round implements SR-006).
+- Prior authoritative result: IR-004, CRR-004 Pass.
+- Current authoritative result: implemented and checked; `Large` / `High`, to code review.
+- Related solution and architecture-review revision IDs: SR-006, ARCH-REV-006.
+- Related code-review revision IDs: CRR-004.
+- Related API/E2E and delivery revision IDs: N/A.
+- Why this implementation revision is recorded: D-4's second reader of the language table, "chat file previews" (`FileDisplay.vue`), is not reached, so `getPrismLanguage` had no reader. Chat highlighting is the message's code blocks, named by their fences.
+- Approved behavior or requirement IDs affected: REQ-004 / AC-004 (the chat leg).
+- Implementation delta (`339b8d0ddb`):
+  - **Removed, as SR-006 says:** `components/conversation/segments/renderer/FileDisplay.vue`, `getPrismLanguage`, the table's `prism` column, and the audit test's `FileDisplay` entry.
+  - **Removed because they became dead with it** (Principle 7; each search finds no other caller):
+    - `utils/highlighting/segmentHighlighter.ts` (`highlightWriteFileSegment`, `FileDisplay`'s only path);
+    - `highlightService.highlightVue` (only `segmentHighlighter`);
+    - `utils/highlighting/vueCodeHighlight.ts` (no caller at all, already dead, in the folder this change touches);
+    - `WriteFileSegment.highlightedContent` (written and read only by `segmentHighlighter`), and the unused `ParsedFile` type beside it.
+  - **Kept:** the Prism grammar loads. `highlightService.ts` registers `Prism.languages.rs` (rust) and `Prism.languages.zsh` (bash) beside them, and its comment names message code blocks (N-9).
+  - **The table:** extension or name → Monaco id, read by `getMonacoLanguage` alone.
+- Changed files or areas: the above; `utils/highlighting/__tests__/languageDetector.spec.ts` (Monaco only); `services/__tests__/highlightService.fences.spec.ts` (new).
+- Local validation and result: IMP-15.
+  - Every listed fence and the `rs`/`zsh`/`yml`/`sh`/`dockerfile` names give several token classes; the unchanged languages too; a message through `markdownItPrism` too.
+  - Red: without the aliases, `zsh`, `rs` and the markdown-it case fail.
+  - The whole web suite (808 files), both typechecks and the guards pass.
+- Next recipient or routing: `/code_reviewer` (Large/High).
+- Remaining limitations or risks: none new.
 
