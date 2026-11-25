@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-003), Targeted Delta | Fail | Pass | CR-002 (resolved) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-005), Targeted Delta | Pass | Pass | None |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-005, SR-006), Targeted Delta | Pass | Pass | None |
+| CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review, round 6 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-003 (new) |
 
 ## Revision Entries
 
@@ -181,3 +182,38 @@ None open.
   - C-6 (ship 574 and 642 together);
   - the zero-byte 416;
   - the iOS Back bar over AVKit's buttons.
+
+### CRR-006: failure-origin review of API-REV-001 F-1 (iOS audio seek): implementation Local Fix
+
+- Canonical review report updated: `tickets/in-progress/file-viewer-media-642/code-review-report.md` ("Round 6 Failure-Origin Finding")
+- Review entry point and round: API/E2E Failure-Origin Review, round 6
+- Review scope: `N/A` (failure-origin). Product code is unchanged. Re-read: `AuthorizedMediaLoader.advance` (`readAheadReach`) and `NativeMediaPlayer.viewDidDisappear`.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (commit `8dc9abb9f6`): F-1 (IOS-C; Android AND-A3 is the control)
+- Relevant solution revision IDs: SR-002…SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-001…IR-005 (the loader is 574's IR-004)
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Fail. The origin is implementation: CR-003, `Local Fix`.
+- What changed in the review result and why:
+  - The loader's byte reach (1 MB), sized for 6 Mbit/s video, covers about 31 s of 256 kbit/s audio. An iOS audio seek therefore waits for the sequential stream instead of making a ranged read.
+  - AC-002's seek-by-range fails, and the seek waits for the reach divided by the link's rate.
+  - Recommended: a time-based reach from the fetch's observed rate, capped at 1 MB, keeping 574's video behavior.
+  - Cosmetic: the "swipe down" comment.
+- **Review gap I own:** CRR-001 passed the loader's reuse for audio without re-judging its byte-tuned constant against audio bitrates.
+- Supported product scenario / material-premise basis changes: S-2 now includes seeking over slower links.
+
+#### Prior Finding Resolution
+
+None open. CR-001 and CR-002 stay resolved (API-REV-001 confirms both).
+
+- New or remaining finding IDs: CR-003
+- Material score or classification changes: runtime correctness is below 9.2 until CR-003 is fixed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty:
+  - the physical-iPhone check (sound, the Ring/Silent switch, a lock);
+  - C-6;
+  - the zero-byte 416;
+  - the iOS Back bar.
+  - The test-code review of `8dc9abb9f6` follows a passing round.

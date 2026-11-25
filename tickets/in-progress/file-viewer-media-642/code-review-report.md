@@ -14,7 +14,8 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `tickets/in-progress/file-viewer-media-642/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`. Round 5 is a `Targeted Delta Review` of `e4ce2f000b..0a605d1293`: SR-006 / DEC-008 and IR-005, with the source change in `339b8d0ddb`.
+- Current Code Review Revision ID: `CRR-006`. Round 6 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1 (commit `8dc9abb9f6`). Product code is unchanged since IR-005. Re-read: `AuthorizedMediaLoader.advance` (the reach) and `NativeMediaPlayer.viewDidDisappear` (the comment).
+- Previous: `CRR-005`. Round 5 is a `Targeted Delta Review` of `e4ce2f000b..0a605d1293`: SR-006 / DEC-008 and IR-005, with the source change in `339b8d0ddb`.
 - Round 4 (CRR-004) was a `Targeted Delta Review` of `190cd51bc3..73c3330c49` (SR-005, IR-004); its entry follows.
 - Previous: `CRR-003`
 - Current Review Round: `3`, a `Targeted Delta Review` of `292ea71db5..af2b65c2c0`. The only source change is `36881a6734`: `CollaborationMessageReferenceViewer.vue` and its spec. Rounds 1 and 2 below stay as recorded except where a later round updates them.
@@ -62,6 +63,34 @@
   - iOS: the whole Core suite on my own simulator (`cr642-review`, since deleted), 86 executed with 0 failures and 1 skipped (the AVPlayer video test needs a host video).
 - **Environment note:** the run-history test files that import `@autobyteus/application-sdk-contracts` fail to load in this worktree because that sibling package is not built. This is an environment issue, not the change: the handoff ran the whole unit suite (9078 passed).
 - **Explicit exclusions:** the Android instrumented tests and the iOS UI tests (IMP evidence used); the rendered probes (API/E2E).
+
+## Round 6 Failure-Origin Finding (CRR-006)
+
+### CR-003: on iOS, an audio seek waits for the running stream instead of reading from the target (F-1, Local Fix)
+
+- **Severity:** Medium.
+  - AC-002's "seeks with a ranged request carrying the header" fails on iOS for audio.
+  - On a link that plays the audio in real time, the seek waits for the reach divided by the link's rate: about 2 s at 500 KB/s, about 8.5 s at 60 KB/s (IOS-C).
+  - The supported scenario is S-2, a phone on Wi-Fi or tailnet seeking in a node audio file.
+- **Where:** `autobyteus-ios/AutoByteusMobileCore/Media/AuthorizedMediaLoader.swift:150`. A read past the cache waits for a running fetch whenever `item.offset - fetch.position <= readAheadReach` (`1 << 20`).
+- **Cause:**
+  - The reach is a byte count. 574 (IR-004) sized it for 6 Mbit/s video at AC-001's 1.5 MB/s, where 1 MB is about 0.7 s of delivery and about 1.3 s of playback.
+  - 642 sends audio through the same loader (REQ-002 "exactly as video"), and for 256 kbit/s audio 1 MB is about 31 s of playback. So for a small audio file nearly every seek is "within reach", and no ranged read from the target goes out.
+  - Android's Media3 reads the target at once (AND-A3).
+- **Review gap I own:** CRR-001 accepted that "574's data source, loader … are reused unchanged" for audio, without checking that the loader's tuning fits audio's bitrates. Lesson: a constant tuned in bytes for one medium must be re-judged when another medium uses it. Recorded in CRR-006.
+- **Required outcome (Local Fix, implementation, in the loader):**
+  1. **Seek by range:** `NativeMediaRealNodeUITests.testCAnM4AOverASlowerLinkSeeksByRange` passes. A seek the running stream will not reach soon starts a ranged read from the target.
+  2. **Video unchanged (574 CR-003/CR-004):**
+     - `testAWideVideoFromTheChatLink` (scrub) and `testBDeliversInRealTimeOverASlowerLink` at 50 ms still pass;
+     - `AuthorizedMediaLoaderReadAheadTests` still passes: 40 small sequential reads make one request; a far read starts its own fetch;
+     - the AVPlayer Core test (60 s video) keeps at most 6 requests.
+  3. **Unit cases** for the new rule: a read that the running fetch reaches within the reach, at its observed rate, waits; one beyond it starts its own fetch, and the idle fetch stops.
+- **Recommended direction:**
+  - Judge the reach in time, not bytes: wait only if `(item.offset − fetch.position) / observedRate` is at most about 0.7 s, the value 574 chose (1 MB at 1.5 MB/s). Measure the rate from the fetch's bytes and elapsed time, with a conservative start, for example the current 1 MB cap until about 64 KB have arrived.
+  - Small sequential reads, the F-4 case, sit right at the stream's position, so they still wait. Distant seeks start their own fetch on any link.
+  - Keep the 1 MB as an upper bound.
+- **Also (cosmetic):** `NativeMediaPlayer.swift:218`'s comment names "a swipe down". The screen is presented `.fullScreen`, so that path does not exist (API/E2E observation). Correct the comment; the N-7 teardown itself is right.
+- **Not affected:** AC-001, CR-002, AC-003, AC-004, the session (DEC-007) and Android all pass in API-REV-001.
 
 ## Round 5 Delta Verification (CRR-005): chat highlighting is message code blocks (SR-006, DEC-008)
 
@@ -314,6 +343,10 @@ None beyond the gate.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 6, CRR-006). The failure origin is implementation: CR-003, `Local Fix` in the iOS loader's reach.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Recommended Recipient: `/implementation_engineer`. Then a targeted delta review, then an API/E2E rerun of IOS-C and the 574 video checks.
+- Round 5 result (CRR-005, superseded):
 - Review Decision: `Pass` (round 5, CRR-005, SR-006 / IR-005). No findings; CR-001 and CR-002 stay resolved.
 - Score Summary: 9.3 / 10. Cleanup completeness is 9.5, since the dead `FileDisplay` chain is gone.
 - Recommended Recipient: `/api_e2e_engineer`. AC-004's chat leg is now message code blocks: each listed fence, plus `rs` and `zsh`, rendered with token spans on desktop and phone, and Monaco for files. Plus the earlier rounds' list.
