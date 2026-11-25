@@ -53,8 +53,8 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         print("REQUESTS \(requests.map { "\($0["range"] ?? "-"):\($0["status"] ?? "-"):\($0["bytes"] ?? "-")" })")
         XCTAssertTrue(requests.allSatisfy { ($0["credential"] as? String) == "phone" && ($0["urlCredential"] as? Bool) == false }, "the credential in the header only")
         XCTAssertLessThanOrEqual(requests.count, 4, "a probe and a streaming read, not one request per small read")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !player.exists }, "Back closes the player")
+        closePlayer(app)
+        XCTAssertTrue(wait(timeout) { !player.exists }, "its close closes the player")
     }
 
     /// The same MP3 again: only the two-byte probe goes to the node.
@@ -70,7 +70,7 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         let data = try fileRequests(since: opened, named: "memo-642.mp3").filter { ($0["range"] as? String) != "bytes=0-1" }
         print("REOPEN \(data.map { "\($0["range"] ?? "-"):\($0["bytes"] ?? "-")" })")
         XCTAssertEqual(data.reduce(0) { $0 + (($1["bytes"] as? NSNumber)?.intValue ?? 0) }, 0, "the reopen fetches only the probe")
-        app.buttons["media.back"].tap()
+        closePlayer(app)
         XCTAssertTrue(wait(timeout) { !player.exists })
     }
 
@@ -109,7 +109,7 @@ final class NativeMediaRealNodeUITests: XCTestCase {
             return first >= size * 0.4 && (request["credential"] as? String) == "phone"
         }
         XCTAssertFalse(fromTheMiddle.isEmpty, "the seek reads from the middle by range, with the header")
-        app.buttons["media.back"].tap()
+        closePlayer(app)
         XCTAssertTrue(wait(timeout) { !player.exists })
     }
 
@@ -130,7 +130,7 @@ final class NativeMediaRealNodeUITests: XCTestCase {
             XCTAssertFalse(requests.isEmpty, "\(name): the reference route is read")
             XCTAssertTrue(requests.allSatisfy { ($0["credential"] as? String) == "phone" && ($0["urlCredential"] as? Bool) == false }, "\(name): the header only")
             XCTAssertTrue(requests.contains { ($0["status"] as? NSNumber)?.intValue == 206 }, "\(name): ranged reads")
-            app.buttons["media.back"].tap()
+            closePlayer(app)
             XCTAssertTrue(wait(timeout) { !player.exists })
             backToMessages(app)
         }
@@ -146,17 +146,18 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         try control("POST", "/team-message")
         Thread.sleep(forTimeInterval: 6)
         XCTAssertEqual(app.otherElements.matching(identifier: "media.player").count, 1, "one player while messages arrive")
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(10) { !player.exists }, "one Back closes it")
+        closePlayer(app)
+        XCTAssertTrue(wait(10) { !player.exists }, "one close closes it")
         try control("POST", "/team-message")
         Thread.sleep(forTimeInterval: 8)
         XCTAssertFalse(player.exists, "the player does not open again by itself")
         attach(app, "reference-after-back-and-a-message")
-        if player.exists { app.buttons["media.back"].tap() }
+        if player.exists { closePlayer(app) }
     }
 
-    /// The other references show as they did: text, PDF and image in the page; the deleted one says so; the empty video
-    /// (held: its probe answers 416) shows an error, never the player.
+    /// The other references show as they did: text, PDF and image in the page; the deleted one says so. The empty video
+    /// (zero bytes: its probe answers 416 `bytes */0`) opens as an empty file (autobyteus-647 D-2): no error in the page,
+    /// the app's player screen opens and, with nothing to play, says it could not be played, with Back.
     func testFTheOtherReferencesShowInThePage() throws {
         let app = try openTheTeamsMessages()
         for name in ["ref-642.md", "ref-642.pdf", "ref-642.png", "gone-642.mp4", "empty-642.mp4"] {
@@ -166,6 +167,12 @@ final class NativeMediaRealNodeUITests: XCTestCase {
             attach(app, "reference-\(name)")
             if name == "gone-642.mp4" { XCTAssertTrue(app.webViews.staticTexts["Reference file unavailable"].exists, "the deleted reference says so") }
             if name == "ref-642.md" { XCTAssertTrue(app.webViews.staticTexts.matching(NSPredicate(format: "label CONTAINS 'REF-642 notes'")).firstMatch.exists, "the text shows") }
+            if name == "empty-642.mp4" {
+                XCTAssertFalse(app.webViews.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Failed to fetch reference content'")).firstMatch.exists, "no error in the page")
+                XCTAssertTrue(app.staticTexts["media.couldNotPlay"].waitForExistence(timeout: timeout), "the app's player screen opens and has nothing to play")
+                app.buttons["media.back"].tap()
+                XCTAssertTrue(wait(timeout) { !app.otherElements["media.host"].exists }, "its Back closes it")
+            }
             backToMessages(app)
         }
     }
@@ -184,33 +191,26 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         }
     }
 
-    /// Each way to leave the player closes it: the app's Back and AVKit's own Close (autobyteus-642 SR-005 N-7: each ends
-    /// the audio session; the simulator log is read for the session's failure lines from the host). The screen is presented
-    /// full screen, which iOS gives no swipe-down dismissal: a swipe down leaves it open.
+    /// Each way to leave the player closes it: iOS's player screen's own close and a swipe down (autobyteus-647 D-3; each
+    /// ends the playback and the audio session, 642 SR-005 N-7, in the app screen's teardown under it).
     func testHEachWayToLeaveThePlayerClosesIt() throws {
         let app = try openTheRun()
         let link = app.webViews.buttons["Open memo-642.mp3 in Files"]
         let player = app.otherElements["media.player"]
-        for way in ["back", "swipe-down", "avkit-close"] {
+        for way in ["swipe-down", "avkit-close"] {
             XCTAssertTrue(link.waitForExistence(timeout: timeout), "the chat's link to the MP3")
             link.tap()
             XCTAssertTrue(player.waitForExistence(timeout: timeout), "\(way): the app's player opens")
             Thread.sleep(forTimeInterval: 3)
             mark("close-\(way)")
             switch way {
-            case "back": app.buttons["media.back"].tap()
             case "swipe-down": player.swipeDown(velocity: .fast)
-            default:
-                player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
-                let close = app.buttons["Close Button"]
-                XCTAssertTrue(close.waitForExistence(timeout: 5), "AVKit's Close")
-                close.tap()
+            default: closePlayer(app)
             }
-            let closed = wait(10) { !player.exists }
+            let closed = wait(10) { !player.exists && !app.otherElements["media.host"].exists }
             print("CLOSE \(way) closed=\(closed)")
-            if way == "swipe-down" { XCTAssertFalse(closed, "a swipe down leaves the full-screen player open") }
-            else { XCTAssertTrue(closed, "\(way) closes the player") }
-            if !closed { app.buttons["media.back"].tap(); _ = wait(10) { !player.exists } }
+            XCTAssertTrue(closed, "\(way) closes the player")
+            if !closed { closePlayer(app); _ = wait(10) { !player.exists } }
             // The page now shows the file's viewer; its Back returns to the conversation and its link.
             Thread.sleep(forTimeInterval: 1)
             tapPageBack(app)
@@ -236,6 +236,15 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         XCTAssertTrue(wait(20) { !app.buttons["start.row.more"].exists }, "the node is removed")
         mark("removed")
         Thread.sleep(forTimeInterval: 3)
+    }
+
+    /// Closes iOS's player screen with its own close button, its controls shown first (autobyteus-647 D-3: the app has no
+    /// bar over the player; Back exists only on the "could not be played" screen).
+    private func closePlayer(_ app: XCUIApplication) {
+        let close = app.buttons["Close Button"]
+        if !close.exists { app.otherElements["media.player"].coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap() }
+        _ = close.waitForExistence(timeout: 5)
+        close.tap()
     }
 
     // MARK: Helpers

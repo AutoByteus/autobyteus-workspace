@@ -2,15 +2,17 @@ import XCTest
 
 /// autobyteus-574 and autobyteus-642 on the iOS simulator (574 UC-001, UC-003; AC-001, AC-004; 642 UC-002, AC-002 on
 /// iOS): the node's page hands a protected video or audio file to the app over the shell bridge (`playMedia`); the app's
-/// own player opens it, a wide video turns the phone to landscape, an audio file stays in portrait with its title, and
-/// Back returns to the page in portrait. A missing file says it could not be played. The fake node
+/// own player opens it as iOS's player screen (autobyteus-647 D-3: its close button and the file's name as its title, no
+/// app bar over its controls), a wide video turns the phone to landscape, an audio file stays in portrait with its title,
+/// and closing it (its close button, or a swipe down) returns to the page in portrait. A missing file says it could not
+/// be played, with Back. The fake node
 /// (`scripts/fake-mobile-server.py --video <a wide MP4> --audio <an MP3>`) serves the files by range and logs each request
 /// (`MEDIA {…}`: path, status, range, whether the credential came, bytes). Not part of the smoke run (it needs the files):
 /// `xcodebuild … -only-testing:AutoByteusMobileUITests/NativeMediaPlayerUITests AUTOBYTEUS_TEST_NODE_URL=<the fake node>/mobile test`.
 final class NativeMediaPlayerUITests: XCTestCase {
     private let timeout: TimeInterval = 60
 
-    func testANodeVideoPlaysInTheAppsPlayerInLandscapeAndBackReturnsToThePageInPortrait() throws {
+    func testANodeVideoPlaysInTheAppsPlayerInLandscapeAndItsCloseReturnsToThePageInPortrait() throws {
         let app = try launchAndOpenTheFakeNode()
         let play = app.webViews.buttons["Play video"]
         XCTAssertTrue(play.waitForExistence(timeout: timeout), "start the fake node with --video")
@@ -22,9 +24,13 @@ final class NativeMediaPlayerUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 5)
         XCTAssertFalse(app.staticTexts["media.couldNotPlay"].exists, "the video plays")
         attach(app, "player-landscape")
+        showControls(app)
+        XCTAssertFalse(app.buttons["media.back"].exists, "no app bar over iOS's player")
+        XCTAssertTrue(app.staticTexts["clip.mp4"].exists, "iOS's player shows the file's name")
+        attach(app, "player-landscape-controls")
 
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !app.otherElements["media.player"].exists }, "Back closes the player")
+        closeWithItsButton(app)
+        XCTAssertTrue(wait(timeout) { !app.otherElements["media.player"].exists && !app.otherElements["media.host"].exists }, "its close closes the player")
         XCTAssertTrue(wait(timeout) { !self.isLandscape(app) }, "and the phone returns to portrait")
         XCTAssertTrue(app.webViews.buttons["Play video"].exists, "the page is shown again")
         attach(app, "back-to-page-portrait")
@@ -55,15 +61,43 @@ final class NativeMediaPlayerUITests: XCTestCase {
         XCTAssertFalse(isLandscape(app), "an audio file stays in portrait")
         // With the controls hidden while it plays, the screen still shows an audio symbol and the name (642 C-2).
         XCTAssertTrue(app.images["media.audioSymbol"].exists, "the audio symbol")
-        XCTAssertGreaterThanOrEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "memo.mp3")).count, 2, "the name in the bar and under the symbol")
         attach(app, "audio-portrait")
-        app.otherElements["media.player"].coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
-        XCTAssertTrue(app.sliders.firstMatch.waitForExistence(timeout: 5), "a tap shows the player's audio controls")
+        showControls(app)
+        XCTAssertTrue(app.sliders.matching(NSPredicate(format: "identifier == %@", "Current position")).firstMatch.waitForExistence(timeout: 5), "a tap shows the player's audio controls")
+        XCTAssertFalse(app.buttons["media.back"].exists, "no app bar over iOS's player")
+        XCTAssertGreaterThanOrEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "memo.mp3")).count, 2, "the name as iOS's title and under the symbol")
         attach(app, "audio-controls")
 
-        app.buttons["media.back"].tap()
-        XCTAssertTrue(wait(timeout) { !app.otherElements["media.player"].exists }, "Back closes the player")
+        closeWithItsButton(app)
+        XCTAssertTrue(wait(timeout) { !app.otherElements["media.player"].exists && !app.otherElements["media.host"].exists }, "its close closes the player")
         XCTAssertTrue(app.webViews.buttons["Play audio"].exists, "the page is shown again")
+    }
+
+    /// A swipe down closes iOS's player screen, and the app's screen under it closes too (autobyteus-647 REQ-003).
+    func testASwipeDownClosesThePlayerAndThePageShowsAgain() throws {
+        let app = try launchAndOpenTheFakeNode()
+        let play = app.webViews.buttons["Play audio"]
+        XCTAssertTrue(play.waitForExistence(timeout: timeout), "start the fake node with --audio")
+        play.tap()
+        let player = app.otherElements["media.player"]
+        XCTAssertTrue(player.waitForExistence(timeout: timeout), "the app's player opens")
+        Thread.sleep(forTimeInterval: 2)
+        player.swipeDown(velocity: .fast)
+        XCTAssertTrue(wait(timeout) { !player.exists && !app.otherElements["media.host"].exists }, "a swipe down closes the player")
+        XCTAssertTrue(app.webViews.buttons["Play audio"].exists, "the page is shown again")
+    }
+
+    /// Shows iOS's player controls with a tap away from the centre (where play/pause is).
+    private func showControls(_ app: XCUIApplication) {
+        app.otherElements["media.player"].coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap()
+    }
+
+    /// iOS's player screen's own close button (its controls shown first).
+    private func closeWithItsButton(_ app: XCUIApplication) {
+        let close = app.buttons["Close Button"]
+        if !close.exists { showControls(app) }
+        XCTAssertTrue(close.waitForExistence(timeout: 5), "iOS's player's close button")
+        close.tap()
     }
 
     private func isLandscape(_ app: XCUIApplication) -> Bool {
