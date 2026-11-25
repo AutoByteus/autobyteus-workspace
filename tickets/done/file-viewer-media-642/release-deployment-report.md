@@ -129,3 +129,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape. Th
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/file-viewer-media-642`: committed (tip `e24356e0c1`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/file-viewer-media-642` (`0813c4f30e..e24356e0c1`, a fast-forward of the tip pushed earlier for the build-only release runs). Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 46 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `45d1b4309c`, which the ticket branch already contained (merge `0813c4f30e`); no re-integration and no re-verification were needed. C-6 was checked again at the same time: `git tag --contains 7cbab1f7c2` (autobyteus-574's merge) lists no tag.
+- Merge: on `finalize/file-viewer-media-642` (from `origin/personal` `45d1b4309c`), `git merge --no-ff codex/file-viewer-media-642` = `28c2509aa2` (parents `45d1b4309c` and `e24356e0c1`; the merged tree equals the ticket branch's tree, `8b6e3cfbdd`). Secret Gate on the merged state: `PASS`, 47 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (105 373 tracked files).
+- Push: `git push origin HEAD:personal` `45d1b4309c..28c2509aa2`; `origin/personal` = `28c2509aa2` afterwards.
+- Release: none (no tag, no version bump, no pipeline beyond the two build-only runs, which published nothing).
+- This record: committed on `finalize/file-viewer-media-642` and pushed to `origin/personal` as the commit that follows `28c2509aa2`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/file-viewer-media-642` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/file-viewer-media-642` and `codex/file-viewer-media-642`, and delete delivery's own `/tmp/del642` and `/tmp/del642-*.txt`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). API/E2E keeps `/tmp/api642` until the Solution Designer asks. The result is in the terminal message.
