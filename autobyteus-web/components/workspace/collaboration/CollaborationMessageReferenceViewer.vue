@@ -197,7 +197,10 @@ const fetchContent = async () => {
       isDeleted.value = true;
       return;
     }
-    if (!response.ok) {
+    // An empty file has no byte 0: the node answers the probe 416 with `bytes */0`, and it opens as an empty file
+    // (autobyteus-647 D-2).
+    const emptyMedia = streams && response.status === 416 && /^bytes \*\/0$/.test(response.headers?.get('content-range')?.trim() ?? '');
+    if (!response.ok && !emptyMedia) {
       throw new Error(`Failed to fetch reference content (${response.status})`);
     }
     if (streams) {

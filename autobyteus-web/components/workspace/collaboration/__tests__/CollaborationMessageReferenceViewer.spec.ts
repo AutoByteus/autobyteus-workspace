@@ -223,6 +223,24 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
     expect(wrapper.find('[data-test="file-viewer"]').exists()).toBe(false);
   });
 
+  // autobyteus-647 D-2 (REQ-002): an empty file has no byte 0, so the probe answers 416 with `bytes */0`; it opens as an
+  // empty file. A 416 naming another size is still an error.
+  it('a zero-byte video reference (416 bytes */0) opens as an empty file, with no error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers({ 'Content-Range': 'bytes */0' }), body: { cancel: async () => undefined } })));
+    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/empty.mp4', type: 'video' } });
+    await flushPromises();
+    expect(wrapper.get('[data-test="error"]').text()).toBe('');
+    expect(wrapper.get('[data-test="type"]').text()).toBe('Video');
+    expect(wrapper.get('[data-test="url"]').text()).toContain('/content');
+  });
+
+  it('a video reference whose probe answers 416 for a file with bytes is still an error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers({ 'Content-Range': 'bytes */2048' }) })));
+    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/demo.mp4', type: 'video' } });
+    await flushPromises();
+    expect(wrapper.get('[data-test="error"]').text()).toContain('Failed to fetch reference content (416)');
+  });
+
   it('a video reference whose probe fails otherwise passes the error to FileViewer', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ status: 403, ok: false })));
     const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/demo.mp4', type: 'video' } });

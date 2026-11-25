@@ -94,6 +94,18 @@ describe('a run another node runs: its file paths name that node (autobyteus-471
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  // autobyteus-647 D-6 (REQ-006): the monitor is reused across runs; the line about one run's file goes when the shown run
+  // changes, and does not come back on a return to that run (it was a one-off message).
+  it('the status line clears when the shown run changes, and stays gone on the way back', async () => {
+    const { wrapper } = await mountRunView('remote-B', '/remote/B/notes.md');
+    await wrapper.get('[data-event-monitor-file-action-id]').trigger('click');
+    await vi.waitFor(() => expect(wrapper.find(STATUS).exists()).toBe(true));
+    await wrapper.setProps({ conversation: conversationOf('local-A', '/owned/B/notes.md'), runId: 'local-A', browseSubject: { kind: 'run', runId: 'local-A' } });
+    expect(wrapper.find(STATUS).exists()).toBe(false);
+    await wrapper.setProps({ conversation: conversationOf('remote-B', '/remote/B/notes.md'), runId: 'remote-B', browseSubject: { kind: 'run', runId: 'remote-B' } });
+    expect(wrapper.find(STATUS).exists()).toBe(false);
+  });
+
   it('desktop: in a run of this node a path attachment opens as before, with no status line', async () => {
     const { wrapper } = await mountRunView('local-A', '/owned/B/notes.md');
     await wrapper.get('button.message-attachment-chip').trigger('click');
