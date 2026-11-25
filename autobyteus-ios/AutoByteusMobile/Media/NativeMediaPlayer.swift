@@ -215,7 +215,7 @@ final class NativeMediaPlayerViewController: UIViewController {
         playerController.player = nil
         loader?.invalidate()
         loader = nil
-        // Whatever took the screen away (Back, a swipe down, AVKit's own close) ends the session here (642 N-7).
+        // Whatever took the screen away (Back, AVKit's own close, the app closing it) ends the session here (642 N-7).
         audioSession.end()
         playback = nil
         sizeObservation = nil

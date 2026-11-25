@@ -21,9 +21,14 @@ protocol MediaRead: AnyObject {
 /// again of what it has. A range is asked with `If-Range` (the version the playback started with): a file changed
 /// meanwhile fails the read instead of mixing two versions.
 public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegate, URLSessionDataDelegate {
-    /// How far ahead of a running fetch a read may be and still wait for it: about 0.7 s of the throttled node (AC-001's
-    /// 1.5 MB/s). A read farther away (a seek, a scrub) starts a fetch of its own.
+    /// How long a read may wait for a running fetch to reach it (autobyteus-642 CR-003): a read the fetch reaches sooner at
+    /// its measured rate waits; one farther away (a seek, a scrub) starts a fetch of its own. In time, not bytes: 574's 1 MB
+    /// was about 0.7 s of 6 Mbit/s video at AC-001's 1.5 MB/s, but over 30 s of 256 kbit/s audio.
+    static let readAheadWait: TimeInterval = 0.7
+    /// The most a read may be ahead of a running fetch and still wait, and the reach before any rate of this link is known.
     static let readAheadReach: Int64 = 1 << 20
+    /// The bytes a fetch must have delivered after its first answer before its rate is trusted.
+    static let rateSampleBytes: Int64 = 64 << 10
     /// The most cached bytes handed over in one step: the queue is free between steps, so a cancel takes effect there.
     static let cacheStep = 1 << 20
 
@@ -62,15 +67,30 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
         let first: Int64
         let last: Int64
         var position: Int64
+        /// When its first bytes came and where it then stood: what its rate is measured from.
+        var firstDataAt: TimeInterval?
+        var positionAtFirstData: Int64 = 0
         init(task: URLSessionDataTask, first: Int64, last: Int64) {
             self.task = task
             self.first = first
             self.last = last
             position = first
         }
+
+        /// Its rate in bytes per second, once enough has come after its first answer to measure it.
+        func measuredRate(now: TimeInterval) -> Double? {
+            guard let firstDataAt else { return nil }
+            let delivered = position - positionAtFirstData
+            let elapsed = now - firstDataAt
+            guard delivered >= AuthorizedMediaLoader.rateSampleBytes, elapsed > 0 else { return nil }
+            return Double(delivered) / elapsed
+        }
     }
 
     private var serving: [Serving] = []
+    /// The last rate a fetch of this loader measured: the link's. A fetch that has not measured its own yet (one a seek or
+    /// a scrub just started) is judged by it, so a scrub's later points do not wait on its first one (CR-003).
+    private var linkRate: Double?
     private var fetches: [Int: Fetch] = [:]
     /// Bytes fetched from the node by this loader (read on `queue`), for checks.
     public private(set) var networkBytes: Int64 = 0
@@ -147,11 +167,19 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
             guard item.offset <= item.read.last else { return finish(item) }
             return queue.async { [weak self] in self?.advance(item) }
         }
-        if let fetch = fetches.values.first(where: { $0.position <= item.offset && item.offset <= $0.last && item.offset - $0.position <= Self.readAheadReach }) {
+        let now = ProcessInfo.processInfo.systemUptime
+        if let fetch = fetches.values.first(where: { $0.position <= item.offset && item.offset <= $0.last && item.offset - $0.position <= reach(of: $0, now: now) }) {
             item.fetch = fetch
             return
         }
         startFetch(for: item)
+    }
+
+    /// How far ahead of its position `fetch` reaches within `readAheadWait`: at its own measured rate, else the link's, at
+    /// most `readAheadReach`; that cap before any rate of this link is known.
+    private func reach(of fetch: Fetch, now: TimeInterval) -> Int64 {
+        guard let rate = fetch.measuredRate(now: now) ?? linkRate else { return Self.readAheadReach }
+        return min(Self.readAheadReach, Int64(rate * Self.readAheadWait))
     }
 
     /// A fetch from `item`'s offset to the next byte the cache holds or a running fetch starts at (or the end), so no
@@ -215,7 +243,12 @@ public final class AuthorizedMediaLoader: NSObject, AVAssetResourceLoaderDelegat
         let end = start + Int64(chunk.count)
         cache.write(key: cacheKey, offset: start, data: chunk, length: probe.length)
         networkBytes += Int64(chunk.count)
+        if fetch.firstDataAt == nil {
+            fetch.firstDataAt = ProcessInfo.processInfo.systemUptime
+            fetch.positionAtFirstData = end
+        }
         fetch.position = end
+        if let rate = fetch.measuredRate(now: ProcessInfo.processInfo.systemUptime) { linkRate = rate }
         for item in serving where !item.cancelled && start <= item.offset && item.offset < end {
             item.fetch = fetch
             respond(item, chunk.subdata(in: Int(item.offset - start)..<Int(min(end, item.read.last + 1) - start)))

@@ -107,6 +107,68 @@ final class AuthorizedMediaLoaderReadAheadTests: XCTestCase {
         XCTAssertLessThan(stopped, 3 << 20)
     }
 
+    // autobyteus-642 CR-003: "within reach" is time at the fetch's measured rate, not 1 MB. Over a slow link (100 KB/s,
+    // about 256 kbit/s audio's room) 1 MB is ten seconds of waiting; a read the fetch reaches within readAheadWait waits,
+    // and one farther away starts its own fetch.
+    func testOverASlowLinkAReadBeyondTheFetchsRateStartsItsOwnFetchAndTheIdleOneStops() async throws {
+        let loader = try await loader()
+        defer { loader.invalidate() }
+        StubNodeProtocol.bytesPerSecond = 100_000
+        let first = Read(0, count: 1_000)
+        start(first, on: loader)
+        try await done(first)
+        // Enough has come for a rate (two 64 KB parts after the first).
+        try await wait("the fetch's rate") { (StubNodeProtocol.served.first?.bytes ?? 0) >= 3 * 65_536 }
+        let near = StubNodeProtocol.served[0].bytes
+        // About 200 KB ahead: 2 s at 100 KB/s, well within 1 MB but beyond 0.7 s.
+        let seek = Read(near + 200_000, count: 1_000)
+        start(seek, on: loader)
+        try await wait("the seek's own fetch") { StubNodeProtocol.served.count == 2 }
+        XCTAssertEqual(StubNodeProtocol.served.map(\.range), ["bytes=0-\(last)", "bytes=\(near + 200_000)-\(last)"])
+        try await done(seek)
+        let stopped = StubNodeProtocol.served[0].bytes
+        try await Task.sleep(nanoseconds: 1_500_000_000)
+        XCTAssertEqual(StubNodeProtocol.served[0].bytes, stopped, "the idle fetch stopped")
+    }
+
+    // A scrub seeks again and again while it is dragged: a later point must not wait on the fetch an earlier point just
+    // started, which has no rate of its own yet; it is judged by the link's.
+    func testOverASlowLinkASecondSeekBeforeTheFirstSeeksFetchHasARateIsJudgedByTheLinksRate() async throws {
+        let loader = try await loader()
+        defer { loader.invalidate() }
+        StubNodeProtocol.bytesPerSecond = 100_000
+        let first = Read(0, count: 1_000)
+        start(first, on: loader)
+        try await done(first)
+        try await wait("the link's rate") { (StubNodeProtocol.served.first?.bytes ?? 0) >= 3 * 65_536 }
+        let near = StubNodeProtocol.served[0].bytes
+        let firstSeek = Read(near + 200_000, count: 1_000)
+        start(firstSeek, on: loader)
+        try await wait("the first seek's fetch") { StubNodeProtocol.served.count == 2 }
+        // At once, 300 KB further on: within 1 MB of the first seek's fetch, 3 s at the link's rate.
+        let secondSeek = Read(near + 500_000, count: 1_000)
+        start(secondSeek, on: loader)
+        try await wait("the second seek's own fetch") { StubNodeProtocol.served.count == 3 }
+        XCTAssertEqual(StubNodeProtocol.served.last?.range, "bytes=\(near + 500_000)-\(last)")
+        try await done(secondSeek)
+    }
+
+    func testOverASlowLinkAReadTheFetchReachesWithinItsWaitWaitsForIt() async throws {
+        let loader = try await loader()
+        defer { loader.invalidate() }
+        StubNodeProtocol.bytesPerSecond = 100_000
+        let first = Read(0, count: 1_000)
+        start(first, on: loader)
+        try await done(first)
+        try await wait("the fetch's rate") { (StubNodeProtocol.served.first?.bytes ?? 0) >= 3 * 65_536 }
+        // 10 KB past what the fetch has delivered: 0.1 s at its rate.
+        let cachedEnd = cache.ranges(for: key).first(where: { $0.contains(0) })?.upperBound ?? 0
+        let next = Read(cachedEnd + 1 + 10_000, count: 1_000)
+        start(next, on: loader)
+        try await done(next)
+        XCTAssertEqual(StubNodeProtocol.served.map(\.range), ["bytes=0-\(last)"], "it waited for the running fetch")
+    }
+
     func testCancellingOneReadKeepsTheFetchAnotherReadWaitsFor() async throws {
         let loader = try await loader()
         defer { loader.invalidate() }

@@ -15,7 +15,6 @@ final class StubNodeProtocol: URLProtocol {
         var bytes: Int64
     }
 
-    private static let bytesPerSecond = 1_500_000
     private static let part = 64 * 1024
     private let stopped = NSLock()
     private var isStopped = false
@@ -31,6 +30,7 @@ final class StubNodeProtocol: URLProtocol {
         _file = file
         _etag = etag
         _served = []
+        _bytesPerSecond = 1_500_000
     }
 
     static var etag: String {
@@ -39,6 +39,13 @@ final class StubNodeProtocol: URLProtocol {
     }
 
     static var served: [Served] { lock.lock(); defer { lock.unlock() }; return _served }
+
+    private static var _bytesPerSecond = 1_500_000
+    /// The rate a body streams at: the AC's throttled node by default; `serve` sets it back.
+    static var bytesPerSecond: Int {
+        get { lock.lock(); defer { lock.unlock() }; return _bytesPerSecond }
+        set { lock.lock(); _bytesPerSecond = newValue; lock.unlock() }
+    }
     static func clearServed() { lock.lock(); _served = []; lock.unlock() }
 
     static func configuration() -> URLSessionConfiguration {
