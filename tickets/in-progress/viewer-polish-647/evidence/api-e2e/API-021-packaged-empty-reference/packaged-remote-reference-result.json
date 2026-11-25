@@ -1,0 +1,50 @@
+{
+  "steps": [
+    {
+      "step": "node-window",
+      "url": "file://…/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace",
+      "origin": "file://",
+      "windowContext": "{\"windowId\":2,\"entryId\":\"remote-api647-1795610835991\"}"
+    },
+    {
+      "step": "AC-002",
+      "empty": {
+        "text": "empty-642.mp4 <stack-root>/workspace/refs/empty-642.mp4 This video could not be played. Retry",
+        "video": false,
+        "alerts": [
+          "This video could not be played.Retry"
+        ]
+      },
+      "gone": {
+        "text": "gone-642.mp4 <stack-root>/workspace/refs/gone-642.mp4 Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+        "video": false,
+        "alerts": []
+      },
+      "referenceResponses": [
+        {
+          "url": "…/collabmsg_iArtkZZj780bWFI5hUQihF4lR0eMCDzB/references/8d2aba9a9fc9fadd1d128feca1d163acaaac40746f87bc34d0c2bd89140df158/content",
+          "status": 416,
+          "range": "bytes=0-0",
+          "contentRange": "bytes */0"
+        },
+        {
+          "url": "…/collabmsg_iArtkZZj780bWFI5hUQihF4lR0eMCDzB/references/8d2aba9a9fc9fadd1d128feca1d163acaaac40746f87bc34d0c2bd89140df158/content",
+          "status": 416,
+          "range": "bytes=0-",
+          "contentRange": "bytes */0"
+        },
+        {
+          "url": "…/collabmsg_iArtkZZj780bWFI5hUQihF4lR0eMCDzB/references/160b20deaa50da23c56d9b49eecdefbedd1c0fe255e6f1f04500161cc7ee45cc/content",
+          "status": 404,
+          "range": "bytes=0-0",
+          "contentRange": null
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 416 (Range Not Satisfiable)",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "pass": true
+    }
+  ]
+}

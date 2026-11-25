@@ -35,3 +35,12 @@ Ticket autobyteus-647 (viewer-polish-647), round 1, commit under test `812760b2e
 | 12:36 | API-014 | Checkpoint | base `bc4351cad7` fresh clone `/tmp/api647/base`: install, SDK dist, server, phone bundle, then the seven cases (failure origin) |
 | 12:44 | API-014 | Checkpoint | base: MSP-17, 61, 65, 82, 87, 58 Fail (pre-existing, FU-001); MSP-92 Pass |
 | 13:07 | API-014 | Completed: Pass (no regression) | MSP-92 with a MutationObserver record ×2 on HEAD and base: identical texts, Pass ×4 (sampling timing); temporary edits reverted in both trees. FU-002 recorded |
+| 13:36 | Round 2 | Started | IR-002 (SR-003), HEAD `adcff4d2b2` |
+| 13:37 | API-001 | Completed: Pass (r2) | 7 files, 43 tests |
+| 13:37 | API-002 | Started (r2) | fresh clone `/tmp/api647/fresh2` at `adcff4d2b2`, frozen install, `build:electron:mac -- --arm64` |
+| 13:45 | API-002 | Completed: Pass (r2) | build exit 0, `[typecheck] PASS` |
+| 13:46 | API-021 | Started | isolated instance `iso-60514-f216` of the r2 app; remote node = a `native-video-node.mjs` stack on loopback; add node, connect with a setup code (file mode 600, deleted after), open its window |
+| 13:52 | API-021 | Completed: Pass | packaged `file://` window, cross-origin: probe 416 `bytes */0`, player `bytes=0-` 416, "This video could not be played. Retry", no fetch error; deleted: "Reference file unavailable". Instance and stack stopped |
+| 13:53 | API-011 | Started (r2) | `build:mobile-web`, then probe `--cases=MSP-114,MSP-115,MSP-92` |
+| 14:01 | API-011 | Completed: Pass (r3) | MSP-92, MSP-114, MSP-115 Pass; 0 unknown browser errors; cleanup clean |
+| 14:03 | Round 2 | Completed: Pass | documents updated (API-REV-002) |

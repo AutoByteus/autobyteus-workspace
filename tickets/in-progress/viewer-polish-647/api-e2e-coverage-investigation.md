@@ -15,10 +15,10 @@
 - Code Review Revision Record: `N/A — not applicable`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `tickets/in-progress/viewer-polish-647/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: implementation complete, IR-001, Medium / Low direct route, commit `812760b2ec` on base `bc4351cad7`
-- Prior Investigation Reviewed: none (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1: IR-001 (`812760b2ec`); round 2: IR-002 implementing SR-003 after CRR-001 (`adcff4d2b2`)
+- Prior Investigation Reviewed: round 1 (this file, updated in place)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -41,6 +41,12 @@
   - **The audio session after each close path** (handoff hint): judged in the simulator's unified log (AVAudioSession activation and deactivation of the app's process) plus the node's delivered bytes stopping after the close.
   - **AC-006's trigger:** a run-relative link out of the run's folder shows "The file preview could not be opened." on the same status line D-6 clears. The "on node X" text of AC-006 is one message of that line; D-6 clears the line whatever its message, and the web spec covers the "on node X" message itself.
 - Unsupported/contrived scenarios: none recorded by the designer.
+
+## Round 2 Delta (SR-003, IR-002)
+
+- D-2 now decides on the probe's status alone (`emptyMedia = streams && status === 416`); REQ-002/AC-002 restated: no fetch error, the media viewer is reached and reports "could not be played" (pages) or the native screen (apps); AC-002 now names the dev and packaged desktop (cross-origin).
+- Rerun: API-001 (specs), API-002 (fresh packaged build), API-011 (MSP-114, 115, 92 on the rebuilt phone bundle; MSP-115 as updated by implementation, reviewed). New: API-021, the packaged window against a remote node's Team reference (the node added and connected on the Nodes path).
+- Reused from round 1 (files they exercise unchanged since `e931df7eb9`): API-010, 012, 013, 014, 020, 030…033, 040. The apps' empty reference (API-031 testF, API-040): SR-003's condition matches wherever round 1's header check matched on their same-origin pages.
 
 ## Changed Behavior Summary
 
