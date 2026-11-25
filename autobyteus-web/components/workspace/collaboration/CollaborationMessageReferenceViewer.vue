@@ -197,9 +197,10 @@ const fetchContent = async () => {
       isDeleted.value = true;
       return;
     }
-    // An empty file has no byte 0: the node answers the probe 416 with `bytes */0`, and it opens as an empty file
-    // (autobyteus-647 D-2).
-    const emptyMedia = streams && response.status === 416 && /^bytes \*\/0$/.test(response.headers?.get('content-range')?.trim() ?? '');
+    // Only an empty file has no byte 0, so a 416 to this `bytes=0-0` probe means an empty file: it goes to the media
+    // player, which reports that it cannot be played (autobyteus-647 D-2, SR-003). The status alone decides: the desktop
+    // calls the node cross-origin, and the node exposes no headers, so `Content-Range` is unreadable there.
+    const emptyMedia = streams && response.status === 416;
     if (!response.ok && !emptyMedia) {
       throw new Error(`Failed to fetch reference content (${response.status})`);
     }

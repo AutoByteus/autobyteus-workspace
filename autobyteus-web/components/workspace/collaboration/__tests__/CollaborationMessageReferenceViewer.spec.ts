@@ -223,21 +223,25 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
     expect(wrapper.find('[data-test="file-viewer"]').exists()).toBe(false);
   });
 
-  // autobyteus-647 D-2 (REQ-002): an empty file has no byte 0, so the probe answers 416 with `bytes */0`; it opens as an
-  // empty file. A 416 naming another size is still an error.
-  it('a zero-byte video reference (416 bytes */0) opens as an empty file, with no error', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers({ 'Content-Range': 'bytes */0' }), body: { cancel: async () => undefined } })));
+  // autobyteus-647 D-2 as revised in SR-003 (REQ-002): only an empty file has no byte 0, so a 416 to the media probe
+  // (`Range: bytes=0-0`) means an empty file, and the viewer reaches the media player (which reports that it cannot be
+  // played). The status alone decides: the desktop renderer calls the node cross-origin and the node exposes no headers,
+  // so `Content-Range` reads null there (CRR-001 F-1).
+  it('a zero-byte video reference (416 to the probe, Content-Range unreadable) reaches the player, with no error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers(), body: { cancel: async () => undefined } })));
     const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/empty.mp4', type: 'video' } });
     await flushPromises();
+    expect((vi.mocked(fetch).mock.calls[0][1]?.headers as Headers).get('Range')).toBe('bytes=0-0');
     expect(wrapper.get('[data-test="error"]').text()).toBe('');
     expect(wrapper.get('[data-test="type"]').text()).toBe('Video');
     expect(wrapper.get('[data-test="url"]').text()).toContain('/content');
   });
 
-  it('a video reference whose probe answers 416 for a file with bytes is still an error', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers({ 'Content-Range': 'bytes */2048' }) })));
-    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/demo.mp4', type: 'video' } });
+  it('a 416 to a fetch that is not the media probe (no Range sent) is still an error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 416, ok: false, headers: new Headers() })));
+    const wrapper = mountSubject({ reference: { ...baseReference, path: '/tmp/notes.txt', type: 'text' } });
     await flushPromises();
+    expect((vi.mocked(fetch).mock.calls[0][1]?.headers as Headers | undefined)?.get?.('Range') ?? null).toBeNull();
     expect(wrapper.get('[data-test="error"]').text()).toContain('Failed to fetch reference content (416)');
   });
 
