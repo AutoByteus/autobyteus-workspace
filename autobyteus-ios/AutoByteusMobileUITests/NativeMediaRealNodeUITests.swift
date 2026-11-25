@@ -28,6 +28,17 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         let player = app.otherElements["media.player"]
         XCTAssertTrue(player.waitForExistence(timeout: timeout), "the app's player opens")
         mark("player")
+        // AC-002's start: the scrubber's position reaches 1 s; playing began about a second before (whole seconds; the
+        // audio clock moves only while the sound plays).
+        if !scrubber(app).exists { player.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)).tap() }
+        var started: Double?
+        let deadline = Date().addingTimeInterval(10)
+        while Date() < deadline {
+            if let elapsed = elapsedSeconds(app), elapsed >= 1 { started = Date().timeIntervalSince(opened) - 1; break }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        print("START playing about \(started.map { String(format: "%.2f", $0) } ?? "-") s after the tap")
+        XCTAssertLessThan(started ?? 99, 2.0, "the MP3 plays in under 2 s")
         XCTAssertTrue(app.otherElements["media.audioSymbol"].waitForExistence(timeout: 10) || app.images["media.audioSymbol"].exists, "the audio symbol")
         XCTAssertTrue(app.staticTexts["memo-642.mp3"].exists, "the file's name")
         Thread.sleep(forTimeInterval: 5)
@@ -323,7 +334,6 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         return row
     }
 
-    /// The node's requests since `since` whose path contains `named`, from the stack's request log.
     /// AVKit's scrubber (its position), by its identifier. On the audio screen the first slider is AVKit's volume slider
     /// (identifier "Volume Slider", though its label also reads "Current position"), so `app.sliders.firstMatch` there
     /// moves the volume, not the position.
@@ -331,6 +341,14 @@ final class NativeMediaRealNodeUITests: XCTestCase {
         app.sliders.matching(NSPredicate(format: "identifier == %@", "Current position")).firstMatch
     }
 
+    /// The whole seconds the scrubber shows elapsed ("17 seconds elapsed, 13 seconds remaining"), or `nil` while hidden.
+    private func elapsedSeconds(_ app: XCUIApplication) -> Int? {
+        let slider = scrubber(app)
+        guard slider.exists, let value = slider.value as? String else { return nil }
+        return Int(value.split(separator: " ").first ?? "")
+    }
+
+    /// The node's requests since `since` whose path contains `named`, from the stack's request log.
     private func fileRequests(since: Date, named: String) throws -> [[String: Any]] {
         let log = try controlJSON("/log?since=\(Int(since.timeIntervalSince1970 * 1000))") as? [[String: Any]] ?? []
         return log.filter { ($0["path"] as? String)?.contains(named) == true }

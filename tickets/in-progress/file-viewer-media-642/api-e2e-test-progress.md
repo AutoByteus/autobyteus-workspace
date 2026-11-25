@@ -27,3 +27,7 @@
 | 2026-11-25 01:30 | WS-1 | Started | — | whole phone probe |
 | 2026-11-25 02:22 | WS-1 | Completed | Pass for this ticket | 110 cases, 103 Pass; every case of this ticket passes; 7 outside (FU-002, FU-006, MSP-104 timing: passes alone) |
 | 2026-11-25 02:48 | SI-1, SE-1 | Completed | Pass; Pass for this ticket | integration 523 passed; e2e only RRB-1, SID-2 (609 FU-007) |
+| 2026-11-25 03:35 | — | Checkpoint | — | Round 2 (CRR-007 on IR-006): round 1's IOS-C had read the volume slider (corrected in `216bc68baf`); a cold start measurement added; freshly booted own simulator `api642-r3` |
+| 2026-11-25 03:43 | R2-IOS-C, R2-IOS-START, R2-IOS-CLASS | Completed | Pass | the middle read by range about 0.7 s after the drag (50 ms / 60 KB/s); cold start about 1.0 s; the audio class 10/10 |
+| 2026-11-25 03:46 | R2-IOS-V | Completed | Pass | 574's video class 8/8, 13.7 MB delivered at 50 ms |
+| 2026-11-25 03:47 | — | Checkpoint | — | stacks stopped; simulator `api642-r3` deleted |

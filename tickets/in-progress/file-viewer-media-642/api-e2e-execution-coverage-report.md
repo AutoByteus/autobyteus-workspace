@@ -3,9 +3,9 @@
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: Round 1.
+- Round and trigger: Round 2: `/code_reviewer` CRR-007 Pass on IR-006 (`243d269420`: the iOS loader waits for a running fetch only if it comes within 0.7 s at the measured rate, capped at 1 MB; `216bc68baf`: my audio tests' scrubber query). Round 1:
   - It started on `/code_reviewer`'s CRR-003 Pass on IR-003 (`af2b65c2c0`).
   - During it, two of my evidence questions were decided and implemented:
     - DEC-007, the iOS audio session: IR-004, `38f318021c`, CRR-004 Pass;
@@ -33,6 +33,25 @@
 | ENV-4 | `339b8d0ddb` | as ENV-1 | the phone probe: desktop window (`nuxt dev`, Chrome) and phone (production bundle at /mobile, 390×844) | probe-owned nodes |
 
 ## Cases
+
+## Round 2 Cases (IR-006, `243d269420` + `216bc68baf`)
+
+On my own freshly booted simulator `api642-r3` (iPhone 17, iOS 26.1), with fresh stacks.
+
+| Case ID | Criteria | Surface | Result | Evidence | Look For |
+| --- | --- | --- | --- | --- | --- |
+| R2-IOS-C | AC-002 (seek), F-1 | a fresh 120 s M4A over 50 ms latency and 60 KB/s; AVKit's scrubber (`Current position`) to the middle | Pass | `R2-ios/m4a-seek-requests.txt`, `r5-summary.log` | `bytes=693716-` 0.59 s after the drag began, `bytes=930111-` (the middle) about 0.7 s after it ended, both 206 with the header (round 1: nothing from the middle in 3 s) |
+| R2-IOS-START | AC-002 (start) | the MP3 from the chat link, the app's first playback on a freshly booted simulator | Pass | `R2-ios/r5-summary.log` | the scrubber at 1 s at 2.0 s after the tap: playing by about 1.0 s (under 2 s); probe and one stream |
+| R2-IOS-CLASS | AC-001, AC-002, CR-002, DEC-007 | the whole `NativeMediaRealNodeUITests`, fresh stack | Pass | `R2-ios/r5-summary.log` | 10/10: pairing, MP3, reopen (probe only), the slower-link seek, references, CR-002, other references, Ogg/WebM page path, each way to leave, removal |
+| R2-IOS-V | preserved | 574's `NativeVideoRealNodeUITests` on IR-006, fresh stack | Pass | `R2-ios/v2-summary.log` | 8/8; `delivered 13696434 bytes in 10.0 s; real-time playback needs at least 5345721` (50 ms) |
+
+**Correction to round 1:**
+- IOS-C and testA's POSITION line read AVKit's volume slider. On the audio screen `app.sliders.firstMatch` is the volume slider: identifier `Volume Slider`, though its label also reads "Current position".
+- So round 1's IOS-C never sought. Its "no read from the middle" was not evidence of F-1.
+- F-1 was real nonetheless. Implementation's Core trace on IR-005 (IMP-16) showed the seek take about 14 s with nothing read from the middle.
+- `216bc68baf` queries the scrubber by its identifier. Round 2 proves the fix with the corrected test.
+
+Round 1 rows (kept as run; see the correction above for IOS-C):
 
 | Case ID | Criteria | Surface | Env | Result | Evidence | Look For |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -71,13 +90,13 @@
 | AC | Proven By | Result | Accepted / user part |
 | --- | --- | --- | --- |
 | AC-001 | SRV-1, AND-R1…R4, IOS-D, IOS-F, MSP-114, WS-1 (MSP-92), SI-1 | Proven | — |
-| AC-002 | AND-A1…A5, AND-C, AND-N, IOS-A, IOS-B, IOS-C, IOS-G, IOS-CR, IOS-Z | **Not proven on iOS: F-1** (a seek over a slower link) | the sound and the Ring/Silent switch: physical iPhone (DEC-007) |
+| AC-002 | AND-A1…A5, AND-C, AND-N, IOS-A, IOS-B, IOS-G, IOS-CR, IOS-Z, R2-IOS-C, R2-IOS-START, R2-IOS-CLASS | Proven (round 2) | the sound and the Ring/Silent switch: physical iPhone (DEC-007) |
 | AC-003 | MSP-111 | Proven | — |
 | AC-004 | MSP-112, MSP-113 | Proven (DEC-008) | — |
 
 ## Findings
 
-### F-1 — On iOS, a seek in an audio file over a slower link waits for the one sequential stream instead of a ranged read from the target
+### F-1 — Resolved in round 2 (`243d269420`; R2-IOS-C) — On iOS, a seek in an audio file over a slower link waits for the one sequential stream instead of a ranged read from the target
 
 - **Where:** `autobyteus-ios/AutoByteusMobileCore/Media/AuthorizedMediaLoader.swift`.
   - A read past the cache waits for a running fetch when it is within `readAheadReach = 1 << 20` (1 MB) of it (line 150).
@@ -115,21 +134,21 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 86% | 86% | AC-001, AC-003, AC-004 proven on real surfaces; AC-002 on Android | AC-002's iOS seek over a slower link (F-1) | the fix and a rerun |
-| Changed-boundary execution directness | 90% | 96% | the real route, the real viewers, both apps' players and loaders, the proxy log per case | — | — |
-| Cross-boundary integration realism and mock gap | 88% | 93% | a real node with a real Team's references, a throttled link with latency; the desktop window and the phone bundle | a media message from a generating model | — |
-| Environment, configuration, identity, and fixture fidelity | 88% | 90% | clean env; own devices; real pairing | no physical phone | a device |
-| Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | messages arriving while open, deleted and empty references, reopen, latency, removal, each close path, the old types' page path | — | — |
-| User-surface, browser, and desktop-shell confidence | 88% | 92% | frames of every screen; rendered widths; both highlighting surfaces | the sound on a device (DEC-007) | the physical-iPhone check |
-| Durable regression coverage quality and relevance | 90% | 94% | `NativeMediaRealNodeUITests` (incl. F-1's check), MSP-111…114, the stack | the Android journeys are not a durable driver | — |
+| Requirement and acceptance-criteria proof | 90% | 95% | AC-001…AC-004 proven on real surfaces in both apps, the desktop window and the phone | the sound on a device (DEC-007) | the physical-iPhone check |
+| Changed-boundary execution directness | 90% | 96% | the real route, the viewers, both apps' players and loaders, the proxy log per case | — | — |
+| Cross-boundary integration realism and mock gap | 88% | 93% | a real node, a real Team's references, a throttled link with latency | a media message from a generating model | — |
+| Environment, configuration, identity, and fixture fidelity | 88% | 90% | clean env; own devices (a cold simulator for the start time); real pairing | no physical phone | a device |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | messages arriving while open, deleted and empty references, reopen, latency, slower links, removal, each close path | — | — |
+| User-surface, browser, and desktop-shell confidence | 88% | 92% | frames of every screen; rendered widths; both highlighting surfaces | the sound on a device | — |
+| Durable regression coverage quality and relevance | 90% | 93% | `NativeMediaRealNodeUITests` (the scrubber by identifier, the start time), MSP-111…114, the stack | round 1's slider query was wrong (corrected); the Android journeys are not a durable driver | — |
 
-- Overall post-repository confidence: 88.6%
-- Overall final confidence: 92.3% (mean of the seven final scores)
+- Overall post-repository confidence: 89.1%
+- Overall final confidence: 93.4% (mean of the seven final scores; round 1: 92.3%, Fail)
 - Calculation method: mean of the final category scores
-- Every critical acceptance criterion directly proven, apart from user-only or accepted parts: `No` (AC-002 on iOS: F-1)
-- Any final applicable category below `90%`: `Yes` (requirement proof 86%)
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-1; the sound and the Ring/Silent switch on a physical iPhone (DEC-007); no physical phones
+- Every critical acceptance criterion directly proven, apart from user-only or accepted parts: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `No` (no physical phones)
+- Confidence-limiting residual risks: the sound, the Ring/Silent switch and a lock on a physical iPhone (DEC-007); no physical phones
 
 ## Broader Validation Decision (Mandatory)
 
@@ -183,24 +202,18 @@
 
 ## Preliminary Classification (On `Fail`)
 
-- F-1: `Local Fix`, iOS `AuthorizedMediaLoader` (its fixed 1 MB read-ahead reach). Owner per the failure-origin review.
-- Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six), MSP-104 (timing, passes alone), 609 FU-007 (SE-1's two). No new follow-up.
+- Not applicable in round 2 (Pass). F-1 is resolved by IR-006 (CR-003).
+- Outside this ticket: 628 FU-002 and 609 FU-006 (WS-1's six), MSP-104 (timing, passes alone) and 609 FU-007 (SE-1's two). No new follow-up.
 
 ## Latest Authoritative Result
 
-- Result: `Fail` (F-1)
-- Criteria not proven, user-only or accepted:
-  - not proven: AC-002's seek on iOS over a slower link (F-1);
-  - for the physical iPhone before release (DEC-007): the sound, the Ring/Silent switch, a lock.
-- Evidence decisions requested: DEC-007 (iOS audio session) and DEC-008 (AC-004's chat surface). Both were decided and implemented in the round (IR-004, IR-005).
-- Preliminary classification and recommended owner: `Local Fix`; code reviewer for the failure-origin review
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (Fail)
+- Result: `Pass` (round 2, IR-006 `243d269420`)
+- Criteria not proven, user-only or accepted: for the physical iPhone before release (DEC-007): the sound, the Ring/Silent switch, a lock
+- Evidence decisions requested: DEC-007 and DEC-008 (round 1; both decided and implemented)
+- Preliminary classification and recommended owner: —
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (Pass, Large / High: proportional test-code review of `8dc9abb9f6`, `216bc68baf` and this round's commit)
 - Notes:
-  - **Passing:**
-    - references stream on the desktop and play natively in both apps, header only;
-    - CR-002 holds on both apps;
-    - Android audio plays in 0.5–1.2 s, seeks by range and reopens from the cache;
-    - the iOS audio screen is never blank and its session is `MoviePlayback`;
-    - the layout and both highlighting surfaces pass;
-    - 574's video is unchanged on both apps.
-  - **Failing:** only the iOS loader's audio seek over a slower link.
+  - The iOS audio seek over a slower link now reads the middle by range within about 0.7 s.
+  - The cold start on a fresh simulator is about 1.0 s.
+  - The audio class passes 10/10, and 574's video class 8/8 on IR-006.
+  - Round 1's other results stand: IR-006 changed only the iOS loader and my test file.

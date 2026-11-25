@@ -1,0 +1,31 @@
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project AutoByteusMobile.xcodeproj -scheme AutoByteusMobile -destination id=67DD94D7-1F03-4751-B803-B309F3BA1FA8 -derivedDataPath /private/tmp/api642/ios-dd IOS_BUNDLE_ID=org.autobyteus.mobile IOS_SHARE_EXTENSION_BUNDLE_ID=org.autoby
+    MARKETING_VERSION = 1.5.14
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (7.997 seconds).
+MARK tap-mp3 1795574333367
+MARK player 1795574334891
+START playing about 1.00 s after the tap
+POSITION 18 seconds elapsed, 1 minute, 42 seconds remaining at 18.7 s
+REQUESTS ["bytes=0-1:206:2", "bytes=0-2881452:206:2881453"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testAAnMP3FromTheChatLinkPlaysInTheAppsPlayer]' passed (28.256 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testBTheMP3ReopenedFetchesOnlyTheProbe]' passed (16.050 seconds).
+MARK tap-m4a 1795574379436
+MARK player 1795574381905
+MARK seek 1795574386404
+POSITION after seek hidden
+REQUESTS ["bytes=0-1:206:2", "bytes=0-1867270:206:458544", "bytes=693716-1867270:206:81868", "bytes=930111-1867270:206:81868"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' passed (22.293 seconds).
+REFERENCE ref-642.mp4 ["bytes=0-0:206:1", "bytes=0-1:206:2", "bytes=0-15527420:206:15527421"]
+REFERENCE ref-642.m4a ["bytes=0-0:206:1", "bytes=0-1:206:2", "bytes=0-930830:206:930831"]
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testDATeamsMediaReferencesPlayInTheAppsPlayer]' passed (29.944 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testEAMediaReferenceStaysAsItIsWhileMessagesArrive]' passed (28.820 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testFTheOtherReferencesShowInThePage]' passed (44.928 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testGOggAndWebMStayInThePage]' passed (25.463 seconds).
+MARK close-back 1795574533835
+CLOSE back closed=true
+MARK close-swipe-down 1795574543279
+CLOSE swipe-down closed=false
+MARK close-avkit-close 1795574562970
+CLOSE avkit-close closed=true
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' passed (47.129 seconds).
+MARK removed 1795574580319
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.447 seconds).

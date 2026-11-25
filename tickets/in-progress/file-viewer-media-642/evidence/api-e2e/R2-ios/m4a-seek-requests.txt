@@ -1,0 +1,4 @@
+-6668 ms after the seek mark: bytes=0-1 206 2 bytes
+-6604 ms after the seek mark: bytes=0-1867270 206 458544 bytes
+589 ms after the seek mark: bytes=693716-1867270 206 81868 bytes
+2219 ms after the seek mark: bytes=930111-1867270 206 196608 bytes
