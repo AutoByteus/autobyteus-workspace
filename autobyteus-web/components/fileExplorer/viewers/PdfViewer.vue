@@ -23,7 +23,7 @@
     >
       <VuePdfEmbed
         v-if="baseWidth > 0"
-        :source="resolvedUrl"
+        :source="pdfSource"
         :width="renderWidth"
         class="pdf-content shadow-lg"
         @loaded="onTouchLoaded"
@@ -32,7 +32,7 @@
     </div>
     <VuePdfEmbed
       v-else-if="resolvedUrl"
-      :source="resolvedUrl"
+      :source="pdfSource"
       class="pdf-content shadow-lg w-full max-w-4xl mx-auto"
       @loaded="onLoaded"
       @loading-failed="onError"
@@ -46,7 +46,7 @@ import VuePdfEmbed from 'vue-pdf-embed/dist/index.essential.mjs'
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl'
 import { usePdfPinchZoom } from '~/composables/usePdfPinchZoom'
 import type { ViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory'
-import { ensureSharedPdfWorker } from '~/utils/pdf/sharedPdfWorker'
+import { getSharedPdfWorker } from '~/utils/pdf/sharedPdfWorker'
 
 // Essential styles for vue-pdf-embed
 // index.css is no longer separate in v2, styles are injected or not needed for base
@@ -67,9 +67,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-// One pdf.js worker for every PDF, set before the first document loads (autobyteus-647 D-5).
-ensureSharedPdfWorker()
 const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 })
+// Every PDF loads through the one shared pdf.js worker (autobyteus-647 D-5, SR-002): a loading task given a worker does
+// not own it, so closing one PDF cannot break the next. A new source only with a new URL, so a re-render does not reload.
+const pdfSource = computed(() => (resolvedUrl.value ? { url: resolvedUrl.value, worker: getSharedPdfWorker() } : null))
 
 const loading = ref(true)
 const error = ref<string | null>(null)

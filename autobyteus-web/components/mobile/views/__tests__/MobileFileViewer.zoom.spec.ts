@@ -2,8 +2,9 @@
 // reloaded (AC-005: the open-file state goes through `isLoading` and comes back with a new URL; the viewers are
 // replaced meanwhile), start at 1× for another file, and offer Download for a loaded PDF or image (REQ-004).
 // Production: MobileFileViewer, FileViewer, PdfViewer, ImageViewer, the zoom composables and the zoom memory.
-// Doubled: vue-pdf-embed (it sizes each page canvas at its `width`, as the real one does), the layout numbers jsdom
-// does not compute, and the Download composable's download (its own spec covers it).
+// Doubled: vue-pdf-embed's essential build (it sizes each page canvas at its `width`, as the real one does) and the shared
+// pdf.js worker (a test environment has no Worker), the layout numbers jsdom does not compute, and the Download
+// composable's download (its own spec covers it).
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
@@ -11,7 +12,8 @@ import { defineComponent, h, nextTick, onMounted, watch } from 'vue';
 import MobileFileViewer from '../MobileFileViewer.vue';
 import type { OpenFileState } from '~/stores/fileExplorerState';
 
-vi.mock('vue-pdf-embed', () => ({
+vi.mock('~/utils/pdf/sharedPdfWorker', () => ({ getSharedPdfWorker: () => ({}) }));
+vi.mock('vue-pdf-embed/dist/index.essential.mjs', () => ({
   default: defineComponent({
     props: ['source', 'width'],
     emits: ['loaded', 'loading-failed'],
