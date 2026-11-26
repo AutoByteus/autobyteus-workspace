@@ -14,7 +14,7 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - the prototype diff `a4e314f5` for exact classes;
   - `follow-ups.md` (FU-001, and FU-002 added here).
 - Design review report and architecture review revision record: `N/A — not applicable` (independent architecture review not selected).
-- Triggering rework report: `code-review-report.md` CRR-001 (failure-origin review of API-REV-001): CR-001, CR-002, Local Fix (IR-002).
+- Triggering rework report: `code-review-report.md` CRR-001 (failure-origin review of API-REV-001): CR-001, CR-002, Local Fix (IR-002); CRR-002 (of API-REV-002): CR-003, Local Fix (IR-003).
 
 ## Current Implementation Summary
 
@@ -24,6 +24,9 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - `11978136f1`: the semantic-memory view probe moved to the new layout.
   - `7bf21db56e`: the IR-001 docs.
   - IR-002, `1cf6e23765`: CR-001, a base column (`grid-cols-1`) on the agent, member and owner card grids; CR-002, the agent page's places line takes only the space the name leaves (`flex-1 basis-0`), so the name stays whole.
+  - `0072beea13`: the IR-002 docs.
+  - IR-003, `413c2dcd83`: CR-003. `MemoryPageHeader`'s left group takes its own width as basis (`flex-auto`), so the actions wrap below instead of squeezing the name. The places line is `w-0`, so it never forces a wrap. Back's text and the run page's name give way with the run title on a too-narrow row.
+  - `41bce17570`: a baseline fix in API/E2E's probe. SMV-034 leaves out the run lists' 5 s re-reads, which its window began to catch once SMV-122 came before it.
   - The docs commit carrying this update.
 - **The shared pieces** (`components/memory/`), each with one owner, replacing the prototype's repeated markup:
   - `MemorySectionTabs` (Browse · Search · Index with the Index badge).
@@ -70,12 +73,12 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - `.md` is `heroicons:document-text` `text-blue-500/80` 14 px; `.js/.ts/.vue/.html/.css/.json` are the `vscode-icons:file-type-*` icons; the drag preview uses `heroicons:document`.
   - The `fab`/`fas` `<i>` tags are gone. The icon bundle already held every name: `--check` says current and the asset is unchanged.
 - **D-13:** new keys in `localization/messages/{en,zh-CN}/memory.ts`. Touched literals moved to keys ("Work Journal", "Raw Traces", "Back to search results", "Show", "Loading…", "Retry", "N runs"). Three keys left unused were removed (`memory.journal.go`, `RawTracesTab.records`, `CollaborationMemoryDetail.back_to_memory`).
-- Implementation cycle: `Rework` (IR-002, CRR-001 Local Fix). IR-001 was the initial round.
+- Implementation cycle: `Rework` (IR-003, CRR-002 Local Fix; IR-002, CRR-001). IR-001 was the initial round.
 - Implementation revision record: `tickets/in-progress/memory-layout-652/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-002`.
+- Current implementation revision ID: `IR-003`.
 - Related solution revision IDs: SR-001.
-- Related code-review revision IDs: CRR-001. Related API/E2E revision IDs: API-REV-001. Architecture-review and delivery: `N/A`.
-- Triggering finding IDs: CR-001 (F-1, SMV-121), CR-002 (F-2, SMV-120).
+- Related code-review revision IDs: CRR-001, CRR-002. Related API/E2E revision IDs: API-REV-001, API-REV-002. Architecture-review and delivery: `N/A`.
+- Triggering finding IDs: IR-003: CR-003 (F-3, SMV-122). IR-002: CR-001 (F-1, SMV-121), CR-002 (F-2, SMV-120).
 
 ## Routing Classification (Mandatory)
 
@@ -184,6 +187,9 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
 | Rendered views at 1440×900, 1280×800, 390×844 (and 1200×800 for the picker) | `37c047cb59` tree | all AC measurements hold; 0 errors (CR-001 and CR-002 were not caught here: my data had short workspace paths and a short name) | IMP-003 |
 | IR-002: CR-001 and CR-002 spec cases red → green; memory specs | `1cf6e23765` | 3 red → 12 files, 76 passed | IMP-004 |
 | IR-002: semantic-memory view probe with API/E2E's SMV-120 and SMV-121 | `1cf6e23765` | Pass, 54/54, 0 page errors | IMP-004 |
+| IR-003: header spec cases red → green; memory specs | `413c2dcd83` | 1 red → 13 files, 79 passed | IMP-005 |
+| IR-003: headers at 768, 900, 1024, 1280, 1440 with the left panel open (agent, a 550 px name, team Runs, a run page) | `413c2dcd83` | names whole where they fit; one row at 1280 and 1440; 0 errors | IMP-005 |
+| IR-003: semantic-memory view probe (SMV-120…122; SMV-034 baseline fix) | `41bce17570` | Pass, 55/55, 0 page errors | IMP-005 |
 
 Not run:
 - The packaged desktop app and the fresh-start build: no build input changed (rule 12 does not apply).

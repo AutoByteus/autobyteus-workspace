@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, design-spec.md (SR-001), initial | N/A | `Initial Baseline` | SR-001 | Implemented; to API/E2E |
 | IR-002 | Code Reviewer, code-review-report.md CRR-001 (failure-origin review of API-REV-001) | CR-001, CR-002 (F-1 / SMV-121, F-2 / SMV-120) | `Local Fix` | SR-001, CRR-001, API-REV-001 | Fixed; to API/E2E |
+| IR-003 | Code Reviewer, code-review-report.md CRR-002 (failure-origin review of API-REV-002) | CR-003 (F-3 / SMV-122) | `Local Fix` | SR-001, CRR-002, API-REV-002 | Fixed; to API/E2E |
 
 ## Revision Entries
 
@@ -64,4 +65,31 @@
   - API/E2E's semantic-memory view probe passed 54/54, SMV-120 and SMV-121 included, with 0 page errors.
 - Next recipient or routing: `/api_e2e_engineer` (direct route).
 - Remaining limitations or risks: none new. FU-003 (the design reference's copy of these defects) is the code reviewer's follow-up.
+
+### IR-003 — CRR-002 Local Fix: the page headers wrap instead of hiding the name
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/memory-layout-652/code-review-report.md`, "Round 2 Failure-Origin Finding", CRR-002 (of API/E2E round 2, API-REV-002).
+- Triggering finding IDs: CR-003 (F-3, SMV-122).
+- Classification: Local Fix.
+- Prior authoritative result: IR-002, API/E2E Fail on F-3.
+- Current authoritative result: fixed; `Medium` / `Low` unchanged; direct route to API/E2E.
+- Related solution revision IDs: SR-001.
+- Related architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-002.
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: IR-001's header left group had a zero flex basis. The row never wrapped while the actions fit, so the name shrank, to 0 px at 1024 with the left panel open.
+- Approved behavior or requirement IDs affected: REQ-001 / AC-001 (spec Responsive).
+- Implementation delta:
+  - `MemoryPageHeader`: the left group is `flex-auto` (its own width as basis); Back is `min-w-0`, with its text truncating and its arrow kept.
+  - `AgentMemoryPage`: the places line is `w-0` too.
+  - `MemoryInspector`: the visible name is no longer `flex-shrink-0`.
+  - A fixed `flex-[1_1_18rem]` basis, the review's example, was measured first and left the run title 16 to 34 px; IMP-005 says why.
+- Changed files or areas: those three components, `MemoryPageHeader.spec.ts` (new) and `AgentMemoryPage.spec.ts`. Commit: `413c2dcd83`. Also `41bce17570`, a baseline fix in API/E2E's probe (SMV-034), with its cause found.
+- Local validation and result (IMP-005):
+  - the specs red → green; 13 files and 79 tests passed;
+  - headers measured at 768, 900, 1024, 1280 and 1440 with the left panel open (agent, a 550 px name, team Runs, a run page): names whole where they fit, one row at 1280 and 1440;
+  - the probe passed 55/55, SMV-120, 121 and 122 included.
+- Next recipient or routing: `/api_e2e_engineer` (direct route).
+- Remaining limitations or risks: on a row too narrow for Back, the name and a run's title together (768 with the left panel open), all three truncate in proportion, as designed.
 
