@@ -14,3 +14,8 @@ Ticket autobyteus-652 (memory-layout-652), round 1, commit under test `7bf21db56
 | 07:56 | API-003 | Completed: Pass (run 1) | 52/52 (SMV-110…119 added, all pass) |
 | 07:58 | API-003 | Completed: Fail (run 2) | SMV-120 (F-2) and SMV-121 (F-1) added as reproductions: SMV-120 fails at 1280 (90 of 153 px); one run with SMV-120 non-fatal (reverted): SMV-121 fails (cards end at 695 px in 390) |
 | 07:59 | Round 1 | Completed: Fail | report and revision record written |
+| 08:25 | Round 2 | Started | IR-002 `0072beea13` (CRR-001 CR-001, CR-002) |
+| 08:26 | API-016 | Checkpoint | specs: 45 files, 304 tests passed |
+| 08:27 | API-003 | Completed: Pass (round 2) | 54/54; SMV-120 whole at 1440/1280; SMV-121 cards end at 370 in 390 |
+| 08:28 | API-016 | Started | stack with a very long owner name; steps r2, hdr2, hdr3 |
+| 08:31 | API-016 | Completed: Fail (F-3) | CR-001 and CR-002 hold at 1440, 1280, 390; at 1024×768 the agent's name is 0 px (team 73/219, run title 34/276); 768: 36 px. Stack stopped |
