@@ -34,6 +34,7 @@ import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import modelRoutingSettingsMessages from './modelRoutingSettings';
 import projectMessages from './projects';
 import voiceInputMessages from './voiceInput';
+import extensionsMessages from './extensions';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
@@ -85,6 +86,7 @@ const enMessages: TranslationCatalog = {
   ...modelRoutingSettingsMessages,
   ...projectMessages,
   ...voiceInputMessages,
+  ...extensionsMessages,
   ...generatedShellMessages,
   ...shellMessages,
   ...generatedSkillsMessages,

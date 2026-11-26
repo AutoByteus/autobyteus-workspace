@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import { useExtensionsStore } from '~/stores/extensionsStore';
+import { useNodeStore } from '~/stores/nodeStore';
+import { GetExtensions } from '~/graphql/queries/extensionsQueries';
+import { directNodeApolloClient } from '~/services/nodeCollaboration/directNodeApolloClient';
+import { callExtensionAction, ExtensionActionError } from '~/services/extensions/extensionActionClient';
+import { EMBEDDED_ENTRY_ID } from '~/types/node';
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import type { ExtensionList } from '~/types/extensions';
 import type { VoiceInputRecordingRequest, VoiceInputRecordingSource, VoiceInputPermissionState, VoiceInputStoreState, VoiceInputLatestResult, VoiceInputCapturePayload, VoiceInputCaptureDiagnostics } from '~/types/voiceInput';
 import {
   buildMicrophoneAccessError,
@@ -12,13 +18,20 @@ import {
 } from '~/utils/voiceInputCapture';
 
 const CAPTURE_START_TIMEOUT_MS = 2500;
+/** This computer's microphone choice: every window of the packaged app shares the renderer's origin, so its storage. */
+export const VOICE_INPUT_MICROPHONE_STORAGE_KEY = 'autobyteus.voiceInput.microphone';
+const readMicrophoneChoice = (): string | null => (typeof window === 'undefined' ? null : window.localStorage.getItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY));
+type VoiceTranscription = { text: string; noSpeech: boolean; detectedLanguage: string | null };
 
 const t = (key: string, params?: Record<string, string | number>): string => localizationRuntime.translate(key, params);
 
 export const useVoiceInputStore = defineStore('voiceInput', {
   state: (): VoiceInputStoreState => ({
     initialized: false,
-    isElectron: typeof window !== 'undefined' && Boolean(window.electronAPI),
+    voiceInput: null,
+    availabilityGeneration: 0,
+    microphoneDeviceId: readMicrophoneChoice(),
+    focusListenerRegistered: false,
     isStarting: false,
     isRecording: false,
     isTranscribing: false,
@@ -40,14 +53,13 @@ export const useVoiceInputStore = defineStore('voiceInput', {
   }),
 
   getters: {
-    isAvailable(): boolean {
-      const extensionsStore = useExtensionsStore();
-      return extensionsStore.voiceInput?.status === 'installed' && extensionsStore.voiceInput?.enabled === true;
+    /** The microphone button shows only when this computer's Voice Input is installed, on and ready (REQ-006, REQ-008). */
+    isAvailable(state): boolean {
+      return state.voiceInput?.state === 'installed' && state.voiceInput.enabled === true && state.voiceInput.ready === true;
     },
 
-    selectedAudioInputDeviceId(): string | null {
-      const extensionsStore = useExtensionsStore();
-      return extensionsStore.voiceInput?.settings.audioInputDeviceId ?? null;
+    selectedAudioInputDeviceId(state): string | null {
+      return state.microphoneDeviceId;
     },
 
     selectedAudioInputUnavailable(): boolean {
@@ -62,7 +74,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       localizationRuntime.resolvedLocale.value;
 
       if (!this.selectedAudioInputDeviceId) {
-        return t('settings.components.settings.VoiceInputExtensionCard.system_default');
+        return t('extensions.voice.systemDefaultShort');
       }
 
       return this.audioInputDevices.find((device) => device.deviceId === this.selectedAudioInputDeviceId)?.label
@@ -123,12 +135,49 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         return;
       }
 
-      const extensionsStore = useExtensionsStore();
-      await extensionsStore.initialize();
-      this.isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
       this.initialized = true;
-      await this.refreshAudioInputDevices();
+      if (!this.focusListenerRegistered && typeof window !== 'undefined') {
+        // A change made in another window (or on the node) shows when this window is used again.
+        window.addEventListener('focus', () => { void this.refreshAvailability(); });
+        this.focusListenerRegistered = true;
+      }
+      await Promise.all([this.refreshAvailability(), this.refreshAudioInputDevices()]);
       this.registerMediaDeviceListener();
+    },
+
+    /**
+     * Reads this computer's Voice Input from the embedded node, in every window (design AR-001): at window start, when
+     * a voice surface mounts, on focus, after this window changes it, and when a dictation finds it off or gone. Its
+     * cached catalog is enough (no catalog fetch).
+     */
+    async refreshAvailability(): Promise<void> {
+      const generation = ++this.availabilityGeneration;
+      // The phone has no computer of its own to dictate with (voice on the phone is a later stage).
+      const embedded = isMobileRemoteAccessRuntime() ? null : useNodeStore().getEntryById(EMBEDDED_ENTRY_ID);
+      const item = !embedded?.baseUrl ? null : await directNodeApolloClient(embedded.baseUrl)
+        .query<{ extensions: ExtensionList }>({ query: GetExtensions, variables: { refreshCatalog: false } })
+        .then((result) => result.data?.extensions?.extensions.find((extension) => extension.id === 'voice-input') ?? null, () => null);
+      if (generation === this.availabilityGeneration) this.voiceInput = item;
+    },
+
+    setMicrophone(deviceId: string | null): void {
+      this.microphoneDeviceId = deviceId;
+      if (deviceId) window.localStorage.setItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY, deviceId);
+      else window.localStorage.removeItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY);
+    },
+
+    async transcribe(audioData: ArrayBuffer): Promise<VoiceTranscription> {
+      const embedded = useNodeStore().getEntryById(EMBEDDED_ENTRY_ID);
+      if (!embedded?.baseUrl) throw new Error(t('settings.voiceInput.store.notEnabledYet'));
+      try {
+        return await callExtensionAction(embedded.baseUrl, 'voice-input', 'transcribe', { wav: audioData }) as VoiceTranscription;
+      } catch (error) {
+        if (error instanceof ExtensionActionError && (error.code === 'EXTENSION_OFF' || error.code === 'EXTENSION_NOT_INSTALLED')) {
+          this.voiceInput = null;
+          void this.refreshAvailability();
+        }
+        throw error;
+      }
     },
 
     async queryMicrophonePermission(): Promise<VoiceInputPermissionState> {
@@ -384,11 +433,8 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         await this.disposeCapture();
         if (!isCurrent()) return;
 
-        const result = await window.electronAPI.transcribeVoiceInput({ audioData: capture.audioData });
+        const result = await this.transcribe(capture.audioData);
         if (!isCurrent()) return;
-        if (!result.ok) {
-          throw new Error(result.error || t('settings.voiceInput.store.failedToTranscribeAudio'));
-        }
 
         if (result.noSpeech) {
           this.setLatestResult({

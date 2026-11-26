@@ -1,6 +1,7 @@
 // Opt-in journeys for projects-feature-probe.mjs --voice-input.
 // Production routes/components/stores/native media/worklet/HTTP/database are real.
-// Only extension discovery and transcription IPC are deterministic fixtures.
+// Only this computer's Voice Input (its availability read and its transcribe action on the embedded node) is a
+// deterministic fixture, by request.
 // Chrome synthetic input and permission grant are NOT physical mic/OS/model proof.
 import assert from 'node:assert/strict'
 
@@ -14,30 +15,30 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
     }
     const probe = window.__projectVoice = { mode: 'success', calls: 0, pending: false, wavs: [],
       tracks: () => streams.flatMap(s => s.getTracks().map(t => t.readyState)), release: null }
-    probe.install = () => { window.electronAPI = {
-      getExtensionsState: async () => [{ id: 'voice-input', status: 'installed', enabled: true, settings: { audioInputDeviceId: null } }],
-      transcribeVoiceInput: async ({ audioData }) => {
-        probe.calls++
-        const header = new DataView(audioData)
-        probe.wavs.push({ riff: header.getUint32(0, false), samples: header.getUint32(40, true) / 2 })
-        if (probe.mode === 'pending') await new Promise(resolve => { probe.pending = true; probe.release = () => { probe.pending = false; resolve() } })
-        if (probe.mode === 'error') return { ok: false, error: 'Controlled provider failure' }
-        return { ok: true, text: probe.mode === 'no-speech' ? '' : 'dictated words', noSpeech: probe.mode === 'no-speech', detectedLanguage: 'en' }
-      },
+    const nativeFetch = window.fetch.bind(window)
+    const json = body => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } })
+    probe.install = () => { window.fetch = async (input, init) => {
+      const url = String(input instanceof Request ? input.url : input)
+      if (url.endsWith('/graphql') && String(init?.body ?? '').includes('GetExtensions')) {
+        return json({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64', extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } })
+      }
+      if (!url.endsWith('/rest/extensions/voice-input/actions/transcribe')) return nativeFetch(input, init)
+      probe.calls++
+      const header = new DataView(init.body)
+      probe.wavs.push({ riff: header.getUint32(0, false), samples: header.getUint32(40, true) / 2 })
+      if (probe.mode === 'pending') await new Promise(resolve => { probe.pending = true; probe.release = () => { probe.pending = false; resolve() } })
+      if (probe.mode === 'error') return new Response(JSON.stringify({ code: 'ACTION_FAILED', message: 'Controlled provider failure' }), { status: 500, headers: { 'content-type': 'application/json' } })
+      return json({ output: { text: probe.mode === 'no-speech' ? '' : 'dictated words', noSpeech: probe.mode === 'no-speech', detectedLanguage: 'en' } })
     } }
   })
-  // Install only after browser endpoint bootstrap: this is a voice IPC fixture, not a shell.
+  // Install only after browser endpoint bootstrap: the fixture answers only the voice requests.
   const open = async url => {
     await goto(url)
     await page.getByTestId('project-editor-page').or(page.getByTestId('project-task-page')).waitFor()
     await page.evaluate(async () => {
       window.__projectVoice.install()
-      const { useExtensionsStore } = await import('/_nuxt/stores/extensionsStore.ts')
       const { useVoiceInputStore } = await import('/_nuxt/stores/voiceInputStore.ts')
-      const extensions = useExtensionsStore(), voice = useVoiceInputStore()
-      extensions.initialized = false; voice.initialized = false
-      await voice.initialize()
-      delete window.electronAPI
+      await useVoiceInputStore().refreshAvailability()
     })
   }
   const state = () => page.evaluate(() => {
@@ -59,17 +60,14 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
   async function stop() {
     const before = (await state()).calls
     await page.getByRole('button', { name: 'Stop recording', exact: true }).press('Enter')
-    await waitFor('transcription IPC entered', async () => (await state()).calls > before)
-    // Browser endpoint policy must stay browser-owned for actual HTTP persistence/navigation.
-    // The in-flight IPC promise retains its fixture independently of global bridge discovery.
-    await page.evaluate(() => { delete window.electronAPI })
+    await waitFor('transcription request entered', async () => (await state()).calls > before)
   }
   async function quiet(id) {
     await mic().waitFor()
     assert.equal(await page.getByTestId(id).count(), 0, 'No success node or reserved status gap')
     const s = await state()
     assert(s.tracks.every(t => t === 'ended'), 'Native tracks released')
-    assert(s.wavs.length > 0 && s.wavs.every(w => w.riff === 0x52494646 && w.samples > 0), 'Actual worklet WAV reached IPC')
+    assert(s.wavs.length > 0 && s.wavs.every(w => w.riff === 0x52494646 && w.samples > 0), 'Actual worklet WAV reached the transcribe request')
     return s
   }
   let projectId, taskId
@@ -146,7 +144,6 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
   await runCase('B-005', 'Recording Cancel releases native tracks without insertion or persistence', async obs => {
     await open('/projects/' + projectId + '/edit'); await input().fill('Keep')
     await start(); await page.getByTestId('project-voice-cancel').click(); await mic().waitFor()
-    await page.evaluate(() => { delete window.electronAPI })
     await waitFor('cancel disposal', async () => (await state()).tracks.every(t => t === 'ended'))
     assert.equal((await state()).calls, 0); assert.equal(await input().inputValue(), 'Keep')
     assert.equal(await page.getByTestId('project-voice-status').count(), 0)

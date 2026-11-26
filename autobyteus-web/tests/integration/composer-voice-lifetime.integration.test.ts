@@ -1,5 +1,6 @@
 /** Narrow renderer integration: actual Team publication/projections/adapter/button/store.
- * Media permission, Web Audio capture and Electron transcription are controlled doubles,
+ * Media permission, Web Audio capture and the embedded node's Voice Input (its availability read and its
+ * transcribe action) are controlled doubles,
  * not real-microphone, network, model or packaged-desktop certification.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -20,8 +21,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 const external = vi.hoisted(() => ({
   team: null as AgentTeamContext | null,
   send: vi.fn(), addToast: vi.fn(),
-  extensions: { initialize: vi.fn(async () => undefined),
-    voiceInput: { status: 'installed', enabled: true, settings: { audioInputDeviceId: null } } },
+  transcribe: vi.fn(),
 }))
 // Surrounding owners provide selection/context inputs, not fake composer/voice behavior.
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ selectedType: 'team' }) }))
@@ -33,12 +33,16 @@ vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => ({ se
 vi.mock('~/stores/contextFileUploadStore', () => ({ useContextFileUploadStore: () => ({}) }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => ({}) }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({}) }))
-vi.mock('~/stores/extensionsStore', () => ({ useExtensionsStore: () => external.extensions }))
+vi.mock('~/stores/nodeStore', () => ({ useNodeStore: () => ({ getEntryById: () => ({ id: 'embedded-local', baseUrl: 'http://127.0.0.1:29695' }) }) }))
+vi.mock('~/services/nodeCollaboration/directNodeApolloClient', () => ({ directNodeApolloClient: () => ({ query: async () => ({
+  data: { extensions: { catalog: 'verified', platform: 'darwin-arm64', extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } },
+}) }) }))
+vi.mock('~/services/extensions/extensionActionClient', () => ({ callExtensionAction: (...args: unknown[]) => external.transcribe(...args), ExtensionActionError: class extends Error {} }))
 vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: external.addToast }) }))
 
 const resources = {
   stop: vi.fn(), close: vi.fn(async () => undefined), getUserMedia: vi.fn(),
-  transcribe: vi.fn(), flush: vi.fn(), holdFlush: false,
+  transcribe: external.transcribe, flush: vi.fn(), holdFlush: false,
 }
 class ControlledAudioContext {
   state = 'running'
@@ -66,9 +70,8 @@ class ControlledWorklet {
 const wrappers: VueWrapper[] = []
 const originalMediaDevices = Object.getOwnPropertyDescriptor(navigator, 'mediaDevices')
 const originalPermissions = Object.getOwnPropertyDescriptor(navigator, 'permissions')
-const originalElectronApi = Object.getOwnPropertyDescriptor(window, 'electronAPI')
 const stream = () => ({ getTracks: () => [{ stop: resources.stop }] })
-const result = { ok: true, text: 'dictated words', detectedLanguage: 'en', noSpeech: false, error: null }
+const result = { text: 'dictated words', detectedLanguage: 'en', noSpeech: false }
 function deferred<T>() {
   let resolve!: (value: T) => void
   const promise = new Promise<T>(r => { resolve = r })
@@ -99,6 +102,7 @@ async function setup() {
     return wrapper
   }
   const wrapper = mountOwner()
+  await flushPromises() // the button shows once this computer's Voice Input is read (design AR-001)
   const store = useVoiceInputStore()
   const context = composer.value!.context
   context.requirement = 'existing draft'
@@ -135,7 +139,6 @@ beforeEach(() => {
   resources.transcribe.mockResolvedValue(result)
   vi.stubGlobal('AudioContext', ControlledAudioContext)
   vi.stubGlobal('AudioWorkletNode', ControlledWorklet)
-  Object.defineProperty(window, 'electronAPI', { configurable: true, value: { transcribeVoiceInput: resources.transcribe } })
   Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: {
     enumerateDevices: vi.fn(async () => [{ kind: 'audioinput', deviceId: 'controlled-mic', label: 'Controlled microphone' }]),
     getUserMedia: resources.getUserMedia, addEventListener: vi.fn(),
@@ -148,7 +151,6 @@ afterEach(async () => {
   await useVoiceInputStore().cleanup()
   await flushPromises()
   for (const [object, key, descriptor] of [
-    [window, 'electronAPI', originalElectronApi],
     [navigator, 'mediaDevices', originalMediaDevices],
     [navigator, 'permissions', originalPermissions],
   ] as const) {
@@ -268,6 +270,7 @@ describe('composer voice work across actual unrelated Team publications', () => 
     const { wrapper, store, voice, mountOwner } = await setup()
     const first = voice.value!
     const other = mountOwner()
+    await flushPromises()
     expect(other.getComponent(VoiceInputButton).props('target').key).not.toBe(first.key)
     await other.get('button').trigger('click')
     await flushPromises()

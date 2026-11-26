@@ -8,6 +8,7 @@ const voiceInputMessages = {
   'voiceInput.status.cancel': '取消录音',
   'voiceInput.status.noSpeech': '未检测到语音。请重试或直接输入。',
   'voiceInput.status.failed': '语音转录失败。文本未改变。请重试或直接输入。',
+  'voiceInput.status.slow': '正在启动语音模型。第一次使用最多可能需要 30 秒。',
 } satisfies TranslationCatalog;
 
 export default voiceInputMessages;

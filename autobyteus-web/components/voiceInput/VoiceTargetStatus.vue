@@ -4,12 +4,14 @@
         <span class="flex items-center gap-2"><span v-if="voicePhase !== 'idle'" class="h-2 w-2 flex-shrink-0 rounded-full" :class="voicePhase === 'recording' ? 'animate-pulse bg-red-500 motion-reduce:animate-none' : 'bg-blue-500'"></span>{{ voiceStatus }}</span>
         <button v-if="voicePhase === 'recording'" type="button" class="min-h-8 rounded px-1 underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" :data-testid="cancelTestId" @click="cancelVoice">{{ t('voiceInput.status.cancel') }}</button>
       </div>
+      <!-- The voice program may still be starting (up to ~30 s, measured): said after about 2 s of waiting (VIS-V5-03). -->
+      <p v-if="slow" class="mt-0.5 pl-4 text-blue-700/90" data-testid="voice-target-slow">{{ t('voiceInput.status.slow') }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
 /** The status line of one voice transcript target (project editor, task composer, Memory search): what its capture is doing, or why it gave nothing. */
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 import { useLocalization } from '~/composables/useLocalization'
 import type { VoiceTranscriptTarget, VoiceInputLatestResult } from '~/types/voiceInput'
@@ -31,4 +33,12 @@ const voiceStatus = computed(() => voicePhase.value === 'recording' ? t('voiceIn
 // Success deliberately renders no status node: the editable transcript is the feedback.
 watch(() => voice.latestResult, (latest) => {if (ownsCapture.value) result.value = latest}, {flush: 'sync'})
 const cancelVoice = () => {result.value = null; void voice.cancelOperationForTarget(props.target.key)}
+const slow = ref(false)
+let slowTimer: ReturnType<typeof setTimeout> | null = null
+watch(voicePhase, (phase) => {
+  if (slowTimer) clearTimeout(slowTimer)
+  slow.value = false
+  if (phase === 'transcribing') slowTimer = setTimeout(() => { slow.value = true }, 2000)
+})
+onBeforeUnmount(() => { if (slowTimer) clearTimeout(slowTimer) })
 </script>

@@ -26,7 +26,6 @@
     "test": "pnpm test:nuxt && pnpm test:electron",
     "test:nuxt": "cross-env NUXT_TEST=true vitest",
     "test:electron": "vitest --config ./electron/vitest.config.ts",
-    "test:voice-input-real-release": "cross-env AUTOBYTEUS_VOICE_INPUT_REAL_E2E=1 vitest --config ./electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.realRelease.spec.ts",
     "start": "electron .",
     "generate": "nuxt generate",
     "generate:electron": "cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate",

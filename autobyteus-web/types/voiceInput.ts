@@ -1,3 +1,4 @@
+import type { ExtensionItem } from '~/types/extensions';
 export interface VoiceTranscriptTarget { key: string; isCurrent: () => boolean; appendTranscript: (text: string) => void }
 export type VoiceInputRecordingRequest = { source: 'composer' | 'project-task' | 'project-description' | 'memory-search'; target: VoiceTranscriptTarget } | {source: 'settings-test'};
 export type VoiceInputRecordingSource = VoiceInputRecordingRequest['source'];
@@ -34,7 +35,12 @@ export interface VoiceInputLatestResult {
 
 export interface VoiceInputStoreState {
   initialized: boolean;
-  isElectron: boolean;
+  /** This computer's Voice Input: the embedded node's `voice-input` item (design AR-001), or null when it has none. */
+  voiceInput: ExtensionItem | null;
+  availabilityGeneration: number;
+  /** The microphone this computer records from; null = the system default. */
+  microphoneDeviceId: string | null;
+  focusListenerRegistered: boolean;
   isStarting: boolean;
   isRecording: boolean;
   isTranscribing: boolean;

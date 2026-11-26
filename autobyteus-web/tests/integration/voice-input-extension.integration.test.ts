@@ -1,296 +1,150 @@
+// @vitest-environment node
+/**
+ * Voice Input on the extension foundation, renderer to node (autobyteus-516 DS-002, DS-004; AC-002, AC-007): the
+ * renderer's voice store reads this computer's Voice Input from the embedded node and sends the recording to the
+ * node's real action route, whose real Extension Manager installed a test-signed `voice-input` package (its server
+ * part answers like the voice runtime) from a test-signed catalog. Controlled doubles: the GraphQL read (it returns
+ * the manager's own list) and the HTTP hop (`fetch` goes through Fastify's `inject` into the real route). The real
+ * voice server part and runtime are proved in AutoByteus/autobyteus-extensions and the server's real-release test.
+ * Node environment: the Nuxt test environment's module runner cannot import a server part by file URL with a query.
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import * as fs from 'fs/promises'
 import * as os from 'os'
 import * as path from 'path'
-import * as tar from 'tar'
-import { createHash } from 'crypto'
-import { createServer, type Server } from 'http'
+import { composeExtensions } from '../../../autobyteus-server-ts/src/compositions/extensions-composition'
+import type { ExtensionManager } from '../../../autobyteus-server-ts/src/extensions/services/extension-manager'
+import {
+  CATALOG_URL,
+  describeTestExtension,
+  TEST_PLATFORM,
+  TestCatalogPublisher,
+  TestWeb,
+  extensionRoutesApp,
+} from '../../../autobyteus-server-ts/tests/fixtures/extension-packages'
 
-const {
-  activeContextStoreMock,
-  addToastMock,
-} = vi.hoisted(() => ({
-  activeContextStoreMock: {
-    activeAgentContext: {
-      contextId: 'ctx-1',
-      requirement: 'draft',
-      contextFilePaths: [],
-    },
-    currentRequirement: 'draft',
-    updateRequirement: vi.fn(),
-    updateRequirementForContext: vi.fn(),
-  },
-  addToastMock: vi.fn(),
+const { addToastMock, manager } = vi.hoisted(() => ({ addToastMock: vi.fn(), manager: { current: null as ExtensionManager | null } }))
+vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: addToastMock }) }))
+vi.mock('~/stores/nodeStore', () => ({
+  useNodeStore: () => ({ getEntryById: (id: string) => (id === 'embedded-local' ? { id, baseUrl: 'http://127.0.0.1:29695' } : null) }),
+}))
+vi.mock('~/services/nodeCollaboration/directNodeApolloClient', () => ({
+  directNodeApolloClient: () => ({ query: async () => ({ data: { extensions: await manager.current!.list({ refreshCatalog: false }) } }) }),
 }))
 
-vi.mock('~/stores/activeContextStore', () => ({
-  useActiveContextStore: () => activeContextStoreMock,
-}))
-
-vi.mock('~/composables/useToasts', () => ({
-  useToasts: () => ({
-    addToast: addToastMock,
-  }),
-}))
-
-vi.mock('~/electron/logger', () => {
-  const logger = {
-    child: vi.fn(() => logger),
-    trace: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    fatal: vi.fn(),
-  }
-  return { logger }
-})
-
-import { ManagedExtensionService } from '~/electron/extensions/managedExtensionService'
-import { useExtensionsStore } from '~/stores/extensionsStore'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 
-async function createWorkerArchive(targetPath: string): Promise<void> {
-  const stagingDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-integration-worker-'))
-  const binDir = path.join(stagingDir, 'bin')
-  await fs.mkdir(binDir, { recursive: true })
-
-  const workerScriptPath = path.join(stagingDir, 'worker.js')
-  const contents = [
-    '#!/usr/bin/env node',
-    "const fs = require('fs')",
-    "const path = require('path')",
-    "const readline = require('readline')",
-    'const args = process.argv.slice(2)',
-    'const command = args[0]',
-    'function readArg(name) {',
-    '  const index = args.indexOf(name)',
-    '  return index === -1 ? undefined : args[index + 1]',
-    '}',
-    "if (command === 'prepare') {",
-    "  const modelPath = readArg('--model-path')",
-    "  if (!modelPath) throw new Error('missing --model-path')",
-    "  fs.mkdirSync(modelPath, { recursive: true })",
-    "  fs.writeFileSync(path.join(modelPath, 'model.txt'), 'fixture-model', 'utf8')",
-    '  process.exit(0)',
-    '}',
-    "if (command !== 'serve') throw new Error(`unsupported command: ${command}`)",
-    "process.stdout.write(JSON.stringify({ type: 'ready', backendKind: 'faster-whisper' }) + '\\n')",
-    'const rl = readline.createInterface({ input: process.stdin })',
-    "rl.on('line', (line) => {",
-    '  const payload = JSON.parse(line)',
-    "  process.stdout.write(JSON.stringify({ requestId: payload.requestId, ok: true, text: payload.languageMode === 'zh' ? 'ni hao' : 'fixture transcript', detectedLanguage: payload.languageMode === 'zh' ? 'zh' : 'en', noSpeech: false, error: null }) + '\\n')",
-    '})',
-  ].join('\n')
-  await fs.writeFile(workerScriptPath, contents, 'utf8')
-
-  const workerPath = path.join(binDir, process.platform === 'win32' ? 'voice-input-worker.cmd' : 'voice-input-worker')
-  if (process.platform === 'win32') {
-    await fs.writeFile(workerPath, '@echo off\r\nnode "%~dp0\\..\\worker.js" %*\r\n', 'utf8')
-  } else {
-    await fs.writeFile(workerPath, '#!/usr/bin/env bash\nset -euo pipefail\nSCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\nexec node "$SCRIPT_DIR/../worker.js" "$@"\n', 'utf8')
-    await fs.chmod(workerPath, 0o755)
-    await fs.chmod(workerScriptPath, 0o755)
-  }
-
-  await tar.c(
-    {
-      gzip: true,
-      cwd: stagingDir,
-      file: targetPath,
+/** A voice-input package whose server part answers like the voice runtime: text in the chosen language. */
+const VOICE_SERVER_PART = `
+import fs from 'node:fs/promises';
+import path from 'node:path';
+const language = async (ctx) => JSON.parse(await fs.readFile(path.join(ctx.dir, 'settings.json'), 'utf8').catch(() => '{}')).language ?? 'auto';
+export default {
+  async install(ctx) { ctx.progress({ message: 'Preparing the speech model', percent: null }); },
+  async status() { return { ready: true, message: 'Ready.' }; },
+  async stop() {},
+  actions: {
+    async transcribe(ctx, input) {
+      if (!input.bytes || input.bytes.length < 4) return { text: '', noSpeech: true, detectedLanguage: null };
+      return (await language(ctx)) === 'zh' ? { text: 'ni hao', noSpeech: false, detectedLanguage: 'zh' } : { text: 'fixture transcript', noSpeech: false, detectedLanguage: 'en' };
     },
-    ['.'],
-  )
-  await fs.rm(stagingDir, { recursive: true, force: true })
-}
+    async setLanguage(ctx, input) { await fs.writeFile(path.join(ctx.dir, 'settings.json'), JSON.stringify(input.json)); return input.json; },
+  },
+};`
 
-describe('voice input extension integration', () => {
-  let tempDir: string
-  let server: Server
-  let serverBaseUrl: string
-  let managedExtensionService: ManagedExtensionService
+describe('voice input extension integration (renderer → node action route → Extension Manager)', () => {
+  let root: string
+  let app: Awaited<ReturnType<typeof extensionRoutesApp>>
+
+  const capture = (store: ReturnType<typeof useVoiceInputStore>, bytes: number[]) => {
+    store.audioWorklet = { port: { postMessage: vi.fn(() => queueMicrotask(() => store.flushPromiseResolve?.({
+      audioData: new Uint8Array(bytes).buffer,
+      diagnostics: { inputSampleRate: 48000, wavSampleRate: 48000, durationMs: 1000, rms: 0.03, peak: 0.4, sampleCount: 48000 },
+    }))) } } as any
+    store.stream = { getTracks: () => [{ stop: vi.fn() }] } as any
+    store.audioContext = { close: vi.fn().mockResolvedValue(undefined) } as any
+    store.isRecording = true
+    store.recordingSource = 'composer'
+  }
 
   beforeEach(async () => {
     setActivePinia(createPinia())
-    activeContextStoreMock.activeAgentContext = {
-      contextId: 'ctx-1',
-      requirement: 'draft',
-      contextFilePaths: [],
-    }
-    activeContextStoreMock.currentRequirement = 'draft'
-    activeContextStoreMock.updateRequirement.mockReset()
-    activeContextStoreMock.updateRequirementForContext.mockReset()
     addToastMock.mockReset()
-
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-integration-'))
-    managedExtensionService = new ManagedExtensionService(tempDir)
-
-    // Model an immutable release: checksum and every download use the same bytes.
-    const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
-    await createWorkerArchive(runtimeArchivePath)
-    const runtimeArchive = await fs.readFile(runtimeArchivePath)
-    const runtimeSha = createHash('sha256').update(runtimeArchive).digest('hex')
-
-    server = createServer((request, response) => {
-
-      const manifest = {
-        schemaVersion: 2,
-        runtimeId: 'voice-input',
-        runtimeVersion: '0.2.0',
-        generatedAt: new Date().toISOString(),
-        assets: [
-          {
-            platform: process.platform,
-            arch: process.arch,
-            fileName: 'voice-input-runtime.tar.gz',
-            url: `${serverBaseUrl}/runtime`,
-            sha256: runtimeSha,
-            entrypoint: process.platform === 'win32' ? 'bin/voice-input-worker.cmd' : 'bin/voice-input-worker',
-            distributionType: 'archive',
-            backendKind: 'faster-whisper',
-            model: {
-              id: 'fixture-model',
-              sourceRepo: 'fixtures/faster-whisper-small',
-              version: 'fixture-model-v1',
-            },
-          },
-        ],
-      }
-
-      if (request.url === '/manifest.json') {
-        response.setHeader('content-type', 'application/json')
-        response.end(JSON.stringify(manifest))
-        return
-      }
-
-      if (request.url === '/runtime') {
-        response.end(runtimeArchive)
-        return
-      }
-
-      response.statusCode = 404
-      response.end('not found')
+    root = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-integration-'))
+    const web = new TestWeb()
+    const publisher = new TestCatalogPublisher(web)
+    publisher.publishCatalog([await publisher.publishPackage(describeTestExtension({
+      id: 'voice-input', name: 'Voice Input', offeredOn: 'desktop-node',
+    }), { serverSource: VOICE_SERVER_PART })])
+    manager.current = composeExtensions({
+      dataDir: root, platform: TEST_PLATFORM, isDesktopNode: true,
+      catalogSource: { url: CATALOG_URL, publicKeyPem: publisher.publicKeyPem }, fetch: web.fetch,
     })
-
-    await new Promise<void>((resolve) => {
-      server.listen(0, '127.0.0.1', () => {
-        const address = server.address()
-        if (!address || typeof address === 'string') {
-          throw new Error('Failed to bind fixture server')
-        }
-        serverBaseUrl = `http://127.0.0.1:${address.port}`
-        resolve()
+    app = await extensionRoutesApp(manager.current!)
+    vi.stubGlobal('fetch', async (input: string, init: RequestInit) => {
+      const url = new URL(input)
+      const answer = await app.inject({
+        method: init.method as 'POST', url: url.pathname, headers: init.headers as Record<string, string>,
+        payload: init.body instanceof ArrayBuffer ? Buffer.from(init.body) : (init.body as string),
       })
+      return new Response(answer.body, { status: answer.statusCode, headers: { 'content-type': String(answer.headers['content-type']) } })
     })
-
-    vi.stubEnv('AUTOBYTEUS_VOICE_INPUT_MANIFEST_URL', `${serverBaseUrl}/manifest.json`)
-
-    ;(window as typeof window & { electronAPI?: any }).electronAPI = {
-      getExtensionsState: () => managedExtensionService.listExtensions(),
-      installExtension: (id: 'voice-input') => managedExtensionService.install(id),
-      enableExtension: (id: 'voice-input') => managedExtensionService.enable(id),
-      disableExtension: (id: 'voice-input') => managedExtensionService.disable(id),
-      updateVoiceInputSettings: (id: 'voice-input', payload: { languageMode?: 'auto' | 'en' | 'zh'; audioInputDeviceId?: string | null }) =>
-        managedExtensionService.updateVoiceInputSettings(id, payload),
-      removeExtension: (id: 'voice-input') => managedExtensionService.remove(id),
-      reinstallExtension: (id: 'voice-input') => managedExtensionService.reinstall(id),
-      openExtensionFolder: vi.fn().mockResolvedValue({ success: true }),
-      transcribeVoiceInput: (request: { audioData: ArrayBuffer; languageMode?: 'auto' | 'en' | 'zh' }) =>
-        managedExtensionService.transcribeVoiceInput(request),
-    }
   })
 
   afterEach(async () => {
-    vi.unstubAllEnvs()
-    await new Promise<void>((resolve, reject) => {
-      server.close((error) => {
-        if (error) {
-          reject(error)
-          return
-        }
-        resolve()
-      })
-    })
-    await fs.rm(tempDir, { recursive: true, force: true })
+    vi.unstubAllGlobals()
+    await app.close()
+    await manager.current?.stopAll()
+    await fs.rm(root, { recursive: true, force: true })
   })
 
-  it('serves the manifest checksum bytes unchanged across repeated downloads', async () => {
-    const manifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
-    expect(manifestResponse.ok).toBe(true)
-    const manifest = await manifestResponse.json()
-    const asset = manifest.assets[0]
-    const download = async () => {
-      const response = await fetch(asset.url)
-      expect(response.ok).toBe(true)
-      return Buffer.from(await response.arrayBuffer())
-    }
-    const first = await download()
-    expect(createHash('sha256').update(first).digest('hex')).toBe(asset.sha256)
-    // Cross tar's one-second mtime resolution to catch request-time regeneration.
-    await new Promise((resolve) => setTimeout(resolve, 1100))
-    const second = await download()
-    expect(second.equals(first)).toBe(true)
-    expect(createHash('sha256').update(second).digest('hex')).toBe(asset.sha256)
-    const nextManifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
-    expect(nextManifestResponse.ok).toBe(true)
-    const nextManifest = await nextManifestResponse.json()
-    expect(nextManifest.assets[0].sha256).toBe(asset.sha256)
-  })
+  it('installs (On at once), shows the microphone, and inserts the transcript into the draft, never sent', async () => {
+    const voice = useVoiceInputStore()
+    await voice.refreshAvailability()
+    expect(voice.isAvailable).toBe(false)
 
-  it('installs, enables, and inserts transcript text into the draft', async () => {
-    const extensionsStore = useExtensionsStore()
-    const voiceInputStore = useVoiceInputStore()
-    const capturePayload = {
-      audioData: new Uint8Array([1, 2, 3]).buffer,
-      diagnostics: {
-        inputSampleRate: 48000,
-        wavSampleRate: 48000,
-        durationMs: 1000,
-        rms: 0.032,
-        peak: 0.4,
-        sampleCount: 48000,
-      },
-    }
+    await manager.current!.list({ refreshCatalog: true })
+    await manager.current!.install('voice-input')
+    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]).toMatchObject({ state: 'installed', enabled: true }))
+    await voice.refreshAvailability()
+    expect(voice.isAvailable).toBe(true)
 
-    await extensionsStore.initialize()
-    expect(extensionsStore.voiceInput?.status).toBe('not-installed')
-
-    await extensionsStore.installExtension('voice-input')
-    expect(extensionsStore.voiceInput?.status, extensionsStore.voiceInput?.lastError ?? undefined).toBe('installed')
-    expect(extensionsStore.voiceInput?.enabled).toBe(false)
-
-    await extensionsStore.enableExtension('voice-input')
-    expect(extensionsStore.voiceInput?.enabled).toBe(true)
-
-    voiceInputStore.audioWorklet = {
-      port: {
-        postMessage: vi.fn(() => {
-          queueMicrotask(() => {
-            voiceInputStore.flushPromiseResolve?.(capturePayload)
-          })
-        }),
-      },
-    } as any
-    voiceInputStore.stream = {
-      getTracks: () => [{ stop: vi.fn() }],
-    } as any
-    voiceInputStore.audioContext = {
-      close: vi.fn().mockResolvedValue(undefined),
-    } as any
-    voiceInputStore.isRecording = true
-    voiceInputStore.recordingSource = 'composer'
-    voiceInputStore.transcriptTarget = {
-      key: 'fixture-composer',
-      isCurrent: () => true,
-      appendTranscript: (text) => { activeContextStoreMock.activeAgentContext.requirement += ' ' + text },
-    }
-
-    await voiceInputStore.stopRecording()
-
-    expect(activeContextStoreMock.activeAgentContext.requirement).toBe('draft fixture transcript')
+    let draft = 'draft'
+    capture(voice, [1, 2, 3, 4, 5])
+    voice.transcriptTarget = { key: 'composer', isCurrent: () => true, appendTranscript: (text) => { draft += ` ${text}` } }
+    await voice.stopRecording()
+    expect(draft).toBe('draft fixture transcript')
+    expect(voice.latestResult).toMatchObject({ outcome: 'transcript-ready', detectedLanguage: 'en' })
     expect(addToastMock).not.toHaveBeenCalled()
-    // Real tar extraction and two real worker processes (bash, then node): about 2 s alone, more beside the
-    // full suite's parallel workers, so vitest's 5 s default is too tight.
+
+    // The language chosen on the extension's page applies to the next dictation.
+    await manager.current!.callAction('voice-input', 'setLanguage', { json: { language: 'zh' }, bytes: null })
+    capture(voice, [1, 2, 3, 4, 5])
+    voice.transcriptTarget = { key: 'composer', isCurrent: () => true, appendTranscript: (text) => { draft += ` ${text}` } }
+    await voice.stopRecording()
+    expect(draft).toBe('draft fixture transcript ni hao')
+  }, 30_000)
+
+  it('reports no speech, and hides the microphone at once when Voice Input was turned off elsewhere', async () => {
+    const voice = useVoiceInputStore()
+    await manager.current!.list({ refreshCatalog: true })
+    await manager.current!.install('voice-input')
+    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]?.state).toBe('installed'))
+    await voice.refreshAvailability()
+
+    capture(voice, [0])
+    voice.transcriptTarget = { key: 'composer', isCurrent: () => true, appendTranscript: vi.fn() }
+    await voice.stopRecording()
+    expect(voice.latestResult?.outcome).toBe('no-speech')
+    expect(addToastMock).toHaveBeenCalledWith(expect.any(String), 'info')
+
+    await manager.current!.setEnabled('voice-input', false)
+    expect(voice.isAvailable).toBe(true)
+    capture(voice, [1, 2, 3, 4, 5])
+    voice.transcriptTarget = { key: 'composer', isCurrent: () => true, appendTranscript: vi.fn() }
+    await voice.stopRecording()
+    expect(voice.latestResult).toMatchObject({ outcome: 'error', error: 'voice-input is turned off on this node.' })
+    expect(voice.isAvailable).toBe(false)
   }, 30_000)
 })
