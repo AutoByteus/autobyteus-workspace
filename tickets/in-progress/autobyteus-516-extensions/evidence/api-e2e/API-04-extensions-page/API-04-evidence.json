@@ -1,0 +1,137 @@
+{
+  "startedAt": "2026-11-26T17:06:19.737Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "R1": {
+      "title": "This computer's Extensions: Voice Input Not installed from the verified catalog (V1-01, V2-01)",
+      "result": "Pass",
+      "ms": 2987
+    },
+    "R2": {
+      "title": "Install: phases without a percent, then Installed and on, Getting ready, then On and Ready (V2-02…V2-05, AC-002, REQ-012)",
+      "result": "Pass",
+      "ms": 112640
+    },
+    "R3": {
+      "title": "The packaged page through the real node: loads, shows the installed runtime and folder, saves the language; nothing refused (AC-002 page check, V7-01)",
+      "result": "Pass",
+      "ms": 706
+    },
+    "R4": {
+      "title": "Microphone panel and Test: records the fake microphone and transcribes with this computer's Voice Input (V8-01…V8-04, AC-007)",
+      "result": "Pass",
+      "ms": 7866
+    },
+    "R5": {
+      "title": "A voice surface shows the microphone button: Memory search (V5-01)",
+      "result": "Pass",
+      "ms": 2409
+    },
+    "R6": {
+      "title": "View log, then Off hides the microphone in another page, and On again (V11-01, V4, AR-001)",
+      "result": "Pass",
+      "ms": 40122
+    },
+    "R7": {
+      "title": "Chinese app: translated card and page texts (VIS-L-01, VIS-L-02); phone width layout (VIS-N-01, N-02)",
+      "result": "Pass",
+      "ms": 3607
+    },
+    "U1": {
+      "title": "Update 1.0.0 → 1.0.1 from a newer catalog release: Update offered, On and the language kept, the Test dictates with the new package; one worker (AC-003, V9-01, V9-02)",
+      "result": "Pass",
+      "ms": 9694
+    },
+    "U2": {
+      "title": "A broken 1.0.2 release: \"Update to 1.0.2 failed: …\", Update still offered, 1.0.1 still On and dictating (AC-003 failure outcome)",
+      "result": "Pass",
+      "ms": 9018
+    },
+    "R8": {
+      "title": "Remove: confirmation, Removing, Not installed; the folder is gone (V10-01…V10-03)",
+      "result": "Pass",
+      "ms": 3524
+    }
+  },
+  "browserErrors": [],
+  "refusedRequests": [],
+  "timings": {
+    "installSeconds": 93,
+    "readySeconds": 112,
+    "testTranscriptionMs": 829
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:17643",
+    "backend": "terminated:15673",
+    "catalog": "closed",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "catalog": {
+    "url": "http://127.0.0.1:60904/extensions-catalog.json",
+    "packageSha256": "c7e77c874d8c7061035b73ad6be04d47a77362230caab811cfbea780a66fbe8b",
+    "packageSha256Check": "c7e77c874d8c7061035b73ad6be04d47a77362230caab811cfbea780a66fbe8b"
+  },
+  "isolation": {
+    "tempRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-extensions-page-e2e-G9f2DC",
+    "backend": "http://127.0.0.1:60906",
+    "frontend": "http://127.0.0.1:60905"
+  },
+  "browserVersion": "158.0.8127.88",
+  "installPhases": [
+    "Preparing the speech model (downloads about 2 GB once; this can take a few minutes)"
+  ],
+  "startingMessage": "Installed and on. Getting ready: the speech model is loading (about 30 seconds).",
+  "pageFacts": "Voice runtime\n0.3.2\nSpeech model\nwhisper-small-mlx\nFolder\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-extensions-page-e2e-G9f2DC/node/extensions/voice-input/data Copy",
+  "frameHeight": 226,
+  "testResult": "Last test result Transcript Ready Please summarize the meeting notes and send them to the team. Please summarize the meeting notes. Duration: 5.8 s Language: English",
+  "logExcerpt": "2026-11-26T17:06:36.367Z install: voice-input 1.0.0 from http://127.0.0.1:60904/voice-input-1.0.0.tar.gz 2026-11-26T17:06:36.377Z package verified: its SHA-256 matches the signed list of extensions 2026-11-26T17:06:36.692Z install: runtime 0.3.2 for darwin-arm64 from https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.2/voice-input-runtime-darwin-arm64.tar.gz 2026-11-26T1",
+  "updateProgress": "Downloading Voice Input 1.0.1",
+  "u1": {
+    "settings": {
+      "language": "en",
+      "runtimeVersion": "0.3.2",
+      "model": "whisper-small-mlx",
+      "folder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-extensions-page-e2e-G9f2DC/node/extensions/voice-input/data"
+    },
+    "state": {
+      "voice-input": {
+        "enabled": true
+      }
+    },
+    "transcript": "Last test result Transcript Ready Please summarize the meeting notes and send them to the team. Duration: 5.2 s Language: English",
+    "ms": 316,
+    "workers": [
+      "93010"
+    ]
+  },
+  "u2": {
+    "message": "Update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404",
+    "settings": {
+      "language": "en",
+      "runtimeVersion": "0.3.2",
+      "model": "whisper-small-mlx",
+      "folder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-extensions-page-e2e-G9f2DC/node/extensions/voice-input/data"
+    },
+    "state": {
+      "voice-input": {
+        "enabled": true
+      }
+    },
+    "transcript": "Last test result Transcript Ready Please summarize the meeting notes and send them to the team. Duration: 5.2 s Language: English",
+    "ms": 309,
+    "workers": [
+      "95475"
+    ],
+    "logLines": [
+      "2026-11-26T17:09:25.013Z update: to 1.0.1 from http://127.0.0.1:60904/voice-input-1.0.1.tar.gz",
+      "2026-11-26T17:09:25.023Z update: voice-input 1.0.1 installed",
+      "2026-11-26T17:09:34.034Z update: to 1.0.2 from http://127.0.0.1:60904/voice-input-1.0.2.tar.gz",
+      "2026-11-26T17:09:34.298Z update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404; the installed version stays"
+    ]
+  },
+  "finishedAt": "2026-11-26T17:09:47.341Z"
+}

@@ -1,0 +1,60 @@
+{
+  "step": "install-and-wait",
+  "name": "API-11-update-1.0.2",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:48:42.308Z",
+  "screenshots": [
+    "API-11-update-1.0.2-busy.png",
+    "API-11-update-1.0.2.png"
+  ],
+  "seconds": 3,
+  "phases": [
+    {
+      "s": 0,
+      "phase": "On: "
+    },
+    {
+      "s": 0,
+      "phase": "Updating: Downloading Voice Input 1.0.2"
+    },
+    {
+      "s": 1,
+      "phase": "On: starting: Update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404"
+    },
+    {
+      "s": 2,
+      "phase": "On: Update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404"
+    }
+  ],
+  "refused": [],
+  "nodeLine": "Extensions of Embedded Node · this computer",
+  "voiceNote": null,
+  "unverified": null,
+  "offline": null,
+  "error": null,
+  "cards": [
+    {
+      "id": "voice-input",
+      "title": "Voice Input",
+      "state": "On",
+      "version": "1.0.1",
+      "message": "Update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404",
+      "failed": null,
+      "notAvailable": null,
+      "progress": null,
+      "updateBadge": "1.0.2 available",
+      "starting": false,
+      "buttons": [
+        "extension-update-narrow-voice-input",
+        "extension-update-voice-input",
+        "extension-switch-voice-input",
+        "extension-toggle-page-voice-input",
+        "extension-log-voice-input",
+        "extension-remove-voice-input",
+        "voice-microphone-refresh",
+        "voice-test-button"
+      ]
+    }
+  ],
+  "ok": true
+}

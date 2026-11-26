@@ -1,0 +1,56 @@
+{
+  "step": "click",
+  "name": "API-13-main-window-off-2",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:56:24.113Z",
+  "responses": [
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/graphql"
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/graphql"
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/graphql"
+    }
+  ],
+  "nodeLine": "Extensions of Embedded Node · this computer",
+  "voiceNote": null,
+  "unverified": null,
+  "offline": null,
+  "error": null,
+  "cards": [
+    {
+      "id": "voice-input",
+      "title": "Voice Input",
+      "state": "Off",
+      "version": "1.0.1",
+      "message": "Update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404",
+      "failed": null,
+      "notAvailable": null,
+      "progress": null,
+      "updateBadge": "1.0.2 available",
+      "starting": false,
+      "buttons": [
+        "extension-update-narrow-voice-input",
+        "extension-update-voice-input",
+        "extension-switch-voice-input",
+        "extension-toggle-page-voice-input",
+        "extension-log-voice-input",
+        "extension-remove-voice-input",
+        "voice-microphone-refresh",
+        "voice-test-button"
+      ]
+    }
+  ],
+  "screenshots": [
+    "API-13-main-window-off-2.png"
+  ],
+  "ok": true
+}

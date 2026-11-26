@@ -1,0 +1,20 @@
+{
+  "step": "test",
+  "name": "API-11-test-after-1.0.1",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:48:26.139Z",
+  "ms": 332,
+  "transcript": "Last test result Transcript Ready Please summarize the meeting notes and send them to the team. Duration: 6.7 s Language: English",
+  "fakeMicCalls": 2,
+  "transcribeRequests": [
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/actions/transcribe"
+    }
+  ],
+  "screenshots": [
+    "API-11-test-after-1.0.1.png"
+  ],
+  "ok": true
+}

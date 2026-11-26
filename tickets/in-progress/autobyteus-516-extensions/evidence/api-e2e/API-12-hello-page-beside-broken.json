@@ -1,0 +1,27 @@
+{
+  "step": "page-check",
+  "name": "API-12-hello-page-beside-broken",
+  "window": "docker-516",
+  "at": "2026-11-26T16:51:14.670Z",
+  "pageAnswer": "{\"hostname\":\"5586d8d241bc\",\"platform\":\"linux-arm64\",\"dir\":\"/home/autobyteus/data/extensions/hello-node/data\"}",
+  "frameSrc": "http://127.0.0.1:57499/rest/extensions/hello-node/ui/index.html",
+  "frameSandbox": "allow-scripts",
+  "frameHeight": 80,
+  "responses": [
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://127.0.0.1:57499/rest/extensions/hello-node/ui/index.html"
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:57499/rest/extensions/hello-node/actions/whereAmI"
+    }
+  ],
+  "refused": [],
+  "screenshots": [
+    "API-12-hello-page-beside-broken.png"
+  ],
+  "ok": true
+}

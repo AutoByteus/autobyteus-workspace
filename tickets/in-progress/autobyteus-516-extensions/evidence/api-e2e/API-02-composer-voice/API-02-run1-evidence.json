@@ -1,0 +1,106 @@
+{
+  "startedAt": "2026-11-26T17:10:12.956Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue",
+  "pagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/pages/api-e2e-composer-voice-lifetime.vue",
+  "cases": {
+    "B-001": {
+      "result": "Fail",
+      "description": "Run caller survives repeated publications and Stop appends once/no Send",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('composer').getByRole('button', { name: 'Start voice input', exact: true }) to be visible\n",
+      "state": {
+        "kind": "run",
+        "visible": true,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingTranscribe": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 0,
+        "transcribe": 0,
+        "tracks": [],
+        "audioContexts": [],
+        "wavs": [],
+        "error": null,
+        "leadDraft": "",
+        "reviewerDraft": ""
+      }
+    }
+  },
+  "pageErrors": [],
+  "apiRequests": [
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    }
+  ],
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": true,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingTranscribe": false,
+      "publications": 0,
+      "wrappersChanged": 0,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 0,
+      "transcribe": 0,
+      "tracks": [],
+      "audioContexts": [],
+      "wavs": [],
+      "error": null,
+      "leadDraft": "",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 14154
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 11181,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  },
+  "failures": [
+    {
+      "id": "B-001",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('composer').getByRole('button', { name: 'Start voice input', exact: true }) to be visible\n",
+      "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('composer').getByRole('button', { name: 'Start voice input', exact: true }) to be visible\n\n    at open (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:61:34)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:146:5\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:98:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:145:3"
+    },
+    {
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('composer').getByRole('button', { name: 'Start voice input', exact: true }) to be visible\n",
+      "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('composer').getByRole('button', { name: 'Start voice input', exact: true }) to be visible\n\n    at open (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:61:34)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:146:5\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:98:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:145:3"
+    }
+  ],
+  "port": 61922,
+  "baseUrl": "http://127.0.0.1:61922",
+  "devPid": 11181,
+  "browserPid": 14154,
+  "browserVersion": "158.0.8127.88",
+  "result": "Fail",
+  "finishedAt": "2026-11-26T17:11:07.065Z"
+}

@@ -1,0 +1,80 @@
+{
+  "step": "install-and-wait",
+  "name": "API-12-install-hello",
+  "window": "docker-516",
+  "at": "2026-11-26T16:50:53.958Z",
+  "screenshots": [
+    "API-12-install-hello-busy.png",
+    "API-12-install-hello.png"
+  ],
+  "seconds": 3,
+  "phases": [
+    {
+      "s": 0,
+      "phase": "Not installed: "
+    },
+    {
+      "s": 0,
+      "phase": "Installing: Downloading Hello Node 1.0.0"
+    },
+    {
+      "s": 1,
+      "phase": "On: "
+    }
+  ],
+  "refused": [],
+  "nodeLine": "Extensions of Docker Test Node · 127.0.0.1:57499",
+  "voiceNote": "Voice Input belongs to the computer you work at and is used in every window. Manage it in the window of this computer’s own node.",
+  "unverified": null,
+  "offline": null,
+  "error": null,
+  "cards": [
+    {
+      "id": "hello-node",
+      "title": "Hello Node",
+      "state": "On",
+      "version": "1.0.0",
+      "message": null,
+      "failed": null,
+      "notAvailable": null,
+      "progress": null,
+      "updateBadge": null,
+      "starting": false,
+      "buttons": [
+        "extension-switch-hello-node",
+        "extension-toggle-page-hello-node",
+        "extension-log-hello-node",
+        "extension-remove-hello-node"
+      ]
+    },
+    {
+      "id": "no-arm-build",
+      "title": "No ARM Linux Build",
+      "state": "Not available on this computer",
+      "version": "1.0.0",
+      "message": null,
+      "failed": null,
+      "notAvailable": "There is no build for this computer, Linux (ARM). Offered for macOS (Apple silicon), Linux (x64).",
+      "progress": null,
+      "updateBadge": null,
+      "starting": false,
+      "buttons": []
+    },
+    {
+      "id": "broken-status",
+      "title": "Broken Status",
+      "state": "Not installed",
+      "version": "1.0.0",
+      "message": null,
+      "failed": null,
+      "notAvailable": null,
+      "progress": null,
+      "updateBadge": null,
+      "starting": false,
+      "buttons": [
+        "extension-install-broken-status"
+      ]
+    }
+  ],
+  "ok": true
+}

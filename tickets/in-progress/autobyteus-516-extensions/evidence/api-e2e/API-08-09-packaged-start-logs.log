@@ -1,0 +1,97 @@
+# API-08 / API-09 packaged desktop start with a synthesized old install (autobyteus-516)
+# Build: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app (pnpm build:electron:mac at 8fcbb9bda3; code 3961790ab6); pnpm --silent isolated-app start --from-worktree --data-root <root>
+# Fixture: probes/api-e2e/old-install.mjs (see API-08-old-install-before.txt); 2026-11-26
+
+## API-08 start 1 (iso-56207-7a75, root /private/tmp/516-api-iso-a): instance log lines 1-40
+[2026-11-26T16:43:36.765Z] [INFO] [electron] Application started
+[2026-11-26T16:43:36.839Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-11-26T16:43:36.839Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-11-26T16:43:36.840Z] [INFO] [electron.server.app-data] Created missing data directory: /private/tmp/516-api-iso-a/server-data/db
+[2026-11-26T16:43:36.840Z] [INFO] [electron.server.app-data] Created missing data directory: /private/tmp/516-api-iso-a/server-data/logs
+[2026-11-26T16:43:36.840Z] [INFO] [electron.server.app-data] Created missing data directory: /private/tmp/516-api-iso-a/server-data/download
+
+DevTools listening on ws://127.0.0.1:56207/devtools/browser/72077dc8-322d-4f99-93a6-6d3c66f97d6b
+[2026-11-26T16:43:36.893Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:56211
+[2026-11-26T16:43:36.904Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-11-26T16:43:36.914Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-11-26T16:43:36.914Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:43:36.914Z] [INFO] [electron.server.base-server-manager] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:43:36.914Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-11-26T16:43:36.914Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/tmp/516-api-iso-a/server-data/.env
+[2026-11-26T16:43:36.914Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-11-26T16:43:36.915Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-11-26T16:43:37.863Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-11-26T16:43:37.863Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-11-26T16:43:37.863Z] [INFO] [electron] Using PATH from login shell
+[2026-11-26T16:43:37.864Z] [INFO] [electron] Starting server with port: 56208
+[2026-11-26T16:43:37.866Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:56208
+[2026-11-26T16:43:37.866Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:43:37.866Z] [INFO] [electron] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:43:37.866Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 56208 --data-dir /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:43:37.867Z] [INFO] [electron] Server process spawned with PID: 37551
+[2026-11-26T16:43:37.881Z] [INFO] [electron] Removed the old desktop Voice Input install /private/tmp/516-api-iso-a/extensions; Voice Input is installed again from Settings → Extensions.
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/tmp/516-api-iso-a/server-data/.env
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/tmp/516-api-iso-a/server-data/.env
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] ◇ injected env (2) from ../../../../../../../../../../../../private/tmp/516-api-iso-a/server-data/.env // tip: ⌘ suppress logs { quiet: true }
+[2026-11-26T16:43:37.937Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-11-26T16:43:37.938Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:56208
+[2026-11-26T16:43:37.938Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+
+## API-08 data root after start 1
+drwxr-xr-x@   6 normy  wheel    192 Nov 26 17:43 .
+drwxrwxrwt  627 root   wheel  20064 Nov 26 17:49 ..
+drwx------@   2 normy  wheel     64 Nov 26 17:43 browser-artifacts
+drwx------@   6 normy  wheel    192 Nov 26 17:43 electron
+drwx------@   3 normy  wheel     96 Nov 26 17:43 logs
+drwx------@  17 normy  wheel    544 Nov 26 17:44 server-data
+
+## API-08 start 2 (iso-56338-577d, same root, catalog in server-data/.env): lines matching 'old desktop' (expect none):
+0
+[2026-11-26T16:44:16.070Z] [INFO] [electron] Application started
+[2026-11-26T16:44:16.143Z] [INFO] [electron] Creating server manager for platform: darwin
+
+DevTools listening on ws://127.0.0.1:56338/devtools/browser/88014dbc-27d6-40cd-8405-363aad3b081f
+[2026-11-26T16:44:16.188Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:56342
+[2026-11-26T16:44:16.198Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-11-26T16:44:16.198Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-11-26T16:44:16.198Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:44:16.198Z] [INFO] [electron.server.base-server-manager] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:44:16.199Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Using PATH from login shell
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Starting server with port: 56339
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:56339
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:44:17.302Z] [INFO] [electron] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:44:17.302Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 56339 --data-dir /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:44:17.304Z] [INFO] [electron] Server process spawned with PID: 56281
+[2026-11-26T16:44:17.375Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-11-26T16:44:17.375Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-26T16:44:17.375Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/tmp/516-api-iso-a/server-data
+[2026-11-26T16:44:17.375Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/tmp/516-api-iso-a/server-data/.env
+[2026-11-26T16:44:17.375Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/tmp/516-api-iso-a/server-data/.env
+[2026-11-26T16:44:17.376Z] [INFO] [electron.embedded-server.stdout] ◇ injected env (5) from ../../../../../../../../../../../../private/tmp/516-api-iso-a/server-data/.env // tip: ⌘ suppress logs { quiet: true }
+[2026-11-26T16:44:17.376Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+
+## API-09 start 1 (iso-57219-67c5, root /private/tmp/516-api-iso-b, models/whisper-small-mlx read-only)
+1:[2026-11-26T16:49:07.375Z] [INFO] [electron] Application started
+31:[2026-11-26T16:49:08.614Z] [WARN] [electron] Could not remove the old desktop Voice Input install /private/tmp/516-api-iso-b/extensions: EACCES: permission denied, unlink '/private/tmp/516-api-iso-b/extensions/voice-input/models/whisper-small-mlx/weights.npz'. It is tried again at the next start.
+142:[2026-11-26T16:49:10.685Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+239:[2026-11-26T16:49:11.369Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+240:[2026-11-26T16:49:11.369Z] [INFO] [electron] ServerStatusManager: Server is ready
+
+## API-09 start 2 (iso-57345-95cf) after chmod 755
+1:[2026-11-26T16:49:33.631Z] [INFO] [electron] Application started
+24:[2026-11-26T16:49:34.890Z] [INFO] [electron] Removed the old desktop Voice Input install /private/tmp/516-api-iso-b/extensions; Voice Input is installed again from Settings → Extensions.

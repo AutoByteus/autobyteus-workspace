@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-26T16:56:27.648Z",
+  "entryId": "docker-516",
+  "micBefore": 1,
+  "responses": [
+    {
+      "status": 409,
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/actions/transcribe",
+      "body": "{\"code\":\"EXTENSION_OFF\",\"message\":\"voice-input is turned off on this node.\"}"
+    }
+  ],
+  "micAfter": 0,
+  "composerText": [
+    "Please summarize the meeting notes and send them to the team."
+  ],
+  "visibleError": []
+}

@@ -1,0 +1,60 @@
+{
+  "step": "install-and-wait",
+  "name": "API-10-install",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:44:39.919Z",
+  "screenshots": [
+    "API-10-install-busy.png",
+    "API-10-install.png"
+  ],
+  "seconds": 101,
+  "phases": [
+    {
+      "s": 0,
+      "phase": "Not installed: "
+    },
+    {
+      "s": 0,
+      "phase": "Installing: Downloading Voice Input 1.0.0"
+    },
+    {
+      "s": 1,
+      "phase": "Installing: Preparing the speech model (downloads about 2 GB once; this can take a few minutes)"
+    },
+    {
+      "s": 78,
+      "phase": "On: starting: Installed and on. Getting ready: the speech model is loading (about 30 seconds)."
+    },
+    {
+      "s": 101,
+      "phase": "On: "
+    }
+  ],
+  "refused": [],
+  "nodeLine": "Extensions of Embedded Node · this computer",
+  "voiceNote": null,
+  "unverified": null,
+  "offline": null,
+  "error": null,
+  "cards": [
+    {
+      "id": "voice-input",
+      "title": "Voice Input",
+      "state": "On",
+      "version": "1.0.0",
+      "message": null,
+      "failed": null,
+      "notAvailable": null,
+      "progress": null,
+      "updateBadge": null,
+      "starting": false,
+      "buttons": [
+        "extension-switch-voice-input",
+        "extension-toggle-page-voice-input",
+        "extension-log-voice-input",
+        "extension-remove-voice-input"
+      ]
+    }
+  ],
+  "ok": true
+}

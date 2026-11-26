@@ -1,0 +1,9 @@
+{
+  "id": "hello-node",
+  "name": "Hello Node",
+  "description": "API/E2E test extension (autobyteus-516): offered on every node; its page asks its own server part which computer it runs on.",
+  "version": "1.0.0",
+  "contractVersion": 1,
+  "offeredOn": "every-node",
+  "platforms": ["darwin-arm64", "darwin-x64", "linux-x64", "linux-arm64", "win32-x64"]
+}
