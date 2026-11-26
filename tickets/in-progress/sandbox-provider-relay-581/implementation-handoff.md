@@ -16,12 +16,12 @@
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `…/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-001 baseline; IR-002: CR-001, CR-002 / DEC-115; IR-003: CR-003)
+- Current implementation revision ID: `IR-004` (IR-001 baseline; IR-002: CR-001, CR-002 / DEC-115; IR-003: CR-003; IR-004: F-1, F-2 via CRR-004)
 - Related solution revision IDs: SR-007, SR-008 (DEC-115), SR-009 (DEC-116, DEC-117)
 - Related architecture-review revision IDs: ARCH-REV-003
-- Related code-review revision IDs: CRR-001, CRR-002 (Fail, Local Fix)
-- Related API/E2E / delivery revision IDs: N/A
-- Triggering finding IDs: CR-001, CR-002, CR-003
+- Related code-review revision IDs: CRR-001, CRR-002 (Fail, Local Fix), CRR-003 (Pass), CRR-004 (failure origin: Local Fix)
+- Related API/E2E / delivery revision IDs: API-REV-001 (Fail: F-1, F-2)
+- Triggering finding IDs: CR-001, CR-002, CR-003, F-1, F-2
 - Branches: `codex/sandbox-provider-relay` in this worktree (base `origin/personal` @ `9f803aa84d`); the public skill on `codex/autobyteus-sandboxes` in `AutoByteus/autobyteus-skills` (worktree `/Users/normy/autobyteus_org/autobyteus-skills-worktrees/autobyteus-sandboxes-581`, base `origin/main` @ `1213803`, commit `f85b30a`; committed locally, not pushed: its pull request goes with delivery).
 
 What exists now:
@@ -108,6 +108,7 @@ What exists now:
   7. **Gemini through the relay is AI Studio only** (`GEMINI_ENDPOINT_NEEDS_AI_STUDIO` otherwise); on a relayed node native Gemini runs on AI Studio. C3 lists only the AI Studio key.
   8. **`ClaudeSessionManager` takes `providerRelayAccess` as an optional (null) last parameter**, like its existing `integrationRunAccess`. A relayed node without it still refuses loudly in the client.
   9. **The sandbox tools reach the manager through a process binding** (`bindProcessSandboxManager` / `getProcessSandboxManager`): the tools are registered statically in the tool registry and the Agent Tools MCP before remote collaboration is composed. Principle 16's conditions hold: the studio binds it before the server serves, a call with none throws "Sandboxes are not available on this server", and it hides no cycle.
+  11. **The run-memory folder is bound at the sandbox node's own memory folder, `/home/autobyteus/data/memory` (F-2, IR-004),** not at `/home/autobyteus/run-memory` with `AUTOBYTEUS_MEMORY_DIR` as design C8 says: the server always keeps memory at `<data-dir>/memory` (`AppConfig.getMemoryDir`), and the image's starter always passes `--data-dir`, so the variable had no reader. The host-facing contract (`runMemoryFolder`, `agents/<runId>/…`) is unchanged. The folder also holds the sandbox node's run indexes and episodic and semantic memory; credential stores are elsewhere in its data folder. Design C8 needs this wording at delivery.
   10. **Only the creating run uses or removes a sandbox (CR-001; now DEC-117, SR-009, so no longer a deviation).** REQ-012 also names "the owner", but no product surface gives the owner a sandbox action (no UI, DEC-107); the owner's sandboxes go at expiry and at the node's start. The unused owner caller was removed.
 - Changed source files stayed within size guardrails: `Yes` (`autobyteus-agent-run-backend-factory.ts` 499 → 497; `claude-session.ts` 497 → 498; `server-settings-service.ts` 465 → 483; `build-studio-server.ts` 468 → 471; no file over 500)
 
@@ -144,6 +145,8 @@ Evidence in `tickets/in-progress/sandbox-provider-relay-581/evidence/`. Code com
 | IMP-13 | after the removal: `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes`, then `tests/unit/runtime-management tests/unit/secret-management tests/unit/agent-execution/backends/codex tests/architecture/tracked-imports.test.ts`; `pnpm -C autobyteus-server-ts typecheck` | `b2e7e0d3bd` | macOS arm64, Node 22.23.1 | relay, offer, settings, login reader, Codex launch, sandboxes | CR-001, DEC-115 | Pass | (console) | `Tests  123 passed`; `Tests  847 passed`; `[typecheck] PASS` |
 
 | IMP-14 | `pnpm -C autobyteus-server-ts typecheck`; `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes tests/unit/runtime-management/grok tests/unit/agent-execution/backends/deepseek-harness` | `d624f09ce6` | macOS arm64, Node 22.23.1 | forwarder, relay routes, handler, settings guard | CR-003 | Pass | (console) | `[typecheck] PASS`; `Tests  154 passed` |
+| IMP-15 | `pnpm -C autobyteus-server-ts typecheck`; `vitest run tests/unit/sandboxes tests/unit/agent-tools tests/architecture` (new `sandbox-pairing.test.ts`: dropped connection then answer → one exchange; never answering → `SANDBOX_START_FAILED`, no exchange) | `7296a698d6` | macOS arm64, Node 22.23.1 | `SandboxPairing.connect`, sandbox mounts and environment | F-1, F-2 | Pass | `evidence/IMP-15-sandbox-unit.log` | `[typecheck] PASS`; `Tests  487 passed` |
+| IMP-16 | live probe `probes/sandbox-connect-and-memory-probe.ts` ×5 (real `SandboxDocker` spec shape and `SandboxPairing.connect`; image `autobyteus-server:581-api-e2e`; one native run each, no model call) | `7296a698d6` | macOS arm64, Docker Desktop 29.0.1, Node 22.23.1 | connect race; where a sandbox run's memory lands | F-1 (AC-008, QR-001), F-2 (AC-011, REQ-009) | Pass | `evidence/IMP-16-sandbox-connect-and-memory-live.log` | connect ok 5/5 (API-E01: 3/4 failed); `run_metadata.json` on the host under `agents/<runId>` 5/5; no container left |
 
 Note on IMP-08/09: `SANDBOX-OK: true` there is read from the run's frames; IMP-10 showed the prompt itself echoes the string, so IMP-08's answers were confirmed by `TURN_COMPLETED` with a relayed `200` per runtime in C5, not by the string alone.
 

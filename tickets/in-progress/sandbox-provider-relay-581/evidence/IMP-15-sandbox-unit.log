@@ -1,0 +1,8 @@
+# IMP-15: unit checks for IR-004 (F-1, F-2)
+# commit: 7296a698d6; macOS arm64, Node v22.23.1; date 2026-11-26T17:58:26Z
+# command: pnpm -C autobyteus-server-ts typecheck; vitest run tests/unit/sandboxes tests/unit/agent-tools tests/architecture
+
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+ Test Files  55 passed (55)
+      Tests  487 passed (487)

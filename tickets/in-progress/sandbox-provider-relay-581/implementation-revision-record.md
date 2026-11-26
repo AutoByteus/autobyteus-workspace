@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-004 | Code Reviewer, `code-review-report.md` Round 4, CRR-004 (failure origin of API-REV-001) | F-1, F-2 | `Local Fix` | CRR-004, API-REV-001 | Health wait before the setup exchange; run memory bound at the node's memory folder; back to Code Review |
 | IR-003 | Code Reviewer, `code-review-report.md`, CRR-002 (Fail) | CR-003 | `Local Fix` | CRR-002 | Caller-header drop list removed; `isLoginTokenRuntimeKind`; back to Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002 | `Local Fix` | SR-008 (DEC-115), CRR-001 | Owner caller removed; DEC-115 implemented, failed live (IMP-12), Codex login token removed as not supported; back to Code Review |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 3 (Pass) | N/A (non-blocking N-3, N-4 applied) | `Initial Baseline` | SR-007, ARCH-REV-003 | Implemented steps 1–8; live API-key sandbox path passes; Codex login token (U-1) fails live, Grok (U-2) unproven; handed to Code Review |
@@ -64,3 +65,22 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `pnpm -C autobyteus-server-ts typecheck` PASS; `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes tests/unit/runtime-management/grok tests/unit/agent-execution/backends/deepseek-harness`: `Tests  154 passed` (IMP-14).
 - Next recipient or routing: `/code_reviewer`. Outcome: CRR-003 Pass (CR-003 resolved at d624f09ce6); the reviewer routed to `/api_e2e_engineer`.
 - Remaining limitations or risks: as IR-002.
+
+### IR-004 — F-1, F-2: sandbox start race and run-memory location
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` Round 4, CRR-004 (failure-origin review of API/E2E `api-e2e-execution-coverage-report.md`, API-REV-001, Fail).
+- Triggering finding IDs: F-1, F-2.
+- Classification: `Local Fix` (implementation defects). Task size and risk unchanged: Large / High.
+- Prior authoritative result: IR-003 (CRR-003 Pass). Current authoritative result: IR-003 plus this fix.
+- Related revision IDs: SR-009; CRR-003, CRR-004; API-REV-001; ARCH-REV and DR: N/A.
+- Why recorded: F-1 made about one create in four fail (`SANDBOX_START_FAILED … fetch failed`); F-2 left a sandbox's run memory in its data volume, which destroy removes, so `runMemoryFolder` stayed empty.
+- Approved behavior or requirement IDs affected: AC-008, QR-001 (F-1); AC-011, REQ-009 (F-2). No change to intended behavior.
+- Implementation delta (`7296a698d6`):
+  - F-1: `SandboxPairing.connect` (`sandbox-pairing.ts`) asks `GET /rest/health` after the setup code until any HTTP answer comes (5 s per request, 250 ms apart, within the existing start deadline; past it `SANDBOX_START_FAILED`), then exchanges the code once. Waiting on health, not retrying the exchange, so a code is never sent twice.
+  - F-2: `sandbox-folders.ts` has `DATA_IN_SANDBOX` and `MEMORY_IN_SANDBOX = <data>/memory` in place of `RUN_MEMORY_IN_SANDBOX`; `SandboxManager.start` binds `runMemoryFolder` there (nested in the data volume) and no longer sets `AUTOBYTEUS_MEMORY_DIR`; the pairing's control-socket path uses `DATA_IN_SANDBOX`.
+  - Tests: new `tests/unit/sandboxes/sandbox-pairing.test.ts` (two cases); `sandbox-manager.test.ts` expects the new mount and environment.
+  - Docs: `docs/modules/sandboxes.md` steps 4 and 5.
+- Folder contents checked: the memory folder holds `agents/`, `episodic/`, `semantic/`, `semantic-global/` and the run-history indexes; node identity, paired devices, peers and memory-sync hub credentials are under `<data-dir>/remote-access`, `remote-collaboration` and `memory-sync`, and nothing resolves `<data-dir>/memory/persistence`.
+- Local validation and result: IMP-15 (typecheck PASS; sandboxes, agent-tools and architecture tests: 487 passed); IMP-16 live, 5 fresh sandbox nodes: connect 5/5, each run's `run_metadata.json` on the host under `agents/<runId>`, no container left.
+- Next recipient or routing: `/code_reviewer` (targeted: `sandbox-pairing.ts`, the mounts in `sandbox-manager.ts`, their tests); then API/E2E reruns API-L01, API-L02, API-L07, API-L10.
+- Remaining limitations or risks: as IR-003. Design C8 still names `/home/autobyteus/run-memory` and `AUTOBYTEUS_MEMORY_DIR` (handoff deviation 11; for delivery, with API/E2E's D-1 and D-2).

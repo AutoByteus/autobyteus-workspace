@@ -1,0 +1,17 @@
+# IMP-16: live probe for IR-004 (F-1 connect race, F-2 run-memory location)
+# command: probes/sandbox-connect-and-memory-probe.ts, bundled with esbuild and run with node: <bundle> autobyteus-server:581-api-e2e 5
+# code: working tree identical to 7296a698d6 (real SandboxDocker.startContainer spec shape and SandboxPairing.connect);
+#       image autobyteus-server:581-api-e2e (sandbox side, package from d624f09ce6: the fix is host-side only)
+# environment: macOS arm64, Docker Desktop 29.0.1, Node v22.23.1, 2026-11-26; no relay settings, no key, no model call
+# meaning: connect "ok" in 5 of 5 fresh nodes (API-E01 saw 3 of 4 fail); each native run's run_metadata.json is in the
+#          host's run-memory folder under agents/<runId>; no probe container left (docker ps -a --filter name=sbx_probe: 0)
+
+{"run":0,"connect":"ok","connectMs":7578,"runCreated":true,"metadataOnHost":["agents/<runId>"],"hostMemoryTopLevel":["agents","episodic","run_history_index.json","semantic","semantic-global","team_run_history_index.json"]}
+{"run":1,"connect":"ok","connectMs":6841,"runCreated":true,"metadataOnHost":["agents/<runId>"],"hostMemoryTopLevel":["agents","episodic","run_history_index.json","semantic","semantic-global","team_run_history_index.json"]}
+{"run":2,"connect":"ok","connectMs":7686,"runCreated":true,"metadataOnHost":["agents/<runId>"],"hostMemoryTopLevel":["agents","episodic","run_history_index.json","semantic","semantic-global","team_run_history_index.json"]}
+{"run":3,"connect":"ok","connectMs":8837,"runCreated":true,"metadataOnHost":["agents/<runId>"],"hostMemoryTopLevel":["agents","episodic","run_history_index.json","semantic","semantic-global","team_run_history_index.json"]}
+{"run":4,"connect":"ok","connectMs":8682,"runCreated":true,"metadataOnHost":["agents/<runId>"],"hostMemoryTopLevel":["agents","episodic","run_history_index.json","semantic","semantic-global","team_run_history_index.json"]}
+
+# The memory folder's other contents: credential stores (node identity, paired devices, peers, memory-sync hub
+# credentials) are under <data-dir>/remote-access, remote-collaboration and memory-sync, not <data-dir>/memory;
+# nothing in src resolves a path under <data-dir>/memory/persistence.
