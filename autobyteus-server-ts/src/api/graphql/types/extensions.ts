@@ -40,6 +40,8 @@ export class ExtensionItemGql {
 export class ExtensionListGql {
   /** `verified` · `unverified` · `unreachable`: the result of the latest catalog fetch. */
   @Field(() => String) catalog!: string;
+  /** This node's `<os>-<cpu>`. */
+  @Field(() => String) platform!: string;
   @Field(() => [ExtensionItemGql]) extensions!: ExtensionItemGql[];
 }
 
@@ -49,7 +51,9 @@ const toItem = (item: ExtensionItem): ExtensionItemGql => ({
   platforms: [...item.platforms],
   progress: item.progress ? { ...item.progress } : null,
 });
-const toList = (list: ExtensionList): ExtensionListGql => ({ catalog: list.catalog, extensions: list.extensions.map(toItem) });
+const toList = (list: ExtensionList): ExtensionListGql => ({
+  catalog: list.catalog, platform: list.platform, extensions: list.extensions.map(toItem),
+});
 
 /** Managing a node's extensions is an owner action (REQ-005, DEC-005): GraphQL as a route is open to phones too. */
 const requireOwner = (context: GraphqlRequestContext): void => {

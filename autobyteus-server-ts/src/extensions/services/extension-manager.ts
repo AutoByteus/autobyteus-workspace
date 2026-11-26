@@ -74,7 +74,11 @@ export class ExtensionManager {
       ...this.installFailures.keys(),
     ])];
     const items = await Promise.all(ids.map((id) => this.itemOf(id, offered.find((entry) => entry.id === id) ?? null, states)));
-    return { catalog: catalog.status, extensions: items.filter((item): item is ExtensionItem => item !== null) };
+    return {
+      catalog: catalog.status,
+      platform: this.deps.platform,
+      extensions: items.filter((item): item is ExtensionItem => item !== null),
+    };
   }
 
   /** Whether this node lists an extension (REQ-011): `desktop-node` ones only on the desktop app's own node. */

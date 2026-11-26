@@ -48,4 +48,9 @@ export type ExtensionItem = Readonly<{
   failureMessage: string | null;
 }>;
 
-export type ExtensionList = Readonly<{ catalog: ExtensionCatalogStatus; extensions: readonly ExtensionItem[] }>;
+export type ExtensionList = Readonly<{
+  catalog: ExtensionCatalogStatus;
+  /** This node's `<os>-<cpu>`: the card names it when an extension has no build for it. */
+  platform: string;
+  extensions: readonly ExtensionItem[];
+}>;

@@ -63,7 +63,7 @@ describe("ExtensionManager (extension-contract.md §6, §7; design DS-001…DS-0
   });
 
   it("lists what the verified catalog offers here, and fetches only when asked", async () => {
-    expect(await manager.list({ refreshCatalog: false })).toEqual({ catalog: "unreachable", extensions: [] });
+    expect(await manager.list({ refreshCatalog: false })).toEqual({ catalog: "unreachable", platform: TEST_PLATFORM, extensions: [] });
     expect(web.requested).toEqual([]);
 
     const list = await manager.list({ refreshCatalog: true });

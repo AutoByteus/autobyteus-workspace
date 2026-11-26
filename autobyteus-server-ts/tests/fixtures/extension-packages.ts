@@ -146,3 +146,16 @@ export class TestCatalogPublisher {
     this.web.files.set(`${CATALOG_URL}.sig`, Buffer.from(sign(null, bytes, signWith).toString("base64")));
   }
 }
+
+/**
+ * The node's real extension routes (action call and page files) for a test that sends requests through Fastify's
+ * `inject`, without a network (used by the web's voice integration test, which has no Fastify of its own).
+ */
+export const extensionRoutesApp = async (extensions: import("../../src/extensions/services/extension-manager.js").ExtensionManager) => {
+  const { default: fastify } = await import("fastify");
+  const { registerExtensionRoutes } = await import("../../src/api/rest/extensions.js");
+  const app = fastify();
+  await app.register(async (rest) => registerExtensionRoutes(rest, { extensions }), { prefix: "/rest" });
+  await app.ready();
+  return app;
+};
