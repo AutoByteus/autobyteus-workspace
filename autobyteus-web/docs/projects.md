@@ -638,16 +638,16 @@ gap. Its synchronous result snapshot retains useful terminal feedback before
 the voice store releases target ownership; it does not own text or saving.
 Task attachment controls and manual persistence are unchanged.
 
-The existing installed/enabled local Electron Voice Input extension and device/
+This computer's Voice Input (installed, on and ready on the desktop's own node) and device/
 permission availability are prerequisites. Browser or unavailable capability
 keeps typed/file authoring usable; no sample/fake transcript fallback. One
 shared starting/recording/transcribing lifecycle blocks competing capture.
 Matching-target Cancel/unmount invalidates late delivery and disposes capture;
-uncancellable IPC remains busy until settlement. Late text/errors are ignored
+an uncancellable transcription request remains busy until settlement. Late text/errors are ignored
 for an invalid destination. Settings tests use their own source without a
 Project/Task/composer text sink. See [capture ownership](electron_packaging.md#capture-startup-and-ownership).
 
-Repository capture/worker/IPC doubles prove contracts, **not** installed official
+Repository capture/worker doubles prove contracts, **not** an installed official
 extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
@@ -771,10 +771,11 @@ retry. The read-only detail heading and existing preservation journeys remain.
 Add `--voice-input` to exercise six additional Project create/edit and Task
 voice journeys, including quiet success, manual persistence, optional blank
 reload, retry, cancellation and late navigation response. This uses actual
-browser capture/AudioWorklet, voice store and HTTP/SQLite; extension discovery
-and transcription IPC are fixtures, with a synthetic microphone and test-granted
-permission. It does not certify physical devices, native Electron IPC/models or
-the packaged desktop shell.
+browser capture/AudioWorklet, voice store and HTTP/SQLite; the extension
+availability read and the transcription request are fixtures (answered at the
+network), with a synthetic microphone and test-granted permission. It does not
+certify physical devices, the real voice runtime and models or the packaged
+desktop shell.
 
 `pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh dir>`
 (needs a current server build; `--cases PMU-001,…` selects cases) drives the

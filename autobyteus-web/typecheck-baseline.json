@@ -6,7 +6,6 @@
   "composables/projects/__tests__/useProjectTaskPage.spec.ts": 1,
   "composables/projects/__tests__/useTaskWorkerTasks.spec.ts": 1,
   "composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts": 1,
-  "electron/extensions/__tests__/managedExtensionService.realRelease.spec.ts": 1,
   "electron/server/__tests__/BackendPortBindFaults.spec.ts": 1,
   "electron/server/__tests__/BaseServerManager.spec.ts": 3,
   "electron/server/__tests__/PortOwnerInspectorFaults.spec.ts": 2,

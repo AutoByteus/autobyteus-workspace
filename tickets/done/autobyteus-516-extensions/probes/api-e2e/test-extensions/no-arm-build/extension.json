@@ -1,0 +1,9 @@
+{
+  "id": "no-arm-build",
+  "name": "No ARM Linux Build",
+  "description": "API/E2E test extension (autobyteus-516): offered on every node, but there is no linux-arm64 build.",
+  "version": "1.0.0",
+  "contractVersion": 1,
+  "offeredOn": "every-node",
+  "platforms": ["darwin-arm64", "linux-x64"]
+}

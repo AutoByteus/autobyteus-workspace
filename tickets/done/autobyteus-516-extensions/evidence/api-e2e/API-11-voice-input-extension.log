@@ -1,0 +1,28 @@
+2026-11-26T16:44:40.006Z install: voice-input 1.0.0 from http://127.0.0.1:53057/pkg/voice-input-1.0.0.tar.gz
+2026-11-26T16:44:40.023Z package verified: its SHA-256 matches the signed list of extensions
+2026-11-26T16:44:40.450Z install: runtime 0.3.2 for darwin-arm64 from https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.2/voice-input-runtime-darwin-arm64.tar.gz
+2026-11-26T16:44:40.783Z install: preparing the speech model mlx-community/whisper-small-mlx
+2026-11-26T16:45:56.864Z install: runtime 0.3.2 and model whisper-small-mlx ready
+2026-11-26T16:45:56.869Z install: voice-input 1.0.0 installed and turned on
+2026-11-26T16:45:56.870Z start: starting
+2026-11-26T16:45:56.871Z worker starting (mlx, runtime 0.3.2)
+2026-11-26T16:46:19.733Z worker ready (mlx)
+2026-11-26T16:46:19.734Z start: started
+2026-11-26T16:46:26.861Z settings: language en
+2026-11-26T16:48:18.111Z worker stopped
+2026-11-26T16:48:18.162Z update: to 1.0.1 from http://127.0.0.1:53057/pkg/voice-input-1.0.1.tar.gz
+2026-11-26T16:48:18.168Z package verified: its SHA-256 matches the signed list of extensions
+2026-11-26T16:48:18.169Z install: runtime 0.3.2 and model whisper-small-mlx already here; kept
+2026-11-26T16:48:18.170Z update: voice-input 1.0.1 installed
+2026-11-26T16:48:18.170Z start: starting
+2026-11-26T16:48:18.172Z worker starting (mlx, runtime 0.3.2)
+2026-11-26T16:48:19.899Z worker ready (mlx)
+2026-11-26T16:48:19.899Z start: started
+2026-11-26T16:48:42.402Z worker stopped
+2026-11-26T16:48:42.436Z update: to 1.0.2 from http://127.0.0.1:53057/pkg/voice-input-1.0.2.tar.gz
+2026-11-26T16:48:42.440Z package verified: its SHA-256 matches the signed list of extensions
+2026-11-26T16:48:42.683Z update to 1.0.2 failed: Could not download https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.99/voice-input-runtime-manifest.json: HTTP 404; the installed version stays
+2026-11-26T16:48:42.685Z start: starting
+2026-11-26T16:48:42.686Z worker starting (mlx, runtime 0.3.2)
+2026-11-26T16:48:44.358Z worker ready (mlx)
+2026-11-26T16:48:44.358Z start: started

@@ -1,0 +1,442 @@
+{
+ "run": "smv6 (round 3, IR-003)",
+ "checks": [
+  {
+   "id": "SMV-000",
+   "pass": true,
+   "message": "Built server entry exists (run pnpm -C autobyteus-server-ts build first)"
+  },
+  {
+   "id": "SMV-001",
+   "pass": true,
+   "message": "A Chrome executable is available"
+  },
+  {
+   "id": "SMV-010",
+   "pass": true,
+   "message": "Browse tabs in order",
+   "details": [
+    "Global",
+    "Agents",
+    "Agent Teams",
+    "Agent Orgs"
+   ]
+  },
+  {
+   "id": "SMV-011",
+   "pass": true,
+   "message": "No list filter on Browse"
+  },
+  {
+   "id": "SMV-012",
+   "pass": true,
+   "message": "An agent card shows no run count"
+  },
+  {
+   "id": "SMV-020",
+   "pass": true,
+   "message": "The agent page heading"
+  },
+  {
+   "id": "SMV-021",
+   "pass": true,
+   "message": "Back shows \"Memory\" (Back to Memory)"
+  },
+  {
+   "id": "SMV-022",
+   "pass": true,
+   "message": "Two episodes"
+  },
+  {
+   "id": "SMV-117",
+   "pass": true,
+   "message": "AC-001 (autobyteus-652): the Episodic page's first card starts within 90 px of the top",
+   "details": {
+    "top": 85,
+    "bottom": 161,
+    "toWindowBottom": 739,
+    "width": 344,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-120",
+   "pass": true,
+   "message": "AC-001: the agent's name is whole beside its subtitle at 1440 and 1280 px",
+   "details": {
+    "nameAt1440": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "nameAt1280": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "subtitle": "Also works in Product Review Team"
+   }
+  },
+  {
+   "id": "SMV-122",
+   "pass": true,
+   "message": "AC-001 (Responsive): at 1024 px the agent's name stays visible (the header wraps instead)",
+   "details": {
+    "width": 153,
+    "needs": 153,
+    "whole": true
+   }
+  },
+  {
+   "id": "SMV-023",
+   "pass": true,
+   "message": "The Episodic tab counts the episodes"
+  },
+  {
+   "id": "SMV-030",
+   "pass": true,
+   "message": "The folder path",
+   "details": "<probe-root-path>"
+  },
+  {
+   "id": "SMV-031",
+   "pass": true,
+   "message": "The tab is in the address"
+  },
+  {
+   "id": "SMV-032",
+   "pass": true,
+   "message": "Two link rows \"Link \u00b7 not opened\""
+  },
+  {
+   "id": "SMV-039",
+   "pass": true,
+   "message": "Folders first, then files and links by name",
+   "details": [
+    "sites",
+    "research-method.md",
+    "secret-link.md",
+    "shared"
+   ]
+  },
+  {
+   "id": "SMV-033",
+   "pass": true,
+   "message": "The first root document opens on arrival",
+   "details": "research-method.md"
+  },
+  {
+   "id": "SMV-110",
+   "pass": true,
+   "message": "AC-001: the agent page's content starts within 90 px of the top",
+   "details": {
+    "top": 85,
+    "bottom": 880,
+    "toWindowBottom": 20,
+    "width": 1061,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-111",
+   "pass": true,
+   "message": "AC-002: the semantic panel ends within 24 px of the window bottom, no page scroll",
+   "details": {
+    "top": 85,
+    "bottom": 880,
+    "toWindowBottom": 20,
+    "width": 1061,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-112",
+   "pass": true,
+   "message": "AC-002: reader type h1 22 px, h2 17.6 px, body 14 px",
+   "details": {
+    "h1": "22px",
+    "h2": "17.6px",
+    "body": "14px"
+   }
+  },
+  {
+   "id": "SMV-113",
+   "pass": true,
+   "message": "DC-004: the file list is 300 px wide at 1440 px",
+   "details": 300
+  },
+  {
+   "id": "SMV-114",
+   "pass": true,
+   "message": "AC-005: every file-list icon is a drawn SVG (no blank font icon)",
+   "details": [
+    {
+     "svg": true,
+     "shapes": 1,
+     "width": 14
+    }
+   ]
+  },
+  {
+   "id": "SMV-115",
+   "pass": true,
+   "message": "TR-008: Copy folder path puts the real path on the clipboard and shows \"Copied\" for about 1.5 s",
+   "details": {
+    "clipboardIsFolder": true,
+    "copiedFor": 1542
+   }
+  },
+  {
+   "id": "SMV-034",
+   "pass": true,
+   "message": "A link row asks nothing of the node",
+   "details": [
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+   ]
+  },
+  {
+   "id": "SMV-035",
+   "pass": true,
+   "message": "No context menu on a link row"
+  },
+  {
+   "id": "SMV-036",
+   "pass": true,
+   "message": "Preview only: no Edit mode"
+  },
+  {
+   "id": "SMV-037",
+   "pass": true,
+   "message": "No context menu on a file"
+  },
+  {
+   "id": "SMV-116",
+   "pass": true,
+   "message": "AC-005: the 40-character read-only tab name is whole (\u2264 320 px), its tooltip the name",
+   "details": {
+    "width": 285,
+    "truncated": false,
+    "maxWidth": "320px",
+    "tooltip": "deployment-checklist-and-rollback-pla.md"
+   }
+  },
+  {
+   "id": "SMV-038",
+   "pass": true,
+   "message": "Search finds nothing through a link"
+  },
+  {
+   "id": "SMV-040",
+   "pass": true,
+   "message": "The workspaces query lists no semantic memory workspace",
+   "details": {
+    "data": {
+     "workspaces": [
+      {
+       "workspaceId": "temp_ws_default",
+       "kind": "temp"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "SMV-041",
+   "pass": true,
+   "message": "A write is refused",
+   "details": {
+    "data": null,
+    "errors": [
+     {
+      "message": "WORKSPACE_READ_ONLY: Workspace 'semantic_ws_probe-researcher' is read-only.",
+      "locations": [
+       {
+        "line": 1,
+        "column": 12
+       }
+      ],
+      "path": [
+       "writeFileContent"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "SMV-042",
+   "pass": true,
+   "message": "The content route serves a regular file of the folder",
+   "details": 200
+  },
+  {
+   "id": "SMV-043",
+   "pass": true,
+   "message": "A path through a link is refused by the content route",
+   "details": 403
+  },
+  {
+   "id": "SMV-121",
+   "pass": true,
+   "message": "AC-001 (VIS-005): the Episodic cards fit a 390 px window; the page does not scroll sideways",
+   "details": {
+    "window": 390,
+    "cardRights": [
+     370,
+     370
+    ],
+    "sideways": false
+   }
+  },
+  {
+   "id": "SMV-050",
+   "pass": true,
+   "message": "Short tab labels below 640 px",
+   "details": [
+    "Episodic 2",
+    "Semantic"
+   ]
+  },
+  {
+   "id": "SMV-060",
+   "pass": true,
+   "message": "The team card counts its members"
+  },
+  {
+   "id": "SMV-061",
+   "pass": true,
+   "message": "Members: a team-local agent and a shared agent",
+   "details": [
+    "Reviewer",
+    "Research AssistantShared agent"
+   ]
+  },
+  {
+   "id": "SMV-118",
+   "pass": true,
+   "message": "AC-001 (autobyteus-652): the team page's first member card starts within 90 px of the top",
+   "details": {
+    "top": 85,
+    "bottom": 173,
+    "toWindowBottom": 727,
+    "width": 344,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-062",
+   "pass": true,
+   "message": "Back to the team"
+  },
+  {
+   "id": "SMV-065",
+   "pass": true,
+   "message": "No \"Belongs to\" when Back names the team"
+  },
+  {
+   "id": "SMV-063",
+   "pass": true,
+   "message": "The missing folder state"
+  },
+  {
+   "id": "SMV-064",
+   "pass": true,
+   "message": "The view created no folder"
+  },
+  {
+   "id": "SMV-100",
+   "pass": true,
+   "message": "A long ID's folder has the shortened name",
+   "details": {
+    "encodedBytes": 274,
+    "folderName": "team-local-agent%3Aprobe-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-archive-team-long-#cb8c76738ea0a6cc"
+   }
+  },
+  {
+   "id": "SMV-101",
+   "pass": true,
+   "message": "The Semantic tab finds the shortened folder",
+   "details": "<probe-root-path>"
+  },
+  {
+   "id": "SMV-102",
+   "pass": true,
+   "message": "A file inside the shortened folder opens in the preview (the `#` never reaches a URL unencoded)"
+  },
+  {
+   "id": "SMV-103",
+   "pass": true,
+   "message": "A relative link opens the linked file as a preview tab of the same folder, nothing editable"
+  },
+  {
+   "id": "SMV-104",
+   "pass": true,
+   "message": "A link to a missing file opens its tab with the viewer's message",
+   "details": "archive\nnotes.md\nCopy folder path\nnotes.md\n2026.md\nold-page.md\nError!File not found: <probe-root-path>"
+  },
+  {
+   "id": "SMV-105",
+   "pass": true,
+   "message": "A link out of the folder opens nothing",
+   "details": {
+    "before": 162,
+    "after": 162
+   }
+  },
+  {
+   "id": "SMV-090",
+   "pass": true,
+   "message": "The Semantic tab shows \"Loading the folder\u2026\" while its first listing is held",
+   "details": "semantic_ws_probe-researcher"
+  },
+  {
+   "id": "SMV-091",
+   "pass": true,
+   "message": "Left during the first listing (same page, store kept): the chat workspace menu offers no workspace of the folder view",
+   "details": {
+    "sameDocument": true,
+    "menuOptions": [
+     {
+      "id": "chat-workspace-option-temp",
+      "text": "Temp workspaceDefaultScratch folder for quick chats"
+     }
+    ]
+   }
+  },
+  {
+   "id": "SMV-070",
+   "pass": true,
+   "message": "The Global title (for screen readers)"
+  },
+  {
+   "id": "SMV-071",
+   "pass": true,
+   "message": "The Global line (the tab's tooltip)"
+  },
+  {
+   "id": "SMV-119",
+   "pass": true,
+   "message": "AC-001, AC-002 (autobyteus-652): Global's reader starts within 80 px of the top and ends within 24 px of the window bottom, no page scroll",
+   "details": {
+    "top": 74,
+    "bottom": 880,
+    "toWindowBottom": 20,
+    "width": 1061,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-080",
+   "pass": true,
+   "message": "The folders shown and the link target are byte-identical after the session"
+  },
+  {
+   "id": "SMV-081",
+   "pass": true,
+   "message": "No page errors",
+   "details": []
+  }
+ ],
+ "pageErrors": [],
+ "failures": []
+}

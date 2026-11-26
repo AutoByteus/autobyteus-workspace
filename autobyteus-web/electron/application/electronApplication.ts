@@ -35,8 +35,6 @@ import { ServerStatusManager } from '../server/serverStatusManager'
 import { AppUpdater } from '../updater/appUpdater'
 import type { AppUpdateController } from '../updater/appUpdateController'
 import { DisabledAppUpdater } from '../updater/disabledAppUpdater'
-import { registerExtensionIpcHandlers } from '../extensionIpcHandlers'
-import { ManagedExtensionService } from '../extensions/managedExtensionService'
 import { BrowserRuntime, startBrowserRuntime } from '../browser/browser-runtime'
 import { registerBrowserShellIpcHandlers } from '../browser/register-browser-shell-ipc-handlers'
 import { BrowserBridgeAuthRegistry } from '../browser/browser-bridge-auth-registry'
@@ -65,7 +63,6 @@ export class ElectronApplication {
   private readonly appUpdateController: AppUpdateController
   private readonly managedUpdates: ManagedUpdateSession | null
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
-  private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
   private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close(), 30000,
     error => logger.error('Application shutdown incomplete', error))
@@ -369,7 +366,6 @@ export class ElectronApplication {
         return { canceled: true, path: null, error: error instanceof Error ? error.message : String(error) }
       }
     })
-    registerExtensionIpcHandlers(ipcMain, this.managedExtensionService!)
   }
 
   private installLifecycleHandlers(): void {
@@ -389,14 +385,13 @@ export class ElectronApplication {
 
   async start(): Promise<void> {
     // autobyteus-290 SM-6: the stored node list's names follow the code before anything reads it.
-    runElectronFileMigrations(app.getPath('userData'), logger)
+    runElectronFileMigrations(app.getPath('userData'), this.profile.baseDataRoot, logger)
     this.nodeRegistrySnapshot = loadNodeRegistrySnapshot(
       app.getPath('userData'),
       this.activeEmbeddedBaseUrl,
     )
     saveNodeRegistrySnapshot(app.getPath('userData'), this.nodeRegistrySnapshot)
     await app.whenReady()
-    this.managedExtensionService = new ManagedExtensionService(this.profile.baseDataRoot)
     this.appUpdateController.initialize()
     const authRegistry = new BrowserBridgeAuthRegistry()
     this.browserRuntime = await startBrowserRuntime({

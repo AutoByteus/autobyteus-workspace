@@ -1,0 +1,11 @@
+# IMP-02
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && test:integration; env -i … vitest run tests/e2e/file-explorer/search-content-http.e2e.test.ts
+# Commit: d2934d630f
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+ Test Files  92 passed | 21 skipped (113)
+      Tests  523 passed | 71 skipped (594)
+## e2e search-content-http (registerGraphql caller)
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

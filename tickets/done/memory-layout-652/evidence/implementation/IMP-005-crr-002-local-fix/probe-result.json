@@ -1,0 +1,50 @@
+{
+ "result": "Pass",
+ "checks": 55,
+ "failed": [],
+ "pageErrors": 0,
+ "selected": {
+  "SMV-120": {
+   "pass": true,
+   "details": {
+    "nameAt1440": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "nameAt1280": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "subtitle": "Also works in Product Review Team"
+   }
+  },
+  "SMV-122": {
+   "pass": true,
+   "details": {
+    "width": 153,
+    "needs": 153,
+    "whole": true
+   }
+  },
+  "SMV-034": {
+   "pass": true,
+   "details": [
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+   ]
+  },
+  "SMV-121": {
+   "pass": true,
+   "details": {
+    "window": 390,
+    "cardRights": [
+     370,
+     370
+    ],
+    "sideways": false
+   }
+  }
+ }
+}

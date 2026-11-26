@@ -8,6 +8,7 @@ const voiceInputMessages = {
   'voiceInput.status.cancel': 'Cancel recording',
   'voiceInput.status.noSpeech': 'No speech detected. Try again or type instead.',
   'voiceInput.status.failed': 'Voice input could not be transcribed. Your text is unchanged. Try again or type instead.',
+  'voiceInput.status.slow': 'Starting the speech model. The first use can take up to 30 seconds.',
 } satisfies TranslationCatalog;
 
 export default voiceInputMessages;

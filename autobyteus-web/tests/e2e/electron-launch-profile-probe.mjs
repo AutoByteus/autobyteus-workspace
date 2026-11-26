@@ -308,7 +308,6 @@ function expectedProfilePaths(rootPath) {
     baseDataRoot: rootPath,
     serverData: path.join(rootPath, 'server-data'),
     logs: path.join(rootPath, 'logs'),
-    extensions: path.join(rootPath, 'extensions'),
     browserArtifacts: path.join(rootPath, 'browser-artifacts'),
     userData: path.join(rootPath, 'electron', 'user-data'),
     sessionData: path.join(rootPath, 'electron', 'session-data'),

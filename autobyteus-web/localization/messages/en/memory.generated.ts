@@ -29,7 +29,6 @@ const messages = {
   'memory.components.memory.AgentMemoryDetail.back_to_memory': 'Back to Memory',
   'memory.components.memory.AgentMemoryDetail.loading_runs': 'Loading runs...',
   'memory.components.memory.AgentMemoryDetail.no_runs_match_this_filter': 'No runs match this filter.',
-  'memory.components.memory.CollaborationMemoryDetail.back_to_memory': 'Back to Memory',
   'memory.components.memory.CollaborationMemoryDetail.loading_runs': 'Loading runs...',
   'memory.components.memory.CollaborationMemoryDetail.no_runs_match_this_filter': 'No runs match this filter.',
   'memory.components.memory.CollaborationMemoryDetail.task_team': 'Task team',

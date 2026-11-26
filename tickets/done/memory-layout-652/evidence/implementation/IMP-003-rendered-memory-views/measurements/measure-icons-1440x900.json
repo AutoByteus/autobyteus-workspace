@@ -1,0 +1,198 @@
+{
+  "result": {
+    "files": [
+      {
+        "name": "scripts",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "build.js",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "src",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "app.ts",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "App.vue",
+        "svg": true,
+        "paths": 3,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "styles",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "main.css",
+        "svg": true,
+        "paths": 2,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "index.html",
+        "svg": true,
+        "paths": 4,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "notes.txt",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "package.json",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "README.md",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      }
+    ],
+    "filesTab": {
+      "text": "package.json",
+      "maxWidth": "150px",
+      "title": ""
+    },
+    "skills": [
+      {
+        "name": "scripts",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "build.js",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "src",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "app.ts",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "App.vue",
+        "svg": true,
+        "paths": 3,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "styles",
+        "svg": true,
+        "paths": 1,
+        "w": 16,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "main.css",
+        "svg": true,
+        "paths": 2,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "index.html",
+        "svg": true,
+        "paths": 4,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "notes.txt",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": false
+      },
+      {
+        "name": "package.json",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "README.md",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      },
+      {
+        "name": "SKILL.md",
+        "svg": true,
+        "paths": 1,
+        "w": 14,
+        "fa": false,
+        "iconify": true
+      }
+    ]
+  },
+  "errors": []
+}

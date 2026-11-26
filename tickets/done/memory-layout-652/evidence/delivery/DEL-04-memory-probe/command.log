@@ -1,0 +1,7 @@
+### memory-probe: pnpm -C autobyteus-web test:e2e:semantic-memory-view
+
+> autobyteus@1.5.15-beta.2 test:e2e:semantic-memory-view /Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652/autobyteus-web
+> node tests/e2e/semantic-memory-view-probe.mjs
+
+semantic memory view probe: Pass (55/55 checks) → /Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652/autobyteus-web/test-results/semantic-memory-view
+exit 0

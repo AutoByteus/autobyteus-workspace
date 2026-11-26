@@ -1,5 +1,5 @@
 <template>
-  <div data-test="work-journal">
+  <div class="flex min-h-0 flex-col" data-test="work-journal">
     <div v-if="focus" class="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-900" data-test="work-journal-found">
       <p class="min-w-0 break-words">
         <span class="font-semibold"><template v-if="focus.cue">{{ $t('memory.journal.found_from', { cue: focus.cue }) }}</template><template v-else>{{ $t('memory.journal.found_lines') }}</template></span>
@@ -27,8 +27,10 @@
     </div>
     <div v-else-if="store.files.length === 0" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.journal.empty') }}</div>
 
-    <div v-else class="grid gap-4 xl:grid-cols-[15rem_minmax(0,1fr)]">
-      <nav class="hidden xl:block" :aria-label="$t('memory.journal.files')">
+    <!-- The file list and the file picker only for 2+ journal files: with one, the journal's header names it (DC-008).
+         The journal fills the page's remaining height; its lines scroll inside it. -->
+    <div v-else class="grid min-h-[360px] grow basis-0 grid-rows-[minmax(0,1fr)] gap-4" :class="store.files.length > 1 ? 'xl:grid-cols-[15rem_minmax(0,1fr)]' : ''">
+      <nav v-if="store.files.length > 1" class="hidden overflow-auto xl:block" :aria-label="$t('memory.journal.files')">
         <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('memory.journal.files') }} · {{ store.files.length }}</h3>
         <ul class="space-y-1">
           <li v-for="item in store.files" :key="item.name">
@@ -54,45 +56,50 @@
         </ul>
       </nav>
 
-      <div class="min-w-0">
-        <div class="xl:hidden">
-          <label class="text-xs font-semibold text-gray-600" for="work-journal-file-select">{{ $t('memory.journal.file') }}</label>
-          <select id="work-journal-file-select" class="mb-3 mt-1 block w-full rounded-md border border-gray-200 px-2 py-1.5 text-xs" :value="store.selectedFile ?? ''" @change="store.selectFile(($event.target as HTMLSelectElement).value)">
-            <option v-for="item in store.files" :key="item.name" :value="item.name">{{ item.name }}{{ item.open ? ` (${$t('memory.journal.active')})` : '' }}</option>
-          </select>
-        </div>
-
-        <div v-if="store.current" class="rounded-lg border border-gray-200">
+      <div class="flex min-h-0 min-w-0 flex-col">
+        <div v-if="store.current" class="flex min-h-0 flex-1 flex-col rounded-lg border border-gray-200 bg-white">
           <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-gray-100 px-3 py-2">
             <div class="min-w-0 flex-1 basis-56">
-              <p class="truncate font-mono text-xs font-semibold text-gray-800">{{ store.current.name }}</p>
+              <!-- Below 1280 px, with several files, the file's name here is the picker (TR-005). -->
+              <p class="truncate font-mono text-xs font-semibold text-gray-800" :class="store.files.length > 1 ? 'hidden xl:block' : ''" data-test="work-journal-file-name">{{ store.current.name }}</p>
+              <MemoryPicker
+                v-if="store.files.length > 1"
+                id="work-journal-file-select"
+                class="mb-1 w-full sm:w-auto sm:max-w-sm xl:hidden"
+                :label="$t('memory.journal.file')"
+                :value="store.selectedFile ?? ''"
+                data-test="work-journal-file-select"
+                @change="store.selectFile(($event.target as HTMLSelectElement).value)"
+              >
+                <option v-for="item in store.files" :key="item.name" :value="item.name">{{ item.name }}{{ item.open ? ` (${$t('memory.journal.active')})` : '' }}</option>
+              </MemoryPicker>
               <p class="text-[11px] text-gray-500">{{ $t('memory.journal.file_size', { lines: store.current.lines.toLocaleString(resolvedLocale), size: formatSize(store.current.sizeKb) }) }} · {{ dayRange(store.current) }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <label class="sr-only" for="work-journal-day">{{ $t('memory.journal.jump_to_day') }}</label>
-              <select id="work-journal-day" class="rounded-md border border-gray-200 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" :value="''" data-test="work-journal-day" @change="jumpToDay($event)">
+              <MemoryPicker id="work-journal-day" size="xs" :label="$t('memory.journal.jump_to_day')" :value="''" data-test="work-journal-day" @change="jumpToDay($event)">
                 <option value="" disabled>{{ $t('memory.journal.jump_to_day') }}</option>
                 <option v-for="item in store.current.days" :key="item.day" :value="item.line">{{ formatDay(item.day) }}</option>
-              </select>
-              <form class="flex items-center gap-1" @submit.prevent="goToLine">
+              </MemoryPicker>
+              <!-- Go to line jumps on Enter (a phone keyboard's Go): no Go button, no spinner (DC-009). -->
+              <form class="flex items-center" @submit.prevent="goToLine">
                 <label class="sr-only" for="work-journal-line">{{ $t('memory.journal.go_to_line') }}</label>
-                <input id="work-journal-line" v-model="lineInput" type="number" min="1" :max="store.current.lines" inputmode="numeric" :placeholder="$t('memory.journal.go_to_line')" class="w-28 rounded-md border border-gray-200 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" data-test="work-journal-line" />
-                <button type="submit" class="rounded-md bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200">{{ $t('memory.journal.go') }}</button>
+                <input id="work-journal-line" v-model="lineInput" type="number" min="1" :max="store.current.lines" inputmode="numeric" enterkeyhint="go" :placeholder="$t('memory.journal.go_to_line')" class="no-spinner w-28 rounded-md border border-gray-200 bg-white px-2.5 py-1 text-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" data-test="work-journal-line" />
               </form>
             </div>
           </div>
 
-          <div ref="scroller" class="relative max-h-[62vh] min-h-[320px] overflow-auto bg-white font-mono text-xs leading-5" tabindex="0" role="region" :aria-label="store.current.name" data-test="work-journal-lines">
+          <div ref="scroller" class="relative min-h-[320px] grow basis-0 overflow-auto bg-white font-mono text-xs leading-5" tabindex="0" role="region" :aria-label="store.current.name" data-test="work-journal-lines">
             <button v-if="store.from > 1" type="button" class="sticky left-0 block w-full border-b border-gray-100 bg-gray-50 px-3 py-2 text-left font-sans text-xs font-semibold text-blue-600 hover:bg-blue-50" data-test="work-journal-earlier" @click="loadEarlier">
               ↑ {{ $t('memory.journal.earlier', { count: Math.min(JOURNAL_WINDOW, store.from - 1) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.from - 1).toLocaleString(resolvedLocale) }) }})</span>
             </button>
             <div v-for="line in store.lines" :key="line.n" :data-line="line.n" class="flex" :class="isMatched(line.n) ? 'bg-amber-50' : ''">
-              <span class="sticky left-0 w-14 flex-shrink-0 select-none border-r px-2 text-right" :class="isMatched(line.n) ? 'border-amber-300 bg-amber-100 text-amber-800' : 'border-gray-100 bg-gray-50 text-gray-400'">{{ line.n }}</span>
+              <span class="sticky left-0 w-10 flex-shrink-0 select-none border-r px-1.5 text-right sm:w-14 sm:px-2" :class="isMatched(line.n) ? 'border-amber-300 bg-amber-100 text-amber-800' : 'border-gray-100 bg-gray-50 text-gray-400'">{{ line.n }}</span>
               <span v-if="kind(line.text) === 'day'" class="flex-1 bg-gray-100 px-3 font-semibold text-gray-700">{{ line.text }}</span>
               <span v-else-if="kind(line.text) === 'entry'" class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-800"><span class="text-gray-400">{{ parts(line.text).time }}</span> <span class="font-semibold">{{ parts(line.text).action }}</span>{{ withoutLink(parts(line.text).rest) }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
               <span v-else-if="kind(line.text) === 'link'" class="min-w-0 flex-1 whitespace-pre-wrap break-all px-3 text-gray-300">{{ line.text }}</span>
               <span v-else-if="kind(line.text) === 'header'" class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 font-semibold text-gray-900">{{ line.text }}</span>
-              <span v-else class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-500">{{ withoutLink(line.text) || ' ' }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
+              <!-- A detail line's leading spaces become an indent: their full width from 640 px, at most 2 ch on a phone. -->
+              <span v-else class="journal-detail min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-500" :style="{ '--indent': `${leadingSpaces(line.text)}ch` }">{{ withoutLink(line.text).trimStart() || ' ' }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
             </div>
             <button v-if="store.to < store.current.lines" type="button" class="sticky left-0 block w-full border-t border-gray-100 bg-gray-50 px-3 py-2 text-left font-sans text-xs font-semibold text-blue-600 hover:bg-blue-50" data-test="work-journal-later" @click="store.loadLater()">
               ↓ {{ $t('memory.journal.later', { count: Math.min(JOURNAL_WINDOW, store.current.lines - store.to) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.current.lines - store.to).toLocaleString(resolvedLocale) }) }})</span>
@@ -111,6 +118,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue';
+import MemoryPicker from './MemoryPicker.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { JOURNAL_WINDOW, useMemoryJournalStore } from '~/stores/memoryJournalStore';
 import { useMemorySearchStore } from '~/stores/memorySearchStore';
@@ -173,6 +181,7 @@ const kind = (text: string): 'day' | 'entry' | 'link' | 'header' | 'detail' => {
 const TRAILING_LINK = / \[↗\]\([^)]*\)$/;
 const trailingLink = (text: string) => TRAILING_LINK.exec(text)?.[0] ?? '';
 const withoutLink = (text: string) => text.replace(TRAILING_LINK, '');
+const leadingSpaces = (text: string) => /^ */.exec(text)?.[0].length ?? 0;
 const parts = (text: string) => {
   const match = /^(\[(?:\d{2}:\d{2}:\d{2}|--:--:--)\]) ([^:]+:)(.*)$/.exec(text);
   return match ? { time: match[1], action: match[2], rest: match[3] } : { time: '', action: '', rest: text };
@@ -212,3 +221,15 @@ watch(() => store.jump?.token, async () => {
   else el.scrollTop = 0;
 }, { immediate: true, flush: 'post' });
 </script>
+
+<style scoped>
+/* autobyteus-608 DC-008: a detail line keeps its alignment under its entry; on a phone a small indent. */
+.journal-detail {
+  padding-left: calc(0.75rem + min(var(--indent, 0ch), 2ch));
+}
+@media (min-width: 640px) {
+  .journal-detail {
+    padding-left: calc(0.75rem + var(--indent, 0ch));
+  }
+}
+</style>

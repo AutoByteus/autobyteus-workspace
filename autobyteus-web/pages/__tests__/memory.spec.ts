@@ -89,16 +89,21 @@ describe('memory page: Browse by owner (autobyteus-554)', () => {
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: { view: 'home', section: 'browse', node: 'teams' } });
   });
 
-  it("opens an agent's episode on its run's inspector by its subject; Back returns to the agent page", async () => {
+  it("opens an agent's episode on its run's inspector by its subject, titled by its summary; Back returns to the agent page", async () => {
     const { wrapper } = mountAt({ view: 'home', section: 'browse', node: 'teams/team:se/agent:codex' });
     const home = wrapper.findComponent({ name: 'MemoryHome' });
-    const back = { back: 'teams/team:se/agent:codex', backName: 'Codex', updatedAt: '2026-11-20T10:31:00Z' };
+    const back = { back: 'teams/team:se/agent:codex', backName: 'Codex', updatedAt: '2026-11-20T10:31:00Z', runLabel: 'Useful run' };
 
     home.vm.$emit('open-episode', episode({ subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: 'codex' } }), 'Codex');
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: {
       view: 'agent-inspector', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex', runId: 'run-1',
-      runLabel: 'Useful run', workspace: '/tmp/project', ...back,
+      workspace: '/tmp/project', ...back,
     } });
+    // No summary: the Task title; neither: no title in the address (the page shows the run ID, autobyteus-608 DEC-002).
+    home.vm.$emit('open-episode', episode({ summary: '', taskTitle: 'Rename the helper' }), 'Codex');
+    expect(routerMock.push.mock.calls.at(-1)?.[0].query.runLabel).toBe('Rename the helper');
+    home.vm.$emit('open-episode', episode({ summary: '', taskTitle: null }), 'Codex');
+    expect(routerMock.push.mock.calls.at(-1)?.[0].query).not.toHaveProperty('runLabel');
     home.vm.$emit('open-episode', episode({ subject: { kind: 'TEAM_MEMBER', teamRunId: 'team-run', agentRunId: 'member-run' }, place: { kind: 'TEAM', name: 'SE Team' } }), 'Codex');
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: {
       view: 'team-inspector', teamName: 'SE Team', teamRunId: 'team-run', agentRunId: 'member-run', memberName: 'Codex', ...back,
@@ -109,16 +114,20 @@ describe('memory page: Browse by owner (autobyteus-554)', () => {
     } });
   });
 
-  it("opens a team run's member from the Runs tab; Back returns to the team's Runs tab", async () => {
+  it("opens a team run's member from the Runs tab, titled by the team run's summary; Back returns to the team's Runs tab", async () => {
     const { wrapper } = mountAt({ view: 'home', section: 'browse', node: 'teams/team:se', pane: 'runs' });
-    wrapper.findComponent({ name: 'MemoryHome' }).vm.$emit('inspect-member', 'team-run-1', {
+    const lead = {
       memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1', executionKind: 'CONFIGURED', groupPath: [],
       lastUpdatedAt: '2026-06-19T10:06:04.000Z', memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
-    }, 'Software Team');
+    };
+    wrapper.findComponent({ name: 'MemoryHome' }).vm.$emit('inspect-member', 'team-run-1', lead, 'Software Team', 'Planning run');
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: {
       view: 'team-inspector', teamDefinitionId: 'se', teamName: 'Software Team', teamRunId: 'team-run-1', agentRunId: 'member-1',
       memberAddress: '/lead', memberName: 'Lead', updatedAt: '2026-06-19T10:06:04.000Z', back: 'teams/team:se', backPane: 'runs', backName: 'Software Team',
+      runLabel: 'Planning run',
     } });
+    wrapper.findComponent({ name: 'MemoryHome' }).vm.$emit('inspect-member', 'team-run-1', lead, 'Software Team', null);
+    expect(routerMock.push.mock.calls.at(-1)?.[0].query).not.toHaveProperty('runLabel');
   });
 
   it('labels and leads Back from an inspector to the owner page it was opened from, else to Memory', async () => {
@@ -126,6 +135,7 @@ describe('memory page: Browse by owner (autobyteus-554)', () => {
     await flushPromises();
     const inspector = opened.wrapper.findComponent({ name: 'MemoryInspector' });
     expect(inspector.props('backLabel')).toBe('Back to Software Team');
+    expect(inspector.props('backText')).toBe('Software Team');
     inspector.vm.$emit('back');
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: { view: 'home', section: 'browse', node: 'teams/team:se', pane: 'runs' } });
 
@@ -133,14 +143,15 @@ describe('memory page: Browse by owner (autobyteus-554)', () => {
     await flushPromises();
     const plain = direct.wrapper.findComponent({ name: 'MemoryInspector' });
     expect(plain.props('backLabel')).toBe('Back to Memory');
+    expect(plain.props('backText')).toBe('Memory');
     plain.vm.$emit('back');
     expect(routerMock.push).toHaveBeenLastCalledWith({ path: '/memory', query: { view: 'home', section: 'browse', node: 'agents' } });
   });
 
-  it('inspects an org member once from the org-inspector route', async () => {
+  it('inspects an org member once from the org-inspector route, with the run title the address carries', async () => {
     const { store } = mountAt({
       view: 'org-inspector', orgDefinitionId: 'org-a', orgName: 'Alpha Org', orgRunId: 'org-run-1',
-      agentRunId: 'designer-run', memberAddress: '/engineering/solution_designer', memberName: 'engineering/solution_designer',
+      agentRunId: 'designer-run', memberAddress: '/engineering/solution_designer', memberName: 'engineering/solution_designer', runLabel: 'Launch plan',
     });
     await flushPromises();
     const inspectorStore = useMemoryInspectorStore();
@@ -148,6 +159,7 @@ describe('memory page: Browse by owner (autobyteus-554)', () => {
     expect(inspectorStore.inspect).toHaveBeenCalledWith({
       kind: 'org_member_run', source: { type: 'LOCAL' }, orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', orgRunId: 'org-run-1',
       agentRunId: 'designer-run', memberAddress: '/engineering/solution_designer', memberName: 'engineering/solution_designer', lastUpdatedAt: null,
+      runLabel: 'Launch plan',
     });
     expect(store.fetchOwners).not.toHaveBeenCalled();
   });
@@ -182,9 +194,9 @@ describe('memory page: opening a memory search result', () => {
     return routerMock.push.mock.calls.at(-1)?.[0];
   };
 
-  it('opens each run kind at the matched lines by its subject; the cue stays in the address for Back', async () => {
+  it('opens each run kind at the matched lines by its subject, with no run title (a result has no summary: DEC-002); the cue stays in the address for Back', async () => {
     expect(await open({ ...base, subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: 'codex' } })).toEqual({ path: '/memory', query: {
-      view: 'agent-inspector', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex', runId: 'run-1', runLabel: 'run-1', workspace: '/w/home', ...lines,
+      view: 'agent-inspector', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex', runId: 'run-1', workspace: '/w/home', ...lines,
     } });
     expect(await open({ ...base, subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: null } })).toMatchObject({ query: { agentAttribution: 'UNATTRIBUTED' } });
     expect(await open({ ...base, team: { name: 'Software Team', kind: 'team' }, member: 'lead', subject: { kind: 'TEAM_MEMBER', teamRunId: 'team-1', agentRunId: 'run-1' } })).toEqual({ path: '/memory', query: {
@@ -210,8 +222,9 @@ describe('memory page: opening a memory search result', () => {
     expect(journal.open).toHaveBeenCalledWith({ kind: 'folder', runKey: 'agent_teams/old_team/run-1' }, 'run-1', { file: 'work_journal_active.md', fromLine: 812, toLine: 814, cue: 'ddns', kind: 'text', words: ['ddns', 'home'] });
     expect(inspectorStore.inspect).not.toHaveBeenCalled();
     const inspector = wrapper.findComponent({ name: 'MemoryInspector' });
-    expect(inspector.props('folderRun')).toEqual({ runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', groupName: null });
+    expect(inspector.props('folderRun')).toEqual({ runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', groupName: null, runLabel: null });
     expect(inspector.props('backLabel')).toBe('Back to search results');
+    expect(inspector.props('backText')).toBe('Search results');
     inspector.vm.$emit('back');
     expect(routerMock.push).toHaveBeenCalledWith({ path: '/memory', query: { view: 'home', section: 'search', q: 'ddns' } });
   });

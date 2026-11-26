@@ -21,25 +21,24 @@ const activeContextStoreMock = {
   send: vi.fn(),
 }
 
-const extensionsStoreMock = {
-  initialize: vi.fn().mockResolvedValue(undefined),
-  voiceInput: {
-    status: 'installed',
-    enabled: true,
-    settings: {
-      languageMode: 'auto',
-      audioInputDeviceId: null as string | null,
-    },
-  },
-}
+/** This computer's Voice Input as the embedded node lists it (design AR-001): installed, on and ready. */
+const voiceItem = { id: 'voice-input', state: 'installed', enabled: true, ready: true }
+const { availabilityQueryMock, transcribeActionMock } = vi.hoisted(() => ({ availabilityQueryMock: vi.fn(), transcribeActionMock: vi.fn() }))
 
 const addToastMock = vi.fn()
 const enumerateDevicesMock = vi.fn()
 const getUserMediaMock = vi.fn()
 const permissionsQueryMock = vi.fn()
 
-vi.mock('~/stores/extensionsStore', () => ({
-  useExtensionsStore: () => extensionsStoreMock,
+vi.mock('~/stores/nodeStore', () => ({
+  useNodeStore: () => ({ getEntryById: (id: string) => (id === 'embedded-local' ? { id, baseUrl: 'http://127.0.0.1:29695' } : null) }),
+}))
+vi.mock('~/services/nodeCollaboration/directNodeApolloClient', () => ({
+  directNodeApolloClient: () => ({ query: availabilityQueryMock }),
+}))
+vi.mock('~/services/extensions/extensionActionClient', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('~/services/extensions/extensionActionClient')>()),
+  callExtensionAction: (...args: unknown[]) => transcribeActionMock(...args),
 }))
 
 vi.mock('~/composables/useToasts', () => ({
@@ -48,7 +47,8 @@ vi.mock('~/composables/useToasts', () => ({
   }),
 }))
 
-import { useVoiceInputStore } from '../voiceInputStore'
+import { useVoiceInputStore, VOICE_INPUT_MICROPHONE_STORAGE_KEY } from '../voiceInputStore'
+import { ExtensionActionError } from '~/services/extensions/extensionActionClient'
 
 const sink = (context = activeContextStoreMock.activeAgentContext) => ({
   key: context.contextId,
@@ -84,24 +84,15 @@ describe('voiceInputStore', () => {
         }
       },
     )
-    extensionsStoreMock.initialize.mockClear()
-    extensionsStoreMock.voiceInput.status = 'installed'
-    extensionsStoreMock.voiceInput.enabled = true
-    extensionsStoreMock.voiceInput.settings.languageMode = 'auto'
-    extensionsStoreMock.voiceInput.settings.audioInputDeviceId = null
+    window.localStorage.clear()
+    availabilityQueryMock.mockReset()
+    availabilityQueryMock.mockResolvedValue({ data: { extensions: { catalog: 'unreachable', platform: 'darwin-arm64', extensions: [voiceItem] } } })
+    transcribeActionMock.mockReset()
+    transcribeActionMock.mockResolvedValue({ text: 'world', detectedLanguage: 'en', noSpeech: false })
     addToastMock.mockReset()
     enumerateDevicesMock.mockReset()
     getUserMediaMock.mockReset()
     permissionsQueryMock.mockReset()
-    ;(window as typeof window & { electronAPI?: any }).electronAPI = {
-      transcribeVoiceInput: vi.fn().mockResolvedValue({
-        ok: true,
-        text: 'world',
-        detectedLanguage: 'en',
-        noSpeech: false,
-        error: null,
-      }),
-    }
 
     Object.defineProperty(navigator, 'mediaDevices', {
       configurable: true,
@@ -126,8 +117,8 @@ describe('voiceInputStore', () => {
 
   it('commits starting synchronously, guards duplicate starts, and cancels without a late commit', async () => {
     let resolveInitialization!: () => void
-    extensionsStoreMock.initialize.mockImplementationOnce(() => new Promise<void>((resolve) => {
-      resolveInitialization = resolve
+    availabilityQueryMock.mockImplementationOnce(() => new Promise((resolve) => {
+      resolveInitialization = () => resolve({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64', extensions: [voiceItem] } } })
     }))
     const store = useVoiceInputStore()
 
@@ -137,7 +128,7 @@ describe('voiceInputStore', () => {
     expect(store.recordingSource).toBe('composer')
 
     await store.startRecording({ source: 'composer', target: sink() })
-    expect(extensionsStoreMock.initialize).toHaveBeenCalledOnce()
+    expect(availabilityQueryMock).toHaveBeenCalledOnce()
 
     await store.cancelOperationForSource('settings-test')
     expect(store.isStarting).toBe(true)
@@ -282,7 +273,7 @@ describe('voiceInputStore', () => {
 
     await store.stopRecording()
 
-    expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce()
+    expect(transcribeActionMock).toHaveBeenCalledExactlyOnceWith('http://127.0.0.1:29695', 'voice-input', 'transcribe', { wav: expect.any(ArrayBuffer) })
     expect(activeContextStoreMock.activeAgentContext.requirement).toBe('hello world')
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
     expect(store.latestResult?.outcome).toBe('transcript-ready')
@@ -303,13 +294,7 @@ describe('voiceInputStore', () => {
       },
     }
 
-    ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
-      ok: false,
-      text: '',
-      detectedLanguage: null,
-      noSpeech: false,
-      error: 'runtime failed',
-    })
+    transcribeActionMock.mockRejectedValue(new ExtensionActionError('ACTION_FAILED', 'runtime failed'))
 
     store.audioWorklet = {
       port: {
@@ -351,13 +336,7 @@ describe('voiceInputStore', () => {
       },
     }
 
-    ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
-      ok: true,
-      text: '',
-      detectedLanguage: null,
-      noSpeech: true,
-      error: null,
-    })
+    transcribeActionMock.mockResolvedValue({ text: '', detectedLanguage: null, noSpeech: true })
 
     store.audioWorklet = {
       port: {
@@ -399,13 +378,7 @@ describe('voiceInputStore', () => {
       },
     }
 
-    ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
-      ok: true,
-      text: '',
-      detectedLanguage: 'en',
-      noSpeech: false,
-      error: null,
-    })
+    transcribeActionMock.mockResolvedValue({ text: '', detectedLanguage: 'en', noSpeech: false })
 
     store.audioWorklet = {
       port: {
@@ -497,7 +470,7 @@ describe('voiceInputStore', () => {
   })
 
   it('uses the selected audio input device when starting recording', async () => {
-    extensionsStoreMock.voiceInput.settings.audioInputDeviceId = 'virtual-source'
+    window.localStorage.setItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY, 'virtual-source')
     enumerateDevicesMock.mockResolvedValue([
       { kind: 'audioinput', deviceId: 'virtual-source', label: 'Virtual Source' },
       { kind: 'audioinput', deviceId: 'usb-mic', label: 'USB Microphone' },
@@ -724,9 +697,7 @@ describe('voiceInputStore', () => {
     store.transcriptTarget = target
     mockCapture(store)
     store.recordingSource = source
-    window.electronAPI.transcribeVoiceInput = vi.fn().mockResolvedValue({
-      ok: true, text: 'dictated description', noSpeech: false, detectedLanguage: 'en',
-    }) as any
+    transcribeActionMock.mockResolvedValue({ text: 'dictated description', noSpeech: false, detectedLanguage: 'en' })
     await store.cancelOperationForTarget('unrelated-target')
     expect(store.isRecording).toBe(true)
     await store.stopRecording()
@@ -743,22 +714,22 @@ describe('voiceInputStore', () => {
     await pending
     expect(stop).toHaveBeenCalledOnce()
     expect(store.isTranscribing).toBe(false)
-    expect(window.electronAPI.transcribeVoiceInput).not.toHaveBeenCalled()
+    expect(transcribeActionMock).not.toHaveBeenCalled()
     expect(append).not.toHaveBeenCalled()
   })
   it('ignores uncancellable late IPC text after Cancel while keeping global busy until settlement', async () => {
     const store = useVoiceInputStore(), append = vi.fn()
     let resolve!: (value: unknown) => void
-    window.electronAPI.transcribeVoiceInput = vi.fn(() => new Promise((r) => {resolve = r})) as any
+    transcribeActionMock.mockImplementation(() => new Promise((r) => {resolve = r}))
     store.transcriptTarget = {key: 'task-local', isCurrent: () => true, appendTranscript: append}
     mockCapture(store)
     const pending = store.stopRecording()
-    await vi.waitFor(() => expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce())
+    await vi.waitFor(() => expect(transcribeActionMock).toHaveBeenCalledOnce())
     await store.cancelOperationForTarget('task-local')
     expect(store.isTranscribing).toBe(true)
     await store.startRecording({source: 'settings-test'})
     expect(getUserMediaMock).not.toHaveBeenCalled()
-    resolve({ok: true, text: 'must not append', noSpeech: false, detectedLanguage: 'en'})
+    resolve({text: 'must not append', noSpeech: false, detectedLanguage: 'en'})
     await pending
     expect(append).not.toHaveBeenCalled()
     expect(store.isTranscribing).toBe(false)
@@ -775,8 +746,67 @@ describe('voiceInputStore', () => {
     await pending
     expect(stop).toHaveBeenCalledOnce()
     expect(store.isTranscribing).toBe(false)
-    expect(window.electronAPI.transcribeVoiceInput).not.toHaveBeenCalled()
+    expect(transcribeActionMock).not.toHaveBeenCalled()
     expect(append).not.toHaveBeenCalled()
   })
 
+  describe('this computer\'s Voice Input availability (design AR-001)', () => {
+    const listOf = (items: unknown[]) => ({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64', extensions: items } } })
+
+    it('shows the microphone only when the embedded node lists voice-input installed, on and ready', async () => {
+      const store = useVoiceInputStore()
+      await store.initialize()
+      expect(store.isAvailable).toBe(true)
+      for (const item of [{ ...voiceItem, enabled: false }, { ...voiceItem, ready: false }, { ...voiceItem, state: 'notInstalled', enabled: null, ready: null }]) {
+        availabilityQueryMock.mockResolvedValueOnce(listOf([item]))
+        await store.refreshAvailability()
+        expect(store.isAvailable).toBe(false)
+      }
+      availabilityQueryMock.mockResolvedValueOnce(listOf([]))
+      await store.refreshAvailability()
+      expect(store.voiceInput).toBeNull()
+      availabilityQueryMock.mockRejectedValueOnce(new Error('node down'))
+      await store.refreshAvailability()
+      expect(store.isAvailable).toBe(false)
+      expect(availabilityQueryMock).toHaveBeenLastCalledWith(expect.objectContaining({ variables: { refreshCatalog: false } }))
+    })
+
+    it('reads again when the window regains focus, and keeps only the latest answer', async () => {
+      const store = useVoiceInputStore()
+      await store.initialize()
+      expect(store.isAvailable).toBe(true)
+      availabilityQueryMock.mockResolvedValue(listOf([{ ...voiceItem, enabled: false }]))
+      window.dispatchEvent(new Event('focus'))
+      await vi.waitFor(() => expect(store.isAvailable).toBe(false))
+
+      let answerFirst!: (value: unknown) => void
+      availabilityQueryMock.mockImplementationOnce(() => new Promise((resolve) => { answerFirst = resolve }))
+      const first = store.refreshAvailability()
+      availabilityQueryMock.mockResolvedValueOnce(listOf([voiceItem]))
+      await store.refreshAvailability()
+      answerFirst(listOf([{ ...voiceItem, enabled: false }]))
+      await first
+      expect(store.isAvailable).toBe(true)
+    })
+
+    it('hides the microphone at once when a dictation finds Voice Input off, and reads again', async () => {
+      const store = useVoiceInputStore()
+      await store.initialize()
+      transcribeActionMock.mockRejectedValueOnce(new ExtensionActionError('EXTENSION_OFF', 'voice-input is turned off on this node.'))
+      availabilityQueryMock.mockResolvedValueOnce(listOf([{ ...voiceItem, enabled: false }]))
+      await expect(store.transcribe(new ArrayBuffer(8))).rejects.toThrow('turned off')
+      expect(store.isAvailable).toBe(false)
+      await vi.waitFor(() => expect(store.voiceInput).toMatchObject({ enabled: false }))
+    })
+
+    it('keeps this computer\'s microphone choice in the renderer\'s storage, shared by every window', () => {
+      const store = useVoiceInputStore()
+      store.setMicrophone('usb-mic')
+      expect(window.localStorage.getItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY)).toBe('usb-mic')
+      setActivePinia(createPinia())
+      expect(useVoiceInputStore().selectedAudioInputDeviceId).toBe('usb-mic')
+      useVoiceInputStore().setMicrophone(null)
+      expect(window.localStorage.getItem(VOICE_INPUT_MICROPHONE_STORAGE_KEY)).toBeNull()
+    })
+  })
 })

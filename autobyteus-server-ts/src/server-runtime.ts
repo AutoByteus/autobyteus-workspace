@@ -194,6 +194,7 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
   let restartResumer!: Awaited<ReturnType<typeof buildStudioServer>>["restartResume"]["resumer"];
   let previousSession: Awaited<ReturnType<typeof restartResumer.takePreviousSession>> = null;
   let runningRunRestorer!: Awaited<ReturnType<typeof buildStudioServer>>["restartResume"]["runningRuns"]["restorer"];
+  let extensions!: Awaited<ReturnType<typeof buildStudioServer>>["extensions"];
   try {
     shutdown.checkpoint();
     const studioServer = await buildStudioServer({ appConfig: config, loggingConfig,
@@ -209,6 +210,7 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     const runningRecorder = studioServer.restartResume.runningRuns.recorder;
     restartResumer = studioServer.restartResume.resumer;
     runningRunRestorer = studioServer.restartResume.runningRuns.restorer;
+    extensions = studioServer.extensions;
     // autobyteus-448: the previous session's record becomes pending restart reminders before this session records
     // anything; autobyteus-638: the running runs to bring back are taken too (the file stays until the recorder
     // rewrites it). Then this session's live records start, and their final writes run first at shutdown, before the
@@ -251,6 +253,10 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
   // (autobyteus-638). In the background: never blocks or fails startup.
   shutdown.checkpoint();
   void restartResumer.resumeAfterRestart(previousSession).then(() => runningRunRestorer.restore());
+  // autobyteus-516: the extension catalog is fetched once and the extensions that are on are started, in the
+  // background: an extension never blocks or fails startup (REQ-009).
+  void extensions.refreshCatalog();
+  void extensions.startEnabled().catch((error) => logger.warn(`EXTENSIONS_START_FAILED: ${String(error)}`));
   await shutdown.stage(() => scheduleStudioBackgroundTasks());
   } catch (error) {
     if (error instanceof StartupCancelled || shutdown.requested) return;

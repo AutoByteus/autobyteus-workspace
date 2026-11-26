@@ -27,12 +27,17 @@ const mountBrowse = (nodeKey: string, pane: string | null = null, setup: (store:
   setup(store);
   const wrapper = mount(MemoryBrowse, {
     props: { nodeKey, pane },
+    slots: { sections: '<div data-test="sections-slot">Browse · Search · Index</div>' },
     global: {
       plugins: [pinia],
       mocks: { $t: translate },
       stubs: {
-        AgentMemoryPage: { props: ['agentDefinitionId', 'name', 'pane', 'imported'], template: '<div data-test="agent-page">{{ name }}|{{ agentDefinitionId }}|{{ pane }}</div>' },
-        GroupMemoryPage: { props: ['kind', 'definitionId', 'name', 'pane', 'imported'], template: '<div data-test="group-page">{{ kind }}|{{ name }}|{{ pane }}</div>' },
+        AgentMemoryPage: {
+          props: ['agentDefinitionId', 'name', 'pane', 'imported', 'backText', 'backLabel'],
+          emits: ['back'],
+          template: '<div><button data-test="page-back" :aria-label="backLabel" @click="$emit(\'back\')">{{ backText }}</button><span data-test="agent-page">{{ name }}|{{ agentDefinitionId }}|{{ pane }}</span></div>',
+        },
+        GroupMemoryPage: { props: ['kind', 'definitionId', 'name', 'pane', 'imported', 'backText', 'backLabel'], template: '<div data-test="group-page">{{ kind }}|{{ name }}|{{ pane }}</div>' },
         SemanticMemoryFolder: { props: ['agentDefinitionId', 'agentName', 'imported'], template: '<div data-test="folder">{{ agentDefinitionId === null ? "GLOBAL" : agentDefinitionId }}|{{ agentName }}</div>' },
       },
     },
@@ -41,14 +46,18 @@ const mountBrowse = (nodeKey: string, pane: string | null = null, setup: (store:
 };
 
 describe('MemoryBrowse', () => {
-  it('shows the tabs Global · Agents · Agent Teams · Agent Orgs and the agent cards (name, ID, latest change; no run count; Unattributed last); no filter box', async () => {
+  it('shows Browse · Search · Index, the tabs Global · Agents · Agent Teams · Agent Orgs and the agent cards (name with its ID in the tooltip, latest change; no run count; Unattributed last); no filter box', async () => {
     const { wrapper } = mountBrowse('agents');
+    // One top row: the sections (MemoryHome's) and the tabs (autobyteus-608 DC-001).
+    expect(wrapper.get('[data-test="sections-slot"]').text()).toBe('Browse · Search · Index');
     expect(wrapper.findAll('[role="tab"]').map((tab) => tab.text())).toEqual(['Global', 'Agents', 'Agent Teams', 'Agent Orgs']);
     expect(wrapper.get('[data-test="memory-browse-tab-agents"]').attributes('aria-selected')).toBe('true');
     expect(wrapper.find('input').exists()).toBe(false);
     const cards = wrapper.findAll('[data-test="memory-owner-card"]');
     expect(cards.map((card) => card.find('h2').text())).toEqual(['Research Assistant', 'Solution Designer', 'Unattributed runs']);
-    expect(cards[2]!.text()).toContain('unattributed');
+    // No ID line (DC-006): the ID is the name's tooltip.
+    expect(cards.map((card) => card.find('h2').attributes('title'))).toEqual(['researcher', teamLocal, 'unattributed']);
+    expect(wrapper.text()).not.toContain(teamLocal);
     expect(wrapper.text()).not.toMatch(/\d+ runs/);
 
     await cards[1]!.trigger('click');
@@ -67,26 +76,37 @@ describe('MemoryBrowse', () => {
     await card.trigger('click');
     expect(teams.emitted('selectNode')).toEqual([['teams/team:se-team']]);
     expect(mountBrowse('orgs').wrapper.get('[data-test="memory-owner-card"]').text()).toContain('2 members');
+    // One run says "1 run".
+    expect(mountBrowse('orgs').wrapper.get('[data-test="memory-owner-card"]').text()).toContain('1 run');
+    expect(mountBrowse('orgs').wrapper.get('[data-test="memory-owner-card"]').text()).not.toContain('1 runs');
   });
 
-  it('shows Global: its title, line and the read-only folder of the node', () => {
+  it("shows Global without a title row: its heading for screen readers, its description as the Global tab's tooltip, the node's read-only folder (DC-003)", () => {
     const { wrapper } = mountBrowse('global');
-    expect(wrapper.get('[data-test="global-memory-page"] h1').text()).toBe('Global memory');
-    expect(wrapper.text()).toContain('Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.');
+    const heading = wrapper.get('[data-test="global-memory-page"] h1');
+    expect(heading.text()).toBe('Global memory');
+    expect(heading.classes()).toContain('sr-only');
+    const description = 'Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.';
+    expect(wrapper.text()).not.toContain(description);
+    expect(wrapper.get('[data-test="memory-browse-tab-global"]').attributes('title')).toBe(description);
+    expect(wrapper.get('[data-test="memory-browse-tab-agents"]').attributes('title')).toBeUndefined();
     expect(wrapper.get('[data-test="folder"]').text()).toBe('GLOBAL|Global memory');
   });
 
-  it("opens an agent's page with Back to Memory, and the same agent reached from its team with Back to the team", async () => {
+  it("opens an agent's page with Back showing \"Memory\", and the same agent reached from its team with Back showing the team; no Browse · Search · Index (DC-001)", async () => {
     const fromAgents = mountBrowse('agents/agent:researcher', 'semantic').wrapper;
-    expect(fromAgents.get('[data-test="memory-owner-back"]').text()).toBe('← Back to Memory');
+    expect(fromAgents.find('[data-test="sections-slot"]').exists()).toBe(false);
+    expect(fromAgents.find('[role="tab"]').exists()).toBe(false);
+    expect(fromAgents.get('[data-test="page-back"]').text()).toBe('Memory');
+    expect(fromAgents.get('[data-test="page-back"]').attributes('aria-label')).toBe('Back to Memory');
     expect(fromAgents.get('[data-test="agent-page"]').text()).toBe('Research Assistant|researcher|semantic');
-    await fromAgents.get('[data-test="memory-owner-back"]').trigger('click');
+    await fromAgents.get('[data-test="page-back"]').trigger('click');
     expect(fromAgents.emitted('selectNode')).toEqual([['agents']]);
 
     const fromTeam = mountBrowse(`teams/team:se-team/agent:${encodeURIComponent(teamLocal)}`).wrapper;
-    expect(fromTeam.get('[data-test="memory-owner-back"]').text()).toBe('← Back to Software Engineering Team');
-    expect(fromTeam.get('[data-test="agent-page"]').text()).toBe(`Solution Designer|${teamLocal}|episodic`);
-    await fromTeam.get('[data-test="memory-owner-back"]').trigger('click');
+    expect(fromTeam.get('[data-test="page-back"]').text()).toBe('Software Engineering Team');
+    expect(fromTeam.get('[data-test="page-back"]').attributes('aria-label')).toBe('Back to Software Engineering Team');
+    await fromTeam.get('[data-test="page-back"]').trigger('click');
     expect(fromTeam.emitted('selectNode')).toEqual([['teams/team:se-team']]);
   });
 
@@ -105,6 +125,8 @@ describe('MemoryBrowse', () => {
     const unknown = mountBrowse('agents/agent:router').wrapper;
     expect(unknown.get('[data-test="memory-owner-not-found"]').text()).toBe('This agent, team or org is not in this memory.');
     expect(unknown.find('[data-test="agent-page"]').exists()).toBe(false);
+    // Its header still has Back (the page is never a dead end).
+    expect(unknown.get('[data-test="memory-page-back"]').text()).toBe('Memory');
   });
 
   it("shows the loading state, not \"not found\", while the cards or the members that could name an owner are on their way", () => {
@@ -126,5 +148,9 @@ describe('MemoryBrowse', () => {
     });
     expect(wrapper.find('select').exists()).toBe(true);
     expect(wrapper.text()).toContain('Imported · read-only');
+  });
+
+  it('keeps the owner card grid one column wide on a phone (CRR-001 CR-001)', () => {
+    expect(mountBrowse('agents').wrapper.get('[data-test="memory-group-cards-agents"]').classes()).toEqual(expect.arrayContaining(['grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3']));
   });
 });

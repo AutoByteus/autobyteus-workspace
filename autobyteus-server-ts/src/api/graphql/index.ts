@@ -3,11 +3,11 @@ import type { FastifyInstance } from "fastify";
 import mercurius from "mercurius";
 import { getClientIdentity, registerOpenSocket } from "../security/node-access-gate.js";
 import { buildGraphqlSchema } from "./schema.js";
-import { createGraphqlRequestContext } from "./graphql-request-context.js";
+import { createGraphqlRequestContext, type GraphqlServices } from "./graphql-request-context.js";
 
 type SubscriptionSocketContext = { unregisterOpenSocket?: () => void };
 
-export async function registerGraphql(app: FastifyInstance): Promise<void> {
+export async function registerGraphql(app: FastifyInstance, services: GraphqlServices): Promise<void> {
   const schema = await buildGraphqlSchema();
   await app.register(mercurius, {
     schema,
@@ -16,11 +16,12 @@ export async function registerGraphql(app: FastifyInstance): Promise<void> {
     // closes it (NA-11).
     subscription: {
       context: (socket, request) => ({
+        ...services,
         clientIdentity: getClientIdentity(request),
         unregisterOpenSocket: registerOpenSocket(request, socket),
       }),
       onDisconnect: (context) => (context as SubscriptionSocketContext).unregisterOpenSocket?.(),
     },
-    context: createGraphqlRequestContext,
+    context: createGraphqlRequestContext(services),
   });
 }

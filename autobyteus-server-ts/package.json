@@ -27,7 +27,8 @@
     "test:integration:prepare": "node ./scripts/integration-test-prerequisites.mjs prepare",
     "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs",
     "test:e2e:prisma-engine-discovery:docker": "node tests/e2e/startup/prisma-engine-discovery.docker.mjs",
-    "test:starter": "node --test \"docker/starter/tests/*.test.mjs\""
+    "test:starter": "node --test \"docker/starter/tests/*.test.mjs\"",
+    "test:voice-input-real-release": "vitest run tests/real-release/voice-input-extension.real-release.test.ts"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "1.5.0",

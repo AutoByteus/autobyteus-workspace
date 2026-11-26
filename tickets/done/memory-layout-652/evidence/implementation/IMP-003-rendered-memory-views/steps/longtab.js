@@ -1,0 +1,10 @@
+const { name } = JSON.parse(await (await import('node:fs/promises')).readFile('<tmp>/run/longname.json', 'utf8'));
+const node = `teams/team:software-engineering-team/agent:${encodeURIComponent(stack.designerId)}`;
+await h.goto(`?view=home&section=browse&node=${encodeURIComponent(node)}&pane=semantic`);
+await page.locator('.semantic-memory-reader .markdown-body h1').first().waitFor({ timeout: 60000 });
+await page.locator(`.semantic-memory-sidebar .file-header >> text="${name}"`).first().click();
+await h.sleep(1500);
+const tab = await page.locator('[data-test="file-tab-name"]', { hasText: name }).first().evaluate((el) => ({ text: el.textContent.trim(), chars: el.textContent.trim().length, width: Math.round(el.getBoundingClientRect().width), maxWidth: getComputedStyle(el).maxWidth, truncated: el.scrollWidth > el.clientWidth, title: el.title }));
+const listRow = await page.locator(`.semantic-memory-sidebar .file-header >> text="${name}"`).first().evaluate((el) => ({ truncated: el.scrollWidth > el.clientWidth }));
+await h.shot('semantic-long-tab-1440x900');
+return { tab, listRow };

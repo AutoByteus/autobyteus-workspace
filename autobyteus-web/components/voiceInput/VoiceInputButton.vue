@@ -71,7 +71,9 @@ const handleVoiceAction = async () => {
 };
 
 onMounted(() => {
-  void voiceInputStore.initialize();
+  // A voice surface reads this computer's Voice Input again when it appears (design AR-001).
+  if (voiceInputStore.initialized) void voiceInputStore.refreshAvailability();
+  else void voiceInputStore.initialize();
 });
 
 watch(() => props.target, (target, old) => {

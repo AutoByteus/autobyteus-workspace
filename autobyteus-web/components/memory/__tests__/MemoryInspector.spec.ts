@@ -4,10 +4,19 @@ import { createTestingPinia } from '@pinia/testing';
 import MemoryInspector from '../MemoryInspector.vue';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
 
+vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
+
 const mountInspector = (props: Record<string, unknown> = {}) => {
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
   const store = useMemoryInspectorStore();
-  return { pinia, store, mountIt: () => mount(MemoryInspector, { props, global: { plugins: [pinia] } }) };
+  return {
+    pinia,
+    store,
+    mountIt: () => mount(MemoryInspector, {
+      props: { backText: 'Memory', backLabel: 'Back to Memory', ...props },
+      global: { plugins: [pinia], stubs: { WorkJournalTab: { template: '<div data-test="work-journal" />' }, RawTracesTab: true } },
+    }),
+  };
 };
 
 const tabLabels = (wrapper: ReturnType<typeof mount>) => wrapper.findAll('[role="tab"]').map(tab => tab.text());
@@ -29,12 +38,35 @@ describe('MemoryInspector', () => {
     expect(wrapper.find('[data-test="work-journal"]').exists()).toBe(true);
   });
 
-  it('names an agent run by its agent, with the run ID and workspace', () => {
+  it('names an agent run by its agent; without a run title, the run ID · workspace in mono with it as tooltip (REQ-005)', () => {
     const { store, mountIt } = mountInspector();
     store.target = { kind: 'agent_run', runId: 'run-1', agentDisplayName: 'Codex', workspaceRootPath: '/w/app' };
     const wrapper = mountIt();
     expect(wrapper.find('h1').text()).toBe('Codex');
-    expect(wrapper.text()).toContain('run-1 · /w/app');
+    expect(wrapper.find('h1').classes()).not.toContain('sr-only');
+    const identity = wrapper.get('[data-test="memory-inspector-run-identity"]');
+    expect(identity.text()).toBe('run-1 · /w/app');
+    expect(identity.classes()).toContain('font-mono');
+    expect(identity.attributes('title')).toBe('run-1 · /w/app');
+    expect(wrapper.find('[data-test="memory-inspector-run-title"]').exists()).toBe(false);
+  });
+
+  it("one header row (DC-007): Back shows where it goes; the run's title, its run ID · workspace in the tooltip; the agent for screen readers only when Back names it", async () => {
+    const { store, mountIt } = mountInspector({ backText: 'Codex', backLabel: 'Back to Codex' });
+    store.target = { kind: 'agent_run', runId: 'run-1', agentDisplayName: 'Codex', workspaceRootPath: '/w/app', runLabel: 'Rename the helper and update callers' };
+    const wrapper = mountIt();
+    const back = wrapper.get('[data-test="memory-page-back"]');
+    expect(back.text()).toBe('Codex');
+    expect(back.attributes('aria-label')).toBe('Back to Codex');
+    await back.trigger('click');
+    expect(wrapper.emitted('back')).toHaveLength(1);
+    expect(wrapper.get('h1').text()).toBe('Codex');
+    expect(wrapper.get('h1').classes()).toContain('sr-only');
+    const title = wrapper.get('[data-test="memory-inspector-run-title"]');
+    expect(title.text()).toBe('Rename the helper and update callers');
+    expect(title.attributes('title')).toBe('run-1 · /w/app');
+    expect(wrapper.find('[data-test="memory-inspector-run-identity"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="memory-page-header"]').find('[role="tablist"]').exists()).toBe(true);
   });
 
   it('calls setActiveTab when opening Raw Traces', async () => {
@@ -47,13 +79,20 @@ describe('MemoryInspector', () => {
     expect(store.setActiveTab).toHaveBeenCalledWith('raw');
   });
 
-  it('names a team member as member · team, without path words', () => {
+  it('names a team member as member · team, without path words; the team is not repeated when Back names it; its run titled by the team run\'s summary (DEC-002)', () => {
     const { store, mountIt } = mountInspector();
     store.target = { kind: 'team_member_run', teamDefinitionName: 'Alpha Team', teamRunId: 'team-1', agentRunId: 'member-1', memberAddress: '/coordinator', memberName: 'Coordinator' };
     const wrapper = mountIt();
     expect(wrapper.find('h1').text()).toBe('Coordinator · Alpha Team');
-    expect(wrapper.text()).toContain('member-1');
+    expect(wrapper.get('[data-test="memory-inspector-run-identity"]').text()).toBe('member-1');
     expect(wrapper.text()).not.toContain('Agent Teams /');
+
+    const fromTeam = mountInspector({ backText: 'Alpha Team', backLabel: 'Back to Alpha Team' });
+    fromTeam.store.target = { ...store.target, runLabel: 'Planning run' };
+    const titled = fromTeam.mountIt();
+    expect(titled.get('h1').text()).toBe('Coordinator');
+    expect(titled.get('[data-test="memory-inspector-run-title"]').text()).toBe('Planning run');
+    expect(titled.get('[data-test="memory-inspector-run-title"]').attributes('title')).toBe('member-1');
   });
 
   it('names an org member as member · org', () => {
@@ -64,8 +103,8 @@ describe('MemoryInspector', () => {
     expect(wrapper.text()).toContain('designer-run');
   });
 
-  it('shows a run known only by its folder with its Work Journal only', () => {
-    const { mountIt } = mountInspector({ folderRun: { runKey: 'agent_teams/old_team/member_y', runId: 'member_y', agentName: 'member_y', groupName: 'old_team' } });
+  it('shows a run known only by its folder with its Work Journal only, its run key standing in for a title', () => {
+    const { mountIt } = mountInspector({ folderRun: { runKey: 'agent_teams/old_team/member_y', runId: 'member_y', agentName: 'member_y', groupName: 'old_team', runLabel: null } });
     const wrapper = mountIt();
     expect(wrapper.find('h1').text()).toBe('member_y · old_team');
     expect(wrapper.text()).toContain('agent_teams/old_team/member_y');

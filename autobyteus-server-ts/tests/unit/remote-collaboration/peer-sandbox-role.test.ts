@@ -35,7 +35,7 @@ const compose = () => {
 };
 
 describe("the sandbox mark (C11)", () => {
-  it("NAS-44 is kept with the invite, never in its text, and saved with the peer by the exchange (R-H)", async () => {
+  it("NAS-46 is kept with the invite, never in its text, and saved with the peer by the exchange (R-H)", async () => {
     const { peers, pairing, store } = compose();
     const invite = await pairing.createInvite({ role: "sandbox" });
     expect(JSON.stringify(decodePeerInvite(invite.inviteText))).not.toContain("sandbox");

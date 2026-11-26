@@ -315,6 +315,27 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   pre-locked it). The move banner leaves it out; the per-row hint still offers
   the move. Kept per device and node (`mcpSecretReviewState`).
 
+## Extensions
+
+- **Extension:** an optional capability of a node, packaged and signed by AutoByteus: its description
+  (`extension.json`), its server part, its page, and the programs it downloads (Voice Input: the voice runtime
+  and its speech model). Every node has one Extension Manager; a node works fully with none installed. Not an
+  **integration**: an integration lets agents use an outside service and is imported content (a skill plus
+  authentication, never app code, from any repository); an extension adds a capability to the node itself, runs
+  code on it, and comes only from AutoByteus's signed catalog. See
+  `autobyteus-server-ts/docs/modules/extensions.md`.
+- **Extension catalog:** the signed list of extensions AutoByteus offers
+  (`extensions-catalog.json` and its `.sig`, the fixed release `catalog` of `AutoByteus/autobyteus-extensions`).
+  Each entry is an `extension.json` plus `packageUrl` and `sha256`. A node installs only what this list holds.
+- **Offered on:** where an extension is listed: `desktop-node` (only the desktop app's own node, used by every
+  window: Voice Input) or `every-node`.
+- **Server part:** an extension's `server/index.mjs`, which the node loads and calls (install, start, status,
+  stop, actions). It opens no port; the node routes every call.
+- **Action:** one named operation of a server part, called by AutoByteus (Voice Input's `transcribe`) or by the
+  extension's page (`setLanguage`).
+- **Extension page:** an extension's `ui/index.html`, shown in its card in a sandboxed frame; it reaches only its
+  own extension's actions, through the page bridge.
+
 ## Integrations
 
 - **Integration:** a connection to an outside service (GitHub first) that agents

@@ -177,7 +177,7 @@ describe("provider relay through a paired relay node (C4)", () => {
   };
   const run = { runId: "run-581", agentDefinitionId: "agent-a" };
 
-  it("NAS-42 native Anthropic (API key): the relay node attaches its key; body, stream and C5 line (AC-001, AC-006)", async () => {
+  it("NAS-44 native Anthropic (API key): the relay node attaches its key; body, stream and C5 line (AC-001, AC-006)", async () => {
     await startRelayedNode(relayed());
     const access = await host.providerRelayAccess.prepareForRun(run, "anthropic", "autobyteus");
     expect(access.relayCredentialKind).toBe("apiKey");
@@ -281,7 +281,7 @@ describe("provider relay through a paired relay node (C4)", () => {
     expect(await providerRefusal.json()).toEqual({ type: "error", error: { type: "authentication_error", message: "provider says no" } });
   });
 
-  it("NAS-43 refuses before any provider call when the relay node does not accept this node: unpaired there, a wrong secret (AC-003)", async () => {
+  it("NAS-45 refuses before any provider call when the relay node does not accept this node: unpaired there, a wrong secret (AC-003)", async () => {
     await startRelayedNode(relayed());
     const access = await host.providerRelayAccess.prepareForRun(run, "anthropic", "autobyteus");
     const call = () => fetch(`${access.baseUrl}/v1/messages`, { method: "POST", body: BODY, headers: { "x-api-key": access.pass } });

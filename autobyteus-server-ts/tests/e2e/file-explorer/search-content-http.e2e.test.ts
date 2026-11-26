@@ -14,6 +14,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { registerGraphql } from "../../../src/api/graphql/index.js";
+import { testExtensionManager } from "../../helpers/test-extension-manager.js";
 import { registerWorkspaceRoutes } from "../../../src/api/rest/workspaces.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
@@ -56,7 +57,7 @@ describe("search to protected content over real HTTP", () => {
     fs.mkdirSync(path.join(owned, "data"));
     appConfigProvider.initialize({ appDataDir: path.join(owned, "data") });
     app = fastify();
-    await app.register(registerGraphql);
+    await app.register(async (graphqlApp) => registerGraphql(graphqlApp, { extensions: testExtensionManager() }));
     await app.register(registerWorkspaceRoutes, { prefix: "/rest" });
     base = await app.listen({ port: 0, host: "127.0.0.1" });
     const created = await gql('mutation($input: CreateWorkspaceInput!) { createWorkspace(input: $input) { workspaceId } }', { input: { rootPath: root } });

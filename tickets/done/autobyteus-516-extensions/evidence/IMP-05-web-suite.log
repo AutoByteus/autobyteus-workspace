@@ -1,0 +1,13 @@
+# IMP-05
+# Command: pnpm -C autobyteus-web test:nuxt --run (full)
+# Commit: d2934d630f; the 2 failures fixed in d2934d630f..38058ec630 and rerun
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+      Tests  2 failed | 6296 passed | 2 skipped (6300)
+ FAIL  client-data-migrations/__tests__/boundaries.spec.ts > client-data-migrations boundaries > migrations import only frozen/ and their own folder; frozen/ imports nothing; no area file imports current code
+ FAIL  scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else
+ Test Files  2 failed | 809 passed (811)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+## Rerun of the affected web specs on 38058ec630 (voice/extensions stores, voice integration and lifetime, components/settings, services/extensions, client-data-migrations, mobileBuildChecks, voiceInput, agentInput): 80 files, 573 tests; one batch run failed voice-input-extension 'reports no speech…' (install wait > vi.waitFor 1 s under load; reproduced by shrinking the wait), fixed in cc3094a0cb; reruns 445/445 x3 and the batch passed

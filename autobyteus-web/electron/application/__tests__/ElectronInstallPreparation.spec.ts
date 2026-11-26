@@ -24,8 +24,6 @@ vi.mock('../../updater/appUpdater', () => ({
   AppUpdater: class { constructor(options: { prepareForInstall: () => Promise<void> }) { mocks.prepareForInstall = options.prepareForInstall } },
 }))
 vi.mock('../../updater/disabledAppUpdater', () => ({ DisabledAppUpdater: class {} }))
-vi.mock('../../extensionIpcHandlers', () => ({ registerExtensionIpcHandlers: vi.fn() }))
-vi.mock('../../extensions/managedExtensionService', () => ({ ManagedExtensionService: class {} }))
 vi.mock('../../browser/browser-runtime', () => ({ BrowserRuntime: class {}, startBrowserRuntime: vi.fn() }))
 vi.mock('../../browser/register-browser-shell-ipc-handlers', () => ({ registerBrowserShellIpcHandlers: vi.fn() }))
 vi.mock('../../browser/browser-bridge-auth-registry', () => ({ BrowserBridgeAuthRegistry: class {} }))

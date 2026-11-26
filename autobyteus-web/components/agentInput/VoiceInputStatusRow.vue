@@ -15,6 +15,8 @@
         :class="voiceInputStore.isRecording ? 'animate-pulse bg-red-500' : 'bg-blue-500'"
       ></span>
       <span>{{ voiceStatusText }}</span>
+      <!-- The voice program may still be starting (up to ~30 s, measured): said after about 2 s of waiting (VIS-V5-03). -->
+      <span v-if="slow" class="font-normal text-blue-700/90" data-testid="voice-status-slow">· {{ t('voiceInput.status.slow') }}</span>
     </div>
     <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[0.6875rem] text-current/80">
       {{ recordingDurationLabel }}
@@ -24,9 +26,18 @@
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 
 const voiceInputStore = useVoiceInputStore();
+const { t } = useLocalization();
+const slow = ref(false);
+let slowTimer: ReturnType<typeof setTimeout> | null = null;
+watch(() => voiceInputStore.isTranscribing, (transcribing) => {
+  if (slowTimer) clearTimeout(slowTimer);
+  slow.value = false;
+  if (transcribing) slowTimer = setTimeout(() => { slow.value = true; }, 2000);
+});
 
 const recordingElapsedSeconds = ref(0);
 let recordingStartedAt = 0;
@@ -80,5 +91,8 @@ watch(
   { immediate: true },
 );
 
-onUnmounted(stopRecordingTimer);
+onUnmounted(() => {
+  stopRecordingTimer();
+  if (slowTimer) clearTimeout(slowTimer);
+});
 </script>

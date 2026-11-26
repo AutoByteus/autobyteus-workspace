@@ -54,6 +54,8 @@ const mocks = vi.hoisted(() => {
       packageRegistryService: {},
       restartResume,
       stopFileWatchesForProcessExit,
+      // autobyteus-516: started after listen, in the background.
+      extensions: { refreshCatalog: vi.fn(async () => undefined), startEnabled: vi.fn(async () => undefined) },
     })),
     initializePrisma: vi.fn(async () => undefined),
     disableEnvironmentKeySource: vi.fn(),
