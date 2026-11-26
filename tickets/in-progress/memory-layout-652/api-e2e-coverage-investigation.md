@@ -13,8 +13,8 @@
 - Implementation Revision Record: `tickets/in-progress/memory-layout-652/implementation-revision-record.md`
 - Code Review Report / Revision Record: `N/A — not applicable` (direct route)
 - API/E2E Revision Record: `tickets/in-progress/memory-layout-652/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (IR-002, `0072beea13`)
 - Trigger: implementation complete IR-001, Medium / Low direct route, commit `7bf21db56e` (base `9f803aa84d`)
 - Prior Investigation Reviewed: none
 - Latest Authoritative Investigation: this file
@@ -101,6 +101,7 @@
 | API-011 | AC-004, REQ-005 | run titles: episode, team member, org member, search result | Temporary Probe | the same stack | the org and search paths are not in the implementation's evidence |
 | API-012 | AC-006 | imported source: badges in the header rows, Semantic not synced | Temporary Probe | the same stack (beta synced) | |
 | API-013 | AC-006 (keyboard) | focus order Back → filter → switch → content; Enter on Show, Go to line | Temporary Probe | the same stack | |
+| API-016 | AC-001 (round 2) | the three changed components' grids and headers | Temporary Probe + Durable | specs; the probe; my stack with a very long owner name, at 1440, 1280, 1024, 900, 768, 390 | round 2's fix and the header between the stated viewports (the spec's 768–1279 px range) |
 | API-014 | AC-005 | Files panel (a run's Files tab) and Skills page: icons for `.md .ts .js .vue .html .css .json`; Files panel tabs 150 px | Temporary Probe | the same stack (the run workspace holds those files) | |
 
 - Test progress log: Yes.

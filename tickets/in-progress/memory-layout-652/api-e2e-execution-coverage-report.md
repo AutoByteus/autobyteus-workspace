@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/memory-layout-652/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `tickets/in-progress/memory-layout-652/api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `tickets/in-progress/memory-layout-652/api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `tickets/in-progress/memory-layout-652/api-e2e-test-progress.md`
-- Round and trigger: round 1; implementation IR-001 (direct route, Medium / Low), commit `7bf21db56e`
-- Prior round reviewed: none
+- Round and trigger: round 2; implementation IR-002 (CRR-001 Local Fix: CR-001, CR-002), commit `0072beea13` (fix `1cf6e23765`). Round 1: IR-001 at `7bf21db56e` (API-REV-001, Fail on F-1, F-2).
+- Prior round reviewed: round 1. Changed since: three templates (`AgentMemoryPage.vue`, `GroupMemoryPage.vue`, `MemoryBrowse.vue`: classes only) and their specs. Round 1's cases on other surfaces stand; the changed components' specs, the probe and the views of those three components ran again (API-016).
 - Deviations from the plan: SMV-120 and SMV-121 were added to the probe as reproductions of F-2 and F-1, found by the rendered views; one probe run had SMV-120 made non-fatal (reverted) to show that SMV-121 reproduces too.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652/tickets/in-progress/memory-layout-652/evidence/api-e2e/`
 
@@ -40,13 +40,14 @@
 | API-012 | AC-006 | imported source | `steps/imported.js` (beta synced, `committedBatches: 1`) | ENV-3 | Pass | `results/imported.json`, `shots/imported-*.png` | sources `["Local Memory", "Imported: Beta Node"]`; header `Imported · read-only`, `"badgeInHeader": 1`; Semantic `"notSynced": 1` | |
 | API-013 | AC-006 (keyboard), AC-003 (Show) | focus order, Enter | `steps/keyboard.js` | ENV-3 | Pass | `results/keyboard.json` | owner `["memory-page-back", "agent-episodes-filter", "agent-memory-tab-episodic", "agent-memory-tab-semantic", "agent-episode", …]`; run `["memory-page-back", "memory-inspector-tab-journal", "memory-inspector-tab-raw", "work-journal-file", …]`; Show `2` + Enter → `GetAgentRunMemoryView` `"limit": 2`; the same Enter again → `0` requests | Go to line's highlight was not read (my selector); its Enter path is in the specs |
 | API-014 | AC-005 | Files panel and Skills page | `steps/icons.js` | ENV-3 | Pass | `results/icons.json`, `shots/files-panel-icons-1440x900.png`, `shots/skills-icons-1440x900.png` | each of `app.ts App.vue main.js site.css index.html package.json README.md notes.txt` (and `SKILL.md`): `svg: true`, shapes ≥ 1, 14 px, no font icon; Files tab `"maxWidth": "150px", "title": null` | |
+| API-016 | AC-001 (round 2: CR-001, CR-002; F-3) | the card grids and owner headers after the fix | specs `npx vitest run components/memory components/fileExplorer pages`; the probe; my stack (round 2 adds an agent named "Quarterly Infrastructure Capacity Planning And Forecasting Assistant") with `steps/r2.js` at 1440×900, 1280×800, 1024×768, 390×844, `steps/hdr2.js` at 1024, 900, 768, `steps/hdr3.js` at 1024 and 1440 | ENV-1, ENV-2, ENV-3 | CR-001 Pass; CR-002 Pass at 1440 and 1280; **F-3 Fail at 1024 and 768** | `API-016-round2-fix/results/r2-*.json`, `hdr2-*.json`, `hdr3-*.json`, `shots/r2-header-1024.png`, `shots/r2-*`; `API-003-semantic-memory-probe/smv4-checks.json` | specs `45 passed`, `304 passed`; probe `54/54`, SMV-120 `"nameAt1280": {"width": 153, "needs": 153, "whole": true}`, SMV-121 `"cardRights": [370, 370], "sideways": false`; stack: every card grid `maxRight` ≤ window, `sideways: false` at 1440, 1280, 390; Project Task Manager `"width": 172, "needs": 172` at 1440 and 1280; **1024×768: agent `h1` `"w": 0, "needs": 172`** (group 55 px: Back only), team Runs `h1` `"w": 73, "needs": 219`, run title `"w": 34, "needs": 276`; 768×900: agent `h1` `"w": 36`; 900×768 wraps (`168`) | F-3: see Preliminary Classification |
 | API-015 | AC-002 | a short window and a long document | `steps/short.js` at 1280×720 | ENV-3 | Pass | `results/short.json`, `shots/short-*.png` | panel `"top": 85, "toWindowBottom": 20`, `"pageScroll": false`; reader `"scrollHeight": 6684, "clientHeight": 567`, its last step reachable, panel unmoved; journal `"toWindowBottom": 20` | |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | Notes |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-003, API-010, API-010b, API-010c | **Not Proven** | Every view matches its reference at 1440×900 and 1280×800 in structure, controls, labels and spacing, with the offsets met (85 / 74 px). Two failures: F-1 at 390×844 (Episodic cards wider than the window, page scrolls sideways), F-2 (the owner page's name cut beside its "Also works in" subtitle: 1440 with a longer subtitle, 1280 always) |
+| AC-001 | Yes | API-003, API-010, API-010b, API-010c, API-016 | **Not Proven** | At its stated viewports (1440×900, 1280×800, 390×844) every view now matches (round 2: F-1 and F-2 fixed). Between them, at laptop widths the spec's Responsive section covers (768–1279 px, "one row when it fits, wraps otherwise"), F-3: the header row does not wrap and the page's name shrinks to nothing (1024×768: the agent's name 0 px, a team's 73 of 219, a run's title 34 of 276) |
 | AC-002 | Yes | API-003 (SMV-110…115, 119), API-010, API-015 | Proven | fill, no page scroll, type sizes, first root document on arrival, Copy → clipboard and "Copied" for 1.5 s |
 | AC-003 | Yes | API-010, API-013, API-001 | Proven | |
 | AC-004 | Yes | API-011, API-001; IMP-003 (team member) | Proven | |
@@ -58,19 +59,19 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 60% | all but AC-001 proven | AC-001 fails (F-1, F-2) | the fixes, then SMV-120/121 and API-010 again |
+| Requirement and acceptance-criteria proof | 75% | 75% | all but AC-001 proven; AC-001 holds at its three viewports | F-3 at laptop widths (1024, 768) | the fix, then API-016 again |
 | Changed-boundary execution directness | 70% | 95% | real server and page, every view at every viewport | | |
 | Cross-boundary integration realism and mock gap | 70% | 95% | real runs, index, memory sync, org | | |
 | Environment, configuration, identity, and fixture fidelity | 80% | 90% | ENV-2, ENV-3 | invented data; real workspace paths are long, which is what exposes F-1 | |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 90% | imported, not synced, short window, long document, search fallback | the owner and member cards' long names on a phone not run (same grid as F-1) | include in the F-1 fix |
-| User-surface, browser, and desktop-shell confidence | 70% | 70% | rendered at all viewports | F-1, F-2 visible defects | the fixes |
+| Failure, edge-case, lifecycle, and recovery evidence | 70% | 90% | imported, not synced, short window, long document, search fallback; round 2: a very long owner name on every grid | | |
+| User-surface, browser, and desktop-shell confidence | 70% | 75% | rendered at all viewports; F-1, F-2 fixed | F-3: no visible name at 1024 px | the fix |
 | Durable regression coverage quality and relevance | 80% | 95% | SMV-110…121 in the probe | | |
 
 - Overall post-repository confidence: 74%
-- Overall final confidence: 85% (round result `Fail`)
+- Overall final confidence: 88% (round result `Fail`)
 - Calculation method: simple average
 - Every critical acceptance criterion directly proven: `No` (AC-001)
-- Any final applicable category below `90%`: `Yes`: requirement proof 60%, user surface 70%
+- Any final applicable category below `90%`: `Yes`: requirement proof 75%, user surface 75%
 - Default final confidence target of `95%` met: `No`
 
 ## Broader Validation Decision (Mandatory)
@@ -91,7 +92,7 @@
 
 | Path / Test | Change | Case IDs | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 fail on `7bf21db56e` (F-2, F-1): the fix turns them green |
+| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 failed on `7bf21db56e` (F-2, F-1) and pass on `0072beea13`. F-3 has no durable check yet: the next round adds SMV-122 (the name visible at 1024×768) with the fix |
 
 - Test-code review: `Not Required — direct low-risk route`
 
@@ -112,24 +113,21 @@
 
 ## Preliminary Classification (On `Fail`)
 
-**F-1 — AC-001 at 390×844 (VIS-005): the Episodic page is wider than a phone window. `Local Fix` (implementation).**
+Round 1's F-1 and F-2 are fixed (CR-001, CR-002; API-016, SMV-120, SMV-121). Round 2:
 
-- Observed (Reproduced: ENV-3 and the durable SMV-121): with a run whose workspace path is long (`/Users/someone/projects/autobyteus-worktrees/a-long-workspace-folder-name/launch-app`; real paths are like this), each Episodic card is 561 px wide (stack) / ends at 695 px (probe) in a 390 px window; the page root scrolls sideways (`sw 581 > cw 340`); the time is off screen. VIS-005 shows the path truncated inside the card.
-- Cause (Measured): `AgentMemoryPage.vue:28` `grid gap-3.5 md:grid-cols-2 xl:grid-cols-3` has no base column, so below 768 px its one implicit column sizes to the content (`gridCols: "561.109px"`). The card's new one-line meta (`agent-episode-meta`: `min-w-0 truncate` path · time, DC-006) cannot shrink that column; the base wrapped the path (`break-all`), so this change introduced it.
-- Same pattern (Read, not run): `GroupMemoryPage.vue:24` (member cards) and `MemoryBrowse.vue:47` (owner cards) use the same grid with `truncate` names: a long name on a phone would do the same.
-- Fix hint: a base `grid-cols-1` (`minmax(0, 1fr)`) or `min-w-0` on the cards, for all three grids. SMV-121 turns green.
+**F-3 — the owner and run header at laptop widths: the page's name shrinks to nothing instead of the row wrapping. `Local Fix` (implementation).**
 
-**F-2 — AC-001 at 1440×900 and 1280×800: the owner page's own name is cut beside its "Also works in …" subtitle. `Local Fix` (implementation), or `Design Impact` if a choice is needed.**
-
-- Observed (Reproduced: ENV-3 at 1440 and 1280, the durable SMV-120 at 1280): Project Task Manager (the reference's own agent; it is a shared member of a team, so it has the subtitle) shows "Project Task Man…" at 1440×900 (157 of 172 px) and "Project…" at 1280×800 (89 of 172 px). The probe's Research Assistant gets 90 of 153 px at 1280. VIS-004 shows the name whole.
-- Cause (Measured): D-3 puts the subtitle inline at ≥ 1024 px (`hidden min-w-0 truncate … lg:inline`); the name (`min-w-0 truncate`) and the subtitle shrink together in the left group, so the page's identity is cut as much as the secondary line. Before, the name had its own row.
-- Fix hint: the name keeps its width (the subtitle truncates or hides first), so the name truncates only when it alone does not fit. If keeping the subtitle inline at 1024–1279 px needs a call on what to drop, that part is a design question for the Solution Designer. SMV-120 turns green.
+- Observed (Measured, ENV-3 on `0072beea13`): at 1024×768 (the app's left panel open; the header is 645 px wide) the agent page shows `← Memory`, the filter and the switch; the name `h1` is 0 px wide (needs 172) and the filter covers the end of "Memory" (`API-016-round2-fix/shots/r2-header-1024.png`). The team page's Runs: "Software Engineering Team" 73 of 219 px. A run page: the title 34 of 276 px. At 768×900 the agent's name is 36 px. At 900×768 the row wraps and the name nearly fits (168 of 172). At 1280 and 1440 all are whole.
+- Cause (Measured): the header row is `flex flex-wrap`, but its left group (Back, `/`, name; `flex min-w-0 flex-1`) may shrink to 0, so the row never needs to wrap while the filter (240 px) and the switch (318 px) fit: the name gives way instead.
+- Spec: Responsive: "Header on one row when it fits (wraps otherwise)"; Long names: the name truncates with an ellipsis (never hidden).
+- Not caused by IR-002: the left group's classes are IR-001's; round 1 measured desktop widths only at 1280 and 1440.
+- Fix hint: a minimum width for the name's group (for example about 12 rem), so that below it the filter and switch wrap to the next row; the name still truncates when it alone does not fit. I add SMV-122 (the agent page's name visible at 1024×768) to the probe in the next round.
 
 ## Latest Authoritative Result
 
 - Result: `Fail`
-- Criteria not proven: AC-001 (F-1, F-2)
+- Criteria not proven: AC-001 (F-3, at laptop widths; its three stated viewports now pass)
 - Evidence decisions requested: `None`
-- Preliminary classification and recommended owner: F-1 `Local Fix` → implementation; F-2 `Local Fix` → implementation (Design Impact if a layout choice is needed)
+- Preliminary classification and recommended owner: F-3 `Local Fix` → implementation
 - Next recipient from `get_handoff_rules`: `/code_reviewer` (failure-origin review)
-- Notes: everything else holds on every surface: AC-002 to AC-007, the org and imported paths, search's fallback, keyboard order, the short window, the Files panel and Skills page icons, 0 errors.
+- Notes: round 1's F-1 and F-2 are fixed. Everything else holds: AC-002 to AC-007, the org and imported paths, search's fallback, keyboard order, the short window, the Files panel and Skills page icons, 0 errors.
