@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002 | `Local Fix` | SR-008 (DEC-115), CRR-001 | Owner caller removed; DEC-115 implemented, failed live (IMP-12), Codex login token removed as not supported; back to Code Review |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 3 (Pass) | N/A (non-blocking N-3, N-4 applied) | `Initial Baseline` | SR-007, ARCH-REV-003 | Implemented steps 1–8; live API-key sandbox path passes; Codex login token (U-1) fails live, Grok (U-2) unproven; handed to Code Review |
 
 ## Revision Entries
@@ -29,3 +30,22 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: see the handoff's Checks Run.
 - Next recipient or routing: `/code_reviewer` (Large / High). U-1 (Codex login token fails live) and U-2 (not proven) are reported in the handoff for the Solution Designer's and the user's decision.
 - Remaining limitations or risks: see the handoff's Known Risks.
+
+### IR-002 — CR-001 and DEC-115: Codex login token tried with the account ID, then marked not supported
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/sandbox-provider-relay-581/code-review-report.md`, CRR-001 (Fail, Local Fix); Solution Designer DEC-115 (SR-008).
+- Triggering finding IDs: CR-001 (owner caller dead), CR-002 (U-1: finish SR-008/DEC-115 as IR-002).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-001 (Codex login token failed live, IMP-10).
+- Current authoritative result: Codex login token not supported through a relay; everything else as IR-001.
+- Related solution revision IDs: SR-008. Related architecture-review revision IDs: ARCH-REV-003. Related code-review revision IDs: CRR-001. API/E2E, delivery: N/A.
+- Why recorded: the code reviewer's findings and DEC-115.
+- Approved behavior or requirement IDs affected: REQ-004/005 and AC-005 (Codex login token → not supported, DEC-115 fallback, DEC-010 rule); REQ-012 (owner caller, see handoff deviation 10).
+- Implementation delta:
+  1. CR-001: `SandboxCaller` is the run only (`sandbox-manager.ts`), owner branch and test case removed, `sandboxes.md` updated (`32d6a7ae16`).
+  2. DEC-115 as designed plus `openai_base_url` (`a72ab72b1a`, `70eb033f7c`): C1 `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID`, the relay offer reading it, the account in the placeholder login. The WebSocket flags named in SR-008 are "removed" in Codex 0.171 (IMP-11), so none was passed; `openai_base_url` was needed because Codex sends its model calls straight to `https://chatgpt.com` otherwise.
+  3. Live check IMP-12 failed (`workspace backend must use an HTTPS origin without credentials`), so `b2e7e0d3bd` removes the Codex login-token path: `codex_app_server` from the login-token runtimes (C1 refuses it), the OpenAI login-token route and `chatGptPaths`, `RelayCredentialSource.codexLogin`, `RelayCredential.accountId`, `RelayLoginTokenReader.readCodexLogin`, the account ID setting and its description, and the ChatGPT-mode Codex launch (`CODEX_HOME` is no longer touched on a relayed node). Docs and glossary say Codex runs on the API key.
+- Changed files or areas: `credential-proxy/provider-relays/{provider-relay-settings,provider-relays,provider-relay-access,provider-relay-proxy-routes}.ts`, `credential-proxy/provider-relay-peer/{relay-offer,relay-login-token-reader,provider-relay-peer-handler}.ts`, `credential-proxy-host.ts`, `runtime-management/codex/client/codex-app-server-launch-config.ts`, `services/server-settings-service.ts`, `sandboxes/sandbox-manager.ts`; their tests; `credential_proxy.md`, `sandboxes.md`, `GLOSSARY.md`.
+- Local validation and result: IMP-11, IMP-12 (live), IMP-13 (focused suites, typecheck) — see the handoff.
+- Next recipient or routing: `/code_reviewer` (targeted delta review).
+- Remaining limitations or risks: U-2 (Grok login token) and the Claude login-token live check still wait for the user (a fresh Grok login; a setup-token in the test vault). The validation image `autobyteus-server:581-local` was built from `70eb033f7c` (before the removal); the removal changes only the relayed Codex launch's login branch and `CODEX_HOME` handling, covered by unit tests, not rerun live.

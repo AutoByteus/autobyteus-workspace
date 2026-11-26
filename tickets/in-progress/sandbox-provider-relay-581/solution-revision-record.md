@@ -117,3 +117,14 @@ History before this Task: [history-484/solution-revision-record.md](history-484/
   - N-3: REQ-018 wording aligned with DEC-111 option B; stale design text corrected;
   - N-4: the Nodes page label chain added to the file mapping.
 - These are evidence-only corrections; no behavior or approval change.
+
+## SR-008: Codex login token after the live check (IR-001, IMP-10)
+
+- **Trigger:** `/implementation_engineer` IR-001. U-1 failed live as designed: WebSocket transport, then an account mismatch. R-D answered: the node pass is accepted.
+- **Decision:** DEC-115, by the Solution Designer applying the user's DEC-010:
+  - pass the relay node's ChatGPT account ID as a start variable;
+  - turn off Codex's Responses WebSocket transport for the relayed app-server;
+  - one live check; if it fails, "not supported".
+- **Design:** C1 gains `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID`; the Codex login-token walk is revised.
+- **U-2 (Grok):** needs a run while the user's Grok login is fresh. **Claude:** needs the user's `setup-token` in the test vault. Both are asked of the user.
+- **Review impact:** a narrow, design-local change inside the reviewed C1/C10 shape (one identifier variable and one launch flag); no change to ownership, routes or security boundaries. It does not reopen architecture review.
