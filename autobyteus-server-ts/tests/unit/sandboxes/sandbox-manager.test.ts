@@ -188,8 +188,6 @@ describe("using and removing a sandbox", () => {
     expect((await refusalOf(h.manager.runIn(CALLER, "sbx_unknown", ["ls"], null))).code).toBe("SANDBOX_NOT_FOUND");
     expect((await refusalOf(h.manager.runIn(CALLER, sandboxId, [], null))).code).toBe("SANDBOX_ARGUMENT_INVALID");
     expect((await refusalOf(h.manager.runIn(CALLER, sandboxId, ["ls"], 601))).code).toBe("SANDBOX_ARGUMENT_INVALID");
-    // The owner may use and remove any sandbox.
-    await h.manager.runIn({ kind: "owner" }, sandboxId, ["true"], null);
     h.manager.close();
   });
 

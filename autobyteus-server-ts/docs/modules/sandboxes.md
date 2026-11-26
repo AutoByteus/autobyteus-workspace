@@ -28,7 +28,7 @@ a sealed node, reads the results and transcripts from the folders, and removes i
 ## Tools
 
 Opt-in per agent through its definition's tool list (`create_sandbox`, `run_in_sandbox`, `destroy_sandbox`), on
-every runtime (native tools, Agent Tools MCP for the others). Only the creating run, or the node's owner, may use or
+every runtime (native tools, Agent Tools MCP for the others). Only the creating run may use or
 remove a sandbox.
 
 ```jsonc

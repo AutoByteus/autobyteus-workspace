@@ -43,8 +43,8 @@ export class SandboxRefusal extends Error {
   }
 }
 
-/** Who asks: the run of an agent that has the tools, or the node's owner. */
-export type SandboxCaller = Readonly<{ kind: "run"; runId: string }> | Readonly<{ kind: "owner" }>;
+/** Who asks: the run of an agent that has the tools (the only way a sandbox is created, used or removed). */
+export type SandboxCaller = Readonly<{ kind: "run"; runId: string }>;
 
 export type CreateSandboxInput = Readonly<{
   agentPackages: readonly string[];
@@ -109,7 +109,6 @@ export class SandboxManager {
   }>) {}
 
   async create(caller: SandboxCaller, input: CreateSandboxInput): Promise<CreatedSandbox> {
-    if (caller.kind !== "run") throw new SandboxRefusal("SANDBOX_ARGUMENT_INVALID", "A sandbox is created by an agent's run.");
     if (!this.deps.capability.isEnabled()) {
       throw new SandboxRefusal("SANDBOX_REMOTE_COLLABORATION_OFF", "Turn on Remote Collaboration in Settings: a sandbox pairs with this node as a peer.");
     }
@@ -298,7 +297,7 @@ export class SandboxManager {
       ? (await this.deps.records.read()).find((entry) => entry.sandboxId === sandboxId)
       : undefined;
     if (!record) throw new SandboxRefusal("SANDBOX_NOT_FOUND", `There is no sandbox ${String(sandboxId)} on this node.`);
-    if (caller.kind === "run" && caller.runId !== record.createdByRunId) {
+    if (caller.runId !== record.createdByRunId) {
       throw new SandboxRefusal("SANDBOX_NOT_YOURS", `Sandbox ${record.sandboxId} was created by another run.`);
     }
     return record;
