@@ -1,4 +1,4 @@
-import fs from "node:fs/promises";
+import { createReadStream } from "node:fs";
 import type { FastifyError, FastifyInstance, FastifyReply } from "fastify";
 import { contentType, lookup } from "mime-types";
 import { ExtensionError, errorMessage, type ExtensionErrorCode } from "../../extensions/domain/extension-error.js";
@@ -91,6 +91,6 @@ export async function registerExtensionRoutes(
       .header("content-security-policy", pageSecurityPolicy(uiUrl))
       .header("x-content-type-options", "nosniff")
       .header("cache-control", "no-store")
-      .send(await fs.readFile(file));
+      .send(createReadStream(file));
   });
 }

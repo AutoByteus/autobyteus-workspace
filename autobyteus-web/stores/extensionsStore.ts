@@ -44,6 +44,11 @@ const isRefusal = (error: unknown): boolean => {
   return graphqlCode(error) === 'NODE_ROUTE_NOT_PERMITTED' || status === 401 || status === 403;
 };
 const messageOf = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+/** What this computer's microphone button depends on (design AR-001): installed, on and ready. */
+const voiceAvailabilityOf = (list: ExtensionList | null): string => {
+  const voice = list?.extensions.find((item) => item.id === 'voice-input');
+  return voice ? `${voice.state}:${voice.enabled}:${voice.ready}` : 'none';
+};
 
 /**
  * Settings → Extensions: the extensions of this window's node (REQ-001, REQ-011), through its owner-only GraphQL
@@ -98,7 +103,13 @@ export const useExtensionsStore = defineStore('extensions', {
         const { data } = await getApolloClient().query<{ extensions: ExtensionList }>({
           query: GetExtensions, variables: { refreshCatalog }, fetchPolicy: 'no-cache',
         });
+        const voiceBefore = voiceAvailabilityOf(this.list);
         this.list = data.extensions;
+        // An install, update or start that this page follows ends later than its mutation: when this computer's Voice
+        // Input changes, its microphone buttons read it again.
+        if (this.list && voiceBefore !== voiceAvailabilityOf(this.list) && useWindowNodeContextStore().isEmbeddedWindow) {
+          void useVoiceInputStore().refreshAvailability();
+        }
         this.notOwner = false;
         this.error = null;
         for (const id of Object.keys(this.justInstalled)) {

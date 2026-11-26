@@ -71,7 +71,7 @@ describe("extension routes and GraphQL", () => {
     }
   });
 
-  it("refuses a phone or no credential on the list, every mutation, actions and pages (AC-006)", async () => {
+  it("NAS-43 refuses a phone or no credential on the list, every mutation, actions and pages (AC-006)", async () => {
     for (const query of [
       "{ extensions { catalog } }", "{ extensionLog(id: \"hello\") }", "mutation { installExtension(id: \"hello\") { id } }",
       "mutation { setExtensionEnabled(id: \"hello\", enabled: true) { id } }", "mutation { removeExtension(id: \"hello\") { id } }",
@@ -86,7 +86,7 @@ describe("extension routes and GraphQL", () => {
     }
   });
 
-  it("lists and installs through GraphQL for the owner", async () => {
+  it("NAS-42 lists and installs through GraphQL for the owner", async () => {
     const listed = await gql("{ extensions(refreshCatalog: true) { catalog extensions { id state catalogVersion translations } } }", owner);
     expect(listed.data?.extensions).toEqual({ catalog: "verified", extensions: [{ id: "hello", state: "notInstalled", catalogVersion: "1.0.0", translations: null }] });
     const installing = await gql("mutation { installExtension(id: \"hello\") { state progress { message percent } } }", owner);
