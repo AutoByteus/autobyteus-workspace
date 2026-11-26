@@ -128,4 +128,18 @@ describe('AgentMemoryPage', () => {
     expect(wrapper.find('[data-test="agent-memory-places"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="agent-episodes-filter"]').exists()).toBe(false);
   });
+
+  it('keeps the name whole beside its places line, and its card grid one column wide on a phone (CRR-001 CR-001, CR-002)', () => {
+    const { wrapper } = mountPage({ agentDefinitionId: 'researcher' }, (store) => {
+      store.episodes.ownerKey = 'DEFINITION:researcher';
+      store.episodes.entries = [episode('own-run', null)];
+      (store as any).placesOf = () => [{ kind: 'TEAM', id: 'team-product', name: 'Product Review Team', local: false }];
+    });
+    // The places line takes only the space the name leaves (flex 1 1 0); the name keeps its width (flex 0 1 auto).
+    const places = wrapper.get('[data-test="agent-memory-places"]').classes();
+    expect(places).toEqual(expect.arrayContaining(['flex-1', 'basis-0', 'min-w-0', 'truncate', 'hidden', 'lg:block']));
+    expect(wrapper.get('h1').classes()).not.toContain('flex-1');
+    // A base column of minmax(0, 1fr): a one-line card cannot widen the grid below 768 px (VIS-005).
+    expect(wrapper.get('[data-test="agent-episodes"]').classes()).toEqual(expect.arrayContaining(['grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3']));
+  });
 });

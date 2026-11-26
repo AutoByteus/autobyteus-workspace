@@ -105,4 +105,11 @@ describe('GroupMemoryPage', () => {
       vi.useRealTimers();
     }
   });
+
+  it('keeps its member grid one column wide on a phone (CRR-001 CR-001)', () => {
+    const { wrapper } = mountPage({ kind: 'TEAM', pane: 'members' }, (store) => {
+      store.members = { key: 'TEAM:se-team', loading: false, error: null, requestId: 1, entries: [{ kind: 'AGENT', id: 'a', name: 'A', shared: false }] };
+    });
+    expect(wrapper.get('[data-test="group-members"]').classes()).toEqual(expect.arrayContaining(['grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3']));
+  });
 });

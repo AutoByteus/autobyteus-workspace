@@ -149,4 +149,8 @@ describe('MemoryBrowse', () => {
     expect(wrapper.find('select').exists()).toBe(true);
     expect(wrapper.text()).toContain('Imported · read-only');
   });
+
+  it('keeps the owner card grid one column wide on a phone (CRR-001 CR-001)', () => {
+    expect(mountBrowse('agents').wrapper.get('[data-test="memory-group-cards-agents"]').classes()).toEqual(expect.arrayContaining(['grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3']));
+  });
 });

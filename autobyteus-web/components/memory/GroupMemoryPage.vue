@@ -21,7 +21,7 @@
         <button class="ml-2 font-semibold underline" @click="explorer.fetchMembers(kind, definitionId)">{{ $t('memory.results.retry') }}</button>
       </div>
       <!-- Member cards without IDs (DC-006): the ID is in the name's tooltip. -->
-      <div v-else class="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3" data-test="group-members">
+      <div v-else class="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3" data-test="group-members">
         <button v-for="member in members.entries" :key="`${member.kind}:${member.id}`" :class="cardClass" data-test="group-member" @click="$emit('selectMember', member)">
           <div class="flex min-w-0 items-center gap-2">
             <Icon :icon="member.kind === 'TEAM' ? 'heroicons:user-group' : 'heroicons:user'" class="h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true" />

@@ -4,7 +4,8 @@
          wide screen; the run filter (Episodic) and the Episodic / Semantic switch at the right. -->
     <MemoryPageHeader :back-text="backText" :back-label="backLabel" @back="$emit('back')">
       <h1 class="min-w-0 truncate text-lg font-semibold tracking-tight text-gray-900" :title="agentDefinitionId ?? name">{{ name }}</h1>
-      <span v-if="subtitle" class="hidden min-w-0 truncate text-xs text-gray-500 lg:inline" data-test="agent-memory-places">{{ subtitle }}</span>
+      <!-- Only the space the name leaves: the name stays whole unless it alone overflows the row (CRR-001 CR-002). -->
+      <span v-if="subtitle" class="hidden min-w-0 flex-1 basis-0 truncate text-xs text-gray-500 lg:block" data-test="agent-memory-places">{{ subtitle }}</span>
       <span v-if="imported" class="flex-shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">{{ $t('memory.components.memory.common.importedReadOnly') }}</span>
       <template #actions>
         <div v-if="pane === 'episodic'" class="relative w-full sm:w-60">
@@ -25,7 +26,7 @@
       <div v-else-if="!episodes.entries.length && !episodes.search" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.agent.no_runs', { name }) }}</div>
       <div v-else-if="!episodes.entries.length" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.AgentMemoryDetail.no_runs_match_this_filter') }}</div>
       <template v-else>
-        <div class="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3" data-test="agent-episodes">
+        <div class="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3" data-test="agent-episodes">
           <!-- No run ID line (DC-006): it is in the title's tooltip, and the filter still matches it. -->
           <button v-for="episode in episodes.entries" :key="episode.runId" :class="cardClass" data-test="agent-episode" @click="$emit('openEpisode', episode)">
             <h3 class="break-words text-sm font-semibold text-gray-900" :title="episode.runId">{{ episode.summary || episode.taskTitle || episode.runId }}</h3>

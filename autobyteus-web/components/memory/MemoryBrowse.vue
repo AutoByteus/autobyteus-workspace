@@ -44,7 +44,7 @@
         <button class="ml-2 font-semibold underline" @click="explorer.fetchOwners()">{{ $t('memory.results.retry') }}</button>
       </div>
       <div v-else-if="!cards.length" class="py-16 text-center text-sm text-gray-500">{{ $t(emptyText[node.group] ?? emptyText.agents!) }}</div>
-      <div v-else class="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3" :data-test="`memory-group-cards-${node.group}`">
+      <div v-else class="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3" :data-test="`memory-group-cards-${node.group}`">
         <!-- No ID line (autobyteus-608 DC-006): the name says whose memory it is; the ID is in its tooltip. -->
         <button v-for="card in cards" :key="card.key" :class="cardClass" data-test="memory-owner-card" @click="$emit('selectNode', card.key)">
           <div class="flex items-start justify-between gap-3">
