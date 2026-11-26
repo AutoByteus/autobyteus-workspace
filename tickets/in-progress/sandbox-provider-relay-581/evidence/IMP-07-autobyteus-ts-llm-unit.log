@@ -1,0 +1,7 @@
+# IMP-07-autobyteus-ts-llm-unit.log
+# command: pnpm -C autobyteus-ts exec vitest run tests/unit/llm (includes llm-endpoint-requests.test.ts)
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+ Test Files  73 passed (73)
+      Tests  584 passed (584)

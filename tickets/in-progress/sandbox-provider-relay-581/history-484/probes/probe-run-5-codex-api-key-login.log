@@ -1,0 +1,14 @@
+[1.6s] container autobyteus-sandbox-484-aab52536 started on 127.0.0.1:50458
+[9.7s] node answered with a setup code (local control socket)
+[9.8s] setup exchange: owner credential issued (kept in memory)
+[9.9s] codex sign-in from the vault: codex login --with-api-key exit 0
+[9.9s] GraphQL without credential: HTTP 401
+[10.0s] server log vault lines: 2 Secret vault: test vault /run/autobyteus-test-vault (read-only)
+[10.0s] providers with a key (from the vault): ANTHROPIC, DEEPSEEK, GEMINI, GLM, GROK, KIMI, OPENAI
+[10.1s] ordinary server setting write (not the vault): ok
+[11.4s] agent runtimes sign-in: codex_app_server=SIGNED_IN, claude_agent_sdk=SIGNED_OUT, antigravity_cli=SIGNED_OUT, grok_build=SIGNED_OUT, deepseek_harness=not installed
+[18.7s] smoke codex_app_server/gpt-5.4-mini: TURN_COMPLETED in 4.5s; reply contains SANDBOX-OK: true
+[21.0s] leak scan after the run (exit 3): process environments holding a secret: none | scanned 1046 files (467.2 MiB) for 10 configured secrets | LEAK_SCAN HIT provider.openai.api-key in /root/.codex/auth.json
+[21.1s] container writable layer: 85.3MB (virtual 6.08GB)
+[21.1s] fresh volumes used: 684K /home/autobyteus/data 470M /root
+[21.6s] container removed with its anonymous volumes: true

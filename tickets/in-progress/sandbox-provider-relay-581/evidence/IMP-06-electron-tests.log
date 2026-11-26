@@ -1,0 +1,11 @@
+# IMP-06-electron-tests.log
+# command: pnpm -C autobyteus-web test:electron (full run had 11 mock failures + 3 env failures; rerun of failed files after the mock fix; the two real-Electron specs with env -u ELECTRON_RUN_AS_NODE)
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+ FAIL  browser/__tests__/browser-file-document-request.electron.spec.ts > Browser session policy in real Electron (autobyteus-416 D6)
+ FAIL  browser/__tests__/browser-screenshot-capture.electron.spec.ts > Screenshot of tabs not shown on screen, in real Electron (autobyteus-507)
+ Test Files  2 failed | 19 passed (21)
+      Tests  126 passed | 11 skipped (137)
+ Test Files  2 passed (2)
+      Tests  11 passed (11)

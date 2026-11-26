@@ -1,0 +1,23 @@
+# IMP-08-live-sandbox-api-keys.log
+# command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node probes/sandbox-live-smoke.mjs --image=autobyteus-server:581-local (image 6762b858d4e3)
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+[3.2s] host node up at http://127.0.0.1:62376 (data test-owned)
+[12.5s] create_sandbox turn: TURN_COMPLETED; record state: ready; tool error codes: none
+[12.5s] sandbox sbx_ab7f4be048 ready 9s after its record; image autobyteus-server:581-local
+[12.5s] result names the imported agent: true; shared folder in result: true
+[12.5s] host peers: sbx_ab7f4be048:paired:sandbox
+[12.6s] sandbox environment names: AUTOBYTEUS_BIND_HOST AUTOBYTEUS_DATA_DIR AUTOBYTEUS_MEMORY_DIR AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES AUTOBYTEUS_PROVIDER_RELAY_PEER AUTOBYTEUS_PROVIDER_RELAYS AUTOBYTEUS_SERVER_HOST AUTOBYTEUS_SERVER_PORT AUTOBYTEUS_TEMP_WORKSPACE_DIR BROWSER DEBIAN_FRONTEND DISPLAY ENABLE_REMOTE_COLLABORATION GTK_IM_MODULE HOME HOSTNAME IMAGE_VARIANT LANG LANGUAGE LC_ALL NODE_ENV PATH PWD QT_IM_MODULE SCREEN_RESOLUTION SDL_IM_MODULE USER_GID USER_UID XDG_RUNTIME_DIR XMODIFIERS
+[12.7s] sandbox C1: RELAYS=anthropic,openai,xai,deepseek,gemini,kimi,glm LOGIN=
+[13.5s] sandbox runtime sign-ins: codex_app_server=SIGNED_IN, claude_agent_sdk=SIGNED_IN, antigravity_cli=SIGNED_OUT, grok_build=SIGNED_IN, deepseek_harness=not installed
+[13.5s] sandbox native providers usable (R-E): ANTHROPIC, DEEPSEEK, GEMINI, GLM, GROK, KIMI, OPENAI
+[14.5s] autobyteus (claude-haiku-5-5) in the sandbox: TURN_COMPLETED in 0.9s; SANDBOX-OK: true
+[16.3s] claude_agent_sdk (haiku) in the sandbox: TURN_COMPLETED in 1.2s; SANDBOX-OK: true
+[20.8s] codex_app_server (gpt-5.6-luna) in the sandbox: TURN_COMPLETED in 3.9s; SANDBOX-OK: true
+[26.9s] grok_build (grok-4.20-0309-non-reasoning) in the sandbox: TURN_COMPLETED in 1.5s; SANDBOX-OK: true
+[26.9s] deepseek_harness: probe step failed: GraphQL: DeepSeek Harness is unavailable; install it with npm install -g @deepseek-ai/dsh (Node.js 24.9 or later) or set DEEPSEEK_HARNESS_COMMAND and retry.
+[26.9s] host relay activity (C5): {"anthropic/apiKey/200":3,"openai/apiKey/200":1,"xai/apiKey/200":7}; keys per line: at,durationMs,method,path,peerNodeId,relayCredentialKind,relayId,status
+[27.2s] run_in_sandbox: TURN_COMPLETED; read the shared file: true; write refused: true
+[28.5s] destroy_sandbox: TURN_COMPLETED; containers left: none; sandbox peers left: 0; records left: 0; folders kept: true
+[28.6s] cleaned up
