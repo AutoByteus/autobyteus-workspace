@@ -19,3 +19,4 @@ Ticket autobyteus-652 (memory-layout-652), round 1, commit under test `7bf21db56
 | 08:27 | API-003 | Completed: Pass (round 2) | 54/54; SMV-120 whole at 1440/1280; SMV-121 cards end at 370 in 390 |
 | 08:28 | API-016 | Started | stack with a very long owner name; steps r2, hdr2, hdr3 |
 | 08:31 | API-016 | Completed: Fail (F-3) | CR-001 and CR-002 hold at 1440, 1280, 390; at 1024×768 the agent's name is 0 px (team 73/219, run title 34/276); 768: 36 px. Stack stopped |
+| 08:34 | API-003 | Completed: Fail (round 2, SMV-122 added) | SMV-122 reproduces F-3: at 1024 px the name is 0 of 153 px; SMV-001…121 before it pass |

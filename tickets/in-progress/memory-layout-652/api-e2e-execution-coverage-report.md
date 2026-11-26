@@ -92,7 +92,7 @@
 
 | Path / Test | Change | Case IDs | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 failed on `7bf21db56e` (F-2, F-1) and pass on `0072beea13`. F-3 has no durable check yet: the next round adds SMV-122 (the name visible at 1024×768) with the fix |
+| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 failed on `7bf21db56e` (F-2, F-1) and pass on `0072beea13`. SMV-122 (added in round 2: the agent's name visible at 1024×768, at least 120 px or whole) fails on `0072beea13` (`smv5-checks.json`: `"width": 0, "needs": 153`); the F-3 fix turns it green |
 
 - Test-code review: `Not Required — direct low-risk route`
 
@@ -121,7 +121,7 @@ Round 1's F-1 and F-2 are fixed (CR-001, CR-002; API-016, SMV-120, SMV-121). Rou
 - Cause (Measured): the header row is `flex flex-wrap`, but its left group (Back, `/`, name; `flex min-w-0 flex-1`) may shrink to 0, so the row never needs to wrap while the filter (240 px) and the switch (318 px) fit: the name gives way instead.
 - Spec: Responsive: "Header on one row when it fits (wraps otherwise)"; Long names: the name truncates with an ellipsis (never hidden).
 - Not caused by IR-002: the left group's classes are IR-001's; round 1 measured desktop widths only at 1280 and 1440.
-- Fix hint: a minimum width for the name's group (for example about 12 rem), so that below it the filter and switch wrap to the next row; the name still truncates when it alone does not fit. I add SMV-122 (the agent page's name visible at 1024×768) to the probe in the next round.
+- Fix hint: a minimum width for the name's group (for example about 12 rem), so that below it the filter and switch wrap to the next row; the name still truncates when it alone does not fit. SMV-122 in the probe reproduces it (`API-003-semantic-memory-probe/smv5-checks.json`) and turns green with the fix.
 
 ## Latest Authoritative Result
 

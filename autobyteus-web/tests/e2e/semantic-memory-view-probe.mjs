@@ -6,7 +6,8 @@
 // the screenshots the UI/UX spec's VIS references show (desktop 1440×900, narrow 390×844). Since autobyteus-652 (the
 // approved autobyteus-608 layout) also, at 1440×900: content tops, the reader filling the window, reader type, the list's
 // width and icons, Copy folder path on the clipboard, a 40-character read-only tab (SMV-110…119); the agent's name whole
-// beside its subtitle at 1440 and 1280 px (SMV-120); the Episodic cards inside a 390 px window (SMV-121).
+// beside its subtitle at 1440 and 1280 px (SMV-120); the Episodic cards inside a 390 px window (SMV-121); the name visible
+// at 1024 px (SMV-122).
 //
 //   pnpm -C autobyteus-server-ts build
 //   node autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs --browser-executable <chrome> [--output-dir <dir>]
@@ -275,6 +276,14 @@ try {
   await page.setViewportSize({ width: 1440, height: 900 });
   await sleep(600);
   check('SMV-120', nameAt1440.whole && nameAt1280.whole, 'AC-001: the agent\'s name is whole beside its subtitle at 1440 and 1280 px', { nameAt1440, nameAt1280, subtitle: await text('[data-test="agent-memory-places"]') });
+  // autobyteus-652 F-3: at a laptop width the header wraps rather than hide the name (spec Responsive: one row when it
+  // fits, wraps otherwise): the name shows at least 120 px, or whole when it needs less.
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await sleep(600);
+  const nameAt1024 = await nameFits();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await sleep(600);
+  check('SMV-122', nameAt1024.width >= Math.min(nameAt1024.needs, 120), 'AC-001 (Responsive): at 1024 px the agent\'s name stays visible (the header wraps instead)', nameAt1024);
   check('SMV-023', (await text('[data-test="agent-memory-tab-episodic"]')).includes('2'), 'The Episodic tab counts the episodes');
   await shot(page, 'VIS-004-agent-episodic-1440x900');
 

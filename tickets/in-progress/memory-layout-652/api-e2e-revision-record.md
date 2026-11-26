@@ -36,7 +36,7 @@ None.
 - Triggering finding or case IDs: F-1 (SMV-121), F-2 (SMV-120).
 - Related revision IDs: CRR-001, IR-002.
 - Why recorded: the rerun after the fix.
-- Coverage decisions or durable test paths changed: none this round; SMV-122 (F-3) comes with its fix.
+- Coverage decisions or durable test paths changed: SMV-122 added to `semantic-memory-view-probe.mjs` (F-3's reproduction; fails on `0072beea13`).
 - Cases rechecked: specs (45 files, 304 tests), the probe (54/54), the three changed components' views at 1440, 1280, 1024, 900, 768 and 390 (API-016, with a very long owner name added to the stack).
 
 #### Prior Failure Resolution
