@@ -49,7 +49,8 @@ Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { configurable: tr
   if (holdStartup.value) await new Promise<void>(resolve => { pendingMedia.value = true; mediaResolve = resolve })
   return stream
 } })
-// This computer's Voice Input on the embedded node: its availability read and its transcribe action, by request.
+// This computer's Voice Input on the embedded node: its transcribe action, by request. Its availability read (GetExtensions)
+// is answered by the probe at the network (composer-voice-lifetime-probe.mjs), the window-start read included.
 const nativeFetch = window.fetch.bind(window)
 window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const url = String(input instanceof Request ? input.url : input)
@@ -61,10 +62,6 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
       wave: header.getUint32(8, false), rate: header.getUint32(24, true), samples: header.getUint32(40, true) / 2 })
     if (holdTranscribe.value) await new Promise<void>(resolve => { pendingTranscribe.value = true; transcribeResolve = resolve })
     return new Response(JSON.stringify({ output: { text: 'dictated words', detectedLanguage: 'en', noSpeech: false } }), { headers: { 'content-type': 'application/json' } })
-  }
-  if (url.endsWith('/graphql') && String(init?.body ?? '').includes('GetExtensions')) {
-    return new Response(JSON.stringify({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64',
-      extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } }), { headers: { 'content-type': 'application/json' } })
   }
   return nativeFetch(input, init)
 }

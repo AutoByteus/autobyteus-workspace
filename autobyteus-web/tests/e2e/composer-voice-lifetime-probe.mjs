@@ -3,7 +3,8 @@
 // `pnpm exec nuxt prepare`, and Chrome. Owns Nuxt/Chrome/page; never uses an installed app/data.
 // Native getUserMedia + AudioContext + production AudioWorklet use synthetic PCM, NOT a real mic.
 // Team events enter the actual schema/view; selection/projections/callers/button/store are real.
-// Only transcription IPC is a fixture: no network Team producer, model or packaged-shell claim.
+// Only this computer's Voice Input is a fixture (its availability read and its transcribe action on the embedded node):
+// no network Team producer, model or packaged-shell claim.
 // pnpm test:e2e:composer-voice-lifetime [--output-dir <dir>] [--ledger-file <existing file>]
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
@@ -139,6 +140,14 @@ try {
   await context.route('**/graphql', async route => {
     const payload = route.request().postDataJSON(); evidence.apiRequests.push(payload)
     if (/mutation\s/i.test(payload.query ?? '')) evidence.failures.push({ message: 'Unexpected automatic mutation', operationName: payload.operationName })
+    // This computer's Voice Input on the embedded node, installed, on and ready. Answered here, at the network, because the
+    // window-start read (plugin 22.voiceInputAvailability) is in flight before the fixture page's setup runs, and Apollo
+    // gives the page's own reads that same in-flight answer.
+    if (payload.operationName === 'GetExtensions') {
+      await route.fulfill({ json: { data: { extensions: { catalog: 'verified', platform: 'darwin-arm64',
+        extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } } })
+      return
+    }
     await route.fulfill({ json: { data: { collaboratorCandidates: [] } } })
   })
   page = await context.newPage(); page.on('pageerror', error => evidence.pageErrors.push(error.message))

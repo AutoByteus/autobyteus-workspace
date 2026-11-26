@@ -9,6 +9,13 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
   // The microphone permission, granted here: an earlier case's clipboard-only grantPermissions (PT-E2E-017) rejects every
   // permission it does not list, so without this the store reads the microphone as denied.
   await context.grantPermissions(['microphone'], { origin: new URL(page.url()).origin })
+  // This computer's Voice Input (installed, on, ready), answered at the network: a page load starts the window-start read
+  // (plugin 22.voiceInputAvailability) before any page script runs, and Apollo gives a later read that same in-flight answer.
+  await context.route('**/graphql', async route => {
+    if (route.request().postDataJSON()?.operationName !== 'GetExtensions') return route.fallback()
+    await route.fulfill({ json: { data: { extensions: { catalog: 'verified', platform: 'darwin-arm64',
+      extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } } })
+  })
   await context.addInitScript(() => {
     localStorage.setItem('autobyteus.localization.preference-mode', 'en')
     const streams = []
@@ -22,9 +29,6 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
     const json = body => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } })
     probe.install = () => { window.fetch = async (input, init) => {
       const url = String(input instanceof Request ? input.url : input)
-      if (url.endsWith('/graphql') && String(init?.body ?? '').includes('GetExtensions')) {
-        return json({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64', extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } })
-      }
       if (!url.endsWith('/rest/extensions/voice-input/actions/transcribe')) return nativeFetch(input, init)
       probe.calls++
       const header = new DataView(init.body)

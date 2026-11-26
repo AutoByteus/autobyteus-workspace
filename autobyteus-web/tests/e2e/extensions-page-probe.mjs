@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-// Settings → Extensions on a real node (autobyteus-516; VIS-V*, AC-001, AC-002, AC-005, AC-007): a probe-owned node
+// Settings → Extensions on a real node (autobyteus-516; VIS-V*, AC-001, AC-002, AC-003, AC-005, AC-007): a probe-owned node
 // started as the desktop's own node, a development catalog signed with a throwaway key and served on loopback, the
 // real Voice Input package packed from the extensions repository, the real voice runtime 0.3.2 and its speech model
 // (about 2 GB, downloaded into the probe's temporary folder), a Nuxt dev server and headless Chrome. Chrome's fake
-// microphone plays a spoken clip, so the Test records and transcribes for real.
+// microphone plays a spoken clip, so the Test records and transcribes for real. The update cases (U1, U2) publish later
+// catalog releases on the same catalog: Voice Input 1.0.1 (the repository's package with the version changed), then a
+// broken 1.0.2 whose server part pins a voice runtime release that does not exist, so its install(ctx) fails.
 //
 //   node tests/e2e/extensions-page-probe.mjs --extensions-repo=<AutoByteus/autobyteus-extensions checkout> [--skip-server-build]
 //     [--output-dir=<new folder>] [--browser-executable=<chrome>]
@@ -90,19 +92,48 @@ const stop = async child => {
 };
 const scrubbedEnv = () => Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('ENABLE_') && !key.startsWith('AUTOBYTEUS_')));
 
-/** The development catalog: the real voice-input package, signed with a throwaway key, on loopback. */
+/**
+ * A later Voice Input package for the update cases (AC-003): the repository's voice-input folder with another version,
+ * packed with the repository's own packing code. `runtimeVersion` pins another voice runtime release in the server
+ * part: a release that does not exist makes the package's install(ctx) fail, as a broken package release would.
+ */
+const packVoiceVariant = async (folder, version, { runtimeVersion } = {}) => {
+  const variant = path.join(folder, `voice-input-${version}`);
+  await fs.cp(path.join(extensionsRepo, 'voice-input'), variant, { recursive: true });
+  const descriptionFile = path.join(variant, 'extension.json');
+  const description = { ...JSON.parse(await fs.readFile(descriptionFile, 'utf8')), version };
+  await fs.writeFile(descriptionFile, `${JSON.stringify(description, null, 2)}\n`);
+  if (runtimeVersion) {
+    const serverFile = path.join(variant, 'server', 'index.mjs');
+    const source = await fs.readFile(serverFile, 'utf8');
+    const pinned = source.replace(/const RUNTIME_VERSION = '[^']+'/, `const RUNTIME_VERSION = '${runtimeVersion}'`);
+    assert(pinned !== source, 'the voice server part pins its runtime as const RUNTIME_VERSION');
+    await fs.writeFile(serverFile, pinned);
+  }
+  const { packageFiles } = await import(pathToFileURL(path.join(extensionsRepo, 'scripts', 'lib', 'extension-package.mjs')).href);
+  const { packTarGz } = await import(pathToFileURL(path.join(extensionsRepo, 'scripts', 'lib', 'tar-gz.mjs')).href);
+  const bytes = packTarGz(await packageFiles(variant));
+  return { name: `voice-input-${version}.tar.gz`, bytes, sha256: createHash('sha256').update(bytes).digest('hex'), description };
+};
+
+/**
+ * The development catalog: the real voice-input package, signed with a throwaway key, on loopback. `publish` replaces
+ * the catalog's voice-input entry and its signature (a catalog release), so the update cases can offer a later version.
+ */
 const startCatalog = async (folder) => {
   const { packExtension } = await import(pathToFileURL(path.join(extensionsRepo, 'scripts', 'pack.mjs')).href);
   const { file, sha256, description } = await packExtension('voice-input', { outDir: folder });
   const port = await choosePort();
   const base = `http://127.0.0.1:${port}`;
   const keys = generateKeyPairSync('ed25519');
-  const catalog = Buffer.from(JSON.stringify({ extensions: [{ ...description, packageUrl: `${base}/${path.basename(file)}`, sha256 }] }));
-  const files = new Map([
-    ['extensions-catalog.json', catalog],
-    ['extensions-catalog.json.sig', Buffer.from(sign(null, catalog, keys.privateKey).toString('base64'))],
-    [path.basename(file), await fs.readFile(file)],
-  ]);
+  const files = new Map([[path.basename(file), await fs.readFile(file)]]);
+  const publish = ({ name, bytes, sha256: digest, description: entry }) => {
+    files.set(name, bytes);
+    const catalogBytes = Buffer.from(JSON.stringify({ extensions: [{ ...entry, packageUrl: `${base}/${name}`, sha256: digest }] }));
+    files.set('extensions-catalog.json', catalogBytes);
+    files.set('extensions-catalog.json.sig', Buffer.from(sign(null, catalogBytes, keys.privateKey).toString('base64')));
+  };
+  publish({ name: path.basename(file), bytes: files.get(path.basename(file)), sha256, description });
   const server = http.createServer((request, response) => {
     const body = files.get(path.basename(new URL(request.url, base).pathname));
     if (!body) { response.statusCode = 404; response.end(); return; }
@@ -110,7 +141,13 @@ const startCatalog = async (folder) => {
   });
   await new Promise(resolve => server.listen(port, '127.0.0.1', resolve));
   evidence.catalog = { url: `${base}/extensions-catalog.json`, packageSha256: sha256, packageSha256Check: createHash('sha256').update(files.get(path.basename(file))).digest('hex') };
-  return { server, url: `${base}/extensions-catalog.json`, publicKeyPem: keys.publicKey.export({ type: 'spki', format: 'pem' }).toString() };
+  return { server, publish, url: `${base}/extensions-catalog.json`, publicKeyPem: keys.publicKey.export({ type: 'spki', format: 'pem' }).toString() };
+};
+
+/** The voice worker processes this probe's node runs (their model path is under the probe's own folder). */
+const voiceWorkers = async (ownedFolder) => {
+  const { stdout } = await execFileAsync('ps', ['-axo', 'pid=,command=']);
+  return stdout.split('\n').filter(line => line.includes(' serve --backend ') && line.includes(ownedFolder)).map(line => line.trim().split(/\s+/)[0]);
 };
 
 const createNode = async (ownedRoot, catalog) => {
@@ -270,18 +307,29 @@ try {
     await shot('R3-page-language-saved');
   });
 
-  await kase('R4', 'Microphone panel and Test: records the fake microphone and transcribes with this computer\'s Voice Input (V8-01…V8-04, AC-007)', async () => {
+  /** The microphone panel's Test: records the fake microphone for 5 s and returns the transcript and its time. */
+  const recordTest = async (shotPrefix) => {
+    // The panel is in the card's settings section; a freshly opened page shows it collapsed ("Show settings").
+    if (!(await page.locator('[data-testid="voice-microphone-panel"]').count())) {
+      await page.locator('[data-testid="extension-toggle-page-voice-input"]').click();
+    }
     await page.locator('[data-testid="voice-microphone-panel"]').scrollIntoViewIfNeeded();
-    await shot('R4-microphone-panel');
+    if (shotPrefix) await shot(`${shotPrefix}-microphone-panel`);
     await page.locator('[data-testid="voice-test-button"]').click();
+    // While the Test records and transcribes, the panel hides the earlier result, so the result that appears is this one.
     await waitFor('recording', async () => (await page.locator('[data-testid="voice-test-button"]').innerText()).includes('Stop Test'), 20000);
     await sleep(5000);
-    await shot('R4-test-recording');
+    if (shotPrefix) await shot(`${shotPrefix}-test-recording`);
     await page.locator('[data-testid="voice-test-button"]').click();
     const started = Date.now();
     await page.locator('[data-testid="voice-test-result"]').waitFor({ timeout: 120000 });
-    evidence.timings.testTranscriptionMs = Date.now() - started;
-    evidence.testResult = await text('voice-test-result');
+    return { transcript: await text('voice-test-result'), ms: Date.now() - started };
+  };
+
+  await kase('R4', 'Microphone panel and Test: records the fake microphone and transcribes with this computer\'s Voice Input (V8-01…V8-04, AC-007)', async () => {
+    const { transcript, ms } = await recordTest('R4');
+    evidence.timings.testTranscriptionMs = ms;
+    evidence.testResult = transcript;
     assert(/meeting|summari/i.test(evidence.testResult), `transcript: ${evidence.testResult}`);
     await shot('R4-test-result');
   });
@@ -339,6 +387,58 @@ try {
     await shot('R7-phone-width-page');
     await page.close();
     page = previous;
+  });
+
+  const readyAgain = () => waitFor('on and ready', async () => await card('voice-input') === 'On'
+    && (await page.locator('[data-testid="extension-starting-voice-input"]').count()) === 0, 300000);
+  const nodeSettings = async () => (await (await fetch(`${node.url}/rest/extensions/voice-input/actions/getSettings`, {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: 'null',
+  })).json()).output;
+  const extensionState = async () => JSON.parse(await fs.readFile(path.join(node.dataRoot, 'extensions', 'state.json'), 'utf8'));
+
+  await kase('U1', 'Update 1.0.0 → 1.0.1 from a newer catalog release: Update offered, On and the language kept, the Test dictates with the new package; one worker (AC-003, V9-01, V9-02)', async () => {
+    catalog.publish(await packVoiceVariant(path.join(ownedRoot, 'catalog'), '1.0.1'));
+    await openExtensions();
+    await waitFor('update offered', async () => (await page.locator('[data-testid="extension-update-badge-voice-input"]').count()) > 0, 30000);
+    assert((await text('extension-update-badge-voice-input')).includes('1.0.1'), `badge ${await text('extension-update-badge-voice-input')}`);
+    await shot('U1-update-offered');
+    await page.locator('[data-testid="extension-update-voice-input"]').click();
+    await waitFor('updating', async () => await card('voice-input') === 'Updating', 30000);
+    evidence.updateProgress = await page.locator('[data-testid="extension-progress-voice-input"]').innerText().catch(() => null);
+    await shot('U1-updating');
+    await readyAgain();
+    assert(await text('extension-version-voice-input') === '1.0.1', `version ${await text('extension-version-voice-input')}`);
+    assert(await page.locator('[data-testid="extension-update-voice-input"]').count() === 0, 'no Update offered after the update');
+    const settings = await nodeSettings();
+    assert(settings.language === 'en' && settings.runtimeVersion === '0.3.2', `settings kept: ${JSON.stringify(settings)}`);
+    const state = await extensionState();
+    assert(state['voice-input']?.enabled === true, `state.json kept On: ${JSON.stringify(state)}`);
+    const { transcript, ms } = await recordTest();
+    evidence.u1 = { settings, state, transcript, ms, workers: await voiceWorkers(ownedRoot) };
+    assert(/meeting|summari/i.test(transcript), `transcript after the update: ${transcript}`);
+    assert(evidence.u1.workers.length === 1, `one voice worker after the update: ${evidence.u1.workers.join(', ')}`);
+    await shot('U1-updated');
+  });
+
+  await kase('U2', 'A broken 1.0.2 release: "Update to 1.0.2 failed: …", Update still offered, 1.0.1 still On and dictating (AC-003 failure outcome)', async () => {
+    catalog.publish(await packVoiceVariant(path.join(ownedRoot, 'catalog'), '1.0.2', { runtimeVersion: '0.3.99' }));
+    await openExtensions();
+    await waitFor('update offered', async () => (await page.locator('[data-testid="extension-update-badge-voice-input"]').count()) > 0, 30000);
+    await page.locator('[data-testid="extension-update-voice-input"]').click();
+    await waitFor('the update failure on the card', async () => (await text('extension-message-voice-input').catch(() => '')).includes('Update to 1.0.2 failed'), 120000);
+    await readyAgain();
+    const message = await text('extension-message-voice-input');
+    assert(/Update to 1\.0\.2 failed: .+/.test(message), `message ${message}`);
+    assert(await text('extension-version-voice-input') === '1.0.1', `version ${await text('extension-version-voice-input')}`);
+    assert((await page.locator('[data-testid="extension-update-voice-input"]').count()) === 1, 'Update still offered');
+    const log = await fs.readFile(path.join(node.dataRoot, 'extensions', 'voice-input', 'extension.log'), 'utf8');
+    const { transcript, ms } = await recordTest();
+    evidence.u2 = { message, settings: await nodeSettings(), state: await extensionState(), transcript, ms, workers: await voiceWorkers(ownedRoot),
+      logLines: log.split('\n').filter(line => /1\.0\.2|update/i.test(line)).slice(-8) };
+    assert(evidence.u2.settings.language === 'en', `language kept: ${JSON.stringify(evidence.u2.settings)}`);
+    assert(/meeting|summari/i.test(transcript), `transcript after the failed update: ${transcript}`);
+    assert(evidence.u2.workers.length === 1, `one voice worker: ${evidence.u2.workers.join(', ')}`);
+    await shot('U2-update-failed');
   });
 
   await kase('R8', 'Remove: confirmation, Removing, Not installed; the folder is gone (V10-01…V10-03)', async () => {
