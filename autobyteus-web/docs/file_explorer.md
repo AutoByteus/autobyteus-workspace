@@ -410,6 +410,16 @@ create/delete dialogs, or mutation target policy.
 | **Drag & Drop**   | Move files between folders                                                            |
 | **Visual States** | Open folder indicator, drag-over highlight                                            |
 
+**File icons and tab names** (autobyteus-608, one owner for every file list: the Files panel, the Skills page and the
+Memory reader). A file's icon comes from its extension through `utils/fileExplorer/fileItemIcon.ts`: `.md`
+`heroicons:document-text` (blue), `.js`, `.ts`, `.vue`, `.html`, `.css` and `.json` the `vscode-icons:file-type-*` icons
+the app shows for the same kinds elsewhere (`ArtifactItem.vue`), and the drag preview's file `heroicons:document`; any
+other file keeps the list's plain file outline. They are local Iconify icons, so each one renders (Font Awesome `fab`
+and `fas` tags rendered nothing on some of these kinds): the names are literals that `scripts/build-icon-bundle.mjs`
+puts in `assets/icons/phone-icon-bundle.json` (`--check` verifies it), so a new kind needs its name added to the table
+and the bundle regenerated. `FileExplorerTabs` names a tab up to 150 px, and a read-only tab (the Memory reader) up to
+320 px with the full name as its tooltip.
+
 **Drag & Drop Implementation:**
 
 ```typescript

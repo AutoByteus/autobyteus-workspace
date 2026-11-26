@@ -14,6 +14,11 @@ The page has three tabs (`section` in the route query):
 - **Index** — the memory index pipeline: its four steps, `Index now`, `Try again` and `Rebuild` (see
   [Memory Index](#memory-index)).
 
+The three tabs are the top-level pages' one top bar. An owner's page and a run's page (the run detail) are pages of
+their own: no `Browse · Search · Index`, and one header row (Back, the title, the page's actions; see
+[Owner Pages](#owner-pages)). The layout follows the founder-approved references of autobyteus-608 (VIS-001…017), and
+the semantic reader and the Work Journal fill the window's remaining height.
+
 A run opens in the **run detail** (the Memory Inspector) on its `Work Journal` tab; `Raw Traces` is the other tab.
 There is no Working Context tab and no tab for the per-run category files of an early compaction design: the Work
 Journal is the readable account of a run and the raw traces its authority.
@@ -22,8 +27,10 @@ Route query state (`view`, `section`, `node`, `pane`, `source`, `q`, and the run
 refreshes. Browse's address is `node` (`utils/memoryBrowseNode.ts`): a tab (`global`, `agents`, `teams`, `orgs`) or an
 owner reached through it, for example `agents/agent:<id>`, `teams/team:<id>/agent:<id>`, `orgs/org:<id>/team:<id>` or
 `agents/unattributed`, each ID URI-encoded in its segment (a team-local agent ID keeps its `:` inside the segment); `pane`
-is the owner page's tab (`semantic`, `runs`). A run opened from an owner page carries `back`, `backPane` and `backName`,
-so the inspector's Back reads `Back to <owner>` and returns to that page and tab. The old agent, team and org runs pages
+is the owner page's tab (`semantic`, `runs`). A run opened from an owner page carries `back`, `backPane`, `backName` and, when the page
+knows it, `runLabel` (an episode's summary or Task title, or a team or org member run's summary; never a run ID), so the
+inspector's Back shows the owner's name (its accessible name is `Back to <owner>`) and returns to that page and tab, and
+the run's title is its summary, else its run ID and workspace. The old agent, team and org runs pages
 (`view=agent-detail|team-detail|org-detail`) are gone; such an address opens Browse on Agents. Each card, run, member or
 Back click navigates immediately and the page (the single fetch owner) issues the requests of the target view only;
 an owner page shows `Loading runs…` until its own data arrives and never shows a previous owner's runs.
@@ -43,9 +50,11 @@ See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md).
 
 ## Memory Home (Browse)
 
-Memory Home starts directly with the `Browse · Search · Index` tab control, without a page title, flat on the page like
-the Skills page. Browse (`MemoryBrowse.vue`) has the owner tabs `Global · Agents · Agent Teams · Agent Orgs` and no list
-filter: a node holds few agents, teams and orgs.
+Memory Home has no page title. Its top bar is one row: `Browse · Search · Index` (`MemorySectionTabs.vue`, with the
+Index badge), and on Browse the same row goes on, after a divider, with the owner tabs `Global · Agents · Agent Teams ·
+Agent Orgs` (`MemoryBrowse.vue`; the Global tab's tooltip says what Global memory is) and the source selector at the
+right; Search and Index keep a top row with the section tabs. There is no list filter: a node holds few agents, teams
+and orgs. The cards are one column on a phone, two from 768 px and three from 1280 px.
 
 When more than one memory source exists (imported Memory Sync sources), a source selector and the amber
 `Imported · read-only` pill are shown at the right of the tabs. `Local Memory` is the default for initial page load and
@@ -63,42 +72,69 @@ shows the source error text.
 
 - **Agents:** the shared agents (with or without runs) and every agent with runs on this node (team-local ones
   included), newest change first, then `Unattributed runs` (standalone runs that no agent definition names). A card
-  shows the name, the ID (`unattributed` for that card) and the latest change; no run count. Internal agents appear
+  shows the name (the ID is the name's tooltip; no ID line) and the latest change; no run count. Internal agents appear
   only while Settings → Server Settings → "Show internal agents" is on.
-- **Agent Teams / Agent Orgs:** a card shows the name, the ID, an `N runs` pill and `N members · <latest change>`; this
+- **Agent Teams / Agent Orgs:** a card shows the name (the ID in its tooltip), an `N runs` pill and `N members · <latest change>`; this
   node's cards include the definitions with no runs yet.
-- **Global:** "Global memory", the line "Knowledge shared by every agent, agent team and agent org on this node. Every
-  agent reads it and writes to it.", and the node's global semantic memory folder (below).
+- **Global:** no title row and no description: the selected `Global` tab says where you are, its tooltip says "Knowledge
+  shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it." (the heading
+  "Global memory" stays for screen readers), and the node's global semantic memory folder (below) fills the page.
 
 The cards come from one request per kind (`fetchOwners`, every owner at once). For this node they come from the
 server's episodic catalog, so they appear after its start pass; for an imported source from that source's runs.
 
 ## Owner Pages
 
-Every owner page has `← Back to Memory` (or `← Back to <team or org>` when reached through one) above its header.
+An owner page has one header row (`MemoryPageHeader.vue`, autobyteus-608): Back (an arrow and where it goes, `Memory`
+or the team's or org's name when reached through one; its accessible name and tooltip are `Back to …`), a `/`, the
+title, and at the right the page's actions: a filter where the page has one, and the page's switch
+(`MemoryPaneSwitch.vue`: grey segmented tabs, the selected one white, an optional count pill, a short label below
+640 px, full width on a phone). The row keeps the title whole at every width from 768 to 1440 px: when Back and the title
+do not fit beside the actions, the actions wrap to a row of their own, and below 640 px each action takes a full-width
+row; only a title that alone overflows its row is cut. A shared agent opens the same page from Agents, a team or an org.
 
-**An agent** (`AgentMemoryPage.vue`): the name; "Belongs to <team>" for a team-local agent, "Also works in <teams ·
-orgs>" for a shared agent that is a member somewhere (from the teams' and orgs' members), or "Runs that no agent
-definition names." for Unattributed runs; the ID; and the tabs **Episodic memory · N** and **Semantic memory** (short
-labels below 640 px). A shared agent opens the same page from Agents, a team or an org.
+**An agent** (`AgentMemoryPage.vue`): the agent's name (its ID is the tooltip), then on a wide screen (1024 px and up),
+in the space the name leaves, its places: "Belongs to <team>" for a team-local agent (left out when Back already names
+that team), "Also works in <teams · orgs>" for a shared agent that is a member somewhere (from the teams' and orgs'
+members), or "Runs that no agent definition names." for Unattributed runs; the amber `Imported · read-only` pill for an
+imported source; and at the right the run filter (Episodic only) and the switch **Episodic memory · N** and **Semantic
+memory** (short labels below 640 px).
 
-- *Episodic memory:* the agent's episodes, its runs from every place it works, newest first, 24 to a page: summary (else
-  the Task title, else the run ID), run ID, "In <team or org>" with its icon when the agent works in more than one
-  place, workspace and time. The filter "Filter runs by title or run ID…" asks the node as you type (run ID, Task title,
-  run summary). A run opens its run detail; Back returns to this tab. Unattributed runs has this tab only.
-- *Semantic memory:* the agent's folder (below).
+- *Episodic memory:* the agent's episodes, its runs from every place it works, newest first, 24 to a page. A card shows
+  the summary (else the Task title, else the run ID) with the run ID as its tooltip (no ID line), "In <team or org>"
+  with its icon when the agent works in more than one place, and the workspace and the time on one line. The filter
+  "Filter runs by title or run ID…" asks the node as you type (run ID, Task title, run summary). A run opens its run
+  detail; Back returns to this tab. Unattributed runs has this tab only.
+- *Semantic memory:* the agent's folder (below), filling the rest of the page.
 
-**A team or an org** (`GroupMemoryPage.vue`): the name, "Agent Team" or "Agent Org", the ID, and the tabs **Members · N**
-and **Runs · N**. Member cards show an agent (user icon, name, ID; a shared agent carries the `Shared agent` pill, "A
-shared agent: one memory, the same page wherever it appears.") or, in an org, a team ("Agent Team · N members"); a
-member opens its own page. Runs is the team's or org's run list (`CollaborationMemoryDetail` with `embedded`: no second
-title or Back); a member of a run opens its run detail, and Back returns to the Runs tab.
+**A team or an org** (`GroupMemoryPage.vue`): the name (the tooltip holds "Agent Team" or "Agent Org" and the ID: no
+visible kind label), and at the right the Runs filter (Runs only; owned by this page, 300 ms) and the switch **Members ·
+N** and **Runs · N**. Member cards show an agent (user icon, name; a shared agent carries the `Shared agent` pill, "A
+shared agent: one memory, the same page wherever it appears.") or, in an org, a team ("Agent Team · N members"), each
+with its ID as the name's tooltip; a member opens its own page. Runs is the team's or org's run list
+(`CollaborationMemoryDetail`, the run list only: its non-embedded mode, with its own title, Back and filter, had no
+caller and was removed); a member of a run opens its run detail, carrying that run's summary, and Back returns to the
+Runs tab.
+
+**A run** (the run detail, `MemoryInspector.vue`): one header row with Back, the agent's name (screen-reader only when
+Back already names it) and the run's title, and at the right the switch **Work Journal** and **Raw Traces**. The title
+is the run's summary when it is known (an agent episode's summary or Task title; for a member of a team or org run, the
+summary of that team or org run, which the row carries), else `<run ID> · <workspace>` in monospace (a member run
+without a summary: its run ID; a folder run: its run key); its tooltip is always run ID · workspace. A run opened from a
+search result has no summary, so it shows the fallback, and its Back reads `Search results` (`Back to search results`),
+which returns to the same results.
 
 ## Semantic Memory Folder View
 
 `SemanticMemoryFolder.vue` shows an agent's semantic memory folder or the node's global one, read only, as the Skills
-page shows a skill's folder: the path (selectable), then one panel with the file explorer (260 px, search box, tree) and
-the Files panel's tabs; below 768 px the explorer sits above the open file. The node answers the folder's state first
+page shows a skill's folder: one panel (12 px radius, a light shadow) with the file explorer (280 px, 300 px from
+1024 px; search box, tree, and "Copy folder path" at its foot) and the Files panel's tabs. The panel fills the page's
+remaining height (at least 460 px, no viewport arithmetic); a long document scrolls inside it, and below 768 px the
+explorer sits above the open file (at most 34 % of the window's height) and the page scrolls. There is no path bar:
+**Copy folder path** puts the folder's real path on the clipboard and reads "Copied" for 1.5 s, and the path is the
+button's tooltip. On arrival the first document at the folder's root, in the list's order (folders first, then files
+by name) and not a link, opens, unless one is already open. The reader's type is proportional to its panel: the
+Markdown `h1` is 22 px, the `h2` 17.6 px and the body 14 px (autobyteus-608 DC-005). The node answers the folder's state first
 (`agentSemanticMemoryFolder` / `globalSemanticMemoryFolder`, `stores/semanticMemoryFolderStore.ts`):
 
 - missing: "No semantic memory yet · The folder is created when <agent> next runs." (Global: "No global memory yet · The
@@ -119,7 +155,7 @@ link's content itself ([server File Explorer](../../autobyteus-server-ts/docs/mo
 - `stores/memorySearchStore.ts` owns the memory search (cue, results, coverage, error) and the memory index status, read again about every 2 s while a build runs; `composables/useMemoryIndexView.ts` turns the status into the Index tab's headline, badge and step text.
 - `stores/memorySyncStore.ts` owns the Nodes -> Memory Sync setup/status UI for the currently bound backend node.
 
-The page shell renders `MemoryHome` (with `MemoryBrowse` and its owner pages, and `MemorySearchPanel`, `MemorySearchResults` and `MemoryIndexPanel` for the Search and Index tabs) or `MemoryInspector` (with `WorkJournalTab` and `RawTracesTab`) according to `/memory` query parameters. `stores/memoryExplorerStore.ts` owns the sources, the owner cards, an agent's episodes, a team's or org's members (and every group's members for the agent subtitle), and the team and org runs lists.
+The page shell renders `MemoryHome` (with `MemoryBrowse` and its owner pages, and `MemorySearchPanel`, `MemorySearchResults` and `MemoryIndexPanel` for the Search and Index tabs) or `MemoryInspector` (with `WorkJournalTab` and `RawTracesTab`) according to `/memory` query parameters. Four shared components own what the pages repeated (autobyteus-608): `MemorySectionTabs` (Browse · Search · Index with the Index badge), `MemoryPageHeader` (the header row), `MemoryPaneSwitch` (the grey segmented switch) and `MemoryPicker` (the one bordered select with one down arrow and a screen-reader label, sizes `sm` and `xs`). A typed number (Show, Go to line) has no up/down spinner: the global class `no-spinner` (`app.vue`). `stores/memoryExplorerStore.ts` owns the sources, the owner cards, an agent's episodes, a team's or org's members (and every group's members for the agent subtitle), and the team and org runs lists.
 
 ## GraphQL Explorer Contract
 
@@ -227,14 +263,24 @@ shows a spinner and percent while building, and a dot when the user may need to 
 
 The run detail's default tab reads the run's Work Journal in windows of 300 lines (a file can be several MB):
 
-- a file rail (from 1280 px; a select below) with each file's days, lines, size, `Active` for the open file and
-  `Matched lines` for files holding matches;
-- `Jump to day`, `Go to line` (clamped to the file), `Show 300 earlier / later lines`, and the footer
-  `Lines a–b of N` (`Large file: lines load in parts.` above 5,000 lines);
+- one file shows no list and no picker, only its name; with two or more files, a file list (from 1280 px, headed
+  `FILES · N`) with each file's days, lines, size, `Active` for the open file and `Matched lines` for files holding
+  matches, and below 1280 px a picker (`MemoryPicker`) in the file's header instead;
+- `Jump to day` (a picker) and `Go to line` (clamped to the file; it jumps on Enter, a phone keyboard's Go, with no Go
+  button and no number spinner), `Show 300 earlier / later lines`, and the footer `Lines a–b of N` (`Large file: lines
+  load in parts.` above 5,000 lines);
+- the lines region fills the window's remaining height (a flex column, no viewport arithmetic), to the same bottom
+  margin as the semantic reader;
 - opened from a search result: the matched lines highlighted and scrolled into view, a banner naming the cue and
   the match, and `Match 1 / Match 2` when the run has two matches;
 - a local run without a journal shows `No Work Journal yet. Index your memory to create it.` with a link to the
   Index tab; an imported run shows `No Work Journal`.
+
+The run detail's other tab, **Raw Traces**, reads the run's raw traces one file at a time in one row: the file's name
+as text when the run has one file, a picker (`MemoryPicker`) that loads the chosen file when it has two or more (each
+option reads like `raw_traces_active.jsonl (active) · 2 records`, and `1 record` for one), and at the right `Show [N]`,
+a number with no spinner and no Apply button: it applies on Enter or when the field is left, and only when its value
+changed. The tab names the view, so the picker's and the field's labels are for screen readers only.
 
 ## Storage Source
 
@@ -375,4 +421,5 @@ Coverage includes:
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
 - Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes. Its large-file case (`tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts`) puts a counting proxy between the two: a 40 MiB attachment and two 20 MiB files sync with every request within the limits, an interrupted upload resumes, and a corrupted piece fails only its own file.
 - `components/settings/__tests__/MemorySyncCard.spec.ts` covers the card's status lines and the "files could not be synced" block (nothing extra without failures, many failures with "and N more", one failure); how long paths wrap is checked in a browser, because jsdom does no line breaking.
+- A rendered check of the Memory page's layout (`autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs`, `pnpm -C autobyteus-web test:e2e:semantic-memory-view`; its SMV-110 to SMV-122 measure the layout) runs a real node with invented data in a browser and measures what jsdom cannot: where each page's content starts (85 px on an owner page, 74 px on Global and the cards), that the semantic reader and the Work Journal end 20 px above the window's bottom with no page scroll, the reader's type sizes, the file list's width, the clipboard after Copy folder path, a long tab name, the cards fitting a 390 px window, and an owner's name staying whole at 1280 and 1024 px.
 - Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs), Browse by owner (`MemoryBrowse`, `AgentMemoryPage`, `GroupMemoryPage`: tabs, cards, owner pages, Back, not found, the agent subtitle and episodes), the read-only semantic memory folder (`SemanticMemoryFolder`: states, the transient workspace, read-only explorer mode and link rows in `FileItem.readOnly.spec.ts`), source selection and home-only sources refresh, one request per navigation, team and org runs with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.

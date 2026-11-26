@@ -1,0 +1,41 @@
+{
+  "result": [
+    {
+      "text": "records",
+      "chars": 7,
+      "width": 46,
+      "truncated": false
+    },
+    {
+      "text": "reflections",
+      "chars": 11,
+      "width": 64,
+      "truncated": false
+    },
+    {
+      "text": "deployment-checklist-and-rollback-pla.md",
+      "chars": 40,
+      "width": 251,
+      "truncated": true
+    },
+    {
+      "text": "lessons.md",
+      "chars": 10,
+      "width": 69,
+      "truncated": false
+    },
+    {
+      "text": "network-settings-and-routing-facts.md",
+      "chars": 37,
+      "width": 239,
+      "truncated": false
+    },
+    {
+      "text": "proposals.md",
+      "chars": 12,
+      "width": 82,
+      "truncated": false
+    }
+  ],
+  "errors": []
+}

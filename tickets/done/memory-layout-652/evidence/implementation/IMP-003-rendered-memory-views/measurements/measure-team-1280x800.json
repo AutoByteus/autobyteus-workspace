@@ -1,0 +1,73 @@
+{
+  "result": {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "members": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 901,
+        "h": 49,
+        "bottom": 69,
+        "right": 1252
+      },
+      "headerText": "Memory\n/\nSoftware Engineering Team\nMembers\n2\nRuns\n1",
+      "h1Tooltip": "Agent Team · software-engineering-team",
+      "firstCard": {
+        "x": 351,
+        "y": 85,
+        "w": 291,
+        "h": 88,
+        "bottom": 173,
+        "right": 642
+      },
+      "cards": [
+        {
+          "text": "Solution Designer",
+          "tooltip": "team-local-agent:software-engineering-team:solution_designer"
+        },
+        {
+          "text": "Project Task Manager Shared agent",
+          "tooltip": "project-task-manager"
+        }
+      ]
+    },
+    "runs": {
+      "headerText": "Memory\n/\nSoftware Engineering Team\nMembers\n2\nRuns\n1",
+      "filterInHeader": 1,
+      "firstRun": {
+        "x": 351,
+        "y": 85,
+        "w": 901,
+        "h": 110,
+        "bottom": 195,
+        "right": 1252
+      },
+      "run": {
+        "title": "Review the launch checklist with the team",
+        "tooltip": "software_engineering_team_e2817179927b4e8997b109ed57b60efa",
+        "text": "Review the launch checklist with the team 11/26/2026, 6:02:49 AM <stack-root>/workspace/launch-app solution_designer"
+      },
+      "chips": [
+        {
+          "text": "solution_designer",
+          "tooltip": "solution_designer_781a98ac81b7436ba3fe054274100329"
+        }
+      ],
+      "filtered": 0
+    },
+    "memberRun": {
+      "url": "?view=team-inspector&teamDefinitionId=software-engineering-team&teamName=Software+Engineering+Team&teamRunId=software_engineering_team_e2817179927b4e8997b109ed57b60efa&agentRunId=solution_designer_781a98ac81b7436ba3fe054274100329&memberAddress=/solution_designer&memberName=solution_designer&updatedAt=2026-11-26T06:02:49Z&back=teams/team:software-engineering-team&backPane=runs&backName=Software+Engineering+Team&runLabel=Review+the+launch+checklist+with+the+team",
+      "headerText": "Software Engineering Team\n/\nsolution_designer\nReview the launch checklist with the team\nWork Journal\nRaw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Review the launch checklist with the team",
+        "tooltip": "solution_designer_781a98ac81b7436ba3fe054274100329"
+      },
+      "backTo": "?view=home&section=browse&node=teams/team:software-engineering-team&pane=runs"
+    }
+  },
+  "errors": []
+}

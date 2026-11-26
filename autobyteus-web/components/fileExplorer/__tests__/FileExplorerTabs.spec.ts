@@ -67,4 +67,33 @@ describe('FileExplorerTabs active lifecycle', () => {
     expect(wrapper.findComponent(FileViewer).exists()).toBe(false)
     wrapper.unmount()
   })
+
+  it('shows a read-only tab\'s name up to 320 px with the full name as tooltip; an editable tab stays 150 px (autobyteus-608 DC-010)', async () => {
+    const store = useFileExplorerStore()
+    const name = 'network-settings-and-routing-facts-2026.md'
+    for (const id of ['ws-read', 'ws-edit']) {
+      const state = store._getOrCreateWorkspaceState(id)
+      state.openFiles.push({ path: name, type: 'Text', mode: 'preview', accessIntent: null,
+        content: '# x', url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: null })
+      state.activeFile = name
+    }
+    const mountTabs = (workspaceId: string, readOnly: boolean) => mount(FileExplorerTabs, {
+      props: { workspaceId, readOnly },
+      global: { mocks: { $t: (key: string) => key }, stubs: { FileViewer: true, Icon: true } },
+    })
+    const readOnlyTab = mountTabs('ws-read', true)
+    await nextTick()
+    const shown = readOnlyTab.get('[data-test="file-tab-name"]')
+    expect(shown.text()).toBe(name)
+    expect(shown.classes()).toContain('max-w-[320px]')
+    expect(shown.attributes('title')).toBe(name)
+
+    const editable = mountTabs('ws-edit', false)
+    await nextTick()
+    const edited = editable.get('[data-test="file-tab-name"]')
+    expect(edited.classes()).toContain('max-w-[150px]')
+    expect(edited.attributes('title')).toBeUndefined()
+    readOnlyTab.unmount()
+    editable.unmount()
+  })
 })

@@ -1,0 +1,41 @@
+{
+  "result": {
+    "ownerOrder": [
+      "memory-page-back",
+      "agent-episodes-filter",
+      "agent-memory-tab-episodic",
+      "agent-memory-tab-semantic",
+      "agent-episode",
+      "agent-episode"
+    ],
+    "runOrder": [
+      "memory-page-back",
+      "memory-inspector-tab-journal",
+      "memory-inspector-tab-raw",
+      "work-journal-file",
+      "work-journal-file"
+    ],
+    "goToLine": {
+      "marked": []
+    },
+    "show": {
+      "requestsAfterEnter": [
+        {
+          "op": "GetAgentRunMemoryView",
+          "limit": 2
+        },
+        {
+          "op": "ListWorkspaceRunHistory",
+          "limit": null
+        },
+        {
+          "op": "ListCollaborationRootHistory",
+          "limit": null
+        }
+      ],
+      "requestsAfterSameEnter": 0,
+      "entries": 0
+    }
+  },
+  "errors": []
+}

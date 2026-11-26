@@ -31,7 +31,7 @@
       </section>
     </div>
     <div data-preview="memory" class="mt-4 max-w-5xl">
-      <CollaborationMemoryDetail title="Team memory" :rows="memoryRows" :loading="false" :error="null" :page="1" :total-pages="1" search="" :read-only="false" @inspect-member="inspections++" />
+      <CollaborationMemoryDetail :rows="memoryRows" :loading="false" :error="null" :page="1" :total-pages="1" @inspect-member="inspections++" />
     </div>
   </main>
 </template>

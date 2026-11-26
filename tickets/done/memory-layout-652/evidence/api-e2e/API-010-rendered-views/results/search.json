@@ -1,0 +1,29 @@
+{
+  "result": {
+    "results": [
+      "Project Task Manager project_task_manager_ca953995592948388dad73e82bce912d · /private/tmp/api652/tmp/api652-memory-stack",
+      "solution_designer · Software Engineering Team / solution_designer solution_designer_ef538ee71cc340fb8f4a3a3f8af8034a · /",
+      "Project Task Manager project_task_manager_24c8bc5db9024ab98e22373e9bf39021 · /private/tmp/api652/tmp/api652-memory-stack",
+      "planner · Launch Org / planner research_assistant_8c140955c216464da200b4bae636107d · /private/tmp/api652/tmp/api652-memo"
+    ],
+    "run": {
+      "header": "Search results / Project Task Manager project_task_manager_ca953995592948388dad73e82bce912d · <stack-root>/workspace/launch-app Work Journal Raw Traces",
+      "back": {
+        "text": "Search results",
+        "label": "Back to search results"
+      },
+      "title": {
+        "test": "memory-inspector-run-identity",
+        "text": "project_task_manager_ca953995592948388dad73e82bce912d · <stack-root>/workspace/launch-app",
+        "tooltip": "project_task_manager_ca953995592948388dad73e82bce912d · <stack-root>/workspace/launch-app",
+        "font": "ui-monospace, SFMono-Regular, Menlo, Monaco, Conso",
+        "size": "12px"
+      }
+    },
+    "afterBack": {
+      "query": "release notes",
+      "results": 4
+    }
+  },
+  "errors": []
+}

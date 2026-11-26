@@ -75,4 +75,14 @@ useUpdateNotificationChangeFeed(computed(() => isAppReady.value && showsNotifica
     font-feature-settings: normal;
     text-rendering: optimizeSpeed;
   }
+  /* autobyteus-608 DC-009: a number that is typed (Show, Go to line) has no up/down spinner. */
+  .no-spinner {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 </style>

@@ -1,0 +1,107 @@
+{
+  "result": {
+    "viewport": "1440x900",
+    "agentsCards": {
+      "count": 5,
+      "maxRight": 1412,
+      "window": 1440,
+      "sideways": false,
+      "names": [
+        {
+          "text": "Research Assistant",
+          "cut": false,
+          "tooltip": "research-assistant"
+        },
+        {
+          "text": "Project Task Manager",
+          "cut": false,
+          "tooltip": "project-task-manager"
+        },
+        {
+          "text": "Solution Designer",
+          "cut": false,
+          "tooltip": "team-local-agent:software-engineering-team:solution_designer"
+        },
+        {
+          "text": "Daily Assistant",
+          "cut": false,
+          "tooltip": "autobyteus-daily-assistant"
+        },
+        {
+          "text": "Quarterly Infrastructure Capac",
+          "cut": true,
+          "tooltip": "capacity-planner"
+        }
+      ]
+    },
+    "episodic": {
+      "count": 2,
+      "maxRight": 1054,
+      "window": 1440,
+      "sideways": false,
+      "names": [
+        {
+          "text": "Plan the release notes for the",
+          "cut": false,
+          "tooltip": "project_task_manager_a87838296b8b47258b1eccc997aa4bc3"
+        },
+        {
+          "text": "Rename the helper and update c",
+          "cut": false,
+          "tooltip": "project_task_manager_121201a83379440d8002ad8d465bd781"
+        }
+      ]
+    },
+    "ptmName": {
+      "text": "Project Task Manager",
+      "width": 172,
+      "needs": 172,
+      "whole": true
+    },
+    "ptmPlaces": [
+      {
+        "visible": true,
+        "width": 196,
+        "needs": 232
+      }
+    ],
+    "members": {
+      "count": 2,
+      "maxRight": 1054,
+      "window": 1440,
+      "sideways": false,
+      "names": [
+        {
+          "text": "Solution Designer",
+          "cut": false,
+          "tooltip": "team-local-agent:software-engineering-team:solution_designer"
+        },
+        {
+          "text": "Project Task Manager",
+          "cut": false,
+          "tooltip": "project-task-manager"
+        }
+      ]
+    },
+    "teamRuns": {
+      "count": 1,
+      "maxRight": 1412,
+      "window": 1440,
+      "sideways": false,
+      "names": [
+        {
+          "text": "Review the launch checklist wi",
+          "cut": false,
+          "tooltip": "software_engineering_team_b7df3cdfbb004f55b3b8c42a54f7d135"
+        }
+      ]
+    },
+    "longName": {
+      "text": "Quarterly Infrastructure Capacity Planning And Forecasting Assistant",
+      "width": 374,
+      "needs": 550,
+      "whole": false
+    }
+  },
+  "errors": []
+}
