@@ -126,3 +126,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape: th
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/memory-layout-652`: committed (tip `82dd57fe50`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/memory-layout-652` (`40a89a207b..82dd57fe50`; the remote copy was at implementation's `40a89a207b`, and API/E2E's five commits went up with delivery's push). Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 18 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `9f803aa84d`, which the ticket branch already contained (the branch never needed a merge); no re-integration and no re-verification were needed.
+- Merge: on `finalize/memory-layout-652` (from `origin/personal` `9f803aa84d`), `git merge --no-ff codex/memory-layout-652` = `7efe1844b2` (parents `9f803aa84d` and `82dd57fe50`; the merged tree equals the ticket branch's tree, `1e0dc3060c`). Secret Gate on the merged state: `PASS`, 19 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (105 881 tracked files).
+- Push: `git push origin HEAD:personal` `9f803aa84d..7efe1844b2`; `origin/personal` = `7efe1844b2` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/memory-layout-652` and pushed to `origin/personal` as the commit that follows `7efe1844b2`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/memory-layout-652` and `codex/memory-layout-652`, and delete delivery's own `/tmp/del652` and `/tmp/del652-*.txt`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). API/E2E keeps `/tmp/api652` until the Solution Designer asks. The result is in the terminal message.
