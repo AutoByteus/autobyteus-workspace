@@ -16,8 +16,9 @@
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
+- Current Code Review Revision ID: `CRR-002` (round 2, failure-origin: API-REV-002 F-3, code tested `0072beea13`, API/E2E commits `fb52da0a82`, `97d5e9acd7`, `3bbbda8439`; SMV-122). Round 1 below stays as recorded.
+- Previous: `CRR-001`
+- Current Review Round: `2`
 - Review Scope: `N/A` (failure-origin). The code tested is `7bf21db56e`.
 - Trigger: API/E2E round 1 (API-REV-001, commit `a6ebe0c7de`) failed AC-001 with F-1 and F-2.
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record Reviewed: yes (API-REV-001)
@@ -73,9 +74,37 @@ Medium / Low, direct route; this round is a failure-origin exception. Classifica
   - SMV-120 checks it.
 - **Why not a Design Impact:** no layout choice is open. The VIS and the spec already settle the priority (the name over the subtitle); only the markup misses it.
 
+## Round 2 Failure-Origin Finding (CRR-002)
+
+CR-001 and CR-002 are Resolved. API-REV-002 shows:
+- every card grid inside the window at 1440, 1280 and 390;
+- the name whole beside its places line at 1440 and 1280;
+- SMV-120 and SMV-121 green.
+
+### CR-003 (F-3): between about 768 and 1100 px, the owner and run page header hides the name instead of wrapping
+
+- **Where:** `components/memory/MemoryPageHeader.vue:2-3`, the one shared owner of the agent, team and run page headers. The row is `flex flex-wrap`, but its left group (Back · `/` · name) is `flex min-w-0 flex-1`, which is `flex: 1 1 0%`.
+- **Cause:** with a basis of 0, the row never wraps while the filter (240 px) and the switch (318 px) fit. The left group shrinks instead, below its own content, since `min-w-0` lets it go under the Back button's width.
+- **Consequence:** at 1024×768 with the app's left panel open:
+  - the agent's name is 0 of 172 px, and the filter overlaps "← Memory";
+  - "Software Engineering Team" gets 73 of 219 px;
+  - a run title gets 34 of 276 px;
+  - at 768×900 the name gets 36 px.
+
+  This is a supported scenario: a laptop width with the app's panel open. SMV-122 reproduces it (0 of 153 px).
+- **Governing artifacts:** the 608 spec's responsive rule is "Header on one row when it fits (wraps otherwise)" (Responsive table). For long names, the `h1` "truncates with ellipsis", which is not 0 px.
+- **Origin:** IR-001's header classes. Round 1 measured desktop widths only at 1280 and 1440, and my CRR-001 did not check the header across the spec's breakpoints either (a review gap, recorded).
+- **Required action (Local Fix), in `MemoryPageHeader` only:**
+  - Give the left group a real basis, so the actions wrap to their own row before the name goes. For example `flex-[1_1_18rem] min-w-0`: about 288 px for Back, the `/` and a readable name, tuned against SMV-122's 120 px floor.
+  - Keep `min-w-0` for the name's truncation inside its own row.
+  - The Back button already doesn't shrink.
+  - Check 768, 900, 1024 (with the left panel open), 1280 and 1440 on the agent, team runs and run pages, and that 1280/1440 stay one row (VIS-004).
+
 ## Classification
 
-`Local Fix` (CR-001, CR-002), owned by `/implementation_engineer`. A follow-up for the design reference is recorded as FU-003 in `follow-ups.md`, for the Solution Designer to send.
+Round 2: `Local Fix` (CR-003), owned by `/implementation_engineer`.
+
+Round 1: `Local Fix` (CR-001, CR-002), owned by `/implementation_engineer`. A follow-up for the design reference is recorded as FU-003 in `follow-ups.md`, for the Solution Designer to send.
 
 ## Not Affected
 
@@ -87,6 +116,9 @@ API-REV-001's other results hold:
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 2, CRR-002). The origin is implementation: CR-003, `Local Fix` in `MemoryPageHeader`. CR-001 and CR-002 are resolved.
+- Recommended Recipient: `/implementation_engineer`, then API/E2E (SMV-122 and the widths above).
+- Round 1 result (CRR-001, superseded):
 - Review Decision: `Fail`
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Failure Origin: implementation, `Local Fix` (CR-001, CR-002). Both are faithful copies of the runnable reference's defects, against the written spec and the normative VIS.
