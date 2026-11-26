@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/memory-layout-652/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `tickets/in-progress/memory-layout-652/api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `tickets/in-progress/memory-layout-652/api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `tickets/in-progress/memory-layout-652/api-e2e-test-progress.md`
-- Round and trigger: round 2; implementation IR-002 (CRR-001 Local Fix: CR-001, CR-002), commit `0072beea13` (fix `1cf6e23765`). Round 1: IR-001 at `7bf21db56e` (API-REV-001, Fail on F-1, F-2).
-- Prior round reviewed: round 1. Changed since: three templates (`AgentMemoryPage.vue`, `GroupMemoryPage.vue`, `MemoryBrowse.vue`: classes only) and their specs. Round 1's cases on other surfaces stand; the changed components' specs, the probe and the views of those three components ran again (API-016).
+- Round and trigger: round 3; implementation IR-003 (CRR-002 Local Fix: CR-003), commit `40a89a207b` (fix `413c2dcd83`; probe baseline fix `41bce17570`). Round 1: IR-001 at `7bf21db56e` (API-REV-001, Fail on F-1, F-2). Round 2: IR-002 at `0072beea13` (API-REV-002, Fail on F-3).
+- Prior rounds reviewed: rounds 1 and 2. Changed since round 1: classes in `AgentMemoryPage.vue`, `GroupMemoryPage.vue`, `MemoryBrowse.vue` (round 2), `MemoryPageHeader.vue`, `MemoryInspector.vue`, `AgentMemoryPage.vue` (round 3), their specs, and SMV-034 in the probe. Round 3 reran the whole web suite, the probe, every VIS view at the three AC viewports and the headers at 1440, 1280, 1024, 900 and 768 (API-017). Round 1's cases on unchanged surfaces (org, imported, search, keyboard, short window, icons) stand: those files are unchanged since round 1.
 - Deviations from the plan: SMV-120 and SMV-121 were added to the probe as reproductions of F-2 and F-1, found by the rendered views; one probe run had SMV-120 made non-fatal (reverted) to show that SMV-121 reproduces too.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652/tickets/in-progress/memory-layout-652/evidence/api-e2e/`
 
@@ -15,7 +15,7 @@
 - Task size: `Medium`
 - Architectural risk: `Low`
 - Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (this round is a `Fail`: failure-origin review)
+- Successful-output route: `Delivery`
 - Proportional test-code review decision: `Not Required — direct low-risk route`
 
 ## Tested Builds And Environments
@@ -41,13 +41,14 @@
 | API-013 | AC-006 (keyboard), AC-003 (Show) | focus order, Enter | `steps/keyboard.js` | ENV-3 | Pass | `results/keyboard.json` | owner `["memory-page-back", "agent-episodes-filter", "agent-memory-tab-episodic", "agent-memory-tab-semantic", "agent-episode", …]`; run `["memory-page-back", "memory-inspector-tab-journal", "memory-inspector-tab-raw", "work-journal-file", …]`; Show `2` + Enter → `GetAgentRunMemoryView` `"limit": 2`; the same Enter again → `0` requests | Go to line's highlight was not read (my selector); its Enter path is in the specs |
 | API-014 | AC-005 | Files panel and Skills page | `steps/icons.js` | ENV-3 | Pass | `results/icons.json`, `shots/files-panel-icons-1440x900.png`, `shots/skills-icons-1440x900.png` | each of `app.ts App.vue main.js site.css index.html package.json README.md notes.txt` (and `SKILL.md`): `svg: true`, shapes ≥ 1, 14 px, no font icon; Files tab `"maxWidth": "150px", "title": null` | |
 | API-016 | AC-001 (round 2: CR-001, CR-002; F-3) | the card grids and owner headers after the fix | specs `npx vitest run components/memory components/fileExplorer pages`; the probe; my stack (round 2 adds an agent named "Quarterly Infrastructure Capacity Planning And Forecasting Assistant") with `steps/r2.js` at 1440×900, 1280×800, 1024×768, 390×844, `steps/hdr2.js` at 1024, 900, 768, `steps/hdr3.js` at 1024 and 1440 | ENV-1, ENV-2, ENV-3 | CR-001 Pass; CR-002 Pass at 1440 and 1280; **F-3 Fail at 1024 and 768** | `API-016-round2-fix/results/r2-*.json`, `hdr2-*.json`, `hdr3-*.json`, `shots/r2-header-1024.png`, `shots/r2-*`; `API-003-semantic-memory-probe/smv4-checks.json` | specs `45 passed`, `304 passed`; probe `54/54`, SMV-120 `"nameAt1280": {"width": 153, "needs": 153, "whole": true}`, SMV-121 `"cardRights": [370, 370], "sideways": false`; stack: every card grid `maxRight` ≤ window, `sideways: false` at 1440, 1280, 390; Project Task Manager `"width": 172, "needs": 172` at 1440 and 1280; **1024×768: agent `h1` `"w": 0, "needs": 172`** (group 55 px: Back only), team Runs `h1` `"w": 73, "needs": 219`, run title `"w": 34, "needs": 276`; 768×900: agent `h1` `"w": 36`; 900×768 wraps (`168`) | F-3: see Preliminary Classification |
+| API-017 | AC-001…006 (round 3: CR-003; F-3) | the whole web suite; the probe; every VIS view at 1440×900, 1280×800, 390×844; the owner, team and run headers at 1440, 1280, 1024, 900, 768; the phone card grids | `pnpm test:nuxt`; the probe; my stack with `steps/vis.js`, `hdr2.js`, `hdr3.js`, `r2.js` | ENV-1, ENV-2, ENV-3 | Pass | `API-017-round3-fix/results/web-suite.txt`, `vis-*.json`, `hdr2-*.json`, `hdr3-*.json`, `r2-390x844.json`, `shots/`; `API-003-semantic-memory-probe/smv6-checks.json` | suite `812 passed`, `6296 passed \| 2 skipped`; probe `55/55`, SMV-122 `"width": 153, "needs": 153`, SMV-034 saw only `ListWorkspaceRunHistory`, `ListCollaborationRootHistory` (the 5 s run-list refresh); agent name `172/172` at every width (one row at 1440 and 1280, wrapped below), team `219/219` everywhere, run page Back/name/title at 768 `129, 83/143, 160/276`, at 1024 `212, 142/143, 274/276`; VIS views: owner tops `85`, Global and cards `74`, panel and journal `toWindowBottom 20` (phone 16), `pageScrolls false`; phone card grids `maxRight 370`, `sideways false`; 0 errors | the implementation's SMV-034 change (leaving out the two periodic run-list reads, `RUN_HISTORY_REFRESH_INTERVAL_MS = 5000`) is reviewed and kept as mine |
 | API-015 | AC-002 | a short window and a long document | `steps/short.js` at 1280×720 | ENV-3 | Pass | `results/short.json`, `shots/short-*.png` | panel `"top": 85, "toWindowBottom": 20`, `"pageScroll": false`; reader `"scrollHeight": 6684, "clientHeight": 567`, its last step reachable, panel unmoved; journal `"toWindowBottom": 20` | |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | Notes |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-003, API-010, API-010b, API-010c, API-016 | **Not Proven** | At its stated viewports (1440×900, 1280×800, 390×844) every view now matches (round 2: F-1 and F-2 fixed). Between them, at laptop widths the spec's Responsive section covers (768–1279 px, "one row when it fits, wraps otherwise"), F-3: the header row does not wrap and the page's name shrinks to nothing (1024×768: the agent's name 0 px, a team's 73 of 219, a run's title 34 of 276) |
+| AC-001 | Yes | API-003, API-010, API-016, API-017 | Proven | every VIS view matches its reference at 1440×900, 1280×800 and 390×844 (structure, controls, labels, spacing; only data differs), offsets 85 / 74 px; F-1 (round 2), F-2 (round 2) and F-3 (round 3) resolved: names stay visible at every width from 768 to 1440, the header wraps when the row does not fit, cards fit a phone |
 | AC-002 | Yes | API-003 (SMV-110…115, 119), API-010, API-015 | Proven | fill, no page scroll, type sizes, first root document on arrival, Copy → clipboard and "Copied" for 1.5 s |
 | AC-003 | Yes | API-010, API-013, API-001 | Proven | |
 | AC-004 | Yes | API-011, API-001; IMP-003 (team member) | Proven | |
@@ -59,20 +60,21 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 75% | all but AC-001 proven; AC-001 holds at its three viewports | F-3 at laptop widths (1024, 768) | the fix, then API-016 again |
-| Changed-boundary execution directness | 70% | 95% | real server and page, every view at every viewport | | |
+| Requirement and acceptance-criteria proof | 75% | 95% | AC-001…007 proven on their surfaces | invented data (shaped like real use: long paths, shared agents, long names) | |
+| Changed-boundary execution directness | 70% | 95% | real server and page, every view at every viewport and the widths between | | |
 | Cross-boundary integration realism and mock gap | 70% | 95% | real runs, index, memory sync, org | | |
-| Environment, configuration, identity, and fixture fidelity | 80% | 90% | ENV-2, ENV-3 | invented data; real workspace paths are long, which is what exposes F-1 | |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 90% | imported, not synced, short window, long document, search fallback; round 2: a very long owner name on every grid | | |
-| User-surface, browser, and desktop-shell confidence | 70% | 75% | rendered at all viewports; F-1, F-2 fixed | F-3: no visible name at 1024 px | the fix |
-| Durable regression coverage quality and relevance | 80% | 95% | SMV-110…121 in the probe | | |
+| Environment, configuration, identity, and fixture fidelity | 80% | 95% | ENV-1…3 | zh-CN checked through catalogs, guards and the probe's zh-CN Global heading, not a full zh-CN screenshot pass (as the implementation noted) | |
+| Failure, edge-case, lifecycle, and recovery evidence | 70% | 95% | imported, not synced, short window, long document, search fallback, very long names | | |
+| User-surface, browser, and desktop-shell confidence | 70% | 95% | rendered at 390…1920 px; 0 errors | no packaged window (no shell change) | |
+| Durable regression coverage quality and relevance | 80% | 95% | SMV-110…122 in the probe, the components' new specs | | |
 
 - Overall post-repository confidence: 74%
-- Overall final confidence: 88% (round result `Fail`)
+- Overall final confidence: 95%
 - Calculation method: simple average
-- Every critical acceptance criterion directly proven: `No` (AC-001)
-- Any final applicable category below `90%`: `Yes`: requirement proof 75%, user surface 75%
-- Default final confidence target of `95%` met: `No`
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: none material; zh-CN layout not screenshotted in full
 
 ## Broader Validation Decision (Mandatory)
 
@@ -92,7 +94,7 @@
 
 | Path / Test | Change | Case IDs | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 failed on `7bf21db56e` (F-2, F-1) and pass on `0072beea13`. SMV-122 (added in round 2: the agent's name visible at 1024×768, at least 120 px or whole) fails on `0072beea13` (`smv5-checks.json`: `"width": 0, "needs": 153`); the F-3 fix turns it green |
+| `autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs` | Updated (by implementation, reviewed and kept: SMV-021/062, 030/101, 033, 065, 070/071) and extended by me: SMV-110…121; fixture: an h2 in `research-method.md`, `sites/deployment-checklist-and-rollback-pla.md`, a long workspace path for run 2 | API-003 | SMV-120 and SMV-121 failed on `7bf21db56e` (F-2, F-1) and pass from `0072beea13`; SMV-122 (the agent's name visible at 1024×768) failed on `0072beea13` and passes on `40a89a207b`. SMV-034 updated by implementation (`41bce17570`: leaves out the 5 s run-list re-reads), reviewed and kept |
 
 - Test-code review: `Not Required — direct low-risk route`
 
@@ -111,23 +113,12 @@
 | SMV-120 made non-fatal for one run | Yes | the probe restored from my backup | `grep TEMP-NONFATAL` finds nothing |
 | `/tmp/api652` | Yes | removed when the Solution Designer asks | kept for the next round |
 
-## Preliminary Classification (On `Fail`)
-
-Round 1's F-1 and F-2 are fixed (CR-001, CR-002; API-016, SMV-120, SMV-121). Round 2:
-
-**F-3 — the owner and run header at laptop widths: the page's name shrinks to nothing instead of the row wrapping. `Local Fix` (implementation).**
-
-- Observed (Measured, ENV-3 on `0072beea13`): at 1024×768 (the app's left panel open; the header is 645 px wide) the agent page shows `← Memory`, the filter and the switch; the name `h1` is 0 px wide (needs 172) and the filter covers the end of "Memory" (`API-016-round2-fix/shots/r2-header-1024.png`). The team page's Runs: "Software Engineering Team" 73 of 219 px. A run page: the title 34 of 276 px. At 768×900 the agent's name is 36 px. At 900×768 the row wraps and the name nearly fits (168 of 172). At 1280 and 1440 all are whole.
-- Cause (Measured): the header row is `flex flex-wrap`, but its left group (Back, `/`, name; `flex min-w-0 flex-1`) may shrink to 0, so the row never needs to wrap while the filter (240 px) and the switch (318 px) fit: the name gives way instead.
-- Spec: Responsive: "Header on one row when it fits (wraps otherwise)"; Long names: the name truncates with an ellipsis (never hidden).
-- Not caused by IR-002: the left group's classes are IR-001's; round 1 measured desktop widths only at 1280 and 1440.
-- Fix hint: a minimum width for the name's group (for example about 12 rem), so that below it the filter and switch wrap to the next row; the name still truncates when it alone does not fit. SMV-122 in the probe reproduces it (`API-003-semantic-memory-probe/smv5-checks.json`) and turns green with the fix.
-
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-001 (F-3, at laptop widths; its three stated viewports now pass)
+- Result: `Pass`
+- Criteria not proven, parts only the user can check, or accepted as unverified risk: `None`
 - Evidence decisions requested: `None`
-- Preliminary classification and recommended owner: F-3 `Local Fix` → implementation
-- Next recipient from `get_handoff_rules`: `/code_reviewer` (failure-origin review)
-- Notes: round 1's F-1 and F-2 are fixed. Everything else holds: AC-002 to AC-007, the org and imported paths, search's fallback, keyboard order, the short window, the Files panel and Skills page icons, 0 errors.
+- Next recipient from `get_handoff_rules`: `/delivery_engineer` (direct route, Medium / Low, test-code review not required)
+- Notes:
+  - Resolved across the rounds: F-1 (cards wider than a phone window; round 2), F-2 (the owner name cut beside its subtitle; round 2), F-3 (the name hidden at laptop widths; round 3).
+  - Follow-ups in `follow-ups.md`: FU-001 (Solution Designer), FU-002 (implementation), FU-003 (code reviewer: the design reference has the same layout defects).

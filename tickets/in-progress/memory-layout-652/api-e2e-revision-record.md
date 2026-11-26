@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md` IR-001, round 1 | SR-001, IR-001 | N/A | Fail / 85% |
 | API-REV-002 | Implementation Engineer, IR-002 (CRR-001 Local Fix), round 2 | CRR-001, IR-002 | Fail / 85% | Fail / 88% |
+| API-REV-003 | Implementation Engineer, IR-003 (CRR-002 Local Fix), round 3 | CRR-002, IR-003 | Fail / 88% | Pass / 95% |
 
 ## Revision Entries
 
@@ -51,3 +52,24 @@ None.
 - Current result and confidence: Fail, 88%.
 - New or remaining failure IDs: F-3 (the header's name shrinks to nothing at 1024 px and to 36 px at 768: agent, team and run pages).
 - Recommended owner: failure-origin review (`/code_reviewer`); preliminary `Local Fix` → implementation.
+
+### API-REV-003 — F-3 fixed; Pass
+
+- Triggering role, report path, and round: Implementation Engineer, `implementation-handoff.md` IR-003 (CRR-002 CR-003), round 3, commit `40a89a207b`.
+- Triggering finding or case IDs: F-3 (SMV-122).
+- Related revision IDs: CRR-002, IR-003.
+- Coverage decisions or durable test paths changed: SMV-034 changed by implementation (`41bce17570`): it leaves out the left panel's 5 s run-list re-reads (`RUN_HISTORY_REFRESH_INTERVAL_MS`), which fall in its window once SMV-120…122 come before it; reviewed and kept.
+- Cases rechecked: the whole web suite, the probe, every VIS view at the AC viewports, the headers at 1440…768, the phone card grids (API-017).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-3: the header's name hidden at 1024 px, 36 px at 768 | Local Fix (CRR-002 CR-003) | Resolved by `413c2dcd83` (the left group `flex-auto`: the actions wrap first) | SMV-122, API-017 |
+
+- Canonical artifacts and sections updated: execution report (Round, API-017, AC-001, scorecard, durable coverage, result; the Fail classification removed), progress log, `evidence/api-e2e/API-017-round3-fix/`, `API-003-semantic-memory-probe/smv6-checks.json`.
+- Prior result and confidence: Fail, 88%.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: `/delivery_engineer`.
+- Remaining risks: zh-CN layout not screenshotted in full.
