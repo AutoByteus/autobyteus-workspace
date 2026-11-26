@@ -11,7 +11,7 @@ import {
 export type ProviderRelayRunIdentity = Readonly<{ runId: string; agentDefinitionId: string }>;
 
 /** The runtimes whose model calls a relayed node sends through a relay (Antigravity cannot be relayed, DEC-101). */
-export type RelayedRuntimeKind = LoginTokenRuntimeKind | "deepseek_harness";
+export type RelayedRuntimeKind = LoginTokenRuntimeKind | "codex_app_server" | "deepseek_harness";
 
 /** The relay each external runtime calls its provider through. */
 const RUNTIME_RELAY: Readonly<Record<RelayedRuntimeKind, string>> = Object.freeze({
@@ -135,7 +135,7 @@ export class DefaultProviderRelayAccess implements ProviderRelayAccess {
       return runtimeKind === "deepseek_harness" ? { kind: "relay", relayId, relayCredentialKind: "apiKey" } : { kind: "direct" };
     }
     // The C1 rule (AR-003): listed for a login token → loginToken; else apiKey when the relay is listed.
-    if (runtimeKind !== "deepseek_harness" && relayed.loginTokenRuntimes.has(runtimeKind)) {
+    if ((runtimeKind === "claude_agent_sdk" || runtimeKind === "grok_build") && relayed.loginTokenRuntimes.has(runtimeKind)) {
       return { kind: "relay", relayId, relayCredentialKind: "loginToken" };
     }
     if (relayed.relays.has(relayId)) return { kind: "relay", relayId, relayCredentialKind: "apiKey" };

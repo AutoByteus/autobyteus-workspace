@@ -80,7 +80,6 @@ describe("provider relay access", () => {
     relayPeerNodeId: "srv_relay",
     relays: new Set(["anthropic", "openai", "deepseek"]),
     loginTokenRuntimes: new Set(["claude_agent_sdk" as const]),
-    codexAccountId: null,
   };
   const accessWith = (status: "CONFIGURED" | "MISSING", relayed: typeof RELAYED | null = null) => {
     const passes = new RunPassRegistry();
@@ -161,25 +160,21 @@ describe("the relay table (C3)", () => {
     expect(route.route.allows("POST", "/chat/completions")).toBe(true);
     expect(route.route.allows("GET", "/anthropic/v1/messages")).toBe(false);
     expect(route.route.allows("POST", "/anthropic/v1/models")).toBe(false);
-    expect(route.attach({ secret: "k", accountId: null })).toEqual({ "x-api-key": "k" });
+    expect(route.attach({ secret: "k" })).toEqual({ "x-api-key": "k" });
     expect(relays.get("deepseek")!.routes.loginToken).toBeNull();
     expect(relays.get("deepseek")!.observation).toEqual({ streamReader: "anthropic-messages", compactionHeader: "x-deepseek-harness-compact" });
   });
 
-  it("per-kind routes: Anthropic key vs login token; OpenAI key vs ChatGPT login with the account (P-4, P-6)", () => {
+  it("per-kind routes: Anthropic key vs login token, Grok login; OpenAI API key only (P-4, DEC-115)", () => {
     const anthropic = relays.get("anthropic")!;
-    expect(anthropic.routes.apiKey.attach({ secret: "k", accountId: null })).toEqual({ "x-api-key": "k" });
-    expect(anthropic.routes.loginToken!.attach({ secret: "t", accountId: null })).toEqual({ authorization: "Bearer t" });
+    expect(anthropic.routes.apiKey.attach({ secret: "k" })).toEqual({ "x-api-key": "k" });
+    expect(anthropic.routes.loginToken!.attach({ secret: "t" })).toEqual({ authorization: "Bearer t" });
     expect(anthropic.routes.loginToken!.source).toEqual({ kind: "vault", consumer: { kind: "providerRelay", relayId: "anthropic", relayCredentialKind: "loginToken" } });
-    const chatgpt = relays.get("openai")!.routes.loginToken!;
-    expect(chatgpt.route.origin).toBe("https://chatgpt.com");
-    expect(chatgpt.route.allows("POST", "/backend-api/codex/responses")).toBe(true);
-    expect(chatgpt.route.allows("GET", "/backend-api/wham/accounts/check")).toBe(true);
-    expect(chatgpt.route.allows("POST", "/backend-api/conversation")).toBe(false);
-    expect(chatgpt.attach({ secret: "t", accountId: "acct" })).toEqual({ authorization: "Bearer t", "chatgpt-account-id": "acct" });
-    expect(chatgpt.dropFromCaller).toEqual(["chatgpt-account-id"]);
+    // No Codex login token (DEC-115): OpenAI has an API-key route only.
+    expect(relays.get("openai")!.routes.loginToken).toBeNull();
+    expect(relays.get("xai")!.routes.loginToken!.source).toEqual({ kind: "grokLogin" });
     expect(relays.get("openai")!.routes.apiKey.route.allows("POST", "/v1/files")).toBe(false);
-    expect(relays.get("gemini")!.routes.apiKey.attach({ secret: "g", accountId: null })).toEqual({ "x-goog-api-key": "g" });
+    expect(relays.get("gemini")!.routes.apiKey.attach({ secret: "g" })).toEqual({ "x-goog-api-key": "g" });
   });
 });
 
@@ -219,7 +214,7 @@ describe("credential proxy forwarder with an x-api-key route", () => {
     const route = new ProviderRelays().get("deepseek")!.routes.apiKey;
     const response = await forwarder.forward({
       route: route.route,
-      credential: { headers: route.attach({ secret: "sk-vault-key", accountId: null }), secrets: ["sk-vault-key"] },
+      credential: { headers: route.attach({ secret: "sk-vault-key" }), secrets: ["sk-vault-key"] },
       request: {
         method: "POST", rawPathAndQuery: "/anthropic/v1/messages",
         headers: { "x-api-key": "rp_pass", authorization: "Bearer other", "content-type": "application/json", "anthropic-version": "2023-06-01" },

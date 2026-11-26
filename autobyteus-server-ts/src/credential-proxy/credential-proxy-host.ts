@@ -72,7 +72,7 @@ export const createCredentialProxyHost = (input: AccessInput & Readonly<{
   peerRelayClient: () => Pick<PeerRelayClient, "relay">;
   /** Where the relay node keeps its activity log (C5); the app data folder by default. */
   appDataDir?: string;
-  logins?: Pick<RelayLoginTokenReader, "readCodexLogin" | "readGrokLogin">;
+  logins?: Pick<RelayLoginTokenReader, "readGrokLogin">;
   loginTokensEnabled?: () => boolean;
 }>): CredentialProxyHost => {
   const integrationsDir = input.integrationsDir ?? integrationsDirectory();

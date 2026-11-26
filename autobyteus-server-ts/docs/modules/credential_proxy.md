@@ -55,7 +55,7 @@ outside the runtime, so the runtime never holds it. See
     peer forwarder, the Messages stream reader, `ProviderRelayAccess` with its
     per-run observers, the process relay slot);
   - `provider-relay-peer/`: the relay node's side of relayed calls (the handler,
-    the activity log, the Codex and Grok login reader, the relay offer a new
+    the activity log, the Grok login reader, the relay offer a new
     sandbox gets);
   - `credential-proxy-forwarder.ts`: the caller-path checks and one forwarded call;
   - `credential-proxy-routes.ts`, `credential-proxy-local-server.ts`: the
@@ -252,7 +252,7 @@ and the CLIs' own account paths are allowed.
 | Relay | Upstream | API key attached | Login token attached |
 | --- | --- | --- | --- |
 | `anthropic` | `api.anthropic.com` (`/v1/messages`, `/v1/messages/count_tokens`, `/v1/models`) | `x-api-key` (`provider.anthropic.api-key`) | `Authorization: Bearer` (`provider.anthropic.login-token`, C9); Claude Code's own `anthropic-beta` passes |
-| `openai` | `api.openai.com` (`/v1/responses…`, `/v1/chat/completions`, `/v1/models`); login token: `chatgpt.com` (`/backend-api/codex/*`, `/backend-api/wham/*`, `/backend-api/ps/*`) | `Authorization: Bearer` (`provider.openai.api-key`) | the relay node's own Codex login: `Authorization: Bearer <access_token>` and `chatgpt-account-id`, the caller's account dropped |
+| `openai` | `api.openai.com` (`/v1/responses…`, `/v1/chat/completions`, `/v1/models`) | `Authorization: Bearer` (`provider.openai.api-key`) | none (DEC-115) |
 | `xai` | `api.x.ai` (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, models, `/v1/api-key`) | `Authorization: Bearer` (`provider.grok.api-key`) | the relay node's own Grok login, Bearer |
 | `deepseek` | `api.deepseek.com` (`POST /anthropic/v1/messages` for DeepSeek Harness, `POST /chat/completions` for native DeepSeek) | `x-api-key` (`provider.deepseek.api-key`) | none |
 | `gemini` | `generativelanguage.googleapis.com` (`generateContent`, `streamGenerateContent`, `countTokens`, models) | `x-goog-api-key` (AI Studio key) | none |
@@ -271,8 +271,7 @@ runtime goes through its relay and the relay node attaches the credential:
 | --- | --- |
 | `AUTOBYTEUS_PROVIDER_RELAY_PEER` | The relay node's node ID (a paired peer). Empty: not relayed. |
 | `AUTOBYTEUS_PROVIDER_RELAYS` | The relays the relay node has API keys for. |
-| `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | The runtimes (`claude_agent_sdk`, `codex_app_server`, `grok_build`) that run on the relay node's login token. |
-| `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID` | Exactly when Codex runs on the login token: the relay node's ChatGPT account ID (an identifier, not a credential; Codex checks its account against the list the relay returns, DEC-115). |
+| `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | The runtimes (`claude_agent_sdk`, `grok_build`) that run on the relay node's login token. Codex always uses the API key: in ChatGPT mode it sends its model calls only to an HTTPS workspace backend, which a loopback relay is not (DEC-115). |
 
 A runtime listed in the third setting uses `loginToken` on its relay, otherwise
 `apiKey` when its relay is listed, otherwise it is signed out with the reason
@@ -293,7 +292,7 @@ control queries, Grok discovery) the **node pass**. The launch shapes:
 | --- | --- |
 | Native (AutoByteus) | the autobyteus-ts client's endpoint is the relay (FU-003); the pass is its key |
 | Claude Agent SDK | `ANTHROPIC_BASE_URL`; `ANTHROPIC_API_KEY` (apiKey) or `CLAUDE_CODE_OAUTH_TOKEN` (loginToken); none of the node's own Claude credentials |
-| Codex | apiKey: a custom provider on the relay with the node pass as its bearer; loginToken: `chatgpt_base_url` (account and plugin calls) and `openai_base_url` (model calls) on the relay, and a login in its own `CODEX_HOME` under the server data holding the node pass and the relay node's account ID |
+| Codex | a custom provider on the relay with the node pass as its bearer (always the API key, DEC-115) |
 | Grok Build | `GROK_XAI_API_BASE_URL`; `XAI_API_KEY` (apiKey) or `GROK_AUTH_PROVIDER_ACCESS_TOKEN` (loginToken) |
 | DeepSeek Harness | `DEEPSEEK_BASE_URL=<relay>/anthropic`, `DEEPSEEK_API_KEY=<pass>` (every node) |
 
@@ -322,7 +321,7 @@ peer by its signature (NA-9); its handler (`ProviderRelayPeerHandler`) then, in
 order: refuses an unknown relay, kind, path or method (`PATH_NOT_ALLOWED`); a
 `loginToken` call while its `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS` is off
 (`RELAY_LOGIN_TOKENS_OFF`); a missing credential (`RELAY_KEY_NOT_SET`,
-`RELAY_LOGIN_TOKEN_NOT_SET`) or an expired Codex or Grok login
+`RELAY_LOGIN_TOKEN_NOT_SET`) or an expired Grok login
 (`RELAY_LOGIN_EXPIRED`); then forwards with exactly the declared kind's
 credential (no swap) and writes one activity line. Every reply it sends is marked
 `x-autobyteus-relay-reply: forwarded | refused`; the relayed side passes a marked
@@ -342,10 +341,9 @@ only failure shape whose text every runtime shows; `authentication_error` and
 `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS=true`. Claude's comes from `claude
 setup-token`, stored once with `pnpm secrets:import` (`CLAUDE_CODE_OAUTH_TOKEN=…`
 in the source file → `provider.anthropic.login-token`), never in the plain-text
-settings. Codex's and Grok's are the relay node's own logins
-(`$CODEX_HOME/auth.json` or `~/.codex/auth.json`; `~/.grok/auth.json`), read for
+settings. Grok's is the relay node's own login (`~/.grok/auth.json`), read for
 each call and never renewed by AutoByteus; an expired one is refused so its owner
-signs in again.
+signs in again. Codex has no login-token mode through a relay (DEC-115).
 
 **Provider relay activity (C5).** On the relay node,
 `<app-data-dir>/provider-relays/activity.jsonl`: one line per relayed call,

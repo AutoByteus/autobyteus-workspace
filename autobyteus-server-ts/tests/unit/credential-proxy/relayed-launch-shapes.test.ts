@@ -32,12 +32,7 @@ describe("C1 relayed-node settings", () => {
       AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID,
       AUTOBYTEUS_PROVIDER_RELAYS: "anthropic, openai,deepseek",
       AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "claude_agent_sdk",
-    })).toEqual({ relayPeerNodeId: NODE_ID, relays: new Set(["anthropic", "openai", "deepseek"]), loginTokenRuntimes: new Set(["claude_agent_sdk"]), codexAccountId: null });
-    expect(parse({
-      AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID,
-      AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "codex_app_server",
-      AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID: "acct-relay",
-    })?.codexAccountId).toBe("acct-relay");
+    })).toEqual({ relayPeerNodeId: NODE_ID, relays: new Set(["anthropic", "openai", "deepseek"]), loginTokenRuntimes: new Set(["claude_agent_sdk"]) });
   });
 
   it("stops startup with the reason on a malformed value, never reading it as not relayed", () => {
@@ -45,9 +40,8 @@ describe("C1 relayed-node settings", () => {
     expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID, AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,antigravity" })).toThrow("unknown relay 'antigravity'");
     expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID, AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "autobyteus" })).toThrow("names 'autobyteus'");
     expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic" })).toThrow("need AUTOBYTEUS_PROVIDER_RELAY_PEER");
-    // DEC-115: Codex's account ID comes exactly with Codex on the login token.
-    expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID, AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "codex_app_server" })).toThrow("AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID");
-    expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID, AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID: "acct" })).toThrow("AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID");
+    // DEC-115: Codex cannot run on a relayed login token.
+    expect(() => parse({ AUTOBYTEUS_PROVIDER_RELAY_PEER: NODE_ID, AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "codex_app_server" })).toThrow("names 'codex_app_server'");
   });
 });
 
@@ -68,7 +62,7 @@ describe("Claude's relayed spawn environment (P-3, P-4)", () => {
   });
 });
 
-describe("Codex's relayed app-server launch (P-5, P-6, P-13)", () => {
+describe("Codex's relayed app-server launch (P-5, P-13)", () => {
   it("unrelayed: as configured, in the server's environment", () => {
     vi.stubEnv("OPENAI_API_KEY", "sk-own");
     const launch = resolveCodexAppServerLaunch(null);
@@ -87,29 +81,6 @@ describe("Codex's relayed app-server launch (P-5, P-6, P-13)", () => {
     expect(launch.env.OPENAI_API_KEY).toBeUndefined();
   });
 
-  it("login token: ChatGPT and model calls on the relay, with the relay node's account and the node pass in its own CODEX_HOME, never ~/.codex (DEC-115)", () => {
-    vi.stubEnv("CODEX_HOME", path.join(os.homedir(), ".codex"));
-    const appData = fs.mkdtempSync(path.join(os.tmpdir(), "codex-relay-"));
-    try {
-      const launch = resolveCodexAppServerLaunch(
-        { baseUrl: "http://127.0.0.1:5000/relay/openai", pass: "rp_node_pass", relayCredentialKind: "loginToken" }, () => appData, () => "acct-relay");
-      expect(launch.args.slice(-4)).toEqual([
-        "-c", 'chatgpt_base_url="http://127.0.0.1:5000/relay/openai/backend-api/"',
-        "-c", 'openai_base_url="http://127.0.0.1:5000/relay/openai/backend-api/codex"',
-      ]);
-      expect(launch.env.CODEX_HOME).toBe(path.join(appData, "codex-relay-home"));
-      const auth = JSON.parse(fs.readFileSync(path.join(appData, "codex-relay-home", "auth.json"), "utf8"));
-      expect(auth).toMatchObject({ auth_mode: "chatgpt", tokens: { access_token: "rp_node_pass", account_id: "acct-relay" } });
-      const claims = JSON.parse(Buffer.from(String(auth.tokens.id_token).split(".")[1], "base64url").toString("utf8"));
-      expect(claims["https://api.openai.com/auth"].chatgpt_account_id).toBe("acct-relay");
-      expect(() => resolveCodexAppServerLaunch(
-        { baseUrl: "http://127.0.0.1:5000/relay/openai", pass: "rp_node_pass", relayCredentialKind: "loginToken" }, () => appData, () => null))
-        .toThrow("AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID");
-      expect(fs.statSync(path.join(appData, "codex-relay-home", "auth.json")).mode & 0o777).toBe(0o600);
-    } finally {
-      fs.rmSync(appData, { recursive: true, force: true });
-    }
-  });
 });
 
 describe("runtime sign-in on a relayed node (DS-005)", () => {
@@ -159,16 +130,15 @@ describe("the relay offer a new sandbox gets (DEC-109, DEC-115)", () => {
     getStatusForConsumer: async (consumer: SecretConsumerIdentity) =>
       (consumer.kind === "providerRelay" && configured.includes(`${consumer.relayId}/${consumer.relayCredentialKind}`) ? "CONFIGURED" as const : "MISSING" as const),
   });
-  const logins = (codex: "found" | "missing") => ({
-    readCodexLogin: async () => (codex === "found" ? { kind: "found" as const, credential: { secret: "t", accountId: "acct-relay" } } : { kind: "missing" as const }),
-    readGrokLogin: async () => ({ kind: "expired" as const }),
+  const logins = (grok: "found" | "expired") => ({
+    readGrokLogin: async () => (grok === "found" ? { kind: "found" as const, credential: { secret: "t" } } : { kind: "expired" as const }),
   });
-  it("lists API-key relays; with the switch on the login-token runtimes, and Codex's account ID beside Codex", async () => {
+  it("lists API-key relays, and with the switch on the login-token runtimes it has (never Codex, DEC-115)", async () => {
     expect(await readRelayOffer({ relays, management: management(["anthropic/apiKey", "openai/apiKey", "anthropic/loginToken"]), logins: logins("found"), loginTokensEnabled: () => false }))
       .toEqual({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,openai", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "" });
     expect(await readRelayOffer({ relays, management: management(["anthropic/apiKey", "anthropic/loginToken"]), logins: logins("found"), loginTokensEnabled: () => true }))
-      .toEqual({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "claude_agent_sdk,codex_app_server", AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID: "acct-relay" });
-    expect(await readRelayOffer({ relays, management: management([]), logins: logins("missing"), loginTokensEnabled: () => true }))
+      .toEqual({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "claude_agent_sdk,grok_build" });
+    expect(await readRelayOffer({ relays, management: management([]), logins: logins("expired"), loginTokensEnabled: () => true }))
       .toEqual({ AUTOBYTEUS_PROVIDER_RELAYS: "", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "" });
   });
 });

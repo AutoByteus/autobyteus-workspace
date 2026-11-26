@@ -5,8 +5,8 @@
  * `ProviderRelayPeerHandler`), and a fake provider on 127.0.0.1 standing in for every provider origin. A "runtime" is a
  * `fetch` to the relayed node's local relay with its pass in the provider's own credential header.
  *
- * Covers: the credential attached per declared kind (API key; Claude login token with its OAuth beta; Codex's ChatGPT
- * login with its account, the caller's placeholder account dropped), the body and the streamed reply unchanged, the
+ * Covers: the credential attached per declared kind (API key; Claude login token with its OAuth beta; Grok's own
+ * login), the body and the streamed reply unchanged, the
  * query kept without the peer envelope, the reply marking (a provider 401 stays the provider's), every refusal before a
  * provider call (relay node's switch off, an expired login, a missing key, unpaired on either side, a wrong secret,
  * remote collaboration off, the relay node unreachable), one C5 line per call with no secret in any line or log.
@@ -36,10 +36,9 @@ const RELAY = "srv_relaynode_000000000000000000000000000";
 const SECRET = "peer-secret-581";
 const ANTHROPIC_KEY = "sk-relay-anthropic-dummy-581";
 const CLAUDE_LOGIN_TOKEN = "oat-relay-login-dummy-581";
-const CODEX_ACCESS = "codex-access-dummy-581";
-const CODEX_ACCOUNT = "acct-relay-dummy-581";
+const GROK_LOGIN = "grok-login-dummy-581";
 const GEMINI_KEY = "gemini-relay-dummy-581";
-const SECRETS = [ANTHROPIC_KEY, CLAUDE_LOGIN_TOKEN, CODEX_ACCESS, GEMINI_KEY, SECRET];
+const SECRETS = [ANTHROPIC_KEY, CLAUDE_LOGIN_TOKEN, GROK_LOGIN, GEMINI_KEY, SECRET];
 const BODY = JSON.stringify({ model: "claude-sonnet-5", stream: true, messages: [{ role: "user", content: "hi" }] });
 const SSE = ['event: message_start\ndata: {"type":"message_start"}\n\n', 'event: message_stop\ndata: {"type":"message_stop"}\n\n'];
 
@@ -54,7 +53,7 @@ describe("provider relay through a paired relay node (C4)", () => {
   let relayPeerSecrets: Record<string, string> = {};
   let loginTokensOn = false;
   let claudeLoginStored = true;
-  let codexLogin: RelayLoginRead = { kind: "found", credential: { secret: CODEX_ACCESS, accountId: CODEX_ACCOUNT } };
+  let grokLogin: RelayLoginRead = { kind: "found", credential: { secret: GROK_LOGIN } };
   let activityDir = "";
   let host: CredentialProxyHost;
   let remoteOn = true;
@@ -100,7 +99,7 @@ describe("provider relay through a paired relay node (C4)", () => {
           throw new Error("SECRET_NOT_FOUND");
         },
       }) as never,
-      logins: { readCodexLogin: async () => codexLogin, readGrokLogin: async () => ({ kind: "missing" }) },
+      logins: { readGrokLogin: async () => grokLogin },
       activity: new ProviderRelayActivityLog(activityDir),
       loginTokensEnabled: () => loginTokensOn,
     });
@@ -118,7 +117,6 @@ describe("provider relay through a paired relay node (C4)", () => {
 
   const relayed = (loginTokenRuntimes: RelayedNodeSettings["loginTokenRuntimes"] = new Set()): RelayedNodeSettings => ({
     relayPeerNodeId: RELAY, relays: new Set(["anthropic", "openai", "gemini"]), loginTokenRuntimes,
-    codexAccountId: loginTokenRuntimes.has("codex_app_server") ? CODEX_ACCOUNT : null,
   });
 
   const startRelayedNode = async (settings: RelayedNodeSettings) => {
@@ -151,7 +149,7 @@ describe("provider relay through a paired relay node (C4)", () => {
     relayPeerSecrets = { [RELAYED]: SECRET };
     loginTokensOn = false;
     claudeLoginStored = true;
-    codexLogin = { kind: "found", credential: { secret: CODEX_ACCESS, accountId: CODEX_ACCOUNT } };
+    grokLogin = { kind: "found", credential: { secret: GROK_LOGIN } };
     remoteOn = true;
     pairedHere = true;
     ownSecret = SECRET;
@@ -237,36 +235,34 @@ describe("provider relay through a paired relay node (C4)", () => {
     expect(activity()).toEqual([expect.objectContaining({ relayCredentialKind: "loginToken", error: "RELAY_LOGIN_TOKENS_OFF" })]);
   });
 
-  it("refuses a login token that is not stored, and an expired Codex login (RELAY_LOGIN_TOKEN_NOT_SET, RELAY_LOGIN_EXPIRED)", async () => {
+  it("refuses a login token that is not stored, and an expired Grok login (RELAY_LOGIN_TOKEN_NOT_SET, RELAY_LOGIN_EXPIRED)", async () => {
     loginTokensOn = true;
     claudeLoginStored = false;
-    codexLogin = { kind: "expired" };
-    await startRelayedNode(relayed(new Set(["claude_agent_sdk", "codex_app_server"])));
+    grokLogin = { kind: "expired" };
+    await startRelayedNode(relayed(new Set(["claude_agent_sdk", "grok_build"])));
     const claude = await host.providerRelayAccess.prepareForRun(run, "anthropic", "claude_agent_sdk");
     const noToken = await fetch(`${claude.baseUrl}/v1/messages`, { method: "POST", body: BODY, headers: { authorization: `Bearer ${claude.pass}` } });
     expect(await noToken.json()).toMatchObject({ error: { code: "RELAY_LOGIN_TOKEN_NOT_SET" } });
-    const codex = host.providerRelayAccess.prepareForNode("openai", "codex_app_server");
-    const expired = await fetch(`${codex.baseUrl}/backend-api/codex/responses`, { method: "POST", body: "{}", headers: { authorization: `Bearer ${codex.pass}` } });
+    const grok = await host.providerRelayAccess.prepareForRun(run, "xai", "grok_build");
+    const expired = await fetch(`${grok.baseUrl}/v1/chat/completions`, { method: "POST", body: "{}", headers: { authorization: `Bearer ${grok.pass}` } });
     const answer = await expired.json() as { error: { code: string; message: string } };
     expect(answer.error.code).toBe("RELAY_LOGIN_EXPIRED");
-    expect(answer.error.message).toContain("sign in again in Codex");
+    expect(answer.error.message).toContain("sign in again in Grok");
     expect(seen).toHaveLength(0);
   });
 
-  it("Codex ChatGPT mode with the node pass: the relay node's access token and account, the caller's account dropped (P-6)", async () => {
+  it("Grok login token: the relay node's own Grok login as Bearer, never renewed (C10)", async () => {
     loginTokensOn = true;
-    await startRelayedNode(relayed(new Set(["codex_app_server"])));
-    const codex = host.providerRelayAccess.prepareForNode("openai", "codex_app_server");
-    expect(codex.relayCredentialKind).toBe("loginToken");
-    const response = await fetch(`${codex.baseUrl}/backend-api/codex/responses`, {
-      method: "POST", body: '{"model":"gpt-6.1-terra"}',
-      headers: { authorization: `Bearer ${codex.pass}`, "chatgpt-account-id": "autobyteus-relay", "content-type": "application/json" },
+    await startRelayedNode(relayed(new Set(["grok_build"])));
+    const grok = host.providerRelayAccess.prepareForNode("xai", "grok_build");
+    expect(grok.relayCredentialKind).toBe("loginToken");
+    const response = await fetch(`${grok.baseUrl}/v1/chat/completions`, {
+      method: "POST", body: '{"model":"grok-x"}', headers: { authorization: `Bearer ${grok.pass}`, "content-type": "application/json" },
     });
     expect(response.status).toBe(200);
-    expect(seen[0]).toMatchObject({ url: "/backend-api/codex/responses" });
-    expect(seen[0]!.headers.authorization).toBe(`Bearer ${CODEX_ACCESS}`);
-    expect(seen[0]!.headers["chatgpt-account-id"]).toBe(CODEX_ACCOUNT);
-    expectNoSecretAnywhere(codex.pass);
+    expect(seen[0]).toMatchObject({ url: "/v1/chat/completions" });
+    expect(seen[0]!.headers.authorization).toBe(`Bearer ${GROK_LOGIN}`);
+    expectNoSecretAnywhere(grok.pass);
   });
 
   it("keeps the provider's query (Gemini `alt=sse`) without the peer envelope, and a provider 401 stays the provider's (AR-004)", async () => {

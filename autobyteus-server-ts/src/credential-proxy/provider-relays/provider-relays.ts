@@ -6,14 +6,13 @@ import type { RelayCredentialKind } from "./provider-relay-settings.js";
 /** The stream protocols a relay reads usage and stop reason from. */
 export type ProviderRelayStreamReaderKind = "anthropic-messages";
 
-/** Where a relay node finds the credential of one route: its vault, or its own Codex or Grok login (C10). */
+/** Where a relay node finds the credential of one route: its vault, or its own Grok login (C10). */
 export type RelayCredentialSource =
   | Readonly<{ kind: "vault"; consumer: SecretConsumerIdentity }>
-  | Readonly<{ kind: "codexLogin" }>
   | Readonly<{ kind: "grokLogin" }>;
 
-/** A credential as the relay node attaches it: the secret, and the account it belongs to when the provider needs one. */
-export type RelayCredential = Readonly<{ secret: string; accountId: string | null }>;
+/** A credential as the relay node attaches it. */
+export type RelayCredential = Readonly<{ secret: string }>;
 
 /**
  * One way a relay reaches its provider, for one relay credential kind: the upstream route (origin, base path, allowed
@@ -99,9 +98,6 @@ export const createProviderRelayTable = (origin: ProviderOriginMap = sameOrigin)
     rule("GET|DELETE", /^\/v1\/responses\/[^/]+$/),
     ...OPENAI_COMPATIBLE_CHAT,
   ];
-  // Codex in ChatGPT mode (P-6): the model call (`codex/responses`) and its account, settings and plugin calls.
-  const chatGptPaths = [rule("GET|POST", /^\/backend-api\/codex\/.+$/), rule("GET", /^\/backend-api\/wham\/.+$/),
-    rule("GET|POST", /^\/backend-api\/ps\/.+$/)];
   const xaiPaths = [
     rule("POST", /^\/v1\/(chat\/completions|responses|messages)$/),
     rule("GET", /^\/v1\/(models|language-models)(\/[^/]+)?$/),
@@ -120,18 +116,9 @@ export const createProviderRelayTable = (origin: ProviderOriginMap = sameOrigin)
         attach: bearer,
         dropFromCaller: Object.freeze([]),
       })),
+    // No login-token route: Codex cannot run on a relayed login token (DEC-115, IMP-12).
     relay("openai", "OpenAI",
-      apiKeyRoute("openai", route("openai-api-key", origin("https://api.openai.com"), openAiPaths), bearer),
-      Object.freeze({
-        route: route("openai-login-token", origin("https://chatgpt.com"), chatGptPaths),
-        source: Object.freeze({ kind: "codexLogin" }),
-        attach: (credential: RelayCredential) => ({
-          ...bearer(credential),
-          ...(credential.accountId ? { "chatgpt-account-id": credential.accountId } : {}),
-        }),
-        // The relayed node's Codex sends its placeholder account (P-6).
-        dropFromCaller: Object.freeze(["chatgpt-account-id"]),
-      })),
+      apiKeyRoute("openai", route("openai-api-key", origin("https://api.openai.com"), openAiPaths), bearer)),
     relay("xai", "xAI",
       apiKeyRoute("xai", route("xai-api-key", origin("https://api.x.ai"), xaiPaths), bearer),
       Object.freeze({

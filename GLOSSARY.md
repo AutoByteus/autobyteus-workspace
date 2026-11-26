@@ -382,8 +382,8 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   start. Always written with "relay"; not the credential of node access.
 - **Login token:** a subscription credential from a provider's own sign-in: a
   Claude `setup-token` token in the relay node's vault
-  (`provider.anthropic.login-token`), or the relay node's own Codex or Grok login,
-  read and never renewed by AutoByteus. Used for relayed calls only when the relay
+  (`provider.anthropic.login-token`), or the relay node's own Grok login, read and
+  never renewed by AutoByteus (Codex has none through a relay, DEC-115). Used for relayed calls only when the relay
   node's `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS` is `true`.
 - **Provider relay activity:** one line of
   `<app-data-dir>/provider-relays/activity.jsonl` on a relay node per relayed

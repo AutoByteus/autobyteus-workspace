@@ -172,7 +172,7 @@ const forwardWithVaultKey = async (
     const secret = key.revealToTrustedConsumer();
     const response = await deps.forwarder.forward({
       route: route.route,
-      credential: Object.freeze({ headers: route.attach({ secret, accountId: null }), secrets: Object.freeze([secret]) }),
+      credential: Object.freeze({ headers: route.attach({ secret }), secrets: Object.freeze([secret]) }),
       dropHeaders: route.dropFromCaller,
       request: { method: request.method, rawPathAndQuery, headers: request.headers, body: request.raw },
       proxyRouteBase: providerRelayBaseUrl(deps.proxyBaseUrl(), relay.id),

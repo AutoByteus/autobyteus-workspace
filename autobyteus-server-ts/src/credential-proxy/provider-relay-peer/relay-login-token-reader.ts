@@ -13,18 +13,6 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === "object" && !Array.isArray(value);
 const nonEmpty = (value: unknown): string | null => (typeof value === "string" && value.trim() ? value.trim() : null);
 
-/** A JWT's `exp` in milliseconds; `null` when the value is not a JWT with one. */
-const jwtExpiryMs = (token: string): number | null => {
-  const payload = token.split(".")[1];
-  if (!payload) return null;
-  try {
-    const exp = (JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { exp?: unknown }).exp;
-    return typeof exp === "number" ? exp * 1000 : null;
-  } catch {
-    return null;
-  }
-};
-
 const readJson = async (file: string): Promise<unknown | null> => {
   try {
     return JSON.parse(await readFile(file, "utf8")) as unknown;
@@ -34,28 +22,15 @@ const readJson = async (file: string): Promise<unknown | null> => {
 };
 
 /**
- * C10: the relay node's own Codex and Grok logins, read from their login files for each relayed call and **never
- * renewed** by AutoByteus (DEC-102): renewing from two places would sign one of them out. An expired login is refused
- * so its owner signs in again in the runtime itself.
+ * C10: the relay node's own Grok login, read from its login file for each relayed call and **never renewed** by
+ * AutoByteus (DEC-102): renewing from two places would sign one of them out. An expired login is refused so its owner
+ * signs in again in Grok itself. (Codex's login is not relayed, DEC-115.)
  */
 export class RelayLoginTokenReader {
   constructor(private readonly options: Readonly<{
-    codexHome?: () => string;
     grokHome?: () => string;
     now?: () => number;
   }> = {}) {}
-
-  /** `$CODEX_HOME/auth.json` (else `~/.codex`): ChatGPT tokens' `access_token` and `account_id`. */
-  async readCodexLogin(): Promise<RelayLoginRead> {
-    const home = this.options.codexHome?.() ?? (process.env.CODEX_HOME?.trim() || path.join(os.homedir(), ".codex"));
-    const auth = await readJson(path.join(home, "auth.json"));
-    const tokens = isRecord(auth) && isRecord(auth.tokens) ? auth.tokens : null;
-    const accessToken = nonEmpty(tokens?.access_token);
-    if (!accessToken) return { kind: "missing" };
-    const expiresAt = jwtExpiryMs(accessToken);
-    if (expiresAt !== null && expiresAt <= this.now()) return { kind: "expired" };
-    return { kind: "found", credential: Object.freeze({ secret: accessToken, accountId: nonEmpty(tokens?.account_id) }) };
-  }
 
   /** `~/.grok/auth.json`: the signed-in issuer entry's `key`, refused after its `expires_at`. */
   async readGrokLogin(): Promise<RelayLoginRead> {
@@ -69,7 +44,7 @@ export class RelayLoginTokenReader {
     const latest = entries[0];
     if (!latest) return { kind: "missing" };
     if (!Number.isNaN(latest.expiresAt) && latest.expiresAt <= this.now()) return { kind: "expired" };
-    return { kind: "found", credential: Object.freeze({ secret: latest.key, accountId: null }) };
+    return { kind: "found", credential: Object.freeze({ secret: latest.key }) };
   }
 
   private now(): number {

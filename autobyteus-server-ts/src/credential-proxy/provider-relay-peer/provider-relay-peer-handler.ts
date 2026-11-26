@@ -63,7 +63,7 @@ export class ProviderRelayPeerHandler {
     relays: ProviderRelays;
     forwarder: CredentialProxyForwarder;
     management: () => Pick<SecretManagementService, "resolveForUse">;
-    logins: Pick<RelayLoginTokenReader, "readCodexLogin" | "readGrokLogin">;
+    logins: Pick<RelayLoginTokenReader, "readGrokLogin">;
     activity: Pick<ProviderRelayActivityLog, "append">;
     /** C2 now (read per call). */
     loginTokensEnabled: () => boolean;
@@ -118,7 +118,7 @@ export class ProviderRelayPeerHandler {
         route: route.route,
         credential: Object.freeze({
           headers: route.attach(credential),
-          secrets: Object.freeze([credential.secret, ...(credential.accountId ? [credential.accountId] : [])]),
+          secrets: Object.freeze([credential.secret]),
         }),
         dropHeaders: route.dropFromCaller,
         request: {
@@ -150,7 +150,7 @@ export class ProviderRelayPeerHandler {
     if (source.kind === "vault") {
       try {
         const secret = await this.deps.management().resolveForUse(source.consumer);
-        return { kind: "found", credential: Object.freeze({ secret: secret.revealToTrustedConsumer(), accountId: null }) };
+        return { kind: "found", credential: Object.freeze({ secret: secret.revealToTrustedConsumer() }) };
       } catch {
         return kind === "apiKey"
           ? providerRelayRefusal("RELAY_KEY_NOT_SET", `The relay node has no ${relay.providerName} API key.`)
@@ -158,10 +158,8 @@ export class ProviderRelayPeerHandler {
             `The relay node has no ${relay.providerName} login token. Its owner stores one from \`claude setup-token\` with \`pnpm secrets:import\` (CLAUDE_CODE_OAUTH_TOKEN).`);
       }
     }
-    const runtime = source.kind === "codexLogin" ? "Codex" : "Grok";
-    const read: RelayLoginRead = source.kind === "codexLogin"
-      ? await this.deps.logins.readCodexLogin()
-      : await this.deps.logins.readGrokLogin();
+    const runtime = "Grok";
+    const read: RelayLoginRead = await this.deps.logins.readGrokLogin();
     if (read.kind === "found") return read;
     return read.kind === "expired"
       ? providerRelayRefusal("RELAY_LOGIN_EXPIRED", `The relay node's ${runtime} login has expired: sign in again in ${runtime} on the relay node.`)
