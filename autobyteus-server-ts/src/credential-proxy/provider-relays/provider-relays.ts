@@ -16,14 +16,12 @@ export type RelayCredential = Readonly<{ secret: string }>;
 
 /**
  * One way a relay reaches its provider, for one relay credential kind: the upstream route (origin, base path, allowed
- * methods and paths), where the credential comes from, the headers it becomes, and the caller headers removed beyond
- * the forwarder's own list.
+ * methods and paths), where the credential comes from, and the headers it becomes.
  */
 export type RelayCredentialRoute = Readonly<{
   route: DeliveryRoute;
   source: RelayCredentialSource;
   attach(credential: RelayCredential): Readonly<Record<string, string>>;
-  dropFromCaller: readonly string[];
 }>;
 
 /**
@@ -68,7 +66,7 @@ const apiKeyRoute = (
   relayId: string,
   upstream: DeliveryRoute,
   attach: RelayCredentialRoute["attach"],
-): RelayCredentialRoute => Object.freeze({ route: upstream, source: vault(relayId, "apiKey"), attach, dropFromCaller: Object.freeze([]) });
+): RelayCredentialRoute => Object.freeze({ route: upstream, source: vault(relayId, "apiKey"), attach });
 
 const OPENAI_COMPATIBLE_CHAT = [rule("POST", /^\/v1\/chat\/completions$/), rule("GET", /^\/v1\/models(\/[^/]+)?$/)];
 
@@ -114,7 +112,6 @@ export const createProviderRelayTable = (origin: ProviderOriginMap = sameOrigin)
         source: vault("anthropic", "loginToken"),
         // Claude Code's own `anthropic-beta` (with the OAuth beta) passes unchanged (P-4).
         attach: bearer,
-        dropFromCaller: Object.freeze([]),
       })),
     // No login-token route: Codex cannot run on a relayed login token (DEC-115, IMP-12).
     relay("openai", "OpenAI",
@@ -125,7 +122,6 @@ export const createProviderRelayTable = (origin: ProviderOriginMap = sameOrigin)
         route: route("xai-login-token", origin("https://api.x.ai"), xaiPaths),
         source: Object.freeze({ kind: "grokLogin" }),
         attach: bearer,
-        dropFromCaller: Object.freeze([]),
       })),
     relay(DEEPSEEK_PROVIDER_RELAY_ID, "DeepSeek",
       // DeepSeek Harness's Messages API (its base URL ends in `/anthropic`) and native DeepSeek's chat API.

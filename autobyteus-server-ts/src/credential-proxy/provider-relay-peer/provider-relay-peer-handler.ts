@@ -120,7 +120,6 @@ export class ProviderRelayPeerHandler {
           headers: route.attach(credential),
           secrets: Object.freeze([credential.secret]),
         }),
-        dropHeaders: route.dropFromCaller,
         request: {
           method: request.method,
           rawPathAndQuery: request.rawPathAndQuery,

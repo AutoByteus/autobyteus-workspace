@@ -19,6 +19,8 @@ export const RELAY_CREDENTIAL_KINDS: readonly RelayCredentialKind[] = Object.fre
  */
 export type LoginTokenRuntimeKind = "claude_agent_sdk" | "grok_build";
 export const LOGIN_TOKEN_RUNTIME_KINDS: readonly LoginTokenRuntimeKind[] = Object.freeze(["claude_agent_sdk", "grok_build"]);
+export const isLoginTokenRuntimeKind = (runtimeKind: string): runtimeKind is LoginTokenRuntimeKind =>
+  (LOGIN_TOKEN_RUNTIME_KINDS as readonly string[]).includes(runtimeKind);
 
 /** The relays a relayed node may name (C3's rows). */
 export const RELAYED_PROVIDER_RELAY_IDS: readonly string[] = Object.freeze([
@@ -63,7 +65,7 @@ export const parseRelayedNodeSettings = (read: (key: string) => string | undefin
   }
   const unknownRelay = relays.find((relay) => !RELAYED_PROVIDER_RELAY_IDS.includes(relay));
   if (unknownRelay) throw new ProviderRelaySettingsError(`${PROVIDER_RELAYS_SETTING} names an unknown relay '${unknownRelay}'.`);
-  const unknownRuntime = runtimes.find((runtime) => !LOGIN_TOKEN_RUNTIME_KINDS.includes(runtime as LoginTokenRuntimeKind));
+  const unknownRuntime = runtimes.find((runtime) => !isLoginTokenRuntimeKind(runtime));
   if (unknownRuntime) {
     throw new ProviderRelaySettingsError(`${PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING} names '${unknownRuntime}'; allowed: ${LOGIN_TOKEN_RUNTIME_KINDS.join(", ")}.`);
   }

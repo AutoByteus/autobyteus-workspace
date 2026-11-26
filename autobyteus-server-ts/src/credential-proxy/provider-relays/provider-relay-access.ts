@@ -1,7 +1,12 @@
 import type { SecretManagementService } from "../../secret-management/services/secret-management-service.js";
 import type { RunPassRegistry } from "../run-pass-registry.js";
 import type { ProviderCallListener, ProviderCallObservation } from "./provider-call-observation.js";
-import type { LoginTokenRuntimeKind, RelayCredentialKind, RelayedNodeSettings } from "./provider-relay-settings.js";
+import {
+  isLoginTokenRuntimeKind,
+  type LoginTokenRuntimeKind,
+  type RelayCredentialKind,
+  type RelayedNodeSettings,
+} from "./provider-relay-settings.js";
 import {
   providerRelayBaseUrl,
   providerRelayKeyMissingText,
@@ -135,7 +140,7 @@ export class DefaultProviderRelayAccess implements ProviderRelayAccess {
       return runtimeKind === "deepseek_harness" ? { kind: "relay", relayId, relayCredentialKind: "apiKey" } : { kind: "direct" };
     }
     // The C1 rule (AR-003): listed for a login token → loginToken; else apiKey when the relay is listed.
-    if ((runtimeKind === "claude_agent_sdk" || runtimeKind === "grok_build") && relayed.loginTokenRuntimes.has(runtimeKind)) {
+    if (isLoginTokenRuntimeKind(runtimeKind) && relayed.loginTokenRuntimes.has(runtimeKind)) {
       return { kind: "relay", relayId, relayCredentialKind: "loginToken" };
     }
     if (relayed.relays.has(relayId)) return { kind: "relay", relayId, relayCredentialKind: "apiKey" };

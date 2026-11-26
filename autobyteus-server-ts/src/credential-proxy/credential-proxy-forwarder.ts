@@ -105,16 +105,13 @@ export const integrationCredential = (auth: DeliveryAuthFormat, token: SecretVal
 
 /**
  * The caller's headers that may travel on: without the caller's credentials (a pass), our own host, proxy and
- * hop-by-hop headers, and `drop` (lower-case names).
+ * hop-by-hop headers.
  */
-export const forwardableRequestHeaders = (
-  incoming: IncomingHttpHeaders,
-  drop: readonly string[] = [],
-): Headers => {
+export const forwardableRequestHeaders = (incoming: IncomingHttpHeaders): Headers => {
   const headers = new Headers();
   for (const [name, value] of Object.entries(incoming)) {
     const lower = name.toLowerCase();
-    if (value === undefined || DROPPED_REQUEST_HEADERS.has(lower) || lower.startsWith("proxy-") || drop.includes(lower)) continue;
+    if (value === undefined || DROPPED_REQUEST_HEADERS.has(lower) || lower.startsWith("proxy-")) continue;
     headers.set(lower, Array.isArray(value) ? value.join(", ") : value);
   }
   return headers;
@@ -145,14 +142,12 @@ export class CredentialProxyForwarder {
     route: DeliveryRoute;
     request: ForwardRequest;
     credential: UpstreamCredential;
-    /** Caller headers removed beyond the forwarder's own list (lower-case names). */
-    dropHeaders?: readonly string[];
     /** This route's address for the caller's pass, for rewriting a same-origin `Location` (absent: passed as sent). */
     proxyRouteBase?: string;
   }>): Promise<ForwardResponse> {
     const { route, request, credential } = input;
     const upstream = buildUpstreamUrl(route, request.method, request.rawPathAndQuery);
-    const headers = forwardableRequestHeaders(request.headers, input.dropHeaders);
+    const headers = forwardableRequestHeaders(request.headers);
     for (const [name, value] of Object.entries(credential.headers)) headers.set(name, value);
     // Identity responses only: the body passes through (or is redacted) exactly as the upstream sent it.
     headers.set("accept-encoding", "identity");
