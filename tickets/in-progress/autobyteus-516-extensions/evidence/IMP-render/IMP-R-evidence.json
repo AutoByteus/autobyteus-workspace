@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-11-26T15:23:15.197Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "R1": {
+      "title": "This computer's Extensions: Voice Input Not installed from the verified catalog (V1-01, V2-01)",
+      "result": "Pass",
+      "ms": 3297
+    },
+    "R2": {
+      "title": "Install: phases without a percent, then Installed and on, Getting ready, then On and Ready (V2-02…V2-05, AC-002, REQ-012)",
+      "result": "Pass",
+      "ms": 135769
+    },
+    "R3": {
+      "title": "The packaged page through the real node: loads, shows the installed runtime and folder, saves the language; nothing refused (AC-002 page check, V7-01)",
+      "result": "Pass",
+      "ms": 739
+    },
+    "R4": {
+      "title": "Microphone panel and Test: records the fake microphone and transcribes with this computer's Voice Input (V8-01…V8-04, AC-007)",
+      "result": "Pass",
+      "ms": 7816
+    },
+    "R5": {
+      "title": "A voice surface shows the microphone button: Memory search (V5-01)",
+      "result": "Pass",
+      "ms": 2860
+    },
+    "R6": {
+      "title": "View log, then Off hides the microphone in another page, and On again (V11-01, V4, AR-001)",
+      "result": "Pass",
+      "ms": 40992
+    },
+    "R7": {
+      "title": "Chinese app: translated card and page texts (VIS-L-01, VIS-L-02); phone width layout (VIS-N-01, N-02)",
+      "result": "Pass",
+      "ms": 3587
+    },
+    "R8": {
+      "title": "Remove: confirmation, Removing, Not installed; the folder is gone (V10-01…V10-03)",
+      "result": "Pass",
+      "ms": 4347
+    }
+  },
+  "browserErrors": [],
+  "refusedRequests": [],
+  "timings": {
+    "installSeconds": 110,
+    "readySeconds": 135,
+    "testTranscriptionMs": 818
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:99501",
+    "backend": "terminated:97755",
+    "catalog": "closed",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "catalog": {
+    "url": "http://127.0.0.1:58391/extensions-catalog.json",
+    "packageSha256": "c7e77c874d8c7061035b73ad6be04d47a77362230caab811cfbea780a66fbe8b",
+    "packageSha256Check": "c7e77c874d8c7061035b73ad6be04d47a77362230caab811cfbea780a66fbe8b"
+  },
+  "isolation": {
+    "tempRoot": "<probe-root>",
+    "backend": "http://127.0.0.1:58394",
+    "frontend": "http://127.0.0.1:58393"
+  },
+  "browserVersion": "158.0.8127.88",
+  "installPhases": [
+    "Preparing the speech model (downloads about 2 GB once; this can take a few minutes)"
+  ],
+  "startingMessage": "Installed and on. Getting ready: the speech model is loading (about 30 seconds).",
+  "pageFacts": "Voice runtime\n0.3.2\nSpeech model\nwhisper-small-mlx\nFolder\n<probe-root>/node/extensions/voice-input/data Copy",
+  "frameHeight": 226,
+  "testResult": "Last test result Transcript Ready Please summarize the meeting notes and send them to the team. Please summarize them. Duration: 5.7 s Language: English",
+  "logExcerpt": "2026-11-26T15:23:39.679Z install: voice-input 1.0.0 from http://127.0.0.1:58391/voice-input-1.0.0.tar.gz 2026-11-26T15:23:39.698Z package verified: its SHA-256 matches the signed list of extensions 2026-11-26T15:23:40.029Z install: runtime 0.3.2 for darwin-arm64 from https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.2/voice-input-runtime-darwin-arm64.tar.gz 2026-11-26T1",
+  "finishedAt": "2026-11-26T15:26:57.183Z"
+}

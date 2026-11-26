@@ -1,0 +1,30 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts test:unit (full); then the 4 failing files after fixes
+# Commit: d2934d630f (full run); 38058ec630 (rerun of the fixed files)
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+      Tests  17 failed | 9112 passed | 9 skipped (9138)
+ FAIL  tests/architecture/node-access-boundaries.test.ts > node access boundaries > names every scenario of the contract's table (NAS-01…) in at least one test
+ FAIL  tests/architecture/user-file-replies.test.ts > user file replies (autobyteus-416) > leaves the user-file headers to sendUserFile
+ FAIL  tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED_WITH_WARNINGS
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during background without concurrent cleanup or subsequent startup stages
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > marks every capability pending before the runner runs and applies its answer before admission is rebuilt
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > retains the warning-only policy for an unrelated ordinary migration failure
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is failed (AC-004)
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is missing (AC-004)
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > starts with only custom providers held back while the readable identity migration is running (AC-004)
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status FAILED
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status MISSING
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status NOT_RUN
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status RUNNING
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status SUCCEEDED
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS
+ Test Files  4 failed | 1088 passed | 5 skipped (1097)
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+## Rerun after fixes (38058ec630): node-access-boundaries, user-file-replies, web-generated-graphql-current, server-runtime-app-data-migration-gate, extensions-routes, tests/unit/extensions
+ Test Files  7 passed (7)
+      Tests  65 passed (65)

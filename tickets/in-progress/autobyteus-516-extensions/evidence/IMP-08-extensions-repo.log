@@ -1,0 +1,22 @@
+# IMP-08
+# Command: (autobyteus-extensions) npm test   [node --test "tests/*.test.mjs"]
+# Commit: autobyteus-extensions 4d00904 (local repository, not pushed)
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1
+# Date: 2026-11-26
+
+ok 1 - packs voice-input with the contract layout, the same bytes each time
+ok 2 - checks catalog entries against their packages
+ok 3 - signs the exact catalog bytes with the key from the environment, checked against the public key
+ok 4 - install downloads and checks the runtime, prepares the model, and reports progress without a percent
+ok 5 - start warms the worker: Getting ready while it loads, Ready after; transcribe uses the warm worker
+ok 6 - a failed start rejects with the worker reason and reports not ready (the microphone button hides)
+ok 7 - settings: language is validated and kept in ctx.dir; getSettings gives the folder
+ok 8 - without its runtime it is not ready and says so; transcribe needs bytes
+ok 9 - refuses a runtime archive that does not match its checksum
+# tests 9
+# pass 9
+# fail 0
+
+## The voice part's unpacker on the real runtime 0.3.2 archives (darwin-arm64, win32-x64), /tmp/516-scripts/unpack-check.mjs:
+voice-input-runtime-darwin-arm64.tar.gz ["bin/voice-input-worker 755","requirements-faster-whisper.txt 644","requirements-mlx.txt 644","run_pip_ipv4.py 644","voice_input_worker.py 644"]
+voice-input-runtime-win32-x64.tar.gz ["bin/voice-input-worker.cmd 644","requirements-faster-whisper.txt 644","requirements-mlx.txt 644","run_pip_ipv4.py 755","voice_input_worker.py 755"]

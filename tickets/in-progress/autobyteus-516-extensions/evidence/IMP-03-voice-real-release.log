@@ -1,0 +1,12 @@
+# IMP-03
+# Command: env -i PATH HOME=<tmp> AUTOBYTEUS_VOICE_INPUT_REAL_E2E=1 AUTOBYTEUS_EXTENSIONS_CATALOG_URL=http://127.0.0.1:48516/extensions-catalog.json AUTOBYTEUS_EXTENSIONS_CATALOG_PUBLIC_KEY=<throwaway dev key> pnpm -C autobyteus-server-ts test:voice-input-real-release
+# Commit: 3982b0042e (voice package autobyteus-extensions@4d00904, runtime v0.3.2 from GitHub)
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+[voice-input real release] installed and ready in 142 s
+ ✓ tests/real-release/voice-input-extension.real-release.test.ts (1 test) 151775ms
+     ✓ installs from the signed catalog, ends On and ready, and dictates through the action route  151770ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  154.00s (transform 298ms, setup 140ms, import 200ms, tests 151.78s, environment 0ms)
