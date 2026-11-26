@@ -93,6 +93,11 @@ import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-pla
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
+import { composeExtensions } from "./extensions-composition.js";
+import type { ExtensionManager } from "../extensions/services/extension-manager.js";
+import { readExtensionCatalogSource } from "../extensions/catalog/extension-catalog-source.js";
+import { thisPlatform } from "../extensions/domain/extension-description.js";
+import { isDesktopEmbeddedNode } from "../config/desktop-embedded-node.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -105,6 +110,8 @@ export type StudioServer = Readonly<{
   restartResume: RestartResume;
   /** Process shutdown only, right before the close: ends the file watches and leaves their OS watches to the exit. */
   stopFileWatchesForProcessExit(): void;
+  /** autobyteus-516: the node's extensions; started after listen, stopped with the process resources. */
+  extensions: ExtensionManager;
 }>;
 
 const createStudioApplicationServices = (input: {
@@ -197,10 +204,12 @@ export const buildStudioServer = async (input: {
   let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
   let episodicCatalog: EpisodicCatalog | null = null;
+  let extensions: ExtensionManager | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
+    await extensions?.stopAll();
     await episodicCatalog?.stop();
     if (episodicCatalog) releaseProcessEpisodicCatalog(episodicCatalog);
     await nodeAccess?.close();
@@ -396,6 +405,10 @@ export const buildStudioServer = async (input: {
     releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir(), modelSelectionValidator }).close;
     // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
+    const nodeExtensions = extensions = composeExtensions({
+      dataDir: input.appConfig.getAppDataDir(), platform: thisPlatform(), isDesktopNode: isDesktopEmbeddedNode(),
+      catalogSource: readExtensionCatalogSource(), fetch: globalThis.fetch,
+    });
 
     const app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),
@@ -429,7 +442,7 @@ export const buildStudioServer = async (input: {
         async (restApp) => registerRestRoutes(restApp, {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
-          nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,
+          nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services, extensions: nodeExtensions,
         }),
         { prefix: "/rest" },
       );
@@ -444,7 +457,7 @@ export const buildStudioServer = async (input: {
         remoteChannel: remoteCollaboration.services.client,
         agentStreamHandler: createAgentStreamHandler(generalProcessRunSupervisor.agentRunCommandCoordinator),
       });
-      await registerGraphql(app);
+      await registerGraphql(app, { extensions: nodeExtensions });
       // Last preClose hook: after the native drain and the WebSocket plugin's client close (AR-003).
       installClientConnectionClose(app);
       return Object.freeze({
@@ -455,6 +468,7 @@ export const buildStudioServer = async (input: {
         packageRegistryService: packages.packageRegistryService,
         restartResume,
         stopFileWatchesForProcessExit,
+        extensions: nodeExtensions,
       });
     } catch (error) {
       await app.close();

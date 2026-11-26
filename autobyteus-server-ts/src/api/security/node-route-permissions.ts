@@ -56,7 +56,10 @@ const EXEMPT_EXCHANGES = new Set([
   "/rest/remote/peer-pairing-exchanges",
 ]);
 
-/** Owner actions (NA-7): settings, phone pairing and devices, node update, owner credentials, the MCP gateway token. */
+/**
+ * Owner actions (NA-7): settings, phone pairing and devices, node update, owner credentials, the MCP gateway token, and
+ * the extensions' actions and pages (autobyteus-516).
+ */
 const isOwnerAction = (path: string): boolean =>
   path === "/rest/remote-access/network"
   || path.startsWith("/rest/remote-access/network/")
@@ -69,7 +72,9 @@ const isOwnerAction = (path: string): boolean =>
   || path === "/rest/node-access"
   || path.startsWith("/rest/node-access/")
   || path === "/rest/mcp-gateway"
-  || path.startsWith("/rest/mcp-gateway/");
+  || path.startsWith("/rest/mcp-gateway/")
+  || path === "/rest/extensions"
+  || path.startsWith("/rest/extensions/");
 
 const isPath = (path: string, prefix: string): boolean => path === prefix || path.startsWith(`${prefix}/`);
 

@@ -1,3 +1,4 @@
+import { testExtensionManager } from "../../helpers/test-extension-manager.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
 import { teamMembershipTestCollaborators } from "../../helpers/team-membership-test-collaborators.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
@@ -193,7 +194,7 @@ describe("Team communication API integration", () => {
 
     app = fastify();
     await registerCollaborationMessageReferenceRoutes(app);
-    await registerGraphql(app);
+    await registerGraphql(app, { extensions: testExtensionManager() });
   });
 
   afterAll(async () => {
