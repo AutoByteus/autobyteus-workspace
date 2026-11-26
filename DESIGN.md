@@ -174,8 +174,8 @@ how to apply them; they do not replace user-approved product requirements.
    data, so a wrong contract is the most expensive mistake to undo. A bug fix
    that leaves the data unchanged does not need this. Example (autobyteus-516):
    the extension contract was written first, cut to the fields Stage 1 reads,
-   and proved by prototypes with the real voice runtime and a real Tailscale
-   library before the design; the prototypes changed three details of it.
+   and proved by a prototype with the real voice runtime before the design; the
+   prototype changed three details of it.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 
