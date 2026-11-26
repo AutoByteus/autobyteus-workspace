@@ -1,0 +1,9 @@
+# API-03 private key hygiene and repository state (autobyteus-657, R-1, R-2)
+# bash scripts/check_secrets.sh origin/personal..HEAD; grep for PRIVATE KEY markers in the branch's changed files and the ticket folder; full clone of AutoByteus/autobyteus-extensions (every commit scanned with git grep); gh repo view; gh secret list (names only)
+# Commit 45645fb079; 2026-11-26 20:06:20 CET
+secret gate: PASS (no secrets found)
+private-key markers: branch changed files 0, ticket folder 0
+extensions repository: main @ 5427a1a, 5 commits, private-key markers in any commit: 0; files ever named *private*/*signing-key*: .github/workflows/check-signing-key.yml (the key check workflow) only; tracked: catalog-public-key.pem (public half)
+{"branch":"main","visibility":"PUBLIC"}
+secrets (names): EXTENSIONS_CATALOG_SIGNING_KEY
+The local private key file ~/autobyteus-catalog-signing-key/ was not opened, listed or touched by this validation.
