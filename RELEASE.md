@@ -245,9 +245,8 @@ takes dictation away. Before every beta and stable tag, check both:
   its `.sig`, and the catalog lists `voice-input`
   (`gh release view catalog --repo AutoByteus/autobyteus-extensions --json assets`).
 
-A failing check is a blocker, not a waiver. Since 2026-11-26 the key and the
-first releases exist, so a failing check means something changed: fix it before
-the tag.
+A failing check is a blocker, not a waiver. The key and the first releases
+exist, so a failing check means something changed: fix it before the tag.
 
 ### Build-only release run
 
@@ -662,11 +661,12 @@ What the release workflows build, validate and need.
 
 The extensions and the catalog AutoByteus trusts are maintained in the
 independent `AutoByteus/autobyteus-extensions` repository, with its own tags and
-two workflows (*Release an extension*, tag `<id>-v<version>`; *Release the
-catalog*, the fixed release `catalog`). Its README holds the order: package
-first, then the catalog. Desktop publication does not publish them, and their
-versions are independent of the app's. Nothing in it is released without the
-founder's word.
+two release workflows (*Release an extension*, tag `<id>-v<version>`; *Release
+the catalog*, the fixed release `catalog`) and *Check the signing key*, which
+signs and verifies with the secret and publishes nothing. Its README holds the
+order: package first, then the catalog. Desktop publication does not publish
+them, and their versions are independent of the app's. Nothing in it is
+released without the founder's word.
 
 - The catalog is signed with the Ed25519 private key kept only as that
   repository's secret `EXTENSIONS_CATALOG_SIGNING_KEY`; the matching public key
