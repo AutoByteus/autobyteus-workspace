@@ -52,7 +52,10 @@ CORS loads with `Origin: null`, which the node refuses.
 
 `https://github.com/AutoByteus/autobyteus-extensions/releases/download/catalog/extensions-catalog.json` and the same
 URL with `.sig` (base64 Ed25519 over the exact bytes; the public key is built into AutoByteus,
-`src/extensions/catalog/extension-catalog-source.ts`). `{ "extensions": [ … ] }`: each entry is the extension's
+`src/extensions/catalog/extension-catalog-source.ts`: the repository's `catalog-public-key.pem`, fingerprint
+`SHA256:75d4d2f80ed35374e7956d736aed66111e3eac76b911eb2367428a27dc64ad4c`, created on the founder's Mac on 2026-11-26 by
+his approved setup script; the private half is only the repository's secret `EXTENSIONS_CATALOG_SIGNING_KEY` and his
+backup, and the two change only together). `{ "extensions": [ … ] }`: each entry is the extension's
 `extension.json` plus `packageUrl` and `sha256`. On install the package must match `sha256` and its `extension.json`
 must equal the entry without those two fields.
 

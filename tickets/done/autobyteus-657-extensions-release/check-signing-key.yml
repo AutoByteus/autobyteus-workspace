@@ -1,0 +1,17 @@
+# Proves that the repository secret EXTENSIONS_CATALOG_SIGNING_KEY matches catalog-public-key.pem: it signs catalog.json
+# with the secret and verifies the signature with the public key (scripts/sign-catalog.mjs fails otherwise). It publishes
+# nothing and uploads nothing; GitHub masks the secret in the log, and the script never prints it.
+name: Check the signing key
+on:
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Sign with the secret, verify with catalog-public-key.pem (nothing is published)
+        env: { EXTENSIONS_CATALOG_SIGNING_KEY: "${{ secrets.EXTENSIONS_CATALOG_SIGNING_KEY }}" }
+        run: node scripts/sign-catalog.mjs --catalog catalog.json --public-key catalog-public-key.pem --out "$RUNNER_TEMP/signing-check"

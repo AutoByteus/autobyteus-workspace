@@ -1,0 +1,13 @@
+# IMP-01 server gates
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm build; vitest run tests/unit/extensions tests/unit/api/rest/extensions-routes.test.ts tests/architecture tests/unit/node-access
+# Commit: a80cd0218f (source identical to the working tree the gates ran on)
+# Environment: macOS 26 darwin-arm64, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.3s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 30.2s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+build exit 0
+ Test Files  23 passed (23)
+      Tests  142 passed (142)

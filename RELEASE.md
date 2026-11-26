@@ -245,8 +245,8 @@ takes dictation away. Before every beta and stable tag, check both:
   its `.sig`, and the catalog lists `voice-input`
   (`gh release view catalog --repo AutoByteus/autobyteus-extensions --json assets`).
 
-A failing check is a blocker, not a waiver: the key and the first releases are
-the founder's to create.
+A failing check is a blocker, not a waiver. The key and the first releases
+exist, so a failing check means something changed: fix it before the tag.
 
 ### Build-only release run
 
@@ -661,18 +661,24 @@ What the release workflows build, validate and need.
 
 The extensions and the catalog AutoByteus trusts are maintained in the
 independent `AutoByteus/autobyteus-extensions` repository, with its own tags and
-two workflows (*Release an extension*, tag `<id>-v<version>`; *Release the
-catalog*, the fixed release `catalog`). Its README holds the order: package
-first, then the catalog. Desktop publication does not publish them, and their
-versions are independent of the app's. Nothing in it is released without the
-founder's word.
+two release workflows (*Release an extension*, tag `<id>-v<version>`; *Release
+the catalog*, the fixed release `catalog`) and *Check the signing key*, which
+signs and verifies with the secret and publishes nothing. Its README holds the
+order: package first, then the catalog. Desktop publication does not publish
+them, and their versions are independent of the app's. Nothing in it is
+released without the founder's word.
 
 - The catalog is signed with the Ed25519 private key kept only as that
   repository's secret `EXTENSIONS_CATALOG_SIGNING_KEY`; the matching public key
   is `catalog-public-key.pem` there and is built into the app
   (`EXTENSIONS_CATALOG_PUBLIC_KEY_PEM`, see the
-  [Extensions catalog check](#extensions-catalog-check)). The founder creates
-  the key pair himself; it is never generated, printed or committed by an agent.
+  [Extensions catalog check](#extensions-catalog-check)). The key pair is
+  created on the founder's Mac by the setup script he approved, run on his
+  word, possibly by an agent. The script writes the private key straight into a
+  protected local file and into the repository secret
+  `EXTENSIONS_CATALOG_SIGNING_KEY`, and never prints it. No agent opens, reads,
+  copies or commits it. The private key exists only as that secret and in the
+  founder's own backup; he deletes the local file once it is backed up.
 - Changing the key (or its built-in copy) makes every installed app refuse the
   other catalog: treat it like the server package key and the desktop signing
   key, a coordinated change, never a fix for a failed run.
