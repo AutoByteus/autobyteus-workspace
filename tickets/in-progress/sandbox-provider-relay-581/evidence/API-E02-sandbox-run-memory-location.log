@@ -1,0 +1,11 @@
+# API-E02 diagnostic: where a sandbox-shaped node writes a new run's memory
+# command: node API-E02-sandbox-run-memory-location.mjs autobyteus-server:581-api-e2e (container with AUTOBYTEUS_MEMORY_DIR=/home/autobyteus/run-memory and AUTOBYTEUS_TEMP_WORKSPACE_DIR as SandboxManager sets them; one native run created over GraphQL; no model call)
+# image: autobyteus-server:581-api-e2e (package from d624f09ce6); Node v22.23.1; date 2026-11-26
+
+run created: true 
+container env AUTOBYTEUS_MEMORY_DIR: /home/autobyteus/run-memory
+server process AUTOBYTEUS_MEMORY_DIR: AUTOBYTEUS_MEMORY_DIR=/home/autobyteus/run-memory
+run_metadata.json under /home/autobyteus/run-memory: 0
+run_metadata.json under /home/autobyteus/data/memory: /home/autobyteus/data/memory/agents
+
+# cause: docker/starter/server-process.mjs:23 always passes --data-dir; src/config/app-config.ts:466-468 (setCustomAppDataDir) then sets AUTOBYTEUS_MEMORY_DIR = <data-dir>/memory unconditionally.
