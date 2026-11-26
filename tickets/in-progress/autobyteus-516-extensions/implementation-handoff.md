@@ -16,14 +16,14 @@ All paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/auto
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: CRR-001 local fixes CR-001, CR-002; see the revision record)
 - Implementation revision record: `…/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-006, SR-007, SR-008 (+ `platform`, below)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review / API/E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
-- Branch / commits: `codex/autobyteus-516-extensions` on `origin/personal` @ fdde5406fa: 60a02aa667 (server foundation), 3982b0042e (list `platform`, real-release test), d2934d630f (web, desktop removal, deletion step), 8bf772e0e6 (docs), 38058ec630 (voice re-read on followed changes, suite fixes, probe), cc3094a0cb (test wait bound), plus the ticket documents and evidence commit after this file. Not pushed.
+- Related code-review revision IDs: CRR-001. API/E2E / delivery: N/A
+- Triggering finding IDs: CR-001, CR-002 (CRR-001)
+- Branch / commits: `codex/autobyteus-516-extensions` on `origin/personal` @ fdde5406fa: 60a02aa667 (server foundation), 3982b0042e (list `platform`, real-release test), d2934d630f (web, desktop removal, deletion step), 8bf772e0e6 (docs), 38058ec630 (voice re-read on followed changes, suite fixes, probe), cc3094a0cb (test wait bound), 909ede3f3f (ticket documents and evidence), 3961790ab6 (IR-002: CR-001, CR-002), plus this round's documents commit. Not pushed.
 - Second repository: `AutoByteus/autobyteus-extensions` does not exist on GitHub yet (the founder creates it). Its content is a local git repository at `/Users/normy/autobyteus_org/autobyteus-extensions` (branch `main`, commit 4d00904).
 
 What exists now:
@@ -118,7 +118,7 @@ Design addition made during implementation (Solution Designer confirmed option (
 
 - Backward-compatibility mechanisms introduced: None. Nothing reads the old registry, and there is no IPC fallback.
 - Legacy old-behavior retained in scope: No.
-- Dead code in the touched files and modules removed: Yes. That covers the old card keys, `failedToTranscribeAudio`, the `isElectron` state of the voice store, the removed-module mocks, the web `test:voice-input-real-release` script and the baseline entry.
+- Dead code in the touched files and modules removed: Yes (IR-002 also removed `getCanonicalExtensionsPath` and the e2e path plan's `extensions`, CR-001). That covers the old card keys, `failedToTranscribeAudio`, the `isElectron` state of the voice store, the removed-module mocks, the web `test:voice-input-real-release` script and the baseline entry.
 - Dead code found elsewhere, added to `follow-ups.md`: None.
 - Shared structures remain tight: Yes. `ExtensionItem` is flat with fields set per state, as the contract table says. `GraphqlServices` carries only `extensions`.
 - Canonical shared design guidance reapplied: Yes.
@@ -156,6 +156,7 @@ Evidence folder: `tickets/in-progress/autobyteus-516-extensions/evidence/`.
 | IMP-06 | `pnpm -C autobyteus-web test:electron --run` | d2934d630f | same | Electron main after the removal | removal plan | Pass except one load-timing failure (cause recorded; rerun alone 11/11; not touched by this change) | `IMP-06-electron-suite.log` | "542 passed"; the ENOENT cause |
 | IMP-07 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-web typecheck` | cc3094a0cb | same | both packages, cross-package tests | — | Pass | `IMP-07-typechecks.log` | "[typecheck] PASS" twice, production errors 0 |
 | IMP-08 | `npm test` in `autobyteus-extensions`; unpacker on the real 0.3.2 archives | extensions 4d00904 | same | voice server part (scripted worker), pack, check-catalog, sign-catalog | AC-002, AC-007, QR-001 | Pass | `IMP-08-extensions-repo.log` | "# pass 9"; both archives' file lists |
+| IMP-09 | appDataPaths + launch-profile specs (`electron/vitest.config.ts`), probe `node --check`, server and web typechecks | 3961790ab6 | same | IR-002 lines: `electron/appDataPaths.ts`, `electronLaunchProfile.ts`, `electron-launch-profile-probe.mjs`, `extension-catalog.ts` comment | REQ-007 (dead code only) | Pass | `IMP-09-crr-001-fixes.log` | "Tests  10 passed (10)"; "[typecheck] PASS" twice |
 | IMP-R | `node tests/e2e/extensions-page-probe.mjs --extensions-repo=<…/autobyteus-extensions> --skip-server-build` (run 5) | 38058ec630 (server dist built from it by `codegen:local`) | real node (desktop node flag, dev-signed catalog), Nuxt dev, headless Chrome 1440×900, 390×844, zh-CN, fake microphone | page, card, frame + bridge through the real node, microphone panel, voice surface, voice store re-reads, Remove | AC-001, AC-002 (incl. page check), AC-005, AC-007, VIS-V1-01, V2-01…05, V4, V5-01, V7-01, V8-01…04, V10, V11-01, L-01/02, N-01/02 | Pass (8/8) | `IMP-render/IMP-R-*.png`, `IMP-render/IMP-R-evidence.json` | `"result": "Pass"`, `"refusedRequests": []`, `"browserErrors": []`, `testResult` "Please summarize the meeting notes…", `timings` |
 
 - Not run, and why:

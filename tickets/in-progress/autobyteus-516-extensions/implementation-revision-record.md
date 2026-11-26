@@ -4,7 +4,8 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture reviewer, design-review-report.md, ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-006…SR-008 (+ the `platform` field confirmed by the Solution Designer during implementation), ARCH-REV-002 | Implemented; ready for code review |
+| IR-001 | Architecture reviewer, design-review-report.md, ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-006…SR-008 (+ the `platform` field confirmed by the Solution Designer during implementation), ARCH-REV-002 | Implemented; reviewed in CRR-001 |
+| IR-002 | Code reviewer, code-review-report.md, CRR-001 (Fail, Local Fix) | CR-001, CR-002 | `Local Fix` | CRR-001; SR-007; ARCH-REV-002 | Fixed; back to code review (targeted delta) |
 
 ## Revision Entries
 
@@ -25,3 +26,22 @@
 - Local validation and result: implementation-handoff.md, Checks Run (IMP-01…IMP-08, IMP-R): all pass on the final commit except the recorded, explained items.
 - Next recipient or routing: `/code_reviewer` (Large / High).
 - Remaining limitations or risks: implementation-handoff.md, Known Risks and "Not run".
+
+### IR-002 — CRR-001 local fixes: the retired folder's name and a stale comment
+
+- Triggering role, report path, and round: `/code_reviewer`, `code-review-report.md`, CRR-001 (round 1, Fail, Local Fix).
+- Triggering finding IDs: CR-001, CR-002.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-001 (CRR-001 Fail on these two findings; the five points raised in the handoff accepted).
+- Current authoritative result: both findings fixed in commit 3961790ab6.
+- Related solution revision IDs: SR-007 (persisted-data checklist item 6: current code never names the old folder).
+- Related architecture-review revision IDs: ARCH-REV-002. Related code-review revision IDs: CRR-001. Related API/E2E / delivery revision IDs: N/A.
+- Why this revision is recorded: the code reviewer's round-1 findings.
+- Approved behavior or requirement IDs affected: none changed (REQ-007/BEH-007 deletion step unchanged; dead code removed, Principle 7).
+- Implementation delta:
+  - CR-001: removed `getCanonicalExtensionsPath` (`autobyteus-web/electron/appDataPaths.ts`) and its expectation (`electron/__tests__/appDataPaths.spec.ts`); removed `E2EElectronPathPlan.extensions` and its value (`electron/launch-profile/electronLaunchProfile.ts`) and the expected key in `tests/e2e/electron-launch-profile-probe.mjs`. Nothing read either. Only the sealed deletion step names `<base data folder>/extensions` now.
+  - CR-002: `autobyteus-server-ts/src/extensions/catalog/extension-catalog.ts` comment: fetched once after listen, when the Extensions page opens (`extensions(refreshCatalog: true)`), and at the start of Install and Update.
+- Changed files or areas: the five files above.
+- Local validation and result: IMP-09 (`evidence/IMP-09-crr-001-fixes.log`): appDataPaths and launch-profile specs 10/10; probe syntax check; server and web typechecks PASS (production errors 0). The packaged launch-profile probe itself (`test:e2e:electron`, needs a packaged build) was not run: its change is one removed expected key matching the removed plan key.
+- Next recipient or routing: `/code_reviewer` (Large / High, targeted delta review).
+- Remaining limitations or risks: unchanged from IR-001.

@@ -1,0 +1,25 @@
+# IMP-09 (IR-002, CRR-001 CR-001/CR-002)
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run electron/__tests__/appDataPaths.spec.ts electron/launch-profile; node --check tests/e2e/electron-launch-profile-probe.mjs; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck
+# Commit: 3961790ab6
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+## specs
+ Test Files  4 passed (4)
+      Tests  10 passed (10)
+## probe syntax
+probe syntax ok
+## server typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 29.4s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 50.8s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+## web typecheck (Nuxt app, Electron main, build scripts, cross-package tests)
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 53.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 26 errors, exit 2, 2.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.2s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 30.5s
+[typecheck] production errors: 0; test-file errors: 85 in 35 files (baseline 85 in 35 files)
+[typecheck] PASS
+## Only the sealed deletion step names the folder (grep "'extensions'" in electron/ and client-data-migrations/, tests excluded):
+client-data-migrations/migrations/remove-desktop-voice-input-install/remove-desktop-voice-input-install.ts:12:  folderName: 'extensions',
