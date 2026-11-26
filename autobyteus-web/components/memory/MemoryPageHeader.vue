@@ -1,16 +1,20 @@
 <template>
   <header class="flex flex-wrap items-center gap-x-4 gap-y-2.5 border-b border-gray-200 pb-3" data-test="memory-page-header">
-    <div class="flex min-w-0 flex-1 items-center gap-1.5">
+    <!-- Its basis is its own width (Back, the "/", the title and a run's title): one row when that fits beside the
+         actions, else the actions wrap to a row of their own instead of squeezing the title away (spec Responsive: "one
+         row when it fits, wraps otherwise"; CRR-002 CR-003). On its own row a title too long still truncates. -->
+    <div class="flex min-w-0 flex-auto items-center gap-1.5">
       <button
         type="button"
-        class="-ml-1.5 inline-flex flex-shrink-0 items-center gap-1 rounded-md px-1.5 py-1 text-sm font-medium text-gray-500 transition hover:bg-gray-200/60 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="-ml-1.5 inline-flex min-w-0 items-center gap-1 rounded-md px-1.5 py-1 text-sm font-medium text-gray-500 transition hover:bg-gray-200/60 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         :aria-label="backLabel"
         :title="backLabel"
         data-test="memory-page-back"
         @click="$emit('back')"
       >
-        <Icon icon="heroicons:arrow-left-20-solid" class="h-4 w-4" aria-hidden="true" />
-        <span class="max-w-[16rem] truncate">{{ backText }}</span>
+        <Icon icon="heroicons:arrow-left-20-solid" class="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+        <!-- On a row too narrow for Back, the title and a run's title, each gives way in proportion (CRR-002 CR-003). -->
+        <span class="min-w-0 max-w-[16rem] truncate">{{ backText }}</span>
       </button>
       <span class="flex-shrink-0 text-gray-300" aria-hidden="true">/</span>
       <slot />

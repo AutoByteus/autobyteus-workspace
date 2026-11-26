@@ -4,7 +4,7 @@
     <!-- One header row (DC-007): Back, the run (its agent only when Back does not already name it, then the run's title
          or its run ID and workspace) and Work Journal / Raw Traces. -->
     <MemoryPageHeader :back-text="backText" :back-label="backLabel" @back="$emit('back')">
-      <h1 :class="backNamesAgent ? 'sr-only' : 'min-w-0 flex-shrink-0 truncate text-lg font-semibold tracking-tight text-gray-900'" data-test="memory-inspector-name">{{ heading }}</h1>
+      <h1 :class="backNamesAgent ? 'sr-only' : 'min-w-0 truncate text-lg font-semibold tracking-tight text-gray-900'" data-test="memory-inspector-name">{{ heading }}</h1>
       <span v-if="runTitle" class="min-w-0 truncate text-sm font-medium text-gray-800" :title="runIdentity" data-test="memory-inspector-run-title">{{ runTitle }}</span>
       <span v-else-if="runIdentity" class="min-w-0 truncate font-mono text-xs text-gray-500" :title="runIdentity" data-test="memory-inspector-run-identity">{{ runIdentity }}</span>
       <span v-if="isImported" class="flex-shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">{{ $t('memory.components.memory.MemoryInspector.importedReadOnlyCorpus') }}</span>

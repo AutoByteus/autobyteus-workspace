@@ -4,8 +4,9 @@
          wide screen; the run filter (Episodic) and the Episodic / Semantic switch at the right. -->
     <MemoryPageHeader :back-text="backText" :back-label="backLabel" @back="$emit('back')">
       <h1 class="min-w-0 truncate text-lg font-semibold tracking-tight text-gray-900" :title="agentDefinitionId ?? name">{{ name }}</h1>
-      <!-- Only the space the name leaves: the name stays whole unless it alone overflows the row (CRR-001 CR-002). -->
-      <span v-if="subtitle" class="hidden min-w-0 flex-1 basis-0 truncate text-xs text-gray-500 lg:block" data-test="agent-memory-places">{{ subtitle }}</span>
+      <!-- Only the space the name leaves: the name stays whole unless it alone overflows the row (CRR-001 CR-002). Width 0:
+           it adds nothing to the header's own width, so it never makes the header wrap (CRR-002 CR-003). -->
+      <span v-if="subtitle" class="hidden w-0 min-w-0 flex-1 basis-0 truncate text-xs text-gray-500 lg:block" data-test="agent-memory-places">{{ subtitle }}</span>
       <span v-if="imported" class="flex-shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">{{ $t('memory.components.memory.common.importedReadOnly') }}</span>
       <template #actions>
         <div v-if="pane === 'episodic'" class="relative w-full sm:w-60">
