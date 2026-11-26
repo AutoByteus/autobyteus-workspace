@@ -15,6 +15,7 @@ import { createClaudeAgentRuntimeStrategy } from "../../../src/runtime-managemen
 import { parseRelayedNodeSettings } from "../../../src/credential-proxy/provider-relays/provider-relay-settings.js";
 import type { AgentRuntimeStrategy } from "../../../src/runtime-management/agent-runtimes/agent-runtime-strategy.js";
 import { providerRelayAccessDouble } from "../../helpers/provider-relay-access-double.js";
+import type { SecretConsumerIdentity } from "../../../src/secret-management/domain/secret-id.js";
 import { readRelayOffer } from "../../../src/credential-proxy/provider-relay-peer/relay-offer.js";
 import { ProviderRelays } from "../../../src/credential-proxy/provider-relays/provider-relays.js";
 
@@ -155,8 +156,8 @@ describe("Claude in API-key mode reads its sign-in from the vault (FU-001)", () 
 describe("the relay offer a new sandbox gets (DEC-109, DEC-115)", () => {
   const relays = new ProviderRelays();
   const management = (configured: string[]) => () => ({
-    getStatusForConsumer: async (consumer: { relayId?: string; relayCredentialKind?: string }) =>
-      (configured.includes(`${consumer.relayId}/${consumer.relayCredentialKind}`) ? "CONFIGURED" as const : "MISSING" as const),
+    getStatusForConsumer: async (consumer: SecretConsumerIdentity) =>
+      (consumer.kind === "providerRelay" && configured.includes(`${consumer.relayId}/${consumer.relayCredentialKind}`) ? "CONFIGURED" as const : "MISSING" as const),
   });
   const logins = (codex: "found" | "missing") => ({
     readCodexLogin: async () => (codex === "found" ? { kind: "found" as const, credential: { secret: "t", accountId: "acct-relay" } } : { kind: "missing" as const }),
