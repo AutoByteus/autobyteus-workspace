@@ -6,6 +6,9 @@
 import assert from 'node:assert/strict'
 
 export async function runProjectVoiceCases({ page, context, goto, api, node, runCase, waitFor, screenshot }) {
+  // The microphone permission, granted here: an earlier case's clipboard-only grantPermissions (PT-E2E-017) rejects every
+  // permission it does not list, so without this the store reads the microphone as denied.
+  await context.grantPermissions(['microphone'], { origin: new URL(page.url()).origin })
   await context.addInitScript(() => {
     localStorage.setItem('autobyteus.localization.preference-mode', 'en')
     const streams = []
@@ -111,6 +114,7 @@ export async function runProjectVoiceCases({ page, context, goto, api, node, run
     assert(projectId)
     await open('/projects/' + projectId + '/tasks/new')
     const text = page.locator('#task-page-description')
+    await page.locator('#task-page-title').fill('Voice task') // a Task needs a title (required since the Task title field)
     await text.fill('Task draft'); await start()
     assert(await page.getByTestId('task-page-save').isDisabled())
     await stop(); await waitFor('task append', async () => await text.inputValue() === 'Task draft dictated words')
