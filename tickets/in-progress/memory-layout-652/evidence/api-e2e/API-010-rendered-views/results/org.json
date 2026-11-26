@@ -1,0 +1,33 @@
+{
+  "result": {
+    "card": "Launch Org 1 run 2 members · 11/26/2026, 6:47:58 AM",
+    "header": "Memory / Launch Org Members 2 Runs 1",
+    "nameTooltip": "Agent Org · launch-org",
+    "members": [
+      "Research Assistant Shared agent",
+      "Software Engineering Team Agent Team · 2 members"
+    ],
+    "runCard": "Coordinate the launch across the teams 11/26/2026, 6:47:58 AM <stack-root>/workspace/launch-app planner",
+    "chips": [
+      {
+        "text": "planner",
+        "tooltip": "research_assistant_8c140955c216464da200b4bae636107d"
+      }
+    ],
+    "memberRun": {
+      "header": "Launch Org / planner Coordinate the launch across the teams Work Journal Raw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Coordinate the launch across the teams",
+        "tooltip": "research_assistant_8c140955c216464da200b4bae636107d",
+        "font": "ui-sans-serif, system-ui, sans-serif, \"A"
+      },
+      "url": "/memory?view=org-inspector&orgDefinitionId=launch-org&orgName=Launch+Org&orgRunId=launch_org_ce1d80c53d1e487eaddbb6d689dbb30b&agentRunId=research_assistant_8c140955c216464da200b4bae636107d&memberAddress=/planner&memberName=planner&updatedAt=2026-11-26T06:47:58Z&back=orgs/org:launch-org&backPane=runs&backName=Launch+Org&runLabel=Coordinate+the+launch+across+the+teams"
+    },
+    "backTo": {
+      "url": "/memory?view=home&section=browse&node=orgs/org:launch-org&pane=runs",
+      "runsSelected": "true"
+    }
+  },
+  "errors": []
+}

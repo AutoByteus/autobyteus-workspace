@@ -1,0 +1,68 @@
+{
+  "result": {
+    "header": {
+      "x": 351,
+      "w": 1061,
+      "right": 1412,
+      "scrollW": 1061,
+      "clientW": 1061,
+      "text": "Memory/Project Task ManagerAlso works in Software Engineerin",
+      "cls": "flex flex-wrap items-center gap-x-4 gap-y-2.5 border-b border-gray-200 pb-3"
+    },
+    "back": {
+      "x": 345,
+      "w": 86,
+      "right": 431,
+      "scrollW": 86,
+      "clientW": 86,
+      "text": "Memory",
+      "cls": "-ml-1.5 inline-flex flex-shrink-0 items-center gap-1 rounded-md px-1.5 py-1 text-sm font-medium text-gray-500 transition"
+    },
+    "h1": {
+      "x": 448,
+      "w": 157,
+      "right": 604,
+      "scrollW": 172,
+      "clientW": 157,
+      "text": "Project Task Manager",
+      "cls": "min-w-0 truncate text-lg font-semibold tracking-tight text-gray-900"
+    },
+    "h1Parent": {
+      "x": 351,
+      "w": 471,
+      "right": 822,
+      "scrollW": 471,
+      "clientW": 471,
+      "text": "Memory/Project Task ManagerAlso works in Software Engineerin",
+      "cls": "flex min-w-0 flex-1 items-center gap-1.5"
+    },
+    "places": {
+      "x": 610,
+      "w": 211,
+      "right": 822,
+      "scrollW": 232,
+      "clientW": 211,
+      "text": "Also works in Software Engineering Team",
+      "cls": "hidden min-w-0 truncate text-xs text-gray-500 lg:inline"
+    },
+    "filter": {
+      "x": 838,
+      "w": 240,
+      "right": 1078,
+      "scrollW": 190,
+      "clientW": 190,
+      "text": "",
+      "cls": "w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focu"
+    },
+    "switch": {
+      "x": 1094,
+      "w": 318,
+      "right": 1412,
+      "scrollW": 318,
+      "clientW": 318,
+      "text": "EpisodicEpisodic memory2SemanticSemantic memory",
+      "cls": "flex w-full flex-shrink-0 rounded-lg bg-gray-200/75 p-0.5 sm:inline-flex sm:w-auto"
+    }
+  },
+  "errors": []
+}

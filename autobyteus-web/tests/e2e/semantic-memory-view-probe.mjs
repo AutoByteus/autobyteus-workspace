@@ -3,7 +3,10 @@
 // probe-written data root (never a user's data). Browse by owner, an agent's page (Episodic, Semantic), a team page
 // (Members), the read-only semantic memory folder view (files, preview, links listed and never opened, no edit, no
 // menu), Global, the missing state, the narrow layout and zh-CN; the node never lists the view's workspace. It takes
-// the screenshots the UI/UX spec's VIS references show (desktop 1440×900, narrow 390×844).
+// the screenshots the UI/UX spec's VIS references show (desktop 1440×900, narrow 390×844). Since autobyteus-652 (the
+// approved autobyteus-608 layout) also, at 1440×900: content tops, the reader filling the window, reader type, the list's
+// width and icons, Copy folder path on the clipboard, a 40-character read-only tab (SMV-110…119); the agent's name whole
+// beside its subtitle at 1440 and 1280 px (SMV-120); the Episodic cards inside a 390 px window (SMV-121).
 //
 //   pnpm -C autobyteus-server-ts build
 //   node autobyteus-web/tests/e2e/semantic-memory-view-probe.mjs --browser-executable <chrome> [--output-dir <dir>]
@@ -41,6 +44,8 @@ const check = (id, condition, message, details = undefined) => {
   if (!condition) throw Object.assign(new Error(`${id}: ${message}`), { details });
 };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const LONG_TAB_NAME = 'deployment-checklist-and-rollback-pla.md'; // 40 characters (autobyteus-652 AC-005)
+const LONG_WORKSPACE = '/Users/someone/projects/autobyteus-worktrees/a-long-workspace-folder-name/launch-app';
 const waitFor = async (description, fn, timeout = timeoutMs) => {
   const deadline = Date.now() + timeout;
   let lastError;
@@ -90,7 +95,7 @@ const writeAgent = async (dir, name, description) => {
   await fs.writeFile(path.join(dir, 'agent.md'), `---\nname: ${name}\ndescription: ${description}\nrole: assistant\n---\n\nHelp the user.\n`);
   await fs.writeFile(path.join(dir, 'agent-config.json'), `${JSON.stringify({ toolNames: [], skillNames: [] }, null, 2)}\n`);
 };
-const writeRun = async (memoryDir, runId, startedAt, MetadataStore) => {
+const writeRun = async (memoryDir, runId, startedAt, MetadataStore, workspaceRootPath = '/work/launch') => {
   const runDir = path.join(memoryDir, 'agents', runId);
   await fs.mkdir(runDir, { recursive: true });
   const ts = Date.parse(startedAt) / 1000;
@@ -100,7 +105,7 @@ const writeRun = async (memoryDir, runId, startedAt, MetadataStore) => {
   ];
   await fs.writeFile(path.join(runDir, 'raw_traces_active.jsonl'), records.map((record) => `${JSON.stringify(record)}\n`).join(''));
   await new MetadataStore(memoryDir).writeMetadata(runId, {
-    runId, agentDefinitionId: AGENT_ID, workspaceRootPath: '/work/launch', memoryDir: runDir, llmModelIdentifier: 'probe-model',
+    runId, agentDefinitionId: AGENT_ID, workspaceRootPath, memoryDir: runDir, llmModelIdentifier: 'probe-model',
     llmConfig: null, autoExecuteTools: false, runtimeKind: 'autobyteus', platformAgentRunId: null, startedAt,
   });
 };
@@ -135,12 +140,15 @@ const writeDataRoot = async (dataRoot, outsideDir) => {
   await fs.writeFile(path.join(longFolder, 'archive', '2026.md'), '# 2026 archive\n\nQ1 closed the launch.\n');
   const { AgentRunMetadataStore } = await import(pathToFileURL(path.join(serverDir, 'dist/run-history/store/agent-run-metadata-store.js')).href);
   await writeRun(memoryDir, 'probe_researcher_run_1', '2026-11-18T09:00:00Z', AgentRunMetadataStore);
-  await writeRun(memoryDir, 'probe_researcher_run_2', '2026-11-19T10:30:00Z', AgentRunMetadataStore);
+  // A workspace path as long as real ones are (autobyteus-652 SMV-121: a card's one-line path must not widen the page).
+  await writeRun(memoryDir, 'probe_researcher_run_2', '2026-11-19T10:30:00Z', AgentRunMetadataStore, LONG_WORKSPACE);
   // The agent's semantic memory: nested files, a link to a file and one to a folder outside it.
   const folder = path.join(memoryDir, 'semantic', AGENT_ID);
   await fs.mkdir(path.join(folder, 'sites', 'linkedin'), { recursive: true });
   await fs.writeFile(path.join(folder, 'sites', 'linkedin', 'controls.md'), '# LinkedIn controls\n\nThe **post** button is at the top right.\n');
-  await fs.writeFile(path.join(folder, 'research-method.md'), '# Research method\n\n1. Read the sources.\n2. Write the notes.\n');
+  await fs.writeFile(path.join(folder, 'research-method.md'), '# Research method\n\n1. Read the sources.\n2. Write the notes.\n\n## Sources\n\nPrimary sources first, then the summaries.\n');
+  // autobyteus-652 AC-005: a 40-character name for the read-only tab.
+  await fs.writeFile(path.join(folder, 'sites', LONG_TAB_NAME), '# Deployment checklist\n\nRoll back when the health check fails.\n');
   await fs.mkdir(outsideDir, { recursive: true });
   await fs.writeFile(path.join(outsideDir, 'secret.md'), 'secret outside the folder\n');
   await fs.symlink(outsideDir, path.join(folder, 'shared'));
@@ -223,6 +231,18 @@ try {
   page.on('request', (request) => { for (const name of operationNames(request)) evidence.operations.push(name); });
   const goto = async (query) => { await page.goto(`${frontendUrl}/memory${query}`, { waitUntil: 'domcontentloaded' }); };
   const text = async (selector) => (await page.locator(selector).first().textContent())?.trim() ?? '';
+  // autobyteus-652 (the approved autobyteus-608 layout): where `selector` starts and ends in the window, and whether any
+  // element holding it scrolls (a page scroll). Inner scrolling (the file list, the document) is not a page scroll.
+  const placement = (selector) => page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return null;
+    const box = el.getBoundingClientRect();
+    const pageScrolls = [document.scrollingElement, ...document.querySelectorAll('*')]
+      .filter((node) => node && node !== el && node.contains(el))
+      .filter((node) => node === document.scrollingElement || /(auto|scroll)/.test(getComputedStyle(node).overflowY))
+      .some((node) => node.scrollHeight > node.clientHeight + 1);
+    return { top: Math.round(box.top), bottom: Math.round(box.bottom), toWindowBottom: Math.round(innerHeight - box.bottom), width: Math.round(box.width), pageScrolls };
+  }, selector);
 
   // UXJ-001: Browse opens on Agents; the tabs; the agent card (after the catalog's start pass).
   await goto('');
@@ -244,6 +264,17 @@ try {
   check('SMV-021', (await text('[data-test="memory-page-back"]')) === 'Memory' && (await page.locator('[data-test="memory-page-back"]').getAttribute('aria-label')) === 'Back to Memory', 'Back shows "Memory" (Back to Memory)');
   await waitFor('the agent subtitle', async () => (await text('[data-test="agent-memory-places"]')) === 'Also works in Product Review Team');
   check('SMV-022', (await page.locator('[data-test="agent-episode"]').count()) === 2, 'Two episodes');
+  const firstEpisode = await placement('[data-test="agent-episode"]');
+  check('SMV-117', firstEpisode && firstEpisode.top <= 90, 'AC-001 (autobyteus-652): the Episodic page\'s first card starts within 90 px of the top', firstEpisode);
+  // autobyteus-652 AC-001: the page's own name stays whole beside its "Also works in …" subtitle at 1440×900 and 1280×800.
+  const nameFits = async () => page.locator('[data-test="memory-page-header"] h1').first().evaluate((el) => ({ width: el.clientWidth, needs: el.scrollWidth, whole: el.scrollWidth <= el.clientWidth + 1 }));
+  const nameAt1440 = await nameFits();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await sleep(600);
+  const nameAt1280 = await nameFits();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await sleep(600);
+  check('SMV-120', nameAt1440.whole && nameAt1280.whole, 'AC-001: the agent\'s name is whole beside its subtitle at 1440 and 1280 px', { nameAt1440, nameAt1280, subtitle: await text('[data-test="agent-memory-places"]') });
   check('SMV-023', (await text('[data-test="agent-memory-tab-episodic"]')).includes('2'), 'The Episodic tab counts the episodes');
   await shot(page, 'VIS-004-agent-episodic-1440x900');
 
@@ -261,6 +292,34 @@ try {
   // autobyteus-608 TR-004: the first file at the root, in the list's order and not a link, opens on arrival.
   await page.locator('text=Read the sources.').first().waitFor();
   check('SMV-033', (await text('[data-test="file-tab-name"]')) === 'research-method.md', 'The first root document opens on arrival', await text('[data-test="file-tab-name"]'));
+  // autobyteus-652 at 1440×900: AC-001 the content's top, AC-002 the panel to the window bottom without a page scroll and
+  // the reader's type, DC-004 the 300 px list, DC-011 every list icon drawn, TR-008 Copy folder path.
+  const semanticPanel = await placement('[data-test="semantic-memory-explorer"]');
+  check('SMV-110', semanticPanel && semanticPanel.top <= 90, 'AC-001: the agent page\'s content starts within 90 px of the top', semanticPanel);
+  check('SMV-111', semanticPanel && semanticPanel.toWindowBottom >= 0 && semanticPanel.toWindowBottom <= 24 && !semanticPanel.pageScrolls, 'AC-002: the semantic panel ends within 24 px of the window bottom, no page scroll', semanticPanel);
+  const readerType = await page.evaluate(() => {
+    const body = document.querySelector('.semantic-memory-reader .markdown-body');
+    const size = (sel) => (body?.querySelector(sel) ? getComputedStyle(body.querySelector(sel)).fontSize : null);
+    return { h1: size('h1'), h2: size('h2'), body: body ? getComputedStyle(body).fontSize : null };
+  });
+  check('SMV-112', readerType.h1 === '22px' && readerType.h2 === '17.6px' && readerType.body === '14px', 'AC-002: reader type h1 22 px, h2 17.6 px, body 14 px', readerType);
+  const listWidth = await page.evaluate(() => Math.round(document.querySelector('.semantic-memory-sidebar')?.getBoundingClientRect().width ?? 0));
+  check('SMV-113', listWidth === 300, 'DC-004: the file list is 300 px wide at 1440 px', listWidth);
+  const icons = await page.locator('[data-test="semantic-memory-explorer"] [data-test="file-item-icon"]').evaluateAll((nodes) => nodes.map((node) => {
+    const svg = node.tagName.toLowerCase() === 'svg' ? node : node.querySelector('svg');
+    return { svg: Boolean(svg), shapes: svg ? svg.querySelectorAll('path, rect, circle, polygon, polyline, line, ellipse').length : 0, width: Math.round(node.getBoundingClientRect().width) };
+  }));
+  check('SMV-114', icons.length > 0 && icons.every((icon) => icon.svg && icon.shapes > 0 && icon.width > 0)
+    && !(await page.locator('[data-test="semantic-memory-explorer"] i.fab, [data-test="semantic-memory-explorer"] i.fas').count()), 'AC-005: every file-list icon is a drawn SVG (no blank font icon)', icons);
+  const copyPath = page.locator('[data-test="semantic-memory-copy-path"]');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: frontendUrl });
+  await copyPath.click();
+  const copiedAt = Date.now();
+  await waitFor('"Copied"', async () => (await copyPath.innerText()).includes('Copied'), 3000);
+  const clipboard = await page.evaluate(() => navigator.clipboard.readText());
+  await waitFor('"Copy folder path" again', async () => (await copyPath.innerText()).includes('Copy folder path'), 4000);
+  const copiedFor = Date.now() - copiedAt;
+  check('SMV-115', clipboard === folder && copiedFor >= 1200 && copiedFor <= 2600, 'TR-008: Copy folder path puts the real path on the clipboard and shows "Copied" for about 1.5 s', { clipboardIsFolder: clipboard === folder, copiedFor });
   const operationsBeforeLink = evidence.operations.length;
   await links.first().click();
   await links.first().click({ button: 'right' });
@@ -278,6 +337,14 @@ try {
   await page.locator('.file-header', { hasText: 'controls.md' }).click();
   await page.locator('text=button is at the top right').first().waitFor();
   await shot(page, 'VIS-005-agent-semantic-links-file-open-1440x900');
+  // autobyteus-652 AC-005 (DC-010): a read-only tab shows a 40-character name whole, up to 320 px, the name as its tooltip.
+  await page.locator('[data-test="semantic-memory-explorer"] .file-header', { hasText: LONG_TAB_NAME }).click();
+  await page.locator('text=Roll back when the health check fails.').first().waitFor();
+  const longTab = await page.locator('[data-test="file-tab-name"]', { hasText: LONG_TAB_NAME }).first().evaluate((el) => ({
+    width: Math.round(el.getBoundingClientRect().width), truncated: el.scrollWidth > el.clientWidth + 1, maxWidth: getComputedStyle(el).maxWidth,
+    tooltip: el.getAttribute('title') ?? el.closest('[title]')?.getAttribute('title') ?? null,
+  }));
+  check('SMV-116', longTab.width <= 320 && !longTab.truncated && longTab.tooltip === LONG_TAB_NAME, 'AC-005: the 40-character read-only tab name is whole (≤ 320 px), its tooltip the name', longTab);
   const search = page.locator('[data-test="semantic-memory-explorer"] input').first();
   await search.fill('secret');
   await sleep(1500);
@@ -300,6 +367,22 @@ try {
   // Narrow: the folder stacks below 768 px; short tab labels below 640 px.
   await page.setViewportSize({ width: 390, height: 844 });
   await sleep(800);
+  // autobyteus-652 AC-001 (VIS-005): the Episodic cards stay inside a 390 px window with a long workspace path (it truncates).
+  await page.locator('[data-test="agent-memory-tab-episodic"]').click();
+  await page.locator('[data-test="agent-episode"]').first().waitFor();
+  await sleep(600);
+  const narrowCards = await page.evaluate(() => {
+    const list = document.querySelector('[data-test="agent-episodes"]');
+    const cards = [...document.querySelectorAll('[data-test="agent-episode"]')].map((card) => Math.round(card.getBoundingClientRect().right));
+    const sideways = [document.scrollingElement, ...document.querySelectorAll('*')].filter((node) => node && node.contains(list))
+      .some((node) => node.scrollWidth > node.clientWidth + 1 && (node === document.scrollingElement || /(auto|scroll)/.test(getComputedStyle(node).overflowX)));
+    return { window: innerWidth, cardRights: cards, sideways };
+  });
+  await shot(page, 'SMV-121-agent-episodic-narrow-390x844');
+  check('SMV-121', narrowCards.cardRights.every((right) => right <= narrowCards.window) && !narrowCards.sideways, 'AC-001 (VIS-005): the Episodic cards fit a 390 px window; the page does not scroll sideways', narrowCards);
+  await page.locator('[data-test="agent-memory-tab-semantic"]').click();
+  await page.locator('[data-test="semantic-memory-explorer"]').waitFor();
+  await sleep(600);
   const narrowTabs = (await page.locator('[data-test^="agent-memory-tab-"]').allInnerTexts()).map((label) => label.replace(/\s+/g, ' ').trim());
   check('SMV-050', narrowTabs[0]?.startsWith('Episodic') && narrowTabs[1] === 'Semantic' && narrowTabs.every((label) => !label.includes('memory')), 'Short tab labels below 640 px', narrowTabs);
   await shot(page, 'VIS-018-agent-semantic-narrow-390x844');
@@ -316,6 +399,8 @@ try {
   const members = await page.locator('[data-test="group-member"]').allTextContents();
   check('SMV-061', members.some((member) => member.includes('Reviewer') && !member.includes('Shared agent'))
     && members.some((member) => member.includes(AGENT_NAME) && member.includes('Shared agent')), 'Members: a team-local agent and a shared agent', members);
+  const firstMember = await placement('[data-test="group-member"]');
+  check('SMV-118', firstMember && firstMember.top <= 90, 'AC-001 (autobyteus-652): the team page\'s first member card starts within 90 px of the top', firstMember);
   await shot(page, 'VIS-009-team-members-1440x900');
   await page.locator('[data-test="group-member"]', { hasText: 'Reviewer' }).click();
   await page.locator('[data-test="agent-memory-page"]').waitFor();
@@ -416,6 +501,9 @@ try {
   check('SMV-071', (await page.locator('[data-test="memory-browse-tab-global"]').getAttribute('title')) === 'Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.', "The Global line (the tab's tooltip)");
   await page.locator('[data-test="semantic-memory-explorer"] .file-header', { hasText: 'product.md' }).click();
   await page.locator('text=runs agents on your own nodes').first().waitFor();
+  const globalPanel = await placement('[data-test="semantic-memory-explorer"]');
+  check('SMV-119', globalPanel && globalPanel.top <= 80 && globalPanel.toWindowBottom >= 0 && globalPanel.toWindowBottom <= 24 && !globalPanel.pageScrolls,
+    'AC-001, AC-002 (autobyteus-652): Global\'s reader starts within 80 px of the top and ends within 24 px of the window bottom, no page scroll', globalPanel);
   await shot(page, 'VIS-003-global-file-open-1440x900');
 
   // zh-CN.

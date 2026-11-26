@@ -1,0 +1,161 @@
+{
+  "result": {
+    "files": [
+      {
+        "name": "src",
+        "svg": true,
+        "shapes": 1,
+        "w": 16,
+        "fontIcon": false
+      },
+      {
+        "name": "app.ts",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "App.vue",
+        "svg": true,
+        "shapes": 3,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "main.js",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "styles",
+        "svg": true,
+        "shapes": 1,
+        "w": 16,
+        "fontIcon": false
+      },
+      {
+        "name": "site.css",
+        "svg": true,
+        "shapes": 2,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "index.html",
+        "svg": true,
+        "shapes": 4,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "notes.txt",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "package.json",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "README.md",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      }
+    ],
+    "filesTab": {
+      "text": "package.json",
+      "maxWidth": "150px",
+      "title": null
+    },
+    "skills": [
+      {
+        "name": "src",
+        "svg": true,
+        "shapes": 1,
+        "w": 16,
+        "fontIcon": false
+      },
+      {
+        "name": "app.ts",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "App.vue",
+        "svg": true,
+        "shapes": 3,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "main.js",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "styles",
+        "svg": true,
+        "shapes": 1,
+        "w": 16,
+        "fontIcon": false
+      },
+      {
+        "name": "site.css",
+        "svg": true,
+        "shapes": 2,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "index.html",
+        "svg": true,
+        "shapes": 4,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "notes.txt",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "package.json",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "README.md",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      },
+      {
+        "name": "SKILL.md",
+        "svg": true,
+        "shapes": 1,
+        "w": 14,
+        "fontIcon": false
+      }
+    ]
+  },
+  "errors": []
+}

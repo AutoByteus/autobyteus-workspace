@@ -1,0 +1,100 @@
+{
+ "run": "smv2",
+ "checks": [
+  {
+   "id": "SMV-000",
+   "pass": true,
+   "message": "Built server entry exists (run pnpm -C autobyteus-server-ts build first)"
+  },
+  {
+   "id": "SMV-001",
+   "pass": true,
+   "message": "A Chrome executable is available"
+  },
+  {
+   "id": "SMV-010",
+   "pass": true,
+   "message": "Browse tabs in order",
+   "details": [
+    "Global",
+    "Agents",
+    "Agent Teams",
+    "Agent Orgs"
+   ]
+  },
+  {
+   "id": "SMV-011",
+   "pass": true,
+   "message": "No list filter on Browse"
+  },
+  {
+   "id": "SMV-012",
+   "pass": true,
+   "message": "An agent card shows no run count"
+  },
+  {
+   "id": "SMV-020",
+   "pass": true,
+   "message": "The agent page heading"
+  },
+  {
+   "id": "SMV-021",
+   "pass": true,
+   "message": "Back shows \"Memory\" (Back to Memory)"
+  },
+  {
+   "id": "SMV-022",
+   "pass": true,
+   "message": "Two episodes"
+  },
+  {
+   "id": "SMV-117",
+   "pass": true,
+   "message": "AC-001 (autobyteus-652): the Episodic page's first card starts within 90 px of the top",
+   "details": {
+    "top": 85,
+    "bottom": 161,
+    "toWindowBottom": 739,
+    "width": 344,
+    "pageScrolls": false
+   }
+  },
+  {
+   "id": "SMV-120",
+   "pass": false,
+   "message": "AC-001: the agent's name is whole beside its subtitle at 1440 and 1280 px",
+   "details": {
+    "nameAt1440": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "nameAt1280": {
+     "width": 90,
+     "needs": 153,
+     "whole": false
+    },
+    "subtitle": "Also works in Product Review Team"
+   }
+  }
+ ],
+ "pageErrors": [],
+ "failures": [
+  {
+   "message": "SMV-120: AC-001: the agent's name is whole beside its subtitle at 1440 and 1280 px",
+   "details": {
+    "nameAt1440": {
+     "width": 153,
+     "needs": 153,
+     "whole": true
+    },
+    "nameAt1280": {
+     "width": 90,
+     "needs": 153,
+     "whole": false
+    },
+    "subtitle": "Also works in Product Review Team"
+   }
+  }
+ ]
+}
