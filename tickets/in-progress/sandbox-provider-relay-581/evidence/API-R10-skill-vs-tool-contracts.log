@@ -1,0 +1,38 @@
+# API-R10 public skill vs. the tool contracts (AC-016, review part)
+# compared: /Users/normy/autobyteus_org/autobyteus-skills-worktrees/autobyteus-sandboxes-581/autobyteus-sandboxes/SKILL.md (skills commit f85b30a) with autobyteus-server-ts/src/agent-tools/sandboxes/{sandbox-tool-contract,sandbox-tool-manifest}.ts and src/sandboxes/* (code d624f09ce6); date 2026-11-26T17:42:54Z
+
+## Refusal codes: source (grep '"SANDBOX_[A-Z_]+"') vs skill (grep SANDBOX_[A-Z_]+)
+2a3
+> SANDBOX_IMAGE
+13d13
+< SANDBOX_TOOL_FAILED
+(SANDBOX_IMAGE in the skill is the setting AUTOBYTEUS_SANDBOX_IMAGE, not a code; SANDBOX_TOOL_FAILED is the manifest's code for an unexpected error, not a refusal: undocumented)
+
+## Tool names
+create_sandbox source:1 skill:4
+run_in_sandbox source:1 skill:3
+destroy_sandbox source:1 skill:3
+
+## Parameters (source schema names) and limits
+name: "agentPackages" name: "argv" name: "lifetimeMinutes" name: "name" name: "path" name: "sandboxId" name: "sharedFolders" name: "timeoutSeconds" 
+autobyteus-server-ts/src/sandboxes/sandbox-manager.ts:28:const EXEC_DEFAULT_SECONDS = 60;
+autobyteus-server-ts/src/sandboxes/sandbox-manager.ts:29:const EXEC_MAX_SECONDS = 600;
+autobyteus-server-ts/src/sandboxes/sandbox-manager.ts:30:const EXEC_OUTPUT_MAX_BYTES = 64 * 1024;
+autobyteus-server-ts/src/sandboxes/sandbox-manager.ts:141:      if (records.length >= SANDBOX_LIMITS.maxSandboxes) {
+autobyteus-server-ts/src/sandboxes/sandbox-manager.ts:142:        throw new SandboxRefusal("SANDBOX_LIMIT_REACHED", `This node already has ${SANDBOX_LIMITS.maxSandboxes} sandboxes: destroy one first.`);
+autobyteus-server-ts/src/sandboxes/sandbox-settings.ts:8:  maxSandboxes: 4,
+autobyteus-server-ts/src/sandboxes/sandbox-settings.ts:9:  defaultLifetimeMinutes: 120,
+autobyteus-server-ts/src/sandboxes/sandbox-settings.ts:10:  maxLifetimeMinutes: 480,
+
+## Skill statements checked: lifetime 1-480 default 120; timeoutSeconds 1-600 default 60; output 64 KiB; 4 sandboxes; 6 GiB / 4 CPUs; shared folders read-only at /home/autobyteus/shared/<name>; destroy -> {removed:true, foldersKept:true}
+24:holds memory and CPU (6 GiB and 4 CPUs each, at most 4 per node).
+38:- `sharedFolders` (optional): folders the sandbox may **read** at `/home/autobyteus/shared/<name>`. They are
+40:- `lifetimeMinutes` (optional): 1 to 480, default 120. Choose a little more than the work needs.
+104:run_in_sandbox { "sandboxId": "sbx_7f3a9c0d1e", "argv": ["bash", "-lc", "cd /home/autobyteus/workspace && npm test"], "timeoutSeconds": 120 }
+108:1 to 600 seconds (default 60). The result is `exitCode` (`null` when the time limit ended it), `stdout` and `stderr`
+109:(each at most 64 KiB) and `truncated`. Only the run that created the sandbox may use it.
+117:→ `{ "removed": true, "foldersKept": true }`. The container, its pairing with your node and its record are removed;
+
+## Result fields: skill example vs. live result (SBX-01, run 4): the live result leaves out empty fields (platform tool result rule, agent-tools-mcp-structured-json-result.ts), so 'teams' (and 'sharedFolders' when none) are absent, while the skill's example shows "teams": [] -> doc note
+
+## Run memory layout (skill section 4: agents/<runId>/raw_traces_active.jsonl in runMemoryFolder): contradicted by F-2 (API-E02): the folder stays empty

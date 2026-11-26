@@ -1,0 +1,20 @@
+# API-R02 web typecheck
+# command: pnpm -C autobyteus-web typecheck
+# commit: 5c6ef6ee86 (code d624f09ce6); Node v22.23.1; date 2026-11-26T17:20:05Z
+
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "actions", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-web/stores/agentRunStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-web/stores/semanticMemoryFolderStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 39.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.8s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+exit 0

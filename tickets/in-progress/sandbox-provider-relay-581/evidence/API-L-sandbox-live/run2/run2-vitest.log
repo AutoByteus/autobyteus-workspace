@@ -1,0 +1,225 @@
+# API-L01..L08 gated sandbox live suite (SBX-01..SBX-08), run 2 (after fixing the suite: tool results from AGY_FAKE_TOOL_LOG)
+# command: env -i PATH HOME USER LOGNAME TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_SANDBOX_LIVE_E2E=1 SANDBOX_LIVE_E2E_IMAGE=autobyteus-server:581-api-e2e SANDBOX_LIVE_E2E_EVIDENCE_DIR=<this folder> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/sandboxes/sandbox-live.e2e.test.ts --no-watch
+# commit: 5c6ef6ee86 (code d624f09ce6) + uncommitted suite; image autobyteus-server:581-api-e2e (5532578247f4, package from d624f09ce6); Node v22.23.1; Docker Desktop 29.0.1; date 2026-11-26T17:29:26Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:86944) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts (8 tests | 6 failed) 155260ms
+     × SBX-01: create, peer role, network, sign-ins, one relayed turn per runtime, direct turns on the host 9480ms
+     × SBX-02 (QR-002): the relay adds at most 1 s to the time to the first streamed content 1ms
+     × SBX-03: delegation into the sandbox; the answer and its file arrive; folders, transcript; nothing leaked 0ms
+     × SBX-04: another run is refused; the creator's destroy leaves nothing but the folders 1ms
+     × SBX-05 (AC-003): the host unpairs a running sandbox; its next call is refused before any provider call 11344ms
+     ✓ SBX-06 (AC-013): a sandbox is removed at its expiry; its folders stay  61144ms
+     ✓ SBX-07 (AC-013, R-A): after a host crash with two sandboxes alive and one record lost, the next start removes both  39012ms
+     × SBX-08 (AC-014, R-B): five at once give four sandboxes and one limit refusal; collaboration off and a home folder are refused 31011ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-01: create, peer role, network, sign-ins, one relayed turn per runtime, direct turns on the host
+AssertionError: SANDBOX_START_FAILED: The sandbox could not start: fetch failed: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:354:93
+    352|       agentPackages: [packageDir], sharedFolders: [{ path: sharedDir, …
+    353|     const readyMs = Date.now() - started;
+    354|     expect(created.ok, `${created.code}: ${created.message ?? created.…
+       |                                                                                             ^
+    355|     record = records()[0]!;
+    356|     expect(record).toMatchObject({ state: "ready", createdByRunId: eva…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-02 (QR-002): the relay adds at most 1 s to the time to the first streamed content
+AssertionError: SBX-01 created the sandbox: expected null not to be null
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:447:54
+    445|
+    446|   it("SBX-02 (QR-002): the relay adds at most 1 s to the time to the f…
+    447|     expect(record, "SBX-01 created the sandbox").not.toBeNull();
+       |                                                      ^
+    448|     const sandboxUrl = `http://127.0.0.1:${record!.hostPort}`;
+    449|     const sandboxModel = await nativeModel(sandboxUrl, credential);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-03: delegation into the sandbox; the answer and its file arrive; folders, transcript; nothing leaked
+AssertionError: SBX-01 created the sandbox: expected null not to be null
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:470:54
+    468|
+    469|   it("SBX-03: delegation into the sandbox; the answer and its file arr…
+    470|     expect(record, "SBX-01 created the sandbox").not.toBeNull();
+       |                                                      ^
+    471|     const token = `report-${randomUUID().slice(0, 8)}`;
+    472|     const address = sandbox!.agents[0].address as string;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-04: another run is refused; the creator's destroy leaves nothing but the folders
+AssertionError: SBX-01 created the sandbox: expected null not to be null
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:543:54
+    541|
+    542|   it("SBX-04: another run is refused; the creator's destroy leaves not…
+    543|     expect(record, "SBX-01 created the sandbox").not.toBeNull();
+       |                                                      ^
+    544|     const other = await evaluatorRun();
+    545|     const exec = await callTool(other, "run_in_sandbox", { sandboxId: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-05 (AC-003): the host unpairs a running sandbox; its next call is refused before any provider call
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:584:31
+    582|       mentionsRelayPeerNotAccepted: text.includes("RELAY_PEER_NOT_ACCE…
+    583|       destroy: destroyed.result, containersLeft: (await containersOf(`…
+    584|     expect(refused.completed).toBe(false);
+       |                               ^
+    585|     expect(text).toContain("RELAY_PEER_NOT_ACCEPTED");
+    586|     expect(activity().length).toBe(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/e2e/sandboxes/sandbox-live.e2e.test.ts > sandbox nodes end to end (autobyteus-581) > SBX-08 (AC-014, R-B): five at once give four sandboxes and one limit refusal; collaboration off and a home folder are refused
+AssertionError: expected { calls: 5, ready: 3, …(4) } to deeply equal { calls: 5, ready: 4, …(4) }
+
+- Expected
++ Received
+
+  {
+    "calls": 5,
+-   "containers": 4,
+-   "creators": 4,
+-   "ready": 4,
+-   "records": 4,
++   "containers": 3,
++   "creators": 3,
++   "ready": 3,
++   "records": 3,
+    "refusals": [
+      "SANDBOX_LIMIT_REACHED",
++     "SANDBOX_START_FAILED",
+    ],
+  }
+
+ ❯ tests/e2e/sandboxes/sandbox-live.e2e.test.ts:657:21
+    655|       sandboxPeers: (await hostPeers()).filter((p) => p.role === "sand…
+    656|     evidence("SBX-08", { atLimit, remoteCollaborationOff: off.code, ho…
+    657|     expect(atLimit).toEqual({ calls: 5, ready: 4, refusals: ["SANDBOX_…
+       |                     ^
+    658|     expect(off.code).toBe("SANDBOX_REMOTE_COLLABORATION_OFF");
+    659|     expect(homeShared.code).toBe("SANDBOX_SHARED_FOLDER_INVALID");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  18:29:26
+   Duration  155.93s (transform 119ms, setup 77ms, import 96ms, tests 155.26s, environment 0ms)
+
+exit 1

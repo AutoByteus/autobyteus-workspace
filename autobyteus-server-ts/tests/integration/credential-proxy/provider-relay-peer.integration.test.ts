@@ -9,7 +9,8 @@
  * login), the body and the streamed reply unchanged, the
  * query kept without the peer envelope, the reply marking (a provider 401 stays the provider's), every refusal before a
  * provider call (relay node's switch off, an expired login, a missing key, unpaired on either side, a wrong secret,
- * remote collaboration off, the relay node unreachable), one C5 line per call with no secret in any line or log.
+ * remote collaboration off, the relay node unreachable), one C5 line per call with no secret in any line or log, and
+ * the relayed body limit (QR-004: 32 MiB passes both nodes and the gate's body hash; one byte more is refused locally).
  * Dummy values only.
  */
 import http from "node:http";
@@ -309,6 +310,30 @@ describe("provider relay through a paired relay node (C4)", () => {
     expect(await unreachable.json()).toMatchObject({ error: { code: "RELAY_PEER_UNREACHABLE" } });
     expect(seen).toHaveLength(0);
   });
+
+  it("QR-004 a 32 MiB body passes both nodes and the gate's body hash unchanged; one byte more is refused before anything is sent", async () => {
+    await startRelayedNode(relayed());
+    const access = await host.providerRelayAccess.prepareForRun(run, "anthropic", "autobyteus");
+    const MAX = 32 * 1024 * 1024;
+    const largest = Buffer.alloc(MAX, "a");
+    const accepted = await fetch(`${access.baseUrl}/v1/messages`, {
+      method: "POST", body: largest, headers: { "content-type": "application/json", "x-api-key": access.pass },
+    });
+    expect(accepted.status).toBe(200);
+    expect(await accepted.text()).toBe(SSE.join(""));
+    expect(seen).toHaveLength(1);
+    expect(seen[0]!.body.length).toBe(MAX);
+    expect(seen[0]!.body === largest.toString("utf8")).toBe(true);
+    expect(activity()).toEqual([expect.objectContaining({ relayCredentialKind: "apiKey", path: "/v1/messages", status: 200 })]);
+
+    const tooLarge = await fetch(`${access.baseUrl}/v1/messages`, {
+      method: "POST", body: Buffer.alloc(MAX + 1, "a"), headers: { "content-type": "application/json", "x-api-key": access.pass },
+    });
+    expect(tooLarge.status).toBe(413);
+    expect(await tooLarge.json()).toMatchObject({ error: { code: "RELAY_BODY_TOO_LARGE" } });
+    expect(seen).toHaveLength(1);
+    expect(activity()).toHaveLength(1);
+  }, 60_000);
 
   it("refuses a relay C1 does not list, before anything is sent (RELAY_NOT_LISTED)", async () => {
     await startRelayedNode(relayed());
