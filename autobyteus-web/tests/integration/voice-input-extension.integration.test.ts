@@ -35,6 +35,9 @@ vi.mock('~/services/nodeCollaboration/directNodeApolloClient', () => ({
 
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 
+/** A real install (unpack and import) can take longer than vi.waitFor's 1 s default beside a busy suite. */
+const INSTALL_WAIT = { timeout: 15_000, interval: 50 }
+
 /** A voice-input package whose server part answers like the voice runtime: text in the chosen language. */
 const VOICE_SERVER_PART = `
 import fs from 'node:fs/promises';
@@ -106,7 +109,7 @@ describe('voice input extension integration (renderer → node action route → 
 
     await manager.current!.list({ refreshCatalog: true })
     await manager.current!.install('voice-input')
-    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]).toMatchObject({ state: 'installed', enabled: true }))
+    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]).toMatchObject({ state: 'installed', enabled: true }), INSTALL_WAIT)
     await voice.refreshAvailability()
     expect(voice.isAvailable).toBe(true)
 
@@ -130,7 +133,7 @@ describe('voice input extension integration (renderer → node action route → 
     const voice = useVoiceInputStore()
     await manager.current!.list({ refreshCatalog: true })
     await manager.current!.install('voice-input')
-    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]?.state).toBe('installed'))
+    await vi.waitFor(async () => expect((await manager.current!.list({ refreshCatalog: false })).extensions[0]?.state).toBe('installed'), INSTALL_WAIT)
     await voice.refreshAvailability()
 
     capture(voice, [0])
