@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, design-spec.md (SR-001), initial | N/A | `Initial Baseline` | SR-001 | Implemented; to API/E2E |
+| IR-002 | Code Reviewer, code-review-report.md CRR-001 (failure-origin review of API-REV-001) | CR-001, CR-002 (F-1 / SMV-121, F-2 / SMV-120) | `Local Fix` | SR-001, CRR-001, API-REV-001 | Fixed; to API/E2E |
 
 ## Revision Entries
 
@@ -39,3 +40,28 @@
 - Remaining limitations or risks:
   - a 40-character name truncates slightly in the approved 300 px list;
   - FU-002: English literals in Memory paging and raw-trace cards, untouched by this change.
+
+### IR-002 — CRR-001 Local Fix: card grids on a phone, the name beside its places line
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/memory-layout-652/code-review-report.md`, CRR-001 (the failure-origin review of API/E2E's round 1, API-REV-001).
+- Triggering finding IDs: CR-001 (F-1, SMV-121), CR-002 (F-2, SMV-120).
+- Classification: Local Fix.
+- Prior authoritative result: IR-001, API/E2E Fail on AC-001 (layout).
+- Current authoritative result: both fixed; `Medium` / `Low` unchanged; direct route to API/E2E.
+- Related solution revision IDs: SR-001.
+- Related architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-001.
+- Related API/E2E revision IDs: API-REV-001.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: I copied the 608 runnable reference's two layout defects. The spec's card grid rule and VIS-004 and VIS-005 settle both.
+- Approved behavior or requirement IDs affected: REQ-001 / AC-001.
+- Implementation delta:
+  - CR-001: `grid-cols-1` (`minmax(0, 1fr)`) on the three card grids (`AgentMemoryPage.vue`, `GroupMemoryPage.vue`, `MemoryBrowse.vue`).
+  - CR-002: the places line is `flex-1 basis-0 … lg:block` (it was `lg:inline` and shrank with the name); the `h1` is unchanged (`flex: 0 1 auto`).
+- Changed files or areas: those three components and their specs. Commit: `1cf6e23765`.
+- Local validation and result (IMP-004):
+  - spec cases red 3 → green; the memory specs, 12 files and 76 tests, passed;
+  - API/E2E's semantic-memory view probe passed 54/54, SMV-120 and SMV-121 included, with 0 page errors.
+- Next recipient or routing: `/api_e2e_engineer` (direct route).
+- Remaining limitations or risks: none new. FU-003 (the design reference's copy of these defects) is the code reviewer's follow-up.
+

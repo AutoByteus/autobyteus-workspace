@@ -14,7 +14,7 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - the prototype diff `a4e314f5` for exact classes;
   - `follow-ups.md` (FU-001, and FU-002 added here).
 - Design review report and architecture review revision record: `N/A — not applicable` (independent architecture review not selected).
-- Triggering rework report: `N/A`.
+- Triggering rework report: `code-review-report.md` CRR-001 (failure-origin review of API-REV-001): CR-001, CR-002, Local Fix (IR-002).
 
 ## Current Implementation Summary
 
@@ -22,7 +22,9 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - `666052a203`: file lists, D-11 and D-12.
   - `37c047cb59`: the Memory layout, D-1…D-10 and D-13.
   - `11978136f1`: the semantic-memory view probe moved to the new layout.
-  - The docs commit carrying this handoff and the evidence.
+  - `7bf21db56e`: the IR-001 docs.
+  - IR-002, `1cf6e23765`: CR-001, a base column (`grid-cols-1`) on the agent, member and owner card grids; CR-002, the agent page's places line takes only the space the name leaves (`flex-1 basis-0`), so the name stays whole.
+  - The docs commit carrying this update.
 - **The shared pieces** (`components/memory/`), each with one owner, replacing the prototype's repeated markup:
   - `MemorySectionTabs` (Browse · Search · Index with the Index badge).
   - `MemoryPageHeader` (Back showing its destination, its accessible name and tooltip "Back to …", `/`, the title slot, the actions slot whose items wrap full width below 640 px).
@@ -68,12 +70,12 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
   - `.md` is `heroicons:document-text` `text-blue-500/80` 14 px; `.js/.ts/.vue/.html/.css/.json` are the `vscode-icons:file-type-*` icons; the drag preview uses `heroicons:document`.
   - The `fab`/`fas` `<i>` tags are gone. The icon bundle already held every name: `--check` says current and the asset is unchanged.
 - **D-13:** new keys in `localization/messages/{en,zh-CN}/memory.ts`. Touched literals moved to keys ("Work Journal", "Raw Traces", "Back to search results", "Show", "Loading…", "Retry", "N runs"). Three keys left unused were removed (`memory.journal.go`, `RawTracesTab.records`, `CollaborationMemoryDetail.back_to_memory`).
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework` (IR-002, CRR-001 Local Fix). IR-001 was the initial round.
 - Implementation revision record: `tickets/in-progress/memory-layout-652/implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002`.
 - Related solution revision IDs: SR-001.
-- Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`.
-- Triggering finding IDs: `N/A`.
+- Related code-review revision IDs: CRR-001. Related API/E2E revision IDs: API-REV-001. Architecture-review and delivery: `N/A`.
+- Triggering finding IDs: CR-001 (F-1, SMV-121), CR-002 (F-2, SMV-120).
 
 ## Routing Classification (Mandatory)
 
@@ -179,7 +181,9 @@ Ticket autobyteus-652 (memory-layout-652): build the founder-approved autobyteus
 | `build-icon-bundle.mjs` and `--check` | same | current; asset unchanged | IMP-002 |
 | `test:e2e:team-group-icon` (its fixture page edited) | same | Pass, 4 cases | IMP-002 |
 | `semantic-memory-view-probe.mjs` (stale checks updated) | `11978136f1` | Pass, 42/42, 0 page errors (an earlier run's cold-cache reload is explained) | IMP-002 |
-| Rendered views at 1440×900, 1280×800, 390×844 (and 1200×800 for the picker) | `37c047cb59` tree | all AC measurements hold; 0 errors | IMP-003 |
+| Rendered views at 1440×900, 1280×800, 390×844 (and 1200×800 for the picker) | `37c047cb59` tree | all AC measurements hold; 0 errors (CR-001 and CR-002 were not caught here: my data had short workspace paths and a short name) | IMP-003 |
+| IR-002: CR-001 and CR-002 spec cases red → green; memory specs | `1cf6e23765` | 3 red → 12 files, 76 passed | IMP-004 |
+| IR-002: semantic-memory view probe with API/E2E's SMV-120 and SMV-121 | `1cf6e23765` | Pass, 54/54, 0 page errors | IMP-004 |
 
 Not run:
 - The packaged desktop app and the fresh-start build: no build input changed (rule 12 does not apply).
