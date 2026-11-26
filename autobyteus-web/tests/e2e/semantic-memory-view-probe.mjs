@@ -333,7 +333,10 @@ try {
   await links.first().click();
   await links.first().click({ button: 'right' });
   await sleep(800);
-  check('SMV-034', evidence.operations.length === operationsBeforeLink, 'A link row asks nothing of the node', evidence.operations.slice(operationsBeforeLink));
+  // The left panel re-reads the run lists every 5 s (RUN_HISTORY_REFRESH_INTERVAL_MS): those reads are not the link row's.
+  const PERIODIC_READS = new Set(['ListWorkspaceRunHistory', 'ListCollaborationRootHistory']);
+  const askedByLink = evidence.operations.slice(operationsBeforeLink).filter((name) => !PERIODIC_READS.has(name));
+  check('SMV-034', askedByLink.length === 0, 'A link row asks nothing of the node', evidence.operations.slice(operationsBeforeLink));
   check('SMV-035', !(await page.locator('[role="menu"], .context-menu').count()), 'No context menu on a link row');
   await page.locator('.file-header', { hasText: 'research-method.md' }).click();
   await page.locator('text=Read the sources.').first().waitFor();
