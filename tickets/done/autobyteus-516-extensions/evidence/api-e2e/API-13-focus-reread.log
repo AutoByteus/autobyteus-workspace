@@ -1,0 +1,26 @@
+# API-13 focus re-read in the packaged Docker node window (autobyteus-516, AC-009 / SCN-A4)
+# 1) focus-reread.mjs (raw CDP; focus through electronAPI.openNodeWindow → shell focus): no focus event reached the renderer in this isolated instance (both windows report document.hasFocus() true; System Events lists no windows of the instance), so real OS focus could not be driven here.
+# 2) /tmp/516-focus-dispatch.mjs: window focus event dispatched in the Docker window (packaged renderer's own listener), after Voice Input was turned Off in the main window.
+# Instance iso-56338-577d (control 56338); embedded node 127.0.0.1:56339; Docker node 127.0.0.1:57499; 2026-11-26 17:56:54
+{
+  "window": {
+    "windowId": 2,
+    "entryId": "docker-516"
+  },
+  "before": {
+    "readGeneration": 9,
+    "voiceInput": {
+      "enabled": true,
+      "ready": true
+    },
+    "micButtons": 1
+  },
+  "afterFocusEvent": {
+    "readGeneration": 10,
+    "voiceInput": {
+      "enabled": false,
+      "ready": true
+    },
+    "micButtons": 0
+  }
+}

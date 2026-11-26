@@ -1,0 +1,66 @@
+# API-14 QR-002 warm transcription before/after (autobyteus-516)
+# Same clip: /tmp/516-api-clips/clip-5s-48k.wav (5.000 s, 48 kHz mono PCM16; macOS say 'Please summarize the meeting notes and send them to the team.' padded to 5 s); languageMode en; 1 + 10 runs each; warm = runs 1-10
+# Machine: Apple Silicon (arm64, 10 cores, 64 GB), macOS 26 (Darwin 25.5.0); load average 7-15 from other agents; 2026-11-26 18:00:20
+# BEFORE: the base commit fdde5406fa's Electron-main VoiceInputRuntimeService (git archive, bundled with esbuild; shellEnv stubbed to return PATH), run in Node v22.23.1 (Electron main runs Node 24; the renderer→main IPC hop is not included, which favours BEFORE), runtime 0.3.0 installed by that service into a temp HOME: probes/api-e2e/qr002-bench-base.ts (bundled to /tmp/516-api-qr002/bench-base.mjs with autobyteus-web/electron/utils/shellEnv.ts stubbed)
+# AFTER: the packaged worktree build (commit 8fcbb9bda3, code 3961790ab6), main window renderer → fetch POST <embedded node>/rest/extensions/voice-input/actions/transcribe (audio/wav; owner credential attached by the desktop) → Voice Input 1.0.1 server part → runtime 0.3.2 worker: probes/api-e2e/qr002-after-renderer.mjs
+# ATTRIBUTION: each runtime's worker alone (same JSON-line protocol): probes/api-e2e/qr002-direct-worker.mjs
+
+## BEFORE (base path, runtime 0.3.0)
+{"run":0,"warm":false,"ms":22472,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":1,"warm":true,"ms":200,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":2,"warm":true,"ms":199,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":3,"warm":true,"ms":205,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":4,"warm":true,"ms":202,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":5,"warm":true,"ms":202,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":6,"warm":true,"ms":209,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":7,"warm":true,"ms":202,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":8,"warm":true,"ms":202,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":9,"warm":true,"ms":198,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":10,"warm":true,"ms":198,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"summary":true,"n":10,"medianMs":202,"minMs":198,"maxMs":209}
+
+## AFTER (new path through the node, runtime 0.3.2)
+{"run":0,"warm":false,"ms":264,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":1,"warm":true,"ms":227,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":2,"warm":true,"ms":221,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":3,"warm":true,"ms":212,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":4,"warm":true,"ms":215,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":5,"warm":true,"ms":215,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":6,"warm":true,"ms":214,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":7,"warm":true,"ms":222,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":8,"warm":true,"ms":218,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":9,"warm":true,"ms":218,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":10,"warm":true,"ms":225,"status":200,"text":"Please summarize the meeting notes and send them to the team."}
+{"summary":true,"n":10,"medianMs":218,"minMs":212,"maxMs":227}
+
+## Worker alone, runtime 0.3.0
+{"ready":"ready","ms":49}
+{"run":0,"warm":false,"ms":1429,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":1,"warm":true,"ms":227,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":2,"warm":true,"ms":204,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":3,"warm":true,"ms":208,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":4,"warm":true,"ms":200,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":5,"warm":true,"ms":209,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":6,"warm":true,"ms":217,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":7,"warm":true,"ms":224,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":8,"warm":true,"ms":205,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":9,"warm":true,"ms":200,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":10,"warm":true,"ms":207,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"summary":true,"n":10,"medianMs":208,"minMs":200,"maxMs":227}
+
+## Worker alone, runtime 0.3.2
+{"ready":"ready","ms":2128}
+{"run":0,"warm":false,"ms":228,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":1,"warm":true,"ms":215,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":2,"warm":true,"ms":236,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":3,"warm":true,"ms":228,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":4,"warm":true,"ms":210,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":5,"warm":true,"ms":208,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":6,"warm":true,"ms":207,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":7,"warm":true,"ms":208,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":8,"warm":true,"ms":207,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":9,"warm":true,"ms":207,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"run":10,"warm":true,"ms":207,"ok":true,"text":"Please summarize the meeting notes and send them to the team."}
+{"summary":true,"n":10,"medianMs":208,"minMs":207,"maxMs":236}
+
+## Result: warm median BEFORE 202 ms, AFTER 218 ms: +16 ms (QR-002 limit +500 ms). Worker alone 208 ms for both runtimes: the new path adds ~10 ms (HTTP hop + node); run-to-run spread ~±10 ms.

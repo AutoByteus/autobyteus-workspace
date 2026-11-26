@@ -1,0 +1,26 @@
+# API-12 Docker node (autobyteus-516): container autobyteus-516-api-e2e, image autobyteus/autobyteus-server:beta, this worktree's linux/arm64 server package (docker buildx … --target server-package, commit 8fcbb9bda3, code 3961790ab6) mounted read-only over /opt/autobyteus/server-package; -p 127.0.0.1:57499:8000; anonymous volumes; AUTOBYTEUS_EXTENSIONS_CATALOG_URL=<dev catalog via host.docker.internal>; 2026-11-26
+# Lines about extensions, node requests to /rest/extensions, start/listen
+xrdb: Connection refused
+ vncext:      VNC extension running!
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+{"level":30,"time":1795711823347,"pid":96,"hostname":"5586d8d241bc","msg":"Server listening at http://127.0.0.1:35823"}
+{"level":30,"time":1795711823395,"pid":96,"hostname":"5586d8d241bc","msg":"Server listening at http://127.0.0.1:8000"}
+{"level":30,"time":1795711823395,"pid":96,"hostname":"5586d8d241bc","msg":"Server listening at http://172.17.0.6:8000"}
+[2026-11-26T16:50:23.395Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/extensions/hello-node/ui/index.html from 172.17.0.1
+{"level":40,"time":1795711830715,"pid":96,"hostname":"5586d8d241bc","reqId":"req-2","method":"GET","url":"/rest/extensions/hello-node/ui/index.html","statusCode":401,"elapsedMs":1.182291000000987,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/extensions/voice-input/actions/transcribe from 172.17.0.1
+{"level":40,"time":1795711830733,"pid":96,"hostname":"5586d8d241bc","reqId":"req-3","method":"POST","url":"/rest/extensions/voice-input/actions/transcribe","statusCode":401,"elapsedMs":1.1121249999996508,"msg":"http request completed"}
+EXTENSION_FAILED: broken-status: the status probe of Broken Status failed on purpose
+xrdb: Connection refused
+ vncext:      VNC extension running!
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+{"level":30,"time":1795711896575,"pid":95,"hostname":"5586d8d241bc","msg":"Server listening at http://127.0.0.1:37139"}
+{"level":30,"time":1795711896615,"pid":95,"hostname":"5586d8d241bc","msg":"Server listening at http://127.0.0.1:8000"}
+{"level":30,"time":1795711896615,"pid":95,"hostname":"5586d8d241bc","msg":"Server listening at http://172.17.0.6:8000"}
+[2026-11-26T16:51:36.615Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+EXTENSION_FAILED: broken-status: the status probe of Broken Status failed on purpose

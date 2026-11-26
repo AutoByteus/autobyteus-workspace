@@ -3,7 +3,8 @@
 // `pnpm exec nuxt prepare`, and Chrome. Owns Nuxt/Chrome/page; never uses an installed app/data.
 // Native getUserMedia + AudioContext + production AudioWorklet use synthetic PCM, NOT a real mic.
 // Team events enter the actual schema/view; selection/projections/callers/button/store are real.
-// Only transcription IPC is a fixture: no network Team producer, model or packaged-shell claim.
+// Only this computer's Voice Input is a fixture (its availability read and its transcribe action on the embedded node):
+// no network Team producer, model or packaged-shell claim.
 // pnpm test:e2e:composer-voice-lifetime [--output-dir <dir>] [--ledger-file <existing file>]
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
@@ -84,7 +85,7 @@ async function appended() {
   await waitFor('once-only draft append', async () => (await state()).leadDraft === 'existing draft dictated words')
   const s = await state()
   assert.equal(await host().locator('textarea').inputValue(), s.leadDraft)
-  assert.equal(s.ipc, 1); assert.equal(s.stops, 1); assert.equal(s.sends, 0); assert.equal(s.transcribing, false)
+  assert.equal(s.transcribe, 1); assert.equal(s.stops, 1); assert.equal(s.sends, 0); assert.equal(s.transcribing, false)
   assert.equal(s.outcome, 'transcript-ready'); assert.equal(s.error, null)
   assert.deepEqual(s.tracks, ['ended']); assert.deepEqual(s.audioContexts, ['closed'])
   assert.equal(s.wavs[0].riff, 0x52494646); assert.equal(s.wavs[0].wave, 0x57415645)
@@ -139,6 +140,14 @@ try {
   await context.route('**/graphql', async route => {
     const payload = route.request().postDataJSON(); evidence.apiRequests.push(payload)
     if (/mutation\s/i.test(payload.query ?? '')) evidence.failures.push({ message: 'Unexpected automatic mutation', operationName: payload.operationName })
+    // This computer's Voice Input on the embedded node, installed, on and ready. Answered here, at the network, because the
+    // window-start read (plugin 22.voiceInputAvailability) is in flight before the fixture page's setup runs, and Apollo
+    // gives the page's own reads that same in-flight answer.
+    if (payload.operationName === 'GetExtensions') {
+      await route.fulfill({ json: { data: { extensions: { catalog: 'verified', platform: 'darwin-arm64',
+        extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } } })
+      return
+    }
     await route.fulfill({ json: { data: { collaboratorCandidates: [] } } })
   })
   page = await context.newPage(); page.on('pageerror', error => evidence.pageErrors.push(error.message))
@@ -146,7 +155,7 @@ try {
     await open(); const initial = await start()
     await delay(3000) // Cross the existing capture-start watchdog window with genuine native stats.
     for (let i = 0; i < 3; i++) {
-      const s = await publish('recording'); assert.equal(s.ipc, 0); assert.deepEqual(s.tracks, ['live'])
+      const s = await publish('recording'); assert.equal(s.transcribe, 0); assert.deepEqual(s.tracks, ['live'])
       assert(await mic('Stop recording').isEnabled()); assert((await host().innerText()).includes('Recording...'))
     }
     await page.screenshot({ path: path.join(out, 'B-001-recording.png'), fullPage: true })
@@ -170,21 +179,21 @@ try {
     await waitFor('deferred media', async () => (await state()).pendingMedia); await button('member').click()
     await button('release-media').click(); await waitFor('late stream disposal', async () => (await state()).tracks[0] === 'ended')
     const s = await state(); assert.equal(s.starting, false); assert.equal(s.recording, false)
-    assert.equal(s.ipc, 0); assert.equal(s.sends, 0); assert.equal(s.leadDraft, 'existing draft'); assert.equal(s.reviewerDraft, '')
+    assert.equal(s.transcribe, 0); assert.equal(s.sends, 0); assert.equal(s.leadDraft, 'existing draft'); assert.equal(s.reviewerDraft, '')
     return s
   })
   await scenario('B-005', 'Publication during pending transcription preserves once-only append', async () => {
-    await open(); await button('ipc').click(); await start(); await mic('Stop recording').click()
-    await waitFor('pending IPC', async () => (await state()).pendingIpc)
+    await open(); await button('transcribe').click(); await start(); await mic('Stop recording').click()
+    await waitFor('pending transcription', async () => (await state()).pendingTranscribe)
     const pending = await publish('transcribing'); assert(await mic('Transcribing...').isDisabled())
     await page.screenshot({ path: path.join(out, 'B-005-transcribing.png'), fullPage: true })
-    await button('release-ipc').click(); return { pending, final: await appended() }
+    await button('release-transcribe').click(); return { pending, final: await appended() }
   })
   await scenario('B-006', 'Genuine member switch rejects late pending transcription', async () => {
-    await open(); await button('ipc').click(); await start(); await mic('Stop recording').click()
-    await waitFor('pending IPC', async () => (await state()).pendingIpc); await button('member').click()
+    await open(); await button('transcribe').click(); await start(); await mic('Stop recording').click()
+    await waitFor('pending transcription', async () => (await state()).pendingTranscribe); await button('member').click()
     const cancelled = await state(); assert.equal(cancelled.transcribing, true); assert.equal(cancelled.focused, 'reviewer')
-    await button('release-ipc').click(); await waitFor('IPC settlement', async () => !(await state()).transcribing)
+    await button('release-transcribe').click(); await waitFor('transcription settlement', async () => !(await state()).transcribing)
     const s = await state(); assert.equal(s.leadDraft, 'existing draft'); assert.equal(s.reviewerDraft, '')
     assert.equal(await host().locator('textarea').inputValue(), ''); assert.equal(s.sends, 0)
     assert.deepEqual(s.tracks, ['ended']); assert.deepEqual(s.audioContexts, ['closed']); return { cancelled, final: s }
@@ -192,7 +201,7 @@ try {
   await scenario('B-007', 'Composer teardown cancels and disposes actual native capture', async () => {
     await open(); await start(); await button('unmount').click()
     await waitFor('native resource disposal', async () => { const s = await state(); return !s.recording && s.tracks[0] === 'ended' && s.audioContexts[0] === 'closed' })
-    const s = await state(); assert.equal(s.ipc, 0); assert.equal(s.sends, 0); assert.equal(s.leadDraft, 'existing draft'); return s
+    const s = await state(); assert.equal(s.transcribe, 0); assert.equal(s.sends, 0); assert.equal(s.leadDraft, 'existing draft'); return s
   })
   assert.deepEqual(evidence.pageErrors, [], 'Unexpected browser page error')
   assert.deepEqual(evidence.failures, [], 'Unexpected API mutation/failure')

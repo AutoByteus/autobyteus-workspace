@@ -39,7 +39,7 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
     fs.writeFileSync(path.join(dir, OLD), released);
     const sink = log();
 
-    runElectronFileMigrations(dir, sink);
+    runElectronFileMigrations(dir, dir, sink);
 
     expect(files(dir)).toEqual([NEW, BAK].sort());
     expect(fs.readFileSync(path.join(dir, BAK), 'utf8')).toBe(released);
@@ -60,10 +60,10 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
   it('a re-run changes nothing; the backup is removed at the next start that finds only the new file', () => {
     const dir = userData();
     fs.writeFileSync(path.join(dir, OLD), released);
-    runElectronFileMigrations(dir, log());
+    runElectronFileMigrations(dir, dir, log());
     const converted = fs.readFileSync(path.join(dir, NEW), 'utf8');
 
-    runElectronFileMigrations(dir, log());
+    runElectronFileMigrations(dir, dir, log());
 
     expect(files(dir)).toEqual([NEW]);
     expect(fs.readFileSync(path.join(dir, NEW), 'utf8')).toBe(converted);
@@ -75,7 +75,7 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
     fs.writeFileSync(path.join(dir, BAK), released);
     fs.writeFileSync(path.join(dir, NEW), '{"version":7,"nodes":[]}');
 
-    runElectronFileMigrations(dir, log());
+    runElectronFileMigrations(dir, dir, log());
 
     expect(files(dir)).toEqual([NEW, BAK].sort());
     expect(read(dir, NEW)).toEqual({ version: 7, nodes: [] });
@@ -86,7 +86,7 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
     fs.writeFileSync(path.join(dir, OLD), '{broken');
     const sink = log();
 
-    runElectronFileMigrations(dir, sink);
+    runElectronFileMigrations(dir, dir, sink);
 
     expect(files(dir)).toEqual([OLD]);
     expect(sink.warn).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, OLD)));
@@ -95,13 +95,13 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
   it('after a failed conversion, the app starts with the embedded entry only and the old file stays for recovery', () => {
     const dir = userData();
     fs.writeFileSync(path.join(dir, OLD), '{broken');
-    runElectronFileMigrations(dir, log());
+    runElectronFileMigrations(dir, dir, log());
     const snapshot = loadNodeRegistrySnapshot(dir, 'http://127.0.0.1:29695');
     saveNodeRegistrySnapshot(dir, snapshot);
     expect(snapshot.nodes.map((entry) => entry.id)).toEqual(['embedded-local']);
 
     const sink = log();
-    runElectronFileMigrations(dir, sink);
+    runElectronFileMigrations(dir, dir, sink);
 
     expect(files(dir)).toEqual([NEW, OLD].sort());
     expect(fs.readFileSync(path.join(dir, OLD), 'utf8')).toBe('{broken');
@@ -110,7 +110,70 @@ describe('runElectronFileMigrations, SM-6 (autobyteus-290)', () => {
 
   it('a fresh install has nothing to convert', () => {
     const dir = userData();
-    runElectronFileMigrations(dir, log());
+    runElectronFileMigrations(dir, dir, log());
     expect(files(dir)).toEqual([]);
   });
 });
+
+/**
+ * AC-008 (DEC-016): the old desktop Voice Input install, synthesized in each released registry shape with small
+ * stand-in files (never real user data), is deleted once in the background; the user data folder is untouched.
+ */
+describe('runElectronFileMigrations, the old desktop Voice Input install (autobyteus-516)', () => {
+  const record = { id: 'voice-input', status: 'installed', message: 'Voice Input is ready.', installedAt: '2026-08-01T10:00:00.000Z',
+    runtimeVersion: '0.3.0', modelVersion: 'mlx-community/whisper-small-mlx', runtimeEntrypoint: '/x/runtime/bin/voice-input-worker',
+    modelPath: '/x/models/whisper-small-mlx', lastError: null };
+  const RELEASED_REGISTRIES: Record<string, unknown> = {
+    'v1 (v1.2.25)': { version: 1, extensions: { 'voice-input': record } },
+    'v2 (v1.2.28)': { version: 2, extensions: { 'voice-input': { ...record, enabled: true, settings: { languageMode: 'en' } } } },
+    'v2 with a microphone (v1.2.29)': { version: 2, extensions: { 'voice-input': { ...record, enabled: true, settings: { languageMode: 'en', audioInputDeviceId: 'mic-usb' } } } },
+  };
+  const oldInstall = (base: string, registry: unknown): string => {
+    const folder = path.join(base, 'extensions');
+    fs.mkdirSync(path.join(folder, 'voice-input', 'runtime', 'bin'), { recursive: true });
+    fs.mkdirSync(path.join(folder, 'voice-input', 'models', 'whisper-small-mlx'), { recursive: true });
+    fs.writeFileSync(path.join(folder, 'registry.json'), JSON.stringify(registry));
+    fs.writeFileSync(path.join(folder, 'voice-input', 'installation.json'), '{}');
+    fs.writeFileSync(path.join(folder, 'voice-input', 'runtime', 'bin', 'voice-input-worker'), '#!/bin/sh\n');
+    fs.writeFileSync(path.join(folder, 'voice-input', 'models', 'whisper-small-mlx', 'weights.npz'), 'stand-in');
+    fs.writeFileSync(path.join(folder, '.DS_Store'), 'finder');
+    return folder;
+  };
+
+  for (const [shape, registry] of Object.entries(RELEASED_REGISTRIES)) {
+    it(`deletes <base data folder>/extensions with a ${shape} registry once; a second start does nothing more`, async () => {
+      const dir = userData();
+      const base = userData();
+      fs.mkdirSync(path.join(base, 'server-data', 'extensions', 'voice-input', 'package'), { recursive: true });
+      const folder = oldInstall(base, registry);
+      const sink = log();
+
+      runElectronFileMigrations(dir, base, sink);
+
+      await vi.waitFor(() => expect(fs.existsSync(folder)).toBe(false));
+      expect(sink.info).toHaveBeenCalledWith(expect.stringContaining('Removed the old desktop Voice Input install'));
+      expect(fs.existsSync(path.join(base, 'server-data', 'extensions', 'voice-input', 'package'))).toBe(true);
+      const again = log();
+      runElectronFileMigrations(dir, base, again);
+      expect(again.info).not.toHaveBeenCalled();
+      expect(again.warn).not.toHaveBeenCalled();
+    });
+  }
+
+  it('logs a deletion that fails and tries again at the next start, without blocking the start', async () => {
+    const dir = userData();
+    const base = userData();
+    const folder = oldInstall(base, RELEASED_REGISTRIES['v2 (v1.2.28)']);
+    const rm = vi.spyOn(fs.promises, 'rm').mockRejectedValueOnce(Object.assign(new Error('EBUSY: resource busy'), { code: 'EBUSY' }));
+    const sink = log();
+
+    runElectronFileMigrations(dir, base, sink);
+
+    await vi.waitFor(() => expect(sink.warn).toHaveBeenCalledWith(expect.stringContaining('tried again at the next start')));
+    expect(fs.existsSync(folder)).toBe(true);
+    rm.mockRestore();
+    runElectronFileMigrations(dir, base, log());
+    await vi.waitFor(() => expect(fs.existsSync(folder)).toBe(false));
+  });
+});
+

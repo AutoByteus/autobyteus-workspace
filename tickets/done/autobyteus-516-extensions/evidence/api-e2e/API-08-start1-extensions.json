@@ -1,0 +1,16 @@
+{
+  "step": "extensions",
+  "name": "API-08-start1-extensions",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:43:47.895Z",
+  "nodeLine": "Extensions of Embedded Node · this computer",
+  "voiceNote": null,
+  "unverified": null,
+  "offline": "Could not reach the list of extensions. Installed extensions keep working; try again later.",
+  "error": null,
+  "cards": [],
+  "screenshots": [
+    "API-08-start1-extensions.png"
+  ],
+  "ok": true
+}

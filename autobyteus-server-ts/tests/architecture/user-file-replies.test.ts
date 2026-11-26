@@ -10,7 +10,9 @@ import { describe, expect, it } from "vitest";
  * (autobyteus-416, REQ-007), which also opens the file: no other file under `src/api/rest/` streams one. Named
  * exceptions:
  * - `application-bundles.ts`: installed application code, designed to run at the node's origin;
- * - `project-task-context-files.ts`: Task context files, already `nosniff` + `attachment` (F16).
+ * - `project-task-context-files.ts`: Task context files, already `nosniff` + `attachment` (F16);
+ * - `extensions.ts`: an installed extension's page files (autobyteus-516), served with the extension page's own,
+ *   stricter sandbox CSP (no network, its `ui/` path only; extension-contract §2, §5), not as user files.
  * `application-backends.ts` proxies installed application backends; it sends their response body, not a file
  * stream, so the detector does not match it and it needs no exception.
  */
@@ -18,7 +20,7 @@ import { describe, expect, it } from "vitest";
 const THIS_FILE = fileURLToPath(import.meta.url);
 const REST = resolve(dirname(THIS_FILE), "../../src/api/rest");
 const OWNER = "user-file-reply.ts";
-const EXCEPTIONS = ["application-bundles.ts", "project-task-context-files.ts"];
+const EXCEPTIONS = ["application-bundles.ts", "project-task-context-files.ts", "extensions.ts"];
 const FILE_ROUTES = [
   "workspaces.ts",
   "files.ts",

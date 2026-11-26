@@ -1,0 +1,58 @@
+# API-08/API-09 synthesized old desktop install, before the first start (autobyteus-516)
+# node probes/api-e2e/old-install.mjs <root> [--locked]; 2026-11-26 17:40:33
+## /private/tmp/516-api-iso-a
+drwxr-xr-x@ .
+drwxr-xr-x@ ./extensions
+-rw-r--r--@ ./extensions/.DS_Store
+-rw-r--r--@ ./extensions/registry.json
+drwxr-xr-x@ ./extensions/voice-input
+-rw-r--r--@ ./extensions/voice-input/.DS_Store
+drwxr-xr-x@ ./extensions/voice-input/downloads
+-rw-r--r--@ ./extensions/voice-input/installation.json
+drwxr-xr-x@ ./extensions/voice-input/models
+drwxr-xr-x@ ./extensions/voice-input/models/whisper-small-mlx
+-rw-r--r--@ ./extensions/voice-input/models/whisper-small-mlx/weights.npz
+drwxr-xr-x@ ./extensions/voice-input/runtime
+drwxr-xr-x@ ./extensions/voice-input/runtime/bin
+-rwxr-xr-x@ ./extensions/voice-input/runtime/bin/voice-input-worker
+drwxr-xr-x@ ./extensions/voice-input/temp
+## /private/tmp/516-api-iso-b
+drwxr-xr-x@ .
+drwxr-xr-x@ ./extensions
+-rw-r--r--@ ./extensions/.DS_Store
+-rw-r--r--@ ./extensions/registry.json
+drwxr-xr-x@ ./extensions/voice-input
+-rw-r--r--@ ./extensions/voice-input/.DS_Store
+drwxr-xr-x@ ./extensions/voice-input/downloads
+-rw-r--r--@ ./extensions/voice-input/installation.json
+drwxr-xr-x@ ./extensions/voice-input/models
+dr-xr-xr-x@ ./extensions/voice-input/models/whisper-small-mlx
+-rw-r--r--@ ./extensions/voice-input/models/whisper-small-mlx/weights.npz
+drwxr-xr-x@ ./extensions/voice-input/runtime
+drwxr-xr-x@ ./extensions/voice-input/runtime/bin
+-rwxr-xr-x@ ./extensions/voice-input/runtime/bin/voice-input-worker
+drwxr-xr-x@ ./extensions/voice-input/temp
+## registry.json (a)
+{
+  "version": 2,
+  "extensions": {
+    "voice-input": {
+      "id": "voice-input",
+      "status": "installed",
+      "enabled": true,
+      "settings": {
+        "languageMode": "en",
+        "audioInputDeviceId": "mic-usb-stand-in"
+      },
+      "message": "Voice Input is ready.",
+      "installProgress": null,
+      "installedAt": "2026-08-01T10:00:00.000Z",
+      "runtimeVersion": "0.3.0",
+      "modelVersion": "mlx-community/whisper-small-mlx",
+      "runtimeEntrypoint": "/private/tmp/516-api-iso-a/extensions/voice-input/runtime/bin/voice-input-worker",
+      "modelPath": "/private/tmp/516-api-iso-a/extensions/voice-input/models/whisper-small-mlx",
+      "backendKind": "mlx",
+      "lastError": null
+    }
+  }
+}

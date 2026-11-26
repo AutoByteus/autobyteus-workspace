@@ -1,0 +1,11 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>body{font:14px system-ui;margin:12px}</style></head>
+<body><p>Hello Node runs on: <span id="out">asking…</span></p>
+<script>
+window.addEventListener('message', (event) => {
+  const data = event.data || {}
+  if (data.id === 'w1') document.getElementById('out').textContent = data.ok ? JSON.stringify(data.output) : `error: ${data.error}`
+})
+parent.postMessage({ id: 'w1', call: 'whereAmI', input: {} }, '*')
+parent.postMessage({ resize: { height: 80 } }, '*')
+</script></body></html>

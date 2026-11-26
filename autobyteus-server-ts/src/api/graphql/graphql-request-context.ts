@@ -1,17 +1,25 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
 import { getClientIdentity } from "../security/node-access-gate.js";
+import type { ExtensionManager } from "../../extensions/services/extension-manager.js";
 
-export type GraphqlRequestContext = {
+/** The composed owners GraphQL resolvers reach through each request's context (built in the composition root). */
+export type GraphqlServices = Readonly<{
+  /** The node's extensions (autobyteus-516). */
+  extensions: ExtensionManager;
+}>;
+
+export type GraphqlRequestContext = GraphqlServices & {
   readonly requestAbortSignal: AbortSignal;
   /** The client the node access gate established for the request (every GraphQL request has one). */
   readonly clientIdentity: ClientIdentity | null;
 };
 
-export const createGraphqlRequestContext = (
+export const createGraphqlRequestContext = (services: GraphqlServices) => (
   request: FastifyRequest,
   reply: FastifyReply,
 ): GraphqlRequestContext => ({
+  ...services,
   requestAbortSignal: createRequestAbortSignal(request, reply),
   clientIdentity: getClientIdentity(request),
 });

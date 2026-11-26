@@ -1,0 +1,33 @@
+{
+  "step": "page-check",
+  "name": "API-10-page-check",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:46:25.811Z",
+  "pageFacts": "Voice runtime\n0.3.2\nSpeech model\nwhisper-small-mlx\nFolder\n/private/tmp/516-api-iso-a/server-data/extensions/voice-input/data Copy",
+  "languageSaved": "en",
+  "frameSrc": "http://127.0.0.1:56339/rest/extensions/voice-input/ui/index.html",
+  "frameSandbox": "allow-scripts",
+  "frameHeight": 205,
+  "responses": [
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/ui/index.html"
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/actions/getSettings"
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/actions/setLanguage"
+    }
+  ],
+  "refused": [],
+  "screenshots": [
+    "API-10-page-check.png"
+  ],
+  "ok": true
+}

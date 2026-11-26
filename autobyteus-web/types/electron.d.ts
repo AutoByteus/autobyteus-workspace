@@ -22,13 +22,6 @@ import type {
   BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from './browserShell';
-import type {
-  ExtensionId,
-  ManagedExtensionState,
-  UpdateVoiceInputSettingsPayload,
-  VoiceInputTranscriptionRequest,
-  VoiceInputTranscriptionResult,
-} from '../electron/extensions/types';
 
 type Cleanup = () => void;
 
@@ -106,18 +99,6 @@ declare global {
       resetServerData: () => Promise<{ success: boolean; error?: string }>;
       showFolderDialog: () => Promise<{ canceled: boolean; path: string | null; error?: string }>;
       getPathForFile: (file: File) => Promise<string | null>;
-      getExtensionsState: () => Promise<ManagedExtensionState[]>;
-      installExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
-      enableExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
-      disableExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
-      updateVoiceInputSettings: (
-        extensionId: ExtensionId,
-        payload: UpdateVoiceInputSettingsPayload,
-      ) => Promise<ManagedExtensionState[]>;
-      removeExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
-      reinstallExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
-      openExtensionFolder: (extensionId: ExtensionId) => Promise<{ success: boolean; error?: string }>;
-      transcribeVoiceInput: (request: VoiceInputTranscriptionRequest) => Promise<VoiceInputTranscriptionResult>;
     };
   }
 }

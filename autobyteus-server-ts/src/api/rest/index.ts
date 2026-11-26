@@ -20,6 +20,8 @@ import { registerNodeUpdateRoutes } from "../../node-update/node-update-routes.j
 import { registerNodeDesktopRoutes } from "./node-desktop.js";
 import { registerNodeAccessRoutes } from "./node-access.js";
 import { registerMcpGatewayTokenRoutes } from "./mcp-gateway-token.js";
+import { registerExtensionRoutes } from "./extensions.js";
+import type { ExtensionManager } from "../../extensions/services/extension-manager.js";
 import type { NodeAccess } from "../../compositions/node-access-composition.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
@@ -33,6 +35,8 @@ export async function registerRestRoutes(
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The studio's remote collaboration, behind `/rest/remote/*` (autobyteus-500 FU-011). */
     remoteCollaboration: RemoteCollaborationServices;
+    /** The node's extensions, behind `/rest/extensions/*` (autobyteus-516). */
+    extensions: ExtensionManager;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
@@ -43,6 +47,7 @@ export async function registerRestRoutes(
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
   await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration);
+  await registerExtensionRoutes(app, { extensions: dependencies.extensions });
   await registerFileRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);

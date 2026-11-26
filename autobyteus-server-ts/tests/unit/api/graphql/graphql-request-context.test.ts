@@ -1,11 +1,12 @@
 import { EventEmitter } from "node:events";
 import { describe, expect, it } from "vitest";
 import { createGraphqlRequestContext } from "../../../../src/api/graphql/graphql-request-context.js";
+import { testExtensionManager } from "../../../helpers/test-extension-manager.js";
 
 type Raw = EventEmitter & { aborted?: boolean; destroyed?: boolean };
 const raw = (props: { aborted?: boolean; destroyed?: boolean } = {}): Raw => Object.assign(new EventEmitter(), props);
 const contextFor = (request: Raw, response: Raw) =>
-  createGraphqlRequestContext({ raw: request } as never, { raw: response } as never);
+  createGraphqlRequestContext({ extensions: testExtensionManager() })({ raw: request } as never, { raw: response } as never);
 
 describe("GraphQL request abort signal", () => {
   it("is not aborted for a request whose body was read (its stream ended and was destroyed by a body hook)", () => {

@@ -1,0 +1,12 @@
+{
+  "step": "memory-mic",
+  "name": "API-13-docker-chat-mic",
+  "window": "docker-516",
+  "at": "2026-11-26T16:52:39.560Z",
+  "micButtons": 1,
+  "micButtonsEnabled": 1,
+  "screenshots": [
+    "API-13-docker-chat-mic.png"
+  ],
+  "ok": true
+}

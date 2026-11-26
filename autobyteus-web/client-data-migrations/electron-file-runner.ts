@@ -4,10 +4,11 @@ import {
   NODE_REGISTRY_ENTRY_NAMES,
   convertNodeRegistryText,
 } from './migrations/node-registry-entry-names/node-registry-entry-names'
+import { REMOVE_DESKTOP_VOICE_INPUT_INSTALL } from './migrations/remove-desktop-voice-input-install/remove-desktop-voice-input-install'
 
 /**
  * The desktop shell's client-data migrations (autobyteus-290; Data Migration Guideline § 3, "Client-side stores").
- * Called once by the Electron main process before it first reads the node list. Current code imports only this file
+ * Called once by the Electron main process before it first reads the node list and before the embedded node starts. Current code imports only this file
  * and `browser-storage-runner.ts`; old names live only in `migrations/` and `frozen/`.
  */
 export type ClientMigrationLog = {
@@ -68,7 +69,24 @@ function migrateFile(
   }
 }
 
-export function runElectronFileMigrations(userDataPath: string, log: ClientMigrationLog): void {
+/**
+ * Deletes one discarded folder by structure (it exists), in the background: the start never waits for it. A failure is
+ * logged and the next start tries again; an absent folder is nothing to do.
+ */
+function removeFolderInBackground(
+  directory: string,
+  step: { folderName: string; removed(folder: string): string; failed(folder: string, reason: string): string },
+  log: ClientMigrationLog,
+): void {
+  const folder = path.join(directory, step.folderName)
+  if (!fs.existsSync(folder)) return
+  fs.promises.rm(folder, { recursive: true, force: true }).then(
+    () => log.info(step.removed(folder)),
+    (error: unknown) => log.warn(step.failed(folder, error instanceof Error ? error.message : String(error))),
+  )
+}
+
+export function runElectronFileMigrations(userDataPath: string, baseDataRoot: string, log: ClientMigrationLog): void {
   migrateFile(
     userDataPath,
     NODE_REGISTRY_ENTRY_NAMES.sourceFileName,
@@ -76,4 +94,6 @@ export function runElectronFileMigrations(userDataPath: string, log: ClientMigra
     convertNodeRegistryText,
     log,
   )
+  // autobyteus-516 (DEC-016): in the background; a failure is retried at the next start.
+  removeFolderInBackground(baseDataRoot, REMOVE_DESKTOP_VOICE_INPUT_INSTALL, log)
 }

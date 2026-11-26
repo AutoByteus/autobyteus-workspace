@@ -50,6 +50,7 @@ import { UpdateNotificationResolver } from './types/update-notifications.js';
 import { AgentRuntimesResolver } from './types/agent-runtimes.js';
 import { AvailableAgentRuntimesResolver } from './types/available-agent-runtimes.js';
 import { ModelRoutingResolver } from './types/model-routing.js';
+import { ExtensionsResolver } from './types/extensions.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -83,6 +84,7 @@ export async function buildGraphqlSchema() {
       MemorySearchResolver,
       MemorySyncResolver,
       RemoteCollaborationSettingsResolver,
+      ExtensionsResolver,
       RunHistoryResolver,
       ProjectRunHistoryResolver,
       RunFileChangesResolver,

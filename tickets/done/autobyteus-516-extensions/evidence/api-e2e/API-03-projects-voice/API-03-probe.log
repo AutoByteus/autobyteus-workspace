@@ -1,0 +1,33 @@
+# API-03 Projects probe with the voice cases (autobyteus-516; Task / Project description voice surfaces, AC-007)
+# Command: pnpm -C autobyteus-web test:e2e:projects --voice-input --skip-server-build --output-dir=<new>; Node v22.23.1; headless Chrome; 2026-11-26
+# run 1 (/tmp/516-api-03): PT-E2E-005 Fail 'File failure remains actionable' (expects server detail; app shows its localized "Couldn't attach failed.txt." since autobyteus-workspace-6 62bda32c49, 2026-11-15) → PT-E2E-006…011 cascade (taskId undefined); B-001…006 Fail.
+# diag run (/tmp/516-api-03-diag, temporary TEMP-DIAG-516 lines, reverted): store error 'Microphone permission is denied…', voiceInput installed/on/ready → PT-E2E-017's grantPermissions(['clipboard-read','clipboard-write'], {origin}) (since 2026-10-17) rejects microphone for later cases.
+# run 2 (/tmp/516-api-03b) after fixes 1-2 (grant without origin): PT all Pass; B-001…006 Fail (origin-scoped clipboard grant still wins).
+# run 3 (/tmp/516-api-03c) grant for the page origin: B-001, B-005 Pass; B-002 no microphone button after open() (GetExtensions stub installed after the page load loses to the in-flight window-start read, Apollo de-duplication), B-003/004/006 cascade; PT-E2E-017 Fail 'Timed out waiting for live badge clear' at load average ~26 (passed in runs 2, 4, 5; outside this change: FU-004).
+# run 4 (/tmp/516-api-03d) stub moved to the network: only B-003 Fail: 'Give the task a title.' (Task title required since autobyteus-260 24fee53dc9, 2026-10-25); dictation itself appended.
+# run 5 (/tmp/516-api-03e) B-003 fills the title:
+result Pass
+PT-E2E-001 Pass Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects
+PT-E2E-002 Pass Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+PT-E2E-003 Pass Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing
+PT-E2E-004 Pass Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders
+PT-E2E-005 Pass Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+PT-E2E-006 Pass Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+PT-E2E-007 Pass External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+PT-E2E-008 Pass Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are disti
+PT-E2E-009 Pass Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+PT-E2E-010 Pass Real backend process restart preserves Tasks, context HTTP bytes and links
+PT-E2E-011 Pass All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+PT-E2E-012 Pass Ordinary route read/Refresh ordering: late old Project response cannot populate another Project
+PT-E2E-013 Pass 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation
+PT-E2E-014 Pass Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery
+PT-E2E-015 Pass Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key
+PT-E2E-016 Pass zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys
+PT-E2E-017 Pass Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies car
+B-001 Pass Project create: native dictation into latest typed draft; review and explicit real save
+B-002 Pass Project edit at 390px: native append/manual save, blank optional update and current reader
+B-003 Pass Task create/edit: native dictation, no success node, attachments retained and explicit save
+B-004 Pass Project no-speech/error feedback retained then successful retry clears without saving
+B-005 Pass Recording Cancel releases native tracks without insertion or persistence
+B-006 Pass Cancel navigation during pending transcription rejects late text in next editor
+cleanup {'browser': 'closed', 'frontend': 'terminated:60300', 'nodeA': 'terminated:73917', 'nodeB': 'terminated:58445', 'frontendPortReleased': True, 'nodeAPortReleased': True, 'nodeBPortReleased': True, 'tempRootRemoved': True}

@@ -78,7 +78,6 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import { useExtensionsStore } from '~/stores/extensionsStore';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 import { dispatchAgentStreamMessage, type AgentStreamProjectionTarget } from '~/services/agentStreaming/agentStreamMessageProjector';
 import type { ServerMessage } from '~/services/agentStreaming/protocol';
@@ -100,7 +99,6 @@ const selectionStore = useAgentSelectionStore();
 const runHistoryStore = useRunHistoryStore();
 const activityStore = useAgentActivityStore();
 const uploadStore = useContextFileUploadStore();
-const extensionsStore = useExtensionsStore();
 const voiceInputStore = useVoiceInputStore();
 const navigationRefreshReasons: string[] = [];
 runHistoryStore.$onAction(({ name, args }) => {
@@ -470,14 +468,18 @@ uploadStore.uploadAttachment = async ({ file }) => {
     uploadStore.activeRequestCount -= 1;
   }
 };
-extensionsStore.$patch({
-  initialized: true,
-  extensions: [{
-    id: 'voice-input', name: 'Voice Input', description: 'Probe', status: 'installed', enabled: true,
-    settings: { languageMode: 'auto', audioInputDeviceId: null }, message: 'Ready', installProgress: null,
-    installedAt: now, runtimeVersion: 'probe', modelVersion: 'probe', backendKind: 'faster-whisper', lastError: null,
-  }],
-});
+// This computer's Voice Input as the embedded node would list it (installed, on and ready): its availability read
+// is answered here; every other request goes to the probe's node.
+const nativeFetch = window.fetch.bind(window);
+window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  const url = String(input instanceof Request ? input.url : input);
+  if (url.endsWith('/graphql') && String(init?.body ?? '').includes('GetExtensions')) {
+    return new Response(JSON.stringify({ data: { extensions: { catalog: 'verified', platform: 'darwin-arm64',
+      extensions: [{ id: 'voice-input', state: 'installed', enabled: true, ready: true }] } } }), { headers: { 'content-type': 'application/json' } });
+  }
+  return nativeFetch(input, init);
+};
+void voiceInputStore.refreshAvailability();
 
 onMounted(() => {
   if ('PerformanceObserver' in window) {
