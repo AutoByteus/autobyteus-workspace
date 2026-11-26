@@ -240,7 +240,8 @@ try {
   await page.locator('[data-test="agent-memory-page"]').waitFor();
   await page.locator('[data-test="agent-episode"]').first().waitFor();
   check('SMV-020', (await text('[data-test="agent-memory-page"] h1')) === AGENT_NAME, 'The agent page heading');
-  check('SMV-021', (await text('[data-test="memory-owner-back"]')) === '← Back to Memory', 'Back to Memory');
+  // autobyteus-608 DC-002: Back shows where it goes; "Back to …" is its accessible name.
+  check('SMV-021', (await text('[data-test="memory-page-back"]')) === 'Memory' && (await page.locator('[data-test="memory-page-back"]').getAttribute('aria-label')) === 'Back to Memory', 'Back shows "Memory" (Back to Memory)');
   await waitFor('the agent subtitle', async () => (await text('[data-test="agent-memory-places"]')) === 'Also works in Product Review Team');
   check('SMV-022', (await page.locator('[data-test="agent-episode"]').count()) === 2, 'Two episodes');
   check('SMV-023', (await text('[data-test="agent-memory-tab-episodic"]')).includes('2'), 'The Episodic tab counts the episodes');
@@ -249,14 +250,17 @@ try {
   // UXJ-003: Semantic memory: the folder view, read only.
   await page.locator('[data-test="agent-memory-tab-semantic"]').click();
   await page.locator('[data-test="semantic-memory-explorer"]').waitFor();
-  check('SMV-030', (await text('[data-test="semantic-memory-path"]')) === folder, 'The folder path', await text('[data-test="semantic-memory-path"]'));
+  // autobyteus-608 DC-004: no path bar; the real path is "Copy folder path"'s tooltip (TR-008).
+  check('SMV-030', (await page.locator('[data-test="semantic-memory-copy-path"]').getAttribute('title')) === folder, 'The folder path', await page.locator('[data-test="semantic-memory-copy-path"]').getAttribute('title'));
   check('SMV-031', page.url().includes('pane=semantic'), 'The tab is in the address');
   const links = page.locator('[data-test="file-item-link"]');
   await links.first().waitFor();
   check('SMV-032', (await links.count()) === 2 && (await links.allTextContents()).every((row) => row.includes('Link · not opened')), 'Two link rows "Link · not opened"');
   const topRows = await page.locator('[data-test="semantic-memory-explorer"] .file-header').evaluateAll((rows) => rows.map((row) => row.textContent.replace(/Link · not opened/, '').trim()));
   check('SMV-039', JSON.stringify(topRows) === JSON.stringify(['sites', 'research-method.md', 'secret-link.md', 'shared']), 'Folders first, then files and links by name', topRows);
-  check('SMV-033', await page.locator('text=No file selected').count() > 0 && await page.locator('text=Select a file to read it.').count() > 0, 'The read-only empty tab copy');
+  // autobyteus-608 TR-004: the first file at the root, in the list's order and not a link, opens on arrival.
+  await page.locator('text=Read the sources.').first().waitFor();
+  check('SMV-033', (await text('[data-test="file-tab-name"]')) === 'research-method.md', 'The first root document opens on arrival', await text('[data-test="file-tab-name"]'));
   const operationsBeforeLink = evidence.operations.length;
   await links.first().click();
   await links.first().click({ button: 'right' });
@@ -315,8 +319,9 @@ try {
   await shot(page, 'VIS-009-team-members-1440x900');
   await page.locator('[data-test="group-member"]', { hasText: 'Reviewer' }).click();
   await page.locator('[data-test="agent-memory-page"]').waitFor();
-  check('SMV-062', (await text('[data-test="memory-owner-back"]')) === '← Back to Product Review Team', 'Back to the team');
-  await waitFor('the team-local subtitle', async () => (await text('[data-test="agent-memory-places"]')) === 'Belongs to Product Review Team');
+  check('SMV-062', (await text('[data-test="memory-page-back"]')) === 'Product Review Team' && (await page.locator('[data-test="memory-page-back"]').getAttribute('aria-label')) === 'Back to Product Review Team', 'Back to the team');
+  // autobyteus-608 DC-002: "Belongs to Product Review Team" is not shown: Back already names the team.
+  check('SMV-065', !(await page.locator('[data-test="agent-memory-places"]').count()), 'No "Belongs to" when Back names the team');
   await page.locator('[data-test="agent-memory-tab-semantic"]').click();
   await page.locator('[data-test="semantic-memory-empty"]').waitFor();
   check('SMV-063', (await page.locator('[data-test="semantic-memory-empty"]').innerText()).replace(/\s+/g, ' ').trim() === 'No semantic memory yet The folder is created when Reviewer next runs.', 'The missing folder state');
@@ -333,7 +338,7 @@ try {
   await page.locator('[data-test="agent-memory-page"]').waitFor();
   await page.locator('[data-test="agent-memory-tab-semantic"]').click();
   await page.locator('[data-test="semantic-memory-explorer"]').waitFor();
-  check('SMV-101', (await text('[data-test="semantic-memory-path"]')) === longFolder, 'The Semantic tab finds the shortened folder', await text('[data-test="semantic-memory-path"]'));
+  check('SMV-101', (await page.locator('[data-test="semantic-memory-copy-path"]').getAttribute('title')) === longFolder, 'The Semantic tab finds the shortened folder', await page.locator('[data-test="semantic-memory-copy-path"]').getAttribute('title'));
   await page.locator('[data-test="semantic-memory-explorer"] .file-header', { hasText: 'notes.md' }).click();
   await page.locator('text=The long team keeps its notes here.').first().waitFor();
   check('SMV-102', (await page.locator('text=The long team keeps its notes here.').count()) > 0, 'A file inside the shortened folder opens in the preview (the `#` never reaches a URL unencoded)');
@@ -405,8 +410,10 @@ try {
   // UXJ-002: Global.
   await goto('?view=home&section=browse&node=global');
   await page.locator('[data-test="global-memory-page"]').waitFor();
-  check('SMV-070', (await text('[data-test="global-memory-page"] h1')) === 'Global memory', 'The Global title');
-  check('SMV-071', (await page.locator('text=Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.').count()) > 0, 'The Global line');
+  // autobyteus-608 DC-003: no title row: the heading for screen readers, the line as the Global tab's tooltip.
+  check('SMV-070', (await text('[data-test="global-memory-page"] > h1')) === 'Global memory'
+    && (await page.locator('[data-test="global-memory-page"] > h1').getAttribute('class')).includes('sr-only'), 'The Global title (for screen readers)');
+  check('SMV-071', (await page.locator('[data-test="memory-browse-tab-global"]').getAttribute('title')) === 'Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.', "The Global line (the tab's tooltip)");
   await page.locator('[data-test="semantic-memory-explorer"] .file-header', { hasText: 'product.md' }).click();
   await page.locator('text=runs agents on your own nodes').first().waitFor();
   await shot(page, 'VIS-003-global-file-open-1440x900');
@@ -415,7 +422,7 @@ try {
   await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.locator('[data-test="global-memory-page"]').waitFor();
-  await waitFor('the zh-CN title', async () => (await text('[data-test="global-memory-page"] h1')) === '全局记忆');
+  await waitFor('the zh-CN title', async () => (await text('[data-test="global-memory-page"] > h1')) === '全局记忆');
   await shot(page, 'VIS-016-global-zh-CN-1440x900');
 
   const after = { agent: await treeHash(folder), global: await treeHash(path.join(memoryDir, 'semantic-global')), outside: await treeHash(outsideDir), long: await treeHash(longFolder) };
