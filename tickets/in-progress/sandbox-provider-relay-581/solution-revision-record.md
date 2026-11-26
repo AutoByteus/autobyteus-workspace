@@ -135,3 +135,9 @@ History before this Task: [history-484/solution-revision-record.md](history-484/
 - **Requirements:** REQ-004, REQ-005, REQ-012 and AC-005 updated; DEC-116 and DEC-117 recorded. Intended behavior narrows by the user's own rule (DEC-010) and DEC-115's fallback. The user is informed.
 - **Design:** the Codex login-token path is removed (implementation already did this); C1's `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID` goes with it.
 - **Still open:** U-2 (a fresh Grok login) and the Claude setup-token, both asked of the user.
+
+## SR-010: Evidence decision DEC-118 (AC-005 live, Claude and Grok login tokens)
+
+- **Trigger:** `/api_e2e_engineer` evidence decision request, round 1.
+- **Decision:** option (a): live after the user's setup-token and a fresh Grok login. Fallback (c) at delivery. Not an accepted risk (the user's DEC-108).
+- **Requirements and design:** unchanged. Route: Evidence Decision to `/api_e2e_engineer`.

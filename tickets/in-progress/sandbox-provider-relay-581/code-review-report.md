@@ -8,22 +8,65 @@
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001 to SR-007 committed; SR-008 present uncommitted in the worktree)
 - Design Spec Reviewed As Context: `design-spec.md` (SR-007)
 - Supplemental Task Artifacts Reviewed As Context: `history-484/sandbox-relay-data-contract.md` (reader rule V-7), `follow-ups.md`, the public skill `autobyteus-sandboxes/SKILL.md` (skills worktree, commit `f85b30a`)
-- Relevant Solution Revision IDs: SR-007, SR-008 (DEC-115 and its fallback)
+- Relevant Solution Revision IDs: SR-007, SR-008 (DEC-115 and its fallback), SR-009 (DEC-116, DEC-117)
 - Design Review Report Reviewed As Context: `design-review-report.md` (round 3, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): `git diff 1bc0f90811 b2e7e0d3bd` touches 14 source/doc files, all on the prior findings' paths: the sandbox caller (CR-001) and the Codex login-token path (C1 runtime list, relay offer, login reader, handler, relay table, access, Codex launch config, settings descriptions; CR-002). The change removes code and adds no new path; the spine, ownership and the API-key paths are unchanged. The worktree is clean (`git status`), so the review covers the commits.
-- Trigger: `/implementation_engineer` IR-002 handoff (code `b2e7e0d3bd`, docs `eb050a0378`)
-- Prior Review Round Reviewed: round 1 (CRR-001, IR-001 at `1bc0f90811`)
-- Latest Authoritative Round: 2
+- Review Scope Evidence (round 3): `git diff 00318250e3 d624f09ce6 -- autobyteus-server-ts/src` covers six files, all CR-003's path; it only removes the drop list and adds `isLoginTokenRuntimeKind` (the optional C-09 note). The commits `cdd92a1577` and `00318250e3` change ticket docs only. The worktree is clean.
+- Review Scope Evidence (round 2): `git diff 1bc0f90811 b2e7e0d3bd` touches 14 source/doc files, all on the prior findings' paths: the sandbox caller (CR-001) and the Codex login-token path (C1 runtime list, relay offer, login reader, handler, relay table, access, Codex launch config, settings descriptions; CR-002). The change removes code and adds no new path; the spine, ownership and the API-key paths are unchanged. The worktree is clean (`git status`), so the review covers the commits.
+- Trigger: `/implementation_engineer` IR-003 handoff (code `d624f09ce6`, docs `f19cedcbf6`); round 2 was IR-002 (code `b2e7e0d3bd`)
+- Prior Review Round Reviewed: round 2 (CRR-002)
+- Latest Authoritative Round: 3
 - Failure-origin fields: N/A
+
+## Round 5 — Targeted Delta Review of IR-004 (CRR-005)
+
+- Review Entry Point: `Implementation Review`; Review Scope: `Targeted Delta Review`
+- Scope evidence: `git diff 0edd500997 7296a698d6` touches three source files, the sandbox tests and `sandboxes.md`, all on F-1 and F-2's paths. The spine, ownership and the relay are untouched. The only uncommitted ticket docs are mine and the Solution Designer's.
+- **F-1 resolved.** `SandboxPairing.connect` now waits, after the setup code, until `GET /rest/health` gives any HTTP answer: 5 s per request, 250 ms apart, within the existing `deadlineAt`. Past the deadline it refuses `SANDBOX_START_FAILED`, then exchanges the code exactly once. Waiting on health rather than retrying the exchange never sends a setup code twice. `sandbox-pairing.test.ts` covers a dropped connection followed by an answer (health, health, then one exchange) and a port that never answers (refused with no exchange). Live, IMP-16: 5 of 5 fresh nodes connected, where API-E01 saw 3 of 4 fail.
+- **F-2 resolved.** `runMemoryFolder` is bound at `MEMORY_IN_SANDBOX` (`/home/autobyteus/data/memory`) inside the `DATA_IN_SANDBOX` anonymous volume, and the ineffective `AUTOBYTEUS_MEMORY_DIR` and `RUN_MEMORY_IN_SANDBOX` are gone (grep: no leftovers in `src`). `AppConfig` is unchanged, as the escalation condition required. The host folder now holds `agents/`, `episodic/`, `semantic/`, `semantic-global/` and the run-history indexes. The credential stores sit under `remote-access`, `remote-collaboration` and `memory-sync`, outside `memory`, so REQ-011 holds. IMP-16: each native run's `run_metadata.json` is on the host under `agents/<runId>`, and no container was left behind.
+- Doc lines for delivery: design spec C8 (the mount path and the removed variable, handoff deviation 11), D-1 and D-2.
+- Scorecard: unchanged from round 3 (9.5 average, all at or above 9.2). F-2's gap is closed.
+
+## Round 4 — API/E2E Failure-Origin Review (CRR-004)
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Trigger: `/api_e2e_engineer` API-REV-001 Fail (F-1, F-2), code tested `d624f09ce6`, evidence committed at `0edd500997`
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md` (API-REV-001)
+- Failing Scenario IDs: F-1 (API-L01, API-L07; AC-008, QR-001); F-2 (API-L02 / SBX-03; AC-011 transcript part, REQ-009, C8, skill § 4)
+- Exact Failing Command: `env -i PATH HOME USER LOGNAME TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_SANDBOX_LIVE_E2E=1 SANDBOX_LIVE_E2E_IMAGE=autobyteus-server:581-api-e2e pnpm -C autobyteus-server-ts exec vitest run tests/e2e/sandboxes/sandbox-live.e2e.test.ts --no-watch`
+- Failure Evidence Paths: `evidence/API-E01-setup-code-vs-http-race.{log,mjs}`, `evidence/API-E02-sandbox-run-memory-location.{log,mjs}`, `evidence/API-L-sandbox-live/run2/*`, `evidence/API-L-sandbox-live/run4-sbx01-03/*`
+- Scenario basis: both are SCN-003 (Supported Normal: an evaluator creates a sandbox, delegates, then reads the transcript from `runMemoryFolder`). The tests enter through the real tools against a real Docker sandbox from a built host; neither depends on a synthetic state.
+
+### F-1 — `create_sandbox` fails intermittently with `SANDBOX_START_FAILED: … fetch failed`
+
+- Confirmed cause (source plus API-E01): `SandboxPairing.connect` (`src/sandboxes/sandbox-pairing.ts:49-66`) polls only the setup code over `docker exec`. Once it has a code it makes **one** `fetch` to `/rest/node-access/setup-exchanges`, with no retry. A fresh node's local control socket hands out the code 66 to 220 ms before its published HTTP port accepts connections (API-E01: 3 of 4 runs got `UND_ERR_SOCKET`). That single fetch throws, `create` cleans up and refuses. About 4 of 15 creates fail, so the AC-008 / QR-001 outcome ("ready, every time") is not met.
+- Origin: **implementation defect** (a missing readiness wait in the owner of the sandbox start sequence). It was not reasonably detectable in source review: the ordering of the setup-code socket and the HTTP listener is runtime behavior of the node's start, and IR-001's single live run (IMP-08) happened to fall outside the gap.
+- Test validity: valid. The case uses the real tool and container and a cold image start.
+- Required fix: within `connect`, wait until the sandbox's HTTP port answers (for example `GET /rest/health`) before the exchange, or retry the exchange on a connection-level failure (not on an HTTP refusal) until the existing `deadlineAt`. A failed connection does not consume the setup code. Add a unit case: the first exchange fetch fails at the connection level and the second succeeds.
+
+### F-2 — Sandbox run memory never reaches the host's `runMemoryFolder`
+
+- Confirmed cause (source plus API-E02): the server keeps all memory at `AppConfig.getMemoryDir()`, which is always `<dataDir>/memory` (`src/config/app-config.ts:333-335`). No server reader consults `AUTOBYTEUS_MEMORY_DIR` (`git grep`: only `app-config.ts` writes it and only autobyteus-ts `memory/path-resolver.ts:16` reads it). The image's starter always passes `--data-dir` (`docker/starter/server-process.mjs:21-23`), and `setCustomAppDataDir` also overwrites the variable (`app-config.ts:466-468`). So `AUTOBYTEUS_MEMORY_DIR=/home/autobyteus/run-memory` (`sandbox-manager.ts:234`) has no effect. Runs write to `/home/autobyteus/data/memory`, an anonymous volume removed at destroy, and the bind-mounted `runMemoryFolder` stays empty. (Correction to API-E01/E02's wording: the override in `setCustomAppDataDir` is not the main cause. The server never reads the variable for its own memory at all.)
+- Origin: the C8 data contract's premise that `AUTOBYTEUS_MEMORY_DIR` relocates a node's run memory was never checked against the server (Principle 17's check against real dependencies), and the implementation followed C8. **This is also a review gap of mine.** In CRR-001 I read the C8 environment in `sandbox-manager.ts` but did not grep for a reader of `AUTOBYTEUS_MEMORY_DIR`; that grep would have shown the variable has no server reader.
+- Test validity: valid. Requirement and skill § 4 promise `agents/<runId>/raw_traces_active.jsonl` under `runMemoryFolder`.
+- Classification: **Local Fix, implementation.** The host-visible contract (REQ-009, C6 `runMemoryFolder`, skill § 4, `sandboxes.md`'s folder layout) stays as approved. Only the in-sandbox mechanism of C8 is wrong. The proportionate fix keeps the shared server configuration unchanged: bind `runMemoryFolder` at the sandbox node's real memory folder (`/home/autobyteus/data/memory`, inside the anonymous data volume), and drop the ineffective `AUTOBYTEUS_MEMORY_DIR` from the sandbox environment and the `RUN_MEMORY_IN_SANDBOX` constant if nothing else reads it. Also check that the folder's other contents (memory-sync staging, imports, the semantic memory of the sandbox's agents) are acceptable on the host folder. They hold no credential (REQ-011) and go away with the folder's owner.
+- Escalation condition: if the fix needs `AppConfig` to honor `AUTOBYTEUS_MEMORY_DIR` for every node, that changes shared server configuration beyond this ticket. Send it to the Solution Designer as `Design Impact` instead of changing it here.
+- Doc lines (delivery or Solution Designer): design spec C8 mounts and environment (`/home/autobyteus/run-memory`, `AUTOBYTEUS_MEMORY_DIR`) and `sandboxes.md:67`.
+
+### Round-4 routing
+
+- F-1 and F-2: `Local Fix` owned by implementation → `/implementation_engineer`. After the fix: source review (targeted: `sandbox-pairing.ts`, `sandbox-manager.ts`, the mounts, tests), then API/E2E again.
+- Doc notes D-1 and D-2 (undocumented `SANDBOX_TOOL_FAILED`; the skill's `"teams": []` example against a result that drops empty fields) stay with delivery's doc sync, as API/E2E proposed. D-2 is in the skill text, which delivery syncs.
 
 ## Routing Classification Review
 
@@ -107,7 +150,7 @@
 | Naming and vocabulary | Pass | `relayCredentialKind` always qualified; `role: "sandbox"`; node pass | — |
 | No unjustified duplication | Pass | — | — |
 | Patch-on-patch complexity | Pass | — | — |
-| Dead code removed in touched files | Fail | CR-001 resolved (round 2). CR-003: `dropFromCaller` / `dropHeaders` / `drop` hold only `[]` after the Codex route's removal | Remove them |
+| Dead code removed in touched files | Pass (round 3) | CR-001 resolved (round 2); CR-003 resolved (`d624f09ce6`): `git grep dropFromCaller\|dropHeaders` at HEAD finds nothing; `forwardableResponseHeaders`'s `drop` stays for the reply marker | — |
 | Test scenarios clear and requirement-aligned | Pass | Two-node relay test (real gate, signing, handler), sandbox manager, launch shapes, peer role | — |
 | Test fixtures/helpers reusable | Pass | `provider-relay-access-double.ts` | — |
 | No stale or compatibility-only tests | Pass | Replaced relay tests updated, `createDeepSeekProviderRelay` gone | — |
@@ -149,7 +192,7 @@ Round 2 also checked the WebSocket question. Codex 0.171 lists `responses_websoc
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | No local-vault fallback on a relayed node; refusals are explicit |
 | No legacy old-behavior retention | Pass | `providerRelayId`, single `route/consumer`, `agentRuntime/deepseek_harness` consumer removed |
-| Dead code removed in touched files | Fail | CR-003 (CR-001 resolved) |
+| Dead code removed in touched files | Pass | CR-001 and CR-003 resolved |
 | Persisted-data transition followed | Pass | `peers.json` `role`: tolerant reader, written only when set |
 | No dual reads/writes | Pass | — |
 | Transition mechanics | Pass | No migration, as decided |
@@ -159,7 +202,7 @@ Round 2 also checked the WebSocket question. Codex 0.171 lists `responses_websoc
 | Item / Path | Type | Evidence | Why | Required Action |
 | --- | --- | --- | --- | --- |
 | ~~`SandboxCaller` `{ kind: "owner" }`~~ | DormantPath | Removed in `32d6a7ae16` (CR-001 resolved) | — | — |
-| `RelayCredentialRoute.dropFromCaller` (`provider-relays.ts:26`, set to `[]` at `:71`, `:117`, `:128`); `dropHeaders` in `CredentialProxyForwarder.forward` (`credential-proxy-forwarder.ts:149,155`) and its callers (`provider-relay-peer-handler.ts:123`, `provider-relay-proxy-routes.ts:176`); the `drop` parameter of `forwardableRequestHeaders` | UnusedFlag | After `b2e7e0d3bd` every route's value is `[]`; the only non-empty one (`chatgpt-account-id` on the OpenAI login-token route) was removed; `git grep` finds no other writer | An option with one value still in use, plus the code behind it (Principle 7) | Remove the field, the forwarder input, the `drop` parameter and the two pass-throughs. Delivery or the Solution Designer drops the field from design C3 |
+| ~~`RelayCredentialRoute.dropFromCaller`~~ — removed in `d624f09ce6` (CR-003 resolved); originally (`provider-relays.ts:26`, set to `[]` at `:71`, `:117`, `:128`); `dropHeaders` in `CredentialProxyForwarder.forward` (`credential-proxy-forwarder.ts:149,155`) and its callers (`provider-relay-peer-handler.ts:123`, `provider-relay-proxy-routes.ts:176`); the `drop` parameter of `forwardableRequestHeaders` | UnusedFlag | After `b2e7e0d3bd` every route's value is `[]`; the only non-empty one (`chatgpt-account-id` on the OpenAI login-token route) was removed; `git grep` finds no other writer | An option with one value still in use, plus the code behind it (Principle 7) | Remove the field, the forwarder input, the `drop` parameter and the two pass-throughs. Delivery or the Solution Designer drops the field from design C3 |
 
 ## Docs-Impact Verdict
 
@@ -176,7 +219,7 @@ None new or reclassified.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.4 / 10 (simple average; not the decision rule). Round 2.
+- Overall score: 9.5 / 10 (simple average; not the decision rule). Round 3.
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -184,16 +227,16 @@ None new or reclassified.
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | One relay owner; credentials only on the relay node; Docker in one owner | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.4 | Subject-specific `routeFor` / `routeForNativeProvider`; tool contract shared by both entry forms; the sandbox caller is now the run only | — | — |
 | 4 | Separation of Concerns and File Placement | 9.4 | Files as mapped; manager stays one concern | — | — |
-| 5 | Shared-Structure / Data-Model Tightness | 9.2 | `RelayCredential` is now `{ secret }`; `RelayCredentialSource` is vault or Grok login | `dropFromCaller` is a field with no value left (CR-003) | Drop it |
+| 5 | Shared-Structure / Data-Model Tightness | 9.5 | `RelayCredential` is `{ secret }`; `RelayCredentialRoute` is route, source and attach; one login-token runtime list with its guard | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Vocabulary consistent with the glossary | — | — |
 | 7 | API/E2E Readiness | 9.3 | Committed and clean; the API-key paths are proven live; Codex's login token is explicitly unsupported | — | — |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Refusal order, reply marking, no swap, no fallback, cleanup on failure; DEC-115's fallback is applied as decided | Grok and Claude login tokens still unproven live (user inputs) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | The Codex ChatGPT path is fully removed, with no leftover `CODEX_HOME` handling | — | — |
-| 10 | Cleanup Completeness | 9.0 | CR-001 resolved | The drop list emptied by the Codex removal remains (CR-003) | Remove it |
+| 10 | Cleanup Completeness | 9.4 | CR-001 and CR-003 resolved; no leftovers of the Codex login-token path | Design spec C3 still shows `dropFromCaller` (doc line for the Solution Designer or delivery) | — |
 
 ## Findings
 
-### CR-003 — The caller-header drop list has no value left after the Codex route's removal (Local Fix, low; round 2)
+### CR-003 — The caller-header drop list has no value left after the Codex route's removal (Local Fix, low; round 2) — **Resolved in round 3** (`d624f09ce6`)
 
 - Contract: Principle 7 (an option with only one value still in use, and the code behind it); Principle 17 (a field without a reader or value stays out of the contract).
 - Problem: `RelayCredentialRoute.dropFromCaller` existed only so the OpenAI login-token route could drop the caller's `chatgpt-account-id`. `b2e7e0d3bd` removed that route, and every remaining route sets `[]`. What is left is a contract field, a forwarder input (`dropHeaders`), a `drop` parameter of `forwardableRequestHeaders` and two pass-throughs, all of which only ever carry nothing. A reader of C3 will look for a relay that drops headers and find none.
@@ -218,15 +261,15 @@ None new or reclassified.
 
 ## Classification
 
-- Round 2: `Local Fix` (implementation): CR-003. (Round 1: CR-001, CR-002, both resolved.)
+- Round 3: none (Pass). Earlier: CR-001, CR-002 (round 1) and CR-003 (round 2), all resolved.
 
 ## Recommended Recipient
 
-- `/implementation_engineer` (source review identifies implementation-owned Local Fixes before executable coverage).
+- Round 3 pass: `/api_e2e_engineer` (primary), then the informational notice to `/implementation_engineer`.
 
 ## Residual Risks
 
-- Codex login tokens are not supported through a relay (DEC-115 fallback, IMP-12). The Solution Designer reports this to the user and updates REQ-004, REQ-005, AC-005 and design C1/C3.
+- Codex login tokens are not supported through a relay (DEC-116, IMP-12). The requirements were updated in SR-009. Design spec C3 still shows `dropFromCaller` and the removed C1 account-ID row: doc lines for the Solution Designer or delivery.
 - U-2 (Grok login token) and the Claude login-token live check depend on the user (a fresh Grok login; a `claude setup-token` in the test vault).
 - The C3 path lists for login-token routes are fixed lists: a CLI version that calls a new account or OAuth path gets `PATH_NOT_ALLOWED`, most likely for Claude Code with an OAuth token, which IR-001 has not run live.
 - REQ-015 relies on the reader rule (skill § 4, tool description). API/E2E's AC-011 planted-link check should use an evaluator that follows the skill, on the runtime evaluators normally use.
@@ -235,10 +278,10 @@ None new or reclassified.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail** (round 2, CRR-002). CR-001 and CR-002 are resolved. One small implementation-owned Local Fix remains: CR-003, the drop list emptied by the Codex removal.
-- Review Entry Point: Implementation Review (Targeted Delta Review)
+- Review Decision: **Pass** (round 5, CRR-005). F-1 and F-2 are resolved; the round-3 source pass stands for everything else.
+- Review Entry Point: Implementation Review (Targeted Delta Review after the failure-origin round)
 - Supported Product Scenario Gate: Pass
 - Material-Premise Gate: Pass
-- Score Summary: 9.4 average; Cleanup Completeness at 9.0 is below 9.2 (CR-003)
-- Recommended Recipient: `/implementation_engineer`
-- Notes: the next round is a Targeted Delta Review of CR-003 only (the forwarder, the relay table, the handler, the local route and their tests).
+- Score Summary: 9.5 average; every category at or above 9.2
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: API/E2E reruns API-L01, API-L02 and API-L07 with a sandbox image built from this code, and runs API-L10 (AC-016, the REQ-015 planted link). AC-005 live still waits on the user (DEC-118).
