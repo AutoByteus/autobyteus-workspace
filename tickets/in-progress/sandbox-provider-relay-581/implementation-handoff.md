@@ -16,12 +16,12 @@
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `…/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001 baseline; IR-002: CR-001, CR-002 / DEC-115)
+- Current implementation revision ID: `IR-003` (IR-001 baseline; IR-002: CR-001, CR-002 / DEC-115; IR-003: CR-003)
 - Related solution revision IDs: SR-007, SR-008 (DEC-115), SR-009 (DEC-116, DEC-117)
 - Related architecture-review revision IDs: ARCH-REV-003
-- Related code-review revision IDs: CRR-001 (Fail, Local Fix)
+- Related code-review revision IDs: CRR-001, CRR-002 (Fail, Local Fix)
 - Related API/E2E / delivery revision IDs: N/A
-- Triggering finding IDs: CR-001, CR-002
+- Triggering finding IDs: CR-001, CR-002, CR-003
 - Branches: `codex/sandbox-provider-relay` in this worktree (base `origin/personal` @ `9f803aa84d`); the public skill on `codex/autobyteus-sandboxes` in `AutoByteus/autobyteus-skills` (worktree `/Users/normy/autobyteus_org/autobyteus-skills-worktrees/autobyteus-sandboxes-581`, base `origin/main` @ `1213803`, commit `f85b30a`; committed locally, not pushed: its pull request goes with delivery).
 
 What exists now:
@@ -142,6 +142,8 @@ Evidence in `tickets/in-progress/sandbox-provider-relay-581/evidence/`. Code com
 | IMP-11 | Codex 0.171 request targets in ChatGPT mode against the fake relay (placeholders only; `probes/codex-chatgpt-base-url-probe.sh`) | image of `ce0e69d8d7` | Docker | Codex launch shape | U-1 | Finding: model calls ignore `chatgpt_base_url` and go to `https://chatgpt.com`; `openai_base_url` moves them to the relay; `responses_websockets*` features "removed" | `IMP-11-codex-base-url-probe.log` | `6 https://chatgpt.com/backend-api/codex/models`; with `openai_base_url`: `3 GET /relay/openai/backend-api/codex/models` |
 | IMP-12 | DEC-115 live check: Codex login token with the account ID and both base URLs | `70eb033f7c` | Docker Desktop, the user's Codex login via a link | relay offer, C1, Codex launch | AC-005 Codex, DEC-115 | **Fail → not supported** (removed in `b2e7e0d3bd`) | `IMP-12-live-codex-login-token-dec115.log` | `workspace backend must use an HTTPS origin without credentials` |
 | IMP-13 | after the removal: `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes`, then `tests/unit/runtime-management tests/unit/secret-management tests/unit/agent-execution/backends/codex tests/architecture/tracked-imports.test.ts`; `pnpm -C autobyteus-server-ts typecheck` | `b2e7e0d3bd` | macOS arm64, Node 22.23.1 | relay, offer, settings, login reader, Codex launch, sandboxes | CR-001, DEC-115 | Pass | (console) | `Tests  123 passed`; `Tests  847 passed`; `[typecheck] PASS` |
+
+| IMP-14 | `pnpm -C autobyteus-server-ts typecheck`; `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes tests/unit/runtime-management/grok tests/unit/agent-execution/backends/deepseek-harness` | `d624f09ce6` | macOS arm64, Node 22.23.1 | forwarder, relay routes, handler, settings guard | CR-003 | Pass | (console) | `[typecheck] PASS`; `Tests  154 passed` |
 
 Note on IMP-08/09: `SANDBOX-OK: true` there is read from the run's frames; IMP-10 showed the prompt itself echoes the string, so IMP-08's answers were confirmed by `TURN_COMPLETED` with a relayed `200` per runtime in C5, not by the string alone.
 

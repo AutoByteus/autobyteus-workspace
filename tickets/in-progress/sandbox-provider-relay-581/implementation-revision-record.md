@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-003 | Code Reviewer, `code-review-report.md`, CRR-002 (Fail) | CR-003 | `Local Fix` | CRR-002 | Caller-header drop list removed; `isLoginTokenRuntimeKind`; back to Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002 | `Local Fix` | SR-008 (DEC-115), CRR-001 | Owner caller removed; DEC-115 implemented, failed live (IMP-12), Codex login token removed as not supported; back to Code Review |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 3 (Pass) | N/A (non-blocking N-3, N-4 applied) | `Initial Baseline` | SR-007, ARCH-REV-003 | Implemented steps 1–8; live API-key sandbox path passes; Codex login token (U-1) fails live, Grok (U-2) unproven; handed to Code Review |
 
@@ -49,3 +50,17 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-11, IMP-12 (live), IMP-13 (focused suites, typecheck) — see the handoff.
 - Next recipient or routing: `/code_reviewer` (targeted delta review).
 - Remaining limitations or risks: U-2 (Grok login token) and the Claude login-token live check still wait for the user (a fresh Grok login; a setup-token in the test vault). The validation image `autobyteus-server:581-local` was built from `70eb033f7c` (before the removal); the removal changes only the relayed Codex launch's login branch and `CODEX_HOME` handling, covered by unit tests, not rerun live.
+
+### IR-003 — CR-003: the caller-header drop list removed
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, CRR-002 (targeted delta, Fail).
+- Triggering finding IDs: CR-003 (and its optional note).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002. Current authoritative result: IR-002 without the dead drop list.
+- Related solution revision IDs: SR-009. Related code-review revision IDs: CRR-002. Others: N/A.
+- Why recorded: the drop list served only the removed Codex login-token route.
+- Approved behavior or requirement IDs affected: none (no behavior change).
+- Implementation delta (`d624f09ce6`): removed `RelayCredentialRoute.dropFromCaller` and its three `[]` values (`provider-relays.ts`), the forwarder's `dropHeaders` and the `drop` parameter of `forwardableRequestHeaders` (`credential-proxy-forwarder.ts`), and their pass-throughs (`provider-relay-peer-handler.ts`, `provider-relay-proxy-routes.ts`); kept `forwardableResponseHeaders`'s `drop` (removes `x-autobyteus-relay-reply`). Optional note applied: `isLoginTokenRuntimeKind` (`provider-relay-settings.ts`) is the one test, used by `routeFor` and the C1 parse. No test built a route with the field.
+- Local validation and result: `pnpm -C autobyteus-server-ts typecheck` PASS; `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes tests/unit/runtime-management/grok tests/unit/agent-execution/backends/deepseek-harness`: `Tests  154 passed` (IMP-14).
+- Next recipient or routing: `/code_reviewer`.
+- Remaining limitations or risks: as IR-002.
