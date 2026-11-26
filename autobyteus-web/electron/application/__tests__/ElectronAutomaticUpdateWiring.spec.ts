@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => ({
   updaterOptions: [] as Array<{ recoverAfterFailedInstall?: () => void; testFeedUrl?: string }>,
   serverManager: { stopServer: vi.fn(), isServerProcessGone: vi.fn(), setRuntimeEnvOverrides: vi.fn() },
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn(), close: vi.fn(), child: vi.fn() },
-  app: { setDesktopName: vi.fn(), on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
+  app: { setDesktopName: vi.fn(), on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), getVersion: vi.fn(() => '1.5.15-test'), isPackaged: false },
 }))
 
 vi.mock('electron', () => ({

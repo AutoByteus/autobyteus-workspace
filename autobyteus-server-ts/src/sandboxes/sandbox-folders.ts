@@ -13,7 +13,8 @@ const SHARED_NAME = /^[a-z0-9][a-z0-9-]{0,39}$/;
 /** The user's credential and app-data folders a sandbox may never receive (R-G); `.autobyteus*` matched by prefix. */
 const PROTECTED_HOME_ENTRIES = [".ssh", ".claude", ".codex", ".grok", ".config", ".aws", ".gnupg", ".docker", ".kube", ".netrc", "Library"];
 
-const within = (child: string, parent: string): boolean => child === parent || child.startsWith(`${parent}${path.sep}`);
+const within = (child: string, parent: string): boolean =>
+  child === parent || child.startsWith(parent.endsWith(path.sep) ? parent : `${parent}${path.sep}`);
 
 /** A folder given to a sandbox, refused with the reason. */
 export class SandboxFolderError extends Error {}

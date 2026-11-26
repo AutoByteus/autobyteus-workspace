@@ -12,11 +12,13 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { SecretVaultError } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import { createCredentialProxyHost, type CredentialProxyHost } from "../../../src/credential-proxy/credential-proxy-host.js";
-import { createDeepSeekProviderRelay, ProviderRelays } from "../../../src/credential-proxy/provider-relays/provider-relays.js";
+import { createProviderRelayTable, ProviderRelays } from "../../../src/credential-proxy/provider-relays/provider-relays.js";
 import type { ProviderCallObservation } from "../../../src/credential-proxy/provider-relays/provider-call-observation.js";
 
 const KEY = "test-dummy-deepseek-key-5512";
 const RUN = { runId: "run-dsh", agentDefinitionId: "agent-a" };
+/** These nodes are not relayed: nothing reaches a relay node. */
+const NO_PEER_RELAYS = () => { throw new Error("not relayed"); };
 const GITHUB_GRANT = { integrationId: "github", skillName: "github-integration", sourceId: "local:/tmp/integrations" };
 const REQUEST_BODY = JSON.stringify({ model: "deepseek-v4-flash", stream: true, dsh_session_log: { id: "s" }, dsh_plugin_packages: [] });
 
@@ -66,7 +68,9 @@ describe("DeepSeek provider relay", () => {
     keyStored = true;
     releaseStream = null;
     host = createCredentialProxyHost({
-      relays: new ProviderRelays([createDeepSeekProviderRelay(upstreamOrigin)]),
+      relays: new ProviderRelays(createProviderRelayTable(() => upstreamOrigin)),
+      relayed: null,
+      peerRelayClient: NO_PEER_RELAYS,
       // agent-b may use GitHub: its run gets an integration-only pass.
       access: { grantsForAgent: async (id: string) => (id === "agent-b" ? [GITHUB_GRANT] : []), allowsCall: async () => true },
       catalog: { entries: () => [], isSourceRegistered: () => true, describe: () => null,
@@ -93,7 +97,7 @@ describe("DeepSeek provider relay", () => {
   });
 
   const call = (baseUrl: string, pass: string | null, init: Partial<RequestInit> & { path?: string; headers?: Record<string, string> } = {}) =>
-    fetch(`${baseUrl}${init.path ?? "/v1/messages"}`, {
+    fetch(`${baseUrl}${init.path ?? "/anthropic/v1/messages"}`, {
       method: init.method ?? "POST",
       headers: { "content-type": "application/json", ...(pass ? { "x-api-key": pass } : {}), ...init.headers },
       ...(init.method === "GET" ? {} : { body: REQUEST_BODY }),
@@ -108,7 +112,7 @@ describe("DeepSeek provider relay", () => {
   };
 
   it("forwards with the vault key, body and stream unchanged, and reports the call to the run's observers (DS-002, DS-003)", async () => {
-    const { baseUrl, apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek");
+    const { baseUrl, pass: apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek", "deepseek_harness");
     const observations: ProviderCallObservation[] = [];
     host.providerRelayAccess.observe(RUN.runId, (observation) => observations.push(observation));
 
@@ -143,7 +147,7 @@ describe("DeepSeek provider relay", () => {
   });
 
   it("reports a call marked as compaction with the compaction purpose", async () => {
-    const { baseUrl, apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek");
+    const { baseUrl, pass: apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek", "deepseek_harness");
     const observations: ProviderCallObservation[] = [];
     host.providerRelayAccess.observe(RUN.runId, (observation) => observations.push(observation));
     const responding = call(baseUrl, apiKey, { headers: { "x-deepseek-harness-compact": "1" } });
@@ -155,12 +159,12 @@ describe("DeepSeek provider relay", () => {
   });
 
   it("refuses every call it must not forward before any upstream call, in the Anthropic error envelope (REQ-009, QR-002)", async () => {
-    const { baseUrl, apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek");
+    const { baseUrl, pass: apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek", "deepseek_harness");
     await expectRefusal(await call(baseUrl, null), 401, "authentication_error", "RUN_PASS_INVALID");
     await expectRefusal(await call(baseUrl, "rp_wrong"), 401, "authentication_error", "RUN_PASS_INVALID");
     await expectRefusal(await call(baseUrl, apiKey, { method: "GET" }), 404, "not_found_error", "PATH_NOT_ALLOWED");
     await expectRefusal(await call(baseUrl, apiKey, { path: "/v1/models" }), 404, "not_found_error", "PATH_NOT_ALLOWED");
-    await expectRefusal(await call(baseUrl, apiKey, { path: "/../v1/messages" }), 404, "not_found_error", "PATH_NOT_ALLOWED");
+    await expectRefusal(await call(baseUrl, apiKey, { path: "/anthropic/../v1/messages" }), 404, "not_found_error", "PATH_NOT_ALLOWED");
     await expectRefusal(await call(baseUrl.replace("/relay/deepseek", "/relay/other"), apiKey), 404, "not_found_error", "PATH_NOT_ALLOWED");
 
     // An integration-only pass has no relay grant.
@@ -175,7 +179,7 @@ describe("DeepSeek provider relay", () => {
   });
 
   it("refuses a revoked pass: the run's pass ends with its relay grant (AC-009, AR-008)", async () => {
-    const { baseUrl, apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek");
+    const { baseUrl, pass: apiKey } = await host.providerRelayAccess.prepareForRun(RUN, "deepseek", "deepseek_harness");
     host.runPasses.revokeForRun(RUN.runId);
     await expectRefusal(await call(baseUrl, apiKey), 401, "authentication_error", "RUN_PASS_INVALID");
     expect(seen).toEqual([]);
@@ -183,7 +187,9 @@ describe("DeepSeek provider relay", () => {
 
   it("answers an unreachable upstream with 502 and reports the call finished without usage", async () => {
     const unreachable = createCredentialProxyHost({
-      relays: new ProviderRelays([createDeepSeekProviderRelay("http://127.0.0.1:1")]),
+      relays: new ProviderRelays(createProviderRelayTable(() => "http://127.0.0.1:1")),
+      relayed: null,
+      peerRelayClient: NO_PEER_RELAYS,
       access: { grantsForAgent: async () => [], allowsCall: async () => false },
       catalog: { entries: () => [], isSourceRegistered: () => true, describe: () => null,
         sourceRemoving: async () => undefined, sourceChanging: async () => undefined },
@@ -192,7 +198,7 @@ describe("DeepSeek provider relay", () => {
     });
     await unreachable.listen();
     try {
-      const { baseUrl, apiKey } = await unreachable.providerRelayAccess.prepareForRun(RUN, "deepseek");
+      const { baseUrl, pass: apiKey } = await unreachable.providerRelayAccess.prepareForRun(RUN, "deepseek", "deepseek_harness");
       const observations: ProviderCallObservation[] = [];
       unreachable.providerRelayAccess.observe(RUN.runId, (observation) => observations.push(observation));
       await expectRefusal(await call(baseUrl, apiKey), 502, "api_error", "UPSTREAM_UNREACHABLE");

@@ -129,7 +129,7 @@ const service = (options: ServiceOptions = {}) => {
     ?? (async (provider) => PROVIDER_READINGS[provider.id]!);
   return new AvailableAgentRuntimesService({
     strategies,
-    signInReader: new AgentRuntimeSignInReader(strategies),
+    signInReader: new AgentRuntimeSignInReader(strategies, () => null),
     modelCatalog: {
       runtimeModelSelectionCatalog: async (kind, _workspace, catalogOptions = {}) => {
         const offeredModels = await (options.catalog ?? (async (k: string) => MODELS[k]!))(String(kind), catalogOptions);

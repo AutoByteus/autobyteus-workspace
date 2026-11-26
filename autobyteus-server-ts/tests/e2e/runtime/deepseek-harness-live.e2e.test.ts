@@ -50,7 +50,7 @@ const MODEL = process.env.DEEPSEEK_HARNESS_E2E_MODEL?.trim() || "deepseek-v4-fla
 const EFFORT = process.env.DEEPSEEK_HARNESS_E2E_REASONING_EFFORT?.trim() || "low";
 const STEP_TIMEOUT_MS = Number(process.env.DEEPSEEK_HARNESS_E2E_STEP_TIMEOUT_MS || 240_000);
 const KEY_SECRET_ID = "provider.deepseek.api-key";
-const KEY_CONSUMER = { kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" } as const;
+const KEY_CONSUMER = { kind: "providerRelay", relayId: "deepseek", relayCredentialKind: "apiKey" } as const;
 
 type WsMessage = { type: string; payload: Record<string, unknown> };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -116,9 +116,9 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     userDshBefore = await fs.stat(userDshHome).then((stat) => String(stat.mtimeMs)).catch(() => null);
 
     const prepare = DefaultProviderRelayAccess.prototype.prepareForRun;
-    vi.spyOn(DefaultProviderRelayAccess.prototype, "prepareForRun").mockImplementation(async function (this: DefaultProviderRelayAccess, run, relayId) {
-      const granted = await prepare.call(this, run, relayId);
-      passes.set(run.runId, granted.apiKey);
+    vi.spyOn(DefaultProviderRelayAccess.prototype, "prepareForRun").mockImplementation(async function (this: DefaultProviderRelayAccess, run, relayId, runtimeKind) {
+      const granted = await prepare.call(this, run, relayId, runtimeKind);
+      passes.set(run.runId, granted.pass);
       return granted;
     });
     const notify = ProviderCallObservers.prototype.notify;

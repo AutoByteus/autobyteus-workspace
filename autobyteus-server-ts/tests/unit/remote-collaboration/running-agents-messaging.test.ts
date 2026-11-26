@@ -187,8 +187,8 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
 
 const twoNodes = async () => {
   const network = new Map<string, PeerGateway>();
-  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
-  const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true }] });
+  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
+  const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true, role: null }] });
   return { a, b };
 };
 

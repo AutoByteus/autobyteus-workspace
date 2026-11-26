@@ -8,7 +8,7 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 /** autobyteus-278: the delegating node's outbound calls about runs its delegation started (§ Interface Boundary Mapping). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
 const answer = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
 const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 

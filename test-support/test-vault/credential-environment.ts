@@ -1,8 +1,9 @@
 /**
  * Credential variables never reach code under test (REQ-006): every
- * `*_API_KEY` name, which covers all importer credential aliases.
+ * `*_API_KEY` name and the Claude login token (`CLAUDE_CODE_OAUTH_TOKEN`,
+ * autobyteus-581 C9), which cover all importer credential aliases.
  */
-export const CREDENTIAL_ENVIRONMENT_NAME = /_API_KEY$/i;
+export const CREDENTIAL_ENVIRONMENT_NAME = /(_API_KEY|^CLAUDE_CODE_OAUTH_TOKEN)$/i;
 
 export const isCredentialEnvironmentName = (name: string): boolean =>
   CREDENTIAL_ENVIRONMENT_NAME.test(name);

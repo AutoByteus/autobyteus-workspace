@@ -32,6 +32,7 @@ import {
   writeCustomFixture,
 } from "../acp/acp-fake-agent-harness.js";
 import { DSH_SESSION_ID, dshRunRows } from "./dsh-fake-fixtures.js";
+import { providerRelayAccessDouble } from "../../../../helpers/provider-relay-access-double.js";
 
 /**
  * The shared ACP backend with the DeepSeek Harness session profile and a relay-naming launch profile over the fake
@@ -55,13 +56,14 @@ const relayAccessStub = (options: { keyMissing?: boolean } = {}) => {
   const listeners: ProviderCallListener[] = [];
   const order: string[] = [];
   const access: ProviderRelayAccess & { listeners: ProviderCallListener[]; order: string[] } = {
+    ...providerRelayAccessDouble(),
     listeners,
     order,
     prepareForRun: vi.fn(async () => {
       if (options.keyMissing) {
         throw new ProviderRelayKeyMissingError("The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.");
       }
-      return { baseUrl: "http://127.0.0.1:7/relay/deepseek", apiKey: "rp_test-pass" };
+      return { baseUrl: "http://127.0.0.1:7/relay/deepseek", pass: "rp_test-pass", relayCredentialKind: "apiKey" as const };
     }),
     relayBaseUrl: vi.fn(() => "http://127.0.0.1:7/relay/deepseek"),
     observe: vi.fn((_runId: string, listener: ProviderCallListener) => {
@@ -84,7 +86,7 @@ const createFactory = (fixture: string, providerRelayAccess: ProviderRelayAccess
     return created;
   });
   const launchProfile = fakeAcpLaunchProfile("Fake DeepSeek Harness", () => ({ FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: recordFile }), {
-    providerRelayId: "deepseek",
+    relay: { relayId: "deepseek", runtimeKind: "deepseek_harness", use: "always" },
     onRunLaunch: (request) => { launches.push(request); },
     release: async () => {
       (providerRelayAccess as { order?: string[] } | null)?.order?.push("release");
@@ -143,11 +145,11 @@ describe("DeepSeek Harness on the shared ACP backend", () => {
     const backend = await factory.beginPreparation({ kind: "new", runId: "run-1", config: config() }).prepare();
     backends.push(backend);
 
-    expect(access.prepareForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, "deepseek");
+    expect(access.prepareForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, "deepseek", "deepseek_harness");
     expect(launches).toHaveLength(1);
     expect(launches[0]).toMatchObject({
       runId: "run-1", model: "deepseek-v4-flash", reasoningEffort: "max",
-      relayAccess: { baseUrl: "http://127.0.0.1:7/relay/deepseek", apiKey: "rp_test-pass" },
+      relayAccess: { baseUrl: "http://127.0.0.1:7/relay/deepseek", pass: "rp_test-pass", relayCredentialKind: "apiKey" },
     });
     expect(launches[0]!.instructions).toContain("Reviews code {name} literally.");
     const sessionNew = recorded().find((message) => message.method === "session/new");
@@ -208,6 +210,6 @@ describe("DeepSeek Harness on the shared ACP backend", () => {
       sessionId: DSH_SESSION_ID, mcpServers: [{ type: "http", name: "autobyteus_agent_tools", url: DESCRIPTOR.serverUrl, headers: [] }],
     });
     expect(launches[0]!.instructions).toContain("Reviews code {name} literally.");
-    expect(launches[0]!.relayAccess).toEqual({ baseUrl: "http://127.0.0.1:7/relay/deepseek", apiKey: "rp_test-pass" });
+    expect(launches[0]!.relayAccess).toEqual({ baseUrl: "http://127.0.0.1:7/relay/deepseek", pass: "rp_test-pass", relayCredentialKind: "apiKey" });
   });
 });

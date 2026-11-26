@@ -8,7 +8,7 @@ export type AcpRelayAccess = ProviderRelayRunAccess;
 
 /**
  * The provider relay an agent's model calls go through: `always` (the agent never holds a key: DeepSeek Harness), or
- * `whenRelayed` (only on a relayed node; elsewhere the agent reaches its provider itself: Grok).
+ * `whenRelayed` (only on a relayed node; elsewhere the agent reaches its provider itself).
  */
 export type AcpProviderRelay = Readonly<{ relayId: string; runtimeKind: RelayedRuntimeKind; use: "always" | "whenRelayed" }>;
 
@@ -27,7 +27,7 @@ export type AcpRunLaunchRequest = Readonly<{
 /**
  * A short catalog-discovery process: `relayBaseUrl`, the relay's address without a pass (DeepSeek Harness, whose
  * discovery makes no model call); `nodeRelayAccess`, on a relayed node, the node pass for an agent whose discovery asks
- * its provider (Grok lists its models).
+ * its provider (to list its models).
  */
 export type AcpDiscoveryLaunchRequest = Readonly<{ relayBaseUrl: string | null; nodeRelayAccess: AcpRelayAccess | null }>;
 

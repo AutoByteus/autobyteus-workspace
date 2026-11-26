@@ -28,6 +28,7 @@ const resolveFor = (agentDefinitionId: string, integrationRunAccess: Integration
     } as never,
     toolingCoordinator: {} as never,
     integrationRunAccess,
+    providerRelayAccess: null,
   });
 
 describe("Claude run session integration environment", () => {

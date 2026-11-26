@@ -48,6 +48,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Personal Settings (tools, skills, avatar and runtime/model of package and built-in definitions, kept outside their files) | [personal_settings.md](./personal_settings.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
+| Sandboxes (disposable sandbox nodes an agent creates, uses and removes; relayed through this node) | [sandboxes.md](./sandboxes.md) |
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |

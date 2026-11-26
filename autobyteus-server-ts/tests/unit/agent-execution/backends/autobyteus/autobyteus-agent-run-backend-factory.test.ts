@@ -175,7 +175,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run-professor", () => undefined
     );
 
-    expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig);
+    // The run and the host's provider relays go with it (a relayed node's LLM goes through its relay, DS-001).
+    expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig,
+      { run: { runId: "run-professor", agentDefinitionId: "agent-1" }, providerRelayAccess: null });
     expect(createLLM.mock.calls[0]?.[1]).toBe(rawLlmConfig);
     expect(createLLM.mock.calls[0]?.[1]).not.toBeInstanceOf(LLMConfig);
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([

@@ -80,6 +80,7 @@ import type {
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_STORED_MODEL_OFFER, OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { providerRelayAccessDouble } from "../../helpers/provider-relay-access-double.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -299,7 +300,7 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
 
   it("gives the studio's provider relays to the scope's backends and its pass revocation to both run managers (AR-008)", () => {
     const harness = createHarness();
-    const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
+    const providerRelayAccess = providerRelayAccessDouble();
     const runPasses = { revokeForRun: vi.fn() };
     const kernel = buildApplicationExecutionScopeKernel({ ...harness.buildInput, providerRelayAccess, runPasses });
     expect(harness.createForExecution).toHaveBeenCalledWith(expect.objectContaining({ integrationRunAccess: null, providerRelayAccess }));
