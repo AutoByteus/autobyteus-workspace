@@ -29,12 +29,31 @@ const INTEGRATION_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   github: "integration.github.token",
 });
 
+/** The vault entry a provider relay attaches, per relay and relay credential kind (C3, C9). */
+const PROVIDER_RELAY_BINDINGS: Readonly<Record<"apiKey" | "loginToken", Readonly<Record<string, string>>>> = Object.freeze({
+  apiKey: Object.freeze({
+    anthropic: "provider.anthropic.api-key",
+    openai: "provider.openai.api-key",
+    xai: "provider.grok.api-key",
+    deepseek: "provider.deepseek.api-key",
+    gemini: "provider.google.ai-studio.api-key",
+    kimi: "provider.kimi.api-key",
+    glm: "provider.glm.api-key",
+    qwen: "provider.qwen.api-key",
+    mistral: "provider.mistral.api-key",
+    minimax: "provider.minimax.api-key",
+  }),
+  /** C9: Claude's login token from `claude setup-token`, stored with the vault's own import. */
+  loginToken: Object.freeze({ anthropic: "provider.anthropic.login-token" }),
+});
+
 /** A vault secret ID of an MCP secret: `mcp.<uuid>`, a new one per stored value. */
 const MCP_SECRET_ID_PATTERN = /^mcp\.[0-9a-f-]{36}$/;
 
 const FIXED_SECRET_IDS: readonly string[] = Object.freeze([
   ...FIXED_PROVIDER_SECRET_IDS,
   ...Object.values(SEARCH_BINDINGS),
+  ...Object.values(PROVIDER_RELAY_BINDINGS.loginToken),
   ...Object.values(TEST_ONLY_SECRET_IDS),
 ]);
 
@@ -59,9 +78,13 @@ export class ProviderCredentialCatalog {
     if (consumer.kind === "agentRuntime") {
       if (consumer.credentialSlot !== "apiKey") throw notAuthorized();
       if (consumer.runtimeKind === "claude_agent_sdk") return secretId("provider.anthropic.api-key");
-      // Read only by the credential proxy's DeepSeek provider relay; dsh never receives it.
-      if (consumer.runtimeKind === "deepseek_harness") return secretId("provider.deepseek.api-key");
       throw notAuthorized();
+    }
+    if (consumer.kind === "providerRelay") {
+      // Read only by the credential proxy, which attaches it to a relayed call; no runtime ever receives it.
+      const mapped = PROVIDER_RELAY_BINDINGS[consumer.relayCredentialKind]?.[consumer.relayId];
+      if (!mapped) throw notAuthorized();
+      return secretId(mapped);
     }
     if (consumer.kind === "search") {
       const mapped = SEARCH_BINDINGS[consumer.providerId.toLowerCase()];

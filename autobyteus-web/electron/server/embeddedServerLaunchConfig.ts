@@ -10,4 +10,6 @@ export type EmbeddedServerLaunchConfig = Readonly<{
   environmentPolicy: ServerEnvironmentPolicy
   /** The origin of the development renderer (`isDev`), which the node must accept; `null` when packaged. */
   developmentRendererOrigin: string | null
+  /** This app's release (`app.getVersion()`): the node's own release, whose server image its sandboxes start from. */
+  releaseVersion: string
 }>

@@ -1,5 +1,6 @@
 import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { FastifyInstance } from "fastify";
+import type { ProviderRelayPeerHandler } from "../../credential-proxy/provider-relay-peer/provider-relay-peer-handler.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerFileRoutes } from "./files.js";
 import { registerMediaRoutes } from "./media.js";
@@ -33,6 +34,8 @@ export async function registerRestRoutes(
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The studio's remote collaboration, behind `/rest/remote/*` (autobyteus-500 FU-011). */
     remoteCollaboration: RemoteCollaborationServices;
+    /** autobyteus-581: this node as a relay node, behind `/rest/remote/provider-relays/*`. */
+    providerRelayPeerHandler: ProviderRelayPeerHandler;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
@@ -42,7 +45,7 @@ export async function registerRestRoutes(
   await registerNodeUpdateRoutes(app);
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
-  await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration);
+  await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration, dependencies.providerRelayPeerHandler);
   await registerFileRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);

@@ -6,6 +6,7 @@ import { Message } from '../utils/messages.js';
 import type { LLMInvocationOptions } from '../base.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm-endpoint.js';
 
 export type GrokReasoningEffort = 'low' | 'medium' | 'high' | 'xhigh';
 
@@ -86,8 +87,8 @@ export function normalizeGrokInvocationKwargs(
 }
 
 export class GrokLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
-    super(model, 'https://api.x.ai/v1', config, apiKeyResolver, LLMProvider.GROK);
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) {
+    super(model, providerAddressThrough('https://api.x.ai/v1', endpoint), config, apiKeyResolver, LLMProvider.GROK);
   }
 
   protected override getRequestConfig(_kwargs: Record<string, unknown>): LLMConfig {

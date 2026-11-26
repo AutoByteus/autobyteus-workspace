@@ -3,6 +3,7 @@ import type { PeerNode } from "../domain/peer-node.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
 import type { PeerAddressResolver } from "./peer-address-resolver.js";
 import type { PeerDirectory } from "./peer-directory.js";
+import type { PeerRole } from "./peer-store.js";
 import type { RemoteCollaborationCapability } from "./remote-collaboration-capability.js";
 
 const INVITE_TTL_MS = 10 * 60 * 1000;
@@ -64,8 +65,8 @@ export const decodePeerInvite = (text: string): PeerInvite => {
  * carries it. Invite codes: 10 minutes, single use, kept as hashes in memory.
  */
 export class PeerPairingService {
-  /** Unused invite codes: hash → expiry (ms). */
-  private readonly invites = new Map<string, number>();
+  /** Unused invite codes: hash → expiry (ms) and the role the peer that accepts it gets here (C11, never in the text). */
+  private readonly invites = new Map<string, Readonly<{ expiresAtMs: number; role: PeerRole | null }>>();
 
   constructor(private readonly dependencies: Readonly<{
     capability: Pick<RemoteCollaborationCapability, "isEnabled">;
@@ -80,13 +81,16 @@ export class PeerPairingService {
     now?(): number;
   }>) {}
 
-  /** On node A: a new invite for one other node. */
-  async createInvite(): Promise<CreatedPeerInvite> {
+  /**
+   * On node A: a new invite for one other node. `role`: the mark the peer that accepts it is saved with here (a
+   * sandbox this node creates), kept beside the code's hash in memory, never in the invite text.
+   */
+  async createInvite(options: Readonly<{ role?: PeerRole | null }> = {}): Promise<CreatedPeerInvite> {
     this.requireSwitchOn();
     this.forgetExpired();
     const inviteCode = generateOneTimeCode();
     const expiresAtMs = this.now() + INVITE_TTL_MS;
-    this.invites.set(hashSecret(inviteCode), expiresAtMs);
+    this.invites.set(hashSecret(inviteCode), Object.freeze({ expiresAtMs, role: options.role ?? null }));
     const invite: PeerInvite = Object.freeze({
       nodeId: await this.dependencies.ownNodeId(),
       addressCandidates: Object.freeze([...this.dependencies.ownAddressCandidates()]),
@@ -127,14 +131,18 @@ export class PeerPairingService {
       return { statusCode: 403, code: "REMOTE_COLLABORATION_OFF", message: "Remote collaboration is turned off on this node." };
     }
     this.forgetExpired();
-    if (!this.invites.delete(hashSecret(request.inviteCode.trim()))) {
+    const codeHash = hashSecret(request.inviteCode.trim());
+    const invite = this.invites.get(codeHash);
+    if (!invite || !this.invites.delete(codeHash)) {
       return { statusCode: 401, code: "PEER_INVITE_INVALID", message: "This invite is not valid. Create a new one." };
     }
     try {
       await this.dependencies.peers.assertPairable(request.fromNodeId);
       const baseUrl = await this.dependencies.addresses.resolve(request.fromNodeId, request.addressCandidates);
       const peerSecret = generateCredential("");
-      await this.dependencies.peers.savePairedPeer({ nodeId: request.fromNodeId, name: request.fromName, baseUrl, peerSecret });
+      await this.dependencies.peers.savePairedPeer({
+        nodeId: request.fromNodeId, name: request.fromName, baseUrl, peerSecret, role: invite.role,
+      });
       return Object.freeze({ nodeId: await this.dependencies.ownNodeId(), peerSecret });
     } catch (error) {
       if (error instanceof RemoteCollaborationSettingsError) {
@@ -156,8 +164,8 @@ export class PeerPairingService {
 
   private forgetExpired(): void {
     const now = this.now();
-    for (const [hash, expiresAt] of this.invites) {
-      if (expiresAt <= now) this.invites.delete(hash);
+    for (const [hash, invite] of this.invites) {
+      if (invite.expiresAtMs <= now) this.invites.delete(hash);
     }
   }
 }

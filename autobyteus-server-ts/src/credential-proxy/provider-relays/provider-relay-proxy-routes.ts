@@ -15,12 +15,13 @@ import type { RunPassRegistry } from "../run-pass-registry.js";
 import { AnthropicMessagesStreamReader } from "./anthropic-messages-stream-reader.js";
 import type { ProviderCallObservation, ProviderCallPurpose } from "./provider-call-observation.js";
 import type { ProviderCallObservers } from "./provider-relay-access.js";
+import type { ProviderRelayPeerForwarder, RelayedCallResult } from "./provider-relay-peer-forwarder.js";
 import {
-  providerRelayBaseUrl,
-  providerRelayKeyMissingText,
-  type ProviderRelay,
-  type ProviderRelays,
-} from "./provider-relays.js";
+  providerRelayRefusal,
+  providerRelayRefusalText,
+  type ProviderRelayRefusal,
+} from "./provider-relay-refusals.js";
+import { providerRelayBaseUrl, type ProviderRelay, type ProviderRelays } from "./provider-relays.js";
 
 const logger = createServerLogger("credential-proxy");
 
@@ -35,63 +36,38 @@ export type ProviderRelayRouteDependencies = Readonly<{
   management: () => SecretManagementService;
   forwarder: CredentialProxyForwarder;
   proxyBaseUrl: () => string;
+  /** Set exactly on a relayed node (C1): every call goes to the relay node, never to the provider. */
+  peerForwarder: ProviderRelayPeerForwarder | null;
   /** The activity clock (tests); defaults to `Date.now`. */
   now?: () => number;
 }>;
 
-export type ProviderRelayRefusalCode =
-  | "NOT_LOOPBACK"
-  | "RUN_PASS_INVALID"
-  | "RELAY_NOT_ALLOWED"
-  | "PATH_NOT_ALLOWED"
-  | "RELAY_KEY_NOT_SET"
-  | "UPSTREAM_UNREACHABLE"
-  | "PROXY_FAILED";
-
 /** `/relay/<relayId><path>?<query>`, read from the raw URL so the path stays as the caller sent it. */
 const RELAY_URL = /^\/relay\/([^/?#]+)(.*)$/s;
 
-/**
- * Refusals in the Anthropic Messages error envelope, the only failure shape the runtime shows the text of; the status
- * and type decide whether it retries (`authentication_error`/`permission_error`: never).
- */
-const REFUSALS: Readonly<Record<ProviderRelayRefusalCode, Readonly<{ status: number; type: string }>>> = {
-  NOT_LOOPBACK: { status: 403, type: "permission_error" },
-  RUN_PASS_INVALID: { status: 401, type: "authentication_error" },
-  RELAY_NOT_ALLOWED: { status: 403, type: "permission_error" },
-  PATH_NOT_ALLOWED: { status: 404, type: "not_found_error" },
-  RELAY_KEY_NOT_SET: { status: 403, type: "permission_error" },
-  UPSTREAM_UNREACHABLE: { status: 502, type: "api_error" },
-  PROXY_FAILED: { status: 500, type: "api_error" },
-};
-
-const messageFor = (code: ProviderRelayRefusalCode, relay: ProviderRelay | null): string => {
-  const name = relay ? `the ${relay.providerName} relay` : "this relay";
-  switch (code) {
-    case "NOT_LOOPBACK": return "Only local calls are accepted.";
-    case "RUN_PASS_INVALID": return "The run pass is not valid: its run has ended, or it never had access.";
-    case "RELAY_NOT_ALLOWED": return `This run has no access to ${name}.`;
-    case "PATH_NOT_ALLOWED": return `This path is not allowed for ${name}.`;
-    case "RELAY_KEY_NOT_SET": return relay ? providerRelayKeyMissingText(relay) : "The API key is not set in AutoByteus.";
-    case "UPSTREAM_UNREACHABLE": return `${relay?.providerName ?? "The provider"} could not be reached.`;
-    case "PROXY_FAILED": return "The call failed in the proxy.";
-  }
-};
-
-const refuse = (reply: FastifyReply, code: ProviderRelayRefusalCode, relay: ProviderRelay | null) => {
-  const { status, type } = REFUSALS[code];
-  return reply.code(status).type("application/json")
-    .send({ type: "error", error: { type, code, message: messageFor(code, relay) } });
-};
+const send = (reply: FastifyReply, refusal: ProviderRelayRefusal) =>
+  reply.code(refusal.status).type("application/json").send(refusal.body);
 
 const headerValue = (value: string | string[] | undefined): string | null =>
   typeof value === "string" && value ? value : null;
 
 /**
- * The provider relays' route family (`/relay/<relayId>/…`, the run pass in `x-api-key`). Every refusal happens before
- * any upstream call. The request and the reply pass unchanged apart from the key swap; the reply's stream is read as
- * it passes so each call is reported to the run's observers: started, throttled activity, and finished (with the
- * provider's usage) synchronously when the upstream reply ends. Logs no pass and no header value.
+ * The pass a runtime sent, in its provider's own credential header: `x-api-key` (Anthropic clients, DeepSeek
+ * Harness), `Authorization: Bearer` (OpenAI-style clients, Codex, Grok, Claude with a login token) or
+ * `x-goog-api-key` (Gemini). The pass only identifies the run; which header it came in does not matter.
+ */
+const passOf = (request: FastifyRequest): string | null => {
+  const bearer = /^Bearer\s+(\S+)$/i.exec(headerValue(request.headers.authorization) ?? "")?.[1] ?? null;
+  return headerValue(request.headers["x-api-key"]) ?? bearer ?? headerValue(request.headers["x-goog-api-key"]);
+};
+
+/**
+ * The provider relays' route family (`/relay/<relayId>/…`, the pass in the runtime's credential header). Every
+ * refusal happens before any upstream call. Unrelayed, the node's own vault key is attached; relayed, the call goes to
+ * the relay node (`ProviderRelayPeerForwarder`), which attaches the credential of the kind the pass was granted. The
+ * request and the reply pass unchanged apart from the credential; a relay with a stream reader reports each run call
+ * to the run's observers: started, throttled activity, and finished (with the provider's usage) synchronously when
+ * the reply ends. Logs no pass and no header value.
  */
 export const registerProviderRelayRoutes = async (
   app: FastifyInstance,
@@ -99,64 +75,116 @@ export const registerProviderRelayRoutes = async (
 ): Promise<void> => {
   const now = deps.now ?? Date.now;
   await app.register(async (scope) => {
-    // Bodies stay unread so they stream upstream unchanged.
+    // Bodies stay unread so they stream upstream unchanged (the relayed side reads them whole to sign them).
     scope.removeAllContentTypeParsers();
     scope.addContentTypeParser("*", (_request, _payload, done) => done(null, undefined));
 
     scope.all("/relay/*", async (request: FastifyRequest, reply: FastifyReply) => {
-      if (!deps.gate.validateRequest(request).ok) return refuse(reply, "NOT_LOOPBACK", null);
+      if (!deps.gate.validateRequest(request).ok) return send(reply, providerRelayRefusal("NOT_LOOPBACK", providerRelayRefusalText.notLoopback()));
       const parsed = RELAY_URL.exec(request.raw.url ?? "");
       const relay = parsed ? deps.relays.get(parsed[1]!) : null;
-      if (!parsed || !relay) return refuse(reply, "PATH_NOT_ALLOWED", null);
+      if (!parsed || !relay) return send(reply, providerRelayRefusal("PATH_NOT_ALLOWED", providerRelayRefusalText.pathNotAllowed(null)));
       const rest = parsed[2] ?? "";
       const rawPathAndQuery = !rest ? "/" : rest.startsWith("?") ? `/${rest}` : rest;
-      const pass = headerValue(request.headers["x-api-key"]);
+      const pass = passOf(request);
       const holder = pass ? deps.passes.lookup(pass) : null;
-      if (!holder) return refuse(reply, "RUN_PASS_INVALID", relay);
-      if (holder.providerRelayId !== relay.id) return refuse(reply, "RELAY_NOT_ALLOWED", relay);
+      if (!holder) return send(reply, providerRelayRefusal("RUN_PASS_INVALID", providerRelayRefusalText.passInvalid()));
+      const kind = holder.providerRelays.get(relay.id);
+      if (!kind) return send(reply, providerRelayRefusal("RELAY_NOT_ALLOWED", providerRelayRefusalText.notAllowed(relay)));
+      const route = relay.routes[kind];
+      if (!route) return send(reply, providerRelayRefusal("PATH_NOT_ALLOWED", providerRelayRefusalText.pathNotAllowed(relay)));
       try {
-        buildUpstreamUrl(relay.route, request.method, rawPathAndQuery);
+        buildUpstreamUrl(route.route, request.method, rawPathAndQuery);
       } catch {
-        return refuse(reply, "PATH_NOT_ALLOWED", relay);
-      }
-      let key: SecretValue;
-      try {
-        key = await deps.management().resolveForUse(relay.consumer);
-      } catch {
-        return refuse(reply, "RELAY_KEY_NOT_SET", relay);
+        return send(reply, providerRelayRefusal("PATH_NOT_ALLOWED", providerRelayRefusalText.pathNotAllowed(relay)));
       }
 
       const callId = randomUUID();
-      const purpose: ProviderCallPurpose = request.headers[relay.compactionHeader] === "1" ? "compaction" : "turn";
-      const report = (observation: ProviderCallObservation) => deps.observers.notify(holder.runId, observation);
-      report({ kind: "started", callId, purpose });
+      const purpose: ProviderCallPurpose = relay.observation.compactionHeader
+        && request.headers[relay.observation.compactionHeader] === "1" ? "compaction" : "turn";
+      const observed = relay.observation.streamReader !== null && holder.kind === "run";
+      const report = (observation: ProviderCallObservation) => {
+        if (observed && holder.kind === "run") deps.observers.notify(holder.runId, observation);
+      };
+      const finishedWithoutReply = (status: number) =>
+        report({ kind: "finished", callId, purpose, httpStatus: status, usage: null, stopReason: null });
+
       let response: ForwardResponse;
-      try {
-        response = await deps.forwarder.forward({
-          route: relay.route,
-          token: key,
-          request: { method: request.method, rawPathAndQuery, headers: request.headers, body: request.raw },
-          proxyRouteBase: providerRelayBaseUrl(deps.proxyBaseUrl(), relay.id),
-        });
-      } catch (error) {
-        report({ kind: "finished", callId, purpose, httpStatus: 502, usage: null, stopReason: null });
-        if (error instanceof CredentialProxyError && error.code === "UPSTREAM_UNREACHABLE") {
-          return refuse(reply, "UPSTREAM_UNREACHABLE", relay);
+      if (deps.peerForwarder) {
+        report({ kind: "started", callId, purpose });
+        let relayed: RelayedCallResult;
+        try {
+          relayed = await deps.peerForwarder.forward({
+            relayId: relay.id, relayCredentialKind: kind, method: request.method, rawPathAndQuery,
+            headers: request.headers, body: ["GET", "HEAD"].includes(request.method) ? null : request.raw,
+          });
+        } catch (error) {
+          finishedWithoutReply(500);
+          logger.error(`Relayed provider call failed (${error instanceof Error ? error.name : "error"}).`);
+          return send(reply, providerRelayRefusal("PROXY_FAILED", providerRelayRefusalText.proxyFailed()));
         }
-        logger.error(`Provider relay call failed (${error instanceof Error ? error.name : "error"}).`);
-        return refuse(reply, "PROXY_FAILED", relay);
+        if (relayed.kind === "refused") {
+          finishedWithoutReply(relayed.refusal.status);
+          return send(reply, relayed.refusal);
+        }
+        response = relayed.response;
+      } else {
+        const unrelayed = await forwardWithVaultKey(deps, relay, request, rawPathAndQuery, () => report({ kind: "started", callId, purpose }));
+        if ("refusal" in unrelayed) {
+          finishedWithoutReply(unrelayed.refusal.status);
+          return send(reply, unrelayed.refusal);
+        }
+        response = unrelayed.response;
       }
-      const body = tapReply(response, {
-        activity: () => report({ kind: "activity", callId }),
-        finished: (reader) => report({
-          kind: "finished", callId, purpose, httpStatus: response.status,
-          usage: reader.usage(), stopReason: reader.stopReason(),
-        }),
-        now,
-      });
+      const body = observed
+        ? tapReply(response, {
+          activity: () => report({ kind: "activity", callId }),
+          finished: (reader) => report({
+            kind: "finished", callId, purpose, httpStatus: response.status,
+            usage: reader.usage(), stopReason: reader.stopReason(),
+          }),
+          now,
+        })
+        : response.body;
       return reply.code(response.status).headers(response.headers).send(body ?? "");
     });
   });
+};
+
+/** An unrelayed node's call: its own vault key for the relay's API-key route (no other kind is granted there). */
+const forwardWithVaultKey = async (
+  deps: ProviderRelayRouteDependencies,
+  relay: ProviderRelay,
+  request: FastifyRequest,
+  rawPathAndQuery: string,
+  started: () => void,
+): Promise<Readonly<{ response: ForwardResponse }> | Readonly<{ refusal: ProviderRelayRefusal }>> => {
+  const route = relay.routes.apiKey;
+  let key: SecretValue;
+  try {
+    if (route.source.kind !== "vault") throw new Error("not a vault credential");
+    key = await deps.management().resolveForUse(route.source.consumer);
+  } catch {
+    return { refusal: providerRelayRefusal("RELAY_KEY_NOT_SET", providerRelayRefusalText.keyMissing(relay)) };
+  }
+  started();
+  try {
+    const secret = key.revealToTrustedConsumer();
+    const response = await deps.forwarder.forward({
+      route: route.route,
+      credential: Object.freeze({ headers: route.attach({ secret, accountId: null }), secrets: Object.freeze([secret]) }),
+      dropHeaders: route.dropFromCaller,
+      request: { method: request.method, rawPathAndQuery, headers: request.headers, body: request.raw },
+      proxyRouteBase: providerRelayBaseUrl(deps.proxyBaseUrl(), relay.id),
+    });
+    return { response };
+  } catch (error) {
+    if (error instanceof CredentialProxyError && error.code === "UPSTREAM_UNREACHABLE") {
+      return { refusal: providerRelayRefusal("UPSTREAM_UNREACHABLE", providerRelayRefusalText.upstreamUnreachable(relay)) };
+    }
+    logger.error(`Provider relay call failed (${error instanceof Error ? error.name : "error"}).`);
+    return { refusal: providerRelayRefusal("PROXY_FAILED", providerRelayRefusalText.proxyFailed()) };
+  }
 };
 
 /**

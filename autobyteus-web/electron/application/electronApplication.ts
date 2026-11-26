@@ -81,6 +81,7 @@ export class ElectronApplication {
       baseDataRoot: profile.baseDataRoot,
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
       developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
+      releaseVersion: app.getVersion(),
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     this.managedUpdates = composeManagedUpdates({ shutdown: this.shutdown, serverGone: () => this.serverManager.isServerProcessGone(),

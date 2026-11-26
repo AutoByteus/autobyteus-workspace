@@ -12,4 +12,6 @@ export type PeerNode = Readonly<{
   baseUrl: string;
   addedAt: string;
   paired: boolean;
+  /** autobyteus-581 C11: `sandbox` when this node created the peer as a sandbox (cleanup, the Nodes page label). */
+  role: "sandbox" | null;
 }>;

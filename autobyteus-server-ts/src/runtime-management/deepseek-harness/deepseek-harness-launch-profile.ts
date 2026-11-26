@@ -19,6 +19,9 @@ export const DSH_WORKSPACE_SKILLS_SEGMENTS = Object.freeze([".dsh", "skills"]);
 
 const DSH_ARGS = Object.freeze(["--profile", "acp"]);
 
+/** dsh speaks DeepSeek's Messages API, under `/anthropic` on the provider (and so on its relay); it appends `/v1/messages`. */
+const dshBaseUrl = (relayBaseUrl: string): string => `${relayBaseUrl}/anthropic`;
+
 /**
  * dsh offers its DeepSeek models only while a key is configured, and on a non-official endpoint (the relay) it lists its
  * built-in catalog without a listing call. Discovery therefore gets this placeholder, neither a key nor a pass: a model
@@ -40,7 +43,7 @@ export const createDeepSeekHarnessLaunchProfile = (
   homeOf: () => DeepSeekHarnessHome = getDeepSeekHarnessHome,
 ): AcpAgentLaunchProfile => Object.freeze({
   agentLabel: DEEPSEEK_HARNESS_AGENT_LABEL,
-  providerRelayId: DEEPSEEK_HARNESS_RELAY_ID,
+  relay: Object.freeze({ relayId: DEEPSEEK_HARNESS_RELAY_ID, runtimeKind: "deepseek_harness", use: "always" }),
   command: deepSeekHarnessCommand,
 
   /** The run's instructions file and skills folder for the home patch; the run folder goes with `release`. */
@@ -53,8 +56,8 @@ export const createDeepSeekHarnessLaunchProfile = (
       args: DSH_ARGS,
       env: {
         ...dshEnvironment(home, {
-          DEEPSEEK_BASE_URL: request.relayAccess.baseUrl,
-          DEEPSEEK_API_KEY: request.relayAccess.apiKey,
+          DEEPSEEK_BASE_URL: dshBaseUrl(request.relayAccess.baseUrl),
+          DEEPSEEK_API_KEY: request.relayAccess.pass,
         }),
         [DSH_INSTRUCTIONS_FILE_VARIABLE]: files.instructionsFile,
         [DSH_SKILLS_DIR_VARIABLE]: path.join(request.workingDirectory, ...DSH_WORKSPACE_SKILLS_SEGMENTS),
@@ -70,7 +73,7 @@ export const createDeepSeekHarnessLaunchProfile = (
     return Object.freeze({
       args: DSH_ARGS,
       env: dshEnvironment(home, request.relayBaseUrl
-        ? { DEEPSEEK_BASE_URL: request.relayBaseUrl, DEEPSEEK_API_KEY: DISCOVERY_API_KEY_PLACEHOLDER }
+        ? { DEEPSEEK_BASE_URL: dshBaseUrl(request.relayBaseUrl), DEEPSEEK_API_KEY: DISCOVERY_API_KEY_PLACEHOLDER }
         : {}),
       release: releaseNothing,
     });

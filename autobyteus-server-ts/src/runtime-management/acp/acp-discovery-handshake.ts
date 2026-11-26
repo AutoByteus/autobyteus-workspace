@@ -1,7 +1,7 @@
 import os from "node:os";
 import type { InitializeResponse, SessionConfigOption, SessionInfo } from "@agentclientprotocol/sdk";
 import { commandBound, deadlineCause, type ReadDeadline } from "../read-deadline.js";
-import type { AcpAgentLaunchProfile, AcpLaunch } from "./acp-agent-launch-profile.js";
+import type { AcpAgentLaunchProfile, AcpDiscoveryLaunchRequest, AcpLaunch } from "./acp-agent-launch-profile.js";
 import { AcpAgentProcess } from "./acp-agent-process.js";
 import { AcpClientConnection } from "./acp-client-connection.js";
 
@@ -27,10 +27,13 @@ export class AcpDiscoveryError extends Error {
 /** `deadline`: the end time of the whole read step this short process belongs to; without it, the usual 90 s. */
 export type AcpShortProcessOptions = Readonly<{ deadline?: ReadDeadline }>;
 
-/** Where a short process runs and the provider relay address it gets (without a pass). */
-export type AcpShortProcessPlace = Readonly<{ cwd: string; relayBaseUrl: string | null }>;
+/** Where a short process runs and the provider relay it gets (`AcpDiscoveryLaunchRequest`). */
+export type AcpShortProcessPlace = Readonly<{ cwd: string }> & AcpDiscoveryLaunchRequest;
 
-const TEMPORARY_PLACE: AcpShortProcessPlace = Object.freeze({ cwd: os.tmpdir(), relayBaseUrl: null });
+/** A short process with no relay (an unrelayed node's own agent). */
+export const NO_RELAY: AcpDiscoveryLaunchRequest = Object.freeze({ relayBaseUrl: null, nodeRelayAccess: null });
+
+const TEMPORARY_PLACE: AcpShortProcessPlace = Object.freeze({ cwd: os.tmpdir(), ...NO_RELAY });
 
 /**
  * Runs a short-lived agent process for `use` (no session, no prompt, so no inference), bounded by the usual time-out
@@ -47,7 +50,7 @@ const withShortAcpProcess = async <T>(
   if (bound.timeoutMs <= 0) throw timedOut();
   let launch: AcpLaunch;
   try {
-    launch = await profile.discoveryLaunch({ relayBaseUrl: place.relayBaseUrl });
+    launch = await profile.discoveryLaunch({ relayBaseUrl: place.relayBaseUrl, nodeRelayAccess: place.nodeRelayAccess });
   } catch {
     throw new AcpDiscoveryError("failed", profile.agentLabel);
   }
@@ -92,7 +95,8 @@ export const runAcpDiscoveryHandshake = (
   profile: AcpAgentLaunchProfile,
   followUp: AcpFollowUpNotification,
   options: AcpShortProcessOptions = {},
-): Promise<AcpDiscoveryHandshake> => withShortAcpProcess(profile, TEMPORARY_PLACE, options, async (connection, boundEndsAt) => {
+  relay: AcpDiscoveryLaunchRequest = NO_RELAY,
+): Promise<AcpDiscoveryHandshake> => withShortAcpProcess(profile, { ...TEMPORARY_PLACE, ...relay }, options, async (connection, boundEndsAt) => {
   const seen: { params: Record<string, unknown> | null; arrived: (() => void) | null } = { params: null, arrived: null };
   const unsubscribe = connection.onConnectionNotification((method, params) => {
     if (method !== followUp.method || seen.params) return;
@@ -122,7 +126,8 @@ export const runAcpExtensionRequest = (
   profile: AcpAgentLaunchProfile,
   method: string,
   options: AcpShortProcessOptions = {},
-): Promise<Record<string, unknown>> => withShortAcpProcess(profile, TEMPORARY_PLACE, options, async (connection) => {
+  relay: AcpDiscoveryLaunchRequest = NO_RELAY,
+): Promise<Record<string, unknown>> => withShortAcpProcess(profile, { ...TEMPORARY_PLACE, ...relay }, options, async (connection) => {
   await connection.initialize();
   return connection.extension(method, {});
 });

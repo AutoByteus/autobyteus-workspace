@@ -1,3 +1,4 @@
+import { getProcessProviderRelayAccess } from '../../../credential-proxy/provider-relays/provider-relay-process-access.js';
 import {
   buildCustomProviderId,
   OpenAICompatibleEndpointDiscovery,
@@ -330,6 +331,12 @@ export class LlmProviderService {
   }
 
   private async isProviderApiKeyConfigured(providerId: string): Promise<boolean> {
+    // A relayed node holds no keys: a provider is usable when its relay node offers its key (C1, R-E).
+    const relays = getProcessProviderRelayAccess();
+    if (relays?.isRelayed()) {
+      const route = relays.routeForNativeProvider(providerId);
+      if (route.kind !== 'direct') return route.kind === 'relay';
+    }
     if (providerId === LLMProvider.OLLAMA) return false;
     if (providerId === LLMProvider.GEMINI) {
       const setup = await this.geminiConfigurationService.getSetupStatus();

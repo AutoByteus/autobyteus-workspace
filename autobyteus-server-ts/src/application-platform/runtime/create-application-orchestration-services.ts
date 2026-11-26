@@ -1,4 +1,5 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { getProcessProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-process-access.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
 import { ApplicationAgentEventMapper } from "../../application-agent-streaming/services/application-agent-stream-event-mapper.js";
@@ -165,6 +166,7 @@ export const createApplicationOrchestrationServices = (
         llmProviderService: input.llmProviderService,
         signInReader: new AgentRuntimeSignInReader(
           createAgentRuntimeStrategies({ codexClientManager: input.codexClientManager }),
+          getProcessProviderRelayAccess,
         ),
       }),
     }),

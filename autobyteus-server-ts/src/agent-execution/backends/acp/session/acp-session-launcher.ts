@@ -2,6 +2,7 @@ import type { SessionConfigOption } from "@agentclientprotocol/sdk";
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import {
   ProviderRelayKeyMissingError,
+  ProviderRelayUnavailableError,
   type ProviderRelayAccess,
 } from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
@@ -11,8 +12,10 @@ import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-t
 import type {
   AcpAgentLaunchProfile,
   AcpLaunch,
+  AcpProviderRelay,
   AcpRelayAccess,
 } from "../../../../runtime-management/acp/acp-agent-launch-profile.js";
+import { relayedNodeSettings } from "../../../../credential-proxy/provider-relays/provider-relay-settings.js";
 import { AcpAgentProcess } from "../../../../runtime-management/acp/acp-agent-process.js";
 import { AcpClientConnection } from "../../../../runtime-management/acp/acp-client-connection.js";
 import { AcpAgentCapabilities } from "../../../../runtime-management/acp/acp-agent-capabilities.js";
@@ -104,17 +107,12 @@ export class AcpSessionLauncher {
   async open(request: AcpSessionOpenRequest): Promise<Readonly<{ sessionId: string }>> {
     const { launchProfile, sessionProfile } = this.deps;
     const { owner, config, assertAccepting } = request;
-    const relayId = launchProfile.providerRelayId;
-    if (relayId && !this.deps.providerRelayAccess) {
-      // Never launch such an agent without the relay: it would look for a key outside the vault (DEC-020).
-      throw new AgentCreationError(
-        `PROVIDER_RELAY_UNAVAILABLE: ${launchProfile.agentLabel} needs the AutoByteus credential proxy, which this host does not run.`);
-    }
+    const relay = this.relayOfRun();
     assertAccepting();
     const run = { runId: request.runId, agentDefinitionId: config.agentDefinitionId };
     // The run's integration variables (a reopen keeps the run's pass).
     const integrationVariables = (await this.deps.integrationRunAccess?.environmentForRun(run, globalThis.process.env)) ?? {};
-    const relayAccess = relayId ? await this.prepareRelayAccess(run, relayId) : null;
+    const relayAccess = relay ? await this.prepareRelayAccess(run, relay) : null;
     assertAccepting();
     const launch = await launchProfile.runLaunch({
       runId: request.runId, workingDirectory: request.workingDirectory, instructions: request.instructions,
@@ -168,6 +166,7 @@ export class AcpSessionLauncher {
       const readiness = sessionProfile.mcpReadiness(request.descriptor);
       if (readiness) await session.awaitMcpServerReady(readiness);
       if (relayAccess) {
+        // Only a relay whose stream is read reports calls (DeepSeek Harness's); the others never notify.
         owner.providerCalls = this.deps.providerRelayAccess!.observe(request.runId, (observation) => session.onProviderCall(observation));
       }
       assertAccepting();
@@ -206,11 +205,29 @@ export class AcpSessionLauncher {
     if (errors.length) throw new AggregateError(errors, "ACP session end failed.");
   }
 
-  private async prepareRelayAccess(run: Readonly<{ runId: string; agentDefinitionId: string }>, relayId: string): Promise<AcpRelayAccess> {
+  /**
+   * The relay this run goes through: the profile's relay when it is `always`, or `whenRelayed` on a relayed node.
+   * Such a run never launches without the relay (it would look for a key outside the vault, DEC-020, or use the
+   * relayed node's own login): a host without the credential proxy refuses before anything starts. A host without
+   * one is never relayed, so a `whenRelayed` agent launches directly there.
+   */
+  private relayOfRun(): AcpProviderRelay | null {
+    const { launchProfile, providerRelayAccess } = this.deps;
+    const relay = launchProfile.relay;
+    if (!relay) return null;
+    if (providerRelayAccess) return relay.use === "always" || providerRelayAccess.isRelayed() ? relay : null;
+    if (relay.use === "whenRelayed" && !relayedNodeSettings()) return null;
+    throw new AgentCreationError(
+      `PROVIDER_RELAY_UNAVAILABLE: ${launchProfile.agentLabel} needs the AutoByteus credential proxy, which this host does not run.`);
+  }
+
+  private async prepareRelayAccess(run: Readonly<{ runId: string; agentDefinitionId: string }>, relay: AcpProviderRelay): Promise<AcpRelayAccess> {
     try {
-      return await this.deps.providerRelayAccess!.prepareForRun(run, relayId);
+      return await this.deps.providerRelayAccess!.prepareForRun(run, relay.relayId, relay.runtimeKind);
     } catch (error) {
-      if (error instanceof ProviderRelayKeyMissingError) throw new AgentCreationError(error.message);
+      if (error instanceof ProviderRelayKeyMissingError || error instanceof ProviderRelayUnavailableError) {
+        throw new AgentCreationError(error.message);
+      }
       throw error;
     }
   }

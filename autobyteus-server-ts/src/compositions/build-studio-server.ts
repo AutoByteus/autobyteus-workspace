@@ -38,6 +38,7 @@ import { getGeneralProcessPublishedArtifactPublisher } from "../services/publish
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { createStudioPackageServices } from "./studio-package-services.js";
 import { composeStudioRemoteCollaboration, createLateRemoteCollaborationBinding, type LateRemoteCollaborationBinding } from "./remote-collaboration-composition.js";
+import { composeSandboxes } from "./sandbox-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeRunningAgents } from "./running-agents-composition.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
@@ -244,7 +245,10 @@ export const buildStudioServer = async (input: {
       loggingConfig: input.loggingConfig,
       peerDiscovery: remote.discovery,
     });
-    credentialProxyHost = createCredentialProxyHost({ agentDefinitions: hostDefinitionServices.agentDefinitionService });
+    const currentCredentialProxyHost = credentialProxyHost = createCredentialProxyHost({
+      agentDefinitions: hostDefinitionServices.agentDefinitionService,
+      peerRelayClient: remote.peerRelays,
+    });
     // Before it listens: the model catalog and runtime availability read it (discovery waits for the listener).
     setProcessProviderRelayAccess(credentialProxyHost.providerRelayAccess);
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
@@ -328,7 +332,9 @@ export const buildStudioServer = async (input: {
       closedDelegations,
       taskResources: taskSide.resources,
     });
-    releaseRemoteCollaboration = remoteCollaboration.release;
+    const sandboxes = composeSandboxes({ appDataDir: input.appConfig.getAppDataDir(), remote: remoteCollaboration.services,
+      relayOffer: () => currentCredentialProxyHost.relayOffer() });
+    releaseRemoteCollaboration = () => { sandboxes.release(); remoteCollaboration.release(); };
     remote.bind(remoteCollaboration.services);
     // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
     const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
@@ -430,6 +436,7 @@ export const buildStudioServer = async (input: {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
           nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,
+          providerRelayPeerHandler: currentCredentialProxyHost.providerRelayPeerHandler,
         }),
         { prefix: "/rest" },
       );

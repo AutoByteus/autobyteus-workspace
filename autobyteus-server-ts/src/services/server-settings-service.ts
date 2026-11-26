@@ -1,3 +1,10 @@
+import {
+  PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING,
+  PROVIDER_RELAY_LOGIN_TOKENS_SETTING,
+  PROVIDER_RELAY_PEER_SETTING,
+  PROVIDER_RELAYS_SETTING,
+} from "../credential-proxy/provider-relays/provider-relay-settings.js";
+import { SANDBOX_IMAGE_SETTING } from "../sandboxes/sandbox-settings.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
 import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
@@ -313,6 +320,18 @@ export class ServerSettingsService {
       DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
       "Default video generation model identifier used by future media tool calls.",
     );
+
+    // autobyteus-581: a relayed node (C1, read at start: restart after a change), a relay node (C2), sandboxes.
+    this.registerPredefinedSetting(PROVIDER_RELAY_PEER_SETTING,
+      "The node ID of a paired node that relays this node's model calls and attaches the credentials; empty: not relayed. Restart to apply.");
+    this.registerPredefinedSetting(PROVIDER_RELAYS_SETTING,
+      "On a relayed node: the relays the relay node has API keys for (comma-separated: anthropic, openai, xai, deepseek, gemini, kimi, glm, qwen, mistral, minimax). Restart to apply.");
+    this.registerPredefinedSetting(PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING,
+      "On a relayed node: the runtimes that run on the relay node's login token (claude_agent_sdk, codex_app_server, grok_build). Restart to apply.");
+    this.registerPredefinedSetting(PROVIDER_RELAY_LOGIN_TOKENS_SETTING,
+      "On a relay node: true lets relayed calls use this node's login tokens (Claude, Codex, Grok) instead of API keys. Off by default.");
+    this.registerPredefinedSetting(SANDBOX_IMAGE_SETTING,
+      "The server image sandboxes start from; default: this node's own release (autobyteus/autobyteus-server:<version>).");
 
     logger.info(
       `Initialized server settings service with ${this.settingsInfo.size} predefined settings`,

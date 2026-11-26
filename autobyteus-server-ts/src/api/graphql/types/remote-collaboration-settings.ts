@@ -21,6 +21,8 @@ export class PeerNodeGql {
   @Field(() => String) addedAt!: string;
   /** Both nodes hold the pair's peer secret; an unpaired peer (registered before pairing) shows "Pair again". */
   @Field(() => Boolean) paired!: boolean;
+  /** autobyteus-581 C11: `sandbox` for a sandbox this node created (the Nodes page labels it); null for a normal peer. */
+  @Field(() => String, { nullable: true }) role!: string | null;
 }
 
 /** An invite another node accepts to pair with this node (design M-9). */

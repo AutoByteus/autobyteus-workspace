@@ -49,7 +49,8 @@ import {
   AUTOBYTEUS_DEFAULT_TOOL_NAMES,
   resolveAutoByteusRuntimeAgentToolExposure,
 } from "./autobyteus-runtime-tool-exposure.js";
-import { createAvailableLlm } from "./available-llm-construction.js";
+import { createAvailableLlm, type NativeLlmRun } from "./available-llm-construction.js";
+import type { ProviderRelayAccess } from "../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
 import { resolveApplicationAwareAgentTools } from "./application-agent-tools/application-agent-tool-composer.js";
 import type { RuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
@@ -65,6 +66,8 @@ export type AutoByteusAgentFactoryLike = typeof defaultAgentFactory;
 export type AutoByteusLlmFactory = (
   modelIdentifier: string,
   configInput?: LLMFactoryConfigInput,
+  /** The run and the host's provider relays, which a relayed node's LLM goes through (DS-001). */
+  native?: NativeLlmRun,
 ) => Promise<BaseLLM>;
 
 export type AutoByteusAgentIdleWaiter = (
@@ -113,16 +116,15 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   peerDiscovery: PeerDiscoveryAccess;
   /** The run's integration variables (`null`: this host's runs get no integration access). */
   integrationRunAccess?: IntegrationRunAccess | null;
+  /** The host's provider relays: on a relayed node every native model call goes through them (`null`: none here). */
+  providerRelayAccess?: ProviderRelayAccess | null;
   semanticMemory?: AgentSemanticMemory;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly agentFactory: AutoByteusAgentFactoryLike;
   private readonly agentDefinitionService: AgentDefinitionService;
-  private readonly createLLM: (
-    modelIdentifier: string,
-    configInput?: LLMFactoryConfigInput,
-  ) => Promise<BaseLLM>;
+  private readonly createLLM: AutoByteusLlmFactory;
   private readonly workspaceManager: WorkspaceManager;
   private readonly skillService: SkillService;
   private readonly registries: ProcessorRegistries;
@@ -431,6 +433,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     const llmInstance = await this.createLLM(
       llmModelIdentifier,
       llmConfig ?? undefined,
+      { run: { runId, agentDefinitionId }, providerRelayAccess: this.options.providerRelayAccess ?? null },
     );
 
     ownLlm(llmInstance);

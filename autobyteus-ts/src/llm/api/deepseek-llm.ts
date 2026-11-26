@@ -4,6 +4,7 @@ import { LLMConfig } from '../utils/llm-config.js';
 import { LLMProvider } from '../providers.js';
 import { DeepSeekChatRenderer } from '../prompt-renderers/deepseek-chat-renderer.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm-endpoint.js';
 
 type DeepSeekThinkingType = 'enabled' | 'disabled';
 
@@ -53,8 +54,8 @@ export class DeepSeekLLM extends OpenAICompatibleLLM {
   /** The provider's chat API documents `max_tokens` only (no `max_completion_tokens`). */
   protected override readonly outputLimitParameter = 'max_tokens' as const;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
-    super(model, 'https://api.deepseek.com', config, apiKeyResolver, LLMProvider.DEEPSEEK);
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) {
+    super(model, providerAddressThrough('https://api.deepseek.com', endpoint), config, apiKeyResolver, LLMProvider.DEEPSEEK);
     this.config.extraParams = normalizeDeepSeekExtraParams(this.config.extraParams);
     this._renderer = new DeepSeekChatRenderer();
   }

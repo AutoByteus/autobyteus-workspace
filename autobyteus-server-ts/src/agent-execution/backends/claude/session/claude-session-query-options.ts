@@ -1,4 +1,8 @@
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import {
+  ProviderRelayUnavailableError,
+  type ProviderRelayAccess,
+} from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSdkSessionBinding } from "../../../../runtime-management/claude/client/claude-sdk-session-binding.js";
@@ -17,6 +21,8 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
   integrationRunAccess: IntegrationRunAccess | null;
+  /** The relay of a relayed node's runs (`null`: this host runs no credential proxy). */
+  providerRelayAccess: ProviderRelayAccess | null;
 }): Promise<ClaudeSdkStreamingSessionOptions> => {
   const { runContext } = input;
   const sessionConfig = runContext.runtimeContext.sessionConfig;
@@ -41,8 +47,14 @@ export const resolveClaudeSessionQueryOptions = async (input: {
       : null;
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   // The run's integration variables for the CLI's shell; the run keeps one pass across process generations.
-  const extraEnvironment = (await input.integrationRunAccess?.environmentForRun(
-    { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env)) ?? {};
+  const run = { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId };
+  const extraEnvironment = (await input.integrationRunAccess?.environmentForRun(run, process.env)) ?? {};
+  // On a relayed node, the run's pass for the Anthropic relay, of the kind C1 gives Claude (DS-001).
+  const route = input.providerRelayAccess?.routeFor("claude_agent_sdk");
+  const providerRelay = route?.kind === "relay"
+    ? await input.providerRelayAccess!.prepareForRun(run, route.relayId, "claude_agent_sdk")
+    : undefined;
+  if (route?.kind === "unavailable") throw new ProviderRelayUnavailableError("RELAY_NOT_LISTED", route.reason);
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
     sessionBinding: input.binding,
@@ -54,6 +66,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     permissionMode: sessionConfig.permissionMode,
     ...claudeSessionReasoningOptions(sessionConfig),
     ...(Object.keys(extraEnvironment).length > 0 ? { extraEnvironment } : {}),
+    ...(providerRelay ? { providerRelay } : {}),
     stderr: (data: string) => input.diagnostics.append(data),
     canUseTool: (toolName, toolInput, toolOptions) =>
       input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions, {

@@ -15,6 +15,8 @@ export interface PeerNode {
   baseUrl: string
   addedAt: string
   paired: boolean
+  /** `sandbox`: a sandbox the bound node created (autobyteus-581), labelled on the Nodes page; null for a normal peer. */
+  role: 'sandbox' | null
 }
 
 /**
