@@ -128,3 +128,10 @@ History before this Task: [history-484/solution-revision-record.md](history-484/
 - **Design:** C1 gains `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID`; the Codex login-token walk is revised.
 - **U-2 (Grok):** needs a run while the user's Grok login is fresh. **Claude:** needs the user's `setup-token` in the test vault. Both are asked of the user.
 - **Review impact:** a narrow, design-local change inside the reviewed C1/C10 shape (one identifier variable and one launch flag); no change to ownership, routes or security boundaries. It does not reopen architecture review.
+
+## SR-009: Codex login token not supported (DEC-116); sandbox use by the creating run only (DEC-117)
+
+- **Trigger:** `/implementation_engineer` IR-002 (b2e7e0d3bd), live evidence IMP-11 and IMP-12; code review CR-001.
+- **Requirements:** REQ-004, REQ-005, REQ-012 and AC-005 updated; DEC-116 and DEC-117 recorded. Intended behavior narrows by the user's own rule (DEC-010) and DEC-115's fallback. The user is informed.
+- **Design:** the Codex login-token path is removed (implementation already did this); C1's `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID` goes with it.
+- **Still open:** U-2 (a fresh Grok login) and the Claude setup-token, both asked of the user.
