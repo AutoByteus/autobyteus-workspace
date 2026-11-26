@@ -62,5 +62,5 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Approved behavior or requirement IDs affected: none (no behavior change).
 - Implementation delta (`d624f09ce6`): removed `RelayCredentialRoute.dropFromCaller` and its three `[]` values (`provider-relays.ts`), the forwarder's `dropHeaders` and the `drop` parameter of `forwardableRequestHeaders` (`credential-proxy-forwarder.ts`), and their pass-throughs (`provider-relay-peer-handler.ts`, `provider-relay-proxy-routes.ts`); kept `forwardableResponseHeaders`'s `drop` (removes `x-autobyteus-relay-reply`). Optional note applied: `isLoginTokenRuntimeKind` (`provider-relay-settings.ts`) is the one test, used by `routeFor` and the C1 parse. No test built a route with the field.
 - Local validation and result: `pnpm -C autobyteus-server-ts typecheck` PASS; `vitest run tests/unit/credential-proxy tests/integration/credential-proxy tests/unit/sandboxes tests/unit/runtime-management/grok tests/unit/agent-execution/backends/deepseek-harness`: `Tests  154 passed` (IMP-14).
-- Next recipient or routing: `/code_reviewer`.
+- Next recipient or routing: `/code_reviewer`. Outcome: CRR-003 Pass (CR-003 resolved at d624f09ce6); the reviewer routed to `/api_e2e_engineer`.
 - Remaining limitations or risks: as IR-002.
