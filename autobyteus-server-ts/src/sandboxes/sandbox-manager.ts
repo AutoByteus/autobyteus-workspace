@@ -9,9 +9,10 @@ import type { RemoteCollaborationCapability } from "../remote-collaboration/sett
 import { PROVIDER_RELAY_PEER_SETTING } from "../credential-proxy/provider-relays/provider-relay-settings.js";
 import type { SandboxDocker } from "./sandbox-docker.js";
 import {
+  DATA_IN_SANDBOX,
   isSharedFolderName,
+  MEMORY_IN_SANDBOX,
   resolveGivenFolder,
-  RUN_MEMORY_IN_SANDBOX,
   SandboxFolderError,
   SHARED_FOLDER_ROOT_IN_SANDBOX,
   WORKSPACE_IN_SANDBOX,
@@ -223,15 +224,15 @@ export class SandboxManager {
       cpus: SANDBOX_LIMITS.cpus,
       mounts: [
         { hostPath: record.workspaceFolder, containerPath: WORKSPACE_IN_SANDBOX, readOnly: false },
-        { hostPath: record.runMemoryFolder, containerPath: RUN_MEMORY_IN_SANDBOX, readOnly: false },
+        // The node's own memory folder (inside its data volume): the server always keeps memory at <data>/memory.
+        { hostPath: record.runMemoryFolder, containerPath: MEMORY_IN_SANDBOX, readOnly: false },
         ...shared.map((folder) => ({ hostPath: folder.path, containerPath: `${SHARED_FOLDER_ROOT_IN_SANDBOX}/${folder.name}`, readOnly: true })),
       ],
-      anonymousVolumes: ["/home/autobyteus/data", "/root", "/home/autobyteus/server-packages"],
+      anonymousVolumes: [DATA_IN_SANDBOX, "/root", "/home/autobyteus/server-packages"],
       // C8: C1's three variables and the node's own settings; never a key, token, credential or peer secret.
       environment: {
         [PROVIDER_RELAY_PEER_SETTING]: hostNodeId,
         ...(await this.deps.relayOffer()),
-        AUTOBYTEUS_MEMORY_DIR: RUN_MEMORY_IN_SANDBOX,
         AUTOBYTEUS_TEMP_WORKSPACE_DIR: WORKSPACE_IN_SANDBOX,
         ENABLE_REMOTE_COLLABORATION: "true",
         AUTOBYTEUS_SERVER_HOST: `http://127.0.0.1:${record.hostPort}`,

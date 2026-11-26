@@ -103,14 +103,13 @@ describe("SandboxManager.create", () => {
       AUTOBYTEUS_PROVIDER_RELAY_PEER: HOST,
       AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,openai",
       AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "",
-      AUTOBYTEUS_MEMORY_DIR: "/home/autobyteus/run-memory",
       AUTOBYTEUS_TEMP_WORKSPACE_DIR: "/home/autobyteus/workspace",
       ENABLE_REMOTE_COLLABORATION: "true",
       AUTOBYTEUS_SERVER_HOST: "http://127.0.0.1:47581",
     });
     expect(spec.mounts).toEqual([
       { hostPath: created.workspaceFolder, containerPath: "/home/autobyteus/workspace", readOnly: false },
-      { hostPath: created.runMemoryFolder, containerPath: "/home/autobyteus/run-memory", readOnly: false },
+      { hostPath: created.runMemoryFolder, containerPath: "/home/autobyteus/data/memory", readOnly: false },
       { hostPath: shared, containerPath: "/home/autobyteus/shared/articles", readOnly: true },
     ]);
     expect(spec.anonymousVolumes).toEqual(["/home/autobyteus/data", "/root", "/home/autobyteus/server-packages"]);

@@ -4,9 +4,11 @@ import path from "node:path";
 
 /** Where a shared folder appears inside a sandbox (read-only, DEC-113). */
 export const SHARED_FOLDER_ROOT_IN_SANDBOX = "/home/autobyteus/shared";
-/** The sandbox's workspace (its delegated runs work here) and run memory, both mapped to host folders (C8). */
+/** The sandbox node's data folder (a fresh anonymous volume, removed with the container). */
+export const DATA_IN_SANDBOX = "/home/autobyteus/data";
+/** The sandbox's workspace (its delegated runs work here) and its node's memory folder, both mapped to host folders (C8). */
 export const WORKSPACE_IN_SANDBOX = "/home/autobyteus/workspace";
-export const RUN_MEMORY_IN_SANDBOX = "/home/autobyteus/run-memory";
+export const MEMORY_IN_SANDBOX = `${DATA_IN_SANDBOX}/memory`;
 
 const SHARED_NAME = /^[a-z0-9][a-z0-9-]{0,39}$/;
 

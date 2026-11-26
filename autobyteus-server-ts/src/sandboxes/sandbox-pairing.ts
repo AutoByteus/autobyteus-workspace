@@ -4,9 +4,13 @@ import type { PeerNodeDiscovery } from "../remote-collaboration/discovery/peer-n
 import type { PeerDirectory } from "../remote-collaboration/settings/peer-directory.js";
 import type { PeerPairingService } from "../remote-collaboration/settings/peer-pairing-service.js";
 import type { SandboxDocker } from "./sandbox-docker.js";
+import { DATA_IN_SANDBOX } from "./sandbox-folders.js";
 
-/** The sandbox node's local control socket (the image's data folder), which hands out its setup code. */
-const LOCAL_CONTROL_SOCKET = "/home/autobyteus/data/node-access/local-control.sock";
+/** The sandbox node's local control socket (in its data folder), which hands out its setup code. */
+const LOCAL_CONTROL_SOCKET = `${DATA_IN_SANDBOX}/node-access/local-control.sock`;
+/** How long one health request may wait for an answer, and the pause between requests. */
+const HEALTH_REQUEST_TIMEOUT_MS = 5_000;
+const HEALTH_RETRY_PAUSE_MS = 250;
 /** Asks the socket for a setup code and prints only the code (run with `node -e` inside the sandbox). */
 const SETUP_CODE_SCRIPT = 'const s=require("net").createConnection(process.argv[1],()=>s.write("setup-code\\n"));'
   + 's.setTimeout(5000,()=>process.exit(1));let d="";s.setEncoding("utf8");s.on("data",(c)=>{d+=c});'
@@ -45,7 +49,10 @@ export class SandboxPairing {
     fetch?: typeof fetch;
   }>) {}
 
-  /** Waits until the sandbox node hands out a setup code, then exchanges it for an owner credential. */
+  /**
+   * Waits until the sandbox node hands out a setup code and its published port answers (the node hands out codes a
+   * moment before its HTTP server takes connections, API-E01), then exchanges the code once for an owner credential.
+   */
   async connect(sandboxId: string, baseUrl: string, deadlineAt: number): Promise<SandboxNodeSession> {
     let setupCode: string | null = null;
     while (!setupCode) {
@@ -55,6 +62,7 @@ export class SandboxPairing {
       else await sleep(1_000);
     }
     const fetchImpl = this.deps.fetch ?? fetch;
+    await this.untilAnswering(fetchImpl, baseUrl, deadlineAt);
     const exchange = await fetchImpl(`${baseUrl}/rest/node-access/setup-exchanges`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -79,6 +87,21 @@ export class SandboxPairing {
         return body.data;
       },
     });
+  }
+
+  /** Asks `GET /rest/health` until any HTTP answer comes; a refused or dropped connection is asked again. */
+  private async untilAnswering(fetchImpl: typeof fetch, baseUrl: string, deadlineAt: number): Promise<void> {
+    for (;;) {
+      try {
+        await fetchImpl(`${baseUrl}/rest/health`, { signal: AbortSignal.timeout(HEALTH_REQUEST_TIMEOUT_MS) });
+        return;
+      } catch {
+        if (Date.now() > deadlineAt) {
+          throw new SandboxPairingError("SANDBOX_START_FAILED", "The sandbox node handed out its setup code, but its port did not answer in time.");
+        }
+        await sleep(HEALTH_RETRY_PAUSE_MS);
+      }
+    }
   }
 
   /**

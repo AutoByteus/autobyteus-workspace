@@ -62,12 +62,15 @@ creation leaves nothing behind.
 4. One container (`autobyteus-<sandboxId>`), labelled `autobyteus.sandbox=<sandboxId>` and
    `autobyteus.sandbox.host=<host node ID>`, on Docker's default network (full network, DEC-110), published on
    `127.0.0.1:<free port>`, 6 GiB and 4 CPUs, with the folders mounted (`/home/autobyteus/workspace` is its runs'
-   workspace, `/home/autobyteus/run-memory` its run memory; shared folders read-only) and fresh anonymous volumes for
-   its data, `/root` and server packages. Its environment: the relay settings (`AUTOBYTEUS_PROVIDER_RELAY_PEER` = the
-   host, and the relays and login-token runtimes the host offers now), `AUTOBYTEUS_MEMORY_DIR`,
+   workspace; the run-memory folder is bound at `/home/autobyteus/data/memory`, the sandbox node's own memory folder
+   inside its data volume, so its runs' memory (`agents/<runId>/…`, and its indexes and semantic memory) is on the
+   host; shared folders read-only) and fresh anonymous volumes for its data, `/root` and server packages. Its environment: the relay settings (`AUTOBYTEUS_PROVIDER_RELAY_PEER` = the
+   host, and the relays and login-token runtimes the host offers now),
    `AUTOBYTEUS_TEMP_WORKSPACE_DIR`, `ENABLE_REMOTE_COLLABORATION=true`, `AUTOBYTEUS_SERVER_HOST`; never a key, token,
    credential or peer secret.
-5. Its setup code over `docker exec`, exchanged for an owner credential kept in memory for the creation only.
+5. Its setup code over `docker exec`; once its published port answers `GET /rest/health` (the node hands out codes a
+   moment before its HTTP server takes connections), the code is exchanged once for an owner credential kept in memory
+   for the creation only.
 6. Pairing: the host creates an invite marked `sandbox`; the sandbox accepts it (its name for the host: `host`; the
    host's name for it: the `sandboxId`); the host's exchange saves the peer with `role: "sandbox"`. The sandbox
    reaches the host at `host.docker.internal:<port>` (the host's loopback listener; the host sees it as `127.0.0.1`).
