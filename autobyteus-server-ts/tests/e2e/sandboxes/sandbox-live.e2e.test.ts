@@ -20,7 +20,7 @@
  *   host's C5 log and the evaluator's tool results finds no test-vault secret and not the host's owner credential.
  * - SBX-04 (AC-012, AC-011): another run of the host is refused `run_in_sandbox` and `destroy_sandbox`
  *   (`SANDBOX_NOT_YOURS`); then the creator destroys it: no container, no anonymous volume, no peer, no record;
- *   the folders stay.
+ *   the folders stay, with the runs' transcripts.
  * - SBX-05 (AC-003, SCN-A2): the host removes a running sandbox's peer; the sandbox's next native turn fails with
  *   `RELAY_PEER_NOT_ACCEPTED` and no C5 line is written (nothing reached a provider); destroy still cleans up.
  * - SBX-06 (AC-013 expiry): a 1-minute sandbox is removed at its expiry, folders kept.
@@ -570,9 +570,12 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     for (const volume of volumes) if ((await docker("volume", "inspect", volume)).code === 0) volumesLeft.push(volume);
     const after = { containers: await containersOf(`label=autobyteus.sandbox=${record!.sandboxId}`), volumesLeft,
       sandboxPeers: (await hostPeers()).filter((p) => p.role === "sandbox" || p.nodeId === sandbox!.nodeId).length,
-      records: records().length, workspaceKept: fs.existsSync(record!.workspaceFolder), runMemoryKept: fs.existsSync(record!.runMemoryFolder) };
+      records: records().length, workspaceKept: fs.existsSync(record!.workspaceFolder), runMemoryKept: fs.existsSync(record!.runMemoryFolder),
+      // The runs' transcripts outlive the sandbox (they are on the host, not in its removed volumes).
+      transcriptsKept: fs.existsSync(path.join(record!.runMemoryFolder, "agents"))
+        && fs.readdirSync(path.join(record!.runMemoryFolder, "agents")).some((id) => fs.existsSync(path.join(record!.runMemoryFolder, "agents", id, "raw_traces_active.jsonl"))) };
     evidence("SBX-04", { otherRunCodes: [exec.code, destroy.code], anonymousVolumes: volumes.length, destroyResult: destroyed.result, after });
-    expect(after).toEqual({ containers: [], volumesLeft: [], sandboxPeers: 0, records: 0, workspaceKept: true, runMemoryKept: true });
+    expect(after).toEqual({ containers: [], volumesLeft: [], sandboxPeers: 0, records: 0, workspaceKept: true, runMemoryKept: true, transcriptsKept: true });
   }, CASE_TIMEOUT);
 
   it("SBX-05 (AC-003): the host unpairs a running sandbox; its next call is refused before any provider call", async () => {

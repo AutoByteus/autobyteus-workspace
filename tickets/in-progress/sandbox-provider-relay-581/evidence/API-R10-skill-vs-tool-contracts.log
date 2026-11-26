@@ -36,3 +36,5 @@ autobyteus-server-ts/src/sandboxes/sandbox-settings.ts:10:  maxLifetimeMinutes: 
 ## Result fields: skill example vs. live result (SBX-01, run 4): the live result leaves out empty fields (platform tool result rule, agent-tools-mcp-structured-json-result.ts), so 'teams' (and 'sharedFolders' when none) are absent, while the skill's example shows "teams": [] -> doc note
 
 ## Run memory layout (skill section 4: agents/<runId>/raw_traces_active.jsonl in runMemoryFolder): contradicted by F-2 (API-E02): the folder stays empty
+
+## Round 2 (code 7296a698d6, skill still f85b30a): skill section 4 layout now holds: runMemoryFolder has agents/<runId>/raw_traces_active.jsonl for every run (API-L02 runs 5 and 6: 6 transcripts each), and the Claude evaluator read them by that path (API-L10). D-1 and D-2 unchanged.

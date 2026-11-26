@@ -15,10 +15,10 @@
 - Code Review Revision Record: `…/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `…/api-e2e-revision-record.md` (written after this round's result)
-- Current API/E2E Revision ID: `API-REV-001` (on completion)
-- Current Investigation Round: 1
-- Trigger: `/code_reviewer` CRR-003 pass (code `d624f09ce6`, docs `f19cedcbf6`)
-- Prior Investigation Reviewed: none (first round)
+- Current API/E2E Revision ID: `API-REV-002` (round 2); `API-REV-001` (round 1, Fail: F-1, F-2)
+- Current Investigation Round: 2
+- Trigger: round 1 `/code_reviewer` CRR-003 pass (code `d624f09ce6`); round 2 `/code_reviewer` CRR-005 pass of IR-004 (code `7296a698d6`, fixes F-1 and F-2)
+- Prior Investigation Reviewed: round 1 (this file)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -218,6 +218,29 @@ None.
 ## Ambiguities Or Reroute Triggers
 
 None at investigation time.
+
+## Round 2 Rerun Plan (by impact)
+
+- Validated commit: round 1 `d624f09ce6`. Round 2 code: `7296a698d6`.
+- `git diff --name-only 0edd500997 7296a698d6` (source): `sandbox-pairing.ts`, `sandbox-manager.ts`, `sandbox-folders.ts`, `sandboxes.md`, `tests/unit/sandboxes/sandbox-{manager,pairing}.test.ts`.
+- No shared foundation changed (no lockfile, schema, autobyteus-ts, contracts, harness, build input).
+- **Rerun:**
+  - API-R01: server typecheck; src changed.
+  - API-R03b: `tests/unit/sandboxes` and `tests/architecture`, which read source by path.
+  - API-L01..L08: the whole gated suite, twice, on a new image `autobyteus-server:581-api-e2e-r2` from `7296a698d6` with the host `dist` rebuilt. Twice because F-1 was intermittent.
+  - API-L10: waited on F-2.
+  - API-L11: exercises create.
+  - API-R10: the skill against the new run-memory layout.
+- **Still valid, with the reason:**
+  - API-R02: no web cross-package test imports `src/sandboxes`.
+  - API-R04: no integration test exercises `src/sandboxes`.
+  - API-R05: no ungated E2E creates a sandbox, and the start sweep is unchanged.
+  - API-R06: tool lists unchanged.
+  - API-R07: its files are unchanged.
+  - API-R09: no build input changed.
+  - API-L09: no sandbox involved.
+- API-E01 and API-E02 are superseded by the suite's own checks: repeated creates (F-1), and transcripts under `agents/<runId>/`, kept after destroy (F-2; SBX-04 gained `transcriptsKept`).
+- API-L12 still waits for the user (DEC-118).
 
 ## Investigation Decision
 
