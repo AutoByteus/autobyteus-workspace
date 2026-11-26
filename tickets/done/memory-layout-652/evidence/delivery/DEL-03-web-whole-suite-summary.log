@@ -1,0 +1,30 @@
+### web-whole: env NUXT_TEST=true pnpm -C autobyteus-web test:nuxt --run
+
+> autobyteus@1.5.15-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/memory-layout-652/autobyteus-web
+[...] full log not kept (the vitest summary, and the count of FAIL lines, follow)
+lines containing ' FAIL ': 0
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 26ms
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 2ms
+ ✓ scripts/__tests__/typecheckGate.spec.ts (29 tests) 374ms
+ ✓ scripts/__tests__/demoImportBoundary.spec.ts (2 tests) 215ms
+ ✓ scripts/__tests__/buildIconBundle.spec.ts (3 tests) 275ms
+stdout | localization/messages/__tests__/shellCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ scripts/__tests__/mobileBuildChecks.spec.ts (8 tests) 104ms
+ ✓ scripts/__tests__/linuxAppImageBuild.spec.ts (7 tests) 30ms
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 1ms
+stdout | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (1 test) 1ms
+ ✓ utils/highlighting/__tests__/languageDetector.spec.ts (38 tests) 3295ms
+
+ Test Files  812 passed (812)
+      Tests  6296 passed | 2 skipped (6298)
+   Start at  09:02:35
+   Duration  278.89s (transform 29.22s, setup 1848.27s, collect 179.39s, tests 94.09s, environment 149.62s, prepare 90.87s)
+
+exit 0
