@@ -1,0 +1,95 @@
+{
+  "result": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scroller": {
+      "scrollHeight": 844,
+      "clientHeight": 844
+    },
+    "header": {
+      "x": 70,
+      "y": 16,
+      "w": 300,
+      "h": 87,
+      "bottom": 103,
+      "right": 370
+    },
+    "contentTop": 119,
+    "panel": {
+      "x": 70,
+      "y": 119,
+      "w": 300,
+      "h": 709,
+      "bottom": 828,
+      "right": 370
+    },
+    "panelGapToBottom": 16,
+    "list": {
+      "x": 71,
+      "y": 120,
+      "w": 298,
+      "h": 287,
+      "bottom": 407,
+      "right": 369
+    },
+    "searchRowHeight": 44,
+    "tabInfo": {
+      "text": "deployment-checklist-and-rollback-pla.md",
+      "title": "deployment-checklist-and-rollback-pla.md",
+      "width": 285,
+      "truncated": false
+    },
+    "type": {
+      "h1": "22px",
+      "h2": null,
+      "h3": null,
+      "body": "14px",
+      "li": null
+    },
+    "headerText": "Software Engineering Team\n/\nSolution Designer\nEpisodic\n1\nSemantic",
+    "back": {
+      "text": "Software Engineering Team",
+      "label": "Back to Software Engineering Team"
+    },
+    "sectionTabs": 0,
+    "rows": [
+      "records",
+      "reflections",
+      "deployment-checklist-and-rollback-pla.md",
+      "lessons.md",
+      "network-settings-and-routing-facts.md",
+      "proposals.md"
+    ],
+    "icons": [
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      }
+    ],
+    "copied": {
+      "label": "Copied",
+      "clipboard": "<stack-root>/data/memory/semantic/team-local-agent%3Asoftware-engineering-team%3Asolution_designer",
+      "path": "<stack-root>/data/memory/semantic/team-local-agent%3Asoftware-engineering-team%3Asolution_designer",
+      "after": "Copy folder path"
+    }
+  },
+  "errors": []
+}

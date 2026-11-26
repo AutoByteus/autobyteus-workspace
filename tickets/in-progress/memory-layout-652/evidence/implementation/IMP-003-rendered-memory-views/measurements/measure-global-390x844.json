@@ -1,0 +1,73 @@
+{
+  "result": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "global": {
+      "topRow": {
+        "x": 73,
+        "y": 19,
+        "w": 77,
+        "h": 32,
+        "bottom": 51,
+        "right": 150
+      },
+      "panel": {
+        "x": 70,
+        "y": 150,
+        "w": 300,
+        "h": 678,
+        "bottom": 828,
+        "right": 370
+      },
+      "readerTop": 150,
+      "gapToBottom": 16,
+      "h1": {
+        "text": "Global memory",
+        "srOnly": true
+      },
+      "tabTooltip": "Knowledge shared by every agent, agent team and agent org on this node. Every agent reads it and writes to it.",
+      "openTab": "glossary.md",
+      "scroller": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      }
+    },
+    "agents": {
+      "topRow": "Browse Search Index Global Agents Agent Teams Agent Orgs",
+      "firstCard": {
+        "x": 70,
+        "y": 150,
+        "w": 300,
+        "h": 80,
+        "bottom": 230,
+        "right": 370
+      },
+      "cards": [
+        {
+          "text": "Project Task Manager 11/26/2026, 6:02:00 AM",
+          "tooltip": "project-task-manager"
+        },
+        {
+          "text": "Solution Designer 11/26/2026, 6:02:00 AM",
+          "tooltip": "team-local-agent:software-engineering-team:solution_designer"
+        },
+        {
+          "text": "Daily Assistant",
+          "tooltip": "autobyteus-daily-assistant"
+        },
+        {
+          "text": "Research Assistant",
+          "tooltip": "research-assistant"
+        }
+      ]
+    },
+    "teams": {
+      "cards": [
+        "Software Engineering Team 1 runs 2 members · 11/26/2026, 6:02:49 AM"
+      ]
+    }
+  },
+  "errors": []
+}

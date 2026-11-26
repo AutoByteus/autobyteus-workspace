@@ -1,0 +1,189 @@
+{
+  "result": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "episodic": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 1061,
+        "h": 49,
+        "bottom": 69,
+        "right": 1412
+      },
+      "firstCard": {
+        "x": 351,
+        "y": 85,
+        "w": 344,
+        "h": 76,
+        "bottom": 161,
+        "right": 695
+      },
+      "headerText": "Memory\n/\nProject Task Manager\nAlso works in Software Engineering Team\nEpisodic memory\n2\nSemantic memory",
+      "cards": [
+        {
+          "title": "Plan the release notes for the launch",
+          "tooltip": "project_task_manager_31dca907825442889c179712b9f916c5",
+          "lines": [
+            "<stack-root>/workspace/launch-app 11/26/2026, 6:02:00 AM"
+          ]
+        },
+        {
+          "title": "Rename the helper and update callers",
+          "tooltip": "project_task_manager_2bb2018a80544dd9aa383498d32fc9a2",
+          "lines": [
+            "<stack-root>/workspace/launch-app 11/26/2026, 6:02:00 AM"
+          ]
+        }
+      ],
+      "filterInHeader": 1,
+      "sectionTabs": 0
+    },
+    "one": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 1061,
+        "h": 49,
+        "bottom": 69,
+        "right": 1412
+      },
+      "headerText": "Project Task Manager\n/\nProject Task Manager\nRename the helper and update callers\nWork Journal\nRaw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Rename the helper and update callers",
+        "tooltip": "project_task_manager_2bb2018a80544dd9aa383498d32fc9a2 · <stack-root>/workspace/launch-app"
+      },
+      "h1": {
+        "text": "Project Task Manager",
+        "srOnly": true
+      },
+      "lines": {
+        "x": 352,
+        "y": 136,
+        "w": 1059,
+        "h": 710,
+        "bottom": 846,
+        "right": 1411
+      },
+      "card": {
+        "bottom": 880
+      },
+      "nav": [
+        {
+          "visible": true,
+          "text": "Chat"
+        }
+      ],
+      "picker": [],
+      "fileName": [
+        {
+          "text": "work_journal_active.md",
+          "visible": true
+        }
+      ],
+      "goButton": false,
+      "spinner": "textfield",
+      "scroller": {
+        "scrollHeight": 900,
+        "clientHeight": 900
+      }
+    },
+    "two": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 1061,
+        "h": 49,
+        "bottom": 69,
+        "right": 1412
+      },
+      "headerText": "Project Task Manager\n/\nProject Task Manager\nPlan the release notes for the launch\nWork Journal\nRaw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Plan the release notes for the launch",
+        "tooltip": "project_task_manager_31dca907825442889c179712b9f916c5 · <stack-root>/workspace/launch-app"
+      },
+      "h1": {
+        "text": "Project Task Manager",
+        "srOnly": true
+      },
+      "lines": {
+        "x": 608,
+        "y": 136,
+        "w": 803,
+        "h": 710,
+        "bottom": 846,
+        "right": 1411
+      },
+      "card": {
+        "bottom": 880
+      },
+      "nav": [
+        {
+          "visible": true,
+          "text": "Chat"
+        },
+        {
+          "visible": true,
+          "text": "FILES · 3"
+        }
+      ],
+      "picker": [
+        {
+          "visible": false,
+          "options": [
+            "work_journal_000001.md",
+            "work_journal_000002.md",
+            "work_journal_active.md (Active)"
+          ]
+        }
+      ],
+      "fileName": [
+        {
+          "text": "work_journal_000001.md",
+          "visible": true
+        }
+      ],
+      "goButton": false,
+      "spinner": "textfield",
+      "scroller": {
+        "scrollHeight": 900,
+        "clientHeight": 900
+      }
+    },
+    "raw": {
+      "picker": [
+        {
+          "options": [
+            "raw_traces_active.jsonl (active) · 2 records",
+            "raw_traces_000002.jsonl · 6 records",
+            "raw_traces_000001.jsonl · 6 records"
+          ],
+          "box": {
+            "x": 351,
+            "y": 85,
+            "w": 384
+          }
+        }
+      ],
+      "name": [],
+      "show": {
+        "x": 1348,
+        "y": 85,
+        "label": "Show",
+        "appearance": "textfield"
+      },
+      "apply": 0
+    },
+    "rawOne": {
+      "picker": 0,
+      "name": [
+        "raw_traces_active.jsonl (active) · 2 records"
+      ]
+    }
+  },
+  "errors": []
+}
