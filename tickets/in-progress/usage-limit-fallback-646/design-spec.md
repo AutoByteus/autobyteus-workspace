@@ -11,26 +11,50 @@
 
 ## Data Contract (for the founder's review)
 
-### C-1 Run event (telemetry) — new, stored
+### C-1 Run event (telemetry) — the hub's record, new, stored
 
-`<appData>/run-events/events_active.jsonl`, one JSON line per event, sealed as `events_NNNNNN.jsonl` at 4 MB (as the routing decision log). The first and only kind in this ticket is `usage_limit_reached`.
+**Envelope:** the same for every kind, now and later.
 
 ```json
 { "eventId": "5b0c…", "at": "2026-11-25T06:42:41Z", "kind": "usage_limit_reached",
-  "run": { "rootKind": "agent", "rootRunId": "computer_use_operator_b75dfef4…", "agentRunId": "computer_use_operator_b75dfef4…",
-           "agentDefinitionId": "computer-use-operator" },
-  "runtimeKind": "codex_app_server", "llmModelIdentifier": "gpt-6.1-terra",
-  "blockedModels": ["gpt-6.1-terra", "gpt-6.1-terra-mini"], "resetAt": "2026-11-27T09:00:00Z" }
+  "run": { "rootKind": "agent", "rootRunId": "computer_use_operator_b75dfef4…",
+           "agentRunId": "computer_use_operator_b75dfef4…", "agentDefinitionId": "computer-use-operator" },
+  "data": { … the kind's own fields … } }
 ```
 
 | Field | Meaning | Readers |
 | --- | --- | --- |
-| `eventId`, `at` | Identity; when the failure was detected | switch record (C-2), exhaustion (C-3) |
-| `kind` | The event kind; new kinds are added later without changing runs | listeners select by kind |
-| `run` | Which run and agent: its root (`agent`, `agent_team`, `agent_org`), the failing agent and its definition | switch executor, router request, history |
-| `runtimeKind`, `llmModelIdentifier` | What failed | exhaustion, router request |
+| `eventId` | UUID, unique on this node | switch record (C-2), deduplication |
+| `at` | When it happened (ISO time) | exhaustion (C-3), ordering |
+| `kind` | What happened; each kind has one `data` shape, defined with it | listeners select by kind |
+| `run` | Which run and agent: its root kind (`agent`, `agent_team`, `agent_org`) and ID, the agent's run ID, and its definition | listeners that act on the run, history |
+| `data` | The kind's own fields | that kind's listeners |
+
+**Kind `usage_limit_reached`** (the only kind in this ticket):
+
+```json
+"data": { "runtimeKind": "codex_app_server", "llmModelIdentifier": "gpt-6.1-terra",
+          "blockedModels": ["gpt-6.1-terra", "gpt-6.1-terra-mini"], "resetAt": "2026-11-27T09:00:00Z" }
+```
+
+| Field | Meaning | Readers |
+| --- | --- | --- |
+| `runtimeKind`, `llmModelIdentifier` | What failed | exhaustion, router request, switch record |
 | `blockedModels` | The runtime's models blocked by the same used-up limits, from the limits read at detection (at least the failed model) | exhaustion |
-| `resetAt` | When the runtime says the limit resets; `null` when it doesn't say | exhaustion |
+| `resetAt` | When the runtime says the limit resets; `null` when it doesn't say | exhaustion, notice text |
+
+**Storage:**
+
+- `<appData>/run-events/events_active.jsonl`, one envelope per line, sealed as `events_NNNNNN.jsonl` at 4 MB (as the routing decision log).
+- A line that can't be read is skipped and logged (DESIGN rule 7). An unknown `kind` is kept and ignored by every listener.
+
+**The hub's rules (C-1b):**
+
+- **Publish:** `publish(event)` appends the line first, then tells each listener subscribed to that `kind`, in the process, one after another.
+- **Isolation:** a listener's failure is logged and never stops the others, the run, or the publisher.
+- **No replay:** listeners hear live events only; nothing is replayed after a restart. A listener that needs the past reads the log (the exhaustion view reads the recent `usage_limit_reached` lines at startup and keeps its view current from then on).
+- **Not a trace copy:** the stream carries moments other parts react to or learn from, never a copy of a run's traces (the founder, 2026-11-26).
+- **Adding a kind:** a new kind adds its `data` shape and its listeners; the envelope and existing kinds don't change.
 
 ### C-2 Switch record — new, stored
 
@@ -55,7 +79,7 @@
 
 ### C-3 Exhaustion — derived, not stored
 
-A runtime's model is **exhausted** while some `usage_limit_reached` event lists it in `blockedModels` and `now < resetAt` (or `now < at + 1 h` when `resetAt` is `null`, DEC-006). It is computed from C-1, the one stored fact. It is read by:
+A runtime's model is **exhausted** while some `usage_limit_reached` event lists it in `data.blockedModels` and `now < data.resetAt` (or `now < at + 1 h` when `resetAt` is `null`, DEC-006). It is computed from C-1, the one stored fact. It is read by:
 
 - the delegation launch check, which skips an exhausted default even with Model Routing off;
 - the fallback candidates;
