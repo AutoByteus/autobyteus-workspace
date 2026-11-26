@@ -1,0 +1,11 @@
+# IMP-04 RELEASE.md Extensions catalog check
+# Command: compare the built-in PEM with https://raw.githubusercontent.com/AutoByteus/autobyteus-extensions/main/catalog-public-key.pem; gh release view catalog --repo AutoByteus/autobyteus-extensions --json assets,tagName; read the published catalog
+# Commit: a80cd0218f
+# Environment: network, gh CLI
+# Date: 2026-11-26
+
+built-in key equals repository key: true
+fingerprint (SHA-256 of the DER public key): 75d4d2f80ed35374e7956d736aed66111e3eac76b911eb2367428a27dc64ad4c
+{"assets":["extensions-catalog.json","extensions-catalog.json.sig"],"tag":"catalog"}
+catalog lists: voice-input 1.0.0 57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d
+Note: GitHub reports releases/latest = voice-input-v1.0.0 (not catalog; nodes read the fixed URL of the catalog tag, so Latest plays no part).
