@@ -341,6 +341,12 @@ or because Gradle's cache already holds a dependency the runner must download.
   stream only its credential file from a node container into the test container without
   writing it to the host, e.g. `docker exec <node> tar -C <dir> -cf - <file> | docker exec -i
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
+- **Sandbox nodes.** A test that creates sandboxes (`create_sandbox`) does it from a test-owned host node, never the
+  user's AutoByteus, with `AUTOBYTEUS_SANDBOX_IMAGE` set to an image that runs this worktree's server package (the
+  published image of the base release with the worktree's server package copied over
+  `/opt/autobyteus/server-package`, as above); a host without a release version and without that setting refuses. A
+  sandbox's relayed calls spend the host's test-vault keys. Afterwards `docker ps -a --filter label=autobyteus.sandbox`
+  shows none of the test's containers.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
 - **Migrations and upgrades are tested on small synthesized data.** The source is a few
