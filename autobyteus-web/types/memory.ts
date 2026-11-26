@@ -209,6 +209,8 @@ export type MemoryInspectTarget =
       agentRunId: string;
       memberAddress?: string | null;
       memberName?: string | null;
+      /** The team's or org's run summary, the run page's title (autobyteus-608 DEC-002); client-only, never sent. */
+      runLabel?: string | null;
       lastUpdatedAt?: string | null;
       source?: MemoryExplorerSourceInput;
     }
@@ -220,6 +222,8 @@ export type MemoryInspectTarget =
       agentRunId: string;
       memberAddress?: string | null;
       memberName?: string | null;
+      /** The team's or org's run summary, the run page's title (autobyteus-608 DEC-002); client-only, never sent. */
+      runLabel?: string | null;
       lastUpdatedAt?: string | null;
       source?: MemoryExplorerSourceInput;
     };

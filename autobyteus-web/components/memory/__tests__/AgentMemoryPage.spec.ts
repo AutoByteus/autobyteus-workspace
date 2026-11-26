@@ -16,12 +16,12 @@ const episode = (runId: string, place: { kind: 'TEAM' | 'ORG'; name: string } | 
   subject: { kind: 'AGENT' as const, runId, agentDefinitionId: 'researcher' },
 });
 
-const mountPage = (props: { agentDefinitionId: string | null; pane?: 'episodic' | 'semantic' }, setup: (store: ReturnType<typeof useMemoryExplorerStore>) => void) => {
+const mountPage = (props: { agentDefinitionId: string | null; pane?: 'episodic' | 'semantic'; backText?: string; backLabel?: string }, setup: (store: ReturnType<typeof useMemoryExplorerStore>) => void) => {
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
   const store = useMemoryExplorerStore();
   setup(store);
   const wrapper = mount(AgentMemoryPage, {
-    props: { name: 'Research Assistant', pane: 'episodic', imported: false, ...props },
+    props: { name: 'Research Assistant', pane: 'episodic', imported: false, backText: 'Memory', backLabel: 'Back to Memory', ...props },
     global: { plugins: [pinia], mocks: { $t: translate }, stubs: { SemanticMemoryFolder: { props: ['agentDefinitionId'], template: '<div data-test="folder">{{ agentDefinitionId }}</div>' } } },
   });
   return { wrapper, store };
@@ -85,5 +85,47 @@ describe('AgentMemoryPage', () => {
     const unattributed = mountPage({ agentDefinitionId: null }, () => undefined).wrapper;
     expect(unattributed.find('[data-test="agent-memory-tab-semantic"]').exists()).toBe(false);
     expect(unattributed.get('[data-test="agent-memory-places"]').text()).toBe('Runs that no agent definition names.');
+  });
+
+  it('has one header row: Back showing where it goes, the name with its ID as tooltip, the filter on Episodic and the switch (autobyteus-608 DC-002)', async () => {
+    const { wrapper } = mountPage({ agentDefinitionId: 'researcher' }, (store) => {
+      store.episodes.ownerKey = 'DEFINITION:researcher';
+      store.episodes.entries = [episode('own-run', null)];
+      (store as any).placesOf = () => [];
+    });
+    const header = wrapper.get('[data-test="memory-page-header"]');
+    const back = header.get('[data-test="memory-page-back"]');
+    expect(back.text()).toBe('Memory');
+    expect(back.attributes('aria-label')).toBe('Back to Memory');
+    expect(back.attributes('title')).toBe('Back to Memory');
+    await back.trigger('click');
+    expect(wrapper.emitted('back')).toHaveLength(1);
+    expect(header.get('h1').text()).toBe('Research Assistant');
+    expect(header.get('h1').attributes('title')).toBe('researcher');
+    expect(header.find('[data-test="agent-episodes-filter"]').exists()).toBe(true);
+    expect(header.find('[data-test="agent-memory-tab-semantic"]').exists()).toBe(true);
+    // No ID line (DC-002).
+    expect(wrapper.findAll('.font-mono')).toHaveLength(0);
+  });
+
+  it('episode cards: no run ID line (it is the title\'s tooltip); the workspace and the time on one line (DC-006)', () => {
+    const { wrapper } = mountPage({ agentDefinitionId: 'researcher' }, (store) => {
+      store.episodes.ownerKey = 'DEFINITION:researcher';
+      store.episodes.entries = [episode('own-run', null)];
+      (store as any).placesOf = () => [];
+    });
+    const card = wrapper.get('[data-test="agent-episode"]');
+    expect(card.get('h3').attributes('title')).toBe('own-run');
+    expect(card.findAll('p, span').some((element) => element.text() === 'own-run')).toBe(false);
+    const meta = card.get('[data-test="agent-episode-meta"]');
+    expect(meta.findAll('span').map((span) => span.text())).toEqual(['/work/project', new Date('2026-11-20T10:31:00Z').toLocaleString('en')]);
+  });
+
+  it('hides "Belongs to <team>" when Back already names that team, and has no filter on Semantic', () => {
+    const { wrapper } = mountPage({ agentDefinitionId: 'team-local-agent:se:designer', pane: 'semantic', backText: 'Software Engineering Team', backLabel: 'Back to Software Engineering Team' }, (store) => {
+      (store as any).placesOf = () => [{ kind: 'TEAM', id: 'se', name: 'Software Engineering Team', local: true }];
+    });
+    expect(wrapper.find('[data-test="agent-memory-places"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="agent-episodes-filter"]').exists()).toBe(false);
   });
 });

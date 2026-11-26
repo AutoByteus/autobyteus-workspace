@@ -29,7 +29,6 @@ const messages = {
   'memory.components.memory.AgentMemoryDetail.back_to_memory': '返回记忆',
   'memory.components.memory.AgentMemoryDetail.loading_runs': '正在加载运行...',
   'memory.components.memory.AgentMemoryDetail.no_runs_match_this_filter': '没有运行匹配此筛选条件。',
-  'memory.components.memory.CollaborationMemoryDetail.back_to_memory': '返回记忆',
   'memory.components.memory.CollaborationMemoryDetail.loading_runs': '正在加载运行...',
   'memory.components.memory.CollaborationMemoryDetail.no_runs_match_this_filter': '没有运行匹配此筛选条件。',
   'memory.components.memory.CollaborationMemoryDetail.task_team': '任务团队',
