@@ -20,8 +20,8 @@ export type ExtensionCatalogView = Readonly<{
  * The Extension Catalog: fetches `extensions-catalog.json` and its `.sig`, verifies the signature over the exact bytes
  * with AutoByteus's public key (Ed25519), and keeps the last verified copy in memory for the process.
  *
- * It fetches only when asked (`fetch()`): once after the node listens, when the Extensions page opens or the owner
- * presses Try again, and at the start of Install and Update. Fetches running at the same time share one request.
+ * It fetches only when asked (`fetch()`): once after the node listens, when the Extensions page opens
+ * (`extensions(refreshCatalog: true)`), and at the start of Install and Update. Fetches running at the same time share one request.
  * `current()` never waits on the network.
  */
 export class ExtensionCatalog {

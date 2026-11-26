@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   getCanonicalBaseDataPath,
-  getCanonicalExtensionsPath,
   getCanonicalLogsPath,
   getCanonicalServerDataPath,
 } from '../appDataPaths'
@@ -12,7 +11,6 @@ describe('appDataPaths', () => {
 
     expect(basePath).toBe('/Users/tester/.autobyteus')
     expect(getCanonicalServerDataPath(basePath)).toBe('/Users/tester/.autobyteus/server-data')
-    expect(getCanonicalExtensionsPath(basePath)).toBe('/Users/tester/.autobyteus/extensions')
     expect(getCanonicalLogsPath(basePath)).toBe('/Users/tester/.autobyteus/logs')
   })
 })
