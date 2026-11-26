@@ -1,4 +1,5 @@
 import {
+  PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING,
   PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING,
   PROVIDER_RELAY_LOGIN_TOKENS_SETTING,
   PROVIDER_RELAY_PEER_SETTING,
@@ -328,6 +329,8 @@ export class ServerSettingsService {
       "On a relayed node: the relays the relay node has API keys for (comma-separated: anthropic, openai, xai, deepseek, gemini, kimi, glm, qwen, mistral, minimax). Restart to apply.");
     this.registerPredefinedSetting(PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING,
       "On a relayed node: the runtimes that run on the relay node's login token (claude_agent_sdk, codex_app_server, grok_build). Restart to apply.");
+    this.registerPredefinedSetting(PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING,
+      "On a relayed node where Codex runs on the relay node's login token: that login's ChatGPT account ID (an identifier, not a credential). Restart to apply.");
     this.registerPredefinedSetting(PROVIDER_RELAY_LOGIN_TOKENS_SETTING,
       "On a relay node: true lets relayed calls use this node's login tokens (Claude, Codex, Grok) instead of API keys. Off by default.");
     this.registerPredefinedSetting(SANDBOX_IMAGE_SETTING,

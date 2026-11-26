@@ -118,6 +118,7 @@ describe("provider relay through a paired relay node (C4)", () => {
 
   const relayed = (loginTokenRuntimes: RelayedNodeSettings["loginTokenRuntimes"] = new Set()): RelayedNodeSettings => ({
     relayPeerNodeId: RELAY, relays: new Set(["anthropic", "openai", "gemini"]), loginTokenRuntimes,
+    codexAccountId: loginTokenRuntimes.has("codex_app_server") ? CODEX_ACCOUNT : null,
   });
 
   const startRelayedNode = async (settings: RelayedNodeSettings) => {

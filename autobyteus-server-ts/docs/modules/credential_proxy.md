@@ -272,6 +272,7 @@ runtime goes through its relay and the relay node attaches the credential:
 | `AUTOBYTEUS_PROVIDER_RELAY_PEER` | The relay node's node ID (a paired peer). Empty: not relayed. |
 | `AUTOBYTEUS_PROVIDER_RELAYS` | The relays the relay node has API keys for. |
 | `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | The runtimes (`claude_agent_sdk`, `codex_app_server`, `grok_build`) that run on the relay node's login token. |
+| `AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID` | Exactly when Codex runs on the login token: the relay node's ChatGPT account ID (an identifier, not a credential; Codex checks its account against the list the relay returns, DEC-115). |
 
 A runtime listed in the third setting uses `loginToken` on its relay, otherwise
 `apiKey` when its relay is listed, otherwise it is signed out with the reason
@@ -292,7 +293,7 @@ control queries, Grok discovery) the **node pass**. The launch shapes:
 | --- | --- |
 | Native (AutoByteus) | the autobyteus-ts client's endpoint is the relay (FU-003); the pass is its key |
 | Claude Agent SDK | `ANTHROPIC_BASE_URL`; `ANTHROPIC_API_KEY` (apiKey) or `CLAUDE_CODE_OAUTH_TOKEN` (loginToken); none of the node's own Claude credentials |
-| Codex | apiKey: a custom provider on the relay with the node pass as its bearer; loginToken: `chatgpt_base_url` on the relay and a placeholder login in its own `CODEX_HOME` under the server data |
+| Codex | apiKey: a custom provider on the relay with the node pass as its bearer; loginToken: `chatgpt_base_url` (account and plugin calls) and `openai_base_url` (model calls) on the relay, and a login in its own `CODEX_HOME` under the server data holding the node pass and the relay node's account ID |
 | Grok Build | `GROK_XAI_API_BASE_URL`; `XAI_API_KEY` (apiKey) or `GROK_AUTH_PROVIDER_ACCESS_TOKEN` (loginToken) |
 | DeepSeek Harness | `DEEPSEEK_BASE_URL=<relay>/anthropic`, `DEEPSEEK_API_KEY=<pass>` (every node) |
 

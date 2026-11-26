@@ -1,6 +1,7 @@
 import type { SecretManagementService } from "../../secret-management/services/secret-management-service.js";
 import {
   LOGIN_TOKEN_RUNTIME_KINDS,
+  PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING,
   PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING,
   PROVIDER_RELAYS_SETTING,
   RELAYED_PROVIDER_RELAY_IDS,
@@ -16,8 +17,8 @@ const LOGIN_TOKEN_RELAY: Readonly<Record<LoginTokenRuntimeKind, string>> = Objec
 
 /**
  * What this node, as a relay node, offers a node it starts now (DEC-109): the relays it holds an API key for, and,
- * only with its login-token switch on (C2), the runtimes whose login token it has. The values of C1's two lists, as
- * start variables (never a credential).
+ * only with its login-token switch on (C2), the runtimes whose login token it has, with Codex's account ID (DEC-115).
+ * C1's values as start variables (never a credential).
  */
 export const readRelayOffer = async (deps: Readonly<{
   relays: ProviderRelays;
@@ -39,11 +40,22 @@ export const readRelayOffer = async (deps: Readonly<{
   const relays: string[] = [];
   for (const relayId of RELAYED_PROVIDER_RELAY_IDS) if (await configured(relayId, "apiKey")) relays.push(relayId);
   const runtimes: string[] = [];
+  let codexAccountId: string | null = null;
   if (deps.loginTokensEnabled()) {
-    for (const runtime of LOGIN_TOKEN_RUNTIME_KINDS) if (await configured(LOGIN_TOKEN_RELAY[runtime], "loginToken")) runtimes.push(runtime);
+    for (const runtime of LOGIN_TOKEN_RUNTIME_KINDS) {
+      if (runtime === "codex_app_server") {
+        // DEC-115: Codex needs the login's account ID beside its token; a login without one is not offered.
+        const login = await deps.logins.readCodexLogin();
+        codexAccountId = login.kind === "found" ? login.credential.accountId : null;
+        if (codexAccountId) runtimes.push(runtime);
+      } else if (await configured(LOGIN_TOKEN_RELAY[runtime], "loginToken")) {
+        runtimes.push(runtime);
+      }
+    }
   }
   return Object.freeze({
     [PROVIDER_RELAYS_SETTING]: relays.join(","),
     [PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING]: runtimes.join(","),
+    ...(codexAccountId ? { [PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING]: codexAccountId } : {}),
   });
 };

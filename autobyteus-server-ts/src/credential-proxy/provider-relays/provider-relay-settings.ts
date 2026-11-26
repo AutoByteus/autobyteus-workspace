@@ -6,6 +6,11 @@ export const PROVIDER_RELAY_PEER_SETTING = "AUTOBYTEUS_PROVIDER_RELAY_PEER";
 export const PROVIDER_RELAYS_SETTING = "AUTOBYTEUS_PROVIDER_RELAYS";
 /** C1: the runtimes that run on the relay node's login token. */
 export const PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING = "AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES";
+/**
+ * C1 (DEC-115): the relay node's ChatGPT account ID, for Codex on its login token: Codex checks its own account against
+ * the account list the relay returns. An identifier, never a credential. Set exactly when Codex uses a login token.
+ */
+export const PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING = "AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID";
 /** C2: on a relay node, `true` lets relayed calls use its login tokens (absent: off). */
 export const PROVIDER_RELAY_LOGIN_TOKENS_SETTING = "AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS";
 
@@ -29,6 +34,8 @@ export type RelayedNodeSettings = Readonly<{
   relays: ReadonlySet<string>;
   /** Runtimes that use the relay node's login token. */
   loginTokenRuntimes: ReadonlySet<LoginTokenRuntimeKind>;
+  /** The relay node's ChatGPT account ID; set exactly when Codex runs on the login token. */
+  codexAccountId: string | null;
 }>;
 
 export class ProviderRelaySettingsError extends Error {
@@ -49,8 +56,9 @@ export const parseRelayedNodeSettings = (read: (key: string) => string | undefin
   const peer = (read(PROVIDER_RELAY_PEER_SETTING) ?? "").trim();
   const relays = list(read(PROVIDER_RELAYS_SETTING));
   const runtimes = list(read(PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING));
+  const codexAccountId = (read(PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING) ?? "").trim() || null;
   if (!peer) {
-    if (relays.length || runtimes.length) {
+    if (relays.length || runtimes.length || codexAccountId) {
       throw new ProviderRelaySettingsError(`${PROVIDER_RELAYS_SETTING} and ${PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING} need ${PROVIDER_RELAY_PEER_SETTING}.`);
     }
     return null;
@@ -64,7 +72,11 @@ export const parseRelayedNodeSettings = (read: (key: string) => string | undefin
   if (unknownRuntime) {
     throw new ProviderRelaySettingsError(`${PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING} names '${unknownRuntime}'; allowed: ${LOGIN_TOKEN_RUNTIME_KINDS.join(", ")}.`);
   }
+  if (runtimes.includes("codex_app_server") !== (codexAccountId !== null)) {
+    throw new ProviderRelaySettingsError(`${PROVIDER_RELAY_CODEX_ACCOUNT_ID_SETTING} is set exactly when codex_app_server is in ${PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES_SETTING}.`);
+  }
   return Object.freeze({
+    codexAccountId,
     relayPeerNodeId: peer,
     relays: new Set(relays),
     loginTokenRuntimes: new Set(runtimes as LoginTokenRuntimeKind[]),

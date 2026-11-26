@@ -3,6 +3,7 @@ import path from "node:path";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import type { ProviderRelayRunAccess } from "../../../credential-proxy/provider-relays/provider-relay-access.js";
 import { processNodeRelayAccess } from "../../../credential-proxy/provider-relays/provider-relay-process-access.js";
+import { relayedNodeSettings } from "../../../credential-proxy/provider-relays/provider-relay-settings.js";
 
 const DEFAULT_APP_SERVER_COMMAND = "codex";
 const DEFAULT_APP_SERVER_ARGS = ["app-server"];
@@ -66,27 +67,28 @@ const RELAY_PROVIDER_ID = "autobyteus_relay";
 
 const tomlString = (value: string): string => JSON.stringify(value);
 
-/** A JWT-shaped placeholder (no signature) carrying only a placeholder account, for Codex's ChatGPT-mode `id_token`. */
-const placeholderIdToken = (): string => {
+/** A JWT-shaped placeholder (no signature) naming only the relay node's account, for Codex's ChatGPT-mode `id_token`. */
+const placeholderIdToken = (accountId: string): string => {
   const part = (value: object) => Buffer.from(JSON.stringify(value), "utf8").toString("base64url");
   return `${part({ alg: "none", typ: "JWT" })}.${part({
     exp: 4_102_444_800,
-    "https://api.openai.com/auth": { chatgpt_account_id: "autobyteus-relay", chatgpt_plan_type: "plus" },
+    "https://api.openai.com/auth": { chatgpt_account_id: accountId, chatgpt_plan_type: "plus" },
   })}.relay`;
 };
 
 /**
- * ChatGPT mode through the relay (login token, U-1): Codex's own home under the server data (never `~/.codex`), whose
- * `auth.json` holds placeholders only: the node pass as its access token. The relay node attaches its own login's
- * token and account and drops this one (C3). `last_refresh` is now, so Codex sees nothing to renew.
+ * ChatGPT mode through the relay (login token, DEC-115): Codex's own home under the server data (never `~/.codex`),
+ * whose `auth.json` holds the node pass as its access token and the relay node's account ID (an identifier: Codex
+ * checks it against the account list the relay returns). The relay node attaches its own login's token and account
+ * (C3). `last_refresh` is now, so Codex sees nothing to renew.
  */
-const writeRelayCodexHome = (appDataDir: string, pass: string): string => {
+const writeRelayCodexHome = (appDataDir: string, pass: string, accountId: string): string => {
   const home = path.join(appDataDir, "codex-relay-home");
   fs.mkdirSync(home, { recursive: true, mode: 0o700 });
   fs.writeFileSync(path.join(home, "auth.json"), JSON.stringify({
     auth_mode: "chatgpt",
     OPENAI_API_KEY: null,
-    tokens: { id_token: placeholderIdToken(), access_token: pass, refresh_token: "autobyteus-relay", account_id: "autobyteus-relay" },
+    tokens: { id_token: placeholderIdToken(accountId), access_token: pass, refresh_token: "autobyteus-relay", account_id: accountId },
     last_refresh: new Date().toISOString(),
   }), { mode: 0o600 });
   return home;
@@ -101,13 +103,23 @@ const writeRelayCodexHome = (appDataDir: string, pass: string): string => {
 export const resolveCodexAppServerLaunch = (
   relay: ProviderRelayRunAccess | null = processNodeRelayAccess("openai", "codex_app_server"),
   appDataDir: () => string = () => appConfigProvider.config.getAppDataDir(),
+  codexAccountId: () => string | null = () => relayedNodeSettings()?.codexAccountId ?? null,
 ): CodexAppServerLaunch => {
   if (!relay) return { args: parseArgs(), env: { ...process.env } };
   const env: NodeJS.ProcessEnv = { ...process.env };
   for (const key of CODEX_OWN_CREDENTIAL_ENV) delete env[key];
   if (relay.relayCredentialKind === "loginToken") {
-    env.CODEX_HOME = writeRelayCodexHome(appDataDir(), relay.pass);
-    return { args: [...parseArgs(), "-c", `chatgpt_base_url=${tomlString(`${relay.baseUrl}/backend-api/`)}`], env };
+    const accountId = codexAccountId();
+    if (!accountId) throw new Error("PROVIDER_RELAY_SETTINGS_INVALID: Codex on the login token needs AUTOBYTEUS_PROVIDER_RELAY_CODEX_ACCOUNT_ID.");
+    env.CODEX_HOME = writeRelayCodexHome(appDataDir(), relay.pass, accountId);
+    // Codex 0.171 sends its account and plugin calls to `chatgpt_base_url` and its model calls (models, responses) to
+    // `openai_base_url`; both go to the relay (DEC-115, probe IMP-11).
+    return {
+      args: [...parseArgs(),
+        "-c", `chatgpt_base_url=${tomlString(`${relay.baseUrl}/backend-api/`)}`,
+        "-c", `openai_base_url=${tomlString(`${relay.baseUrl}/backend-api/codex`)}`],
+      env,
+    };
   }
   const provider = `{name=${tomlString("AutoByteus relay")},base_url=${tomlString(`${relay.baseUrl}/v1`)},`
     + `experimental_bearer_token=${tomlString(relay.pass)},wire_api="responses"}`;

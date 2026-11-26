@@ -80,6 +80,7 @@ describe("provider relay access", () => {
     relayPeerNodeId: "srv_relay",
     relays: new Set(["anthropic", "openai", "deepseek"]),
     loginTokenRuntimes: new Set(["claude_agent_sdk" as const]),
+    codexAccountId: null,
   };
   const accessWith = (status: "CONFIGURED" | "MISSING", relayed: typeof RELAYED | null = null) => {
     const passes = new RunPassRegistry();
