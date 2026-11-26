@@ -47,8 +47,10 @@ destroy_sandbox { "sandboxId" } → { "removed": true, "foldersKept": true }
 A refusal is the tool's error `{ "error": { "code", "message" } }`: `SANDBOX_DOCKER_UNAVAILABLE`,
 `SANDBOX_REMOTE_COLLABORATION_OFF`, `SANDBOX_PLATFORM_NOT_SUPPORTED`, `SANDBOX_LIMIT_REACHED`,
 `SANDBOX_IMAGE_UNKNOWN`, `SANDBOX_PACKAGE_INVALID`, `SANDBOX_SHARED_FOLDER_INVALID`, `SANDBOX_START_FAILED`,
-`SANDBOX_NOT_FOUND`, `SANDBOX_NOT_YOURS`, `SANDBOX_NOT_READY`, `SANDBOX_ARGUMENT_INVALID`. A refused or failed
-creation leaves nothing behind.
+`SANDBOX_NOT_FOUND`, `SANDBOX_NOT_YOURS`, `SANDBOX_NOT_READY`, `SANDBOX_ARGUMENT_INVALID` (a missing,
+wrong-typed or unknown argument). Any other error a tool raises is reported as `SANDBOX_TOOL_FAILED` with its message
+(`sandboxToolError`). A refused or failed creation leaves nothing behind. A tool result leaves out empty fields, so a
+creation that imported no team has no `teams`, and one given no shared folder has no `sharedFolders`.
 
 ## Creation
 

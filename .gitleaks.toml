@@ -210,3 +210,36 @@ regexes = [
 paths = [
   '''^tickets/(in-progress|done)/ios-demo-mode-279/evidence/api-e2e/ios/API-02x-explore-safari\.log$''',
 ]
+
+# sandbox-provider-relay-581 (autobyteus-581): API/E2E's Nodes page probe result `API-L11-nodes-page-sandbox-label.json`
+# lists each row as `{"key": "srv_<32 characters>", "text": "sandbox", …}`. The row key is the peer's node ID, a public
+# identifier (`GET /rest/remote-access/status` returns it with no credential, node access model NA-6); it is not a
+# secret. Checked by shape and context (delivery, 2026-11-26). Only that shape, only for the generic rule, and only in
+# that probe's two result files (in-progress and archived paths).
+[[allowlists]]
+description = "Node ID row keys in the autobyteus-581 Nodes page probe result (generic rule only)"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''^srv_[A-Za-z0-9]{32}$''',
+]
+paths = [
+  '''^tickets/(in-progress|done)/sandbox-provider-relay-581/evidence/API-L11(?:-round2)?/API-L11-nodes-page-sandbox-label\.json$''',
+]
+
+# sandbox-provider-relay-581 (autobyteus-581): `const CLAUDE_API_KEY: SecretConsumerIdentity = Object.freeze({ … })` in
+# the Claude runtime strategy names the vault entry that Claude's API-key mode uses. The env-style rule reads the
+# TypeScript type name after the colon as a value; it is a type, not a credential (checked by shape and context,
+# delivery, 2026-11-26). Only that exact text, in that one file.
+[[allowlists]]
+description = "TypeScript type name SecretConsumerIdentity after CLAUDE_API_KEY in the Claude runtime strategy (env-style rule only)"
+targetRules = ["env-style-secret"]
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''^SecretConsumerIdentity$''',
+]
+paths = [
+  '''^autobyteus-server-ts/src/runtime-management/agent-runtimes/strategies/claude-agent-runtime-strategy\.ts$''',
+]

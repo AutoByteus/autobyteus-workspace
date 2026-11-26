@@ -348,8 +348,10 @@ signs in again. Codex has no login-token mode through a relay (DEC-115).
 **Provider relay activity (C5).** On the relay node,
 `<app-data-dir>/provider-relays/activity.jsonl`: one line per relayed call,
 refusals too: `at`, `peerNodeId`, `relayId`, `relayCredentialKind`, `method`,
-`path` (no query), `status` or `error`, `durationMs`. Never a header value, body,
-key, token or pass.
+`path` (no query), `status` or `error`, `durationMs`. The line is written when the
+provider's response headers arrive, so `durationMs` of a forwarded call is the
+time to those headers, not to the end of a streamed body; a refusal's is the time
+to refuse. Never a header value, body, key, token or pass.
 
 **Provider call observations.** For each forwarded call of a relay that reads its
 stream (only `deepseek` today) the route reports to the run's observers

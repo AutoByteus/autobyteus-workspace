@@ -168,7 +168,7 @@ const home = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "sandbox-live
 const fixtures = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "sandbox-live-fixtures-")));
 let host: Host | null = null;
 let hostUrl = "";
-/** The host node's ID, read from its first sandbox's label; the failsafe cleanup and the sweep checks use it. */
+/** The host node's ID, read from `/rest/remote-access/status` once the host runs; the failsafe cleanup and the sweep checks use it. */
 let hostNodeId = "";
 const hostEnvironment = () => ({
   HOME: home,

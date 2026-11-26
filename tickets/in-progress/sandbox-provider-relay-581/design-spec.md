@@ -17,6 +17,7 @@
   - `DESIGN.md` (rules 7, 9, 10, 12), `GLOSSARY.md`;
   - `node_access_model.md`, `credential_proxy.md`, `secret_management.md`, `TESTING.md`.
 - Conflicts: none.
+- Delivery docs sync (autobyteus-581 delivery, DR-001): C1, C3, C7, C8 and C10 now read as implemented: no Codex login token (DEC-116), no `localPassHeader` or `dropFromCaller`, the added refusals `SANDBOX_ARGUMENT_INVALID` and `SANDBOX_TOOL_FAILED`, and the run-memory mount at `<data>/memory` (deviation 11). The design decisions themselves are unchanged. See `docs-sync-report.md`.
 
 ## Response To ARCH-REV-001
 
@@ -158,7 +159,7 @@ Location: this section. It supersedes the SR-003 version. The user saw the 484 d
 | --- | --- | --- | --- |
 | `AUTOBYTEUS_PROVIDER_RELAY_PEER` | The relay node's node ID. Empty: not relayed; every runtime unchanged. | Sandbox manager; or the owner | `ProviderRelayAccess` |
 | `AUTOBYTEUS_PROVIDER_RELAYS` | Relays the relay node has **API keys** for: `anthropic,openai,xai,deepseek,gemini` | Sandbox manager (relay node's vault status); or the owner | `ProviderRelayAccess` (`routeFor`, `statusOf`) |
-| `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | Runtimes that run on the relay node's **login token**: `claude_agent_sdk,codex_app_server,grok_build`. Set only when the relay node's switch is on and it has that runtime's login token. | Same | Same |
+| `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | Runtimes that run on the relay node's **login token**: `claude_agent_sdk,grok_build` (never `codex_app_server`: DEC-116; a value naming it stops startup). Set only when the relay node's switch is on and it has that runtime's login token. | Same | Same |
 
 **Per-runtime kind rule** (AR-003): a runtime listed in the third variable uses `loginToken` on its relay; otherwise `apiKey`, if its relay is in the second variable. Native (`autobyteus`) is never listed in the third, so it is always `apiKey`, per provider. Malformed values stop startup with the reason.
 
@@ -184,13 +185,13 @@ Readers:
 type RelayPassHeader = "x-api-key" | "authorization-bearer" | "x-goog-api-key";
 type RelayCredentialSource =
   | { kind: "vault"; consumer: SecretConsumerIdentity }
-  | { kind: "codexLogin" } | { kind: "grokLogin" };
+  | { kind: "grokLogin" };                 // no Codex login (DEC-116)
 type RelayCredentialRoute = {
   route: DeliveryRoute;                    // origin, basePath, allows(method, path)
-  localPassHeader: RelayPassHeader;        // where the relayed node's runtime puts the pass (P-3..P-7)
+  // `localPassHeader` is not kept (implementation deviation 1): the local route reads the pass from whichever of the three headers came in
   source: RelayCredentialSource;
   attach(credential: RelayCredential): Record<string, string>;  // headers set on the upstream call
-  dropFromCaller: readonly string[];       // caller headers removed (beyond the forwarder's own list)
+  // `dropFromCaller` is removed: it dropped Codex's `chatgpt-account-id`, and Codex has no login-token route (DEC-116)
 };
 type ProviderRelay = {
   id: string; providerName: string;
@@ -202,15 +203,15 @@ type ProviderRelay = {
 | relay | apiKey: origin · local pass header · source → attached | loginToken | observation |
 | --- | --- | --- | --- |
 | `anthropic` | api.anthropic.com · `x-api-key` · vault `provider.anthropic.api-key` → `x-api-key` | api.anthropic.com · `authorization-bearer` · vault `provider.anthropic.login-token` (C9) → `Authorization: Bearer`; `anthropic-beta` passes (P-4) | none |
-| `openai` | api.openai.com · `authorization-bearer` · vault `provider.openai.api-key` → `Authorization: Bearer` | chatgpt.com/backend-api · `authorization-bearer` · `codexLogin` → `Authorization: Bearer <access_token>`, `chatgpt-account-id: <account_id>`; drop the caller's `chatgpt-account-id` (P-6) | none |
+| `openai` | api.openai.com · `authorization-bearer` · vault `provider.openai.api-key` → `Authorization: Bearer` | null (Codex has no login-token route: DEC-116, IMP-12) | none |
 | `xai` | api.x.ai · `authorization-bearer` · vault `provider.grok.api-key` → Bearer | api.x.ai · `authorization-bearer` · `grokLogin` → Bearer | none |
 | `deepseek` | as today (`x-api-key`) | null | as today (`anthropic-messages`, `x-deepseek-harness-compact`) |
 | `gemini` | generativelanguage.googleapis.com · `x-goog-api-key` · vault AI Studio key → `x-goog-api-key` | null | none |
 | `kimi`, `glm`, `qwen`, `mistral`, `minimax` | the provider origin · `authorization-bearer` · vault key → Bearer | null | none |
 
-Allowed paths per route: as in SR-003 C3; OpenAI login token also `GET|POST /codex/*`, `GET /wham/*`, `GET /ps/*` (P-6, validated live per DEC-108).
+Allowed paths per route: as in SR-003 C3; there is no OpenAI login-token route (DEC-116).
 
-**The forwarder change:** `forward({ credentialHeaders: Record<string,string>, dropHeaders })` replaces the single `token`/`auth`. The GitHub integration passes one header as today.
+**The forwarder change:** `forward({ credential: { headers, secrets } })` replaces the single `token`/`auth` (no drop list: see `dropFromCaller` above). The GitHub integration passes one header as today.
 
 **Observations:** only relays with a `streamReader` notify run observers; today that is DeepSeek, read by the ACP session (`acp-session-launcher.ts:171`).
 
@@ -224,7 +225,7 @@ body: raw; parsed to a Buffer in the route's own scope (body limit 32 MiB) so th
 **Relay node (handler), in order:**
 1. Unknown relay or kind, or path/method not allowed → `PATH_NOT_ALLOWED`.
 2. `loginToken` with C2 off → `RELAY_LOGIN_TOKENS_OFF`; `loginToken` with no route for this relay → `PATH_NOT_ALLOWED`.
-3. Credential missing → `RELAY_KEY_NOT_SET` / `RELAY_LOGIN_TOKEN_NOT_SET`; Codex or Grok login expired → `RELAY_LOGIN_EXPIRED`.
+3. Credential missing → `RELAY_KEY_NOT_SET` / `RELAY_LOGIN_TOKEN_NOT_SET`; Grok login expired → `RELAY_LOGIN_EXPIRED`.
 4. Forward with exactly the declared kind's credential (no swap; `apiKey` is never refused because of C2).
 5. One C5 line.
 
@@ -286,23 +287,24 @@ destroy_sandbox { "sandboxId" } → { "removed": true, "foldersKept": true }
   - `SANDBOX_DOCKER_UNAVAILABLE`, `SANDBOX_REMOTE_COLLABORATION_OFF`, `SANDBOX_PLATFORM_NOT_SUPPORTED`;
   - `SANDBOX_LIMIT_REACHED`, `SANDBOX_IMAGE_UNKNOWN`;
   - `SANDBOX_PACKAGE_INVALID`, `SANDBOX_SHARED_FOLDER_INVALID`, `SANDBOX_START_FAILED`;
-  - `SANDBOX_NOT_FOUND`, `SANDBOX_NOT_YOURS`, `SANDBOX_NOT_READY`.
+  - `SANDBOX_NOT_FOUND`, `SANDBOX_NOT_YOURS`, `SANDBOX_NOT_READY`;
+  - `SANDBOX_ARGUMENT_INVALID` (a missing, wrong-typed or unknown tool argument; added in implementation). An unexpected error in a tool is reported as `SANDBOX_TOOL_FAILED`.
 
 ### C8 Sandbox container start (DEC-109, DEC-110)
 
 One container. Docker's default bridge network. `-p 127.0.0.1:<hostPort>:8000`. Memory 6 GiB, 4 CPUs.
 
-- **Mounts:** `workspaceFolder` → `/home/autobyteus/workspace` (read and write), `runMemoryFolder` → `/home/autobyteus/run-memory` (read and write), each shared folder → `/home/autobyteus/shared/<name>` (**read-only**, P-14), plus fresh anonymous volumes (data, `/root`, server packages).
+- **Mounts:** `workspaceFolder` → `/home/autobyteus/workspace` (read and write), `runMemoryFolder` → `/home/autobyteus/data/memory` (read and write; the sandbox node's own memory folder, `<data>/memory`: deviation 11, F-2), each shared folder → `/home/autobyteus/shared/<name>` (**read-only**, P-14), plus fresh anonymous volumes (data, `/root`, server packages).
 - **Environment:**
   - C1's three variables;
-  - `AUTOBYTEUS_MEMORY_DIR=/home/autobyteus/run-memory`;
+  - `AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace` (deviation 5); no memory variable (`AUTOBYTEUS_MEMORY_DIR` had no reader: deviation 11);
   - `ENABLE_REMOTE_COLLABORATION=true`;
   - `AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:<hostPort>`.
 - **Never:** a key, token, credential or peer secret.
 
 The sandbox reaches the host node at `host.docker.internal:<host port>` (P-1), offered as the host's pairing candidate.
 
-### C9 Claude login token, C10 Codex and Grok logins
+### C9 Claude login token, C10 Grok login (Codex: none, DEC-116)
 
 As SR-003.
 
