@@ -36,3 +36,9 @@
 - Design cases:
   - Case 32: replacing an aggregate drops the page's own state on it;
   - Case 33: a store that starts the work it publishes.
+
+## SR-002 amendment (2026-11-27): ARCH-REV-002 Pass, notes N-4 and N-5
+
+- N-4: a stopped Team is not excluded from automatic recovery. An open stopped Team keeps its stream (SR-045), so its recovery goes on while its context is open. D-A2 now ends a recovery only when the context is removed or its service is no longer `reopen_required`.
+- N-5: retargeting a held mention send moves the handle without adding a row. The row shows on acceptance, on the context the handle then names (D-A7a).
+- These refine D-A2 and D-A7 within the reviewed design; no requirement changes. Sent to `/implementation_engineer`.
