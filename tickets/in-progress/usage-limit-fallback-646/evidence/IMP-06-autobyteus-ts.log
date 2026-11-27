@@ -1,0 +1,42 @@
+# command: pnpm -C autobyteus-ts exec vitest run tests/unit/agent tests/unit/memory (the packages touched: agent input processing, memory)
+# commit: 434d5489d5 + uncommitted SR-009/SR-010 tests, E2E and docs
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T09:42:27Z
+ Test Files  132 passed (132)
+      Tests  873 passed (873)
+   Duration  5.77s (transform 8.58s, setup 2.46s, import 17.36s, tests 13.75s, environment 11ms)
+
+# command: pnpm -C autobyteus-ts test (the whole suite)
+# date: 2026-11-27T09:42:38Z
+     × runs two agents concurrently and executes tool calls 20324ms
+     × uses native LM Studio tool calling to create a realistic nested workspace fixture 120357ms
+     × executes a tool call end-to-end for a single agent 120148ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+ FAIL  tests/integration/agent/agent-single-flow.test.ts > Agent single-flow integration (LM Studio) > executes a tool call end-to-end for a single agent
+ FAIL  tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+ Test Files  3 failed | 404 passed | 23 skipped (430)
+      Tests  3 failed | 2500 passed | 106 skipped (2609)
+   Duration  229.12s (transform 12.51s, setup 6.84s, import 70.66s, tests 690.17s, environment 36ms)
+
+# Rerun of the three LM Studio integration tests one at a time (TESTING.md: local model suites never in parallel):
+# command: pnpm -C autobyteus-ts exec vitest run tests/integration/agent/agent-single-flow.test.ts tests/integration/agent/agent-dual-flow.test.ts tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts --no-file-parallelism
+# date: 2026-11-27T09:47:30Z
+     × uses native LM Studio tool calling to create a realistic nested workspace fixture 8960ms
+     × runs two agents concurrently and executes tool calls 20274ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent/agent-dual-flow.test.ts > Agent dual-flow integration (LM Studio native tool calling) > runs two agents concurrently and executes tool calls
+ FAIL  tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts > LM Studio single-agent run_bash flow > uses native LM Studio tool calling to create a realistic nested workspace fixture
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 1 passed | 1 skipped (4)
+   Duration  41.81s (transform 1.51s, setup 76ms, import 3.65s, tests 37.72s, environment 0ms)
+
+# A/B: the same two tests with autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts at base bc4351cad7 (this ticket's only change on that path reverted for the run, then restored):
+# date: 2026-11-27T09:49:13Z
+     × runs two agents concurrently and executes tool calls 20313ms
+     × uses native LM Studio tool calling to create a realistic nested workspace fixture 9750ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 skipped (3)
+# Result: identical failures without this ticket's change: environmental, not from autobyteus-646.
+#  - lmstudio-single-agent-run-bash-flow: expects /var/folders/... but the process reports /private/var/folders/... (macOS tmp symlink).
+#  - agent-dual-flow: the real local model (LM Studio) did not write the file within the test's 20 s.

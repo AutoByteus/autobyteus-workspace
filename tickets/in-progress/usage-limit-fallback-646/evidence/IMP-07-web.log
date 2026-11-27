@@ -1,0 +1,13 @@
+# commands: pnpm typecheck; pnpm guard:web-boundary; pnpm guard:localization-boundary; pnpm audit:localization-literals; pnpm codegen:check; vitest run components/settings/model-routing components/run-settings utils/runSettings components/conversation
+# commit: 434d5489d5 + uncommitted SR-009/SR-010 tests, E2E and docs
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T09:49:13Z
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+codegen:check exit=0
+ Test Files  34 passed (34)
+      Tests  240 passed (240)

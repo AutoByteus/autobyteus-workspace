@@ -159,11 +159,12 @@ in progress until its client holds are released.
 
 `readRuntime(kind)` (autobyteus-646) reads one external runtime the same way,
 its limits and models with their blocks, or `null` when it is not installed or
-signed out. The usage-limit detector ([run_events.md](run_events.md)) reads the
-failed run's runtime after a terminal turn error: Codex for the reset time, the
-other external runtimes to tell whether the run's model is now blocked (a usage
-limit). Codex itself marks a usage-limit `ERROR` with `error_kind: "usage_limit"`
-(`codexErrorInfo: usageLimitExceeded`; `backends/codex/events/codex-error-kind.ts`).
+signed out. It gives a usage limit's scope and reset to the usage-limit detector
+([run_events.md](run_events.md)), and it answers the limits read that the
+Antigravity, Grok and Claude backends ask after a terminal turn error, to
+classify it late (`ERROR_CLASSIFIED`). Codex classifies its own errors: a
+usage-limit `ERROR` carries `error_kind: "usage_limit"` (`codexErrorInfo:
+usageLimitExceeded`; `backends/codex/events/codex-error-kind.ts`).
 
 **Available** means installed (`strategy.readVersion(...) !== null`, the
 Agent Runtimes page's rule) and not known to be signed out. A runtime whose

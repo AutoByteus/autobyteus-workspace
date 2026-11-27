@@ -1,0 +1,10 @@
+# command: pnpm -C autobyteus-collaboration-stream-contracts test
+# date: 2026-11-27T09:51:49Z
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 404.763333

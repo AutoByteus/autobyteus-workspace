@@ -146,7 +146,9 @@ another runtime. The detection and the event are the run event hub's
   without a fallback), `chosenBy` (`model_router | agent_history`, null without a
   fallback), `reason`, `routerFailure`, `outcome` (`switched | no_fallback |
   switch_failed`). The switch request reads this agent's records of the last
-  30 days.
+  30 days. Sealed files whose last record is older than 90 days are deleted
+  (R-14; DEC-008, the default until the founder decides); the routing decision
+  log keeps everything (its "All" period).
 - **Agent launch history** (`run-history/services/agent-launch-history.ts`,
   C-8): derived when needed from the agent history index with each run's
   metadata, and from the Team history index with each Team's tree.

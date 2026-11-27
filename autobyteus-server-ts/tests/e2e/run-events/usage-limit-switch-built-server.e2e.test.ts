@@ -7,6 +7,7 @@
  *   (`error` with codexErrorInfo usageLimitExceeded, thread status failed, turn failed), and its rate limits read shows
  *   the 5-hour window used up until RESET_AT.
  * - AutoByteus (the fallback): an LM Studio-compatible scripted model, which records what each agent's model received.
+ * - Antigravity (UL-08): `tests/fixtures/agy-failure-cli.mjs`, `runtime_error`, with a scripted usage read.
  *
  *   UL-01  first-turn switch, Model Routing off: one event for the turn's three errors; the run continues on the
  *          agent's most-used runtime (agent_history); one row (the marker), no row for the continue message; the model
@@ -20,6 +21,9 @@
  *          `no_fallback`.
  *   UL-06  delegation: an agent whose default is the exhausted Codex model is started from its history, with the note.
  *   UL-07  the setting off: the event is logged, nothing is switched or recorded.
+ *   UL-08  Antigravity, which gives no usage-limit signal (R-16): its ERROR goes out at once (one live error row), its
+ *          backend's limits read after it sends ERROR_CLASSIFIED (no client frame), and the run switches (the scripted
+ *          AGY CLI `runtime_error` "quota" turn; its scripted usage read shows the run's model used up).
  *
  * Gate: RUN_USAGE_LIMIT_SWITCH_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree. No
  * credentials. macOS/Linux. About 3 minutes. Run (in autobyteus-server-ts):
@@ -42,6 +46,9 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 const ENABLED = process.env.RUN_USAGE_LIMIT_SWITCH_E2E === "1" && process.platform !== "win32";
 const SERVER_DIR = path.resolve(__dirname, "../../..");
 const CODEX_FAKE = path.join(SERVER_DIR, "tests", "fixtures", "codex-usage-limit-app-server.mjs");
+const AGY_CLI = path.join(SERVER_DIR, "tests", "fixtures", "agy-failure-cli.mjs");
+/** An AGY model the scripted usage read shows used up (the fixture names every extra model "Retiring test model"). */
+const AGY_LIMITED_MODEL = "agy-limited";
 const EVIDENCE_DIR = process.env.USAGE_LIMIT_SWITCH_E2E_EVIDENCE_DIR?.trim() || null;
 const MODEL_KEY = "usage-limit-fixture";
 const CODEX_MODEL = "gpt-e2e";
@@ -147,7 +154,10 @@ class TestNode {
     const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
     Object.assign(env, { HOME: path.join(this.root, "home"), DATABASE_URL: `file:${path.join(this.root, "db", "production.db")}`,
       CODEX_APP_SERVER_COMMAND: CODEX_FAKE, CODEX_FAKE_STATE: this.codexState, CODEX_FAKE_LOG: this.codexLog, CODEX_FAKE_MODEL: CODEX_MODEL,
-      CODEX_FAKE_RESET_AT: RESET_AT, ...this.env, ...builtServerLaunchEnvironment() });
+      CODEX_FAKE_RESET_AT: RESET_AT,
+      // UL-08: every AGY turn fails ("Report runtime case: quota"); its usage read shows the extra model's group used up.
+      ANTIGRAVITY_CLI_COMMAND: AGY_CLI, AGY_FAKE_CASE: "runtime_error", AGY_FAKE_EXTRA_MODELS: AGY_LIMITED_MODEL,
+      AGY_FAKE_USAGE_FILE: path.join(this.root, "agy-usage.json"), ...this.env, ...builtServerLaunchEnvironment() });
     const child = spawn(process.execPath, [path.join(SERVER_DIR, "dist", "app.js"), "--data-dir", this.root, "--host", "127.0.0.1", "--port", "0"],
       { cwd: SERVER_DIR, env, stdio: ["ignore", "pipe", "pipe"] });
     children.push(child);
@@ -237,6 +247,9 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
     await fs.access(path.join(SERVER_DIR, "dist", "app.js"));
     await model.listen();
     node = await TestNode.create({ LMSTUDIO_HOSTS: model.origin });
+    await fs.writeFile(path.join(node.root, "agy-usage.json"), JSON.stringify({ status: "SUCCESS", response: "", usage: { total_tokens: 0 },
+      command: { name: "usage", data: { groups: [{ name: "Retiring", description: "Models within this group: Retiring test model",
+        buckets: [{ id: "r-weekly", name: "Weekly", window: "weekly", remaining_fraction: 0, reset_time: RESET_AT }] }] } } }));
     await node.setCodex("ok");
     session = await node.start();
     const models = (await session.gql(`mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`))
@@ -435,4 +448,42 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
     await session.gql(`mutation{setUsageLimitSwitchEnabled(enabled:true)}`);
     stream.close();
   }, 120_000);
+
+  it("UL-08 Antigravity (no usage-limit signal): the ERROR at once, ERROR_CLASSIFIED after its limits read; exactly one error row, then the switch rows", async () => {
+    const researcher = await definition("researcher");
+    await history(researcher, "UL-08H");
+    const runId = await agentRun(researcher, "antigravity_cli", AGY_LIMITED_MODEL);
+    const stream = await openStream(session, "agent", runId);
+    stream.send(runId, "Report runtime case: quota");
+    const records = await until(async () => (await switchesOf(runId)).length ? switchesOf(runId) : null, "the switch record", 90_000);
+    expect(records).toEqual([expect.objectContaining({ from: { runtimeKind: "antigravity_cli", llmModelIdentifier: AGY_LIMITED_MODEL },
+      to: { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel }, chosenBy: "agent_history", outcome: "switched" })]);
+    expect(await eventsOf(runId)).toEqual([expect.objectContaining({ data: { runtimeKind: "antigravity_cli", llmModelIdentifier: AGY_LIMITED_MODEL,
+      blockedModels: [AGY_LIMITED_MODEL], resetAt: RESET_AT } })]);
+    await until(() => continueTurnOf(runId), "the continue message reached AutoByteus", 90_000);
+    const rows = await until(async () => {
+      const all = (await conversation(runId)) as Json[];
+      return all.some((row) => row.senderId === "system.usage_limit") ? all : null;
+    }, "the continue notice row");
+    // Live: exactly one error row (the ERROR at once), and no frame for the late classification, then the switch.
+    const errorFrames = stream.frames.filter((frame) => frame.type === "ERROR");
+    expect(errorFrames, "one live error row").toHaveLength(1);
+    expect(errorFrames[0]!.payload).toMatchObject({ code: "AGY_TURN_ERROR", error_effect: "terminal" });
+    expect(stream.frames.filter((frame) => JSON.stringify(frame).includes("ERROR_CLASSIFIED") || JSON.stringify(frame).includes("Unmapped AgentRunEvent")),
+      "no client frame for the late classification").toEqual([]);
+    const continueFrame = stream.frames.findIndex((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === "system.usage_limit");
+    expect(continueFrame, "the continue notice after the error").toBeGreaterThan(stream.frames.indexOf(errorFrames[0]!));
+    // Stored (the reload): the switch rows after the failed turn's work. An error is a live row only, as for every run.
+    const shown = rows.slice(rows.findIndex((row) => row.content === "Report runtime case: quota") + 1)
+      .filter((row) => row.kind !== "message" && row.kind !== "tool_call")
+      .map((row) => [row.kind, row.senderId ?? null, String(row.content).split("\n")[0]]);
+    expect(shown).toEqual([
+      ["system_task_notification", "system.runtime_handover", `Antigravity CLI usage limit reached (resets ${RESET_TEXT}) — switched to AutoByteus (${autobyteusModel}). Chosen from this agent's history.`],
+      // FU-646-02 (pre-existing on AutoByteus): the hand-over preface stored as a notice before its input.
+      ["system_task_notification", "system.runtime_handover", "[System: runtime hand-over]"],
+      ["system_task_notification", "system.usage_limit", "Continue the task where you left off."],
+    ]);
+    stream.close();
+    evidence["UL-08"] = { runId, records, shown };
+  }, 180_000);
 });

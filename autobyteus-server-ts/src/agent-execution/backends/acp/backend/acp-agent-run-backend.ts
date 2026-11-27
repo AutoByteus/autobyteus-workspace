@@ -85,7 +85,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   /** The run's Agent Tools changed since the session was opened: the next turn start reopens it. */
   private reopenPending = false;
 
-  /** autobyteus-646 R-16: ACP runtimes (Grok) give no usage-limit signal; their limits read after a terminal error classifies it. */
+  /** autobyteus-646 R-16: an ACP runtime gives no usage-limit signal; its limits read after a terminal error classifies it. */
   private readonly lateClassification: LateUsageLimitClassification;
 
   constructor(private readonly input: AcpAgentRunBackendInput) {

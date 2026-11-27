@@ -1,7 +1,7 @@
 # command: env -i PATH HOME=<mktemp> TMPDIR USER RUN_USAGE_LIMIT_SWITCH_E2E=1 USAGE_LIMIT_SWITCH_E2E_EVIDENCE_DIR=/tmp/646-e2e pnpm exec vitest run tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts --no-watch (after pnpm -C autobyteus-server-ts build)
-# commit: c70ed6b257 + uncommitted R-10 changes and the E2E file
-# environment: macOS 26.5.2, node v22.23.1, built server dist/app.js, scripted Codex app-server and LM Studio model
-# date: 2026-11-27T08:45:45Z
+# commit: 434d5489d5 + uncommitted SR-009/SR-010 tests, E2E and docs
+# environment: macOS 26.5.2, node v22.23.1, built server dist/app.js; scripted Codex app-server, scripted AGY CLI, LM Studio-compatible scripted model
+# date: 2026-11-27T09:52:28Z
 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
 
  RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646/autobyteus-server-ts
@@ -97,17 +97,18 @@ migrations/
   └─ 20261009120000_token_meter_context_readings/
     └─ migration.sql
 
- ✓ tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts (7 tests) 30662ms
-     ✓ UL-01 first-turn switch with Model Routing off: one event for three errors, the history runtime, the marker and continue notice rows, the hand-over in the continue turn, C-2  2619ms
-     ✓ UL-02 mid-work switch: an answered Codex turn, then the limit; the new runtime receives the earlier work  2644ms
-     ✓ UL-03 Model Routing on: the router gets the switch request; its turn ends without a decision (R-6 pending), so history decides  3631ms
-     ✓ UL-04 a Team member is switched while the Team runs, and after a graceful restart it answers on AutoByteus  8905ms
-     ✓ UL-05 no fallback: the run stays on Codex with one Error notice; C-2 no_fallback  1521ms
-     ✓ UL-06 delegation: a default on the exhausted Codex model is skipped; the agent starts from its history with the note  2813ms
-     ✓ UL-07 the setting off: the event is logged, nothing is switched or recorded  4120ms
+ ✓ tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts (8 tests) 29359ms
+     ✓ UL-01 first-turn switch with Model Routing off: one event for three errors, the history runtime, the marker and continue notice rows, the hand-over in the continue turn, C-2  2269ms
+     ✓ UL-02 mid-work switch: an answered Codex turn, then the limit; the new runtime receives the earlier work  1904ms
+     ✓ UL-03 Model Routing on: the router gets the switch request; its turn ends without a decision (R-6 pending), so history decides  2512ms
+     ✓ UL-04 a Team member is switched while the Team runs, and after a graceful restart it answers on AutoByteus  9401ms
+     ✓ UL-05 no fallback: the run stays on Codex with one Error notice; C-2 no_fallback  1095ms
+     ✓ UL-06 delegation: a default on the exhausted Codex model is skipped; the agent starts from its history with the note  1779ms
+     ✓ UL-07 the setting off: the event is logged, nothing is switched or recorded  4257ms
+     ✓ UL-08 Antigravity (no usage-limit signal): the ERROR at once, ERROR_CLASSIFIED after its limits read; exactly one error row, then the switch rows  2467ms
 
  Test Files  1 passed (1)
-      Tests  7 passed (7)
-   Start at  09:45:04
-   Duration  31.69s (transform 189ms, setup 186ms, import 99ms, tests 30.66s, environment 0ms)
+      Tests  8 passed (8)
+   Start at  10:52:29
+   Duration  30.01s (transform 95ms, setup 68ms, import 84ms, tests 29.36s, environment 0ms)
 
