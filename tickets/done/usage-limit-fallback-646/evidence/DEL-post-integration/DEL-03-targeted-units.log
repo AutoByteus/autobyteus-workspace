@@ -1,0 +1,6 @@
+# Merged state 3a541e3d45
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/{agent-execution,remote-collaboration,run-events,model-routing,agent-team-execution,standalone-agent-run-root,services,api,compositions,extensions,agent-collaboration} tests/architecture --no-watch
+ Test Files  446 passed | 4 skipped (450)
+      Tests  3828 passed | 6 skipped (3834)
+   Duration  305.66s (transform 10.40s, setup 9.01s, import 130.46s, tests 129.76s, environment 22ms)
+exit=0
