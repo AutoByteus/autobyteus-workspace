@@ -23,6 +23,7 @@ import {
   type RemoteCollaborationServices,
 } from "../remote-collaboration/remote-collaboration-services.js";
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
+import { processNetworkRelay } from "./private-network-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
@@ -99,6 +100,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     receivedFiles: input.receivedFiles,
+    // autobyteus-661: read at use; the private network is composed after remote collaboration.
+    networkRelay: processNetworkRelay,
     handlers: (services) => ({
       delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
         teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),
@@ -137,6 +140,6 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   bindProcessRemoteCollaboration(services);
   // The process binding serves only the GraphQL resolvers (framework edge, FU-500-02); the roots, the discovery tools
   // and the routes get the services from the composition (autobyteus-500 FU-011).
-  const release = () => releaseProcessRemoteCollaboration(services);
+  const release = () => { releaseProcessRemoteCollaboration(services); void services.closeConnections(); };
   return Object.freeze({ services, release });
 };

@@ -15,7 +15,7 @@ import {
   type RunningAgentsHandler,
 } from "./channel/peer-gateway.js";
 import { NodeKeyPeerVerifier } from "./channel/node-key-peer-verifier.js";
-import { PeerConnector } from "./channel/peer-connector.js";
+import { PeerConnector, type NetworkRelay } from "./channel/peer-connector.js";
 import { PeerPairingClient } from "./channel/peer-pairing-client.js";
 import { PeerRequestSigner } from "./channel/peer-request-signer.js";
 import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
@@ -46,6 +46,8 @@ export type RemoteCollaborationServices = Readonly<{
   peerRequestVerifier: NodeKeyPeerVerifier;
   /** autobyteus-581: a relayed node's provider calls to its relay node (C4). */
   peerRelays: PeerRelayClient;
+  /** Closes the connections to peers this node holds open (through the network relay); the server closes. */
+  closeConnections(): Promise<void>;
 }>;
 
 /**
@@ -68,7 +70,9 @@ export const composeRemoteCollaboration = (input: Readonly<{
   runsInContainer?(): boolean;
   /** autobyteus-587: the node's received files, which a peer uploads into before its message or work packet. */
   receivedFiles: ReceivedFilesHandler;
-  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "pairing" | "peerRequestVerifier" | "peerRelays">): Readonly<{
+  /** autobyteus-661: this node's network relay (the Private Network role's `relay`), through which private-network peers are reached. */
+  networkRelay?(): Promise<NetworkRelay>;
+  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "pairing" | "peerRequestVerifier" | "peerRelays" | "closeConnections">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler; delegatedRunStates: DelegatedRunStatesHandler;
     peerRunMembers: PeerRunMembersHandler;
@@ -76,7 +80,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
 }>): RemoteCollaborationServices => {
   const nodeKey = new NodeKey(input.config);
   const signer = new PeerRequestSigner({ key: nodeKey });
-  const connector = new PeerConnector();
+  const connector = new PeerConnector(input.networkRelay ? { networkRelay: input.networkRelay } : {});
   let peers: PeerDirectory;
   const client = new PeerClient({
     peers: {
@@ -113,7 +117,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   });
   const peerRequestVerifier = new NodeKeyPeerVerifier({ ownNodeId: input.ownNodeId, peerKey: (nodeId) => peers.peerKey(nodeId) });
   const peerRelays = new PeerRelayClient({ peers, signer, connector, ownNodeId: input.ownNodeId });
-  return Object.freeze({ ...services, gateway, discovery, pairing, peerRequestVerifier, peerRelays });
+  return Object.freeze({ ...services, gateway, discovery, pairing, peerRequestVerifier, peerRelays, closeConnections: () => connector.close() });
 };
 
 let processServices: RemoteCollaborationServices | null = null;

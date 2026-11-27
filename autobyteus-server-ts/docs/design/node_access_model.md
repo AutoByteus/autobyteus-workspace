@@ -147,6 +147,7 @@ name the scenario ID. "Owner" is the user on his desktop app.
 | NAS-51 | A forged acceptance naming this node's request | Its own node key | `POST /rest/remote/pair-accepted` | This node confirms with a signed `pair-confirm` at the address it asked; that node refuses it, so 403 `PAIR_NOT_CONFIRMED` and nothing stored |
 | NAS-52 | Paired peer | Peer signature | `POST /rest/remote/unpaired` | This node removes its record of the caller; its open sockets close (NA-11) |
 | NAS-53 | Anyone claiming a paired peer's node ID with another node key | Its own node key, with or without a grant | `POST /rest/remote/pair` | 409 `PEER_KEY_CONFLICT` ("Unpair it first"); no pending request, the peer's key unchanged; a grant also works only for the node it names (`forNodeId`), otherwise 403 `PAIRING_GRANT_INVALID` (CR-001) |
+| NAS-54 | The node's owner (the desktop's proxy), a phone, or no credential (autobyteus-661) | Owner credential | `GET /rest/private-network/relay` | The owner gets the network relay's port and its per-start credential (`no-store`); a phone 403, no credential 401; without Private Network 409 `PRIVATE_NETWORK_NOT_SET_UP`; an extension that cannot answer 502 with its reason |
 
 Out of the model: protection against software already running as the user on
 the same computer (it can read the user's files directly), and what each

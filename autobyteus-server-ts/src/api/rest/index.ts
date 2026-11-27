@@ -38,8 +38,8 @@ export async function registerRestRoutes(
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The studio's remote collaboration, behind `/rest/remote/*` (autobyteus-500 FU-011). */
     remoteCollaboration: RemoteCollaborationServices;
-    /** autobyteus-661: the private network's routes (`/rest/remote/info`); a host without one has none. */
-    privateNetwork?: Pick<PrivateNetwork, "info">;
+    /** autobyteus-661: the private network's routes (`/rest/remote/info`, `/rest/private-network/relay`); a host without one has none. */
+    privateNetwork?: Pick<PrivateNetwork, "info" | "role">;
     /** autobyteus-581: this node as a relay node, behind `/rest/remote/provider-relays/*`. */
     providerRelayPeerHandler: ProviderRelayPeerHandler;
     /** The node's extensions, behind `/rest/extensions/*` (autobyteus-516). */
@@ -54,7 +54,7 @@ export async function registerRestRoutes(
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
   await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration, dependencies.providerRelayPeerHandler);
-  if (dependencies.privateNetwork) await registerPrivateNetworkRoutes(app, { info: dependencies.privateNetwork.info });
+  if (dependencies.privateNetwork) await registerPrivateNetworkRoutes(app, dependencies.privateNetwork);
   await registerExtensionRoutes(app, { extensions: dependencies.extensions });
   await registerFileRoutes(app);
   await registerMediaRoutes(app);

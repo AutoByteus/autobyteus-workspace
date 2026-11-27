@@ -58,7 +58,7 @@ import {
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerIdentityProbe } from "../settings/peer-directory.js";
 import { transportFailureReason, type TransportFailureReason } from "./transport-failure-reason.js";
-import type { PeerConnector } from "./peer-connector.js";
+import { fetchOptionsOf, type PeerConnector } from "./peer-connector.js";
 import type { PeerRequestSigner } from "./peer-request-signer.js";
 
 /** QR-102: a call to a peer answers or is refused within this bound, under the runtimes' tool-call timeouts (A-11). */
@@ -437,9 +437,10 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       const built = body(envelope);
       const requestBody = built instanceof RawPeerBody ? new Uint8Array(built.bytes) : JSON.stringify(built);
       const method = built instanceof RawPeerBody ? "PUT" : "POST";
-      const target = this.dependencies.connector.target(peer, typeof path === "string" ? path : path(envelope));
+      const target = await this.dependencies.connector.target(peer, typeof path === "string" ? path : path(envelope));
       if (target.kind === "unavailable") return unreachable(target.detail);
       const response = await this.fetchJson(target.url.toString(), {
+        ...fetchOptionsOf(target),
         method,
         headers: {
           "content-type": built instanceof RawPeerBody ? "application/octet-stream" : "application/json",

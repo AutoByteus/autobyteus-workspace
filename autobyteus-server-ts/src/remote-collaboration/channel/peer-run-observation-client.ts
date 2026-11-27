@@ -5,6 +5,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { remoteObservationFrameOf } from "./peer-run-view-answers.js";
+import type { Dispatcher } from "undici";
 import type { PeerConnector } from "./peer-connector.js";
 import type { PeerRequestSigner } from "./peer-request-signer.js";
 
@@ -17,12 +18,15 @@ export type PeerWebSocket = {
   send(data: string): void;
   close(code?: number): void;
 };
-/** Opens a WebSocket with the upgrade request's headers (the peer signature). */
-export type OpenWebSocket = (url: string, headers: Readonly<Record<string, string>>) => PeerWebSocket;
+/**
+ * Opens a WebSocket with the upgrade request's headers (the peer signature), carried by the target's dispatcher
+ * (`null`: directly; otherwise through this node's network relay, `PeerConnector`).
+ */
+export type OpenWebSocket = (url: string, headers: Readonly<Record<string, string>>, dispatcher: Dispatcher | null) => PeerWebSocket;
 
-// Node's WebSocket takes request headers as a non-standard option.
-const openRuntimeWebSocket: OpenWebSocket = (url, headers) =>
-  new WebSocket(url, { headers } as unknown as string[]) as unknown as PeerWebSocket;
+// Node's WebSocket takes request headers and a dispatcher as non-standard options.
+const openRuntimeWebSocket: OpenWebSocket = (url, headers, dispatcher) =>
+  new WebSocket(url, { headers, ...(dispatcher ? { dispatcher } : {}) } as unknown as string[]) as unknown as PeerWebSocket;
 
 const frameText = (data: unknown): string | null =>
   typeof data === "string" ? data : data instanceof ArrayBuffer ? Buffer.from(data).toString("utf8") : Buffer.isBuffer(data) ? data.toString("utf8") : null;
@@ -68,11 +72,12 @@ export const openPeerRunObservation = (input: Readonly<{
     const fromNodeId = await input.ownNodeId().catch(() => null);
     if (!fromNodeId || closedByUs) return end();
     if (!peer.paired || closedByUs) return end();
-    const target = input.connector.target(peer, input.path, { webSocket: true });
+    const target = await input.connector.target(peer, input.path, { webSocket: true });
+    if (closedByUs) return end();
     if (target.kind === "unavailable") return end();
     const headers = await input.signer.headers({ method: "GET", pathWithQuery: target.pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: null });
     if (closedByUs) return end();
-    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(target.url.toString(), headers); } catch { return end(); }
+    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(target.url.toString(), headers, target.dispatcher); } catch { return end(); }
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);
     socket.onopen = () => socket?.send(JSON.stringify({
       fromNodeId, toNodeId: peer.nodeId, targetRoot: { kind: input.targetRoot.kind, runId: input.targetRoot.runId },

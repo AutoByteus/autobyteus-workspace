@@ -1,5 +1,5 @@
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
-import type { PeerConnector, PeerRoute } from "./peer-connector.js";
+import { fetchOptionsOf, type PeerConnector, type PeerRoute } from "./peer-connector.js";
 import type { PeerRequestSigner } from "./peer-request-signer.js";
 import { transportFailureReason, type TransportFailureReason } from "./transport-failure-reason.js";
 
@@ -43,7 +43,7 @@ export class PeerPairingClient {
 
   private async post(route: PeerRoute, path: string, body: object,
     nodes: Readonly<{ fromNodeId: string; toNodeId: string }> | null): Promise<PeerPairingAnswer> {
-    const target = this.dependencies.connector.target(route, path);
+    const target = await this.dependencies.connector.target(route, path);
     if (target.kind === "unavailable") {
       throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${route.address} could not be reached: ${target.detail}.`, { address: route.address });
     }
@@ -53,6 +53,7 @@ export class PeerPairingClient {
     let response: Pick<Response, "status" | "json">;
     try {
       response = await (this.dependencies.fetch ?? fetch)(target.url.toString(), {
+        ...fetchOptionsOf(target),
         method: "POST", headers, body: text, signal: AbortSignal.timeout(this.dependencies.timeoutMs ?? PEER_PAIRING_TIMEOUT_MS),
       });
     } catch (error) {

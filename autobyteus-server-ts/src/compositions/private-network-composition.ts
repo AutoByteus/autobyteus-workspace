@@ -1,9 +1,11 @@
 import type http from "node:http";
 import type { AddressInfo } from "node:net";
 import type { PrivateNetworkContext } from "../extensions/server-parts/server-part-host.js";
+import type { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { NodeInfoResponder } from "../private-network/node-info-responder.js";
 import { NodeVisibility } from "../private-network/node-visibility.js";
 import { PrivateNetworkListener } from "../private-network/private-network-listener.js";
+import { PrivateNetworkRole, PrivateNetworkUnavailableError, type PrivateNetworkRelay } from "../private-network/private-network-role.js";
 import { readComputerName } from "../remote-access/services/computer-name.js";
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
 import { getNodeNetworkService } from "../remote-access/services/node-network-service.js";
@@ -13,6 +15,8 @@ export type PrivateNetwork = Readonly<{
   listener: PrivateNetworkListener;
   visibility: NodeVisibility;
   info: NodeInfoResponder;
+  /** The `private-network` role: the extension that is on and provides it, resolved at each call. */
+  role: PrivateNetworkRole;
   httpServer(): http.Server;
   close(): Promise<void>;
 }>;
@@ -31,6 +35,14 @@ export const currentPrivateNetworkContext = (): PrivateNetworkContext => {
   });
 };
 
+/**
+ * This node's network relay (role action `relay`), for the peer connector, which is composed before the private network
+ * and reads it at use. Without a composed private network: "Private Network is not set up".
+ */
+export const processNetworkRelay = (): Promise<PrivateNetworkRelay> => processPrivateNetwork
+  ? processPrivateNetwork.role.relay()
+  : Promise.reject(new PrivateNetworkUnavailableError("PRIVATE_NETWORK_NOT_SET_UP", "Private Network is not set up on this node."));
+
 /** The process's private network, for the GraphQL resolvers (framework edge); it throws where none is composed. */
 export const getProcessPrivateNetwork = (): PrivateNetwork => {
   if (!processPrivateNetwork) throw new Error("The private network is not available on this server.");
@@ -42,7 +54,11 @@ export const getProcessPrivateNetwork = (): PrivateNetwork => {
  * visibility. The caller socket opens with the server, so the Private Network extension's program can hand connections
  * over as soon as it starts; it closes with the server.
  */
-export const composePrivateNetwork = async (input: Readonly<{ dataDir: string; httpServer(): http.Server }>): Promise<PrivateNetwork> => {
+export const composePrivateNetwork = async (input: Readonly<{
+  dataDir: string;
+  httpServer(): http.Server;
+  extensions: Pick<ExtensionManager, "enabledProvider" | "callAction">;
+}>): Promise<PrivateNetwork> => {
   const listener = new PrivateNetworkListener({ dataDir: input.dataDir, httpServer: input.httpServer });
   await listener.start();
   const visibility = new NodeVisibility({
@@ -51,7 +67,7 @@ export const composePrivateNetwork = async (input: Readonly<{ dataDir: string; h
   });
   const info = new NodeInfoResponder({ visibility, ownNodeId: () => getNodeIdentityService().getNodeId(), ownName: () => readComputerName() });
   const composed: PrivateNetwork = Object.freeze({
-    listener, visibility, info, httpServer: input.httpServer,
+    listener, visibility, info, role: new PrivateNetworkRole({ extensions: input.extensions }), httpServer: input.httpServer,
     close: async () => {
       if (processPrivateNetwork === composed) processPrivateNetwork = null;
       await listener.close();

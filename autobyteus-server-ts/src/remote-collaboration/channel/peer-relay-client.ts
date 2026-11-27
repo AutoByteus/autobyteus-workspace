@@ -2,7 +2,7 @@ import { Readable } from "node:stream";
 import { NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerDirectory } from "../settings/peer-directory.js";
-import type { PeerConnector } from "./peer-connector.js";
+import { fetchOptionsOf, type PeerConnector } from "./peer-connector.js";
 import type { PeerRequestSigner } from "./peer-request-signer.js";
 import { transportFailureReason } from "./transport-failure-reason.js";
 
@@ -63,7 +63,7 @@ export class PeerRelayClient {
     query.set("toNodeId", peer.nodeId);
     const routePath = `${REMOTE_PROVIDER_RELAYS_PATH}/${encodeURIComponent(call.relayId)}/${encodeURIComponent(call.relayCredentialKind)}`
       + `${providerPath}?${query.toString()}`;
-    const target = this.dependencies.connector.target(peer, routePath);
+    const target = await this.dependencies.connector.target(peer, routePath);
     if (target.kind === "unavailable") return { kind: "unreachable", detail: target.detail };
     const hasBody = call.body !== null && call.body.length > 0 && !["GET", "HEAD"].includes(call.method);
     const headers = new Headers(call.headers);
@@ -76,6 +76,7 @@ export class PeerRelayClient {
     let response: Response;
     try {
       response = await (this.dependencies.fetch ?? fetch)(target.url, {
+        ...fetchOptionsOf(target),
         method: call.method,
         headers,
         redirect: "manual",

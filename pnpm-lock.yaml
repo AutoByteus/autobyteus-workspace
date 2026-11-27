@@ -224,6 +224,9 @@ importers:
       type-graphql:
         specifier: ^2.0.0-rc.4
         version: 2.0.0-rc.4(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
+      undici:
+        specifier: ^7.30.1
+        version: 7.30.1
       uuid:
         specifier: ^13.0.0
         version: 13.0.0

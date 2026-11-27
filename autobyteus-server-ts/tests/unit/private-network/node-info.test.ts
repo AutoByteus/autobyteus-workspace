@@ -69,6 +69,7 @@ describe.skipIf(process.platform === "win32")("POST /rest/remote/info", () => {
     await registerTestNodeAccess(app, { ownNodeId: SELF });
     await app.register(async (rest) => registerPrivateNetworkRoutes(rest, {
       info: new NodeInfoResponder({ visibility: { state: () => state }, ownNodeId: async () => SELF, ownName: async () => "home-mac" }),
+      role: { relay: async () => { throw new Error("not asked here"); } },
     }), { prefix: "/rest" });
     await app.listen({ host: "127.0.0.1", port: 0 });
     const dataDir = fs.mkdtempSync(path.join("/tmp", "pni-"));
@@ -91,5 +92,48 @@ describe.skipIf(process.platform === "win32")("POST /rest/remote/info", () => {
     state.privateNetwork = false; state.localNetwork = true;
     await expect(overNetwork()).resolves.toMatchObject({ status: 404 });
     await expect(overLan()).resolves.toEqual({ status: 200, body: { nodeId: SELF, name: "home-mac" } });
+  });
+});
+
+describe("GET /rest/private-network/relay", () => {
+  const OWNER = `own_${"o".repeat(43)}`;
+  const PHONE = `mra_${"p".repeat(43)}`;
+  const withRole = async (relay: () => Promise<{ port: number; credential: string }>) => {
+    const app = fastify();
+    await registerTestNodeAccess(app, {
+      launchCredential: OWNER,
+      verifiers: [{ prefix: "mra_", verify: (credential) => credential === PHONE
+        ? { ok: true, identity: { kind: "phone", deviceId: "phone-1" } }
+        : { ok: false, refusal: { code: "NODE_CREDENTIAL_INVALID", message: "no" } as never } }],
+    });
+    await app.register(async (rest) => registerPrivateNetworkRoutes(rest, {
+      info: new NodeInfoResponder({ visibility: { state: () => ({ privateNetwork: false, localNetwork: false }) }, ownNodeId: async () => SELF, ownName: async () => "x" }),
+      role: { relay },
+    }), { prefix: "/rest" });
+    cleanups.push(() => app.close());
+    return (authorization?: string) => app.inject({ method: "GET", url: "/rest/private-network/relay", headers: authorization ? { authorization: `Bearer ${authorization}` } : {} });
+  };
+
+  it("NAS-54 gives the network relay's port and credential to the owner only (the desktop's proxy); a phone or no credential is refused", async () => {
+    const access = routeAccessFor({ method: "GET", route: "/rest/private-network/relay", isWebSocketUpgrade: false });
+    expect(access.kind === "clients" ? [...access.permitted] : access.kind).toEqual(["owner"]);
+    const get = await withRole(async () => ({ port: 41000, credential: "relay-credential" }));
+    const answer = await get(OWNER);
+    expect(answer.statusCode).toBe(200);
+    expect(answer.json()).toEqual({ port: 41000, credential: "relay-credential" });
+    expect(answer.headers["cache-control"]).toBe("no-store");
+    expect((await get(PHONE)).statusCode).toBe(403);
+    expect((await get()).statusCode).toBe(401);
+  });
+
+  it("says Private Network is not set up (409), and passes on an extension that cannot answer (502)", async () => {
+    const { PrivateNetworkUnavailableError } = await import("../../../src/private-network/private-network-role.js");
+    const { ExtensionError } = await import("../../../src/extensions/domain/extension-error.js");
+    const notSetUp = await withRole(async () => { throw new PrivateNetworkUnavailableError("PRIVATE_NETWORK_NOT_SET_UP", "Private Network is not set up on this node."); });
+    expect((await notSetUp(OWNER)).statusCode).toBe(409);
+    expect((await notSetUp(OWNER)).json()).toEqual({ code: "PRIVATE_NETWORK_NOT_SET_UP", message: "Private Network is not set up on this node." });
+    const stopped = await withRole(async () => { throw new ExtensionError("ACTION_FAILED", "the program is not running"); });
+    expect((await stopped(OWNER)).statusCode).toBe(502);
+    expect((await stopped(OWNER)).json()).toEqual({ code: "ACTION_FAILED", message: "the program is not running" });
   });
 });

@@ -22,7 +22,7 @@ const context = (kind: "owner" | "phone") => ({
 describe.skipIf(process.platform === "win32")("PrivateNetworkResolver", () => {
   it("NAS-08 a phone is refused; the owner reads and changes the switches, and the local one names why it cannot turn on", async () => {
     dataDir = fs.mkdtempSync(path.join("/tmp", "pnr-"));
-    composed = await composePrivateNetwork({ dataDir, httpServer: () => http.createServer() });
+    composed = await composePrivateNetwork({ dataDir, httpServer: () => http.createServer(), extensions: testExtensionManager() });
     const state = { privateNetwork: false, localNetwork: false };
     vi.spyOn(composed.visibility, "state").mockImplementation(() => ({ ...state }));
     vi.spyOn(composed.visibility, "set").mockImplementation(async (change) => {

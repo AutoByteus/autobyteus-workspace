@@ -63,8 +63,9 @@ const EXEMPT_EXCHANGES = new Set([
 ]);
 
 /**
- * Owner actions (NA-7): settings, phone pairing and devices, node update, owner credentials, the MCP gateway token, and
- * the extensions' actions and pages (autobyteus-516).
+ * Owner actions (NA-7): settings, phone pairing and devices, node update, owner credentials, the MCP gateway token, the
+ * extensions' actions and pages (autobyteus-516), and the private network's own routes, such as its relay's credential
+ * (autobyteus-661).
  */
 const isOwnerAction = (path: string): boolean =>
   path === "/rest/remote-access/network"
@@ -80,7 +81,9 @@ const isOwnerAction = (path: string): boolean =>
   || path === "/rest/mcp-gateway"
   || path.startsWith("/rest/mcp-gateway/")
   || path === "/rest/extensions"
-  || path.startsWith("/rest/extensions/");
+  || path.startsWith("/rest/extensions/")
+  || path === "/rest/private-network"
+  || path.startsWith("/rest/private-network/");
 
 const isPath = (path: string, prefix: string): boolean => path === prefix || path.startsWith(`${prefix}/`);
 
