@@ -142,6 +142,8 @@ export const runTeamStreamRecoveryCases = async (probe) => {
       assert(sendable && during.notice?.certainty === 'not_sent' && during.notice.text === TEXT_A && noticeAfterMs >= 9_000
         && during.draft === `PLAIN during-${marker}`, 'a message while recovering: text (a) after the 10 s wait, the text back', details);
       assert(failuresAtNotice === 5 && noticeAfterGapMs >= 13_000, 'the notice after the fifth failed attempt (not before)', details);
+      // REQ-002: while it recovers, the member keeps its last known status (Idle: the withheld frame was the turn's first).
+      assert(subtitle?.startsWith('Idle'), 'the member keeps its last known status while the stream recovers', details);
       assert(details.noticeAfterRecovery === 0 && details.after.subtitle?.startsWith('Idle') && details.after.shown,
         'once the reads pass, the recovery succeeds and the notice goes', details);
       return details;

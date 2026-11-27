@@ -1,0 +1,9 @@
+ Test Files  1 failed | 817 passed (818)
+      Tests  1 failed | 6369 passed | 2 skipped (6372)
+ FAIL  tests/integration/app-font-size-fixed-px-audit.integration.test.ts > app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m

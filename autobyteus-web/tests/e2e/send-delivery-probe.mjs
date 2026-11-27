@@ -35,6 +35,11 @@
 //          loss and after the notice (autobyteus-541 AC-004).
 //   SDD-12 (team)   autobyteus-541 AC-004: the path down for 15 s and no send: the member's shown status stays the one
 //          before the loss (no Initializing).
+//   SDD-16 (team)   autobyteus-541 CRR-001 C-2: an in-app execution link to another member (what a Project Task's link pushes)
+//          while an automatic recovery's hydration runs (its checkpoint read held 2.5 s): that member stays focused after
+//          the commit.
+//   SDD-17 (team)   autobyteus-541 AC-003: the user selects another member in the run tree while the recovery's hydration runs:
+//          the reselect joins the recovery (no failed attempt) and the member the user chose is focused after the commit.
 //   SDD-14 (team)   autobyteus-541 AC-001: a real gap: another window's message to the member, the wire withholding the
 //          frame before its idle status (`fixtures/team-stream-gap.mjs`). With no reselect the page replaces its Team stream
 //          within one attempt (≤ 3 s), shows the member's status as the node has it (Idle) and the other window's message,
@@ -332,7 +337,7 @@ try {
 
   for (const kind of ['agent', 'team']) {
     const target = targets[kind];
-    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-13', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09', 'SDD-14', 'SDD-15'];
+    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-13', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09', 'SDD-14', 'SDD-15', 'SDD-16', 'SDD-17'];
     if (selected && !ids.some((id) => selected.has(id))) continue;
     await open(target);
     // The first message starts the run's runtime.
@@ -675,10 +680,88 @@ try {
           assert(sendable.label === SEND && sendable.enabled === true && during.notice?.certainty === 'not_sent' && during.notice.text === TEXT_A
             && noticeAfterMs >= 9_000 && during.draft === `PLAIN during-${marker}` && during.count === 0, 'a message while recovering: text (a) after the 10 s wait, the text back', details);
           assert(failuresAtNotice === 5 && noticeAfterGapMs >= 13_000, 'the notice after the fifth failed attempt (not before)', details);
+          // REQ-002: while it recovers, the member keeps its last known status (Idle: the withheld frame was the turn's first).
+          assert(shownStatus === 'Idle' && during.status === 'Idle', 'the member keeps its last known status while the stream recovers', details);
           assert(details.noticeAfterRecovery === 0 && after.status === 'Idle' && after.count >= 1, 'once the reads pass, the recovery succeeds and the notice goes', details);
           return details;
         } finally {
           if (!released) await reads.release();
+        }
+      });
+
+      // SDD-16 (CRR-001 C-2): an in-app execution link to another member while an automatic recovery's hydration runs (its
+      // checkpoint read held 2.5 s, to widen the 100–500 ms window): that member stays focused after the commit.
+      await runCase('SDD-16', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `c2back-${tag}`;
+        const memberRow = (address) => page.locator(`[data-test="workspace-team-member-${target.teamRunId}-${address}"]`).first();
+        const rows = async () => ({ lead: await memberRow('/lead').getAttribute('aria-current').catch(() => 'missing'), mate: await memberRow('/mate').getAttribute('aria-current').catch(() => 'missing') });
+        const where = async () => ({ rows: await rows(), head: (await view()).head, url: decodeURIComponent(new URL(page.url()).search) });
+        // The mate's run, for an in-app execution link to it (what a Project Task's link or any in-app execution link pushes).
+        const treeNow = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: target.teamRunId })).getTeamRunResumeConfig.executionTree;
+        const mateRunId = treeNow.root_team.members.find((m) => m.address === '/mate').agent_run_id;
+        const atLead = await where();
+        let heldAt = null; let heldReads = 0;
+        const graphql = (url) => url.pathname.endsWith('/graphql');
+        const handler = async (route) => {
+          if ((route.request().postData() ?? '').includes('GetTeamRunExecutionCheckpoint')) { heldAt ??= Date.now(); heldReads += 1; await sleep(2_500); }
+          return route.fallback();
+        };
+        await page.route(graphql, handler);
+        try {
+          const gap = await makeTeamStreamGap({ wire, socketBase: stack.backendUrl.replace(/^http/, 'ws'), teamRunId: target.teamRunId,
+            agentRunId: target.agentRunId, content: `PLAIN ${marker}`, until, consoleLines });
+          await until('the recovery\'s checkpoint read held', async () => heldAt !== null, 15_000);
+          await page.evaluate(({ teamRunId, agentRunId }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$router.push({ path: '/workspace',
+            query: { workspaceExecutionKind: 'team', workspaceExecutionRunId: teamRunId, workspaceExecutionAgentRunId: agentRunId } }), { teamRunId: target.teamRunId, agentRunId: mateRunId });
+          await sleep(500);
+          const afterBack = await where();
+          const recovery = await waitForTeamStreamReplacement(gap, { wire, until, consoleLines, timeoutMs: 30_000 });
+          await sleep(3_000);
+          const afterCommit = await where();
+          await shot('SDD-16-link-during-recovery');
+          const details = { atLead, afterLink: afterBack, recovery, afterCommit, heldReads, mateRunId };
+          assert(afterCommit.rows.mate === 'true' && afterCommit.head.includes('mate'), 'the member the in-app link opened stays focused after the recovery commits (CRR-001 C-2)', details);
+          return details;
+        } finally {
+          await page.unroute(graphql, handler);
+        }
+      });
+
+      // SDD-17 (AC-003, CRR-001 C-2): the user selects another member in the run tree while an automatic recovery's hydration
+      // runs (its checkpoint read held 2.5 s): the reselect joins the recovery, and the member the user chose is focused after
+      // the commit.
+      await runCase('SDD-17', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `join-${tag}`;
+        const memberRow = (address) => page.locator(`[data-test="workspace-team-member-${target.teamRunId}-${address}"]`).first();
+        const rows = async () => ({ lead: await memberRow('/lead').getAttribute('aria-current').catch(() => 'missing'), mate: await memberRow('/mate').getAttribute('aria-current').catch(() => 'missing') });
+        if ((await rows()).lead !== 'true') { await memberRow('/lead').click(); await until('lead selected', async () => (await rows()).lead === 'true', 15_000); await sleep(1_000); }
+        let heldAt = null; let heldReads = 0;
+        const graphql = (url) => url.pathname.endsWith('/graphql');
+        const handler = async (route) => {
+          if ((route.request().postData() ?? '').includes('GetTeamRunExecutionCheckpoint')) { heldAt ??= Date.now(); heldReads += 1; await sleep(2_500); }
+          return route.fallback();
+        };
+        await page.route(graphql, handler);
+        try {
+          const before = { rows: await rows(), head: (await view()).head };
+          const gap = await makeTeamStreamGap({ wire, socketBase: stack.backendUrl.replace(/^http/, 'ws'), teamRunId: target.teamRunId,
+            agentRunId: target.agentRunId, content: `PLAIN ${marker}`, until, consoleLines });
+          await until('the recovery\'s checkpoint read held', async () => heldAt !== null, 15_000);
+          await memberRow('/mate').click();
+          const recovery = await waitForTeamStreamReplacement(gap, { wire, until, consoleLines, timeoutMs: 30_000 });
+          await sleep(2_500);
+          const afterCommit = { rows: await rows(), head: (await view()).head };
+          await shot('SDD-17-reselect-during-recovery');
+          const details = { before, recovery, afterCommit, heldReads };
+          assert(recovery.failedAttempts === 0, 'the recovery succeeded at its attempt (the reselect joined it, no second recovery)', details);
+          assert(afterCommit.rows.mate === 'true' && afterCommit.head.includes('mate'), 'the member the user chose is focused after the commit', details);
+          return details;
+        } finally {
+          await page.unroute(graphql, handler);
         }
       });
     }
