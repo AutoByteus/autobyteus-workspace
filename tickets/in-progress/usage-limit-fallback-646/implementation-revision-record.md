@@ -58,3 +58,9 @@
   - `IMP-13` (web and contracts pass);
   - `IMP-14` (built-server E2E 9/9);
   - `IMP-15` (two-server E2E pass).
+
+## Review receipt — CRR-002 Pass (9.4/10)
+
+- **Result:** code review round 2 passed. CR-646-01, -02 and -03 are resolved (report `code-review-report.md`, commit 5dba382563). The package went to API/E2E. Nothing is owed by implementation.
+- **Accepted by the reviewer:** task kind "runtime switch" for a router-chosen switch's launch source (R-19).
+- **Reviewer's minor note, not a finding:** when the runtime report can't be read at all, the chooser answers `no_fallback`, and the notice's "No other runtime can run now" is then unverified. It is rare and logged.
