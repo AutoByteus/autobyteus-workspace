@@ -141,3 +141,9 @@ History before this Task: [history-484/solution-revision-record.md](history-484/
 - **Trigger:** `/api_e2e_engineer` evidence decision request, round 1.
 - **Decision:** option (a): live after the user's setup-token and a fresh Grok login. Fallback (c) at delivery. Not an accepted risk (the user's DEC-108).
 - **Requirements and design:** unchanged. Route: Evidence Decision to `/api_e2e_engineer`.
+
+## SR-011: The user accepts login-token mode unverified (DEC-119, supersedes DEC-118)
+
+- **Trigger:** the user, 2026-11-27.
+- **Decision:** AC-005's live login-token part is accepted unverified, bounded as stated in DEC-119. FU-581-08 records how to prove it later.
+- **Route:** told to `/delivery_engineer` (finalization may proceed) and `/api_e2e_engineer` (API-L12 no longer awaited).
