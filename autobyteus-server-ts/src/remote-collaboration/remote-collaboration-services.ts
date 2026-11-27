@@ -20,7 +20,7 @@ import { PeerPairingClient } from "./channel/peer-pairing-client.js";
 import { PeerRequestSigner } from "./channel/peer-request-signer.js";
 import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
 import { NodeKey } from "./pairing/node-key.js";
-import { PeerPairing } from "./pairing/peer-pairing.js";
+import { PeerPairing, type PairingPrivateNetwork } from "./pairing/peer-pairing.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
 import { PeerStore } from "./settings/peer-store.js";
 import { getServerAddressCandidateService } from "../server-addressing/server-address-candidate-service.js";
@@ -72,6 +72,8 @@ export const composeRemoteCollaboration = (input: Readonly<{
   receivedFiles: ReceivedFilesHandler;
   /** autobyteus-661: this node's network relay (the Private Network role's `relay`), through which private-network peers are reached. */
   networkRelay?(): Promise<NetworkRelay>;
+  /** autobyteus-661 DS-3: this node's private network as pairing reads it (read at use). */
+  privateNetwork?: PairingPrivateNetwork;
   handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "pairing" | "peerRequestVerifier" | "peerRelays" | "closeConnections">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler; delegatedRunStates: DelegatedRunStatesHandler;
@@ -114,6 +116,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
     ownNodeId: ownNodeIdForSettings,
     ownName: () => readComputerName(),
     ownAddresses,
+    ...(input.privateNetwork ? { privateNetwork: input.privateNetwork } : {}),
   });
   const peerRequestVerifier = new NodeKeyPeerVerifier({ ownNodeId: input.ownNodeId, peerKey: (nodeId) => peers.peerKey(nodeId) });
   const peerRelays = new PeerRelayClient({ peers, signer, connector, ownNodeId: input.ownNodeId });

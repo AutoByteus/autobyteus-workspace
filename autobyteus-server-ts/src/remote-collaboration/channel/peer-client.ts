@@ -368,16 +368,21 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
    * `PeerIdentityProbe`: the node ID behind a URL, read from its public status route (DS-004). Only a
    * transport failure or a timeout is `PEER_UNREACHABLE`, with its classified `reason` (one-nodes-tab REQ-707); a
    * server that answered with anything but its identity (another status, a page that is not JSON, JSON without
-   * `nodeId`) is not an AutoByteus node (CR-002).
+   * `nodeId`) is not an AutoByteus node (CR-002). With `machine`, the address is on the private network and is asked
+   * through this node's network relay (`PeerConnector`), never directly.
    */
-  async fetchNodeId(address: string, timeoutMs?: number): Promise<string> {
+  async fetchNodeId(address: string, timeoutMs?: number, machine: string | null = null): Promise<string> {
     const unreachable = (error: unknown) => {
       const reason = transportFailureReason(error);
       return new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${address} could not be reached: ${PROBE_FAILURE_TEXT[reason]}.`,
         { reason, address: address });
     };
     const notAutobyteus = () => new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", `${address} is not an AutoByteus node.`);
-    const response = await this.fetchJson(`${address}/rest/remote-access/status`, { method: "GET" }, timeoutMs)
+    const target = await this.dependencies.connector.target({ address, machine }, "/rest/remote-access/status");
+    if (target.kind === "unavailable") {
+      throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${address} could not be reached: ${target.detail}.`, { address });
+    }
+    const response = await this.fetchJson(target.url.toString(), { ...fetchOptionsOf(target), method: "GET" }, timeoutMs)
       .catch((error: unknown) => { throw unreachable(error); });
     if (await isNodeIdentityPendingAnswer(response)) {
       throw new RemoteCollaborationSettingsError("NODE_IDENTITY_NOT_MIGRATED", `${address}: ${NODE_IDENTITY_NOT_MIGRATED_TEXT}`, { address: address });
@@ -403,6 +408,28 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     const id = (answer as { nodeId?: unknown } | null)?.nodeId;
     if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) throw notAutobyteus();
     return id;
+  }
+
+  /**
+   * Who answers at a private address (contract §4): `POST /rest/remote/info` through this node's network relay. A node
+   * visible on the private network answers `{nodeId, name}`; anything else (not visible, not AutoByteus, nothing there,
+   * no answer within the bound) is `null`.
+   */
+  async fetchNodeInfo(address: string, machine: string, timeoutMs: number): Promise<Readonly<{ nodeId: string; name: string }> | null> {
+    const target = await this.dependencies.connector.target({ address, machine }, "/rest/remote/info");
+    if (target.kind === "unavailable") return null;
+    try {
+      const response = await this.fetchJson(target.url.toString(), {
+        ...fetchOptionsOf(target), method: "POST", headers: { "content-type": "application/json" }, body: "{}",
+      }, timeoutMs);
+      if (response.status !== 200) return null;
+      const answer = await response.json() as { nodeId?: unknown; name?: unknown } | null;
+      return typeof answer?.nodeId === "string" && /^srv_[A-Za-z0-9_-]{32,}$/.test(answer.nodeId)
+        && typeof answer.name === "string" && answer.name.trim() && answer.name.length <= 128
+        ? Object.freeze({ nodeId: answer.nodeId, name: answer.name.trim() }) : null;
+    } catch {
+      return null;
+    }
   }
 
   private async call<TResult>(

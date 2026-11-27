@@ -38,7 +38,7 @@ describe("pairing GraphQL (autobyteus-661)", () => {
     const phone = context("phone");
     const refused = { extensions: { code: "NODE_ROUTE_NOT_PERMITTED" } };
     expect(() => resolver.createPairingGrant("own", "srv_a", null, null, phone)).toThrow(expect.objectContaining(refused));
-    await expect(Promise.resolve().then(() => resolver.pairWithNode("http://x", null, null, null, null, phone))).rejects.toMatchObject(refused);
+    await expect(Promise.resolve().then(() => resolver.pairWithNode("http://x", null, null, null, null, null, phone))).rejects.toMatchObject(refused);
     await expect(Promise.resolve().then(() => resolver.acceptPairRequest("id", null, phone))).rejects.toMatchObject(refused);
     await expect(Promise.resolve().then(() => resolver.rejectPairRequest("id", phone))).rejects.toMatchObject(refused);
     expect(() => resolver.cancelPairRequest("r", phone)).toThrow(expect.objectContaining(refused));
@@ -59,14 +59,14 @@ describe("pairing GraphQL (autobyteus-661)", () => {
       addresses: ["http://192.168.1.10:29695"] });
     expect(createGrant).toHaveBeenCalledWith({ relation: "own", forNodeId: "srv_a", forMachine: null, nameForAsker: "host" });
     expect(() => resolver.createPairingGrant("admin", "srv_a", null, null, owner)).toThrow(expect.objectContaining({ extensions: { code: "BAD_USER_INPUT" } }));
-    await expect(resolver.pairWithNode("http://localhost:8001", ["http://192.168.1.10:8001"], "g", "srv_b", "docker", owner)).resolves.toEqual({ state: "paired", peer: PEER, requestId: null });
-    expect(pair).toHaveBeenCalledWith({ address: "http://localhost:8001", addresses: ["http://192.168.1.10:8001"], grant: "g", nodeId: "srv_b", name: "docker" });
-    await expect(resolver.pairWithNode("http://192.168.1.20:8000", null, null, null, null, owner)).resolves.toEqual({ state: "waiting", peer: null, requestId: "req-1" });
+    await expect(resolver.pairWithNode("http://localhost:8001", ["http://192.168.1.10:8001"], "g", "srv_b", "docker", null, owner)).resolves.toEqual({ state: "paired", peer: PEER, requestId: null });
+    expect(pair).toHaveBeenCalledWith({ address: "http://localhost:8001", addresses: ["http://192.168.1.10:8001"], grant: "g", nodeId: "srv_b", name: "docker", machine: null });
+    await expect(resolver.pairWithNode("http://192.168.1.20:8000", null, null, null, null, null, owner)).resolves.toEqual({ state: "waiting", peer: null, requestId: "req-1" });
   });
 
   it("a refused pair is a GraphQL error with the settings code and details", async () => {
     withPairing({ pair: vi.fn(async () => { throw new RemoteCollaborationSettingsError("PEER_HOST_REFUSED", "refused", { address: "http://lvh.me:1", host: "lvh.me" }); }) });
-    await expect(new RemoteCollaborationSettingsResolver().pairWithNode("http://lvh.me:1", null, null, null, null, context("owner")))
+    await expect(new RemoteCollaborationSettingsResolver().pairWithNode("http://lvh.me:1", null, null, null, null, null, context("owner")))
       .rejects.toMatchObject({ message: "refused", extensions: { code: "PEER_HOST_REFUSED", address: "http://lvh.me:1", host: "lvh.me" } });
   });
 });

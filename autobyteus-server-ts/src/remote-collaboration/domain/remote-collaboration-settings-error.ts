@@ -21,7 +21,9 @@ export type RemoteCollaborationSettingsErrorCode =
   /** autobyteus-661 CR-001: this node already holds that node with another key; Unpair it first. */
   | "PEER_KEY_CONFLICT"
   /** autobyteus-661: no pair request with that ID waits here (answered, withdrawn, or dropped by a restart). */
-  | "PAIR_REQUEST_NOT_FOUND";
+  | "PAIR_REQUEST_NOT_FOUND"
+  /** autobyteus-661 DS-3: pairing over the private network while this node has not joined it. */
+  | "PRIVATE_NETWORK_NOT_JOINED";
 
 /**
  * What the Nodes page words itself (one-nodes-tab REQ-707, REQ-708): the transport `reason` and the `address` of an

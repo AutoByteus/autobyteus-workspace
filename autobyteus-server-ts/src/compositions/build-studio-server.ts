@@ -425,7 +425,8 @@ export const buildStudioServer = async (input: {
       routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     nativeShutdown.install(app);
-    privateNetwork = await composePrivateNetwork({ dataDir: input.appConfig.getAppDataDir(), httpServer: () => app.server, extensions: nodeExtensions });
+    privateNetwork = await composePrivateNetwork({ dataDir: input.appConfig.getAppDataDir(), httpServer: () => app.server, extensions: nodeExtensions,
+      remoteCollaboration: remoteCollaboration.services });
     app.addHook("onClose", async () => nativeShutdown.close(async () => {
       try {
         await currentApplicationRuntime.lifecycle.stop();

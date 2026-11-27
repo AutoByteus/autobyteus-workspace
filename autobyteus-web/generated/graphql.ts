@@ -1382,6 +1382,43 @@ export type ExtensionProgressGql = {
   percent?: Maybe<Scalars['Float']['output']>;
 };
 
+export type FoundMachineGql = {
+  __typename?: 'FoundMachineGql';
+  account?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  sharedBy?: Maybe<Scalars['String']['output']>;
+};
+
+export type FoundNodesGql = {
+  __typename?: 'FoundNodesGql';
+  localNetwork: Array<FoundOnLocalNetworkGql>;
+  privateNetwork: FoundOnPrivateNetworkListGql;
+};
+
+export type FoundOnLocalNetworkGql = {
+  __typename?: 'FoundOnLocalNetworkGql';
+  address: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  nodeId: Scalars['String']['output'];
+};
+
+export type FoundOnPrivateNetworkGql = {
+  __typename?: 'FoundOnPrivateNetworkGql';
+  address: Scalars['String']['output'];
+  machine: FoundMachineGql;
+  mine: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  nodeId: Scalars['String']['output'];
+};
+
+export type FoundOnPrivateNetworkListGql = {
+  __typename?: 'FoundOnPrivateNetworkListGql';
+  message: Scalars['String']['output'];
+  nodes: Array<FoundOnPrivateNetworkGql>;
+  state: Scalars['String']['output'];
+};
+
 export type GeminiConfigurationCommandResult = {
   __typename?: 'GeminiConfigurationCommandResult';
   credentialSetting: ProviderCredentialSettingObject;
@@ -2413,6 +2450,7 @@ export type MutationPairWithNodeArgs = {
   address: Scalars['String']['input'];
   addresses?: InputMaybe<Array<Scalars['String']['input']>>;
   grant?: InputMaybe<Scalars['String']['input']>;
+  machine?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nodeId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3065,6 +3103,7 @@ export type Query = {
   extensions: ExtensionListGql;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
+  foundNodes: FoundNodesGql;
   getAgentOrgExecutionCheckpoint: AgentOrgExecutionCheckpointPayload;
   getAgentOrgMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getAgentOrgMemberFileChanges: Array<RunFileChangeEntryObject>;

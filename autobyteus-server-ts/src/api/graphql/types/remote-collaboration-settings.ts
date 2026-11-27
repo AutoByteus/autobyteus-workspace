@@ -204,10 +204,12 @@ export class RemoteCollaborationSettingsResolver {
     @Arg("grant", () => String, { nullable: true }) grant: string | null,
     @Arg("nodeId", () => String, { nullable: true }) nodeId: string | null,
     @Arg("name", () => String, { nullable: true }) name: string | null,
+    /** autobyteus-661 DS-3: the machine of a node found on the private network; it is then paired over that network. */
+    @Arg("machine", () => String, { nullable: true }) machine: string | null,
     @Ctx() context: GraphqlRequestContext,
   ): Promise<PairOutcomeGql> {
     requireOwner(context);
-    return guarded(async () => toOutcome(await getProcessRemoteCollaboration().pairing.pair({ address, addresses, grant, nodeId, name })));
+    return guarded(async () => toOutcome(await getProcessRemoteCollaboration().pairing.pair({ address, addresses, grant, nodeId, name, machine })));
   }
 
   @Mutation(() => PeerNodeGql)

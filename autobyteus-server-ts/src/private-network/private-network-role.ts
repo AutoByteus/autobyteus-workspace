@@ -14,6 +14,16 @@ export type PrivateNetworkStatus = Readonly<{
 /** The network program's local relay: an HTTP CONNECT proxy on 127.0.0.1 with a credential new at every start. */
 export type PrivateNetworkRelay = Readonly<{ port: number; credential: string }>;
 
+/**
+ * The port the network program listens on at its machine's private address and hands over to its node (design DS-2;
+ * contract §1 address `100.88.80.80:8000`). Every node is its own machine on the private network, so the port is the
+ * same for all.
+ */
+export const PRIVATE_NETWORK_NODE_PORT = 8000;
+/** Where a node is reached on the private network: its machine's private address and the program's port. */
+export const privateNetworkAddressOf = (ip: string): string =>
+  `http://${ip.includes(":") ? `[${ip}]` : ip}:${PRIVATE_NETWORK_NODE_PORT}`;
+
 /** Why the role could not answer: no extension provides it here, or its answer was not what the role promises. */
 export class PrivateNetworkUnavailableError extends Error {
   constructor(readonly code: "PRIVATE_NETWORK_NOT_SET_UP" | "PRIVATE_NETWORK_BAD_ANSWER", message: string) {
@@ -62,6 +72,20 @@ export class PrivateNetworkRole {
       throw this.bad("relay");
     }
     return Object.freeze({ port: answer.port as number, credential: answer.credential });
+  }
+
+  /** Where other machines reach this node: its private address while joined; `null` otherwise or without Private Network. */
+  async ownAddress(): Promise<string | null> {
+    const status = await this.status().catch((error: unknown) => {
+      if (error instanceof PrivateNetworkUnavailableError && error.code === "PRIVATE_NETWORK_NOT_SET_UP") return null;
+      throw error;
+    });
+    return status?.state === "joined" && status.machine ? privateNetworkAddressOf(status.machine.ip) : null;
+  }
+
+  /** The machine `id` of the network's current list, or `null` when the network does not list it. */
+  async machine(id: string): Promise<PrivateNetworkMachine | null> {
+    return (await this.machines()).find((machine) => machine.id === id) ?? null;
   }
 
   private async call(action: "status" | "machines" | "relay"): Promise<unknown> {

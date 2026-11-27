@@ -20,16 +20,23 @@ import { testNodeKey, testSigner, type TestNodeKey } from "../../helpers/peer-no
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 
+/** A node's machine on the private network (DS-3): its ID, the account that added it, and its private address. */
+type TestMachine = Readonly<{ id: string; account: string | null; privateAddress: string }>;
 type TestNode = Readonly<{
   label: string; nodeId: string; address: string; key: TestNodeKey; peers: PeerDirectory; pairing: PeerPairing; verifier: NodeKeyPeerVerifier; file: string;
+  machine: TestMachine | null; probes: Array<{ address: string; machine: string | null }>;
 }>;
 const network = new Map<string, TestNode>();
 afterEach(() => network.clear());
 
 const nodeIdOf = (label: string) => `srv_${label}_${"0".repeat(36 - label.length)}`;
 
-/** The in-process transport: the message goes to the node at the route's address, as its routes would hand it over. */
+/**
+ * The in-process transport: the message goes to the node at the route's address, as its routes would hand it over. A
+ * route with a machine goes over the private network: it arrives with the sender's machine as its proven caller.
+ */
 const transport = (sender: () => TestNode): Pick<PeerPairingClient, "send" | "sendSigned"> => {
+  const callerOf = (route: PeerRoute) => (route.machine && sender().machine ? { machine: sender().machine!.id, account: sender().machine!.account } : null);
   const deliver = async (route: PeerRoute, handle: (node: TestNode) => Promise<PairingResponse> | PairingResponse): Promise<PeerPairingAnswer> => {
     const node = network.get(route.address);
     if (!node) throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${route.address} could not be reached.`, { reason: "refused", address: route.address });
@@ -38,14 +45,14 @@ const transport = (sender: () => TestNode): Pick<PeerPairingClient, "send" | "se
   };
   return {
     send: (route, routePath, body) => deliver(route, (node) => {
-      if (routePath === "/rest/remote/pair") return node.pairing.receivePair(body, null);
-      if (routePath === "/rest/remote/pair-accepted") return node.pairing.receivePairAccepted(body, null);
+      if (routePath === "/rest/remote/pair") return node.pairing.receivePair(body, callerOf(route));
+      if (routePath === "/rest/remote/pair-accepted") return node.pairing.receivePairAccepted(body, callerOf(route));
       if (routePath === "/rest/remote/pair-rejected") return node.pairing.receivePairRejected(body);
       throw new Error(`unsigned ${routePath}`);
     }),
     sendSigned: (route, routePath, body, nodes) => deliver(route, async (node) => {
       const headers = await testSigner(sender().key).headers({ method: "POST", pathWithQuery: routePath, ...nodes, body: JSON.stringify(body) });
-      const verified = await node.verifier.verify({ method: "POST", pathWithQuery: routePath, headers });
+      const verified = await node.verifier.verify({ method: "POST", pathWithQuery: routePath, headers, privateNetworkCaller: callerOf(route) });
       if (!verified.ok) return { status: 401, answer: { code: verified.refusal.code } };
       if (routePath === "/rest/remote/pair-confirm") return node.pairing.receivePairConfirm(body, verified.identity);
       if (routePath === "/rest/remote/unpaired") return node.pairing.receiveUnpaired(verified.identity);
@@ -54,7 +61,7 @@ const transport = (sender: () => TestNode): Pick<PeerPairingClient, "send" | "se
   };
 };
 
-const makeNode = async (label: string, options: { now?: () => number; addresses?: string[] } = {}): Promise<TestNode> => {
+const makeNode = async (label: string, options: { now?: () => number; addresses?: string[]; machine?: TestMachine } = {}): Promise<TestNode> => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), `pairing-${label}-`)); roots.push(dir);
   const nodeId = nodeIdOf(label);
   const address = `http://${label}:29700`;
@@ -62,20 +69,38 @@ const makeNode = async (label: string, options: { now?: () => number; addresses?
   const peers = new PeerDirectory({ store: new PeerStore({ getAppDataDir: () => dir }), probe: { fetchNodeId: async () => nodeId },
     ownNodeId: async () => nodeId, runsInContainer: () => false });
   let self: TestNode | null = null;
+  const probes: TestNode["probes"] = [];
+  const machines = () => [...new Set(network.values())].flatMap((node) => (node.machine ? [node.machine] : []));
   const pairing = new PeerPairing({ peers, client: transport(() => self!), nodeKey: key, ownNodeId: async () => nodeId, ownName: async () => label,
-    probe: { fetchNodeId: async (at: string) => { const there = network.get(at); if (!there) throw new Error("refused"); return there.nodeId; } },
-    ownAddresses: () => options.addresses ?? [address], ...(options.now ? { now: options.now } : {}) });
+    // A private address answers only through the relay (with the machine there); a plain one only directly.
+    probe: { fetchNodeId: async (at: string, _timeoutMs?: number, machine: string | null = null) => {
+      probes.push({ address: at, machine });
+      const there = network.get(at);
+      if (!there || (there.machine?.privateAddress === at) !== (machine !== null) || (machine !== null && there.machine!.id !== machine)) throw new Error("refused");
+      return there.nodeId;
+    } },
+    ownAddresses: () => options.addresses ?? [address], ...(options.now ? { now: options.now } : {}),
+    privateNetwork: {
+      ownAddress: async () => options.machine?.privateAddress ?? null,
+      machineAccount: async (id) => { const found = machines().find((machine) => machine.id === id); return found ? found.account : undefined; },
+    } });
   const verifier = new NodeKeyPeerVerifier({ ownNodeId: async () => nodeId, peerKey: (id) => peers.peerKey(id) });
-  const node: TestNode = { label, nodeId, address, key, peers, pairing, verifier, file: path.join(dir, "remote-collaboration", "peers.json") };
+  const node: TestNode = { label, nodeId, address, key, peers, pairing, verifier, file: path.join(dir, "remote-collaboration", "peers.json"),
+    machine: options.machine ?? null, probes };
   self = node;
   network.set(address, node);
+  if (options.machine) network.set(options.machine.privateAddress, node);
   return node;
 };
 
-/** Whether `from` can make a signed request that `to` admits (the pair works for collaboration, contract §5). */
-const signedRequestWorks = async (from: TestNode, to: TestNode): Promise<boolean> => {
+/**
+ * Whether `from` can make a signed request that `to` admits (the pair works for collaboration, contract §5); with
+ * `overNetwork`, the request arrives over the private network from `from`'s machine.
+ */
+const signedRequestWorks = async (from: TestNode, to: TestNode, overNetwork = false): Promise<boolean> => {
   const headers = await testSigner(from.key).headers({ method: "POST", pathWithQuery: "/rest/remote/availability", fromNodeId: from.nodeId, toNodeId: to.nodeId, body: "{}" });
-  return (await to.verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers })).ok;
+  const privateNetworkCaller = overNetwork && from.machine ? { machine: from.machine.id, account: from.machine.account } : null;
+  return (await to.verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers, privateNetworkCaller })).ok;
 };
 
 describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
@@ -94,7 +119,8 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
 
   it("NAS-48 a grant works once; a used, expired, unknown or other-machine grant is refused and nothing is stored", async () => {
     let now = Date.parse("2026-11-27T10:00:00.000Z");
-    const a = await makeNode("alpha"); const b = await makeNode("beta", { now: () => now }); const c = await makeNode("gamma");
+    const a = await makeNode("alpha"); const b = await makeNode("beta", { now: () => now });
+    const c = await makeNode("gamma", { machine: { id: "machine-gamma", account: "ryan@example.com", privateAddress: "http://100.88.10.12:8000" } });
     const { grant } = b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId });
     // CR-001: a grant is for one node: another node presenting it is refused, and the grant stays for its node.
     await expect(a.pairing.pair({ address: b.address, grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED", message: expect.stringContaining("not valid") });
@@ -105,12 +131,12 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
     now += 10 * 60 * 1000 + 1;
     await expect(c.pairing.pair({ address: b.address, grant: expiring.grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED" });
     await expect(c.pairing.pair({ address: b.address, grant: "made-up" })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED" });
-    // A grant for a machine on the private network is not used from a plain address (no caller).
+    // A grant for a machine on the private network is not used from a plain address (no caller); over the private
+    // network, B reaches the asking machine back at its private address through its own relay.
     const forMachine = b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId, forMachine: "machine-gamma" });
-    await expect(b.pairing.receivePair({ nodeId: c.nodeId, name: "gamma", publicKey: c.key.publicKeyText, addresses: [c.address], grant: forMachine.grant }, null))
-      .resolves.toMatchObject({ status: 403, answer: { code: "PAIRING_GRANT_INVALID" } });
-    await expect(b.pairing.receivePair({ nodeId: c.nodeId, name: "gamma", publicKey: c.key.publicKeyText, addresses: [c.address], grant: forMachine.grant },
-      { machine: "machine-gamma", account: "ryan@example.com" })).resolves.toMatchObject({ status: 200 });
+    const overNetwork = { nodeId: c.nodeId, name: "gamma", publicKey: c.key.publicKeyText, addresses: [c.machine!.privateAddress], grant: forMachine.grant };
+    await expect(b.pairing.receivePair(overNetwork, null)).resolves.toMatchObject({ status: 403, answer: { code: "PAIRING_GRANT_INVALID" } });
+    await expect(b.pairing.receivePair(overNetwork, { machine: "machine-gamma", account: "ryan@example.com" })).resolves.toMatchObject({ status: 200 });
     expect((await b.peers.findByNodeId(c.nodeId))).toMatchObject({ machine: "machine-gamma", account: "ryan@example.com" });
     expect((await b.peers.list()).map((peer) => peer.nodeId)).toEqual([c.nodeId]);
     expect(await a.peers.list()).toEqual([]);
@@ -305,5 +331,48 @@ describe("PeerPairing: Unpair (contract §2)", () => {
     const b = await makeNode("beta");
     await expect(b.pairing.receiveUnpaired(null)).resolves.toMatchObject({ status: 403 });
     await expect(b.pairing.receivePairConfirm({ nodeId: nodeIdOf("alpha") }, { kind: "peer", nodeId: nodeIdOf("other") })).resolves.toMatchObject({ status: 403 });
+  });
+});
+
+describe("PeerPairing: a node found on the private network (design DS-3, contract §4)", () => {
+  const onNetwork = (label: string, account: string | null, ip: string) => ({ id: `machine-${label}`, account, privateAddress: `http://${ip}:8000` });
+
+  it("one click for an own node: A asks B through its relay and offers only its private address; B reaches A back through its relay; both records keep the other's machine and account", async () => {
+    const a = await makeNode("alpha", { machine: onNetwork("alpha", "ryan@example.com", "100.88.10.10") });
+    const b = await makeNode("beta", { machine: onNetwork("beta", "ryan@example.com", "100.88.80.80") });
+    const { grant } = b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId, forMachine: "machine-alpha" });
+    await expect(a.pairing.pair({ address: "http://100.88.80.80:8000", nodeId: b.nodeId, machine: "machine-beta", grant })).resolves.toMatchObject({
+      state: "paired", peer: { nodeId: b.nodeId, address: "http://100.88.80.80:8000", machine: "machine-beta", account: "ryan@example.com", relation: "own" } });
+    expect(a.probes).toEqual([{ address: "http://100.88.80.80:8000", machine: "machine-beta" }]);
+    // B was offered only A's private address, and asked it through its own relay, at A's machine.
+    expect(b.probes).toEqual([{ address: "http://100.88.10.10:8000", machine: "machine-alpha" }]);
+    await expect(b.peers.findByNodeId(a.nodeId)).resolves.toMatchObject({ address: "http://100.88.10.10:8000", machine: "machine-alpha", account: "ryan@example.com" });
+    // Requests are taken only over the private network, from the paired machine (NAS-47).
+    expect(await signedRequestWorks(a, b, true)).toBe(true);
+    expect(await signedRequestWorks(b, a, true)).toBe(true);
+    expect(await signedRequestWorks(a, b, false)).toBe(false);
+  });
+
+  it("someone else's node: Pair, then their Accept, both over the private network; the records say who added the machine", async () => {
+    const a = await makeNode("alpha", { machine: onNetwork("alpha", "ryan@example.com", "100.88.10.10") });
+    const bob = await makeNode("bob", { machine: onNetwork("bob", "bob@example.com", "100.88.80.81") });
+    await expect(a.pairing.pair({ address: "http://100.88.80.81:8000", nodeId: bob.nodeId, machine: "machine-bob" })).resolves.toMatchObject({ state: "waiting" });
+    const [pending] = bob.pairing.pendingRequests();
+    expect(pending).toMatchObject({ nodeId: a.nodeId, address: "http://100.88.10.10:8000", machine: "machine-alpha", account: "ryan@example.com" });
+    await expect(bob.pairing.accept(pending!.id)).resolves.toMatchObject({ machine: "machine-alpha", account: "ryan@example.com", relation: "teammate" });
+    await expect(a.peers.findByNodeId(bob.nodeId)).resolves.toMatchObject({ address: "http://100.88.80.81:8000",
+      machine: "machine-bob", account: "bob@example.com", relation: "teammate", paired: true });
+    expect(await signedRequestWorks(a, bob, true)).toBe(true);
+    expect(await signedRequestWorks(bob, a, true)).toBe(true);
+  });
+
+  it("refuses pairing over the private network while this node has not joined it, or with a machine the network does not list; nothing is sent", async () => {
+    const a = await makeNode("alpha");
+    const b = await makeNode("beta", { machine: onNetwork("beta", "ryan@example.com", "100.88.80.80") });
+    await expect(a.pairing.pair({ address: "http://100.88.80.80:8000", nodeId: b.nodeId, machine: "machine-beta" })).rejects.toMatchObject({ code: "PRIVATE_NETWORK_NOT_JOINED" });
+    const joined = await makeNode("gamma", { machine: onNetwork("gamma", "ryan@example.com", "100.88.10.11") });
+    await expect(joined.pairing.pair({ address: "http://100.88.80.80:8000", nodeId: b.nodeId, machine: "machine-gone" })).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+    expect([...a.probes, ...joined.probes]).toEqual([]);
+    expect(b.pairing.pendingRequests()).toEqual([]);
   });
 });

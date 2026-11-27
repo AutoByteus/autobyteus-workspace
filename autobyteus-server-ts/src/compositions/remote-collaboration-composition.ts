@@ -23,7 +23,7 @@ import {
   type RemoteCollaborationServices,
 } from "../remote-collaboration/remote-collaboration-services.js";
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
-import { processNetworkRelay } from "./private-network-composition.js";
+import { processNetworkRelay, processPairingPrivateNetwork } from "./private-network-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
@@ -102,6 +102,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     receivedFiles: input.receivedFiles,
     // autobyteus-661: read at use; the private network is composed after remote collaboration.
     networkRelay: processNetworkRelay,
+    privateNetwork: processPairingPrivateNetwork,
     handlers: (services) => ({
       delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
         teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),

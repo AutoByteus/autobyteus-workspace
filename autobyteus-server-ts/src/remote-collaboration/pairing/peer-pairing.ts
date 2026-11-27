@@ -29,6 +29,16 @@ export const PAIR_ADDRESS_PROBE_TIMEOUT_MS = 5_000;
 /** The machine and account the private network proved for the connection a message came on; `null` otherwise. */
 export type PairCaller = Readonly<{ machine: string; account: string | null }> | null;
 
+/**
+ * This node's private network as pairing reads it (the `private-network` role, read at use): where other machines
+ * reach this node (`null`: not joined, or no Private Network here), and the account of a machine on the network
+ * (`undefined`: the network does not list it).
+ */
+export type PairingPrivateNetwork = Readonly<{
+  ownAddress(): Promise<string | null>;
+  machineAccount(machine: string): Promise<string | null | undefined>;
+}>;
+
 /** A pair request waiting for this node's owner (contract §1): who asks, and where the acceptance goes. */
 export type PendingPairRequest = Readonly<{
   id: string;
@@ -101,14 +111,19 @@ export class PeerPairing {
   constructor(private readonly dependencies: Readonly<{
     peers: Pick<PeerDirectory, "assertPairable" | "savePairedPeer" | "findByNodeId" | "remove" | "peerKey">;
     client: Pick<PeerPairingClient, "send" | "sendSigned">;
-    /** Asks an address which node answers there (its exempt identity route), within the given bound. */
-    probe: Readonly<{ fetchNodeId(address: string, timeoutMs?: number): ReturnType<PeerIdentityProbe["fetchNodeId"]> }>;
+    /**
+     * Asks an address which node answers there (its exempt identity route), within the given bound; with `machine`
+     * through this node's network relay.
+     */
+    probe: Readonly<{ fetchNodeId(address: string, timeoutMs?: number, machine?: string | null): ReturnType<PeerIdentityProbe["fetchNodeId"]> }>;
     nodeKey: Pick<NodeKey, "publicKey">;
     ownNodeId(): Promise<string>;
     /** This node's name, as another node labels it unless its owner gives one. */
     ownName(): Promise<string>;
     /** Where another node may reach this node, in order of preference (the other node keeps the first that answers). */
     ownAddresses(): readonly string[];
+    /** autobyteus-661 DS-3: pairing with a node found on the private network; absent: none here. */
+    privateNetwork?: PairingPrivateNetwork;
     now?(): number;
   }>) {}
 
@@ -135,22 +150,27 @@ export class PeerPairing {
    * waits for B's owner (`waiting`). `nodeId`: the node the app expects there (refused when another answers); `name`:
    * this node's label for B. B finds where it reaches this node among this node's addresses. With `nodeId`, A finds
    * where it reaches B: the first of `address` (the window's) and then B's own `addresses` (the grant's answer) that
-   * answers as B (CR-002).
+   * answers as B (CR-002). With `machine` (a node found on the private network, contract §4) B is asked through this
+   * node's network relay, this node offers only its own private address, and the record keeps B's machine and the
+   * account that added it, so both ways go over the private network.
    */
   async pair(input: Readonly<{
     address: string; addresses?: readonly string[] | null; grant?: string | null; nodeId?: string | null; name?: string | null; sandbox?: boolean;
+    machine?: string | null;
   }>): Promise<PairOutcome> {
     addressOf(input.address);
+    const machine = input.machine?.trim() || null;
+    const network = machine ? await this.privateNetworkFor(machine) : null;
     const candidates = addressesOf([input.address, ...(input.addresses ?? [])]);
-    const address = input.nodeId ? await this.answeringAddress(input.nodeId, candidates) : candidates[0]!;
+    const address = input.nodeId ? await this.answeringAddress(input.nodeId, candidates, machine) : candidates[0]!;
     if (!address) {
       throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `That node answers at none of its addresses from this node; the first tried was ${candidates[0]}.`,
         { address: candidates[0] });
     }
     const own = await this.ownIdentity();
-    const addresses = addressesOf(this.dependencies.ownAddresses());
+    const addresses = network ? [network.ownAddress] : addressesOf(this.dependencies.ownAddresses());
     if (!addresses.length) throw new RemoteCollaborationSettingsError("PEER_URL_INVALID", "This node knows no address another node could reach it at.");
-    const route = { address, machine: null };
+    const route = { address, machine };
     if (!input.grant) {
       if (this.outstanding.size >= OUTSTANDING_PAIR_REQUESTS_MAX) {
         throw new RemoteCollaborationSettingsError("PEER_PAIRING_REFUSED", "Too many pair requests wait for an answer; cancel one first.");
@@ -174,7 +194,7 @@ export class PeerPairing {
     }
     await this.dependencies.peers.assertPairable(peer.nodeId);
     const saved = await this.dependencies.peers.savePairedPeer({
-      nodeId: peer.nodeId, name: input.name?.trim() || peer.name, publicKey: peer.publicKey, address, machine: null, account: null,
+      nodeId: peer.nodeId, name: input.name?.trim() || peer.name, publicKey: peer.publicKey, address, machine, account: network?.account ?? null,
       relation: "own", sandbox: input.sandbox ?? false,
     });
     return Object.freeze({ state: "paired", peer: saved });
@@ -204,7 +224,8 @@ export class PeerPairing {
       } else if (typeof message.requestId !== "string" || !REQUEST_ID_PATTERN.test(message.requestId)) {
         return refused(400, "PAIR_REQUEST_INVALID", "The pair request has neither a grant nor a request ID.");
       }
-      const address = await this.answeringAddress(asker.nodeId, offered);
+      // Over the private network the asking node is reached back through this node's relay, at its machine.
+      const address = await this.answeringAddress(asker.nodeId, offered, caller?.machine ?? null);
       if (!address) {
         return refused(409, "PAIR_ADDRESS_UNREACHABLE", "This node reaches the asking node at none of the addresses it gave.");
       }
@@ -336,10 +357,24 @@ export class PeerPairing {
    * The first of `addresses`, in their order, at which `nodeId` answers its identity route: all are asked at once,
    * each within the probe bound; `null` when none answers as that node (another node, nothing, not AutoByteus).
    */
-  private async answeringAddress(nodeId: string, addresses: readonly string[]): Promise<string | null> {
-    const answers = await Promise.all(addresses.map((address) => this.dependencies.probe.fetchNodeId(address, PAIR_ADDRESS_PROBE_TIMEOUT_MS)
+  private async answeringAddress(nodeId: string, addresses: readonly string[], machine: string | null): Promise<string | null> {
+    const answers = await Promise.all(addresses.map((address) => this.dependencies.probe.fetchNodeId(address, PAIR_ADDRESS_PROBE_TIMEOUT_MS, machine)
       .then((answered) => answered === nodeId, () => false)));
     return addresses[answers.indexOf(true)] ?? null;
+  }
+
+  /** Pairing with `machine` needs this node joined and `machine` on its network; its account labels the record. */
+  private async privateNetworkFor(machine: string): Promise<Readonly<{ ownAddress: string; account: string | null }>> {
+    const network = this.dependencies.privateNetwork;
+    const ownAddress = network ? await network.ownAddress() : null;
+    if (!network || !ownAddress) {
+      throw new RemoteCollaborationSettingsError("PRIVATE_NETWORK_NOT_JOINED", "This node is not on the private network: join it first.");
+    }
+    const account = await network.machineAccount(machine);
+    if (account === undefined) {
+      throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", "That machine is not on this node's private network now.");
+    }
+    return Object.freeze({ ownAddress, account });
   }
 
   private async ownIdentity(): Promise<Identity> {
