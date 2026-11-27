@@ -55,7 +55,7 @@ const harness = (overrides: Partial<ConstructorParameters<typeof SandboxManager>
       list: async () => peers,
       remove: vi.fn(async (nodeId: string) => { peers = peers.filter((peer) => peer.nodeId !== nodeId); }),
     },
-        checkPlatform: async () => ({ supported: true }),
+    checkPlatform: async () => ({ supported: true }),
     hostNodeId: async () => HOST,
     relayOffer: async () => ({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,openai", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "" }),
     image: () => "autobyteus/autobyteus-server:1.5.15-beta.2",
