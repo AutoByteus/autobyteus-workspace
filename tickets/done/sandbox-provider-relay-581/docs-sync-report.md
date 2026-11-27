@@ -5,8 +5,8 @@
 - Ticket: `sandbox-provider-relay-581` (provider relay through a paired node, and disposable sandbox nodes). `task_size` `Large`, `architectural_risk` `High`, route `Reviewed` (architecture review ARCH-REV-003 Pass; source review CRR-001 to CRR-005; API/E2E API-REV-002 Pass; test-code review CRR-006 Pass).
 - Trigger: `/code_reviewer` CRR-006 Pass, delivery package for code `7296a698d6`, API/E2E documents and evidence `7a76435f8c`.
 - Bootstrap base reference: `origin/personal` @ `9f803aa84d`.
-- Integrated base reference used for docs sync: `origin/personal` @ `b86817915a` (35 commits: autobyteus-516 extensions, autobyteus-652 Memory layout), merged into the ticket branch as `8c76286fbe`.
-- Post-integration verification reference: `8c76286fbe` (plus the docs-sync edits of this round, which change no source: one comment in a test file). Commands and results are in the release/deployment report, "Initial Delivery Integration Refresh".
+- Integrated base reference used for docs sync: `origin/personal` @ `b86817915a` (35 commits: autobyteus-516 extensions, autobyteus-652 Memory layout), merged as `8c76286fbe`; refreshed once more to `41f6894d9d` (6 commits, autobyteus-657: the extensions catalog public key; no overlap with this ticket's files), merged as `6c3f35d8ba`.
+- Post-integration verification reference: `8c76286fbe` and `6c3f35d8ba` (the docs-sync edits of this round change no source: one comment in a test file). Commands and results are in the release/deployment report, "Initial Delivery Integration Refresh".
 
 ## Why Docs Were Updated
 
@@ -30,7 +30,7 @@
 | `autobyteus-server-ts/docs/modules/remote_collaboration.md` | Peer record | Updated | New bullet: `PeerNode.role: "sandbox"`, written from the invite, only labels and enables cleanup; it changes no route or permission. |
 | `autobyteus-web/docs/settings.md` | Nodes page rows | Updated | The "sandbox" chip beside a sandbox peer's name. |
 | `autobyteus-web/docs/remote_access.md`, `autobyteus-server-ts/docs/features/remote_access.md` | Nodes page and pairing | No change | They describe the credential and pairing model, which the ticket did not change. |
-| `tickets/in-progress/sandbox-provider-relay-581/design-spec.md` | Ticket-local; the reviewers named four places that no longer match the code | Updated | C1 (no Codex login token, DEC-116), C3 (`localPassHeader` and `dropFromCaller` gone, no `codexLogin`, the forwarder's credential parameter), C7 (`SANDBOX_ARGUMENT_INVALID`, `SANDBOX_TOOL_FAILED`), C8 (run-memory mount at `<data>/memory`, no memory variable, the temp-workspace variable), C10 heading. The design decisions are unchanged. |
+| `tickets/done/sandbox-provider-relay-581/design-spec.md` | Ticket-local; the reviewers named four places that no longer match the code | Updated | C1 (no Codex login token, DEC-116), C3 (`localPassHeader` and `dropFromCaller` gone, no `codexLogin`, the forwarder's credential parameter), C7 (`SANDBOX_ARGUMENT_INVALID`, `SANDBOX_TOOL_FAILED`), C8 (run-memory mount at `<data>/memory`, no memory variable, the temp-workspace variable), C10 heading. The design decisions are unchanged. |
 | Public skill `autobyteus-sandboxes/SKILL.md` (repository `AutoByteus/autobyteus-skills`, branch `codex/autobyteus-sandboxes`) | The skill is documentation of the tools; the reviewers named D-1 and D-2 | Updated, committed on its branch | `SANDBOX_TOOL_FAILED` row added; the create example no longer shows `"teams": []`, and a sentence says empty fields are left out. Re-checked against `sandbox-tool-contract.ts` and the manifest: names, fields and refusal codes match. |
 
 ## Docs Updated
@@ -75,5 +75,5 @@
 ## Delivery Continuation
 
 - Result: `Pass` for docs sync.
-- Next delivery action: verification of AC-005's live part is open (DEC-118, a user check); finalization waits for it.
+- Next delivery action: none; AC-005's live part was accepted unverified by the user (DEC-119), so finalization proceeds.
 - Notes: no documentation was left stale by a known gap.

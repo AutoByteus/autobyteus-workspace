@@ -5,10 +5,10 @@
 - Ticket: `sandbox-provider-relay-581` (Project Task `autobyteus-581`): provider relay through a paired node, and disposable sandbox nodes.
 - Date: `2026-11-26`
 - Classification: `task_size: Large`, `architectural_risk: High`; route: reviewed (architecture review ARCH-REV-003 Pass; source review CRR-001 to CRR-005; API/E2E API-REV-002 Pass at 95%; test-code review CRR-006 Pass, no findings).
-- Current Status: `Delivery in progress: base integrated and docs synced; verification open on one criterion that only the user can check (AC-005 live, DEC-118). Nothing is pushed or merged yet.`
-- Branch: `codex/sandbox-provider-relay`, base `origin/personal` `9f803aa84d` at bootstrap; `b86817915a` at delivery. Integration method: merge (`8c76286fbe`).
+- Current Status: `Verified from evidence, with one accepted unverified risk (DEC-119); finalized on personal; no release` (the finalization record is in `release-deployment-report.md`).
+- Branch: `codex/sandbox-provider-relay`, base `origin/personal` `9f803aa84d` at bootstrap. Integration method: merge, twice: `8c76286fbe` (base `b86817915a`, three conflicts) and `6c3f35d8ba` (base `41f6894d9d`, clean).
 - Public skill: `codex/autobyteus-sandboxes` in `AutoByteus/autobyteus-skills` (worktree `/Users/normy/autobyteus_org/autobyteus-skills-worktrees/autobyteus-sandboxes-581`, base `origin/main` `1213803`, unchanged). Its pull request goes with this delivery (DEC-112).
-- Delivery rounds: `DR-001` (`delivery-revision-record.md`, written at finalization).
+- Delivery rounds: `DR-001` (`delivery-revision-record.md`).
 
 ## Delivery Summary
 
@@ -24,12 +24,12 @@
 
 ## Delivery's round
 
-- **DR-001** fetched the base (35 commits, three conflicts, resolved keeping both sides), checkpointed the review documents first, reran the post-integration checks, read the evidence behind each critical criterion, synced the docs, wrote the release notes. It did not push or merge anything.
+- **DR-001** fetched the base (35 commits, three conflicts, resolved keeping both sides), checkpointed the review documents first, reran the post-integration checks, read the evidence behind each critical criterion, synced the docs and wrote the release notes. It took AC-005's live part to the user (DEC-118); the user accepted it unverified (DEC-119). It then integrated six more base commits (clean), rechecked, and finalized.
 
 ## Verification Summary
 
-- Judged from the evidence by delivery. Every critical acceptance criterion is directly proven except one part: **AC-005's live part (Claude and Grok login tokens) is Not Tested and needs the user (DEC-118)**; it is not accepted as unverified risk. What delivery checked: `pnpm test-vault status` shows `provider.anthropic.login-token` missing, and the user's Grok login has expired (DEC-102 forbids renewing it).
-- Final confidence 95% (every category 95%); the default target is met apart from that part.
+- Judged from the evidence by delivery. Every critical acceptance criterion is directly proven except one part: **AC-005's live part (whether Anthropic and xAI accept a login token the relay node attaches: Claude C9, Grok C10) was not tested; the user accepted it unverified (DEC-119, which superseded DEC-118)**. Delivery checked the decision covers exactly that: the vault had no `provider.anthropic.login-token` and the user's Grok login had expired (DEC-102 forbids renewing it). Its bounds hold: login tokens are off by default (C2), and API-key mode is proven live (AC-001, AC-005's apiKey part). Evidence that stands: the unit request shapes, the two-node integration test with the real gate and handler (the loginToken route and its refusals), and IMP-09.
+- Final confidence 95% (every category 95%); the default target is met apart from that accepted part.
 - Key evidence opened by delivery:
   - AC-001, AC-006, AC-007, AC-008, AC-009, AC-015: `evidence/API-L-sandbox-live/run5-round2/SBX-01.json`: `readyMs 8067`; `network "internet 200 host 200"`; the host lists `sbx_…` as `role: sandbox`; four runtimes complete (`autobyteus` claude-haiku-5-5, `claude_agent_sdk`, `codex_app_server` gpt-5.6-luna, `grok_build`), `relayedLines {"anthropic/apiKey/200": 3, "openai/apiKey/200": 1, "xai/apiKey/200": 5}`; `run5-vitest.log` `Tests 8 passed (8)`.
   - AC-001, AC-002, AC-007 (a relayed node outside Docker): `API-L09/API-L09-owner-relayed-node.json`: all five runtimes `completed: true`, `allFromB: true`, `bNativeProvidersConfiguredBeforeRelay: []`, `bValueScan hits {}`, `c5SecretHits []`.
@@ -42,7 +42,7 @@
 
 ## Residual Risks For The User
 
-- **AC-005 live (Claude and Grok login tokens): the user's check is open.** To prove it: run `claude setup-token`, add the token to the test vault as `provider.anthropic.login-token` (`pnpm test-vault setup`), use Grok once so its login is fresh, and let API/E2E run `probes/sandbox-live-smoke.mjs --login-tokens --runtimes=claude_agent_sdk,grok_build` (about 10 minutes, no value printed). Or the user accepts the risk in a new decision that supersedes DEC-118; then the automated request shapes, the two-node integration test and IMP-09 are the only evidence for the login-token shapes.
+- **AC-005 live (Claude and Grok login tokens), accepted unverified by the user (DEC-119, 2026-11-27: "I wouldn't consider it as a risk … I can test it any time … as long as you tested the sandbox works [with the] API key and my normal functionality works").** Untested: whether Anthropic and xAI accept the login token the relay node attaches. To prove it later (FU-581-08): switch login tokens on (`AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS=true`, no rebuild; needs a release that contains this change), add a Claude `setup-token` on the relay node (`pnpm secrets:import`, alias `CLAUDE_CODE_OAUTH_TOKEN`), use Grok once, and run `probes/sandbox-live-smoke.mjs --login-tokens --runtimes=claude_agent_sdk,grok_build`.
 - **Release image.** A published image for unreleased code cannot exist; the live suite used the beta image with this commit's server package (TESTING.md's method). The sandbox image is the node's own release tag, which the Server Docker Release publishes.
 - **Platforms.** Sandboxes are verified on macOS with Docker Desktop only; Linux and Windows hosts refuse (FU-581-02).
 - **A sandbox is a normal peer with full network access** (user decisions DEC-110, DEC-111): an agent under evaluation can reach host agents shared with peers and the host's network. The restricted forms are FU-581-05 and FU-581-06.
@@ -59,6 +59,7 @@
 - **FU-581-05** Restricted-network sandboxes.
 - **FU-581-06** Restricted sandbox peers.
 - **FU-581-07** Codex's ChatGPT login through a relay (HTTPS for the local relay).
+- **FU-581-08** Prove login-token mode live when the user first switches it on.
 
 ## Release
 
