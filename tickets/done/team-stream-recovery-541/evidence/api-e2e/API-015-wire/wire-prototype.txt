@@ -1,0 +1,3 @@
+node wire-order-stress.mjs <wire module> (evidence/implementation/wire-order-stress.mjs), 2026-11-27
+base wire (80420a8bf6): wire under a moving clock: 548 out-of-order deliveries in 8000 frames
+branch wire: wire under a moving clock: 0 out-of-order deliveries in 8000 frames

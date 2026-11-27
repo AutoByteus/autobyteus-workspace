@@ -24,6 +24,8 @@ vi.mock('~/composables/remoteRuns/useRemoteRunView', async () => {
 import MobileRunScreen from '../MobileRunScreen.vue';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 const contextOf = (runId: string, name: string) => reactive({
   submissionPending: false,
@@ -34,7 +36,7 @@ const contextOf = (runId: string, name: string) => reactive({
 const targetOf = (kind: string, runId: string, name: string, standaloneMessages = false) => ({ kind, access: 'live', context: contextOf(runId, name), browse: { kind: 'run', runId }, workspaceRootPath: null,
   ...(kind === 'standalone_agent'
     ? (standaloneMessages ? { collaborationMessages: { rootKind: 'agent', memberIdentityByAgentRunId: () => ({}) } } : {})
-    : { team: { focusedMemberAddress: '/team/m', teamDefinitionName: 'Team' }, collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } }) });
+    : { team: { rootRunId: 'team-root', focusedMemberAddress: '/team/m', teamDefinitionName: 'Team' }, collaborationMessages: { memberIdentityByAgentRunId: () => ({}) } }) });
 const tree = (parentName: string | null) => ({ openRowParent: computed(() => (parentName ? { name: parentName } : null)) });
 
 let pinia: Pinia;
@@ -167,6 +169,34 @@ describe('MobileRunScreen', () => {
     expect(wrapper.find('[data-testid="mobile-run-unreachable"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-run-conversation"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-subtitle"]').text()).toBe('Not reachable');
+  });
+
+  // autobyteus-541 D-A5: a Team member's stream that keeps failing to recover says so on the phone too.
+  it.each([
+    ['en', 'Live updates could not recover automatically. Select this Team member again to reload the complete conversation.'],
+    ['zh-CN', '实时更新无法自动恢复。请再次选择此团队成员，以重新加载完整对话。'],
+  ] as const)('shows the %s Team recovery notice only once the recovery keeps failing', async (locale, text) => {
+    await localizationRuntime.setPreference(locale);
+    active.state!.target = targetOf('standalone_team_member', 'member-run', 'Worker');
+    useTeamStreamRecoveryStore().$patch({ states: { 'team-root': 'recovering' } });
+    const { wrapper } = await mountScreen('Team');
+    expect(wrapper.find('[data-testid="mobile-run-recovery-notice"]').exists()).toBe(false);
+    useTeamStreamRecoveryStore().setProgress('team-root', 'exhausted');
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mobile-run-recovery-notice"]').text()).toBe(text);
+    // The conversation stays.
+    expect(wrapper.find('[data-testid="mobile-run-conversation"]').exists()).toBe(true);
+    useTeamStreamRecoveryStore().clear('team-root');
+    await flushPromises();
+    expect(wrapper.find('[data-testid="mobile-run-recovery-notice"]').exists()).toBe(false);
+    await localizationRuntime.setPreference('en');
+  });
+
+  it('shows no Team recovery notice for a run that is not a Team member', async () => {
+    active.state!.target = targetOf('standalone_agent', 'run-1', 'Daily Assistant');
+    useTeamStreamRecoveryStore().$patch({ states: { 'team-root': 'exhausted' } });
+    const { wrapper } = await mountScreen();
+    expect(wrapper.find('[data-testid="mobile-run-recovery-notice"]').exists()).toBe(false);
   });
 
   // autobyteus-279 REQ-008 (VIS-034): an iPad in landscape shows the list beside the run, so the run has no ←.

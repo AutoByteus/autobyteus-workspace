@@ -66,7 +66,7 @@ describe('TeamStreamingService reconnect scheduling', () => {
       rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })],
     });
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
-    service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
   });
   afterEach(() => {
     service.disconnect();
@@ -141,7 +141,7 @@ describe('TeamStreamingService reconnect scheduling', () => {
   });
 
   it('a candidate stream is not retried before readiness: its loss fails the candidate', async () => {
-    const candidate = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const candidate = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
     const readiness = candidate.connectCandidate(rootTeamRunId, team, team.view.getChangeSequence());
     const failed = expect(readiness).rejects.toThrow();
     wsClient.lose();

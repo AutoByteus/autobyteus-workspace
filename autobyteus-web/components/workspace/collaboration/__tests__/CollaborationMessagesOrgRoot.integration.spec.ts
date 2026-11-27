@@ -174,6 +174,7 @@ describe('Collaboration messages on a large Agent Org root', () => {
       .referenceContentPath('m1', 'r1')).toBe('collaboration-messages/agent/task-agent/messages/m1/references/r1/content')
   })
 
+  // Proves the bound at 42,000 references; the data is the point, so the test has its own limit (autobyteus-541 DEC-005).
   it('applies a live communication message with one projection and identity work bounded by the visible rows', async () => {
     const { wrapper, org } = await mountOrgMessages()
     org().select('/designer')
@@ -205,5 +206,5 @@ describe('Collaboration messages on a large Agent Org root', () => {
     expect(referenceRows(wrapper)).toHaveLength(REFS_PER_MESSAGE)
     expect(counters.projections).toBe(1)
     expect(counters.hashes).toBeLessThanOrEqual(REFS_PER_MESSAGE) // only the selected message's visible rows
-  })
+  }, 20_000)
 })

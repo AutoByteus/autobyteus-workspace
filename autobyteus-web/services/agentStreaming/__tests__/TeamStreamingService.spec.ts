@@ -439,7 +439,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
         rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
           testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
           testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' })] });
-      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
       void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
       emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
       emit(candidateCallbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(candidateTeam), ...snapshot });
@@ -496,7 +496,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       coordinatorAddress: '/Teacher',
       rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })],
     });
-    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
     const readiness = service.connectCandidate(rootTeamRunId, team, 7);
 
     emit(callbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
@@ -519,7 +519,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       coordinatorAddress: '/Teacher',
       rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })],
     });
-    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
     const readiness = service.connectCandidate(rootTeamRunId, team, 7);
 
     emit(callbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });

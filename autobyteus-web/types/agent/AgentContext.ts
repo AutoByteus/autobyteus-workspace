@@ -57,3 +57,18 @@ export class AgentContext {
 
   // --- End: New helper getters (Facade) ---
 }
+
+/**
+ * The page's own state of a member moves to the context that replaces it (a Team stream's recovery, autobyteus-541
+ * D-A6): the draft being typed, a returned draft with its notice, and a send still waiting. Not `interruptPending`: the
+ * failed stream settled its Stops before the replacement, and the replacement's status decides the button.
+ */
+export const carryAgentContextPageState = (from: AgentContext, to: AgentContext): void => {
+  to.requirement = from.requirement;
+  to.contextFilePaths = from.contextFilePaths;
+  to.requestedSkillNames = from.requestedSkillNames;
+  to.requestedMentions = from.requestedMentions;
+  to.messageNotDelivered = from.messageNotDelivered;
+  to.collaboratorAddFailure = from.collaboratorAddFailure;
+  to.submissionPending = from.submissionPending;
+};

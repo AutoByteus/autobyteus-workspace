@@ -192,6 +192,11 @@
 //                  reconnects start their turns (a standalone run); a lost message shows text (a) or (b) with its text back
 //                  (a standalone run, an Org member, a run on beta, whose not-bound send waits 10 s):
 //                  `mobile-send-delivery-cases.mjs` (after 533's cases, before MSP-13; about 5 minutes).
+//   MSP-119 autobyteus-541 AC-001  A Team member's stream given a real gap (a frame withheld by the phone's wire) recovers
+//                  by itself, with no reselect, within one attempt; the member Idle, no notice, a message right after is
+//                  answered. MSP-120 AC-002: with the recovery's reads refused, a message meanwhile comes back with text (a),
+//                  the fifth failure shows the notice, and the recovery succeeds once the reads pass:
+//                  `mobile-team-stream-recovery-cases.mjs` (after 540's cases, before MSP-13).
 //   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
 //                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
 //                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
@@ -248,6 +253,7 @@ import { runRunSettingsCases } from './mobile-run-settings-cases.mjs';
 import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs';
 import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
 import { runSendDeliveryCases } from './mobile-send-delivery-cases.mjs';
+import { runTeamStreamRecoveryCases } from './mobile-team-stream-recovery-cases.mjs';
 import { createStopWire } from './fixtures/stop-generation-wire.mjs';
 
 const require = createRequire(import.meta.url);
@@ -602,6 +608,8 @@ const EXPECTED_BY_CASE = {
   'MSP-13': /status of 40[13]|Response not successful: Received status code 40[13]/,
   // Phone Access off (403 PHONE_ACCESS_DISABLED), then the node stopped.
   'MSP-18': /status of 403|Response not successful: Received status code 403|Failed to load resource: net::ERR_CONNECTION_REFUSED|Error: Bound backend is not ready/,
+  // autobyteus-541 AC-002: the recovery's checkpoint reads refused on purpose (the node unreachable for them).
+  'MSP-120': /Failed to load resource: net::ERR_FAILED/,
 };
 const recordBrowserError = (label, text) => {
   const line = redact(`${label}: ${text}`);
@@ -2635,6 +2643,8 @@ const runCases = async () => {
   await runStopGenerationCases({ runCase, page, stack, alpha, beta, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
   // autobyteus-540: messages are never lost silently on the phone (`mobile-send-delivery-cases.mjs`), before MSP-13.
   await runSendDeliveryCases({ runCase, page, stack, alpha, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
+  // autobyteus-541: a Team stream recovers by itself on the phone (`mobile-team-stream-recovery-cases.mjs`), before MSP-13.
+  await runTeamStreamRecoveryCases({ runCase, page, stack, alpha, sel, toList, openRow, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

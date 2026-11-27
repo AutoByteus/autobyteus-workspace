@@ -24,6 +24,8 @@ const messages = {
   'agentInput.components.agentInput.GroupedSelect.auto_execute_tools': '自动执行工具',
   'agentInput.components.agentInput.GroupedSelect.no_models_found': '没有找到型号。',
   'agentInput.components.agentInput.GroupedSelect.search_models': '搜索型号...',
+  'agentInput.components.agentInput.MessagePrimaryActionButton.send_message': '发送消息',
+  'agentInput.components.agentInput.MessagePrimaryActionButton.stop_generation': '停止生成',
 } satisfies TranslationCatalog;
 
 export default messages;

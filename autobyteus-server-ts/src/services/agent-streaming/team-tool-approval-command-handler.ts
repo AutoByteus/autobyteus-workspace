@@ -21,11 +21,11 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+/** A tool decision for one of the team's agents, through its routed commands (the stream's session always has them). */
 export const handleTeamToolApprovalCommand = async (input: {
-  teamRunId: string;
   payload: TeamToolApprovalPayload;
   approved: boolean;
-  activeRun: Pick<RootTeamRun, "executeAgentCommand"> | null;
+  activeRun: Pick<RootTeamRun, "executeAgentCommand">;
   sink: TeamToolApprovalSink;
 }): Promise<void> => {
   const invocationId = typeof input.payload.invocation_id === "string"
@@ -35,13 +35,9 @@ export const handleTeamToolApprovalCommand = async (input: {
     logger.warn("Team tool approval missing invocation_id");
     return;
   }
-  if (!input.activeRun) {
-    logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: active run not found.`);
-    return;
-  }
   const agentRunId = parseCommandAgentRunId(input.payload);
   if (!agentRunId) {
-    logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: ${TEAM_COMMAND_INVALID_TARGET_MESSAGE}`);
+    logger.warn(`TOOL_APPROVAL rejected for invocation ${invocationId}: ${TEAM_COMMAND_INVALID_TARGET_MESSAGE}`);
     input.sink?.send(parseTeamStreamServerMessage({
       type: "ERROR",
       payload: {
@@ -66,7 +62,7 @@ export const handleTeamToolApprovalCommand = async (input: {
   });
   if (!result.accepted) {
     logger.warn(
-      `TOOL_APPROVAL rejected for team run ${input.teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+      `TOOL_APPROVAL rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
     );
   }
 };

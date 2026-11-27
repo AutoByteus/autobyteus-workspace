@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -7,10 +7,12 @@ import {
   testAgentNode,
 } from '~/test-support/currentTeamTestFixtures';
 import { createPinia, setActivePinia } from 'pinia';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore';
 
 const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
-  agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
-  const localState = { activeTeamContext: null as any, recoveryNotice: null as any };
+  agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock } = vi.hoisted(() => {
+  const localState = { activeTeamContext: null as any };
   return {
     state: localState,
     // The Team's own focus; no run it delegated is selected in its tree (autobyteus-461 SR-084).
@@ -26,9 +28,6 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
     agentRunConfigStoreMock: { clearConfig: vi.fn() },
     selectionStoreMock: { selectedType: 'team', subject: null, beginSelectionIntent: vi.fn(() => ({ isCurrent: () => true })), clearSelection: vi.fn() },
     workspaceCenterViewStoreMock: { showConfig: vi.fn() },
-    agentTeamRunStoreMock: {
-      getTeamStreamRecoveryNotice: vi.fn(() => localState.recoveryNotice),
-    },
   };
 });
 
@@ -40,7 +39,6 @@ vi.mock('~/stores/teamRunConfigStore', () => ({ useTeamRunConfigStore: () => tea
 vi.mock('~/stores/agentRunConfigStore', () => ({ useAgentRunConfigStore: () => agentRunConfigStoreMock }));
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => selectionStoreMock }));
 vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock }));
-vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => agentTeamRunStoreMock }));
 const copyTeamRun = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ copyTeamRun }) }));
 
@@ -63,16 +61,11 @@ describe('TeamWorkspaceView current aggregate', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     state.activeTeamContext = buildTeamContext();
-    state.recoveryNotice = null;
-    agentTeamRunStoreMock.getTeamStreamRecoveryNotice.mockImplementation(() => state.recoveryNotice);
   });
+  afterEach(async () => { await localizationRuntime.setPreference('en'); });
 
   const mountComponent = () => mount(TeamWorkspaceView, {
-    global: { mocks: {
-      $t: (key: string) => key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required'
-        ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
-        : key,
-    }, stubs: {
+    global: { mocks: { $t: (key: string) => key }, stubs: {
       AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
       WorkspaceHeaderActions: {
         template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',
@@ -98,12 +91,24 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {
-    state.recoveryNotice = { kind: 'team_stream_recovery_required', rootTeamRunId: 'team-1' };
+  // autobyteus-541 D-A5: the stream recovers by itself; the view says so only after it keeps failing (the fifth time).
+  it.each(['required', 'recovering'] as const)('shows no notice while the Team stream recovery is %s', async (progress) => {
+    useTeamStreamRecoveryStore().$patch({ states: { 'team-1': progress } });
     const wrapper = mountComponent();
-    expect(wrapper.get('[role="alert"]').text()).toBe(
-      'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.',
-    );
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+  });
+
+  it.each([
+    ['en', 'Live updates could not recover automatically. Select this Team member again to reload the complete conversation.'],
+    ['zh-CN', '实时更新无法自动恢复。请再次选择此团队成员，以重新加载完整对话。'],
+  ] as const)('shows the %s notice once the recovery keeps failing', async (locale, text) => {
+    await localizationRuntime.setPreference(locale);
+    useTeamStreamRecoveryStore().$patch({ states: { 'team-1': 'exhausted' } });
+    const wrapper = mountComponent();
+    expect(wrapper.get('[role="alert"]').text()).toBe(text);
+    useTeamStreamRecoveryStore().clear('team-1');
+    await flushPromises();
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false);
   });
 
   it('rejects an unresolved initial AgentRun focus instead of substituting another identity', () => {

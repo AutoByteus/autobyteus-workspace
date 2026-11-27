@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   loadCandidate: vi.fn(), hydrateFiles: vi.fn(), mergeFiles: vi.fn(), selectRun: vi.fn(),
   selectRunWithoutShellNavigation: vi.fn(), clearTeamConfig: vi.fn(), clearAgentConfig: vi.fn(),
   connect: vi.fn(), disconnect: vi.fn(), patchConfig: vi.fn(), upsertContext: vi.fn(),
-  getRun: vi.fn(), isStreamReady: vi.fn(), replaceActivities: vi.fn(), primeBaseline: vi.fn(),
+  getRun: vi.fn(), isStreamReady: vi.fn(), replaceActivities: vi.fn(), primeBaseline: vi.fn(), statusOf: vi.fn(),
 }));
 
 vi.mock('~/services/runHydration/runContextHydrationService', () => ({
@@ -38,6 +38,9 @@ vi.mock('~/stores/agentRunConfigStore', () => ({
 vi.mock('~/stores/teamRunConfigStore', () => ({
   useTeamRunConfigStore: () => ({ clearConfig: mocks.clearTeamConfig }),
 }));
+vi.mock('~/stores/runStatusStore', () => ({
+  useRunStatusStore: () => ({ statusOf: mocks.statusOf }),
+}));
 vi.mock('~/stores/agentRunStore', () => ({
   useAgentRunStore: () => ({
     connectToAgentStream: mocks.connect,
@@ -65,6 +68,7 @@ describe('openAgentRun', () => {
     mocks.isStreamReady.mockReturnValue(false);
     mocks.replaceActivities.mockReturnValue('applied');
     mocks.upsertContext.mockImplementation(({ runId, conversation }) => ({ state: { runId, conversation } }));
+    mocks.statusOf.mockReturnValue(null);
   });
 
   it('keeps the subscribed live context and its Activity while merging projected file changes', async () => {
@@ -100,30 +104,87 @@ describe('openAgentRun', () => {
     expect(mocks.connect).not.toHaveBeenCalled();
   });
 
-  it('rejects an Activity conflict before context publication or selection', async () => {
+  // autobyteus-541 D-B2 (AC-006): another builder's commit during the open is read once more, never an error.
+  it('reads once more after an Activity conflict and commits that read', async () => {
     mocks.getRun.mockReturnValue(undefined);
     mocks.loadCandidate.mockResolvedValue(candidate('run-3', false));
-    mocks.replaceActivities.mockReturnValue('conflict');
+    mocks.replaceActivities.mockReturnValueOnce('conflict').mockReturnValueOnce('applied');
 
     await expect(openAgentRun({
       runId: 'run-3', fallbackAgentName: 'Agent', resolveWorkspaceMetadataByRootPath: vi.fn(),
-    })).rejects.toThrow("Agent activity for 'run-3' changed before projection commit.");
+    })).resolves.toMatchObject({ disposition: 'committed', runId: 'run-3' });
 
-    expect(mocks.upsertContext).not.toHaveBeenCalled();
-    expect(mocks.selectRun).not.toHaveBeenCalled();
+    expect(mocks.loadCandidate).toHaveBeenCalledTimes(2);
+    expect(mocks.upsertContext).toHaveBeenCalledTimes(1);
+    expect(mocks.selectRun).toHaveBeenCalledWith('run-3', 'agent');
   });
 
-  it('rejects a context identity change before touching Activity', async () => {
-    mocks.getRun.mockReturnValueOnce(undefined).mockReturnValueOnce({ state: { runId: 'run-4' } });
+  it('commits the second read over a context a history refresh built during the first', async () => {
+    const built = { state: { runId: 'run-4' } };
+    // The open began with no context; the refresh committed one before the first read came back, and kept it.
+    mocks.getRun.mockReturnValueOnce(undefined).mockReturnValue(built);
     mocks.loadCandidate.mockResolvedValue(candidate('run-4', false));
 
     await expect(openAgentRun({
       runId: 'run-4', fallbackAgentName: 'Agent', resolveWorkspaceMetadataByRootPath: vi.fn(),
-    })).rejects.toThrow("Agent run 'run-4' changed before projection commit.");
+    })).resolves.toMatchObject({ disposition: 'committed' });
+
+    expect(mocks.loadCandidate).toHaveBeenCalledTimes(2);
+    // The first read touched nothing; the second, against the built context, committed.
+    expect(mocks.replaceActivities).toHaveBeenCalledTimes(1);
+    expect(mocks.upsertContext).toHaveBeenCalledWith(expect.objectContaining({ runId: 'run-4' }));
+    expect(mocks.selectRun).toHaveBeenCalledWith('run-4', 'agent');
+  });
+
+  it('keeps and shows the context the page holds when it changed again during the second read', async () => {
+    const first = { state: { runId: 'run-5' } };
+    const second = { state: { runId: 'run-5' } };
+    mocks.getRun.mockReturnValueOnce(undefined).mockReturnValueOnce(first).mockReturnValue(second);
+    mocks.loadCandidate.mockResolvedValue(candidate('run-5', true));
+    const errors = vi.spyOn(console, 'error');
+
+    await expect(openAgentRun({
+      runId: 'run-5', fallbackAgentName: 'Agent', resolveWorkspaceMetadataByRootPath: vi.fn(),
+    })).resolves.toMatchObject({ disposition: 'committed', runId: 'run-5' });
 
     expect(mocks.replaceActivities).not.toHaveBeenCalled();
     expect(mocks.upsertContext).not.toHaveBeenCalled();
+    expect(mocks.selectRun).toHaveBeenCalledWith('run-5', 'agent');
+    expect(mocks.connect).toHaveBeenCalledWith('run-5');
+    expect(errors).not.toHaveBeenCalled();
   });
+
+  it('keeps the held context when its Activity changed again during the second read', async () => {
+    const held = { state: { runId: 'run-6' } };
+    mocks.getRun.mockReturnValue(held);
+    mocks.loadCandidate.mockResolvedValue(candidate('run-6', false));
+    mocks.replaceActivities.mockReturnValue('conflict');
+
+    await expect(openAgentRun({
+      runId: 'run-6', fallbackAgentName: 'Agent', resolveWorkspaceMetadataByRootPath: vi.fn(),
+    })).resolves.toMatchObject({ disposition: 'committed' });
+
+    expect(mocks.replaceActivities).toHaveBeenCalledTimes(2);
+    expect(mocks.upsertContext).not.toHaveBeenCalled();
+    expect(mocks.selectRun).toHaveBeenCalledWith('run-6', 'agent');
+  });
+
+  // autobyteus-541 D-B1 (AC-005): the status at open is the run's own, never a Running placeholder.
+  it.each([
+    ['idle', true, 'idle'],
+    ['running', true, 'running'],
+    [null, true, 'initializing'],
+    ['idle', false, 'offline'],
+  ] as const)('opens a run whose own status is %s (active %s) as %s', async (known, isActive, shown) => {
+    mocks.getRun.mockReturnValue(undefined);
+    mocks.statusOf.mockReturnValue(known);
+    mocks.loadCandidate.mockResolvedValue(candidate('run-7', isActive));
+
+    await openAgentRun({ runId: 'run-7', fallbackAgentName: 'Agent', resolveWorkspaceMetadataByRootPath: vi.fn() });
+
+    expect(mocks.upsertContext).toHaveBeenCalledWith(expect.objectContaining({ runId: 'run-7', status: shown }));
+  });
+
   it.each(['success', 'error'])('superseded Agent %s never publishes candidate or selection', async (completion) => {
     mocks.getRun.mockReturnValue(undefined);
     let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void;

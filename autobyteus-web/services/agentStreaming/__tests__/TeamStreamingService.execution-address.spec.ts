@@ -12,7 +12,7 @@ const createHarness = (state = 'connected') => {
     on: vi.fn((event: string, callback: (...payload: any[]) => void) => callbacks.set(event, callback)),
     off: vi.fn(),
   } as any;
-  const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+  const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient, onStreamRecoveryRequired: vi.fn() });
   const team = buildTestTeamContext({
     teamRunId: 'team-1', coordinatorAddress: '/worker',
     // Two own members; a run a member delegated is its own run, outside the Team's stream (autobyteus-461 rule 2).

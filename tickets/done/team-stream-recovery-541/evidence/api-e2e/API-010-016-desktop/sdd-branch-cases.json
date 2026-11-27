@@ -1,0 +1,264 @@
+{
+ "result": "Fail",
+ "cleanup": {
+  "frontend": "stopped",
+  "backend": "stopped",
+  "dataRootRemoved": true
+ },
+ "browserErrors": [],
+ "notReadyErrors": 0,
+ "cases": {
+  "SDD-13": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "timeline": [
+    [
+     0,
+     "Idle"
+    ]
+   ],
+   "sendDisabledAt": null,
+   "afterUp": "Idle",
+   "seconds": 21
+  },
+  "SDD-07": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "before": "Idle",
+   "view": {
+    "head": [
+     "S4",
+     "hello agent",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN not-bound-47f9",
+    "count": 0
+   },
+   "sendAfterNotice": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10040,
+   "sent": 0,
+   "frames": [
+    "0 L44 down /ws/agent-team DROPPED (the page's path is down)",
+    "0 L45 down /ws/agent DROPPED (the page's path is down)",
+    "693 L46 down /ws/agent REFUSED (path down)",
+    "1003 L47 down /ws/agent-team REFUSED (path down)",
+    "2696 L48 down /ws/agent REFUSED (path down)",
+    "2963 L49 down /ws/agent REFUSED (path down)",
+    "2963 L50 down /ws/agent-team REFUSED (path down)",
+    "3966 L51 down /ws/agent-team REFUSED (path down)",
+    "4727 L52 down /ws/agent-package-definitions REFUSED (path down)",
+    "4728 L53 down /ws/update-notifications REFUSED (path down)",
+    "5968 L54 down /ws/agent-team REFUSED (path down)",
+    "7961 L55 down /ws/agent REFUSED (path down)",
+    "7961 L56 down /ws/agent-team REFUSED (path down)",
+    "8964 L57 down /ws/agent-team REFUSED (path down)",
+    "10728 L58 down /ws/run-status REFUSED (path down)",
+    "10728 L59 down /ws/agent-collaboration REFUSED (path down)",
+    "10967 L60 down /ws/agent-team REFUSED (path down)",
+    "12960 L61 down /ws/agent CONNECTED",
+    "12960 L61 down /ws/agent AGENT_STATUS idle",
+    "12961 L61 down /ws/agent AGENT_STREAM_SNAPSHOT input_state={\"revision\":5,\"entries\":[]}",
+    "12962 L62 down /ws/agent-team CONNECTED",
+    "12962 L62 down /ws/agent-team TEAM_EXECUTION_VIEW_SNAPSHOT",
+    "12962 L62 down /ws/agent-team RUN_TREE_SNAPSHOT"
+   ],
+   "seconds": 13
+  },
+  "SDD-12": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "timeline": [
+    [
+     0,
+     "Idle"
+    ]
+   ],
+   "sendDisabledAt": null,
+   "afterUp": "Idle",
+   "seconds": 19
+  },
+  "SDD-09": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "before": "Idle",
+   "timeline": [
+    [
+     203,
+     "Idle"
+    ]
+   ],
+   "sendable": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "view": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN team-timeout-47f9",
+    "count": 0
+   },
+   "sendAfterNotice": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "afterUp": {
+    "status": "Idle",
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10023,
+   "sent": 0,
+   "seconds": 13
+  },
+  "SDD-14": {
+   "result": "Pass",
+   "gap": {
+    "withheld": {
+     "type": "TURN_COMPLETED",
+     "seq": 34
+    },
+    "recoveredAfterMs": 46,
+    "gapSeen": true,
+    "failedAttempts": 0,
+    "replacementLink": 107
+   },
+   "before": "Idle",
+   "after": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": null,
+    "draft": "",
+    "count": 1
+   },
+   "recoveryNotice": 0,
+   "sentAfter": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": null,
+    "draft": "",
+    "count": 1
+   },
+   "sends": [
+    107
+   ],
+   "seconds": 1
+  },
+  "SDD-15": {
+   "result": "Pass",
+   "refusedReads": 5,
+   "failuresAtNotice": 5,
+   "noticeAfterGapMs": 15065,
+   "shownStatus": "Idle",
+   "sendable": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10028,
+   "during": {
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN during-exhausted-47f9",
+    "count": 0
+   },
+   "recovery": {
+    "withheld": {
+     "type": "AGENT_STATUS",
+     "seq": 54
+    },
+    "recoveredAfterMs": 31044,
+    "gapSeen": true,
+    "failedAttempts": 5,
+    "replacementLink": 113
+   },
+   "after": {
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "count": 1
+   },
+   "noticeAfterRecovery": 0,
+   "seconds": 31
+  },
+  "SDD-91": {
+   "result": "Fail",
+   "error": "the click selected the other member",
+   "details": {
+    "before": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Idle"
+     ]
+    },
+    "afterClick": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Running"
+     ]
+    },
+    "recovery": {
+     "withheld": {
+      "type": "TURN_COMPLETED",
+      "seq": 85
+     },
+     "recoveredAfterMs": 5042,
+     "gapSeen": true,
+     "failedAttempts": 0,
+     "replacementLink": 114
+    },
+    "afterCommit": {
+     "rows": {
+      "lead": null,
+      "mate": "true"
+     },
+     "head": [
+      "M",
+      "mate",
+      "Offline"
+     ]
+    },
+    "heldReads": 2,
+    "clickBeforeCommitMs": 4961
+   },
+   "seconds": 8
+  }
+ }
+}

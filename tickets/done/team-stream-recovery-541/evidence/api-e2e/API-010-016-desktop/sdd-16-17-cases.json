@@ -1,0 +1,103 @@
+{
+ "result": "Fail",
+ "cleanup": {
+  "frontend": "stopped",
+  "backend": "stopped",
+  "dataRootRemoved": true
+ },
+ "browserErrors": [],
+ "cases": {
+  "SDD-16": {
+   "result": "Fail",
+   "error": "the member the in-app link opened stays focused after the recovery commits (CRR-001 C-2)",
+   "details": {
+    "atLead": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Idle"
+     ],
+     "url": ""
+    },
+    "afterLink": {
+     "rows": {
+      "lead": null,
+      "mate": "true"
+     },
+     "head": [
+      "M",
+      "mate",
+      "Offline"
+     ],
+     "url": ""
+    },
+    "recovery": {
+     "withheld": {
+      "type": "TURN_COMPLETED",
+      "seq": 34
+     },
+     "recoveredAfterMs": 5039,
+     "gapSeen": true,
+     "failedAttempts": 0,
+     "replacementLink": 12
+    },
+    "afterCommit": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Idle"
+     ],
+     "url": ""
+    },
+    "heldReads": 2,
+    "mateRunId": "send_mate_4e9b_cd5a521c1c4c4674912d4c071167a2ba"
+   },
+   "seconds": 8
+  },
+  "SDD-17": {
+   "result": "Pass",
+   "before": {
+    "rows": {
+     "lead": "true",
+     "mate": null
+    },
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ]
+   },
+   "recovery": {
+    "withheld": {
+     "type": "TURN_COMPLETED",
+     "seq": 51
+    },
+    "recoveredAfterMs": 5038,
+    "gapSeen": true,
+    "failedAttempts": 0,
+    "replacementLink": 13
+   },
+   "afterCommit": {
+    "rows": {
+     "lead": null,
+     "mate": "true"
+    },
+    "head": [
+     "M",
+     "mate",
+     "Offline"
+    ]
+   },
+   "heldReads": 2,
+   "seconds": 8
+  }
+ }
+}

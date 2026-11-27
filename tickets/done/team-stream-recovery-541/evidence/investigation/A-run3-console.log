@@ -1,0 +1,23 @@
+2026-11-27T07:23:42.686Z debug [vite] connecting...
+2026-11-27T07:23:42.774Z debug [vite] connected.
+2026-11-27T07:23:46.863Z log serverStore: Initializing server config
+2026-11-27T07:23:46.864Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-27T07:23:46.872Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-27T07:23:47.531Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-27T07:23:47.559Z log [useTerminalSession] Connecting to: ws://127.0.0.1:62512/ws/terminal/b139651e-e2f4-4f7a-b86a-faf6f8255bf9
+2026-11-27T07:23:47.579Z log [useTerminalSession] Connected
+2026-11-27T07:23:47.657Z log Agent WebSocket connected
+2026-11-27T07:23:47.676Z log Team WebSocket transport connected
+2026-11-27T07:23:51.368Z debug [vite] connecting...
+2026-11-27T07:23:51.386Z debug [vite] connected.
+2026-11-27T07:23:52.320Z log serverStore: Initializing server config
+2026-11-27T07:23:52.320Z log serverStore: Not in Electron environment. Skipping server initialization.
+2026-11-27T07:23:52.333Z info <Suspense> is an experimental feature and its API will likely change.
+2026-11-27T07:23:52.424Z log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+2026-11-27T07:23:52.443Z log [useTerminalSession] Connecting to: ws://127.0.0.1:62512/ws/terminal/f3e7d2b6-27f2-45ba-ab2d-538a7fc84f55
+2026-11-27T07:23:52.452Z log [useTerminalSession] Connected
+2026-11-27T07:23:52.521Z log Agent WebSocket connected
+2026-11-27T07:23:52.537Z log Team WebSocket transport connected
+2026-11-27T07:23:55.908Z warning Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 3, received 4.
+2026-11-27T07:23:55.908Z warning Message not delivered (unknown): Team message admission was cancelled because Team stream recovery is required.
+2026-11-27T07:24:02.316Z log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm

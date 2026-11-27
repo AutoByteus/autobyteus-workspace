@@ -32,8 +32,8 @@ const messages = {
   "workspace.runModelConfig.validation.pattern": "Value does not match the required format.",
   "workspace.runModelConfig.validation.schema_pattern": "The current model schema contains an invalid format rule.",
   "workspace.runModelConfig.thinkingAdvancedOnly": "Use the model settings below to control thinking.",
-  "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
-    "Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.",
+  "workspace.team.recovery.exhausted":
+    "Live updates could not recover automatically. Select this Team member again to reload the complete conversation.",
   "workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait":
     "This Team is still working. Wait for it to finish, then select this Team member again.",
   "workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry":

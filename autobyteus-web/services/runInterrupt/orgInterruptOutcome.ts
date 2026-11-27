@@ -1,5 +1,5 @@
 import type { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
-import { AgentOrgConnectionLostError } from '~/services/agentOrgExecution/agentOrgConnectionLostError'
+import { AgentOrgConnectionLostError } from '~/services/agentOrgExecution/agentOrgCommandFailures'
 import {
   INTERRUPT_ACCEPTED,
   INTERRUPT_CONNECTION_LOST,

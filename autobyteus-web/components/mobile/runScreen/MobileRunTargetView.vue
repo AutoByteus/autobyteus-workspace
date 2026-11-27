@@ -17,6 +17,7 @@
       <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" @open-view="$emit('open-view', $event)" />
     </header>
 
+    <WorkspaceRecoveryNotice v-if="recoveryNotice" class="flex-shrink-0" :message="recoveryNotice" data-testid="mobile-run-recovery-notice" />
     <div v-if="unreachable" class="min-h-0 flex-1 overflow-y-auto" data-testid="mobile-run-unreachable">
       <RemoteRunNotice :node-name="remote?.nodeName ?? ''" @retry="remoteView.retry()" />
     </div>
@@ -49,6 +50,8 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue';
 import MobileRunMenu from '~/components/mobile/runScreen/MobileRunMenu.vue';
+import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue';
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore';
 import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation';
@@ -71,6 +74,11 @@ const subjectLine = computed(() => mobileRunSubjectLine({
   unreachable: unreachable.value, parentName: props.parentName, t,
 }));
 const dotClass = computed(() => subjectLine.value.dotClass);
+/** A Team member's stream that keeps failing to recover says so, as on the desktop (autobyteus-541 D-A5). */
+const recoveryStates = useTeamStreamRecoveryStore();
+const recoveryNotice = computed(() => props.target.kind === 'standalone_team_member'
+  && recoveryStates.stateOf(props.target.team.rootRunId) === 'exhausted'
+  ? t('workspace.team.recovery.exhausted') : null);
 const subtitle = computed(() => subjectLine.value.subtitle);
 
 /**

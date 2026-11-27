@@ -32,8 +32,8 @@ const messages = {
   "workspace.runModelConfig.validation.pattern": "值不符合所需格式。",
   "workspace.runModelConfig.validation.schema_pattern": "当前模型架构包含无效的格式规则。",
   "workspace.runModelConfig.thinkingAdvancedOnly": "请使用下方的模型设置来控制思考。",
-  "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
-    "团队实时更新已不同步。请等待团队完成当前工作，然后再次选择此团队成员以重新加载完整对话。",
+  "workspace.team.recovery.exhausted":
+    "实时更新无法自动恢复。请再次选择此团队成员，以重新加载完整对话。",
   "workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait":
     "该团队仍在工作。请等待其完成，然后再次选择此团队成员。",
   "workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry":

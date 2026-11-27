@@ -1,0 +1,19 @@
+{
+ "result": "Fail",
+ "cleanup": {
+  "frontend": "stopped",
+  "backend": "stopped",
+  "dataRootRemoved": true
+ },
+ "browserErrors": [
+  "pageerror: Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+ ],
+ "cases": {
+  "SDD-92": {
+   "result": "Fail",
+   "error": "Timed out: the page's replacement Team stream snapshot",
+   "details": null,
+   "seconds": 93
+  }
+ }
+}

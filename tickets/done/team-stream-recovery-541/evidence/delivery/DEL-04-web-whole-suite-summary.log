@@ -1,0 +1,52 @@
+### web-whole: env NUXT_TEST=true pnpm -C autobyteus-web test:nuxt --run
+
+> autobyteus@1.5.15-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-stream-recovery-541/autobyteus-web
+[...] full log not kept (the vitest summary, the failure message and the count of FAIL lines follow)
+lines containing ' FAIL ': 1
+ FAIL  tests/integration/app-font-size-fixed-px-audit.integration.test.ts > app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "components/settings/nodes/NodeRow.vue -> Tailwind arbitrary text-[Npx] @ line 39: class=\"flex-shrink-0 rounded bg-amber-50 px-1.5 text-[11px] font-medium leading-5 text-amber-700 ring-1 ring-inset ring-amber-200\"",[39m
+[31m+ ][39m
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts:124:22
+    122|     );
+    123| 
+    124|     expect(failures).toEqual([]);
+       |                      ^
+    125|   });
+    126| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "components/settings/nodes/NodeRow.vue -> Tailwind arbitrary text-[Npx] @ line 39: class=\"flex-shrink-0 rounded bg-amber-50 px-1.5 text-[11px] font-medium leading-5 text-amber-700 ring-1 ring-inset ring-amber-200\"",[39m
+[31m+ ][39m
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts:124:22
+    122|     );
+    123| 
+    124|     expect(failures).toEqual([]);
+       |                      ^
+    125|   });
+    126| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 817 passed (818)
+      Tests  1 failed | 6372 passed | 2 skipped (6375)
+   Start at  12:21:36
+   Duration  310.92s (transform 35.13s, setup 2074.75s, collect 210.99s, tests 100.36s, environment 163.82s, prepare 96.77s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

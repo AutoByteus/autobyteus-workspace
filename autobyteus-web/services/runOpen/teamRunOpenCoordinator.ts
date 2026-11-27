@@ -13,6 +13,9 @@ import {
   markCommittedTeamRunHydrationAuthority,
 } from '~/services/runHydration/teamRunHydrationCommit';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 export interface OpenTeamRunWithCoordinatorInput {
@@ -89,14 +92,23 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
   return result;
 }
 
-export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
-export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
-export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
-  const intent = input.selectRun === false ? undefined
-    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
-  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
-  const contexts = useAgentTeamContextsStore();
-  const current = contexts.getTeamContextById(input.teamRunId);
+type TeamStreamRecovery = Readonly<{ context: AgentTeamContext; resumeConfig: TeamRunResumeConfigPayload }>;
+/** At most one recovery per Team (autobyteus-541 D-A3): the automatic one and a user's reselect share it. */
+const recoveriesByTeamRunId = new Map<string, Promise<TeamStreamRecovery>>();
+
+const recoverTeamStream = (input: OpenTeamRunWithCoordinatorInput): Promise<TeamStreamRecovery> => {
+  const running = recoveriesByTeamRunId.get(input.teamRunId);
+  if (running) return running;
+  const recovery = runTeamStreamRecovery(input).finally(() => {
+    if (recoveriesByTeamRunId.get(input.teamRunId) === recovery) recoveriesByTeamRunId.delete(input.teamRunId);
+  });
+  recoveriesByTeamRunId.set(input.teamRunId, recovery);
+  return recovery;
+};
+
+/** Reads the Team again and replaces its failed stream with the verified one; no selection (that is its caller's). */
+const runTeamStreamRecovery = async (input: OpenTeamRunWithCoordinatorInput): Promise<TeamStreamRecovery> => {
+  const current = useAgentTeamContextsStore().getTeamContextById(input.teamRunId);
   const preferredAgentRunId = input.agentRunId?.trim()
     || current?.view.getFocusedAgentRunId()
     || null;
@@ -107,35 +119,81 @@ export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordin
   if (!runStore.isTeamStreamReopenRequired(input.teamRunId)) {
     throw new Error(`Team stream '${input.teamRunId}' is not awaiting recovery.`);
   }
-  let hydrated: Awaited<ReturnType<typeof hydrateTeamRunContextForStreamRecovery>>;
-  try {
-    hydrated = await hydrateTeamRunContextForStreamRecovery({ ...input, agentRunId: preferredAgentRunId });
-  } catch (error) {
-    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
-    throw error;
-  }
-  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+  const hydrated = await hydrateTeamRunContextForStreamRecovery({ ...input, agentRunId: preferredAgentRunId });
   const context = hydrated.hydratedContext;
   const focus = context.view.focusAgentForInspection(preferredAgentRunId);
   if (focus.disposition === 'rejected') throw new Error(focus.message);
+  // The member the user moved to while the read ran (any focus path: a link, a mounted Team's inspection), read at the
+  // commit from the context being replaced (autobyteus-541 CR-001).
+  let focusedAtCommit: string | null = null;
+  await runStore.replaceFailedTeamStream({
+    rootTeamRunId: input.teamRunId,
+    candidateContext: context,
+    expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
+    beforeContextCommit: () => {
+      focusedAtCommit = useAgentTeamContextsStore().getTeamContextById(input.teamRunId)?.view.getFocusedAgentRunId() ?? null;
+      commitTeamRunHydration(hydrated);
+    },
+  });
+  markCommittedTeamRunHydrationAuthority(hydrated);
+  await keepFocusAcrossRecovery(input.teamRunId, context, preferredAgentRunId, focusedAtCommit);
+  return { context, resumeConfig: hydrated.resumeConfig };
+};
+
+/**
+ * After the commit, the recovered context shows the member the replaced one showed at the commit: loaded first, as a
+ * mounted Team's member is, then focused. Nothing when that member left the tree, or when the focus moved again since.
+ */
+const keepFocusAcrossRecovery = async (
+  teamRunId: string,
+  context: AgentTeamContext,
+  candidateFocus: string,
+  focusedAtCommit: string | null,
+): Promise<void> => {
+  if (!focusedAtCommit || focusedAtCommit === candidateFocus || !context.view.hasAgentRun(focusedAtCommit)) return;
   try {
-    await runStore.replaceFailedTeamStream({
-      rootTeamRunId: input.teamRunId,
-      candidateContext: context,
-      expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
-      beforeContextCommit: () => {
-        if (intent && !intent.isCurrent()) throw new Error('Workspace selection superseded.');
-        commitTeamRunHydration(hydrated);
-      },
-    });
+    await ensureAuthoritativeTeamMemberProjection({ team: context, agentRunId: focusedAtCommit });
+  } catch (error) {
+    console.warn(`Team '${teamRunId}' recovered; its member '${focusedAtCommit}' could not be loaded.`, error);
+    return;
+  }
+  if (useAgentTeamContextsStore().getTeamContextById(teamRunId) !== context
+    || context.view.getFocusedAgentRunId() !== candidateFocus) return;
+  if (context.view.focusAgentForInspection(focusedAtCommit).disposition === 'rejected') return;
+  // The run tree's rows show the focus from the navigation projection, which the commit built with the read's member.
+  useRunHistoryStore().refreshRunNavigationTopology('team-stream-recovery-focus');
+};
+
+/**
+ * Recovers a Team whose stream failed. A call while a recovery runs joins it; when that one failed, it runs its own.
+ * The stream is replaced whatever the selection does meanwhile; the selection (intent rules as for an open) follows.
+ */
+export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
+export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
+export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
+  const intent = input.selectRun === false ? undefined
+    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+  let recovered: TeamStreamRecovery | null = null;
+  try {
+    const running = recoveriesByTeamRunId.get(input.teamRunId);
+    if (running) recovered = await running.catch(() => null);
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+    recovered ??= await recoverTeamStream(input);
+    // A joined recovery focused its own member: the reselect's member loads, then is focused (as a mounted Team's).
+    const requested = input.agentRunId?.trim();
+    if (requested && recovered.context.view.getFocusedAgentRunId() !== requested) {
+      await ensureAuthoritativeTeamMemberProjection({ team: recovered.context, agentRunId: requested, selectionIntent: intent });
+      if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+      const focus = recovered.context.view.focusAgentForInspection(requested);
+      if (focus.disposition === 'rejected') throw new Error(focus.message);
+    }
   } catch (error) {
     if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
     throw error;
   }
   if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
-  markCommittedTeamRunHydrationAuthority(hydrated);
-  const focusedAgentRunId = context.view.getFocusedAgentRunId();
-  const focusedMemberAddress = context.view.getFocusedMemberAddress();
+  const { context } = recovered;
   if (input.selectRun !== false) {
     const selection = useAgentSelectionStore();
     input.selectionMode === 'mobile'
@@ -147,9 +205,9 @@ export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordin
   const result: OpenTeamRunWithCoordinatorResult = {
     disposition: 'committed',
     teamRunId: input.teamRunId,
-    focusedAgentRunId,
-    focusedMemberAddress,
-    resumeConfig: hydrated.resumeConfig,
+    focusedAgentRunId: context.view.getFocusedAgentRunId(),
+    focusedMemberAddress: context.view.getFocusedMemberAddress(),
+    resumeConfig: recovered.resumeConfig,
   };
   input.onCommitted?.(result);
   return result;

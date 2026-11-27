@@ -437,3 +437,28 @@ Principle 11 (one owner per fact, here a lifetime) and Principle 1 (trace throug
 - **The fix (SR-002):** the app's own module creates one long-lived `PDFWorker` wrapper and passes it to every document as `worker`. pdf.js never destroys a worker it was given. The global default stays unset, so a caller that forgets the worker fails loudly instead of taking the shared wrapper.
 - **Why it mattered:** the leak was fixed, but the change broke opening PDFs one after another, the common path.
 - **Notice it by:** a design that shares a resource by setting a library's global or default, not by passing the instance. Ask who destroys it: trace the library's teardown for that default path. Then check whether consumers' teardowns can overlap, as with an unawaited destroy on unmount followed by an immediate mount. Give the shared resource one explicit owner for its lifetime, and give consumers a handle they cannot destroy.
+
+### Case 32: An Automatic Replacement Of An Aggregate That Drops The Page's Own State On It (autobyteus-541, ARCH-REV-001 AR-001)
+
+Principle 11 (one owner per fact) and Principle 1 (trace the real lifecycle).
+
+- **The design said:** a Team stream that fails recovers by itself, through the existing verified replacement the user's reselect already uses.
+- **What the code does:** the replacement swaps the whole Team context (`replaceTeamContext`), with fresh member `AgentContext`s. Their page-local state (the draft being typed, a returned draft and its notice, a send's pending flag) stays on the old objects. Done by the user's own click, that loss was rare and expected; done automatically, under the user's hands, a draft vanishes at commit, a returned draft disappears with its notice, and a waiting send settles on a context no longer shown.
+- **The fix (SR-002):**
+  - the one commit point carries the page-local fields, through one helper that owns the list;
+  - an in-flight send re-resolves the member's current context when its wait ends;
+  - the walks (typing, send→commit→success, send→timeout→later commit, reselect) are recorded and become specs.
+- **Why it mattered:** a fix for a frozen view would have lost the user's typing and messages instead.
+- **Notice it by:** a design that makes a user-triggered replacement automatic. List what the page holds on the replaced objects that the server does not (drafts, notices, pending flags, handles held by async work), and walk each across the commit.
+
+### Case 33: A Store That Starts The Work It Publishes (autobyteus-541, ARCH-REV-001 AR-002)
+
+Principle 16 (one composition root, visible dependencies).
+
+- **The design said:** the Team store starts the automatic recovery when a stream needs it, "from a plugin or a lazy import" to avoid an import cycle.
+- **What it would have been:** the store drives the recovery, the recovery drives the coordinator, and the coordinator commits through the store. That is a cycle in behavior, hidden from the import graph. And the stream's `onStreamRecoveryRequired` defaulted to a no-op, so a missing wiring would have meant no recovery, silently.
+- **The fix (SR-002):** one direction.
+  - The store publishes each Team's recovery state, a fired trigger.
+  - A recovery owner created at the composition root (a client plugin) watches it and drives the coordinator.
+  - The callback is required, and publishing with no registered owner throws.
+- **Notice it by:** "a lazy import" or "a callback the store calls" used to break a cycle. Ask which side owns the decision, make the trigger data the owner watches, and make a missing owner fail loudly.

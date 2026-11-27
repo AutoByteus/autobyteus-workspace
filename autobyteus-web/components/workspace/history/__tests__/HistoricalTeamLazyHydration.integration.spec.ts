@@ -210,7 +210,6 @@ const {
   agentTeamRunStoreMock: {
     stopPendingTeamIds: { __v_isRef: true, value: {} as Record<string, boolean> },
     isTeamStreamReopenRequired: vi.fn().mockReturnValue(false),
-    getTeamStreamRecoveryNotice: vi.fn().mockReturnValue(null),
     terminateTeamRun: vi.fn().mockResolvedValue(undefined),
     connectToTeamStream: vi.fn(),
     disconnectTeamStream: vi.fn(),
