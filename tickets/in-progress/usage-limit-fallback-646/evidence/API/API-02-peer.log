@@ -1,0 +1,11 @@
+# API-02 two-server peer suite (ULP-01; ULP-02 new)
+# env -i PATH HOME=<fresh temp> TMPDIR USER RUN_USAGE_LIMIT_PEER_E2E=1 USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR=<dir> pnpm exec vitest run tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts --no-watch
+# 2026-11-27T11:34:53Z; code 1bc523124e; tests b5e56fcc50; Node 22.23.1; macOS 26
+ ✓ tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts (2 tests) 6710ms
+     ✓ ULP-01: the copy alpha delegated fails on beta's Codex, switches on beta to its history runtime, and alpha's tree shows beta's new launch  5120ms
+     ✓ ULP-02: a worker whose default is beta's exhausted Codex model and which has no history there starts on beta's node fallback (no inherited launch on a peer)  1439ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  7.22s (transform 59ms, setup 58ms, import 41ms, tests 6.71s, environment 0ms)
+EXIT 0
+## ULP-02 beta metadata: {"runtimeKind":"autobyteus","llmModelIdentifier":"peer-usage-limit-fixture:lmstudio@127.0.0.1:50923","launchSource":{"origin":"node_fallback","fallbacks":[{"layer":"agent_default","runtimeKind":"codex_app_server","llmModelIdentifier":"gpt-e2e","reason":"blocked","detail":"gpt-e2e is exhausted until 2026-11-27 14:28 UTC."}]}}
