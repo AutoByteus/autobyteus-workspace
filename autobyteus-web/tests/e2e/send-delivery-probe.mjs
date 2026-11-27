@@ -297,10 +297,13 @@ try {
 
   /**
    * The page's path down for 15 s and no send: the shown status, sampled every 200 ms, stays the one before the loss, and
-   * Send stays enabled (autobyteus-541 AC-004, DEC-002; on the base, a history refresh turned it Initializing).
+   * Send stays enabled for a typed draft (autobyteus-541 AC-004, DEC-002; on the base, a history refresh turned it
+   * Initializing, which disables Send). The draft is typed first: an empty box disables Send on its own.
    */
   const pathDownControl = async (target, waitBack) => {
     await dismiss();
+    await textarea().fill('a draft typed while the path is down');
+    await sleep(300);
     const beforeCut = await view();
     wire.cut('the page\'s path is down');
     const at = Date.now();
@@ -316,9 +319,10 @@ try {
     wire.up();
     await until('the stream back', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === waitBack), 90_000).catch(() => undefined);
     await sleep(2000);
+    await textarea().fill('');
     const details = { beforeCut: beforeCut.status, timeline, sendDisabledAt, afterUp: (await view()).status };
     assert(timeline.length === 1 && !timeline.some(([, status]) => status === 'Initializing'), 'the shown status stays the one before the loss for 15 s (no Initializing)', details);
-    assert(sendDisabledAt === null, 'Send stays enabled while the path is down', details);
+    assert(sendDisabledAt === null, 'Send stays enabled for the typed draft while the path is down', details);
     return details;
   };
 
@@ -574,8 +578,12 @@ try {
         // Send: 540 FU-003, fixed by autobyteus-541 D-C1).
         await sleep(500);
         const before = await view();
+        // The message typed: Send is read with text in the box (an empty box disables it on its own).
+        await textarea().fill(`PLAIN ${marker}`);
+        await sleep(300);
         const sendable = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
-        await typeAndSend(`PLAIN ${marker}`);
+        assert(sendable.label === SEND && sendable.enabled === true, 'Send enabled right after the loss', { beforeCut: beforeCut.status, before: before.status, sendable });
+        await primary().click();
         const sentAt = Date.now();
         const timeline = [];
         const watch = setInterval(() => { view().then((v) => { const last = timeline.at(-1); if (!last || last[1] !== v.status) timeline.push([Date.now() - sentAt, v.status]); }).catch(() => undefined); }, 200);
