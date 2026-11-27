@@ -1,0 +1,145 @@
+{
+  "result": "Pass",
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "stopped",
+    "backend": "stopped",
+    "dataRootRemoved": true
+  },
+  "cases": {
+    "SDD-13": {
+      "result": "Pass",
+      "beforeCut": "Idle",
+      "timeline": [
+        [
+          0,
+          "Idle"
+        ]
+      ],
+      "sendDisabledAt": null,
+      "afterUp": "Idle",
+      "seconds": 21
+    },
+    "SDD-07": {
+      "result": "Pass",
+      "beforeCut": "Idle",
+      "before": "Idle",
+      "view": {
+        "head": [
+          "S2",
+          "hello agent",
+          "Idle"
+        ],
+        "status": "Idle",
+        "notice": {
+          "certainty": "not_sent",
+          "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+        },
+        "draft": "PLAIN not-bound-2bde",
+        "count": 0
+      },
+      "sendAfterNotice": {
+        "label": "Send message",
+        "enabled": true
+      },
+      "noticeAfterMs": 10041,
+      "sent": 0,
+      "seconds": 13
+    },
+    "SDD-12": {
+      "result": "Pass",
+      "beforeCut": "Idle",
+      "timeline": [
+        [
+          0,
+          "Idle"
+        ]
+      ],
+      "sendDisabledAt": null,
+      "afterUp": "Idle",
+      "seconds": 19
+    },
+    "SDD-09": {
+      "result": "Pass",
+      "beforeCut": "Idle",
+      "before": "Idle",
+      "timeline": [
+        [
+          202,
+          "Idle"
+        ]
+      ],
+      "sendable": {
+        "label": "Send message",
+        "enabled": true
+      },
+      "view": {
+        "head": [
+          "L",
+          "lead",
+          "Idle"
+        ],
+        "status": "Idle",
+        "notice": {
+          "certainty": "not_sent",
+          "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+        },
+        "draft": "PLAIN team-timeout-2bde",
+        "count": 0
+      },
+      "sendAfterNotice": {
+        "label": "Send message",
+        "enabled": true
+      },
+      "afterUp": {
+        "status": "Idle",
+        "label": "Send message",
+        "enabled": true
+      },
+      "noticeAfterMs": 10053,
+      "sent": 0,
+      "seconds": 15
+    },
+    "SDD-14": {
+      "result": "Pass",
+      "gap": {
+        "withheld": {
+          "type": "TURN_COMPLETED",
+          "seq": 34
+        },
+        "recoveredAfterMs": 54,
+        "gapSeen": true,
+        "failedAttempts": 0,
+        "replacementLink": 127
+      },
+      "before": "Idle",
+      "after": {
+        "head": [
+          "L",
+          "lead",
+          "Idle"
+        ],
+        "status": "Idle",
+        "notice": null,
+        "draft": "",
+        "count": 1
+      },
+      "recoveryNotice": 0,
+      "sentAfter": {
+        "head": [
+          "L",
+          "lead",
+          "Idle"
+        ],
+        "status": "Idle",
+        "notice": null,
+        "draft": "",
+        "count": 1
+      },
+      "sends": [
+        127
+      ],
+      "seconds": 1
+    }
+  }
+}
