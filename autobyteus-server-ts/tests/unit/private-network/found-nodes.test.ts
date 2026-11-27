@@ -44,7 +44,7 @@ const found = (input: {
       info: { fetchNodeInfo },
       peers: { list: async () => [{ nodeId: PAIRED }] },
       ownNodeId: async () => SELF,
-      ...(input.local ? { localNetwork: { found: () => input.local! } } : {}),
+      ...(input.local ? { localNetwork: { found: async () => input.local! } } : {}),
     }),
   };
 };

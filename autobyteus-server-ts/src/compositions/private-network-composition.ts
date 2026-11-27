@@ -3,6 +3,8 @@ import type { AddressInfo } from "node:net";
 import type { PrivateNetworkContext } from "../extensions/server-parts/server-part-host.js";
 import type { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { FoundNodes } from "../private-network/found-nodes.js";
+import { LocalNetworkAnnouncer } from "../private-network/local-network-announcer.js";
+import { LocalNetworkBrowser } from "../private-network/local-network-browser.js";
 import { NodeInfoResponder } from "../private-network/node-info-responder.js";
 import { NodeVisibility } from "../private-network/node-visibility.js";
 import { PrivateNetworkListener } from "../private-network/private-network-listener.js";
@@ -21,6 +23,8 @@ export type PrivateNetwork = Readonly<{
   role: PrivateNetworkRole;
   /** The Nodes tab's Found lists (private and local network). */
   found: FoundNodes;
+  /** "Visible on my local network": the DNS-SD announcement that follows the switch. */
+  announcer: LocalNetworkAnnouncer;
   httpServer(): http.Server;
   close(): Promise<void>;
 }>;
@@ -64,9 +68,11 @@ export const getProcessPrivateNetwork = (): PrivateNetwork => {
 };
 
 /**
- * autobyteus-661 (design DS-2, § Ownership `src/private-network/`): the node's end of the private network and its
- * visibility. The caller socket opens with the server, so the Private Network extension's program can hand connections
- * over as soon as it starts; it closes with the server.
+ * autobyteus-661 (design DS-2, DS-3, DS-8; § Ownership `src/private-network/`): the node's end of the private network,
+ * its visibility, the Found lists and the local network announcement. The caller socket opens with the server, so the
+ * Private Network extension's program can hand connections over as soon as it starts. The announcement follows the
+ * switch from the moment the server listens, at every change and once a minute (the local network's own setting may
+ * change meanwhile). All of it closes with the server.
  */
 export const composePrivateNetwork = async (input: Readonly<{
   dataDir: string;
@@ -77,17 +83,32 @@ export const composePrivateNetwork = async (input: Readonly<{
 }>): Promise<PrivateNetwork> => {
   const listener = new PrivateNetworkListener({ dataDir: input.dataDir, httpServer: input.httpServer });
   await listener.start();
-  const visibility = new NodeVisibility({
-    settings: getServerSettingsService(),
-    localNetworkAllowed: async () => (await getNodeNetworkService().readAdmissionFacts()).localNetwork?.allowed === true,
+  const localNetworkAllowed = async () => (await getNodeNetworkService().readAdmissionFacts()).localNetwork?.allowed === true;
+  const ownNodeId = () => getNodeIdentityService().getNodeId();
+  let announcer: LocalNetworkAnnouncer | null = null;
+  const visibility = new NodeVisibility({ settings: getServerSettingsService(), localNetworkAllowed, changed: () => void announcer?.sync() });
+  announcer = new LocalNetworkAnnouncer({
+    visibility, localNetworkAllowed, ownNodeId, ownName: () => readComputerName(),
+    port: () => { const address = input.httpServer().address(); return address && typeof address === "object" ? address.port : null; },
   });
+  const announcing = announcer;
+  const resync = setInterval(() => void announcing.sync(), 60_000);
+  resync.unref();
+  const onListening = () => void announcing.sync();
+  input.httpServer().on("listening", onListening);
+  if (input.httpServer().listening) onListening();
+  const browser = new LocalNetworkBrowser();
   const role = new PrivateNetworkRole({ extensions: input.extensions });
-  const info = new NodeInfoResponder({ visibility, ownNodeId: () => getNodeIdentityService().getNodeId(), ownName: () => readComputerName() });
+  const info = new NodeInfoResponder({ visibility, ownNodeId, ownName: () => readComputerName() });
   const composed: PrivateNetwork = Object.freeze({
-    listener, visibility, info, role, httpServer: input.httpServer,
-    found: new FoundNodes({ role, info: input.remoteCollaboration.client, peers: input.remoteCollaboration.peers, ownNodeId: () => getNodeIdentityService().getNodeId() }),
+    listener, visibility, info, role, httpServer: input.httpServer, announcer: announcing,
+    found: new FoundNodes({ role, info: input.remoteCollaboration.client, peers: input.remoteCollaboration.peers, ownNodeId, localNetwork: browser }),
     close: async () => {
       if (processPrivateNetwork === composed) processPrivateNetwork = null;
+      clearInterval(resync);
+      input.httpServer().off("listening", onListening);
+      browser.close();
+      await announcing.close();
       await listener.close();
     },
   });

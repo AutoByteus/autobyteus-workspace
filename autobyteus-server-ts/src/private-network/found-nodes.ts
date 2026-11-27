@@ -50,16 +50,20 @@ export class FoundNodes {
     info: Readonly<{ fetchNodeInfo(address: string, machine: string, timeoutMs: number): Promise<Readonly<{ nodeId: string; name: string }> | null> }>;
     peers: Readonly<{ list(): Promise<readonly Readonly<{ nodeId: string }>[]> }>;
     ownNodeId(): Promise<string>;
-    localNetwork?: Readonly<{ found(): readonly FoundOnLocalNetwork[] }>;
+    localNetwork?: Readonly<{ found(): Promise<readonly FoundOnLocalNetwork[]> }>;
   }>) {}
 
   async list(): Promise<FoundNodesList> {
     const own = await this.dependencies.ownNodeId();
     const paired = new Set((await this.dependencies.peers.list()).map((peer) => peer.nodeId));
-    const privateNetwork = await this.onPrivateNetwork((nodeId) => nodeId !== own && !paired.has(nodeId));
+    // Both networks are looked at the same time.
+    const [privateNetwork, foundLocally] = await Promise.all([
+      this.onPrivateNetwork((nodeId) => nodeId !== own && !paired.has(nodeId)),
+      this.dependencies.localNetwork?.found().catch(() => []) ?? Promise.resolve([]),
+    ]);
     const onPrivate = new Set(privateNetwork.nodes.map((node) => node.nodeId));
     const seen = new Set<string>();
-    const localNetwork = (this.dependencies.localNetwork?.found() ?? []).filter((node) => {
+    const localNetwork = foundLocally.filter((node) => {
       if (node.nodeId === own || paired.has(node.nodeId) || onPrivate.has(node.nodeId) || seen.has(node.nodeId)) return false;
       seen.add(node.nodeId);
       return true;

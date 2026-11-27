@@ -24,6 +24,8 @@ export class NodeVisibility {
     settings: Pick<ServerSettingsService, "getBooleanSetting" | "setBooleanSetting">;
     /** Whether this node accepts connections from the local network it is on now. */
     localNetworkAllowed(): Promise<boolean>;
+    /** Told after every change (the local network announcement follows the switch). */
+    changed?(state: NodeVisibilityState): void;
   }>) {}
 
   state(): NodeVisibilityState {
@@ -40,6 +42,8 @@ export class NodeVisibility {
     }
     if (typeof change.privateNetwork === "boolean") this.dependencies.settings.setBooleanSetting(PRIVATE_NETWORK_VISIBLE_SETTING, change.privateNetwork);
     if (typeof change.localNetwork === "boolean") this.dependencies.settings.setBooleanSetting(LOCAL_NETWORK_VISIBLE_SETTING, change.localNetwork);
-    return this.state();
+    const state = this.state();
+    this.dependencies.changed?.(state);
+    return state;
   }
 }

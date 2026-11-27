@@ -45,6 +45,7 @@
     "@huggingface/tokenizers": "0.2.0",
     "@prisma/client": "^5.22.0",
     "autobyteus-ts": "workspace:*",
+    "bonjour-service": "^1.4.4",
     "chokidar": "^4.0.3",
     "dotenv": "^17.2.3",
     "fastify": "^5.12.7",
