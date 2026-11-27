@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-009` (SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -493,3 +493,66 @@ Also, sender `system.runtime_handover` is deliberately not recorded on external 
   3. on AutoByteus, also FU-646-02's pre-existing hand-over row.
 
   No user row. The queued input-state entry shows briefly until forwarded, as for any input. Nothing is hidden from the person (REQ-006).
+
+## SR-009 Revisions (ARCH-REV-003)
+
+### R-11 The automatic switch is its own operation per root (AR-006; replaces R-1 step 2 for both roots)
+
+The person's Settings Save (`StandaloneStoppedRunSelectionUpdater.update`, the stopped-Team Save) is **not** used. Its rules (`canSwitchRuntime`, archived and active refusals) and its person-facing texts are the person's. The automatic switch is one owned operation per root, built from the commit primitives:
+
+**Agent root.** `StandaloneAgentRunLifecycleService.switchRuntimeAutomatically(runId, launch, cause)`, called by `StandaloneAgentRunRoot.switchAgentRuntime` in its gate, runs in the run's transition lane:
+
+1. **Its own checks, with its own texts** (for C-2 `switch_failed` and the log):
+   - the run is still on the failed runtime and has no pending switch (R-12);
+   - it is not archived ("the run was archived");
+   - the new launch is a valid fresh selection: `RunModelSelectionValidator.validate` with the new runtime's default model settings ("<model> can't run now: <reason>").
+2. **Commit:** `AgentRunHistoryCatalogService.commitRunRuntimeSwitch({ runId, selection, switchId, cause })`, the primitive the Save uses, writing `run_metadata.json`'s launch and `pendingRuntimeSwitch {switchId, from, cause}`.
+3. **Root follow:** `StandaloneAgentRunRootManager.refreshInheritedLaunch(runId)`, as `AgentRunService.updateStoppedSelection` does after a Save (agent-run-service.ts:377-385; FU-008). A failure there is logged and never undoes the switch.
+
+**Team root.** `RootTeamRun.switchAgentRuntime`, in its gate:
+
+- **Its own checks:** the member is still on the failed runtime, has no pending switch, and the new launch validates.
+- **The tree commit:** `TeamMemberRuntimeSwitchCommitter`, on `commitExecutionTreeMutation`, writes only that member's launch and `pendingRuntimeSwitch {switchId, from, cause}`, through the tree mutator's member function, not the stopped-Team Save's target resolution or refusals.
+- **The follow:** `replaceTree`, plus the handle's `replaceSelection`. The root's own state is the follow; no other registered owner holds a member's launch.
+
+**Peer-started runs (a run delegated from another node, 587).** These switch automatically on their own node:
+
+- CM-10: "the node that runs a delegated run owns it: runtime, memory, message log and lifecycle". The run's launches are its own facts on its node, "read while a view shows them": node A reads the launch fresh, so it shows the new runtime.
+- `canSwitchRuntime`'s peer exclusion belongs to the **person's Settings** on the run's node (whose owner is on the other node, so the launch is shown read-only there). The automatic switch does not use that rule.
+- DEC-003 holds unchanged: every run, including peer-started ones. To prove: a two-server E2E where a run delegated from A hits the limit on B, switches on B, and A's run view shows B's new launch.
+
+### R-12 "Already switching" is decided from the run's own state (AR-007; replaces R-3's in-memory map)
+
+There is no in-memory switch map. In the root's gate, `switchAgentRuntime` acts on the event only when the agent's **current launch** equals the event's failed `runtimeKind`/`llmModelIdentifier` **and** it has **no pending switch**. Otherwise it returns `already_switched`; the listener records nothing new and the event stays in the exhaustion view.
+
+This holds across a restart: the run's metadata or tree is the one state. The detector's once-per-`(agentRunId, turn_id)` rule stays (R-3).
+
+### R-13 Each runtime classifies its own errors (AR-008; replaces C-4's detector-side limits read)
+
+"Is this a usage limit?" is answered by **each runtime's backend**, in its own error conversion, as `error_kind: "usage_limit"` on the run's `ERROR` event:
+
+| Runtime | How its backend decides |
+| --- | --- |
+| Codex | `codexErrorInfo` = `usageLimitExceeded` (C-4), in both the `error` notification and the failed turn, so all three of a turn's errors carry it |
+| Claude | the Agent SDK's rate-limit signal on the failing query (a rejected rate-limit event or the usage-limit result error). To verify against a recorded payload; if the SDK gives none, the backend asks its own runtime's limits read after the terminal error |
+| Antigravity, Grok | no structured signal known. The backend asks its own runtime's limits read (`AgentRuntimeStrategy.readUsageLimits`, 0 tokens) after a terminal turn error, and classifies when the run's model is blocked |
+
+The **detector is runtime-agnostic**: it acts only on `ERROR` with `error_kind: "usage_limit"`.
+
+**Scope and reset** (which models, until when) come from one owner, the availability service's model matching (`AvailableAgentRuntimesService`, one runtime, `blocked {until}`):
+
+- `blockedModels` = the runtime's models blocked now;
+- `resetAt` = the failed model's `blocked.until`;
+- when that read fails: `blockedModels` = [the failed model], `resetAt` = null (1 h, DEC-006).
+
+Classification (the backend) and scope (the availability service) each have one owner. Unrelated errors trigger no read in the detector (the R-4 debug log goes away); a backend that reads its limits after an error logs that read at debug.
+
+### R-14 Log retention in the shared log owner (AR-009)
+
+`SealedJsonlLog` (`utils/sealed-jsonl-log.ts`, the implementer's shared owner) gains `removeSealedOlderThan(days)`: a sealed file whose last line is older is deleted. It runs once at startup and after each seal. Each log sets its window:
+
+| Log | Window | Why |
+| --- | --- | --- |
+| run events (`run-events/`) | 31 days | its readers need at most 31 days (R-5) |
+| switch records (`model-routing/switches_*`) | **90 days, the founder's call** | the router request reads 30 days; the rest is for statistics and the person |
+| routing decisions (`model-routing/decisions_*`) | unchanged: kept | the Model Routing Overview offers "All" (`routing-statistics.ts` period `all`); limiting it changes a visible feature, so it is a separate founder decision, not taken here |

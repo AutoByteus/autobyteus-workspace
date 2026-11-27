@@ -13,6 +13,7 @@
 | SR-006 | Design | Implementation question IQ-002 (history layer's origin) | IQ-002 | design Ready (SR-005) | design Ready (SR-006) | REQ-003, C-2, R-7 | New origin `agent_history` everywhere |
 | SR-007 | Requirements + Design | Implementation question IQ-003 (no hidden input path) | IQ-003 | Approved SR-004; design SR-006 | Approved SR-007; design SR-007 | REQ-006, R-7, R-9 | Continue message = labelled system notice row; FU-646-02 |
 | SR-008 | Design | Implementation question IQ-004 (R-9 loses the hand-over) | IQ-004 | design SR-007 | design SR-008 | REQ-005, REQ-006, R-9, R-10 | `presentAsNotice` tag; sender `system.usage_limit` |
+| SR-009 | Design | ARCH-REV-003 Fail (withdrawn pass; bar 9/10) | AR-006..AR-009 | design SR-008 | design SR-009 | DEC-003, REQ-005, C-4, R-1, R-3 | R-11..R-14; DEC-008 to the founder |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -93,3 +94,12 @@
 - Trigger: the implementation engineer. R-9's notice-only input carries no hand-over preface (`canCarryPreface`), and `system.runtime_handover` is not recorded on external runtimes.
 - Decision: the implementer's proposal. An ordinary SYSTEM input (the hand-over combines into it) with the generic tag `presentAsNotice {senderId}`, recorded and shown as a notice from `system.usage_limit`. REQ-005 and REQ-006 both hold; R-9's outcome is unchanged.
 - Intended behavior: unchanged from SR-007.
+
+### SR-009 — Architecture re-review (bar 9/10)
+
+- Trigger: ARCH-REV-003. The reviewer withdrew the round-2 pass (score about 7.5) on the founder's bar.
+- **AR-006 → R-11:** the automatic switch is its own operation per root (own checks and texts, the commit primitives, the root follow), not the person's Save. Peer-started runs switch on their node (CM-10), so DEC-003 holds; a two-server E2E proves it.
+- **AR-007 → R-12:** "already switching" is decided from the run's own launch and pending switch; the in-memory map is dropped.
+- **AR-008 → R-13:** each runtime backend classifies its own errors (`error_kind`). The detector is runtime-agnostic; scope and reset come from the availability service.
+- **AR-009 → R-14:** retention in `SealedJsonlLog`: run events 31 days; switch records 90 days (DEC-008, Needs user); routing decisions unchanged (the Overview "All" period; a separate founder decision).
+- Next: ARCH-REV-004. DEC-008 is asked of the founder in parallel.

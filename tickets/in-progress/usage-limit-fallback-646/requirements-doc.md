@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-009`
 - Package identifier: `usage-limit-fallback-646`
 - Request: autobyteus-646, "Smart runtime fallback on usage limit"
 - Requested by: `/project_task_manager` (for the founder)
@@ -97,6 +97,7 @@ None.
 | DEC-004 | Fallback order | — | Router first; history when the router is off, past its 40 s budget or exhausted itself; Error when neither finds a usable runtime | Follows DEC-001 B | Founder | Decided, 2026-11-25 |
 | DEC-005 | When the first runtime's limit resets | Cost/quality preference | (a) the run stays on the fallback; new runs use the default again; (b) switch the run back | Switching back mid-work is a second hand-over for no gain. **(a)** | Founder | Decided (recommendation accepted, 2026-11-26) |
 | DEC-006 | No reset time known | — | cooldown 1 h, then usable again (a new failure records it again) | Avoids a runtime blocked forever on a wrong guess. **1 h** | Founder | Decided (recommendation accepted, 2026-11-26) |
+| DEC-008 | How long switch records are kept | Disk vs history the person and statistics can see | 30 / 90 / 365 days | The router reads 30 days; 90 keeps a season of history at a few KB per switch. **90 days** | Founder | Needs user |
 | DEC-007 | Several accounts per provider (autobyteus-498) | Future | Keyed per runtime now; per account when 498 lands | No accounts exist yet. **Later** | Solution Designer | Decided |
 
 ## Architecture Phase Input

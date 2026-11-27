@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/usage-limit-fallback-646/requirements-doc.md` (Approved, SR-003)
+- Upstream Requirements Doc: `tickets/in-progress/usage-limit-fallback-646/requirements-doc.md` (Approved, SR-003; AC-003 corrected at SR-004)
 - Upstream Investigation Notes: `tickets/in-progress/usage-limit-fallback-646/investigation-notes.md`
-- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-003)
-- Reviewed Design Spec: `tickets/in-progress/usage-limit-fallback-646/design-spec.md` (Ready, SR-003)
+- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-004)
+- Reviewed Design Spec: `tickets/in-progress/usage-limit-fallback-646/design-spec.md` (Ready, SR-004; § SR-004 Revisions governs)
 - Supplemental Task Artifacts Reviewed: None (no supplements); `handoff-architecture-review.md`; `follow-ups.md` (FU-646-01)
-- Relevant Solution Revision IDs: SR-001 … SR-003
+- Relevant Solution Revision IDs: SR-001 … SR-004
 - Architecture Review Revision Record: `tickets/in-progress/usage-limit-fallback-646/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
 - Trigger: Solution Designer handoff "Architecture Design Complete", `Large`/`High`, 2026-11-27. The founder approved the data contract and policy; the router template text (C-7) is pending him and does not block this review.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Pass`); round 1 (ARCH-REV-001, `Fail`)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646`, branch `codex/usage-limit-fallback-646` at `214300a403` (ticket docs only). Code read at the base `bc4351cad7` with `git show`:
   - `agent-execution/domain/agent-run-lifecycle-observer.ts`; `agent-run-platform-notices.ts:66-90`; `agent-run.ts:210-235`; `events/dispatch-processed-agent-run-events.ts`;
   - Codex: `events/codex-thread-lifecycle-event-converter.ts:48-105`, `events/codex-turn-event-converter.ts:56-85`, `thread/codex-thread-notification-handler.ts:75-110`;
@@ -59,9 +59,9 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | Pass | Pass | Fail | Needs Correction | AR-003 (duplicate terminal errors per turn), AR-004 (where the detector attaches) |
-| BEH-002 | System | Fail | Pass | Fail | Needs Correction | AR-002 (the history layer's scope against the preserved CM-12 order) |
-| BEH-003 | User/System | Pass | Pass | Fail | Needs Correction | AR-001 (switching a live run, a member above all, is not specified) |
+| BEH-001 | System | Pass | Pass | Pass | Confirmed | AR-003, AR-004 resolved (R-3, R-4) |
+| BEH-002 | System | Pass | Pass | Pass | Confirmed | AR-002 resolved (R-2: CM-12 order preserved; history only after an exhaustion skip) |
+| BEH-003 | User/System | Pass | Pass | Pass | Confirmed | AR-001 resolved (R-1) |
 | BEH-004 | System | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
@@ -223,101 +223,143 @@ Derived consumers: `Pass`. Vocabulary (P15): `Pass` ("usage limit", "exhausted" 
 - Reachability: `Reachable`.
 - Review consequence: AR-003.
 
+## Round 2 Delta Review (SR-004, commit `b40ee8d202`)
+
+This delta supersedes the round-1 `Fail` cells in the verdict tables above. They now pass:
+- Data Contract C-1;
+- DS-001, DS-003, DS-004;
+- the `RunRuntimeSwitcher` boundary;
+- the reuse rows "observing every run" and "quiet stop";
+- the root-kind and launch-preference allocation;
+- the root files' mapping;
+- the live member's persistence;
+- the live-member example.
+
+Code checked at `bc4351cad7` for this round:
+- `agent-org-execution/container/live-agent-org-container.ts:131-132`; `agent-org-unit-runs.ts:11-25`;
+- `active-collaboration-root-directory.ts:159-170`;
+- `flat-team-execution-manager.ts:165-185, 218-225`;
+- `configured-agent-execution-handle.ts:264-300, 404-414, 478`;
+- `team-agent-platform-binding-committer.ts:28-30`, `team-run-selection-mutator.ts`, `team-run-execution-tree-mutator.ts`, `team-membership-committer.ts:102`.
+
+| Finding | SR-004 response | Verification | Status |
+| --- | --- | --- | --- |
+| AR-001 | R-1: two root kinds, each in its own gate. Agent root: quiet stop → `StandaloneStoppedRunSelectionUpdater` (`run_metadata.json` pending switch) → continue notice (`activateSwitched`). Team root: the member handle's `tryPrepareTerminationIfQuiescent` → new `TeamMemberRuntimeSwitchCommitter` on `persistence.commitExecutionTreeMutation` (launch + `pendingRuntimeSwitch` in the live tree, then `replaceTree`) → `handle.replaceSelection` → `post_message` → the existing member switch in `initializeReady`. Restart consistency and failure outcomes are stated | The premise "an Org container claims no unit agent" holds now, not only in implementation: `LiveAgentOrgContainer.hasAgentExecution()`/`ownsAgentRun()` return `false` (`:131-132`), and units are ordinary Agent or Team runs (`agent-org-unit-runs.ts`). A member's quiescent termination does not fence the handle: `onFinished` only clears `agentRun` and disposes (`:478`); the fence is set only by `cancelActivation`/`fenceForRootShutdown`. So `isStopped()` → `replaceSelection` is allowed, and `post_message` reactivates through `initializeReady` with the pending switch. The tree mutation reuses the existing committer pattern (`team-agent-platform-binding-committer.ts`, `team-membership-committer.ts:102`) | Resolved |
+| AR-002 | R-2: the CM-12 order is preserved. Exhaustion is checked on every layer's launch (own, team, inherited). History is used only when a layer was skipped as exhausted and the router did not choose. Other skips keep today's order | Matches REQ-003 and BEH-002's preserved column | Resolved |
+| AR-003 | R-3: the detector publishes once per `(agentRunId, turn_id)` (bounded set, cleared on release; without a `turn_id`, once per run and second). The switch listener keeps one switch in flight per run; a second event is recorded, not acted on | Covers the three Codex events of one turn | Resolved |
+| AR-004 | R-4: a `runPublished` source in `AgentRunPlatformNotices`' fan-out, then `subscribeToEvents`; the listener records the facts and schedules the work detached; collaboration-root runs only (`placeOf`); a debug log for unrelated limits reads | Matches `agent-run-lifecycle-observer.ts` and the synchronous delivery | Resolved |
+| AR-005 | AC-003 now says continue notice, no re-send; the design's basis line updated | — | Resolved |
+| Residuals | R-5: the exhaustion view reads the sealed files newest first, up to 31 days back, keeping events still in force. R-6: the router template is added only after the founder's approval is recorded | — | Taken in |
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-| Item | Why It Matters | Required Action | Status |
-| --- | --- | --- | --- |
-| AC-003 says "the same input runs on the fallback"; REQ-005 and C-5 say the input is not sent again, and a continue message is sent | Tests are written from the AC | AR-005 | Open |
+None.
+
+## Round 3 Re-Review (ARCH-REV-003, SR-004 at `b40ee8d202`): the 9-point bar
+
+**Why a third round.** The user asked for an honest quality score and set the bar for architecture at 9 out of 10. Round 2 passed SR-004 as workable. Measured against 9, it is about **7.5**. Under the rule "rulings hold unless new evidence shows a problem", this round names the evidence:
+- AR-006 rests on defects found today at base;
+- AR-007…AR-009 are quality gaps the raised bar does not accept. I say so in each finding rather than calling them defects.
+
+**Honest assessment.**
+- Strong, and unchanged by this round:
+  - the run event hub (the run reports one fact; listeners decide);
+  - one stored fact behind "exhausted";
+  - a data contract trimmed to fields with readers;
+  - one owner for the fallback choice;
+  - the preserved CM-12 order;
+  - once-per-failure detection.
+- Below 9:
+  - the live switch is assembled from flows built for other purposes, and it inherits their rules (AR-006);
+  - "this run is being switched" is held twice (AR-007);
+  - "this error is a usage limit" is decided by two rules in two owners (AR-008);
+  - the new logs grow forever (AR-009).
+
+With AR-006…AR-009 resolved I would score it 9.
+
+Code read at `bc4351cad7` for this round:
+- `agent-execution/services/standalone-stopped-run-selection-updater.ts:25-165`;
+- `standalone-agent-run-eligibility.ts:1-30`;
+- `agent-run-service.ts:370-385`;
+- `standalone-agent-run-lifecycle-service.ts:95, 144-150`;
+- `agent-team-execution/services/team-run-selection-mutator.ts`;
+- `model-routing/stores/routing-decision-log.ts:10-13, 95, 194`.
+
+### AR-006 — The automatic switch runs a person's Save, and inherits its refusals and gaps
+
+- Type: `Design Impact` (and a `Requirement Gap` for the peer-started case); severity: High. This is a defect, not a preference.
+- Protects: DEC-003 (every run, delegated runs included), REQ-005, BEH-003; the existing FU-008 behavior (a run's registered root follows a saved selection).
+- Problem: R-1's Agent root writes the switch through `StandaloneStoppedRunSelectionUpdater.update`, the person's Settings Save for a stopped run.
+  - **It refuses a run another node started.** `plan()` refuses any runtime change when `!canSwitchRuntime(metadata)` ("Only a started standalone Agent run that no peer node started can", `standalone-stopped-run-selection-updater.ts:130-137`; `canSwitchRuntime` excludes `isPeerStarted`, `standalone-agent-run-eligibility.ts:16-17`). So a cross-node delegated run (autobyteus-587) that hits its limit gets `switch_failed`. DEC-003 says delegated runs switch, and the design does not mention this exclusion.
+  - **Its texts are a person's.** Its refusals ("Stop it, reopen Settings, and try again") would become C-2 `switch_failed` reasons and notice text.
+  - **The root doesn't follow.** Only `AgentRunService.updateStoppedSelection` refreshes the registered root's inherited launch after a Save (`agent-run-service.ts:377-385`, FU-008); R-1 calls the lifecycle's updater below it. After an automatic switch, the run's root would keep the exhausted launch as what its own delegations inherit.
+  - The Team side reuses the stopped-Team Save mutation (`team-run-selection-mutator.ts`, "the saves of a stopped Team's scopes") with the same question about its rules.
+- Required update:
+  - Make the automatic switch one owned operation per root, with its own explicit rules: which runs may switch automatically, and the texts.
+  - Build it from the commit primitives, not the person's Save: `historyCatalogService.commitRunRuntimeSwitch` for an Agent root; the tree mutation for a Team member.
+  - Include the root's follow of the new launch.
+  - For a peer-started run, state the outcome with evidence (why `canSwitchRuntime` excludes it: AR-016 of autobyteus-316). If it cannot switch, DEC-003 narrows and the founder decides (Requirement Gap).
+- Recipient: Solution Designer.
+
+### AR-007 — "This run is being switched" is held twice
+
+- Type: `Design Impact` (quality, required for 9); severity: Low. Not a defect today.
+- Protects: Principle 11 (one fact, one owner); REQ-008.
+- Problem: R-3 adds an in-memory map of runs with a switch in flight. The run's own state already says it: during and after a switch, the root holds a pending switch, or its launch is no longer the failed runtime. Two representations can disagree. For example, after a restart the map is empty while a pending switch from R-1 step 2 is still there.
+- Required update: let the root's switch operation (AR-006) decide in its gate from its own state. An event whose failed runtime is not the run's current launch, or a run that already has a pending switch, is ignored. Remove the map. Keep the detector's once-per-turn rule (R-3), which is a different fact.
+- Recipient: Solution Designer.
+
+### AR-008 — "This error is a usage limit" is decided by two rules in two owners
+
+- Type: `Design Impact` (quality, required for 9); severity: Medium.
+- Protects: Principles 4, 11 and 13 (one owner per fact; runtime knowledge in the runtime subsystem); REQ-001.
+- Problem:
+  - C-4 has Codex's converter set `error_kind`, while for every other runtime the detector in `run-events/` infers it by reading that runtime's limits after any terminal error.
+  - One fact, two owners, and runtime-specific behavior outside the runtime layer. The detector also starts a limits read (up to 18 s, external calls) for every unrelated terminal error of every non-Codex run.
+- Required update:
+  - Every runtime backend owns its classification and emits `error_kind: "usage_limit"` (Codex from `codexErrorInfo`; the others from their own signal, including a limits read after the error, inside that backend).
+  - `ERROR` carries the reset time when the backend knows it.
+  - The detector becomes runtime-agnostic: it reads `error_kind` and publishes.
+- Recipient: Solution Designer.
+
+### AR-009 — The new logs grow without bound
+
+- Type: `Design Impact` (quality, required for 9), with the window a product choice; severity: Low.
+- Protects: Principle 5 (operational cost of stored data); DESIGN rule 7.
+- Problem:
+  - `run-events/` and `switches_*.jsonl` seal at 4 MB and keep every file forever, copying the routing decision log, which has the same gap (`routing-decision-log.ts:10-13, 95, 194`: seal, never delete).
+  - Their readers need at most 31 days: exhaustion 31, router switch history 30.
+  - Volume is small for this ticket alone, but the hub is built for more kinds (FU-646-01 watches token usage on every run).
+- Required update:
+  - Retention in the log owner, shared by all three logs: delete sealed files older than the longest reader window.
+  - The window for switch history, which the router learns from, is the founder's choice. Propose a default, e.g. 90 days.
+- Recipient: Solution Designer.
 
 ## Review Decision
 
-`Fail`.
+`Fail` (round 3, at the 9-point bar). SR-004 is workable, but AR-006 is a defect, and AR-007…AR-009 keep it below 9.
 
 ## Findings
 
-### AR-001 — Switching a live run, and one member of a live Team or Org, is not specified
-
-- Type: `Design Impact`; severity: High.
-- Protects: REQ-005 and AC-003 (switch and continue, through the existing hand-over); DEC-003 (every run, Team and Org members included); the preserved switch semantics.
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Problem: the review's focus is one line: "in its gate: stop the agent quietly …, write the pending switch for that agent, post the notice". It doesn't state the existing primitives, their order, who drives it, or where state is persisted:
-  - **Standalone:** the primitives exist. Quietly terminate the host with `agentRunManager.tryPrepareAgentRunTerminationIfQuiescent(run)`, as idle shutdown does, with no `terminatedAt`. Write `pendingRuntimeSwitch` into `run_metadata.json` (the stopped-run selection path). The next input runs `activateSwitched` with the hand-over. The design names none of these, nor how a host just released is "stopped" for the selection writer while its root stays registered.
-  - **Team/Org member:** nothing does this today. The handle has `releaseRuntimeForUserStop()` / `releaseRuntime(false)` and `replaceSelection({…, pendingRuntimeSwitch})` (only while stopped), but they have no production caller. `replaceSelection` changes only the handle's in-memory `execution`. The design does not say:
-    - which owner writes the member's pending switch, and its new runtime and model after the hand-over, into the live Team's or Org's tree on disk;
-    - so what a restart mid-switch, or after it, restores the member on;
-    - how the member's handle is re-activated within the root's gate.
-- Required update: write the sequence per root kind, with one driver (the root, in its gate), the primitives in call order and the persistence owner. For example, for a member:
-  1. verify the member is quiet;
-  2. `releaseRuntime(false)`;
-  3. `replaceSelection` with the pending switch;
-  4. persist the member's execution spec in the tree through the root's persistence coordinator;
-  5. `postMessage(continue notice)`.
-  - State what happens to the root's other members, and to the switched member's Error status meanwhile.
-  - Name the touched files and add the tests (a live Team member switch, then a restart).
-- Why proportionate: it uses existing primitives; the missing parts are the order and the persistence owner.
-- Recipient: Solution Designer.
-
-### AR-002 — The history layer's scope in the delegation order is not stated
-
-- Type: `Design Impact`, or a `Requirement Gap` if the wider scope is intended; severity: Medium.
-- Protects: BEH-002's preserved column ("the layer order of CM-12 / model_routing.md"); REQ-003.
-- Problem:
-  - Today: own default → team default → router (when on) → the delegator's launch → refuse (`model_routing.md:33-42`).
-  - The design inserts history before the delegator's launch (DS-004; Policy 7) but doesn't say whether that holds only when a default was skipped **because it is exhausted** (REQ-003), or for every skip (runtime not installed, model missing, blocked with routing on).
-  - The second would change the preserved order for cases this ticket does not ask about.
-  - It also doesn't say whether the team's default (layer 2) is checked for exhaustion too.
-- Required update: state the layer order exactly. One option: own default and team default, each skipped when unusable or exhausted → router (on) → history, only when a default was skipped as exhausted → the delegator's launch → refuse. If history is meant for every skip, it goes to the founder as a change to the preserved CM-12 order.
-- Recipient: Solution Designer.
-
-### AR-003 — One failure must publish once and switch once
-
-- Type: `Design Impact`; severity: Medium.
-- Protects: REQ-008, AC-004, REQ-005 (one continue message).
-- Problem: MP-001. Several terminal `ERROR`s for one failed turn become several C-1 events, and the switch listener has no guard per run.
-- Required update: name one rule and its owner. For example, the detector publishes at most once per `(agentRunId, turn_id)` (Codex carries `turn_id`; for others, once per failed turn by their own boundary). The switch listener keeps at most one switch in flight per `agentRunId` and ignores an event for a run already switching. Add a test with the three Codex events.
-- Recipient: Solution Designer.
-
-### AR-004 — DS-001's start: where the detector attaches, and that it runs detached
-
-- Type: `Design Impact`; severity: Low.
-- Protects: REQ-009, REQ-001; Principle 4 (capability reuse).
-- Problem:
-  - "Observes every published run of a collaboration root" names no mechanism. The natural one exists: a source on `AgentRunLifecycleObserver.runPublished` (fanned out by `AgentRunPlatformNotices`), then `run.subscribeToEvents`, released on `runReleased`.
-  - Run listeners are delivered synchronously inside the run's dispatch queue. The detector's limits read (up to 18 s), the publish and the listeners (a 40 s router wait, then stopping this same run) must therefore run detached from the dispatch, never awaited inside it.
-- Required update: name the attach point, and state that detection runs detached and outside the run's gate. Note which `AgentRunManager`s it observes: the node's, not an application execution scope's (whose runs are excluded anyway).
-- Recipient: Solution Designer.
-
-### AR-005 — Requirement and design texts disagree on the failed input and the basis
-
-- Type: `Requirement Gap` (text); severity: Low.
-- Problem:
-  - AC-003 says "the same input runs on the fallback". REQ-005 and C-5 say the input is not sent again, and a continue message is sent instead.
-  - The design's basis line still says "requirements SR-002 … DEC-002/003/005/006 to be confirmed", while the requirements are Approved at SR-003 with those decisions accepted.
-- Required update: correct AC-003 to REQ-005's wording, and the design's basis line.
-- Recipient: Solution Designer.
+Open: AR-006 (High), AR-007 (Low), AR-008 (Medium), AR-009 (Low), all in § Round 3 Re-Review. AR-001 … AR-005 stay resolved.
 
 ## Classification
 
-`Design Impact` (AR-001, AR-002, AR-003, AR-004) and `Requirement Gap` (AR-005, and AR-002 if its wider scope is intended). Route: Solution Designer.
+`Design Impact` (AR-006…AR-009), with a `Requirement Gap` inside AR-006 (peer-started runs) and AR-009 (the retention window). Route: Solution Designer.
 
 ## Recommended Recipient
 
-Solution Designer.
+Solution Designer. The implementation engineer is told to hold the switch, detector and log-retention parts. The hub, the event log format, the exhaustion view and the delegation order are not affected.
 
 ## Residual Risks
 
-- **The router template (C-7)** is a built-in agent's instructions pending the founder (lesson L1). Implementation must not ship text he has not seen.
-- **The exhaustion view's rebuild window.** It reads "recent" events at startup, but weekly limits (Claude, Codex) last up to 7 days, and the log seals at 4 MB. State the window (for example, events whose `resetAt`, or `at + 1 h`, is still in the future, across the sealed files) so a restart doesn't forget a week-long exhaustion.
-- **A limits read after every terminal turn error** on non-Codex runtimes (up to 18 s, 0 tokens) runs for unrelated errors too. That is acceptable, but log its outcome.
-- **A burst of events** queues behind the one-at-a-time router; each falls back to history after 40 s (as designed).
-- **Non-Codex recognition** depends on the limits read after the error (design Risks); API/E2E uses recorded payloads.
+- Agent runs and Team members stay two structures in the codebase. Merging how they switch is a larger refactor outside this ticket, so a follow-up is possible.
+- Non-Codex runtimes give no structured signal, so some inference remains; AR-008 only puts it in one owned place per runtime.
+- The router template (R-6) still waits for the founder.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass`. MP-001 is reachable, with a forward witness from current Codex code.
-- Notes: The data contract is sound and trimmed: C-1 envelope with per-kind data, C-2, C-3 derived from one stored fact, and C-4…C-8. So are the hub's rules, router first with history as the safety net, the dependency direction and the switch records. The blocking gaps:
-  - the central new operation (switching a live run, a Team/Org member above all) has no specified sequence or persistence owner;
-  - the history layer's scope against the preserved CM-12 order;
-  - one failure must publish once and switch once;
-  - DS-001's attach point.
+- Review Decision: `Fail` (ARCH-REV-003)
+- Score: about 7.5 now; 9 with AR-006…AR-009 resolved.
+- Material-Premise Gate: `Pass`. AR-006's peer-started case is reachable: a cross-node delegation (autobyteus-587) whose runtime hits its limit.
+- Notes: the strong parts are listed in § Round 3 Re-Review and are not to be reworked.
