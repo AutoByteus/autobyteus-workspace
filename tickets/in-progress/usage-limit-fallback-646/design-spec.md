@@ -13,22 +13,25 @@
 
 ### C-1 Run event (telemetry) — the hub's record, new, stored
 
-**Envelope:** the same for every kind, now and later.
+**Envelope:** the same for every kind, now and later. Every field has a reader (Principle 17; trimmed after the founder's review on 2026-11-27).
 
 ```json
-{ "eventId": "5b0c…", "at": "2026-11-25T06:42:41Z", "kind": "usage_limit_reached",
-  "run": { "rootKind": "agent", "rootRunId": "computer_use_operator_b75dfef4…",
-           "agentRunId": "computer_use_operator_b75dfef4…", "agentDefinitionId": "computer-use-operator" },
+{ "at": "2026-11-25T06:42:41Z", "kind": "usage_limit_reached", "agentRunId": "computer_use_operator_b75dfef4…",
   "data": { … the kind's own fields … } }
 ```
 
 | Field | Meaning | Readers |
 | --- | --- | --- |
-| `eventId` | UUID, unique on this node | switch record (C-2), deduplication |
-| `at` | When it happened (ISO time) | exhaustion (C-3), ordering |
-| `kind` | What happened; each kind has one `data` shape, defined with it | listeners select by kind |
-| `run` | Which run and agent: its root kind (`agent`, `agent_team`, `agent_org`) and ID, the agent's run ID, and its definition | listeners that act on the run, history |
+| `at` | When it happened (ISO time) | exhaustion (C-3: `at + 1 h` when no reset time), ordering |
+| `kind` | What happened; each kind has one `data` shape, defined with it | the hub selects listeners by kind |
+| `agentRunId` | The agent the event is about | the switch listener. The run holding it (standalone, Team or Org) is looked up live (`ActiveCollaborationRootDirectory.placeOf`), and its definition from its run files when needed |
 | `data` | The kind's own fields | that kind's listeners |
+
+Removed because nothing reads them:
+
+- `eventId`;
+- `run.rootKind` and `run.rootRunId` (equal to the agent's run ID for a standalone run, and derivable live for a member);
+- `run.agentDefinitionId` (history is counted from the run files).
 
 **Kind `usage_limit_reached`** (the only kind in this ticket):
 
@@ -61,13 +64,14 @@
 `<appData>/model-routing/switches_active.jsonl` (beside the routing decisions; same sealing). One line per handled event.
 
 ```json
-{ "recordedAt": "2026-11-25T06:43:05Z", "eventId": "5b0c…", "rootRunId": "computer_use_operator_b75dfef4…",
-  "agentRunId": "computer_use_operator_b75dfef4…", "agentDefinitionId": "computer-use-operator",
+{ "at": "2026-11-25T06:43:05Z", "agentRunId": "computer_use_operator_b75dfef4…", "agentDefinitionId": "computer-use-operator",
   "from": { "runtimeKind": "codex_app_server", "llmModelIdentifier": "gpt-6.1-terra" },
   "to":   { "runtimeKind": "claude_agent_sdk", "llmModelIdentifier": "opus" },
   "chosenBy": "model_router", "reason": "Claude handled this agent's browser tasks well; Codex resets in 2 days.",
   "routerFailure": null, "outcome": "switched" }
 ```
+
+`at` is read by the router request (most recent first, last 30 days). `agentRunId` is read by statistics (switches per run). `agentDefinitionId` is read by the router request, which selects this agent's earlier switches. `eventId` and `rootRunId` were removed: nothing reads them.
 
 | Field | Meaning | Readers |
 | --- | --- | --- |
