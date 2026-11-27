@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-001 (new; was C-2) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001 (resolved) |
+| CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review (API-REV-002 Pass) | Pass (CRR-003) | Pass | None |
 
 ## Revision Entries
 
@@ -114,3 +115,36 @@ None (CRR-001 had no findings; C-2 is promoted to CR-001, and C-1 is rejected).
   - the held in-flight-inspection window;
   - FU-001 (on the base);
   - the test-code review of `488e231641` after the next pass.
+
+### CRR-004: proportional review of the API/E2E test code (Pass)
+
+- Canonical review report updated: `tickets/in-progress/team-stream-recovery-541/api-e2e-test-review-report.md` (new)
+- Review entry point and round: API/E2E test-code review, round 1
+- Review scope: `N/A` (test review) of `488e231641`: `send-delivery-probe.mjs` (SDD-15, SDD-16, SDD-17) and `mobile-team-stream-recovery-cases.mjs` (MSP-120)
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass, 94%, commit `da5802075f`)
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Pass (test code)
+- What changed in the review result and why:
+  - The cases prove REQ-001, REQ-002, AC-003 and AC-010 in the browser, with a deterministic, scoped read hold.
+  - Notes:
+    - T-1: SDD-16 pushes the router instead of clicking a Project Task link;
+    - T-2: SDD-17 could assert `heldReads === 1`;
+    - a leftover variable name.
+  - I agree with FU-002, the in-flight inspection residual, as a follow-up.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - FU-001 (the NodeRow font audit, on the base);
+  - FU-002 (an inspection rejected across a commit).
