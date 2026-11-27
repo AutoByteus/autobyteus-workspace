@@ -13,7 +13,6 @@ const h = vi.hoisted(() => ({
   nodeStore: null as any,
   peers: null as any,
   offers: null as any,
-  capability: null as any,
   connector: { plan: vi.fn(), run: vi.fn() },
 }))
 
@@ -23,9 +22,8 @@ vi.mock('~/utils/nodeIdentityProbe', async (original) => ({
 }))
 vi.mock('~/services/nodeCollaboration/nodeCollaborationApi', () => ({
   createNodeCollaborationApi: (url: string) => {
-    const state = h.remote.get(url) as { switchOn: boolean; peers: unknown[] } | undefined
+    const state = h.remote.get(url) as { peers: unknown[] } | undefined
     return {
-      capability: async () => { if (!state) throw new Error('down'); return { enabled: state.switchOn } },
       peers: async () => { if (!state) throw new Error('down'); return state.peers },
       peerNodeAvailability: async () => ({ available: true }),
     }
@@ -35,7 +33,6 @@ vi.mock('~/stores/nodeStore', () => ({ useNodeStore: () => h.nodeStore }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ entryId: 'embedded-local' }) }))
 vi.mock('~/stores/remoteCollaborationStore', () => ({ useRemoteCollaborationStore: () => h.peers }))
 vi.mock('~/stores/remoteCollaborationOffersStore', () => ({ useRemoteCollaborationOffersStore: () => h.offers }))
-vi.mock('~/stores/remoteCollaborationCapabilityStore', () => ({ useRemoteCollaborationCapabilityStore: () => h.capability }))
 vi.mock('~/services/nodeCollaboration/windowNodeCollaborationConnector', () => ({ useNodeCollaborationConnector: () => h.connector }))
 
 import { useNodeListStore } from '../nodeListStore'
@@ -44,7 +41,7 @@ const entry = (id: string, name: string, baseUrl: string, extra: Record<string, 
   id, name, baseUrl, nodeType: id === 'embedded-local' ? 'embedded' : 'remote',
   createdAt: `2026-10-0${extra.order ?? 1}T00:00:00.000Z`, updatedAt: 'x', ...extra,
 })
-const peer = (nodeId: string, name: string, baseUrl: string) => ({ nodeId, name, baseUrl, addedAt: 'x', paired: true, role: null })
+const peer = (nodeId: string, name: string, address: string) => ({ nodeId, name, address, machine: null, account: null, relation: 'own' as const, sandbox: false, addedAt: 'x', paired: true })
 const flush = async () => { for (let i = 0; i < 10; i += 1) await Promise.resolve() }
 
 /** one-nodes-tab DS-001, DS-002, DS-004 (REQ-702, REQ-704, REQ-711; AR-003, AR-008, AR-009; DEC-705, DEC-706). */
@@ -77,12 +74,11 @@ describe('nodeListStore', () => {
       load: vi.fn(async () => undefined),
     })
     h.offers = reactive({ peers: {} as Record<string, unknown>, ask: vi.fn(async (id: string) => { h.offers.peers[id] = { phase: 'available', entries: [], checkedAt: 'x' } }), clear: vi.fn() })
-    h.capability = reactive({ isEnabled: true, status: 'resolved', ensureResolved: vi.fn(async () => null), setEnabled: vi.fn(async () => null) })
     h.probes.set('http://127.0.0.1:29695', { ok: true, nodeId: A })
     h.probes.set('http://localhost:8001', { ok: true, nodeId: D1 })
     h.probes.set('http://localhost:8003', { ok: true, nodeId: D3 })
-    h.remote.set('http://localhost:8001', { switchOn: true, peers: [peer(A, 'electron', 'http://host.docker.internal:29695')] })
-    h.remote.set('http://localhost:8003', { switchOn: false, peers: [] })
+    h.remote.set('http://localhost:8001', { peers: [peer(A, 'electron', 'http://host.docker.internal:29695')] })
+    h.remote.set('http://localhost:8003', { peers: [] })
     Object.defineProperty(window, 'electronAPI', { configurable: true, writable: true, value: { openNodeWindow: vi.fn() } })
   })
 
@@ -120,7 +116,7 @@ describe('nodeListStore', () => {
     const store = useNodeListStore()
     await store.open()
     await flush()
-    expect(store.facts[D1]!.remote!.peers[0]!.baseUrl).toBe('http://host.docker.internal:29695')
+    expect(store.facts[D1]!.remote!.peers[0]!.address).toBe('http://host.docker.internal:29695')
     expect(store.views[D1]).toMatchObject({ out: { state: 'working' }, in: { state: 'working' }, line: null })
     expect(store.views[D3]!.line).toEqual({ kind: 'agentsOff', tone: 'info', fix: 'turnOn' })
   })
@@ -160,11 +156,11 @@ describe('nodeListStore', () => {
 
   it('TR-704/705/712: keeps each row\'s unfinished step until a later run clears it, and shows it as the row\'s line', async () => {
     h.peers.peers.push(peer(D3, '8003', 'http://localhost:8003'))
-    h.remote.set('http://localhost:8003', { switchOn: false, peers: [] })
+    h.remote.set('http://localhost:8003', { peers: [] })
     const store = useNodeListStore()
     await store.open()
     await flush()
-    const step = { id: 'turnOnThere' as const, status: 'failed' as const, error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' as const } }
+    const step = { id: 'pair' as const, status: 'failed' as const, error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' as const } }
     store.setUnfinishedStep(D3, step)
     expect(store.unfinishedStepOf(D3)).toEqual(step)
     expect(store.views[D3]!.line).toMatchObject({ kind: 'partial', fix: 'tryAgain' })

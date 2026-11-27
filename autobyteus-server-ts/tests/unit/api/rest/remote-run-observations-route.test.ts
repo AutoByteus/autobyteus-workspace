@@ -11,7 +11,7 @@ import type { RunAgentAccess, RunAgentPresentationListener } from "../../../../s
 const services = { current: null as unknown };
 
 import { registerRemoteCollaborationRoutes } from "../../../../src/api/rest/remote.js";
-import { signPeerRequest } from "../../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { testConnector, testNodeKey, testSigner } from "../../../helpers/peer-node-keys.js";
 import { registerTestNodeAccess } from "../../../helpers/node-access-test-gate.js";
 import { NO_FILES_RECEIVED } from "../../../helpers/explicit-host-collaborators.js";
 
@@ -22,14 +22,14 @@ import { NO_FILES_RECEIVED } from "../../../helpers/explicit-host-collaborators.
  */
 
 const SELF = "srv_beta_0000000000000000000000000000";
-const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", baseUrl: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", address: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
 const statusOf = (value: string) => ({ type: "AGENT_STATUS", payload: { status: value, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null,
   error_details: null, recoverableBlock: null } }) as never;
 /** What a live run's subscription sends at once (its current state), before the gateway has answered. */
 const inputState = statusOf("running");
 const status = statusOf("idle");
-/** The secret A and B share since they paired (node access model NA-9). */
-const PEER_SECRET = "peer-secret-for-tests";
+/** A's node key; B holds its public half since they paired (contract §5). */
+const ALPHA_KEY = testNodeKey();
 
 let app: FastifyInstance | null = null;
 afterEach(async () => { await app?.close(); app = null; services.current = null; });
@@ -50,14 +50,13 @@ const startNodeB = async () => {
   const roots = { storedLinkCheck: async () => "proceed" as const, runAgents: () => access } as unknown as RemoteRootDirectory;
   const provider = new RemoteRunViewProvider(roots, { runTitle: async () => null, runLaunches: async () => [], agentProjection: async () => { throw new Error("unused"); } });
   services.current = { gateway: new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
-    ownNodeId: async () => SELF, capability: { isEnabled: () => true },
-    peers: { findByNodeId: async (nodeId) => (nodeId === ALPHA.nodeId ? ALPHA : null) },
+    ownNodeId: async () => SELF,     peers: { findByNodeId: async (nodeId) => (nodeId === ALPHA.nodeId ? ALPHA : null) },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never, peerRunMembers: {} as never,
   }) };
   app = fastify();
   await app.register(websocket);
   // B's gate admits A by its signed upgrade.
-  await registerTestNodeAccess(app, { ownNodeId: SELF, peerSecrets: { [ALPHA.nodeId]: PEER_SECRET } });
+  await registerTestNodeAccess(app, { ownNodeId: SELF, peerKeys: { [ALPHA.nodeId]: ALPHA_KEY.publicKeyText } });
   await app.register(async (rest) => registerRemoteCollaborationRoutes(rest, services.current as never, { handle: async () => { throw new Error("no relay"); } }), { prefix: "/rest" });
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
@@ -69,8 +68,8 @@ describe("the run-observations route", () => {
   it("sends {nodeId} before a frame the live run produces while being subscribed, then that frame", async () => {
     const b = await startNodeB();
     const raw: unknown[] = [];
-    const headers = signPeerRequest({
-      secret: PEER_SECRET, method: "GET", pathWithQuery: "/rest/remote/run-observations", fromNodeId: ALPHA.nodeId, toNodeId: SELF, body: null,
+    const headers = await testSigner(ALPHA_KEY).headers({
+      method: "GET", pathWithQuery: "/rest/remote/run-observations", fromNodeId: ALPHA.nodeId, toNodeId: SELF, body: null,
     });
     const socket = new WebSocket(`${b.baseUrl.replace(/^http/, "ws")}/rest/remote/run-observations`, { headers } as unknown as string[]);
     socket.onopen = () => socket.send(JSON.stringify({ fromNodeId: ALPHA.nodeId, toNodeId: SELF, targetRoot: { kind: "agent", runId: "publisher-run" } }));
@@ -86,8 +85,8 @@ describe("the run-observations route", () => {
     const frames: unknown[] = [];
     const onEnd = vi.fn();
     const stream = openPeerRunObservation({
-      resolvePeer: async () => ({ ...ALPHA, nodeId: SELF, name: "beta", baseUrl: b.baseUrl }),
-      peerSecret: async () => PEER_SECRET,
+      resolvePeer: async () => ({ ...ALPHA, nodeId: SELF, name: "beta", address: b.baseUrl }),
+      signer: testSigner(ALPHA_KEY), connector: testConnector(),
       ownNodeId: async () => ALPHA.nodeId,
       path: "/rest/remote/run-observations",
       targetRoot: { kind: "agent", runId: "publisher-run" },

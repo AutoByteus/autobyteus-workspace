@@ -3,6 +3,7 @@ import type { ClientIdentity } from "../../node-access/domain/client-identity.js
 import { getClientIdentity, registerOpenSocket } from "../security/node-access-gate.js";
 import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
+import type { PairingResponse } from "../../remote-collaboration/pairing/peer-pairing.js";
 import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import { TRANSFERRED_FILE_PIECE_MAX_BYTES } from "../../agent-collaboration/execution/remote/transferred-files.js";
 import type { ProviderRelayPeerHandler } from "../../credential-proxy/provider-relay-peer/provider-relay-peer-handler.js";
@@ -31,9 +32,9 @@ type PeerSocket = Readonly<{
 }>;
 
 /**
- * The inter-node routes (`/rest/remote/*`): an HTTP binding of the peer gateway and of the pairing exchange only. The
- * node access gate admitted a paired peer by its signature (the exchange is exempt); every other rule lives behind
- * the gateway. Registered by the studio with its remote collaboration (autobyteus-500 FU-011); a host without one has
+ * The inter-node routes (`/rest/remote/*`): an HTTP binding of the peer gateway and of the pairing messages only. The
+ * node access gate admitted a paired peer by its node-key signature (`pair`, `pair-accepted`, `pair-rejected` are
+ * exempt); every other rule lives behind the gateway and `PeerPairing`. Registered by the studio with its remote collaboration (autobyteus-500 FU-011); a host without one has
  * no such routes.
  */
 export async function registerRemoteCollaborationRoutes(
@@ -106,12 +107,19 @@ export async function registerRemoteCollaborationRoutes(
     });
   });
 
-  // autobyteus-437: the inviting node's side of peer pairing (exempt: the caller has no peer secret yet).
-  app.post("/remote/peer-pairing-exchanges", async (request, reply) => {
-    const answer = await remote.pairing.exchange(request.body);
-    if ("peerSecret" in answer) return reply.code(201).send(answer);
-    return reply.code(answer.statusCode).send({ code: answer.code, message: answer.message });
-  });
+  // autobyteus-661 contract §2: the pairing messages. `pair`, `pair-accepted` and `pair-rejected` are exempt (the asker
+  // is not a peer yet; a grant or this node's outstanding request decides); `pair-confirm` and `unpaired` are signed.
+  // Every connection here comes by a plain address (no caller), until the private network's listener marks its own.
+  const pairing = (path: string, handle: (request: FastifyRequest) => Promise<PairingResponse> | PairingResponse) =>
+    app.post(path, async (request: FastifyRequest, reply) => {
+      const response = await handle(request);
+      return reply.code(response.status).send(response.answer);
+    });
+  pairing("/remote/pair", (request) => remote.pairing.receivePair(request.body, null));
+  pairing("/remote/pair-accepted", (request) => remote.pairing.receivePairAccepted(request.body, null));
+  pairing("/remote/pair-rejected", (request) => remote.pairing.receivePairRejected(request.body));
+  pairing("/remote/pair-confirm", (request) => remote.pairing.receivePairConfirm(request.body, getClientIdentity(request)));
+  pairing("/remote/unpaired", (request) => remote.pairing.receiveUnpaired(getClientIdentity(request)));
 
   /**
    * autobyteus-278: a run's live output for the peer that started it. The peer's first frame is the envelope with

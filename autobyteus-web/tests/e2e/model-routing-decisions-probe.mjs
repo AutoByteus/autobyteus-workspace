@@ -156,12 +156,11 @@ try {
   await fs.writeFile(beta.planFile, JSON.stringify({ mode: 'valid', runtime: AGY, model: ALT, taskKind: 'writing', reason: REASON.beta, readRuntimes: true }));
   await Promise.all([startNode(alpha), startNode(beta)]);
   for (const node of [alpha, beta]) {
-    await gql(node, 'mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
     await gql(node, 'mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}', { r: AGY, m: MODEL });
     evidence.observations[`${node.name}Status`] = (await gql(node, 'mutation{setModelRoutingEnabled(enabled:true)}')).setModelRoutingEnabled;
   }
   // The nodes pair by invite (autobyteus-437 DS-004).
-  await pairNodes({ inviter: (q, v) => gql(beta, q, v), accepter: (q, v) => gql(alpha, q, v), inviterName: LABEL.beta, accepterName: LABEL.alpha });
+  await pairNodes({ granter: { gql: (q, v) => gql(beta, q, v), address: beta.url }, asker: { gql: (q, v) => gql(alpha, q, v) }, granterName: LABEL.beta, askerName: LABEL.alpha });
   const ids = {};
   ids.manager = await definition(alpha, 'Manager');
   ids.lead = await definition(alpha, 'Lead', { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: null });

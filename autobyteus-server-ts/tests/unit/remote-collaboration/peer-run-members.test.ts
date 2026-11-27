@@ -16,6 +16,7 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 import { PeerRunMembersReceiver } from "../../../src/remote-collaboration/inbound/peer-run-members-receiver.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { taskRunResources } from "../../helpers/task-run-resources.js";
+import { testConnector, testSigner } from "../../helpers/peer-node-keys.js";
 
 /**
  * org-teams-follow-definition FU-003 (REQ-008, AC-007; design DS-007): a Team run a peer started on node B changes its
@@ -26,8 +27,8 @@ import { taskRunResources } from "../../helpers/task-run-resources.js";
 const A_ID = "srv_node_a_000000000000000000000000000";
 const B_ID = "srv_node_b_000000000000000000000000000";
 const T0 = "2026-11-22T09:00:00.000Z";
-const A_ON_B: PeerNode = { nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true, role: null };
-const B_ON_A: PeerNode = { nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null };
+const A_ON_B: PeerNode = { nodeId: A_ID, name: "desktop", address: "http://a:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
+const B_ON_A: PeerNode = { nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
 const LEAD = { address: "/lead", agentRunId: "lead_b" };
 const WRITER = { address: "/writer", agentRunId: "writer_b" };
 const REVIEWER = { address: "/reviewer", agentRunId: "reviewer_b" };
@@ -76,14 +77,13 @@ describe("FU-003: the delegating node's record of a peer Team run follows its me
   it("in process: B's Team run tells A after its change, through the signed peer request; A takes it only for its own delegation", async () => {
     await writeTask("T1", [entry()]);
     const service = await boot();
-    const gateway = new PeerGateway({ ownNodeId: async () => A_ID, capability: { isEnabled: () => true },
-      peers: { findByNodeId: async (id) => id === B_ID ? B_ON_A : null },
+    const gateway = new PeerGateway({ ownNodeId: async () => A_ID,       peers: { findByNodeId: async (id) => id === B_ID ? B_ON_A : null },
       delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, receivedFiles: {} as never,
       peerRunMembers: new PeerRunMembersReceiver({ tasks: service }) });
     const routes: string[] = [];
-    const clientOnB = new PeerClient({
-      peers: { findByName: async () => A_ON_B, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id) => id === A_ID ? A_ON_B : null },
-      capability: { isEnabled: () => true }, ownNodeId: async () => B_ID,
+    const clientOnB = new PeerClient({ signer: testSigner(), connector: testConnector(),
+      peers: { findByName: async () => A_ON_B, findByNodeId: async (id) => id === A_ID ? A_ON_B : null },
+      ownNodeId: async () => B_ID,
       fetch: (async (url: string, init: RequestInit) => {
         const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
         routes.push(route);

@@ -35,7 +35,7 @@
             >
               <span class="truncate">{{ row.name }}</span>
               <span
-                v-if="row.peer?.role === 'sandbox'"
+                v-if="row.peer?.sandbox"
                 class="flex-shrink-0 rounded bg-amber-50 px-1.5 text-[11px] font-medium leading-5 text-amber-700 ring-1 ring-inset ring-amber-200"
                 :data-testid="`node-sandbox-label-${row.key}`"
               >{{ t(k('row.sandboxLabel')) }}</span>
@@ -71,7 +71,6 @@
           :hint="t(k('row.agentsHint'))"
           :title="switchDisabled && !collaborating && !view.checking ? t(k('row.unreachableSwitch'), { name: row.name }) : t(k('row.agentsHint'))"
           :disabled="switchDisabled"
-          :dimmed="collaborating && !store.switchOn"
           :test-id="`node-agents-switch-${row.key}`"
           :icon-test-id="`node-collab-icon-${row.key}`"
           @toggle="dialog.request(collaborating ? 'disconnect' : 'connect', row.key)"
@@ -229,7 +228,7 @@ const view = computed(() => store.views[props.row.key]!)
 const collaborating = computed(() => Boolean(props.row.peer))
 const showDetails = computed(() => collaborating.value && !view.value.checking)
 const expanded = computed({ get: () => Boolean(store.expanded[props.row.key]), set: (value: boolean) => { store.expanded[props.row.key] = value } })
-const shownUrl = computed(() => (props.row.windowAddress ?? props.row.peer?.baseUrl ?? '').replace(/^https?:\/\//, ''))
+const shownUrl = computed(() => (props.row.windowAddress ?? props.row.peer?.address ?? '').replace(/^https?:\/\//, ''))
 
 const summaryLabel = computed(() => {
   if (view.value.offers === null) return t(k('detail.connection'))
@@ -265,7 +264,6 @@ const lineText = computed(() => {
   switch (line?.kind) {
     case 'unreachable': return causeText(t, line.cause, line.host ?? '')
     case 'partial': return line.error ? failureText(t, line.error, { node: name, name: line.stepName }) : ''
-    case 'offThere': return t(k('line.offThere'), { name })
     case 'notRegisteredThere': return t(k('line.notRegisteredThere'), { name })
     case 'notPaired': return t(k('line.notPaired'), { name })
     case 'different': return t(k('line.different'))
@@ -274,7 +272,7 @@ const lineText = computed(() => {
     default: return ''
   }
 })
-const FIX_LABEL = { turnOnThere: 'line.fixOffThere', pairAgain: 'line.fixPairAgain', changeAddress: 'line.fixChangeAddress',
+const FIX_LABEL = { pairAgain: 'line.fixPairAgain', changeAddress: 'line.fixChangeAddress',
   checkAgain: 'line.fixCheckAgain', tryAgain: 'line.fixTryAgain', turnOn: 'line.fixTurnOn' } as const
 const lineFixLabel = computed(() => view.value.line ? t(k(FIX_LABEL[view.value.line.fix])) : '')
 
@@ -282,7 +280,7 @@ const lineFixLabel = computed(() => view.value.line ? t(k(FIX_LABEL[view.value.l
 const runFix = async (): Promise<void> => {
   switch (view.value.line?.fix) {
     case 'turnOn': return dialog.request('connect', props.row.key)
-    case 'turnOnThere': case 'pairAgain': case 'tryAgain': return dialog.request('finish', props.row.key)
+    case 'pairAgain': case 'tryAgain': return dialog.request('finish', props.row.key)
     case 'checkAgain': return store.askAgain(props.row.key)
     case 'changeAddress':
       expanded.value = true

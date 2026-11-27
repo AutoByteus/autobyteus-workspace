@@ -17,7 +17,8 @@ import { useNodeAccessStore } from '~/stores/nodeAccessStore'
  */
 
 const B = 'srv_studioBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x', paired: true, role: null as 'sandbox' | null }
+const peer = { nodeId: B, name: 'studio', address: 'http://192.168.2.31:29695', machine: null, account: null, relation: 'own' as const,
+  sandbox: false, addedAt: 'x', paired: true }
 const row = (overrides: Partial<Row> = {}): Row => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer, name: 'studio', isEmbedded: false, ...overrides,
 })
@@ -39,7 +40,7 @@ const noticeIcon = (wrapper: ReturnType<typeof mountRow>) => get(wrapper, 'node-
 describe('NodeRow', () => {
   beforeEach(() => {
     h.list = reactive({
-      views: {} as Record<string, RowView>, facts: {}, expanded: {}, flashKey: null, switchOn: true, thisName: 'Embedded Node', thisNodeId: 'srv_a',
+      views: {} as Record<string, RowView>, facts: {}, expanded: {}, flashKey: null, thisName: 'Embedded Node', thisNodeId: 'srv_a',
       canOpen: vi.fn(() => true), openNode: vi.fn(), askAgain: vi.fn(), renameNode: vi.fn(), changeAddress: vi.fn(), unfinishedStepOf: vi.fn(() => null),
     })
     h.dialog = reactive({ preparing: null, request: vi.fn() })
@@ -59,7 +60,7 @@ describe('NodeRow', () => {
 
   // autobyteus-581 AC-015: a sandbox this node created is labelled; a normal peer is not.
   it('labels a sandbox peer "sandbox" next to its name, and a normal peer not', () => {
-    const sandbox = mountRow(row({ peer: { ...peer, name: 'sbx_0a1b2c3d4e', role: 'sandbox' }, name: 'sbx_0a1b2c3d4e' }), settled())
+    const sandbox = mountRow(row({ peer: { ...peer, name: 'sbx_0a1b2c3d4e', sandbox: true }, name: 'sbx_0a1b2c3d4e' }), settled())
     expect(get(sandbox, 'node-sandbox-label').text()).toBe('sandbox')
     const normal = mountRow(row(), settled())
     expect(normal.find(`[data-testid="node-sandbox-label-${B}"]`).exists()).toBe(false)
@@ -76,9 +77,9 @@ describe('NodeRow', () => {
     expect(get(wrapper, 'node-agents-switch').attributes('disabled')).toBeDefined()
   })
 
-  it('off there: amber line; Turn on there opens the finish confirmation; connection details instead of the counts', async () => {
-    const wrapper = mountRow(row(), settled({ out: { state: 'offThere' }, offers: null, line: { kind: 'offThere', tone: 'warn', fix: 'turnOnThere' } }))
-    expect(line(wrapper)).toBe('Remote collaboration is off on studio.Turn on there')
+  it('not paired there: amber line; Pair again opens the finish confirmation; connection details instead of the counts', async () => {
+    const wrapper = mountRow(row(), settled({ out: { state: 'notRegisteredThere' }, offers: null, line: { kind: 'notRegisteredThere', tone: 'warn', fix: 'pairAgain' } }))
+    expect(line(wrapper)).toBe("studio doesn't know this node yet.Pair again")
     expect(noticeIcon(wrapper).find('path').attributes('d')).toBe('M10 3.4 17.6 16.6H2.4L10 3.4Z')
     expect(get(wrapper, 'node-line').classes()).toContain('bg-amber-50')
     expect(summary(wrapper)).toBe('Connection details')
@@ -111,7 +112,7 @@ describe('NodeRow', () => {
   })
 
   it('VIS-015: a step not finished: amber line with its cause and Try again', async () => {
-    const wrapper = mountRow(row(), settled({ out: { state: 'offThere' }, offers: null,
+    const wrapper = mountRow(row(), settled({ out: { state: 'notRegisteredThere' }, offers: null,
       line: { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' } } }))
     expect(line(wrapper)).toContain('Turned on here, but not finished on studio. Nothing answers at that address and port.')
     await get(wrapper, 'node-fix').trigger('click')
@@ -139,12 +140,6 @@ describe('NodeRow', () => {
     await get(wrapper, 'node-agents-switch').trigger('click')
     await get(wrapper, 'node-remove').trigger('click')
     expect(h.dialog.request.mock.calls).toEqual([['disconnect', B], ['remove', B]])
-  })
-
-  it('VIS-005: this node off: a collaborating row\'s capsule is dimmed', () => {
-    h.list.switchOn = false
-    const wrapper = mountRow(row(), settled({ out: { state: 'offHere' }, in: { state: 'offHere' }, offers: null }))
-    expect(get(wrapper, 'node-agents-switch').element.parentElement!.classList).toContain('opacity-60')
   })
 
   it('363 capsule: green when collaborating, grey when not; the icon keeps its role and the hint as its label', () => {

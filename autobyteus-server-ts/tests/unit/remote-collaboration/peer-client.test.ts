@@ -1,24 +1,30 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
-import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { NodeKeyPeerVerifier } from "../../../src/remote-collaboration/channel/node-key-peer-verifier.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
+import { plainAddressPeerKey, testConnector, testNodeKey, testSigner } from "../../helpers/peer-node-keys.js";
 
 /** Design § Contract Between Nodes / § Ownership Map `PeerClient` (QR-102, REQ-109, REQ-113, AR-004). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", address: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
+
+/** This node's key; the peer holds its public half (they paired by plain address). */
+const SELF_KEY = testNodeKey();
+/** The peer's verifier, started before any request here is signed (a request dated before its start is refused). */
+const PEER_VERIFIER = new NodeKeyPeerVerifier({ ownNodeId: async () => PEER.nodeId, peerKey: async (nodeId) => nodeId === SELF ? plainAddressPeerKey(SELF_KEY) : null });
+const peerVerifier = () => PEER_VERIFIER;
 
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 
-const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnType<typeof answer>>, options: { enabled?: boolean; timeoutMs?: number } = {}) => {
+const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnType<typeof answer>>, options: { timeoutMs?: number } = {}) => {
   const fetch = vi.fn(fetchImpl);
   return {
     fetch,
     client: new PeerClient({
-      peers: { findByName: async (name) => name === "docker" ? PEER : null, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
-      capability: { isEnabled: () => options.enabled ?? true },
-      ownNodeId: async () => SELF,
+      peers: { findByName: async (name) => name === "docker" ? PEER : null, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
+      signer: testSigner(SELF_KEY), connector: testConnector(), ownNodeId: async () => SELF,
       timeoutMs: options.timeoutMs,
       fetch: fetch as never,
     }),
@@ -34,7 +40,7 @@ const message = {
 };
 
 describe("PeerClient", () => {
-  it("NAS-20 sends the envelope and the request to the peer's pinned URL, signed with the pair's secret (never sent), and returns the peer's run ID", async () => {
+  it("NAS-20 sends the envelope and the request to the peer's pinned address, signed with this node's key (which the peer verifies), and returns the peer's run ID", async () => {
     const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent", agentRunId: "publisher_7f3", launches: [] }));
     await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3", launches: [] });
     const [url, init] = f.fetch.mock.calls[0]!;
@@ -45,37 +51,38 @@ describe("PeerClient", () => {
     expect(headers["content-type"]).toBe("application/json");
     expect(headers).toMatchObject({ "x-autobyteus-peer-from": SELF, "x-autobyteus-peer-to": PEER.nodeId });
     expect(headers["x-autobyteus-peer-body-sha256"]).toBe(createHash("sha256").update(String(init.body)).digest("hex"));
-    expect(headers["x-autobyteus-peer-signature"]).toMatch(/^[0-9a-f]{64}$/);
-    expect(JSON.stringify(init)).not.toContain("peer-secret-for-tests");
+    expect(headers["x-autobyteus-peer-signature"]).toMatch(/^[A-Za-z0-9_-]{86}$/);
+    await expect(peerVerifier().verify({ method: "POST", pathWithQuery: "/rest/remote/delegated-runs", headers }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
     expect(init.signal).toBeInstanceOf(AbortSignal);
   });
 
   it("NAS-20 a peer at a gateway base path: the request goes to the base path and the signature covers the node route", async () => {
-    const gatewayPeer: PeerNode = { ...PEER, baseUrl: "https://gateway.example.com/autobyteus" };
+    const gatewayPeer: PeerNode = { ...PEER, address: "https://gateway.example.com/autobyteus" };
     const fetch = vi.fn(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
     const gatewayClient = new PeerClient({
-      peers: { findByName: async () => gatewayPeer, findByNodeId: async () => gatewayPeer, peerSecret: async () => "peer-secret-for-tests" },
-      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: fetch as never,
+      peers: { findByName: async () => gatewayPeer, findByNodeId: async () => gatewayPeer },
+      signer: testSigner(SELF_KEY), connector: testConnector(), ownNodeId: async () => SELF, fetch: fetch as never,
     });
     await expect(gatewayClient.checkAvailability(PEER.nodeId)).resolves.toEqual({ accepted: true });
     const [url, init] = fetch.mock.calls[0]! as unknown as [string, RequestInit];
     expect(url).toBe("https://gateway.example.com/autobyteus/rest/remote/availability");
-    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
-    await expect(verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers: init.headers as Record<string, string> }))
+    await expect(peerVerifier().verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers: init.headers as Record<string, string> }))
       .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
   });
 
-  it("NAS-23 refuses locally, sending nothing, when this node holds no secret for the peer (paired before peers paired)", async () => {
+  it("NAS-23 refuses locally, sending nothing, when this node holds no key of the peer (paired before node keys: Pair again)", async () => {
     const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const before: PeerNode = { ...PEER, paired: false, relation: null };
     const unpaired = new PeerClient({
-      peers: { findByName: async () => PEER, findByNodeId: async () => PEER, peerSecret: async () => null },
-      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: f.fetch as never,
+      peers: { findByName: async () => before, findByNodeId: async () => before },
+      signer: testSigner(SELF_KEY), connector: testConnector(), ownNodeId: async () => SELF, fetch: f.fetch as never,
     });
     await expect(unpaired.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
     expect(f.fetch).not.toHaveBeenCalled();
   });
 
-  it("NAS-23 reads the peer's 401 (it holds no secret for this node) as not paired", async () => {
+  it("NAS-23 reads the peer's 401 (it holds no key of this node) as not paired", async () => {
     const f = client(async () => ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
     await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
   });
@@ -147,8 +154,7 @@ describe("PeerClient", () => {
       expect(headers["content-type"]).toBe("application/octet-stream");
       expect(Buffer.from(init.body as Uint8Array)).toEqual(bytes);
       expect(headers["x-autobyteus-peer-body-sha256"]).toBe(createHash("sha256").update(bytes).digest("hex"));
-      const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
-      await expect(verifier.verify({ method: "PUT", pathWithQuery: new URL(url).pathname + new URL(url).search, headers }))
+      await expect(peerVerifier().verify({ method: "PUT", pathWithQuery: new URL(url).pathname + new URL(url).search, headers }))
         .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
       const malformed = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, complete: "yes" }));
       await expect(malformed.client.putReceivedFilePiece({ nodeId: PEER.nodeId, sha256: SHA, offset: 0, size: 4, bytes }))
@@ -221,10 +227,13 @@ describe("PeerClient", () => {
     expect(Date.now() - startedAt).toBeLessThan(2_000);
   });
 
-  it("sends nothing while the switch is off, or to a peer that is not registered", async () => {
-    const off = client(async () => answer({}), { enabled: false });
-    await expect(off.client.findPeer("docker")).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
-    await expect(off.client.deliverMessage(message)).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
+  it("sends nothing to a node that is not a peer, and never reaches a private-network peer around the network relay", async () => {
+    const onNetwork: PeerNode = { ...PEER, machine: "machine-peer", account: "ryan@example.com" };
+    const fetch = vi.fn(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const off = { fetch, client: new PeerClient({ peers: { findByName: async () => onNetwork, findByNodeId: async () => onNetwork },
+      signer: testSigner(SELF_KEY), connector: testConnector(), ownNodeId: async () => SELF, fetch: fetch as never }) };
+    await expect(off.client.deliverMessage(message)).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE",
+      message: expect.stringContaining("Private Network is not on") });
     const on = client(async () => answer({}));
     await expect(on.client.findPeer("nas")).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED", message: expect.stringContaining('"nas"') });
     await expect(on.client.deliverMessage({ ...message, nodeId: "srv_removed" })).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED" });

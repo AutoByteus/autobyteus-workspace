@@ -23,7 +23,6 @@ import {
   type RemoteCollaborationServices,
 } from "../remote-collaboration/remote-collaboration-services.js";
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
-import { getServerSettingsService } from "../services/server-settings-service.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
@@ -97,7 +96,6 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   const peerStartedRunDecisions = new PeerStartedRunDecisions();
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
-    settings: getServerSettingsService(),
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     receivedFiles: input.receivedFiles,

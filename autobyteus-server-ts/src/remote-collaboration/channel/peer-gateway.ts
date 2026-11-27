@@ -315,15 +315,13 @@ const parseObservationOpening = (value: unknown): RunObservationOpening & Readon
  *    the body against the signed hash (node access model NA-9); `caller` is that identity;
  * 2. `toNodeId` must be this node → `PEER_IDENTITY_MISMATCH`;
  * 3. `fromNodeId` must be the authenticated peer → `PEER_IDENTITY_MISMATCH`;
- * 4. the switch must be on → `REMOTE_COLLABORATION_OFF`;
- * 5. `fromNodeId` must be a registered peer → `PEER_NOT_REGISTERED`;
- * 6. dispatch to the one handler of the request kind.
+ * 4. `fromNodeId` must be a peer → `PEER_NOT_REGISTERED` (a node collaborates exactly with its peers, autobyteus-661 D-4);
+ * 5. dispatch to the one handler of the request kind.
  * Every answer names this node (`nodeId`), except the 503 refusal while this node's identity is held back.
  */
 export class PeerGateway {
   constructor(private readonly dependencies: Readonly<{
     ownNodeId(): Promise<string>;
-    capability: Readonly<{ isEnabled(): boolean }>;
     peers: Readonly<{ findByNodeId(nodeId: string): Promise<PeerNode | null> }>;
     delegatedRuns: DelegatedRunHandler;
     messages: RemoteMessageHandler;
@@ -444,7 +442,6 @@ export class PeerGateway {
     if (caller?.kind !== "peer" || caller.nodeId !== request.fromNodeId) {
       return refuse(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, "This request does not come from the node it names.");
     }
-    if (!this.dependencies.capability.isEnabled()) return refuse(REMOTE_REFUSAL.OFF, "Remote collaboration is turned off on this node.");
     const peer = await this.dependencies.peers.findByNodeId(request.fromNodeId);
     if (!peer) return refuse(REMOTE_REFUSAL.PEER_NOT_REGISTERED, "The calling node is not a registered peer of this node.");
     const result = await handle(request, peer);

@@ -15,7 +15,6 @@ const here = { name: 'Embedded Node', nodeId: 'srv_a', windowAddress: 'http://12
 const plan = (overrides: Partial<NodeChangePlan>): NodeChangePlan => ({
   kind: 'connect', target, here, phase: 'confirm',
   steps: [
-    { id: 'turnOnThere', status: 'todo' },
     { id: 'pair', status: 'todo', name: '8003', wanted: '8003', nameThere: 'Embedded Node' },
   ],
   ...overrides,
@@ -31,16 +30,16 @@ describe('NodeChangeDialog', () => {
     h.dialog = reactive({ plan: null, confirm: vi.fn(), cancel: vi.fn() })
   })
 
-  it('NAS-19 VIS-003: every change grouped by node, the pairing on both; the pairing note; Cancel / Turn on', async () => {
+  it('NAS-19 VIS-003: the pairing on both nodes; the pairing note (node keys, 661); Cancel / Turn on', async () => {
     const wrapper = mountWith(plan({}))
     expect(wrapper.get('[role="dialog"]').attributes('aria-modal')).toBe('true')
     expect(wrapper.get('h3').text()).toBe('Let agents work with 8003?')
     expect(wrapper.text()).toContain('Agents on this node and on 8003 will be able to work with each other. These changes happen:')
-    expect(text(wrapper, 'node-change-group-there')).toContain('Turn on remote collaboration (it is off)')
+    expect(wrapper.find('[data-testid="node-change-group-there"]').exists()).toBe(false)
     expect(text(wrapper, 'node-change-group-both')).toContain('On both nodes')
     expect(text(wrapper, 'node-change-step-pair')).toContain('Pair this node with 8003 (here it is called “8003”)')
     expect(text(wrapper, 'node-change-name-there-pair')).toBe('8003 calls this node “Embedded Node”.')
-    expect(text(wrapper, 'node-change-trusted')).toBe('Paired nodes share a secret, and each proves every request to the other with it.')
+    expect(text(wrapper, 'node-change-trusted')).toBe("Paired nodes keep each other's node key, and every request between them is signed with the sender's key.")
     expect(text(wrapper, 'node-change-confirm')).toBe('Turn on')
     await wrapper.get('[data-testid="node-change-confirm"]').trigger('click')
     expect(h.dialog.confirm).toHaveBeenCalled()
@@ -56,24 +55,24 @@ describe('NodeChangeDialog', () => {
   })
 
   it('VIS-004: running shows ✓ for what is done and "Working…"', () => {
-    const wrapper = mountWith(plan({ phase: 'running', steps: [
-      { id: 'turnOnThere', status: 'done' },
+    const wrapper = mountWith(plan({ kind: 'finish', phase: 'running', steps: [
+      { id: 'removeThere', status: 'done' },
       { id: 'pair', status: 'running', name: '8003' },
     ] }))
-    expect(text(wrapper, 'node-change-step-turnOnThere')).toContain('✓')
+    expect(text(wrapper, 'node-change-step-removeThere')).toContain('✓')
     expect(text(wrapper, 'node-change-confirm')).toBe('Working…')
     expect(wrapper.get('[data-testid="node-change-confirm"]').attributes('disabled')).toBeDefined()
   })
 
   it('VIS-014: a partial result: ✓ ✗ ○, the cause, "What was done stays done", Close / Try again', async () => {
-    const wrapper = mountWith(plan({ phase: 'failed', steps: [
-      { id: 'turnOnHere', status: 'done' },
-      { id: 'turnOnThere', status: 'failed', error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused', address: 'http://localhost:8005' } },
+    const wrapper = mountWith(plan({ kind: 'finish', phase: 'failed', steps: [
+      { id: 'removeHere', status: 'done' },
+      { id: 'removeThere', status: 'failed', error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused', address: 'http://localhost:8005' } },
       { id: 'pair', status: 'notRun', name: '8005' },
     ] }))
-    expect(text(wrapper, 'node-change-step-turnOnHere')).toContain('✓')
-    expect(text(wrapper, 'node-change-step-turnOnThere')).toContain('✗')
-    expect(text(wrapper, 'node-change-error-turnOnThere')).toBe('Nothing answers at that address and port.')
+    expect(text(wrapper, 'node-change-step-removeHere')).toContain('✓')
+    expect(text(wrapper, 'node-change-step-removeThere')).toContain('✗')
+    expect(text(wrapper, 'node-change-error-removeThere')).toBe('Nothing answers at that address and port.')
     expect(text(wrapper, 'node-change-step-pair')).toContain('○')
     expect(text(wrapper, 'node-change-partial')).toBe('Not everything could be done. What was done stays done.')
     await wrapper.get('[data-testid="node-change-retry"]').trigger('click')
@@ -84,7 +83,6 @@ describe('NodeChangeDialog', () => {
 
   it('VIS-018: a pairing that failed on a Docker loopback address shows the hint (without an address to use) and the Docker Guide', async () => {
     const wrapper = mountWith(plan({ phase: 'failed', steps: [
-      { id: 'turnOnThere', status: 'done' },
       { id: 'pair', status: 'failed', name: '8003', error: { code: 'PEER_UNREACHABLE', message: 'x', address: 'http://127.0.0.1:29695', loopbackInContainer: true } },
     ] }))
     expect(text(wrapper, 'node-change-step-pair')).toContain('✗')
@@ -99,7 +97,7 @@ describe('NodeChangeDialog', () => {
     const wrapper = mountWith(plan({ kind: 'disconnect', steps: [{ id: 'removeHere', status: 'todo' }, { id: 'removeThere', status: 'todo' }] }))
     expect(wrapper.get('h3').text()).toBe('Stop agents working with 8003?')
     expect(wrapper.findAll('[data-testid="node-change-group-all"] li').map((line) => line.text())).toEqual(['•Remove 8003 from this node', '•Remove this node from 8003'])
-    expect(wrapper.text()).toContain('8003 stays in your list, and its own remote collaboration stays on.')
+    expect(wrapper.text()).toContain('8003 stays in your list; it is told that the pair ended.')
     expect(wrapper.find('[data-testid="node-change-trusted"]').exists()).toBe(false)
     expect(text(wrapper, 'node-change-confirm')).toBe('Turn off')
   })

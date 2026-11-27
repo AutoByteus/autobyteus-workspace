@@ -168,8 +168,7 @@ try {
   const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort())]);
 
   // Earlier use, through the servers' own APIs: peers both ways; beta syncs its memory into alpha's hub.
-  for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: 'beta', accepterName: 'alpha' }); // by invite (autobyteus-437)
+  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql }, granterName: 'beta', askerName: 'alpha' }); // one click (autobyteus-661)
   const hub = await alpha.gql('mutation($i:UpdateMemoryHubConfigInput!){updateMemoryHubConfig(input:$i){oneTimePlaintextToken}}', { i: { enabled: true, advertisedHubBaseUrl: alpha.baseUrl } });
   const runDir = path.join(beta.dataDir, 'memory', 'agents', 'nvp-run');
   await fs.mkdir(runDir, { recursive: true });

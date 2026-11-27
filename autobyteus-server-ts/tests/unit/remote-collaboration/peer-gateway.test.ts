@@ -6,7 +6,7 @@ import type { ClientIdentity } from "../../../src/node-access/domain/client-iden
 /** Design § Contract Between Nodes: the gateway's fixed admission order (REQ-114, AC-101, AC-102, AC-111). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "desktop", address: "http://a", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
 /** The identity the node access gate established from the request's signature (node access model NA-9). */
 const PEER_CALLER: ClientIdentity = { kind: "peer", nodeId: PEER.nodeId };
 
@@ -21,7 +21,7 @@ const messageBody = (overrides: Record<string, unknown> = {}) => ({
   content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", files: [], ...overrides,
 });
 
-const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
+const gateway = (input: { registered?: boolean } = {}) => {
   const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, kind: "agent" as const, agentRunId: "publisher_7f3" })) };
   const messages = { accept: vi.fn(async () => ({ accepted: true as const, receiverAddress: "/publisher" })), acceptRunMessage: vi.fn(async () => ({ accepted: true as const, receiverAddress: null })) };
   const runningAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ kind: "agent" as const, name: "PM", agent_run_id: "pm_b", state: "idle" as const }] })) };
@@ -36,7 +36,6 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const peerRunMembers = { apply: vi.fn(async () => ({ accepted: true as const })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
-    capability: { isEnabled: () => input.enabled ?? true },
     peers: { findByNodeId: async (nodeId) => (input.registered ?? true) && nodeId === PEER.nodeId ? PEER : null },
     delegatedRuns,
     messages,
@@ -89,17 +88,16 @@ describe("PeerGateway", () => {
       targetRoot: { kind: "agent", runId: "publisher_7f3" } }), PEER);
   });
 
-  it("checks the target node first, then the switch, then the peer registration, before any dispatch", async () => {
-    const misaddressed = gateway({ enabled: false, registered: false });
+  it("checks the target node first, then the pairing, before any dispatch (autobyteus-661 D-4: no switch)", async () => {
+    const misaddressed = gateway({ registered: false });
     await expect(misaddressed.gate.deliverMessage(messageBody({ toNodeId: "srv_other" }), PEER_CALLER))
       .resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH", nodeId: SELF } });
-    const off = gateway({ enabled: false, registered: false });
-    await expect(off.gate.startDelegatedRun(startBody(), PEER_CALLER))
-      .resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "REMOTE_COLLABORATION_OFF", nodeId: SELF } });
     const unregistered = gateway({ registered: false });
     await expect(unregistered.gate.deliverMessage(messageBody(), PEER_CALLER))
       .resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_NOT_REGISTERED", nodeId: SELF } });
-    for (const f of [misaddressed, off, unregistered]) {
+    await expect(unregistered.gate.startDelegatedRun(startBody(), PEER_CALLER))
+      .resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_NOT_REGISTERED", nodeId: SELF } });
+    for (const f of [misaddressed, unregistered]) {
       expect(f.delegatedRuns.start).not.toHaveBeenCalled();
       expect(f.messages.accept).not.toHaveBeenCalled();
     }
@@ -146,16 +144,15 @@ describe("PeerGateway", () => {
     expect(f.availableAgents.list).toHaveBeenCalledOnce();
   });
 
-  it("autobyteus-261: both kinds keep the admission order (target node, switch, registration) and refuse a malformed body", async () => {
+  it("autobyteus-261: both kinds keep the admission order (target node, pairing) and refuse a malformed body", async () => {
     const envelope = { fromNodeId: PEER.nodeId, toNodeId: SELF };
     for (const call of ["checkAvailability", "listAvailableAgents"] as const) {
       await expect(gateway().gate[call]({ ...envelope, toNodeId: "srv_other" }, PEER_CALLER)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH", nodeId: SELF } });
-      await expect(gateway({ enabled: false }).gate[call](envelope, PEER_CALLER)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "REMOTE_COLLABORATION_OFF" } });
       await expect(gateway({ registered: false }).gate[call](envelope, PEER_CALLER)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
       await expect(gateway().gate[call]({ fromNodeId: PEER.nodeId }, PEER_CALLER)).resolves.toMatchObject({ status: 400, answer: { accepted: false, code: "REMOTE_REQUEST_INVALID" } });
       await expect(gateway().gate[call]("not an object", PEER_CALLER)).resolves.toMatchObject({ status: 400 });
     }
-    const refused = gateway({ enabled: false });
+    const refused = gateway({ registered: false });
     await refused.gate.listAvailableAgents(envelope, PEER_CALLER);
     expect(refused.availableAgents.list).not.toHaveBeenCalled();
   });
@@ -182,12 +179,12 @@ describe("PeerGateway", () => {
       expect(f.messages.acceptRunMessage).not.toHaveBeenCalled();
     });
 
-    it("QR-003: both new requests pass the same admission first: an unauthenticated caller, a switch off and an unregistered peer are refused before any handler", async () => {
+    it("QR-003: both new requests pass the same admission first: an unauthenticated caller and a node that is not a peer are refused before any handler", async () => {
       const f = gateway();
       await expect(f.gate.deliverRunMessage(runMessageBody(), null)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
       await expect(f.gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, null)).resolves.toMatchObject({ answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
-      await expect(gateway({ enabled: false }).gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, PEER_CALLER))
-        .resolves.toMatchObject({ answer: { accepted: false, code: "REMOTE_COLLABORATION_OFF" } });
+      await expect(gateway({ registered: false }).gate.listRunningAgents({ fromNodeId: PEER.nodeId, toNodeId: SELF }, PEER_CALLER))
+        .resolves.toMatchObject({ answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
       await expect(gateway({ registered: false }).gate.deliverRunMessage(runMessageBody(), PEER_CALLER))
         .resolves.toMatchObject({ answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
       expect(f.messages.acceptRunMessage).not.toHaveBeenCalled();
@@ -226,7 +223,7 @@ describe("PeerGateway", () => {
       await expect(f.gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF, receivedBytes: 4, complete: true } });
       expect(f.receivedFiles.appendPiece).toHaveBeenCalledWith({ fromNodeId: PEER.nodeId, toNodeId: SELF, sha256: SHA, offset: 0, size: 4, bytes: Buffer.from("abcd") });
       await expect(f.gate.receivedFilePiece(piece(), null)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH" } });
-      await expect(gateway({ enabled: false }).gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toMatchObject({ answer: { code: "REMOTE_COLLABORATION_OFF" } });
+      await expect(gateway({ registered: false }).gate.receivedFilePiece(piece(), PEER_CALLER)).resolves.toMatchObject({ answer: { code: "PEER_NOT_REGISTERED" } });
       // A malformed piece: a bad name, a bad offset, a body that is not bytes, a piece over 8 MiB.
       for (const bad of [piece({ sha256: "../x" }), piece({ offset: "-1" }), piece({ bytes: "abcd" }), piece({ bytes: Buffer.alloc(8 * 1024 * 1024 + 1) })]) {
         await expect(f.gate.receivedFilePiece(bad, PEER_CALLER)).resolves.toMatchObject({ status: 400, answer: { code: "REMOTE_REQUEST_INVALID" } });

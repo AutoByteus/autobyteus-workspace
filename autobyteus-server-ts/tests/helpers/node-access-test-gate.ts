@@ -11,7 +11,7 @@ import type { NetworkAdmissionCheck } from "../../src/node-access/domain/network
 import { NodeCredentialResolver } from "../../src/node-access/services/node-credential-resolver.js";
 import { OwnerCredentialService } from "../../src/node-access/services/owner-credential-service.js";
 import type { OwnerCredentialStore } from "../../src/node-access/stores/owner-credential-store.js";
-import { PeerRequestSignatureVerifier } from "../../src/remote-collaboration/channel/peer-request-signature.js";
+import { NodeKeyPeerVerifier } from "../../src/remote-collaboration/channel/node-key-peer-verifier.js";
 
 /** An in-memory owner credential store: a test's owner credentials live only as long as the test. */
 export const memoryOwnerCredentialStore = (): OwnerCredentialStore => {
@@ -31,22 +31,22 @@ export type TestNodeAccess = Readonly<{
 
 /**
  * Registers the real node access plugin and gate on a test's Fastify app (node access model §2): the real resolver
- * with an owner credential service holding `launchCredential`, the real peer signature verifier over `peerSecrets`
- * (node ID → secret), and any further verifiers. Admission admits every connection unless the test gives one.
+ * with an owner credential service holding `launchCredential`, the real node-key peer verifier over `peerKeys`
+ * (node ID → the peer's public node key, paired by plain address), and any further verifiers. Admission admits every connection unless the test gives one.
  */
 export const registerTestNodeAccess = async (app: FastifyInstance, options: Readonly<{
   launchCredential?: string;
   ownNodeId?: string;
-  peerSecrets?: Readonly<Record<string, string>>;
+  peerKeys?: Readonly<Record<string, string>>;
   verifiers?: readonly (BearerCredentialVerifier & Partial<ClientRevocationSource>)[];
   peerVerifier?: PeerRequestVerifier;
   admission?: NetworkAdmissionCheck;
   revocationSources?: readonly ClientRevocationSource[];
 }> = {}): Promise<TestNodeAccess> => {
   const ownerCredentials = new OwnerCredentialService(memoryOwnerCredentialStore(), options.launchCredential ?? null);
-  const peerVerifier = options.peerVerifier ?? new PeerRequestSignatureVerifier({
+  const peerVerifier = options.peerVerifier ?? new NodeKeyPeerVerifier({
     ownNodeId: async () => options.ownNodeId ?? "srv_test_node",
-    peerSecret: async (nodeId) => options.peerSecrets?.[nodeId] ?? null,
+    peerKey: async (nodeId) => (options.peerKeys?.[nodeId] ? { publicKey: options.peerKeys[nodeId]!, machine: null } : null),
   });
   const resolver = new NodeCredentialResolver([ownerCredentials, ...(options.verifiers ?? [])], peerVerifier);
   const openSockets = new OpenSocketRegistry();

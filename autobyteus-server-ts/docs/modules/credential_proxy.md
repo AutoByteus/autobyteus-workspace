@@ -312,8 +312,8 @@ loudly (`PROVIDER_RELAY_UNAVAILABLE`); it never launches directly.
    forwarded with it; relayed: the call sent to the relay node (below).
 
 **Relayed calls (C4).** On a relayed node the call (the pass and every local
-credential header dropped, the body read whole up to 32 MiB) is signed with the
-pair's peer secret and sent to
+credential header dropped, the body read whole up to 32 MiB) is signed with this
+node's key (autobyteus-661) and sent to
 `/rest/remote/provider-relays/<relayId>/<kind><path>?fromNodeId=…&toNodeId=…`
 on the relay node (`PeerRelayClient`; timeouts: connect 10 s, response headers
 300 s, 300 s between body chunks, no total). The relay node's gate admits the

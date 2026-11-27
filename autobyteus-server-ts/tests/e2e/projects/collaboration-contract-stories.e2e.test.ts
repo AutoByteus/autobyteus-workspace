@@ -778,8 +778,8 @@ suite("The collaboration contract's stories, run against the built server (autob
       const lead = await agentDef(ctx, "B", "lead@B", "Lead", [], agy);
       const analyst = await agentDef(ctx, "B", "analyst@B", "Analyst", [], agy);
       await teamDef(ctx, "B", "research-team@B", "Research Team", [["lead", lead], ["analyst", analyst]], "lead", [], agy);
-      for (const node of [ctx.nodes.A!, B]) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
-      await pairNodes({ inviter: (q, v) => B.gql(q, v), accepter: (q, v) => ctx.nodes.A!.gql(q, v), inviterName: "node-b", accepterName: "node-a" });
+      await pairNodes({ granter: { gql: (q, v) => B.gql(q, v), address: B.url }, asker: { gql: (q, v) => ctx.nodes.A!.gql(q, v), address: ctx.nodes.A!.url },
+        granterName: "node-b", askerName: "node-a" });
       for (const [name, node] of Object.entries(ctx.nodes)) {
         const status = await (await fetch(`${node.url}/rest/remote-access/status`)).json().catch(() => ({})) as Rec;
         node.nodeId = (status.nodeId as string) ?? node.nodeId;

@@ -39,11 +39,22 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **This node / remote node:** a point of view. Every node other than this one
   is a remote node, even a Docker node on the same machine. *Remote* names a
   location (remote runs, remote access, the remote chip, `nodeType: 'remote'`).
-- **Peer:** a remote node paired with this node: both nodes hold the same
-  **peer secret** and this node pinned the peer's node ID (`PeerNode`,
-  `peers.json`, "pair", `list_peer_nodes`). *Peer* names a relationship; a
-  remote node that isn't paired is not a peer. A peer recorded before nodes
-  paired has no secret (`paired: false`): the Nodes page shows "Pair again".
+- **Peer:** a node paired with this node: each holds the other's public
+  **node key** (`PeerNode`, `peers.json`, "pair", `list_peer_nodes`). *Peer*
+  names a relationship; a remote node that isn't paired is not a peer, and
+  being on the same network grants nothing. A peer is `own` (your node) or
+  `teammate` (someone else's: peer only, never control).
+- **Node key:** each node's own Ed25519 key pair
+  (`<data>/remote-collaboration/node-key.pem`, mode 0600, `NodeKey`). Its
+  private half never leaves the node and signs every request to a peer; a peer
+  keeps its public half (autobyteus-661).
+- **Pairing grant:** a one-time grant (10 minutes, in memory) a node's owner
+  makes for one pair from a node the same AutoByteus app controls: the one-click
+  pair of your own nodes (`createPairingGrant`). Any other pair waits for the
+  other owner's **Accept**.
+- **Pair again:** the state of a pair this node holds no node key for (made
+  before node keys, `paired: false`, or a peer whose machine changed): its
+  requests are refused until the two nodes pair again.
 - **Delegation state** (of a remote run): open while an open Task entry on the
   delegating node names the run, closed otherwise. Only the delegating node
   decides it; it sends it to the run's node (`POST
@@ -69,8 +80,8 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   (node access model, `autobyteus-server-ts/docs/design/node_access_model.md`);
   the node keeps only its hash. Kinds: **owner credential** (`own_…`, a
   desktop's, one per desktop per node, full authority), **phone credential**
-  (`mra_…`), **peer secret** (shared by two paired nodes; never sent, it signs
-  their requests) and **memory sync source credential** (`mhub_…`). The MCP
+  (`mra_…`) and **memory sync source credential** (`mhub_…`). A peer presents
+  no credential: it signs each request with its node key. The MCP
   gateway token is the tool endpoint's own token, not a credential kind.
 - **Launch credential:** the owner credential the desktop app creates each time
   it starts its own node and hands it privately
@@ -80,8 +91,6 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   owner credential; read only on the node's own computer (`setup-code` of
   `autobyteus-docker` or `dist/node-access-cli.js`) or created by an owner
   desktop. It is never written to a file or a log.
-- **Peer invite code:** a one-time code (10 minutes) in a peer invite
-  (`abpi_…`) that a node's owner creates; another node exchanges it to pair.
 - **Network admission:** whether a node accepts a connection by where it
   arrived: this computer, its Tailscale address, an allowed local network, or
   a network listed in `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS`. Refused with

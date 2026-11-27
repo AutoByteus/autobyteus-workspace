@@ -7,7 +7,6 @@ import {
 import { SANDBOX_IMAGE_SETTING } from "../sandboxes/sandbox-settings.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
-import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import {
   AUTO_UPDATE_SETTING_KEYS,
   UPDATE_CHECK_INTERVAL_SETTING_KEYS,
@@ -169,11 +168,6 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       "Controls whether the Applications module is available for this node at runtime.",
-    );
-
-    this.registerPredefinedSetting(
-      REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY,
-      "Controls whether this node collaborates with registered peer nodes (trusted private network only). Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(

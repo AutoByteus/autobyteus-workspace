@@ -12,20 +12,19 @@ import { asSettingsFailure, NodeSettingsError } from '~/utils/nodeSettingsError'
 
 /**
  * What the connector reads and writes. This node goes through its own stores (one-nodes-tab AR-005: its peers through
- * `remoteCollaborationStore`, its switch through the capability store), the desktop's list through `nodeStore`, and
- * the other node only through its `nodeCollaborationApi`.
+ * `remoteCollaborationStore`), the desktop's list through `nodeStore`, and the other node only through its
+ * `nodeCollaborationApi`.
  */
 export interface NodeCollaborationConnectorDependencies {
   here: {
-    switchOn(): boolean
-    setSwitch(on: boolean): Promise<void>
     /** This node's peers, read again so a plan uses fresh facts. */
     loadPeers(): Promise<PeerNode[]>
-    /** autobyteus-437: this node accepts the other node's invite (it finds the other node's address itself). */
-    acceptInvite(inviteText: string, name: string, nameOnInviter: string): Promise<unknown>
+    /** autobyteus-661: this node pairs with the node at `address` using that node's grant (one click: both are this app's). */
+    pairWith(input: { address: string; grant: string; nodeId: string; name: string }): Promise<unknown>
     renamePeer(nodeId: string, name: string): Promise<unknown>
-    removePeer(nodeId: string): Promise<void>
-    changePeerAddress(nodeId: string, baseUrl: string): Promise<unknown>
+    /** Unpair here (the other node is told when this node can reach it). */
+    unpairPeer(nodeId: string): Promise<void>
+    changePeerAddress(nodeId: string, address: string): Promise<unknown>
   }
   list: {
     rename(entryId: string, name: string): Promise<void>
@@ -64,32 +63,27 @@ const requireId = (nodeId: string | null, what: string): string => {
 /**
  * Collaboration between this node and another one, as one confirmed plan carried out on both nodes (one-nodes-tab
  * DS-003): `plan` gathers the facts and lists only the needed steps; `run` carries the steps out in order, by the plan
- * kind's run rule (design § Run Rules), and reports each step. Two nodes collaborate once paired (autobyteus-437,
- * node access model NA-9): the other node creates an invite and this node accepts it, so one step registers both and
- * gives them their shared secret; each node finds the other's address itself. Stateless between calls: the plan holds
- * everything.
+ * kind's run rule (design § Run Rules), and reports each step. Two nodes collaborate exactly when paired (autobyteus-661
+ * D-2, D-4): this app controls both, so the other node makes a grant and this node pairs with it at the address this
+ * window reaches it at; one step stores both records, each with the other's node key. Stateless between calls: the
+ * plan holds everything.
  */
 export const createNodeCollaborationConnector = (deps: NodeCollaborationConnectorDependencies) => {
   const api = (plan: NodeChangePlan): NodeCollaborationApi =>
     deps.there(requireId(plan.target.windowAddress, plan.target.name))
 
   /**
-   * Connect and finish: every step still missing on both nodes, in order. A pair that is paired on one side only (the
-   * other side removed it) is removed there first, since a node pairs again with a peer only after it was removed.
+   * Connect and finish: the pair when it is missing or not complete on either side (Pair again also replaces a pair
+   * made before node keys). A pair left on one side only is removed there first.
    */
   const planConnect = async (kind: 'connect' | 'finish', target: NodeChangeTarget, here: NodeChangeHere): Promise<NodeChangePlan> => {
     const nodeId = requireId(target.nodeId, target.name)
     const hereId = requireId(here.nodeId, here.name)
     const other = deps.there(requireId(target.windowAddress, target.name))
-    const [herePeers, thereOn, therePeers] = await Promise.all([
-      deps.here.loadPeers(), other.capability().then((state) => state.enabled), other.peers(),
-    ])
-    const hereOn = deps.here.switchOn()
+    const [herePeers, therePeers] = await Promise.all([deps.here.loadPeers(), other.peers()])
     const herePeer = herePeers.find((peer) => peer.nodeId === nodeId)
     const therePeer = therePeers.find((peer) => peer.nodeId === hereId)
     const steps: NodeChangeStep[] = []
-    if (!hereOn) steps.push(step('turnOnHere'))
-    if (!thereOn) steps.push(step('turnOnThere'))
     if (!herePeer?.paired || !therePeer?.paired) {
       if (herePeer?.paired) steps.push(step('removeHere'))
       if (therePeer?.paired) steps.push(step('removeThere'))
@@ -142,15 +136,14 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
   const perform = async (plan: NodeChangePlan, current: NodeChangeStep): Promise<void> => {
     const nodeId = plan.target.nodeId
     switch (current.id) {
-      case 'turnOnHere': return deps.here.setSwitch(true)
-      case 'turnOnThere': return api(plan).setEnabled(true)
       case 'pair': {
-        const invite = await api(plan).createInvite()
-        await deps.here.acceptInvite(invite.inviteText, current.name!, current.nameThere!)
+        const { grant } = await api(plan).createGrant({ nameForAsker: current.nameThere! })
+        await deps.here.pairWith({ address: requireId(plan.target.windowAddress, plan.target.name), grant,
+          nodeId: requireId(nodeId, plan.target.name), name: current.name! })
         return
       }
-      case 'removeHere': return deps.here.removePeer(requireId(nodeId, plan.target.name))
-      case 'removeThere': return api(plan).removePeer(requireId(plan.here.nodeId, plan.here.name))
+      case 'removeHere': return deps.here.unpairPeer(requireId(nodeId, plan.target.name))
+      case 'removeThere': return api(plan).unpairPeer(requireId(plan.here.nodeId, plan.here.name))
       case 'removeFromList':
         for (const entryId of plan.target.entryIds) await deps.list.remove(entryId)
         return

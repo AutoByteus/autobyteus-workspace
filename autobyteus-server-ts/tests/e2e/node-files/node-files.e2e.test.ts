@@ -12,10 +12,10 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
 import { configureNodeIdentityCapability } from "../../../src/remote-access/services/node-identity-service.js";
-import { signPeerRequest } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { testNodeKey, testSigner } from "../../helpers/peer-node-keys.js";
 import { startStudioE2eRuntimeServer, type StartedStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
-const PEER = { nodeId: "srv_node_files_peer_0000000000000000000", secret: randomBytes(32).toString("base64url") };
+const PEER = { nodeId: "srv_node_files_peer_0000000000000000000", key: testNodeKey() };
 const ROUTE = "/rest/node-files/content";
 
 describe("Node files: one file by absolute path, read-only (autobyteus-436)", () => {
@@ -44,7 +44,7 @@ describe("Node files: one file by absolute path, read-only (autobyteus-436)", ()
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\nAPP_ENV=test\n", "utf-8");
     await fs.mkdir(path.join(dataDir, "remote-collaboration"), { recursive: true });
     await fs.writeFile(path.join(dataDir, "remote-collaboration", "peers.json"), JSON.stringify({ peers: [
-      { nodeId: PEER.nodeId, name: "peer", baseUrl: "http://127.0.0.1:9", addedAt: new Date().toISOString(), peerSecret: PEER.secret },
+      { nodeId: PEER.nodeId, name: "peer", publicKey: PEER.key.publicKeyText, address: "http://127.0.0.1:9", machine: null, account: null, relation: "own", addedAt: new Date().toISOString() },
     ] }), { mode: 0o600 });
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     configureNodeIdentityCapability(true);
@@ -119,7 +119,7 @@ describe("Node files: one file by absolute path, read-only (autobyteus-436)", ()
 
   it("NAS-40 a peer and a memory sync source are refused 403 NODE_ROUTE_NOT_PERMITTED; no credential is refused 401", async () => {
     const url = fileUrl(path.join(outside, "worktree", "tickets", "data-contract.md"));
-    const signed = signPeerRequest({ secret: PEER.secret, method: "GET", pathWithQuery: url, fromNodeId: PEER.nodeId, toNodeId: ownNodeId, body: null });
+    const signed = await testSigner(PEER.key).headers({ method: "GET", pathWithQuery: url, fromNodeId: PEER.nodeId, toNodeId: ownNodeId, body: null });
     const peer = await inject({ url, headers: signed });
     expect({ status: peer.statusCode, code: peer.json().code }).toEqual({ status: 403, code: "NODE_ROUTE_NOT_PERMITTED" });
 

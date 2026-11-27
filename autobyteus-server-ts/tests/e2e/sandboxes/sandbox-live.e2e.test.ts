@@ -172,7 +172,6 @@ let hostUrl = "";
 let hostNodeId = "";
 const hostEnvironment = () => ({
   HOME: home,
-  ENABLE_REMOTE_COLLABORATION: "true",
   AUTOBYTEUS_SANDBOX_IMAGE: IMAGE,
   ANTIGRAVITY_CLI_COMMAND: FIXTURE,
   AGY_FAKE_CASE: "linked_skills",
@@ -275,7 +274,7 @@ const activity = (): Json[] => {
   const file = path.join(RUNTIME_ROOT, "provider-relays", "activity.jsonl");
   return fs.existsSync(file) ? fs.readFileSync(file, "utf8").trim().split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
 };
-const hostPeers = async (): Promise<Json[]> => (await gql(hostUrl, "{ peerNodes { nodeId name paired role } }")).peerNodes;
+const hostPeers = async (): Promise<Json[]> => (await gql(hostUrl, "{ peerNodes { nodeId name paired relation sandbox } }")).peerNodes;
 const containersOf = async (filter: string) => (await docker("ps", "-a", "--filter", filter, "--format", "{{.Names}}")).stdout.trim().split("\n").filter(Boolean);
 
 /** The sandbox node's own owner credential, from its setup code over `docker exec` (memory only). */
@@ -373,7 +372,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     expect(limits).toBe(`${6 * 1024 ** 3} ${4 * 1e9} bridge`);
 
     const peers = await hostPeers();
-    expect(peers.filter((p) => p.role === "sandbox")).toEqual([expect.objectContaining({ name: record!.sandboxId, paired: true, nodeId: sandbox!.nodeId })]);
+    expect(peers.filter((p) => p.sandbox === true)).toEqual([expect.objectContaining({ name: record!.sandboxId, paired: true, nodeId: sandbox!.nodeId })]);
 
     credential = await sandboxCredential(record!.sandboxId, record!.hostPort);
     const internet = await callTool(evaluator, "run_in_sandbox", { sandboxId: record!.sandboxId, timeoutSeconds: 60,
@@ -381,8 +380,8 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     expect(internet.ok, internet.text.slice(0, 400)).toBe(true);
     expect(internet.result).toMatchObject({ exitCode: 0 });
     expect(String(internet.result!.stdout)).toMatch(/internet 200 host \d{3}/);
-    const sandboxPeers = (await gql(`http://127.0.0.1:${record!.hostPort}`, "{ peerNodes { nodeId name paired role } }", {}, credential)).peerNodes as Json[];
-    expect(sandboxPeers).toEqual([expect.objectContaining({ name: "host", paired: true, role: null })]);
+    const sandboxPeers = (await gql(`http://127.0.0.1:${record!.hostPort}`, "{ peerNodes { nodeId name paired relation sandbox } }", {}, credential)).peerNodes as Json[];
+    expect(sandboxPeers).toEqual([expect.objectContaining({ name: "host", paired: true, relation: "own", sandbox: false })]);
     const availability = (await gql(`http://127.0.0.1:${record!.hostPort}`, "query($n: String!) { peerNodeAvailability(nodeId: $n) { available refusalCode } }",
       { n: sandboxPeers[0]!.nodeId }, credential)).peerNodeAvailability;
     expect(availability).toEqual({ available: true, refusalCode: null });
@@ -437,7 +436,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     const duringDirect = activity().slice(beforeDirect);
     expect(duringDirect.every((line) => line.peerNodeId === sandbox!.nodeId)).toBe(true);
     evidence("SBX-01", { readyMs, resultKeys: Object.keys(sandbox!).sort(), agents: sandbox!.agents, sharedFolders: sandbox!.sharedFolders,
-      limits, hostPeers: peers.map((p) => ({ name: p.name, paired: p.paired, role: p.role })), network: internet.result!.stdout.trim(),
+      limits, hostPeers: peers.map((p) => ({ name: p.name, paired: p.paired, relation: p.relation, sandbox: p.sandbox })), network: internet.result!.stdout.trim(),
       sandboxPeers: sandboxPeers.map((p) => ({ name: p.name, paired: p.paired })), availability, runtimeStates: stateOf, turns,
       relayedLines: byRelay, relayedPaths: relayed.map((l) => `${l.relayId}/${l.relayCredentialKind} ${l.method} ${l.path} -> ${l.status ?? l.error}`),
       directTurns: direct, c5LinesDuringDirectTurns: duringDirect.map((l) => ({ fromSandbox: l.peerNodeId === sandbox!.nodeId, relay: l.relayId, path: l.path, status: l.status })) });
@@ -569,7 +568,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     const volumesLeft: string[] = [];
     for (const volume of volumes) if ((await docker("volume", "inspect", volume)).code === 0) volumesLeft.push(volume);
     const after = { containers: await containersOf(`label=autobyteus.sandbox=${record!.sandboxId}`), volumesLeft,
-      sandboxPeers: (await hostPeers()).filter((p) => p.role === "sandbox" || p.nodeId === sandbox!.nodeId).length,
+      sandboxPeers: (await hostPeers()).filter((p) => p.sandbox === true || p.nodeId === sandbox!.nodeId).length,
       records: records().length, workspaceKept: fs.existsSync(record!.workspaceFolder), runMemoryKept: fs.existsSync(record!.runMemoryFolder),
       // The runs' transcripts outlive the sandbox (they are on the host, not in its removed volumes).
       transcriptsKept: fs.existsSync(path.join(record!.runMemoryFolder, "agents"))
@@ -589,7 +588,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
       await nativeModel(sandboxUrl, cred), "/home/autobyteus/workspace", cred);
     const first = await turn(sandboxUrl, runId, "Reply with one short word.", cred, 120_000);
     expect(first.completed).toBe(true);
-    await gql(hostUrl, "mutation($n: String!) { removePeerNode(nodeId: $n) }", { n: own.nodeId });
+    await gql(hostUrl, "mutation($n: String!) { unpairPeerNode(nodeId: $n) }", { n: own.nodeId });
     const before = activity().length;
     const refused = await turn(sandboxUrl, runId, "Reply with one short word.", cred, 120_000);
     const text = JSON.stringify(refused.frames);
@@ -636,7 +635,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     const aliveWhileDown = (await containersOf(`label=autobyteus.sandbox.host=${hostNodeId}`)).length;
     await startHost();
     await until(async () => (await containersOf(`label=autobyteus.sandbox.host=${hostNodeId}`)).length === 0
-      && (await hostPeers()).filter((p) => p.role === "sandbox").length === 0 && records().length === 0, "start sweep", 120_000);
+      && (await hostPeers()).filter((p) => p.sandbox === true).length === 0 && records().length === 0, "start sweep", 120_000);
     const peers = await hostPeers();
     evidence("SBX-07", { aliveWhileDown, recordsBeforeRestart: 1, afterStart: { containers: 0, sandboxPeers: 0, records: records().length,
       peersOfThoseNodes: peers.filter((p) => nodeIds.includes(p.nodeId)).length,
@@ -647,7 +646,7 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     evaluator = await evaluatorRun();
   }, CASE_TIMEOUT);
 
-  it("SBX-08 (AC-014, R-B): five at once give four sandboxes and one limit refusal; collaboration off and a home folder are refused", async () => {
+  it("SBX-08 (AC-014, R-B): five at once give four sandboxes and one limit refusal; a home folder is refused", async () => {
     expect(hostNodeId, "SBX-01 read the host node ID").not.toBe("");
     const runs = await Promise.all(Array.from({ length: 5 }, () => evaluatorRun()));
     // Five evaluator runs each call create_sandbox at the same moment; each call's own result is in the tool log.
@@ -663,15 +662,11 @@ describe.skipIf(!READY)("sandbox nodes end to end (autobyteus-581)", () => {
     for (const entry of records()) {
       expect((await callTool(entry.createdByRunId, "destroy_sandbox", { sandboxId: entry.sandboxId })).ok).toBe(true);
     }
-    await gql(hostUrl, "mutation { setRemoteCollaborationEnabled(enabled: false) { enabled } }");
-    const off = await callTool(evaluator, "create_sandbox", { agentPackages: [packageDir] });
-    await gql(hostUrl, "mutation { setRemoteCollaborationEnabled(enabled: true) { enabled } }");
     const homeShared = await callTool(evaluator, "create_sandbox", { agentPackages: [packageDir], sharedFolders: [{ path: os.homedir(), name: "home" }] });
     const left = { containers: (await containersOf(`label=autobyteus.sandbox.host=${hostNodeId}`)).length, records: records().length,
-      sandboxPeers: (await hostPeers()).filter((p) => p.role === "sandbox").length };
-    evidence("SBX-08", { atLimit, remoteCollaborationOff: off.code, homeFolderShared: homeShared.code, left });
+      sandboxPeers: (await hostPeers()).filter((p) => p.sandbox === true).length };
+    evidence("SBX-08", { atLimit, homeFolderShared: homeShared.code, left });
     expect(atLimit).toEqual({ calls: 5, ready: 4, refusals: ["SANDBOX_LIMIT_REACHED"], containers: 4, records: 4, creators: 4 });
-    expect(off.code).toBe("SANDBOX_REMOTE_COLLABORATION_OFF");
     expect(homeShared.code).toBe("SANDBOX_SHARED_FOLDER_INVALID");
     expect(left).toEqual({ containers: 0, records: 0, sandboxPeers: 0 });
   }, CASE_TIMEOUT);

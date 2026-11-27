@@ -156,8 +156,7 @@ export const runFileOpenCases = async (probe) => {
     let currentCase = 'file-open-setup';
     try {
       // ---- data -------------------------------------------------------------------------------------------------------
-      for (const node of [epsilon, zeta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-      await pairNodes({ inviter: zeta.gql, accepter: epsilon.gql, inviterName: PEER, accepterName: 'epsilon-node' });
+      await pairNodes({ granter: { gql: zeta.gql, address: zeta.baseUrl }, asker: { gql: epsilon.gql }, granterName: PEER, askerName: 'epsilon-node' });
       const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
       const def = async (node, name) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
         { i: { name, role: 'assistant', description: `${name} (file open probe)`, instructions: 'Follow the request.', toolNames: [], defaultLaunchConfig: agy } })).createAgentDefinition.id;

@@ -89,7 +89,7 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string; modelRo
   const start = (address: string) => receiver.start({
     fromNodeId: "srv_node_a", toNodeId: "srv_node_b", address,
     delegator: { agentRunId: "lead_run" }, delegatingRun: { kind: "agent_team", runId: "team_a" }, task: { text: "Publish it.", title: "Publish it.", taskKey: null, projectId: null, taskId: null },
-  }, { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true, role: null });
+  }, { nodeId: "srv_node_a", name: "desktop", address: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false });
   return { start, prepareAgentRun, startTeam, teamAnswer, decisions };
 };
 

@@ -5,7 +5,8 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { remoteObservationFrameOf } from "./peer-run-view-answers.js";
-import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
+import type { PeerConnector } from "./peer-connector.js";
+import type { PeerRequestSigner } from "./peer-request-signer.js";
 
 /** The part of a WebSocket the observation client uses (the runtime's `WebSocket`, or a test double). */
 export type PeerWebSocket = {
@@ -27,15 +28,17 @@ const frameText = (data: unknown): string | null =>
   typeof data === "string" ? data : data instanceof ArrayBuffer ? Buffer.from(data).toString("utf8") : Buffer.isBuffer(data) ? data.toString("utf8") : null;
 
 /**
- * The outbound end of one observation stream (autobyteus-278). It opens the peer's observation route with a signed
- * upgrade (node access model NA-9; a peer without a secret is never opened), sends the
+ * The outbound end of one observation stream (autobyteus-278). It opens the peer's observation route with an upgrade
+ * signed by this node's key over the empty body (contract §5; a peer paired before node keys is never opened), reached
+ * by `PeerConnector` like every peer request, sends the
  * envelope with the run, and accepts frames only after the peer's first frame names the pinned node (N-401). A
  * refusal, a different node, a malformed first frame, no first frame within the bound, a failure or a close by the
  * peer ends it with `onEnd` once; `close()` ends it silently. A malformed later frame is dropped.
  */
 export const openPeerRunObservation = (input: Readonly<{
   resolvePeer(): Promise<PeerNode | null>;
-  peerSecret(nodeId: string): Promise<string | null>;
+  signer: Pick<PeerRequestSigner, "headers">;
+  connector: Pick<PeerConnector, "target">;
   ownNodeId(): Promise<string>;
   path: string;
   targetRoot: RemoteTargetRoot;
@@ -64,11 +67,12 @@ export const openPeerRunObservation = (input: Readonly<{
     // This node's identity held back (autobyteus-290): nothing is opened, and the stream ends as any refusal does.
     const fromNodeId = await input.ownNodeId().catch(() => null);
     if (!fromNodeId || closedByUs) return end();
-    const secret = await input.peerSecret(peer.nodeId).catch(() => null);
-    if (!secret || closedByUs) return end();
-    const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl.replace(/^http/, "ws"), input.path);
-    const headers = signPeerRequest({ secret, method: "GET", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: null });
-    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(url.toString(), headers); } catch { return end(); }
+    if (!peer.paired || closedByUs) return end();
+    const target = input.connector.target(peer, input.path, { webSocket: true });
+    if (target.kind === "unavailable") return end();
+    const headers = await input.signer.headers({ method: "GET", pathWithQuery: target.pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: null });
+    if (closedByUs) return end();
+    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(target.url.toString(), headers); } catch { return end(); }
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);
     socket.onopen = () => socket?.send(JSON.stringify({
       fromNodeId, toNodeId: peer.nodeId, targetRoot: { kind: input.targetRoot.kind, runId: input.targetRoot.runId },

@@ -99,8 +99,8 @@ describe.skipIf(!ENABLED)("A peer run's background task count on its delegator's
   it("PBS-01: the delegator's run-status feed shows the peer run idle with 1 running background task, then 0", async () => {
     root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "peer-bts-e2e-")));
     [alpha, beta] = await Promise.all([startNode("alpha", path.join(root, "alpha")), startNode("beta", path.join(root, "beta"))]);
-    for (const node of [alpha, beta]) await node.gql("mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}");
-    const paired = await pairNodes({ inviter: (q, v) => beta!.gql(q, v), accepter: (q, v) => alpha!.gql(q, v), inviterName: "beta", accepterName: "alpha" });
+    const paired = await pairNodes({ granter: { gql: (q, v) => beta!.gql(q, v), address: beta.url }, asker: { gql: (q, v) => alpha!.gql(q, v), address: alpha.url },
+      granterName: "beta", askerName: "alpha" });
     expect(paired).toMatchObject({ name: "beta", paired: true });
     const workerName = `Worker ${randomUUID().slice(0, 6)}`;
     await beta.gql("mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}", { input: { name: workerName, role: "engineer",

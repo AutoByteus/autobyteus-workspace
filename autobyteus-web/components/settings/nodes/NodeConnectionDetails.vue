@@ -49,7 +49,7 @@
           @guide="emit('guide')"
         />
         <p v-else class="text-sm text-red-600" role="alert" :data-testid="`node-address-error-${row.key}`">
-          {{ addressError.code === 'REMOTE_COLLABORATION_OFF' ? t(k('dir.offHere')) : failureText(t, addressError, { node: row.name }) }}
+          {{ failureText(t, addressError, { node: row.name }) }}
         </p>
       </div>
     </div>
@@ -113,8 +113,6 @@ const secondaryButton = 'rounded-md border border-slate-300 bg-white px-3 py-1.5
 const dirStatus = (dir: DirState, name: string): string => {
   switch (dir.state) {
     case 'working': return t(k('dir.working'))
-    case 'offHere': return t(k('dir.offHere'))
-    case 'offThere': return t(k('dir.offThere'), { name })
     case 'notRegisteredHere': return t(k('dir.notRegisteredHere'))
     case 'notRegisteredThere': return t(k('dir.notRegisteredThere'), { name })
     case 'notPaired': return t(k('dir.notPaired'), { name })
@@ -128,16 +126,16 @@ const dirStatus = (dir: DirState, name: string): string => {
 
 const directions = computed(() => {
   const name = props.row.name
-  const viaIt = store.facts[props.row.key]?.remote?.peers.find((peer) => peer.nodeId === store.thisNodeId)?.baseUrl ?? null
+  const viaIt = store.facts[props.row.key]?.remote?.peers.find((peer) => peer.nodeId === store.thisNodeId)?.address ?? null
   const make = (id: 'out' | 'in', label: string, dir: DirState, via: string | null) => {
     const good = dir.state === 'working'
-    const info = dir.state === 'offHere' || dir.state === 'offThere' || dir.state === 'notRegisteredHere' || dir.state === 'notRegisteredThere'
+    const info = dir.state === 'notRegisteredHere' || dir.state === 'notRegisteredThere'
       || dir.state === 'notPaired'
     return { id, label, via, checking: dir.state === 'checking', status: dirStatus(dir, name), tone: (good ? 'ok' : info ? 'warn' : 'error') as 'ok' | 'warn' | 'error',
       toneClass: dir.state === 'checking' ? 'text-slate-500' : good ? 'text-emerald-700' : info ? 'text-amber-700' : 'text-red-700' }
   }
   return [
-    make('out', t(k('dir.thisToIt'), { name }), view.value.out, props.row.peer?.baseUrl ?? null),
+    make('out', t(k('dir.thisToIt'), { name }), view.value.out, props.row.peer?.address ?? null),
     make('in', t(k('dir.itToThis'), { name }), view.value.in, viaIt),
   ]
 })
@@ -155,10 +153,7 @@ const unfinishedSteps = computed<NodeChangeStep[]>(() => {
 })
 const stepText = (step: NodeChangeStep): string => {
   const node = props.row.name
-  const there = (text: string) => `${t(k('dialog.there'), { name: node })}: ${text}`
   switch (step.id) {
-    case 'turnOnHere': return t(k('step.turnOnHere'))
-    case 'turnOnThere': return there(t(k('step.turnOnThere')))
     case 'pair': return t(k('step.pair'), { node, name: step.name ?? node })
     default: return ''
   }
@@ -173,7 +168,7 @@ const addressInput = ref<HTMLInputElement | null>(null)
 const addressHint = computed(() => addressHintOf(addressError.value ?? undefined))
 
 const startAddress = async (): Promise<void> => {
-  addressDraft.value = props.row.peer?.baseUrl ?? props.row.windowAddress ?? ''
+  addressDraft.value = props.row.peer?.address ?? props.row.windowAddress ?? ''
   addressError.value = null
   editingAddress.value = true
   await nextTick()

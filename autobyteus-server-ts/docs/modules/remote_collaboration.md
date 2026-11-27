@@ -6,22 +6,22 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
 this document describes the mechanics.
 
 Vocabulary ([Glossary](../../../GLOSSARY.md#nodes)): a *node* is one server with its node ID (`nodeId`, `srv_…`);
-*remote* says where a node is; a *peer* is a remote node registered with this node (`PeerNode`, `peers.json`,
-`list_peer_nodes`). In this module `nodeId` always means a node's ID, and a request's network address is its
+*remote* says where a node is; a *peer* is a node paired with this node: each holds the other's public node key
+(`PeerNode`, `peers.json`, `list_peer_nodes`). In this module `nodeId` always means a node's ID, and a request's network address is its
 *client address*, never a peer.
 
 `src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent or shared Agent
 Team of another node, and lets the delegator and the remote run (every member of a remote Team) message each
 other by run ID. With the discovery tools, an agent also finds the peers and what each offers (autobyteus-261).
-It owns the node-level concerns: the switch, the registered peer nodes, the outbound client, the inbound
+It owns the node-level concerns: pairing and the node key, the peer nodes, the outbound client, the inbound
 gateway, the catalog port through which peers' targets are resolved, and this node's discovery of its peers.
 The collaboration roots own the runs and their messages; they reach other nodes through the shared owners in
 `src/agent-collaboration/execution/remote/`: `RemoteRunLinks` (membership and transmit), `RemoteMessageSend`
 (the outbound message order) and `RemoteDelegation` (remote delegation).
 
-Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
-authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
-switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams,
+Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network. autobyteus-437 signed every request
+between nodes; autobyteus-661 signs it with each node's own key and removed the switch: a node collaborates exactly with
+the nodes it is paired with. autobyteus-245 removed publishing: every shared Agent is available to peers. autobyteus-247 added shared Agent Teams,
 autobyteus-261 discovery. autobyteus-278 shows remote runs in the delegator's run tree and lets the owner drive
 them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). autobyteus-492 lets any agent list the
 running agents of a peer and message one by its run ID, linked or not (see
@@ -34,38 +34,59 @@ later slices.
 
 | What | Where | Owner |
 | --- | --- | --- |
-| The switch, off by default | `ENABLE_REMOTE_COLLABORATION` in `<data>/.env` | `RemoteCollaborationCapability` |
-| Peer nodes `{nodeId, name, baseUrl, addedAt}` | `<data>/remote-collaboration/peers.json` | `PeerDirectory` |
+| This node's key (Ed25519, PKCS#8, created on first use) | `<data>/remote-collaboration/node-key.pem` (0600) | `NodeKey` (`pairing/node-key.ts`) |
+| Peers `{nodeId, name, publicKey, address, machine, account, relation, sandbox?, addedAt}` | `<data>/remote-collaboration/peers.json` (0600) | `PeerDirectory` (written only for `PeerPairing`) |
 
-- Adding a peer names the node it means (`{nodeId, name, baseUrl}`), contacts `GET <baseUrl>/rest/remote-access/status`
-  and pins that node ID as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
-  needs the switch on. `name` is this owner's label, the `node` agents pass. Changing a peer's address
-  (`changePeerAddress`) checks the pinned node answers at the new one. When the node at the address refuses the
-  name in it (its Host gate answers 403 `REMOTE_ACCESS_HOST_REFUSED`, autobyteus-416), adding and changing the
-  address refuse `PEER_HOST_REFUSED` with `host` ("<address> refuses the name <host>; add it to
-  AUTOBYTEUS_ALLOWED_HOSTS on that node."; `channel/peer-client.ts` `fetchNodeId`), and the address resolution
-  below records the attempt as `host_refused` (autobyteus-426). Any other 403 stays not an AutoByteus node.
-- A peer may carry `role: "sandbox"` (`PeerNode.role`, written to `peers.json` only when set): the host's pairing
-  exchange saves it from an invite the host created marked `sandbox` for a sandbox it is creating (the mark never
-  travels in the invite text). It changes no route or permission: a sandbox is a normal paired peer. It only labels
-  the peer on the Nodes page and lets the host's start sweep remove peers of sandboxes that no longer exist
-  ([Sandboxes](./sandboxes.md), autobyteus-581).
-- **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,
-  `PeerAddressResolver`): a node's address depends on who calls (the desktop reaches a Docker node at
-  `localhost:8001`; the Docker node reaches the desktop only at `host.docker.internal:29695`). `resolvePeerAddress(nodeId,
-  baseUrls)` asks every given address at once, each within the 20 s bound, and returns the first one, in order, that
-  answers with the expected node ID, as soon as every address before it has settled. It is read-only and, like adding,
-  needs the switch on: a node whose switch is off asks no other node. When none matches it refuses `PEER_UNREACHABLE`
-  with every attempt's outcome (`refused`, `timeout`, `not_found`, `unreachable`, `not_autobyteus`, `different_node`,
-  `host_refused`) and `loopbackInContainer` when the first address was loopback and this server runs in a container
-  (`server-addressing/runs-in-container.ts`, `/.dockerenv`). `peerAddressCandidates` lists this node's own addresses
-  (`ServerAddressCandidateService`), which the other side tries after the address the window uses. Interface
-  addresses are classified by the one range owner (`remote-access/services/ip-address-ranges.ts`): private and IPv6
-  unique-local as `lan`, `100.64/10` as `tailnet_like`, others as `public`, listed after all the others; link-local
-  addresses are not listed.
-- Settings errors carry `extensions: {code, reason?, address?, loopbackInContainer?, attempts?}`; `reason` is the
-  transport cause `channel/transport-failure-reason.ts` classifies from Node's `fetch` error. The texts agents read
-  are unchanged.
+- A peer record (contract §1 of autobyteus-661): `publicKey`, the peer's node key (base64 SPKI); `address`, where this
+  node reaches it; `machine` and `account`, the private network's stable machine ID and the account that added it
+  (`null` when paired by plain address); `relation`, `own` or `teammate` (never control); `sandbox: true` on a host's
+  record of a sandbox it created (autobyteus-581; it changes no route or permission, it labels the peer and lets the
+  host's start sweep remove it, [Sandboxes](./sandboxes.md)). A record without `publicKey` (a pair made before node
+  keys, written by the migration `20261127_peers_to_node_keys`) is `paired: false`: "Pair again", and the verifier
+  refuses it. `name` is this owner's label, the `node` agents pass.
+- The reader is tolerant (known fields, unknown dropped on the next write); the writer writes every field (`null` where
+  unknown; `sandbox` only when set). A file that cannot be read (for example a released file the migration could not
+  convert) is reported and never rewritten; every peer request is then refused and the rest of the node works.
+- Changing a peer's address (`changePeerAddress`, a peer paired by plain address only: `PEER_ADDRESS_FIXED` for a
+  private-network peer) checks the same node answers at the new one (`GET <address>/rest/remote-access/status`); a
+  different node is `PEER_IDENTITY_MISMATCH`. When the node there refuses the name in the address (its Host gate,
+  autobyteus-416), changing the address and Pair refuse `PEER_HOST_REFUSED` with `host` (autobyteus-426); any other
+  403 is not an AutoByteus node. An unreachable loopback address says `loopbackInContainer` when this server runs in
+  a container (`server-addressing/runs-in-container.ts`).
+- Settings errors carry `extensions: {code, reason?, address?, loopbackInContainer?, host?}`; `reason` is the
+  transport cause `channel/transport-failure-reason.ts` classifies from Node's `fetch` error.
+
+## Pairing (autobyteus-661)
+
+`PeerPairing` (`pairing/peer-pairing.ts`) is the only maker of peer records; its messages go through
+`PeerPairingClient` (`channel/peer-pairing-client.ts`), signed (when signed) by `PeerRequestSigner` and routed by
+`PeerConnector`, like every peer sender.
+
+- **Your own nodes, one click.** The app that controls both asks B for a grant (`createPairingGrant(relation,
+  forMachine?, nameForAsker?)`: one use, 10 minutes, kept as a hash in memory), then has A pair with it
+  (`pairWithNode(address, grant, nodeId?, name?)`): A sends `POST /rest/remote/pair {nodeId, name, publicKey,
+  addresses, grant}` (`addresses`: where B may reach A, in A's order: its configured and current addresses, the Docker
+  host alias when it listens on loopback, its interface addresses; at most 8). B checks the grant (unused, unexpired,
+  `forMachine` = the caller's machine when set), asks each address's identity route at once (5 s each) and keeps the
+  first, in order, that answers with A's node ID as the record's `address` (none: 409 `PAIR_ADDRESS_UNREACHABLE`, the
+  grant stays unused; the resolution both nodes did before, moved to the receiver), then stores A (`relation` from the
+  grant, named `nameForAsker` when set) and answers its own identity; A stores B (`own`). A host pairs its sandbox
+  this way ([Sandboxes](./sandboxes.md)).
+- **A node this app does not control.** `pairWithNode(address)` without a grant: A keeps an outstanding request and
+  sends `pair` with a random `requestId` and its addresses; B resolves the address the same way and keeps it pending (`pendingPairRequests`; at most 20, one per asking node,
+  a restart drops them). B's owner Accepts (`acceptPairRequest`): B stores A as `teammate` and sends `POST
+  /rest/remote/pair-accepted {nodeId, name, publicKey, requestId}`; A takes it only for its outstanding request,
+  confirms with a signed `POST /rest/remote/pair-confirm {nodeId}` at the address it asked, which must answer with the
+  same node, and only then stores B (`teammate`). When A does not take the acceptance, B removes its record again.
+  Reject (`rejectPairRequest`) sends `pair-rejected` (A shows "declined"); Cancel (`cancelPairRequest`) drops A's
+  outstanding request, so a later acceptance is refused (`outstandingPairRequests`).
+- **Unpair** (`unpairPeerNode`): a signed `POST /rest/remote/unpaired` to the peer when it can be reached, then the
+  record here is removed and its open sockets close (NA-11). A node that receives `unpaired` removes its record of the
+  caller. An unreachable peer keeps its record until its next request is refused.
+- `pair`, `pair-accepted` and `pair-rejected` are exempt from credentials (NA-6); `pair-confirm` and `unpaired` are
+  peer routes. Over the private network (its own build slice) the listener attaches the caller's machine and account,
+  which `pair` and `pair-accepted` keep in the record.
+
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
   as a catalog copy, at the same catalog address: shared Agents (the Daily Assistant too) and shared Agent
   Teams, never the Model Router, Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
@@ -78,12 +99,12 @@ later slices.
   of the run (every member of a remote Team). An Agent whose default runtime signs in with this node's local login (Codex, Claude) runs
   with that login for any registered peer, as CM-12 says ("a remote run uses its own node's credentials").
   A leftover `published-agents.json` from a development build is neither read nor written.
-- GraphQL: `remoteCollaborationCapability` / `setRemoteCollaborationEnabled`, `peerNodes`, `addPeerNode`,
-  `renamePeerNode`, `changePeerAddress`, `removePeerNode`, `peerNodeOffer(nodeId)` (autobyteus-267),
-  `peerNodeAvailability(nodeId)`, `peerAddressCandidates` and `resolvePeerAddress(nodeId, baseUrls)` (one-nodes-tab).
-  The web's Nodes → Manage Nodes tab uses them on this node and, from the window, on the other node of a row: one
-  list of nodes, and turning collaboration on or off for a node registers or removes both sides after one
-  confirmation (the other node decides through its own settings API; no node writes another node's peers).
+- GraphQL: `peerNodes`, `pendingPairRequests`, `outstandingPairRequests`, `createPairingGrant`, `pairWithNode`,
+  `acceptPairRequest`, `rejectPairRequest`, `cancelPairRequest`, `renamePeerNode`, `changePeerAddress`,
+  `unpairPeerNode`, `peerNodeOffer(nodeId)` (autobyteus-267) and `peerNodeAvailability(nodeId)` (one-nodes-tab); every
+  change is an owner action (a phone is refused). The web's Nodes → Manage Nodes tab uses them on this node and,
+  from the window, on the other node of a row: pairing two nodes the app controls is one confirmation (a grant there,
+  Pair here; no node writes another node's peers).
 - `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
   absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `PeerNodeDiscovery.listAvailableAgentsOf(nodeId)`:
   the same path as `list_available_agents` with `node`. The window never asks a peer for its offer (only this
@@ -118,14 +139,16 @@ node: towards a remote run, that run's root; back towards the delegator, the del
 description?}]}`. There is no version field and no request ID; nothing retries. A node without a route (an older
 build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 
-- **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies this node's switch
-  and the registration, sends with a 20 s bound (QR-102; a delegated-run start request waits up to 50 s,
+- **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies the pairing (a peer without a key
+  is `PEER_NOT_PAIRED`, nothing sent), signs every request with `PeerRequestSigner` and reaches the peer through
+  `PeerConnector` (directly at `address`, or, for a peer with a `machine`, only through the network relay of the
+  private network), sends with a 20 s bound (QR-102; a delegated-run start request waits up to 50 s,
   `PEER_START_REQUEST_TIMEOUT_MS`, to fit the called node's 40 s routing), refuses an answer from a server that is not the
   pinned peer, and words every refusal for the agent with the peer's name. It reads a peer's list strictly:
   each entry has exactly `name`, `kind`, `address` and, optionally, `description`; anything else (for example
   a `members` field) makes the answer malformed, read as unreachable "it answered without its list".
 - **`PeerGateway`** (`channel/peer-gateway.ts`): the one entry point (REQ-114; S6 adds authentication
-  here). Order: `toNodeId` is this node, the switch is on, `fromNodeId` is a registered peer, then the
+  here). Order: `toNodeId` is this node, `fromNodeId` is the authenticated peer and a peer here, then the
   handler of the request kind. *Availability* has no handler: passing the admission is the answer.
 - **`RemoteCatalogLister`** (`inbound/remote-catalog-lister.ts`): the *available agents* answer,
   `CollaboratorCandidatePolicy.listEligible(NodeCatalogPort)` through the one entry builder. It is the same
@@ -254,12 +277,12 @@ each offers, then delegates with `delegate_task` without being told an address.
   tools use, owned by `agent-collaboration`, implemented by **`PeerNodeDiscovery`**
   (`discovery/peer-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
   go through the roots: a peer's offer does not depend on the asking run.
-- `listPeerNodes()` (`list_peer_nodes`): with the switch on, the registered peers in registration order, all
+- `listPeerNodes()` (`list_peer_nodes`): the peers in pairing order, all
   asked for *availability* at the same time, each within the 20 s bound, so the whole call takes at most about
-  20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
+  20 s. An accepted answer is `available`; anything else (this node not a peer there, the
   wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.
 - `listAvailableAgents(node)` (`list_available_agents` with `node`): the peer by name, with the same refusals as
-  `delegate_task` (switch off, no peer by that name), then `listAvailableAgentsOf(nodeId)`, the peer's
+  `delegate_task` (no peer by that name), then `listAvailableAgentsOf(nodeId)`, the peer's
   *available agents* by node ID, which the Nodes page also uses; the peer's refusal gives the reason for an
   unavailable node.
 - Nothing is stored or cached; every call asks the peers now. A listing creates no run, writes nothing on
@@ -396,7 +419,7 @@ delegating run, as it shows a local delegated run, and its owner talks to it, in
 it (B) serves only the peer whose delegation started the run, and only about the run's **paired agents**: an Agent
 run's host, or a Team run's members.
 
-- **Requests.** All four go through `PeerGateway` admission (`toNodeId`, switch, registered peer) and then
+- **Requests.** All four go through `PeerGateway` admission (`toNodeId`, the authenticated peer) and then
   `RemoteRunViewProvider`'s link check. They are:
   - `POST /rest/remote/run-summaries` `{runs: [{kind, runId}]}` → `{runs: [{kind, runId, title, statuses:
     [{agentRunId, status, backgroundTasksRunning}]}]}` (the count is required, autobyteus-448). One request per node covers every run A asks about there. A run B's delegation

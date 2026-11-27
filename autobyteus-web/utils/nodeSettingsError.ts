@@ -1,8 +1,5 @@
 import type { NodeTransportReason } from '~/utils/nodeIdentityProbe'
 
-/** What one address answered when a node looked for another node there (server `PeerAddressAttempt`). */
-export type NodeAddressAttempt = { address: string; result: NodeTransportReason | 'not_autobyteus' | 'different_node' | 'identity_pending' | 'host_refused' }
-
 /**
  * A refused remote-collaboration settings change, on this node or on another one, as the server's GraphQL error
  * extensions carry it (one-nodes-tab REQ-707, REQ-708). `PEER_UNREACHABLE` is also how a node this window could not
@@ -14,7 +11,6 @@ export interface NodeSettingsFailure {
   reason?: NodeTransportReason
   address?: string
   loopbackInContainer?: boolean
-  attempts?: NodeAddressAttempt[]
   /** The host name the node at the address refuses (`PEER_HOST_REFUSED`, autobyteus-426). */
   host?: string
 }
@@ -40,7 +36,6 @@ export const settingsFailureOf = (error: GraphqlErrorLike): NodeSettingsFailure 
   if (typeof ext.reason === 'string' && REASONS.has(ext.reason)) failure.reason = ext.reason as NodeTransportReason
   if (typeof ext.address === 'string') failure.address = ext.address
   if (typeof ext.loopbackInContainer === 'boolean') failure.loopbackInContainer = ext.loopbackInContainer
-  if (Array.isArray(ext.attempts)) failure.attempts = ext.attempts as NodeAddressAttempt[]
   if (typeof ext.host === 'string') failure.host = ext.host
   return failure
 }

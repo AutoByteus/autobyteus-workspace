@@ -147,7 +147,9 @@ describe("20261019_delegated_copy_own_file_complete_v1", () => {
       "20261118_remove_retired_built_in_agents",
       "20261119_delegated_run_own_attachment_links", "20261119_delegated_run_own_attachment_links_after_task_agent_own_run",
       // org-teams-follow-definition: Org units become runs of their own (after every released migration), then its follow-ups.
-      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]);
+      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id),
+      // autobyteus-661: pairings move to node keys (its own files only).
+      "20261127_peers_to_node_keys"]);
     expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(at);
   });
 

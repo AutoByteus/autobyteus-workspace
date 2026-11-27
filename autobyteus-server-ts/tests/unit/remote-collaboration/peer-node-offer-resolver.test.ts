@@ -73,10 +73,10 @@ describe("one-nodes-tab settings operations", () => {
   });
 
   it("changePeerAddress goes through the peer directory", async () => {
-    const changeAddress = vi.fn(async (nodeId: string, baseUrl: string) => ({ nodeId, name: "docker", baseUrl, addedAt: "2026-10-20T09:00:00.000Z", paired: true }));
+    const changeAddress = vi.fn(async (nodeId: string, address: string) => ({ nodeId, name: "docker", address, machine: null, account: null, relation: "own" as const, sandbox: false, addedAt: "2026-10-20T09:00:00.000Z", paired: true }));
     bindWith({ peers: { changeAddress } });
     const resolver = new RemoteCollaborationSettingsResolver();
-    await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001", { extensions: testExtensionManager(), requestAbortSignal: new AbortController().signal, clientIdentity: { kind: "owner", credentialId: "launch" } })).resolves.toMatchObject({ baseUrl: "http://host.docker.internal:8001" });
+    await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001", { extensions: testExtensionManager(), requestAbortSignal: new AbortController().signal, clientIdentity: { kind: "owner", credentialId: "launch" } })).resolves.toMatchObject({ address: "http://host.docker.internal:8001" });
     expect(changeAddress).toHaveBeenCalledWith("srv_b", "http://host.docker.internal:8001");
   });
 });

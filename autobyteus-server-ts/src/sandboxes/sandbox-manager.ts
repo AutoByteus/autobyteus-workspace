@@ -5,7 +5,6 @@ import path from "node:path";
 import { createServerLogger } from "../logging/server-app-logger.js";
 import type { AvailableCollaboratorEntry } from "../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerDirectory } from "../remote-collaboration/settings/peer-directory.js";
-import type { RemoteCollaborationCapability } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import { PROVIDER_RELAY_PEER_SETTING } from "../credential-proxy/provider-relays/provider-relay-settings.js";
 import type { SandboxDocker } from "./sandbox-docker.js";
 import {
@@ -31,7 +30,7 @@ const EXEC_MAX_SECONDS = 600;
 const EXEC_OUTPUT_MAX_BYTES = 64 * 1024;
 
 export type SandboxRefusalCode =
-  | "SANDBOX_DOCKER_UNAVAILABLE" | "SANDBOX_REMOTE_COLLABORATION_OFF" | "SANDBOX_PLATFORM_NOT_SUPPORTED"
+  | "SANDBOX_DOCKER_UNAVAILABLE" | "SANDBOX_PLATFORM_NOT_SUPPORTED"
   | "SANDBOX_LIMIT_REACHED" | "SANDBOX_IMAGE_UNKNOWN"
   | "SANDBOX_PACKAGE_INVALID" | "SANDBOX_SHARED_FOLDER_INVALID" | "SANDBOX_START_FAILED"
   | "SANDBOX_NOT_FOUND" | "SANDBOX_NOT_YOURS" | "SANDBOX_NOT_READY" | "SANDBOX_ARGUMENT_INVALID";
@@ -95,7 +94,6 @@ export class SandboxManager {
     records: Pick<SandboxRecordsStore, "read" | "write">;
     pairing: Pick<SandboxPairing, "connect" | "pair" | "importPackages">;
     peers: Pick<PeerDirectory, "list" | "remove">;
-    capability: Pick<RemoteCollaborationCapability, "isEnabled">;
     checkPlatform: () => Promise<SandboxPlatformCheck>;
     hostNodeId: () => Promise<string>;
     /** C1's relay lists this node offers a new sandbox now (DEC-109). */
@@ -110,9 +108,6 @@ export class SandboxManager {
   }>) {}
 
   async create(caller: SandboxCaller, input: CreateSandboxInput): Promise<CreatedSandbox> {
-    if (!this.deps.capability.isEnabled()) {
-      throw new SandboxRefusal("SANDBOX_REMOTE_COLLABORATION_OFF", "Turn on Remote Collaboration in Settings: a sandbox pairs with this node as a peer.");
-    }
     const platform = await this.deps.checkPlatform();
     if (!platform.supported) throw new SandboxRefusal(platform.code, platform.message);
     const image = this.deps.image();
@@ -193,7 +188,7 @@ export class SandboxManager {
         await this.deps.docker.remove(sandboxId).catch((error) => logger.warn(`Sandbox container ${sandboxId} not removed at start: ${String(error)}`));
       }
       for (const peer of await this.deps.peers.list()) {
-        if (peer.role === "sandbox") await this.deps.peers.remove(peer.nodeId).catch(() => undefined);
+        if (peer.sandbox) await this.deps.peers.remove(peer.nodeId).catch(() => undefined);
       }
     } catch (error) {
       logger.warn(`The sandbox start sweep did not finish: ${String(error)}`);
@@ -229,12 +224,11 @@ export class SandboxManager {
         ...shared.map((folder) => ({ hostPath: folder.path, containerPath: `${SHARED_FOLDER_ROOT_IN_SANDBOX}/${folder.name}`, readOnly: true })),
       ],
       anonymousVolumes: [DATA_IN_SANDBOX, "/root", "/home/autobyteus/server-packages"],
-      // C8: C1's three variables and the node's own settings; never a key, token, credential or peer secret.
+      // C8: C1's three variables and the node's own settings; never a key, token or credential.
       environment: {
         [PROVIDER_RELAY_PEER_SETTING]: hostNodeId,
         ...(await this.deps.relayOffer()),
         AUTOBYTEUS_TEMP_WORKSPACE_DIR: WORKSPACE_IN_SANDBOX,
-        ENABLE_REMOTE_COLLABORATION: "true",
         AUTOBYTEUS_SERVER_HOST: `http://127.0.0.1:${record.hostPort}`,
       },
     });
@@ -285,7 +279,7 @@ export class SandboxManager {
     await this.update(record.sandboxId, (current) => ({ ...current, state: "removing" })).catch(() => undefined);
     await this.deps.docker.remove(record.sandboxId);
     const peer = (await this.deps.peers.list()).find((entry) =>
-      (record.nodeId !== null && entry.nodeId === record.nodeId) || (entry.role === "sandbox" && entry.name === record.sandboxId));
+      (record.nodeId !== null && entry.nodeId === record.nodeId) || (entry.sandbox && entry.name === record.sandboxId));
     if (peer) await this.deps.peers.remove(peer.nodeId);
     await this.serialized(async () => {
       await this.deps.records.write((await this.deps.records.read()).filter((entry) => entry.sandboxId !== record.sandboxId));

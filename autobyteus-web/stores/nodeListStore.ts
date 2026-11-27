@@ -5,7 +5,6 @@ import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useRemoteCollaborationStore, type PeerNode } from '~/stores/remoteCollaborationStore'
 import { useRemoteCollaborationOffersStore } from '~/stores/remoteCollaborationOffersStore'
-import { useRemoteCollaborationCapabilityStore } from '~/stores/remoteCollaborationCapabilityStore'
 import { rowViewOf, type NodeRow, type RowFacts, type RowView } from '~/stores/nodeRowStatus'
 import { createNodeCollaborationApi } from '~/services/nodeCollaboration/nodeCollaborationApi'
 import { useNodeCollaborationConnector } from '~/services/nodeCollaboration/windowNodeCollaborationConnector'
@@ -43,8 +42,7 @@ let nextToken = 1
 /**
  * Manage Nodes: one list of nodes, each once (one-nodes-tab DS-001, DS-002, DS-004). The rows join the desktop's
  * entries (`nodeStore`) with this node's peers (`remoteCollaborationStore`) by node ID; neither list is changed by
- * joining them. A row's node is asked when the tab opens, when it is added, when this node's switch turns on and on
- * Check again (DEC-708); nothing polls. Each ask takes a token per row, and an answer whose token is no longer current
+ * joining them. A row's node is asked when the tab opens, when it is added and on Check again (DEC-708); nothing polls. Each ask takes a token per row, and an answer whose token is no longer current
  * is ignored. It keeps each row's unfinished step (a connect or finish run that stopped; TR-704/705/712) and runs the
  * changes that have no confirmation (rename, change address) through the connector; the change dialog uses it.
  */
@@ -53,7 +51,6 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const windowNode = useWindowNodeContextStore()
   const peerStore = useRemoteCollaborationStore()
   const offers = useRemoteCollaborationOffersStore()
-  const capability = useRemoteCollaborationCapabilityStore()
 
   const facts = ref<Record<string, RowFacts>>({})
   const tokens: Record<string, number> = {}
@@ -66,8 +63,6 @@ export const useNodeListStore = defineStore('nodeList', () => {
 
   const currentNode = computed<NodeEntry | null>(() => nodeStore.getEntryById(windowNode.entryId))
   const thisName = computed(() => currentNode.value?.name ?? '')
-  const switchOn = computed(() => capability.isEnabled)
-  const switchBusy = computed(() => capability.status === 'loading')
   const hasOpen = computed(() => typeof window !== 'undefined' && Boolean(window.electronAPI?.openNodeWindow))
 
   const rows = computed<NodeRow[]>(() => {
@@ -99,7 +94,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const rowByKey = (key: string): NodeRow | undefined => rows.value.find((row) => row.key === key)
 
   const views = computed<Record<string, RowView>>(() => Object.fromEntries(rows.value.map((row) => [row.key, rowViewOf({
-    row, switchOn: switchOn.value, thisNodeId: thisNodeId.value, facts: facts.value[row.key],
+    row, thisNodeId: thisNodeId.value, facts: facts.value[row.key],
     offer: row.nodeId ? offers.peers[row.nodeId] : undefined, unfinishedStep: unfinished.value[row.key] ?? null,
   })])))
 
@@ -110,7 +105,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
   }
 
   /** The address at which this window asks the row's node: its desktop entry's, or this node's for a node only this node knows. */
-  const probeAddressOf = (row: NodeRow): string | null => row.windowAddress ?? row.peer?.baseUrl ?? null
+  const probeAddressOf = (row: NodeRow): string | null => row.windowAddress ?? row.peer?.address ?? null
   /** Where this window reaches the row's node now, when it does (the probe answered with the row's node). */
   const reachedAddressOf = (row: NodeRow): string | null => {
     const probe = facts.value[row.key]?.probe
@@ -136,7 +131,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
     const token = nextToken++
     tokens[row.key] = token
     facts.value[row.key] = { probe: null, remote: undefined, availability: undefined, checkedAt: null }
-    const offerAsked = row.peer && switchOn.value ? offers.ask(row.peer.nodeId) : Promise.resolve()
+    const offerAsked = row.peer ? offers.ask(row.peer.nodeId) : Promise.resolve()
     const address = probeAddressOf(row)
     const probe: NodeIdentityProbeResult = address ? await probeNodeIdentity(address) : { ok: false, cause: 'unreachable' }
     if (!update(row.key, token, { probe, checkedAt: new Date().toISOString() })) return
@@ -147,8 +142,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
     const reached = probe.ok && (row.entryIds.length > 0 || probe.nodeId === row.nodeId)
     if (!reached || !address) { update(key, token, { remote: null, availability: null }); return }
     const api = createNodeCollaborationApi(address)
-    const remote = await Promise.all([api.capability(), api.peers()])
-      .then(([state, peers]) => ({ switchOn: state.enabled, peers }), () => null)
+    const remote = await api.peers().then((peers) => ({ peers }), () => null)
     if (!update(key, token, { remote })) return
     await offerAsked
     const offer = row.nodeId ? offers.peers[row.nodeId] : undefined
@@ -170,11 +164,11 @@ export const useNodeListStore = defineStore('nodeList', () => {
     await nodeStore.identifyNode(own.id, probe.nodeId)
   }
 
-  /** The tab opened: every row is asked once (TR-701), whatever this node's switch says. */
+  /** The tab opened: every row is asked once (TR-701). */
   const open = async (): Promise<void> => {
     await nodeStore.initializeRegistry()
     // Peers that cannot be read now stay as last read; their rows say what is reachable.
-    await Promise.all([capability.ensureResolved().catch(() => undefined), peerStore.load().catch(() => undefined), identifyThisNode()])
+    await Promise.all([peerStore.load().catch(() => undefined), identifyThisNode()])
     offers.clear()
     askAll()
   }
@@ -184,14 +178,6 @@ export const useNodeListStore = defineStore('nodeList', () => {
     for (const key of Object.keys(tokens)) delete tokens[key]
     facts.value = {}
     offers.clear()
-  }
-
-  // ---------------------------------------------------------------- this node's switch (REQ-709, TR-713)
-  const setSwitch = async (on: boolean): Promise<void> => {
-    if (switchBusy.value) return
-    await capability.setEnabled(on).catch(() => undefined)
-    offers.clear()
-    askAll()
   }
 
   // ---------------------------------------------------------------- add (DS-002)
@@ -298,8 +284,8 @@ export const useNodeListStore = defineStore('nodeList', () => {
   }
 
   return {
-    rows, views, facts, thisNodeId, thisName, currentNode, switchOn, switchBusy, hasOpen, flashKey, expanded,
-    rowByKey, reachedAddressOf, open, close, askAgain, askAll, setSwitch, addNode, canOpen, openNode, renameNode, changeAddress,
+    rows, views, facts, thisNodeId, thisName, currentNode, hasOpen, flashKey, expanded,
+    rowByKey, reachedAddressOf, open, close, askAgain, askAll, addNode, canOpen, openNode, renameNode, changeAddress,
     changeSubjectOf, unfinishedStepOf, setUnfinishedStep,
   }
 })

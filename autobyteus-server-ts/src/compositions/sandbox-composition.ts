@@ -19,7 +19,7 @@ const TEST_VAULT_SETTING = "AUTOBYTEUS_TEST_VAULT";
  */
 export const composeSandboxes = (input: Readonly<{
   appDataDir: string;
-  remote: Pick<RemoteCollaborationServices, "capability" | "peers" | "pairing" | "discovery">;
+  remote: Pick<RemoteCollaborationServices, "peers" | "pairing" | "discovery">;
   /** This node's relay offer for a new sandbox (the credential proxy's, DEC-109). */
   relayOffer: () => Promise<Readonly<Record<string, string>>>;
 }>): Readonly<{ manager: SandboxManager; release: () => void }> => {
@@ -29,10 +29,9 @@ export const composeSandboxes = (input: Readonly<{
     docker,
     records: new SandboxRecordsStore(input.appDataDir),
     pairing: new SandboxPairing({
-      docker, pairing: input.remote.pairing, peers: input.remote.peers, discovery: input.remote.discovery,
+      docker, pairing: input.remote.pairing, discovery: input.remote.discovery,
     }),
     peers: input.remote.peers,
-    capability: input.remote.capability,
     checkPlatform: () => checkSandboxPlatform(docker),
     hostNodeId: () => getNodeIdentityService().getNodeId(),
     relayOffer: input.relayOffer,

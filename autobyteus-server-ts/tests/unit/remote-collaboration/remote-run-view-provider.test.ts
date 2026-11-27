@@ -11,7 +11,7 @@ import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js"
 /** autobyteus-278: the running node's one inbound owner of what a peer's owner reads and drives (link check first). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", baseUrl: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", address: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
 const OTHER: PeerNode = { ...ALPHA, nodeId: "srv_other_000000000000000000000000000", name: "other" };
 const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 const status = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } as never;
@@ -45,8 +45,7 @@ const harness = () => {
   { whenPersisted: async () => undefined });
   const provider = new RemoteRunViewProvider(roots, views, sequences);
   const gateway = new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
-    ownNodeId: async () => SELF, capability: { isEnabled: () => true },
-    peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
+    ownNodeId: async () => SELF,     peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: provider, delegatedRunStates: {} as never, peerRunMembers: {} as never,
   });
   return { access, storedLinkCheck, views, provider, gateway, observation,

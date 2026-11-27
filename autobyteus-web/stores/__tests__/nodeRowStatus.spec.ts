@@ -6,16 +6,16 @@ import type { PeerOffer } from '~/stores/remoteCollaborationOffersStore'
 
 const A = 'srv_thisNodeAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 const B = 'srv_otherNodeBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true, role: null }
-const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true, role: null }
+const peerB = { nodeId: B, name: 'studio', address: 'http://192.168.2.31:29695', machine: null, account: null, relation: 'own' as const, sandbox: false, addedAt: '2026-10-23T08:00:00.000Z', paired: true }
+const peerA = { nodeId: A, name: 'Embedded Node', address: 'http://host.docker.internal:29695', machine: null, account: null, relation: 'own' as const, sandbox: false, addedAt: '2026-10-23T08:00:00.000Z', paired: true }
 
 const row = (overrides: Partial<NodeRow> = {}): NodeRow => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
 })
-const reached: RowFacts = { probe: { ok: true, nodeId: B }, remote: { switchOn: true, peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
+const reached: RowFacts = { probe: { ok: true, nodeId: B }, remote: { peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
 const working: PeerOffer = { phase: 'available', entries: [{ name: 'Writer', kind: 'agent' }], checkedAt: '2026-10-23T08:00:00.000Z' }
-const view = (input: { row?: NodeRow; switchOn?: boolean; facts?: RowFacts; offer?: PeerOffer; unfinished?: Parameters<typeof rowViewOf>[0]['unfinishedStep'] }) => rowViewOf({
-  row: input.row ?? row(), switchOn: input.switchOn ?? true, thisNodeId: A, facts: 'facts' in input ? input.facts : reached,
+const view = (input: { row?: NodeRow; facts?: RowFacts; offer?: PeerOffer; unfinished?: Parameters<typeof rowViewOf>[0]['unfinishedStep'] }) => rowViewOf({
+  row: input.row ?? row(), thisNodeId: A, facts: 'facts' in input ? input.facts : reached,
   offer: 'offer' in input ? input.offer : working, unfinishedStep: input.unfinished ?? null,
 })
 
@@ -34,10 +34,9 @@ describe('rowViewOf', () => {
     expect(view({ facts: { ...reached, availability: undefined } })).toMatchObject({ checking: false, in: { state: 'checking' } })
   })
 
-  it('off there, not registered there: amber lines with their fixing buttons', () => {
-    expect(view({ offer: { phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' } }).line).toEqual({ kind: 'offThere', tone: 'warn', fix: 'turnOnThere' })
+  it('not paired there: amber lines with Pair again (661: no switch)', () => {
     expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_REGISTERED' } }).line).toEqual({ kind: 'notRegisteredThere', tone: 'warn', fix: 'pairAgain' })
-    // NAS-23: a peer without the shared secret (on either side) offers Pair again.
+    // NAS-23: a pair made before node keys (on either side) offers Pair again.
     expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_PAIRED' } }).line).toEqual({ kind: 'notPaired', tone: 'warn', fix: 'pairAgain' })
   })
 
@@ -60,8 +59,8 @@ describe('rowViewOf', () => {
   })
 
   it('a step not finished comes first, with Try again, until both directions work', () => {
-    const unfinished = { id: 'turnOnThere' as const, status: 'failed' as const, error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' as const } }
-    const v = view({ offer: { phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' }, unfinished })
+    const unfinished = { id: 'removeHere' as const, status: 'failed' as const, error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' as const } }
+    const v = view({ offer: { phase: 'unavailable', code: 'PEER_NOT_PAIRED' }, unfinished })
     expect(v.line).toMatchObject({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error })
     expect(view({ unfinished }).line).toBeNull()
     const nameTaken = { id: 'pair' as const, status: 'failed' as const, name: 'Embedded Node', error: { code: 'PEER_NAME_TAKEN', message: 'x' } }
@@ -69,24 +68,14 @@ describe('rowViewOf', () => {
       .toEqual({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: nameTaken.error, stepName: 'Embedded Node' })
   })
 
-  it('not collaborating: "registered only by the other node" when it has this node and is on, else "can\'t work with it yet"; Turn on', () => {
+  it('not collaborating: "registered only by the other node" when it has this node, else "can\'t work with it yet"; Turn on', () => {
     expect(view({ row: row({ peer: null, name: 'nas' }), offer: undefined }).line).toEqual({ kind: 'notRegisteredHereInfo', tone: 'info', fix: 'turnOn' })
-    expect(view({ row: row({ peer: null }), offer: undefined, facts: { ...reached, remote: { switchOn: true, peers: [] } } }).line)
-      .toEqual({ kind: 'agentsOff', tone: 'info', fix: 'turnOn' })
-    expect(view({ row: row({ peer: null }), offer: undefined, facts: { ...reached, remote: { switchOn: false, peers: [peerA] } } }).line)
+    expect(view({ row: row({ peer: null }), offer: undefined, facts: { ...reached, remote: { peers: [] } } }).line)
       .toEqual({ kind: 'agentsOff', tone: 'info', fix: 'turnOn' })
   })
 
-  it('this node\'s switch off: no warnings; the directions say "off on this node"', () => {
-    const v = view({ switchOn: false, offer: undefined })
-    expect(v).toMatchObject({ line: null, out: { state: 'offHere' }, in: { state: 'offHere' } })
-    const peerOnly = view({ switchOn: false, offer: undefined, row: row({ entryIds: [], windowAddress: null }), facts: { ...reached, probe: { ok: false, cause: 'unreachable' }, remote: null } })
-    expect(peerOnly).toMatchObject({ reachable: null, line: null })
-  })
-
-  it('it → this node: off there, not registered there, and the other node\'s own reason for not reaching this node', () => {
-    expect(view({ facts: { ...reached, remote: { switchOn: false, peers: [peerA] } } }).in).toEqual({ state: 'offThere' })
-    expect(view({ facts: { ...reached, remote: { switchOn: true, peers: [] } } }).in).toEqual({ state: 'notRegisteredThere' })
+  it('it → this node: not paired there, and the other node\'s own reason for not reaching this node', () => {
+    expect(view({ facts: { ...reached, remote: { peers: [] } } }).in).toEqual({ state: 'notRegisteredThere' })
     expect(view({ facts: { ...reached, availability: { available: false, code: 'PEER_UNREACHABLE', reason: 'not_found' } } }).in)
       .toEqual({ state: 'unreachable', cause: 'not_found', host: 'host.docker.internal:29695', fromOther: true })
   })

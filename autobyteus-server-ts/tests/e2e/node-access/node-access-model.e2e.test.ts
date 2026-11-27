@@ -5,7 +5,8 @@
 // upgrade over TCP, so no credential is attached that the case does not name.
 // Networks: this computer (127.0.0.1) and 198.51.100.0/24 (listed in AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS, the owner's
 // allowed network) are admitted; 203.0.113.9 (a café Wi-Fi) is not.
-// Peers: two paired peers and one paired before this model (no secret) are in the node's peers.json before it starts.
+// Peers: two paired peers (their public node keys) and one paired before node keys (no key) are in the node's
+// peers.json before it starts; the test signs as them with their keys (autobyteus-661 contract §5).
 // Run (clean environment, TESTING.md):
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
 //     pnpm -C autobyteus-server-ts exec vitest run tests/e2e/node-access/node-access-model.e2e.test.ts --no-watch
@@ -24,7 +25,8 @@ import { requestSetupCode } from "../../../src/node-access/services/local-contro
 import type { PairingExchangeResult } from "../../../src/remote-access/domain/models.js";
 import { configureNodeIdentityCapability } from "../../../src/remote-access/services/node-identity-service.js";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
-import { signPeerRequest } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { PeerRequestSigner } from "../../../src/remote-collaboration/channel/peer-request-signer.js";
+import { testConnector, testNodeKey, testSigner, type TestNodeKey } from "../../helpers/peer-node-keys.js";
 import {
   startStudioE2eRuntimeServer,
   type StartedStudioE2eRuntimeServer,
@@ -35,8 +37,8 @@ const ALLOWED_NETWORK_CLIENT = "198.51.100.7";
 const CAFE_CLIENT = "203.0.113.9";
 const MADE_UP_OWNER_CREDENTIAL = `own_${randomBytes(32).toString("base64url")}`;
 
-const PEER_A = { nodeId: "srv_nas_peer_alpha_00000000000000000000", secret: randomBytes(32).toString("base64url") };
-const PEER_B = { nodeId: "srv_nas_peer_bravo_00000000000000000000", secret: randomBytes(32).toString("base64url") };
+const PEER_A = { nodeId: "srv_nas_peer_alpha_00000000000000000000", key: testNodeKey() };
+const PEER_B = { nodeId: "srv_nas_peer_bravo_00000000000000000000", key: testNodeKey() };
 const PEER_BEFORE_MODEL = { nodeId: "srv_nas_peer_legacy_0000000000000000000" };
 
 type Answer = { statusCode: number; body: Record<string, any> };
@@ -51,7 +53,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
   let started: StartedStudioE2eRuntimeServer;
   let ownNodeId: string;
   /** Every credential, code and secret the suite saw: none may appear in any output line (NAS-29). */
-  const secrets: string[] = [PEER_A.secret, PEER_B.secret, MADE_UP_OWNER_CREDENTIAL];
+  const secrets: string[] = [MADE_UP_OWNER_CREDENTIAL];
   const output: string[] = [];
 
   const inject = async (options: {
@@ -166,15 +168,13 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     return phone;
   };
 
-  const signedHeaders = (peer: { nodeId: string; secret: string }, method: string, pathWithQuery: string, body: string | null,
-    overrides: { toNodeId?: string; now?: Date } = {}) => signPeerRequest({
-    secret: peer.secret,
+  const signedHeaders = (peer: { nodeId: string; key: TestNodeKey }, method: string, pathWithQuery: string, body: string | null,
+    overrides: { toNodeId?: string; now?: Date } = {}) => new PeerRequestSigner({ key: peer.key, now: () => (overrides.now ?? new Date()).getTime() }).headers({
     method,
     pathWithQuery,
     fromNodeId: peer.nodeId,
     toNodeId: overrides.toNodeId ?? ownNodeId,
     body,
-    now: overrides.now,
   });
 
   const peerMessage = (fromNodeId: string, messageId: string) => JSON.stringify({
@@ -200,9 +200,9 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     const addedAt = new Date().toISOString();
     await fs.mkdir(path.join(dataDir, "remote-collaboration"), { recursive: true });
     await fs.writeFile(path.join(dataDir, "remote-collaboration", "peers.json"), JSON.stringify({ peers: [
-      { nodeId: PEER_A.nodeId, name: "peer-alpha", baseUrl: "http://127.0.0.1:9", addedAt, peerSecret: PEER_A.secret },
-      { nodeId: PEER_B.nodeId, name: "peer-bravo", baseUrl: "http://127.0.0.1:9", addedAt, peerSecret: PEER_B.secret },
-      { nodeId: PEER_BEFORE_MODEL.nodeId, name: "peer-legacy", baseUrl: "http://127.0.0.1:9", addedAt },
+      { nodeId: PEER_A.nodeId, name: "peer-alpha", publicKey: PEER_A.key.publicKeyText, address: "http://127.0.0.1:9", machine: null, account: null, relation: "own", addedAt },
+      { nodeId: PEER_B.nodeId, name: "peer-bravo", publicKey: PEER_B.key.publicKeyText, address: "http://127.0.0.1:9", machine: null, account: null, relation: "teammate", addedAt },
+      { nodeId: PEER_BEFORE_MODEL.nodeId, name: "peer-legacy", address: "http://127.0.0.1:9", addedAt },
     ] }), { mode: 0o600 });
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     // A fresh data folder has nothing to migrate: startup marks both ready (as the other route E2Es do).
@@ -302,7 +302,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     expect(await inject({ method: "GET", url: "/rest/remote-access/status", from: CAFE_CLIENT })).toMatchObject(refused);
     expect(await inject({ method: "POST", url: "/rest/node-access/setup-exchanges", from: CAFE_CLIENT, payload: { setupCode: "x" } })).toMatchObject(refused);
     expect(await inject({ method: "POST", url: "/rest/remote-access/pairing-exchanges", from: CAFE_CLIENT, payload: { pairingCode: "x" } })).toMatchObject(refused);
-    expect(await inject({ method: "POST", url: "/rest/remote/peer-pairing-exchanges", from: CAFE_CLIENT, payload: {} })).toMatchObject(refused);
+    expect(await inject({ method: "POST", url: "/rest/remote/pair", from: CAFE_CLIENT, payload: {} })).toMatchObject(refused);
   });
 
   it("NAS-08 a phone credential is refused the owner's actions with 403 NODE_ROUTE_NOT_PERMITTED", async () => {
@@ -313,8 +313,11 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     expect(await inject({ method: "POST", url: "/rest/node-access/setup-codes", credential: phone.credential })).toMatchObject(notPermitted);
     expect(await inject({ method: "GET", url: "/rest/node-access/owner-credentials", credential: phone.credential })).toMatchObject(notPermitted);
     expect(await inject({ method: "GET", url: "/rest/mcp-gateway/token", credential: phone.credential })).toMatchObject(notPermitted);
-    const invite = await graphql("mutation { createPeerInvite { inviteText } }", {}, { credential: phone.credential });
-    expect(invite.body.errors?.[0]?.extensions?.code).toBe("NODE_ROUTE_NOT_PERMITTED");
+    // autobyteus-661: pairing is an owner action (a grant, Pair, Accept); a phone is refused.
+    const grant = await graphql("mutation { createPairingGrant(relation: \"own\") { grant } }", {}, { credential: phone.credential });
+    expect(grant.body.errors?.[0]?.extensions?.code).toBe("NODE_ROUTE_NOT_PERMITTED");
+    const pair = await graphql("mutation { pairWithNode(address: \"http://198.51.100.8:8000\") { state } }", {}, { credential: phone.credential });
+    expect(pair.body.errors?.[0]?.extensions?.code).toBe("NODE_ROUTE_NOT_PERMITTED");
   });
 
   it("NAS-10 a revoked phone is refused 403 REMOTE_ACCESS_DEVICE_REVOKED", async () => {
@@ -339,22 +342,23 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     expect(JSON.stringify(workspaces.body)).not.toContain(outsideDir);
   });
 
-  it("NAS-13 guessed setup, phone pairing and peer invite codes are refused 401", async () => {
-    expect((await graphql("mutation { setRemoteCollaborationEnabled(enabled: true) { enabled } }", {}, { credential: started.ownerCredential })).statusCode).toBe(200);
+  it("NAS-13 NAS-48 guessed setup and phone pairing codes are refused 401, and a guessed pairing grant 403", async () => {
     const guess = randomBytes(18).toString("base64url");
     expect(await inject({ method: "POST", url: "/rest/node-access/setup-exchanges", from: ALLOWED_NETWORK_CLIENT, payload: { setupCode: guess, desktopName: "x" } }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_SETUP_CODE_INVALID" } });
     const phoneGuess = await inject({ method: "POST", url: "/rest/remote-access/pairing-exchanges", from: ALLOWED_NETWORK_CLIENT,
       payload: { pairingCode: guess, serverBaseUrl: "https://desktop.tailnet.ts.net/mobile", deviceName: "Guess" } });
     expect(phoneGuess.statusCode, JSON.stringify(phoneGuess.body)).toBe(401);
-    expect(await inject({ method: "POST", url: "/rest/remote/peer-pairing-exchanges", from: ALLOWED_NETWORK_CLIENT,
-      payload: { inviteCode: guess, fromNodeId: "srv_guesser_000000000000000000000000", fromName: "guesser", addressCandidates: [] } }))
-      .toMatchObject({ statusCode: 401, body: { code: "PEER_INVITE_INVALID" } });
+    expect(await inject({ method: "POST", url: "/rest/remote/pair", from: ALLOWED_NETWORK_CLIENT,
+      payload: { nodeId: "srv_guesser_000000000000000000000000", name: "guesser", publicKey: testNodeKey().publicKeyText, addresses: ["http://198.51.100.8:8000"], grant: guess } }))
+      .toMatchObject({ statusCode: 403, body: { code: "PAIRING_GRANT_INVALID" } });
+    const peers = await graphql("{ peerNodes { nodeId } }", {}, { credential: started.ownerCredential });
+    expect(peers.body.data.peerNodes.map((peer: { nodeId: string }) => peer.nodeId)).not.toContain("srv_guesser_000000000000000000000000");
   });
 
   it("NAS-20 a paired peer's signed request passes the gate to the peer gateway", async () => {
     const body = peerMessage(PEER_A.nodeId, "collabmsg_nas_20");
-    const answer = await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers: signedHeaders(PEER_A, "POST", "/rest/remote/messages", body) });
+    const answer = await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers: await signedHeaders(PEER_A, "POST", "/rest/remote/messages", body) });
     expect(answer.statusCode, JSON.stringify(answer.body)).toBe(200);
     expect(answer.body).toMatchObject({ nodeId: ownNodeId });
   });
@@ -374,11 +378,11 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     await new Promise<void>((resolve) => gateway.listen(0, THIS_COMPUTER, () => resolve()));
     try {
       const gatewayUrl = `http://127.0.0.1:${(gateway.address() as { port: number }).port}/autobyteus`;
-      // This test acts as PEER_A's node: its client signs with the secret the two share.
-      const thisNodeSeenFromPeerA = { nodeId: ownNodeId, name: "via-gateway", baseUrl: gatewayUrl, addedAt: new Date().toISOString(), paired: true, role: null };
+      // This test acts as PEER_A's node: its client signs with PEER_A's node key, whose public half the node holds.
+      const thisNodeSeenFromPeerA = { nodeId: ownNodeId, name: "via-gateway", address: gatewayUrl, addedAt: new Date().toISOString(), paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
       const client = new PeerClient({
-        peers: { findByName: async () => thisNodeSeenFromPeerA, findByNodeId: async () => thisNodeSeenFromPeerA, peerSecret: async () => PEER_A.secret },
-        capability: { isEnabled: () => true },
+        peers: { findByName: async () => thisNodeSeenFromPeerA, findByNodeId: async () => thisNodeSeenFromPeerA },
+        signer: testSigner(PEER_A.key), connector: testConnector(),
         ownNodeId: async () => PEER_A.nodeId,
       });
       await expect(client.checkAvailability(ownNodeId)).resolves.toEqual({ accepted: true });
@@ -387,29 +391,29 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     }
   });
 
-  it("NAS-21 a request claiming a peer's node ID without its signature, or signed with another secret, gets 401", async () => {
+  it("NAS-21 a request claiming a peer's node ID without its signature, or signed with another node's key, gets 401", async () => {
     const body = peerMessage(PEER_A.nodeId, "collabmsg_nas_21");
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_REQUIRED" } });
-    const forged = signedHeaders({ nodeId: PEER_A.nodeId, secret: randomBytes(32).toString("base64url") }, "POST", "/rest/remote/messages", body);
+    const forged = await signedHeaders({ nodeId: PEER_A.nodeId, key: testNodeKey() }, "POST", "/rest/remote/messages", body);
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers: forged }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
   });
 
   it("NAS-22 a replayed peer request, or one signed more than 300 s ago, gets 401", async () => {
     const body = peerMessage(PEER_A.nodeId, "collabmsg_nas_22");
-    const headers = signedHeaders(PEER_A, "POST", "/rest/remote/messages", body);
+    const headers = await signedHeaders(PEER_A, "POST", "/rest/remote/messages", body);
     expect((await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers })).statusCode).toBe(200);
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
-    const stale = signedHeaders(PEER_A, "POST", "/rest/remote/messages", body, { now: new Date(Date.now() - 301_000) });
+    const stale = await signedHeaders(PEER_A, "POST", "/rest/remote/messages", body, { now: new Date(Date.now() - 301_000) });
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers: stale }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
   });
 
-  it("NAS-23 a peer paired before this model (no peer secret) gets 401 until it pairs again", async () => {
+  it("NAS-23 a peer paired before node keys (no key) gets 401 until it pairs again", async () => {
     const body = peerMessage(PEER_BEFORE_MODEL.nodeId, "collabmsg_nas_23");
-    const headers = signedHeaders({ nodeId: PEER_BEFORE_MODEL.nodeId, secret: randomBytes(32).toString("base64url") }, "POST", "/rest/remote/messages", body);
+    const headers = await signedHeaders({ nodeId: PEER_BEFORE_MODEL.nodeId, key: testNodeKey() }, "POST", "/rest/remote/messages", body);
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
     const peers = await graphql("{ peerNodes { nodeId paired } }", {}, { credential: started.ownerCredential });
@@ -418,15 +422,15 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
 
   it("NAS-24 a peer's signature opens only /rest/remote/*: elsewhere 403 NODE_ROUTE_NOT_PERMITTED", async () => {
     const query = JSON.stringify({ query: "{ __typename }" });
-    expect(await inject({ method: "POST", url: "/graphql", payload: query, headers: signedHeaders(PEER_A, "POST", "/graphql", query) }))
+    expect(await inject({ method: "POST", url: "/graphql", payload: query, headers: await signedHeaders(PEER_A, "POST", "/graphql", query) }))
       .toMatchObject({ statusCode: 403, body: { code: "NODE_ROUTE_NOT_PERMITTED" } });
-    expect(await inject({ method: "GET", url: "/rest/node-access/owner-credentials", headers: signedHeaders(PEER_A, "GET", "/rest/node-access/owner-credentials", null) }))
+    expect(await inject({ method: "GET", url: "/rest/node-access/owner-credentials", headers: await signedHeaders(PEER_A, "GET", "/rest/node-access/owner-credentials", null) }))
       .toMatchObject({ statusCode: 403, body: { code: "NODE_ROUTE_NOT_PERMITTED" } });
   });
 
   it("NAS-36 a request signed for another node, presented to this node, gets 401", async () => {
     const body = peerMessage(PEER_A.nodeId, "collabmsg_nas_36");
-    const headers = signedHeaders(PEER_A, "POST", "/rest/remote/messages", body, { toNodeId: "srv_someone_else_000000000000000000000" });
+    const headers = await signedHeaders(PEER_A, "POST", "/rest/remote/messages", body, { toNodeId: "srv_someone_else_000000000000000000000" });
     expect(await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers }))
       .toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
   });
@@ -435,16 +439,16 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     const signedBody = peerMessage(PEER_A.nodeId, "collabmsg_nas_38");
     const changedBody = signedBody.replace('"content":"x"', '"content":"changed in transit"');
     expect(changedBody).not.toBe(signedBody);
-    const answer = await inject({ method: "POST", url: "/rest/remote/messages", payload: changedBody, headers: signedHeaders(PEER_A, "POST", "/rest/remote/messages", signedBody) });
+    const answer = await inject({ method: "POST", url: "/rest/remote/messages", payload: changedBody, headers: await signedHeaders(PEER_A, "POST", "/rest/remote/messages", signedBody) });
     expect(answer).toMatchObject({ statusCode: 401, body: { code: "NODE_CREDENTIAL_INVALID" } });
     expect(answer.body.nodeId, "the peer gateway did not answer").toBeUndefined();
   });
 
   it("NAS-37 removing a peer closes its open run-observation socket at once with 4403 PEER_UNPAIRED", async () => {
-    const held = await holdSocket("/rest/remote/run-observations", signedHeaders(PEER_B, "GET", "/rest/remote/run-observations", null));
+    const held = await holdSocket("/rest/remote/run-observations", await signedHeaders(PEER_B, "GET", "/rest/remote/run-observations", null));
     const removedAt = Date.now();
-    const removed = await graphql("mutation($id: String!) { removePeerNode(nodeId: $id) }", { id: PEER_B.nodeId }, { credential: started.ownerCredential });
-    expect(removed.body.data?.removePeerNode, JSON.stringify(removed.body)).toBe(true);
+    const removed = await graphql("mutation($id: String!) { unpairPeerNode(nodeId: $id) }", { id: PEER_B.nodeId }, { credential: started.ownerCredential });
+    expect(removed.body.data?.unpairPeerNode, JSON.stringify(removed.body)).toBe(true);
     const closed = await held.closed;
     expect({ code: closed.code, reason: closed.reason }).toEqual({ code: 4403, reason: "PEER_UNPAIRED" });
     expect(closed.at - removedAt).toBeLessThanOrEqual(2_000);

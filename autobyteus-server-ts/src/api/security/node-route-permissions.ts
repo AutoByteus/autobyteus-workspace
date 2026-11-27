@@ -53,7 +53,11 @@ const MEMORY_SYNC_SOURCE = clients("memory_sync_source");
 const EXEMPT_EXCHANGES = new Set([
   "/rest/remote-access/pairing-exchanges",
   "/rest/node-access/setup-exchanges",
-  "/rest/remote/peer-pairing-exchanges",
+  // autobyteus-661 contract §2: the asking node is not a peer yet; a grant or an outstanding request decides. Listed
+  // before the `/rest/remote` PEER rule; `pair-confirm` and `unpaired` stay signed peer requests.
+  "/rest/remote/pair",
+  "/rest/remote/pair-accepted",
+  "/rest/remote/pair-rejected",
 ]);
 
 /**

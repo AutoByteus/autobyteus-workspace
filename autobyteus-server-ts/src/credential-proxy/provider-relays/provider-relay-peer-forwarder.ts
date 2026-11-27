@@ -95,11 +95,9 @@ export class ProviderRelayPeerForwarder {
       body,
     });
     if (outcome.kind === "notSent") {
-      return refused(providerRelayRefusal("RELAY_PEER_UNAVAILABLE", outcome.reason === "remoteCollaborationOff"
-        ? "Remote collaboration is off on this node, so it cannot reach its relay node."
-        : outcome.reason === "identityPending"
-          ? "This node's identity is waiting for its data migration, so it cannot reach its relay node yet."
-          : `The relay node (${this.deps.relayNodeId}) is not a paired peer of this node.`));
+      return refused(providerRelayRefusal("RELAY_PEER_UNAVAILABLE", outcome.reason === "identityPending"
+        ? "This node's identity is waiting for its data migration, so it cannot reach its relay node yet."
+        : `The relay node (${this.deps.relayNodeId}) is not a paired peer of this node.`));
     }
     if (outcome.kind === "unreachable") {
       return refused(providerRelayRefusal("RELAY_PEER_UNREACHABLE", `The relay node could not be reached (${outcome.detail}).`));

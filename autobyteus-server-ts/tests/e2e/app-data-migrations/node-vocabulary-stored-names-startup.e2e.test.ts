@@ -201,9 +201,8 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
     // Pair them (mutual peers), as the Nodes tab does.
     ids.alpha = (await status(alpha)).body.nodeId;
     ids.beta = (await status(beta)).body.nodeId;
-    for (const node of [alpha, beta]) await gql(node, `mutation{ setRemoteCollaborationEnabled(enabled:true){ enabled } }`);
-    await pairNodes({ inviter: (query, variables) => gql(beta, query, variables), accepter: (query, variables) => gql(alpha, query, variables),
-      inviterName: "beta-node", accepterName: "alpha-node" });
+    await pairNodes({ granter: { gql: (query, variables) => gql(beta, query, variables), address: beta.baseUrl },
+      asker: { gql: (query, variables) => gql(alpha, query, variables), address: alpha.baseUrl }, granterName: "beta-node", askerName: "alpha-node" });
     expect((await offer(alpha, ids.beta)).entries, "paired before the upgrade").not.toBeNull();
 
     // Alpha syncs its memory to beta (Memory Sync source → hub), as the Memory Sync card does.

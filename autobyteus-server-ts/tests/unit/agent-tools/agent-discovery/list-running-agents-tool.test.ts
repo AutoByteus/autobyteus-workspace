@@ -71,7 +71,7 @@ describe("a peer's running agents (QR-002, AC-004)", () => {
       runningAgents: vi.fn(async () => ({ accepted: true as const, agents: [pm] })),
       checkAvailability: vi.fn(), listAvailableAgents: vi.fn(),
     };
-    const peers = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => [] }, client: client as never });
+    const peers = new PeerNodeDiscovery({ peers: { list: async () => [] }, client: client as never });
     await expect(peers.listRunningAgents("docker")).resolves.toEqual([{ ...pm, node: "docker" }]);
     expect(client.runningAgents).toHaveBeenCalledWith("srv_b");
     await expect(peers.listRunningAgents("nas")).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED" });

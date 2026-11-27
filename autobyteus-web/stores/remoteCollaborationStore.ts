@@ -2,22 +2,30 @@ import { defineStore } from 'pinia'
 import type { DocumentNode } from 'graphql'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetRemoteCollaborationSettings } from '~/graphql/queries/remoteCollaborationQueries'
-import { AcceptPeerInvite, ChangePeerAddress, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
+import { ChangePeerAddress, PairWithNode, RenamePeerNode, UnpairPeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
 import { throwSettingsErrors } from '~/utils/nodeSettingsError'
 
 /**
- * A node registered on the bound node for remote collaboration. `baseUrl` is how the bound node reaches it; `paired`:
- * both nodes hold their shared peer secret (autobyteus-437); a peer registered before peers paired shows "Pair again".
+ * A node paired with the bound node (autobyteus-661 contract §1). `address` is where the bound node reaches it;
+ * `machine` and `account` its private-network machine and the account that added it (null by plain address);
+ * `relation` whose node it is (null for a pair made before node keys); `paired`: the bound node holds its node key
+ * (a pair made before node keys shows "Pair again").
  */
 export interface PeerNode {
   nodeId: string
   name: string
-  baseUrl: string
+  address: string
+  machine: string | null
+  account: string | null
+  relation: 'own' | 'teammate' | null
+  /** A sandbox the bound node created (autobyteus-581), labelled on the Nodes page. */
+  sandbox: boolean
   addedAt: string
   paired: boolean
-  /** `sandbox`: a sandbox the bound node created (autobyteus-581), labelled on the Nodes page; null for a normal peer. */
-  role: 'sandbox' | null
 }
+
+/** What Pair did: paired at once (with a grant), or waiting for the other owner (its request ID). */
+export type PairOutcome = { state: 'paired'; peer: PeerNode } | { state: 'waiting'; requestId: string }
 
 /**
  * The bound node's peers (one-nodes-tab AR-005: the one write path for this node's peers). Every change goes through
@@ -36,25 +44,33 @@ export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore
     },
 
     /**
-     * Pairs this node with the node that created `inviteText` (autobyteus-437 DS-004): `name` is this node's name for it,
-     * `nameOnInviter` that node's name for this one.
+     * Pairs this node with the node at `address` (autobyteus-661 contract §3): with that node's `grant` at once (own
+     * nodes, one click), otherwise a request its owner accepts. `name` is this node's name for it; `nodeId` the node
+     * expected there.
      */
-    async acceptInvite(inviteText: string, name: string, nameOnInviter: string | null): Promise<PeerNode> {
-      const paired = (await this.mutate<{ acceptPeerInvite: PeerNode }>(AcceptPeerInvite, { inviteText, name, nameOnInviter })).acceptPeerInvite
-      this.peers = [...this.peers.filter((peer) => peer.nodeId !== paired.nodeId), paired]
-      return paired
+    async pair(input: { address: string; grant?: string | null; nodeId?: string | null; name?: string | null }): Promise<PairOutcome> {
+      const outcome = (await this.mutate<{ pairWithNode: { state: string; requestId: string | null; peer: PeerNode | null } }>(PairWithNode, {
+        address: input.address, grant: input.grant ?? null, nodeId: input.nodeId ?? null, name: input.name ?? null,
+      })).pairWithNode
+      if (outcome.state === 'paired' && outcome.peer) {
+        const paired = outcome.peer
+        this.peers = [...this.peers.filter((peer) => peer.nodeId !== paired.nodeId), paired]
+        return { state: 'paired', peer: paired }
+      }
+      return { state: 'waiting', requestId: outcome.requestId ?? '' }
     },
 
     async rename(nodeId: string, name: string): Promise<PeerNode> {
       return this.replace((await this.mutate<{ renamePeerNode: PeerNode }>(RenamePeerNode, { nodeId, name })).renamePeerNode)
     },
 
-    async changeAddress(nodeId: string, baseUrl: string): Promise<PeerNode> {
-      return this.replace((await this.mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, baseUrl })).changePeerAddress)
+    async changeAddress(nodeId: string, address: string): Promise<PeerNode> {
+      return this.replace((await this.mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, address })).changePeerAddress)
     },
 
-    async remove(nodeId: string): Promise<void> {
-      await this.mutate(RemovePeerNode, { nodeId })
+    /** Unpair: the other node is told when it can be reached; the pair is removed here. */
+    async unpair(nodeId: string): Promise<void> {
+      await this.mutate(UnpairPeerNode, { nodeId })
       this.peers = this.peers.filter((peer) => peer.nodeId !== nodeId)
     },
 

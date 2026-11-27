@@ -1,8 +1,7 @@
 import path from "node:path";
 import type { AvailableCollaboratorEntry } from "../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerNodeDiscovery } from "../remote-collaboration/discovery/peer-node-discovery.js";
-import type { PeerDirectory } from "../remote-collaboration/settings/peer-directory.js";
-import type { PeerPairingService } from "../remote-collaboration/settings/peer-pairing-service.js";
+import type { PeerPairing } from "../remote-collaboration/pairing/peer-pairing.js";
 import type { SandboxDocker } from "./sandbox-docker.js";
 import { DATA_IN_SANDBOX } from "./sandbox-folders.js";
 
@@ -35,16 +34,15 @@ export class SandboxPairingError extends Error {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * A new sandbox node's setup as its host performs it (DS-003): its owner credential from a setup code read over
- * `docker exec` (kept in memory for the creation only, never stored, V-4), pairing with this host from an invite
- * marked `sandbox` (C11: the host's exchange saves the peer with the mark), and the requested agent packages copied in
- * and imported. Never puts a credential, key or peer secret into the sandbox.
+ * A new sandbox node's setup as its host performs it (DS-003; autobyteus-661 AR-001): its owner credential from a
+ * setup code read over `docker exec` (kept in memory for the creation only, never stored, V-4), pairing with this host
+ * (the host has the sandbox make a grant, then pairs with it under node keys, saving it marked `sandbox`), and the
+ * requested agent packages copied in and imported. Never puts a credential or key into the sandbox.
  */
 export class SandboxPairing {
   constructor(private readonly deps: Readonly<{
     docker: Pick<SandboxDocker, "exec" | "copyInto" | "makeDirectory">;
-    pairing: Pick<PeerPairingService, "createInvite">;
-    peers: Pick<PeerDirectory, "findByName">;
+    pairing: Pick<PeerPairing, "pair">;
     discovery: Pick<PeerNodeDiscovery, "listAvailableAgents">;
     fetch?: typeof fetch;
   }>) {}
@@ -105,24 +103,29 @@ export class SandboxPairing {
   }
 
   /**
-   * Pairs the sandbox with this host: an invite marked `sandbox` here, accepted on the sandbox (its name for this host
-   * is `host`; this host's name for it is `sandboxId`). Returns the sandbox's node ID as this host saved it.
+   * Pairs the sandbox with this host (AR-001 steps 2–5): the sandbox makes a grant for an `own` node it names `host`;
+   * this host pairs with the sandbox at once with the grant (the sandbox keeps the first of this host's addresses that
+   * answers as this host from inside its container, `host.docker.internal` for a host on loopback) and saves it as `sandboxId`,
+   * marked `sandbox`. Returns the sandbox's node ID.
    */
   async pair(session: SandboxNodeSession, sandboxId: string): Promise<string> {
-    const invite = await this.deps.pairing.createInvite({ role: "sandbox" });
+    const failed = (error: unknown) => new SandboxPairingError("SANDBOX_START_FAILED",
+      `The sandbox could not pair with this node: ${error instanceof Error ? error.message : String(error)}`);
+    let grant: string;
     try {
-      await session.graphql(
-        "mutation($inviteText: String!, $name: String!, $nameOnInviter: String) { acceptPeerInvite(inviteText: $inviteText, name: $name, nameOnInviter: $nameOnInviter) { nodeId } }",
-        { inviteText: invite.inviteText, name: "host", nameOnInviter: sandboxId },
-      );
+      grant = (await session.graphql<{ createPairingGrant: { grant: string } }>(
+        'mutation { createPairingGrant(relation: "own", nameForAsker: "host") { grant } }',
+      )).createPairingGrant.grant;
     } catch (error) {
-      throw new SandboxPairingError("SANDBOX_START_FAILED", `The sandbox could not pair with this node: ${error instanceof Error ? error.message : String(error)}`);
+      throw failed(error);
     }
-    const peer = await this.deps.peers.findByName(sandboxId);
-    if (!peer?.paired || peer.role !== "sandbox") {
-      throw new SandboxPairingError("SANDBOX_START_FAILED", "The sandbox paired, but this node did not save it as its sandbox peer.");
+    try {
+      const outcome = await this.deps.pairing.pair({ address: session.baseUrl, grant, name: sandboxId, sandbox: true });
+      if (outcome.state !== "paired" || !outcome.peer.sandbox) throw new Error("this node did not save it as its sandbox peer");
+      return outcome.peer.nodeId;
+    } catch (error) {
+      throw failed(error);
     }
-    return peer.nodeId;
   }
 
   /**

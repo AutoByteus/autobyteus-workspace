@@ -6,7 +6,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PeerGateway } from "../../../src/remote-collaboration/channel/peer-gateway.js";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { composeRemoteCollaboration } from "../../../src/remote-collaboration/remote-collaboration-services.js";
-import { PeerAddressResolver } from "../../../src/remote-collaboration/settings/peer-address-resolver.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 import { NodeIdentityNotMigratedError } from "../../../src/remote-access/services/node-identity-service.js";
 
@@ -20,6 +19,7 @@ import {
 } from "../../../src/remote-access/services/node-identity-service.js";
 import { registerRemoteAccessRoutes } from "../../../src/api/rest/remote-access.js";
 import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js";
+import { testConnector, testSigner } from "../../helpers/peer-node-keys.js";
 
 /**
  * autobyteus-290 § Hold-back chains, `node_identity` (SM-1), N-910: while this node's identity waits for its data
@@ -27,11 +27,12 @@ import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js"
  */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", address: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
 const pending = async (): Promise<string> => { throw new NodeIdentityNotMigratedError(); };
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 const pendingAnswer = () => answer({ code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration." }, 503);
-const peers = { findByName: async (name: string) => (name === "docker" ? PEER : null), peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id: string) => (id === PEER.nodeId ? PEER : null) };
+const peers = { findByName: async (name: string) => (name === "docker" ? PEER : null), findByNodeId: async (id: string) => (id === PEER.nodeId ? PEER : null) };
+const transport = { signer: testSigner(), connector: testConnector() };
 const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
 const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 
@@ -58,7 +59,7 @@ describe("this node's identity held back", () => {
   it("the gateway answers inbound requests 503 with the code and dispatches nothing", async () => {
     const delegatedRuns = { start: vi.fn() };
     const gate = new PeerGateway({ receivedFiles: NO_FILES_RECEIVED,
-      ownNodeId: pending, capability: { isEnabled: () => true }, peers,
+      ownNodeId: pending, peers,
       delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runningAgents: { list: vi.fn() } as never, runViews: {} as never, delegatedRunStates: {} as never, peerRunMembers: {} as never,
     });
     const response = await gate.startDelegatedRun({ fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
@@ -71,50 +72,41 @@ describe("this node's identity held back", () => {
 
   it("the client refuses outbound requests with the code and sends nothing", async () => {
     const fetch = vi.fn();
-    const client = new PeerClient({ peers, capability: { isEnabled: () => true }, ownNodeId: pending, fetch: fetch as never });
+    const client = new PeerClient({ peers, ...transport, ownNodeId: pending, fetch: fetch as never });
     await expect(client.startDelegatedRun(start)).resolves.toMatchObject({ accepted: false, code: "NODE_IDENTITY_NOT_MIGRATED",
       message: "This node's identity is waiting for its data migration, so nothing was sent to another node." });
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("pairing is refused with the code (settings error)", async () => {
+  it("pairing is refused with the code (settings error), before anything is sent", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-hold-back-")); roots.push(dir);
     const services = composeRemoteCollaboration({
       config: { getAppDataDir: () => dir },
-      settings: { getBooleanSetting: () => true, setBooleanSetting: () => undefined },
       ownNodeId: pending,
       tempWorkspaceDir: dir,
       runsInContainer: () => false,
       receivedFiles: NO_FILES_RECEIVED,
       handlers: () => ({ delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runningAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, peerRunMembers: {} as never }),
     });
-    vi.spyOn(services.client, "fetchNodeId").mockResolvedValue(PEER.nodeId);
-    await expect(services.pairing.createInvite()).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
-    await expect(services.addresses.resolve(PEER.nodeId, ["http://peer:29700"])).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
+    const fetch = vi.spyOn(globalThis, "fetch");
+    await expect(services.pairing.pair({ address: "http://peer:29700" })).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
+    await expect(services.pairing.pair({ address: "http://peer:29700", grant: "g" })).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
+    expect(fetch).not.toHaveBeenCalled();
+    fetch.mockRestore();
   });
 });
 
 describe("another node's identity held back (it answers 503 with the code)", () => {
   it("a request to it is refused with the code and its name, not as unreachable", async () => {
-    const client = new PeerClient({ peers, capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: (async () => pendingAnswer()) as never });
+    const client = new PeerClient({ peers, ...transport, ownNodeId: async () => SELF, fetch: (async () => pendingAnswer()) as never });
     await expect(client.startDelegatedRun(start)).resolves.toMatchObject({ accepted: false, code: "NODE_IDENTITY_NOT_MIGRATED",
       message: `Node "docker"'s identity is waiting for its data migration, so it refused the request.` });
   });
 
   it("its identity probe says so, not 'not an AutoByteus node'; any other 503 keeps today's meaning", async () => {
-    const pendingNode = new PeerClient({ peers, capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: (async () => pendingAnswer()) as never });
+    const pendingNode = new PeerClient({ peers, ...transport, ownNodeId: async () => SELF, fetch: (async () => pendingAnswer()) as never });
     await expect(pendingNode.fetchNodeId("http://peer:29700")).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
-    const busy = new PeerClient({ peers, capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: (async () => answer({}, 503)) as never });
+    const busy = new PeerClient({ peers, ...transport, ownNodeId: async () => SELF, fetch: (async () => answer({}, 503)) as never });
     await expect(busy.fetchNodeId("http://web")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
-  });
-
-  it("address resolution reports the attempt as identity_pending", async () => {
-    const resolver = new PeerAddressResolver({
-      probe: new PeerClient({ peers, capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: (async () => pendingAnswer()) as never }),
-      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, runsInContainer: () => false,
-    });
-    await expect(resolver.resolve(PEER.nodeId, ["http://peer:29700"])).rejects.toMatchObject({
-      code: "PEER_UNREACHABLE", details: { attempts: [{ address: "http://peer:29700", result: "identity_pending" }] },
-    });
   });
 });

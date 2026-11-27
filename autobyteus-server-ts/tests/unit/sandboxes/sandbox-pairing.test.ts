@@ -1,19 +1,22 @@
 /**
  * autobyteus-581 F-1 (API-E01): a fresh sandbox node hands out its setup code a moment before its published port
- * takes connections. `connect` waits for the port to answer, then exchanges the code exactly once. Dummy values only.
+ * takes connections. `connect` waits for the port to answer, then exchanges the code exactly once.
+ * autobyteus-661 AR-001: `pair` has the sandbox make a grant, then pairs with it, saving the sandbox marked `sandbox`
+ * (the sandbox keeps the first of the host's addresses that answers it, contract §2). Dummy values only.
  */
 import { describe, expect, it, vi } from "vitest";
 import { SandboxPairing, SandboxPairingError } from "../../../src/sandboxes/sandbox-pairing.js";
 
 const BASE = "http://127.0.0.1:47581";
 
-const pairingWith = (fetchImpl: typeof fetch) => new SandboxPairing({
+const execResult = (stdout: string, exitCode = 0) => ({ exitCode, stdout, stderr: "", truncated: false, timedOut: false });
+
+const pairingWith = (fetchImpl: typeof fetch, overrides: { exec?: ReturnType<typeof vi.fn>; pair?: ReturnType<typeof vi.fn> } = {}) => new SandboxPairing({
   docker: {
-    exec: vi.fn(async () => ({ exitCode: 0, stdout: "setup-code-1", stderr: "", truncated: false, timedOut: false })),
+    exec: overrides.exec ?? vi.fn(async () => execResult("setup-code-1")),
     copyInto: vi.fn(), makeDirectory: vi.fn(),
   } as never,
-  pairing: { createInvite: vi.fn() } as never,
-  peers: { findByName: vi.fn() } as never,
+  pairing: { pair: overrides.pair ?? vi.fn() } as never,
   discovery: { listAvailableAgents: vi.fn() } as never,
   fetch: fetchImpl,
 });
@@ -53,5 +56,28 @@ describe("SandboxPairing.connect", () => {
     expect(refused).toBeInstanceOf(SandboxPairingError);
     expect(refused).toMatchObject({ code: "SANDBOX_START_FAILED" });
     expect(vi.mocked(fetchImpl).mock.calls.every(([url]) => String(url).endsWith("/rest/health"))).toBe(true);
+  });
+});
+
+describe("SandboxPairing.pair (autobyteus-661 AR-001)", () => {
+  const session = (graphql: ReturnType<typeof vi.fn>) => ({ baseUrl: BASE, graphql }) as never;
+
+  it("has the sandbox grant an own pair named `host`, then pairs with it at its published port, marked sandbox", async () => {
+    const graphql = vi.fn(async () => ({ createPairingGrant: { grant: "grant-1" } }))
+    const exec = vi.fn();
+    const pair = vi.fn(async () => ({ state: "paired", peer: { nodeId: "srv_sandbox", sandbox: true } }));
+    await expect(pairingWith(vi.fn() as never, { exec, pair }).pair(session(graphql), "sbx_1")).resolves.toBe("srv_sandbox");
+    expect(graphql).toHaveBeenCalledWith('mutation { createPairingGrant(relation: "own", nameForAsker: "host") { grant } }');
+    expect(pair).toHaveBeenCalledWith({ address: BASE, grant: "grant-1", name: "sbx_1", sandbox: true });
+    expect(exec).not.toHaveBeenCalled();
+  });
+
+  it("refuses SANDBOX_START_FAILED when the sandbox gives no grant or refuses the pair (it reaches the host at none of its addresses)", async () => {
+    await expect(pairingWith(vi.fn() as never).pair(session(vi.fn(async () => { throw new Error("NODE_ROUTE_NOT_PERMITTED"); })), "sbx_1"))
+      .rejects.toMatchObject({ code: "SANDBOX_START_FAILED", message: expect.stringContaining("NODE_ROUTE_NOT_PERMITTED") });
+    const graphql = vi.fn(async () => ({ createPairingGrant: { grant: "grant-1" } }));
+    const refusing = vi.fn(async () => { throw new Error("This node reaches the asking node at none of the addresses it gave."); });
+    await expect(pairingWith(vi.fn() as never, { pair: refusing }).pair(session(graphql), "sbx_1"))
+      .rejects.toMatchObject({ code: "SANDBOX_START_FAILED", message: expect.stringContaining("none of the addresses") });
   });
 });

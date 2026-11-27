@@ -29,6 +29,7 @@ import { RunningAgents } from "../../../src/agent-collaboration/running/running-
 import { RunningAgentsListing } from "../../../src/agent-collaboration/running/running-agents-listing.js";
 import { listRunningAgentsFor } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
+import { testConnector, testSigner } from "../../helpers/peer-node-keys.js";
 
 /**
  * autobyteus-492 in one process, two nodes (only HTTP and the runtimes replaced): real standalone roots and their logs,
@@ -88,13 +89,12 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
   const peerDirectory = {
     findByName: async (name: string) => input.peers.find((peer) => peer.name === name) ?? null,
     findByNodeId: async (nodeId: string) => input.peers.find((peer) => peer.nodeId === nodeId) ?? null,
-    peerSecret: async () => "peer-secret-for-tests",
   };
   const requests: string[] = [];
-  const client = new PeerClient({
-    peers: peerDirectory, capability: { isEnabled: () => true }, ownNodeId: async () => input.nodeId,
+  const client = new PeerClient({ signer: testSigner(), connector: testConnector(),
+    peers: peerDirectory, ownNodeId: async () => input.nodeId,
     fetch: (async (url: string, init: RequestInit) => {
-      const target = input.peers.find((peer) => url.startsWith(peer.baseUrl));
+      const target = input.peers.find((peer) => url.startsWith(peer.address));
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("fetch failed");
       const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
@@ -153,7 +153,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     nodes: new PeerRunNodes({ activeRoots: directory, tree: () => taskSide.tree, channel: () => client }), outgoing: peerFiles.outgoingFiles,
     agentRunManager: { getActiveRun: () => null } });
   input.network.set(input.nodeId, new PeerGateway({
-    ownNodeId: async () => input.nodeId, capability: { isEnabled: () => true }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
+    ownNodeId: async () => input.nodeId, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
     delegatedRuns: {} as never, availableAgents: {} as never, runViews: {} as never, delegatedRunStates: {} as never, peerRunMembers: {} as never,
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
@@ -162,7 +162,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
     }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions(), runningAgents, { openedBy: async () => undefined }, peerFiles.receivedFiles),
     runningAgents: { list: async () => ({ accepted: true as const, agents: await listing.list({ caller: null }) }) },
   }));
-  const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => input.peers }, client });
+  const discovery = new PeerNodeDiscovery({ peers: { list: async () => input.peers }, client });
 
   /** A person starts a Project Task Manager run here: its root is live and its agent runs. */
   const startPm = async (runId: string, workspace: string, containedIn?: Readonly<{ orgRunId: string; address: string }>) => {
@@ -187,8 +187,8 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
 
 const twoNodes = async () => {
   const network = new Map<string, PeerGateway>();
-  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
-  const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true, role: null }] });
+  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
+  const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", address: "http://a:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
   return { a, b };
 };
 

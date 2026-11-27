@@ -1,14 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { openPeerRunObservation } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
-import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { NodeKeyPeerVerifier } from "../../../src/remote-collaboration/channel/node-key-peer-verifier.js";
 import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
+import { plainAddressPeerKey, testConnector, testNodeKey, testSigner } from "../../helpers/peer-node-keys.js";
+
+const SELF_KEY = testNodeKey();
 
 /** autobyteus-278: the delegating node's outbound calls about runs its delegation started (§ Interface Boundary Mapping). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", address: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
+/** The peer's verifier, started before any request here is signed (a request dated before its start is refused). */
+const PEER_VERIFIER = new NodeKeyPeerVerifier({ ownNodeId: async () => PEER.nodeId, peerKey: async (nodeId) => nodeId === SELF ? plainAddressPeerKey(SELF_KEY) : null });
 const answer = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
 const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 
@@ -25,22 +30,21 @@ class FakeSocket implements PeerWebSocket {
   receive(value: unknown) { this.onmessage?.({ data: JSON.stringify(value) }); }
 }
 
-const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnType<typeof answer>>, options: { enabled?: boolean } = {}) => {
+const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnType<typeof answer>>, options: { paired?: boolean } = {}) => {
   const fetch = vi.fn(fetchImpl ?? (async () => answer({})));
   const sockets: FakeSocket[] = [];
   return {
     fetch, sockets,
     client: new PeerClient({
-      peers: { findByName: async () => PEER, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
-      capability: { isEnabled: () => options.enabled ?? true },
-      ownNodeId: async () => SELF,
+      peers: { findByName: async () => PEER, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? { ...PEER, paired: options.paired ?? true } : null },
+      signer: testSigner(SELF_KEY), connector: testConnector(), ownNodeId: async () => SELF,
       timeoutMs: 50,
       fetch: fetch as never,
       openWebSocket: (url) => { const socket = new FakeSocket(url); sockets.push(socket); return socket; },
     }),
   };
 };
-// The opening reads the peer, this node's ID and the peer secret (signed upgrade) before it opens the socket.
+// The opening reads the peer and this node's ID, and signs the upgrade with this node's key, before it opens the socket.
 const flush = async () => { for (let index = 0; index < 10; index += 1) await Promise.resolve(); };
 const statusMessage = { type: "AGENT_STATUS", payload: { status: "running", background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } };
 
@@ -77,8 +81,8 @@ describe("PeerClient run views (autobyteus-278)", () => {
   it("NAS-20 an observation of a peer at a gateway base path opens the base path and signs the node route", async () => {
     let opened: { url: string; headers: Readonly<Record<string, string>> } | null = null;
     openPeerRunObservation({
-      resolvePeer: async () => ({ ...PEER, baseUrl: "https://gateway.example.com/autobyteus" }),
-      peerSecret: async () => "peer-secret-for-tests",
+      resolvePeer: async () => ({ ...PEER, address: "https://gateway.example.com/autobyteus" }),
+      signer: testSigner(SELF_KEY), connector: testConnector(),
       ownNodeId: async () => SELF,
       path: "/rest/remote/run-observations",
       targetRoot: TEAM,
@@ -88,7 +92,7 @@ describe("PeerClient run views (autobyteus-278)", () => {
     });
     await flush();
     expect(opened!.url).toBe("wss://gateway.example.com/autobyteus/rest/remote/run-observations");
-    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    const verifier = PEER_VERIFIER;
     await expect(verifier.verify({ method: "GET", pathWithQuery: "/rest/remote/run-observations", headers: opened!.headers }))
       .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
   });
@@ -129,7 +133,8 @@ describe("PeerClient run views (autobyteus-278)", () => {
     silent.client.observeRun(PEER.nodeId, TEAM, silentObserver);
     await new Promise((resolve) => setTimeout(resolve, 80));
     expect(silentObserver.onEnd).toHaveBeenCalledTimes(1);
-    const off = client(undefined, { enabled: false });
+    // A peer paired before node keys (Pair again) is never opened.
+    const off = client(undefined, { paired: false });
     const offObserver = { onFrame: vi.fn(), onEnd: vi.fn() };
     off.client.observeRun(PEER.nodeId, TEAM, offObserver);
     await flush();

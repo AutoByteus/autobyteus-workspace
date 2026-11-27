@@ -197,7 +197,9 @@ describe("the follow-up after 20261017_task_agent_own_run_v1 (M-7, S-3b)", () =>
     expect(ids.slice(at - 1)).toEqual(["20261118_remove_retired_built_in_agents",
       DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID, DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID,
       // org-teams-follow-definition, appended after these: Org units become runs of their own, then its follow-ups.
-      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id)]);
+      AGENT_ORG_UNITS_OWN_RUNS_V1_MIGRATION_ID, ...ORG_UNITS_FOLLOW_UPS.map((followUp) => followUp.id),
+      // autobyteus-661: pairings move to node keys (its own files only).
+      "20261127_peers_to_node_keys"]);
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_AFTER_TASK_AGENT_OWN_RUN_MIGRATION_ID)).toMatchObject({
       requiredOnStartup: true, prerequisiteMigrationIds: ["20261017_task_agent_own_run_v1", DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID] });
     expect(new AppDataMigrationRegistry().getDefinition(DELEGATED_RUN_OWN_ATTACHMENT_LINKS_MIGRATION_ID)?.holdsBackCapabilities).toBeUndefined();

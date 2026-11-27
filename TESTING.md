@@ -251,9 +251,9 @@ or because Gradle's cache already holds a dependency the runner must download.
   - the MCP gateway needs its own token, not the owner credential: `connectMcpGatewayClient`.
 
   `tests/architecture/e2e-node-credential-paths.test.ts` fails a node composed with
-  `buildStudioServer` or a gateway client opened outside these helpers. Nodes are paired by
-  invite (`tests/e2e/helpers/pair-nodes.ts`). Never print or store a credential, gateway token,
-  setup code, invite or peer secret in evidence.
+  `buildStudioServer` or a gateway client opened outside these helpers. Nodes are paired
+  with a grant, as the app pairs your own nodes (`tests/e2e/helpers/pair-nodes.ts`). Never print
+  or store a credential, gateway token, setup code, pairing grant or node key in evidence.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof. A skipped file never fails, so when a change alters what test clients

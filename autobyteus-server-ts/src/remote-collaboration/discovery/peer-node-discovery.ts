@@ -5,12 +5,11 @@ import type { RemoteChannelRefusal } from "../../agent-collaboration/execution/r
 import type { PeerClient } from "../channel/peer-client.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerRefusal } from "../domain/peer-refusal.js";
-import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 
 /**
  * This node's discovery of its peers (autobyteus-261 DS-001, DS-002), the `PeerDiscoveryChannel`. Nothing is
  * stored: every call asks the peers now (REQ-407).
- * - `listPeerNodes`: with the switch on, every registered peer in registration order, all asked for *availability*
+ * - `listPeerNodes`: every peer in pairing order, all asked for *availability*
  *   at the same time, each within the peer request bound. `available` is an accepted answer; anything else
  *   (a refusal by the peer, the wrong node, an HTTP error such as an older build's 404, a transport failure or a
  *   timeout) is `unavailable`: `listAvailableAgents` with that node says why.
@@ -21,13 +20,11 @@ import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
  */
 export class PeerNodeDiscovery implements PeerDiscoveryChannel {
   constructor(private readonly dependencies: Readonly<{
-    capability: Readonly<{ isEnabled(): boolean }>;
     peers: Readonly<{ list(): Promise<readonly PeerNode[]> }>;
     client: Pick<PeerClient, "findPeer" | "checkAvailability" | "listAvailableAgents" | "runningAgents">;
   }>) {}
 
   async listPeerNodes(): Promise<readonly PeerNodeStatus[] | RemoteChannelRefusal> {
-    if (!this.dependencies.capability.isEnabled()) return Object.freeze({ accepted: false, code: REMOTE_REFUSAL.OFF, message: localRefusalText.off() });
     const peers = await this.dependencies.peers.list();
     const statuses = await Promise.all(peers.map((peer) => this.dependencies.client.checkAvailability(peer.nodeId)
       .then((answer) => answer.accepted ? "available" as const : "unavailable" as const, () => "unavailable" as const)));
@@ -53,7 +50,7 @@ export class PeerNodeDiscovery implements PeerDiscoveryChannel {
 
   /**
    * A peer's offer by its node ID (autobyteus-267): the one path for the agent tools (after the name lookup above)
-   * and for the Nodes page. The client applies the switch, the registration, the 20 s bound and the refusal codes.
+   * and for the Nodes page. The client applies the pairing, the 20 s bound and the refusal codes.
    */
   async listAvailableAgentsOf(nodeId: string): Promise<readonly AvailableCollaboratorEntry[] | PeerRefusal> {
     const answer = await this.dependencies.client.listAvailableAgents(nodeId);

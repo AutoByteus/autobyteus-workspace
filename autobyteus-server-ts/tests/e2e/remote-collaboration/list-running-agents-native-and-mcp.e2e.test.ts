@@ -12,7 +12,6 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
 import { pairNodes } from "../helpers/pair-nodes.js";
-import { REMOTE_ROOT_REFUSAL_TEXT } from "../../../src/agent-collaboration/execution/remote/remote-refusal-codes.js";
 
 /**
  * autobyteus-500 FU-011 with autobyteus-492 merged: `list_running_agents` reads the host's `PeerDiscoveryAccess`, passed in
@@ -38,8 +37,8 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && fs.existsSync(path.jo
 const suite = enabled ? describe : describe.skip;
 const AGY_MODEL = "gemini-3.8-flash-low";
 const MODEL_KEY = "lrn-fixture";
-const OFF = REMOTE_ROOT_REFUSAL_TEXT.off;
 const BETA = "beta-node";
+const OFF = `No peer node named "${BETA}" is registered on this node, so nothing was sent.`;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const until = async <T>(check: () => Promise<T> | T, label: string, ms = 90_000): Promise<NonNullable<T>> => {
@@ -205,10 +204,9 @@ suite("list_running_agents on the native tool and on Agent Tools MCP, with the h
     for (const root of roots) await fsp.rm(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }, 60_000);
 
-  it("LRN-1 Studio: both routes list this node's running roots, a peer's with node, and are refused 'turned off' with node when the switch is off", async () => {
+  it("LRN-1 Studio: both routes list this node's running roots, a peer's with node, and are refused with node once the nodes are unpaired", async () => {
     const [alpha, beta] = await Promise.all([startNode("alpha"), startNode("beta")]);
-    for (const node of [alpha, beta]) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
-    await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: BETA, accepterName: "alpha-node" });
+    await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql, address: alpha.baseUrl }, granterName: BETA, askerName: "alpha-node" });
 
     const lister = await definition(alpha, "LRN Lister", ["list_running_agents"]);
     const bystanderA = await definition(alpha, "LRN Bystander", []);
@@ -243,8 +241,9 @@ suite("list_running_agents on the native tool and on Agent Tools MCP, with the h
     expect(mcpPeer.isError, JSON.stringify(mcpPeer)).toBe(false);
     expect(mcpPeer.agents, "the same answer on both routes").toEqual(nativePeer.agents);
 
-    // Alpha's switch off: with node, the "turned off" refusal on both routes; without node, the local list still answers.
-    await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
+    // Alpha unpairs beta (661: no switch): with node, the not-registered refusal on both routes; without node, the local list still answers.
+    const betaPeer = ((await alpha.gql(`{ peerNodes { nodeId name } }`)).peerNodes as Rec[]).find((peer) => peer.name === BETA)!;
+    await alpha.gql(`mutation($id:String!){unpairPeerNode(nodeId:$id)}`, { id: betaPeer.nodeId });
     const nativeOff = await nativeCall(alpha, native, { node: BETA });
     const mcpOff = await mcpCall(alpha, agy, { node: BETA });
     console.log(`LRN-1 off: ${JSON.stringify({ nativeOff, mcpOff })}`);

@@ -152,9 +152,8 @@ await fs.mkdir(outputDir, { recursive: true });
 try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
   const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort(), { viaProxy: true })]);
-  for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
   // The nodes pair by invite (autobyteus-437 DS-004): alpha names beta NODE, beta names alpha 'alpha-node'.
-  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: NODE, accepterName: 'alpha-node' });
+  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql }, granterName: NODE, askerName: 'alpha-node' });
   const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
   const def = async (node, name, defaultLaunchConfig) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
     { i: { name, role: 'assistant', description: `${name} (tree probe)`, instructions: 'Help.', toolNames: [], ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentDefinition.id;

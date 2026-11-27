@@ -53,6 +53,7 @@ import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/se
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
+import { testConnector, testSigner } from "../../helpers/peer-node-keys.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -76,15 +77,15 @@ const A_ID = "srv_node_a_000000000000000000000000000";
 const B_ID = "srv_node_b_000000000000000000000000000";
 const DELEGATOR = "assistant_a1";
 const T0 = "2026-10-21T09:00:00.000Z";
-const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }];
-const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }];
+const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }];
+const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", address: "http://host.docker.internal:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }];
 type Network = Map<string, PeerGateway>;
 
-const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new PeerClient({
-  peers: { findByName: async (name) => peers.find((peer) => peer.name === name) ?? null, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id) => peers.find((peer) => peer.nodeId === id) ?? null },
-  capability: { isEnabled: () => true }, ownNodeId: async () => nodeId,
+const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new PeerClient({ signer: testSigner(), connector: testConnector(),
+  peers: { findByName: async (name) => peers.find((peer) => peer.name === name) ?? null, findByNodeId: async (id) => peers.find((peer) => peer.nodeId === id) ?? null },
+  ownNodeId: async () => nodeId,
   fetch: (async (url: string, init: RequestInit) => {
-    const target = peers.find((peer) => url.startsWith(peer.baseUrl));
+    const target = peers.find((peer) => url.startsWith(peer.address));
     const gateway = target && network.get(target.nodeId);
     if (!gateway) throw new TypeError("fetch failed");
     const files = await peerFilesRequest(gateway, url, init, peerCallerOf(init.headers));
@@ -99,7 +100,7 @@ const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new 
 });
 const peerDirectory = (peers: PeerNode[]) => ({
   findByName: async (name: string) => peers.find((peer) => peer.name === name) ?? null,
-  peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => peers.find((peer) => peer.nodeId === nodeId) ?? null,
+  findByNodeId: async (nodeId: string) => peers.find((peer) => peer.nodeId === nodeId) ?? null,
 });
 const tempDir = async (prefix: string) => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), prefix)); directories.push(dir); return dir; };
 
@@ -145,7 +146,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     },
   });
   network.set(A_ID, new PeerGateway({
-    ownNodeId: async () => A_ID, capability: { isEnabled: () => true }, peers: peerDirectory(A_PEERS), receivedFiles: peerFiles.receivedFiles,
+    ownNodeId: async () => A_ID, peers: peerDirectory(A_PEERS), receivedFiles: peerFiles.receivedFiles,
     delegatedRuns: { start: async () => ({ accepted: false as const, code: "AGENT_NOT_FOUND", message: "/" }) },
     availableAgents: { list: async () => ({ accepted: true as const, agents: [] }) },
     messages: new RemoteMessageReceiver({
@@ -165,7 +166,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   // send_message_to with node (autobyteus-587 RF-14), through A's router (below): the node rule, the files, the admission.
   const send = async (target: string, content: string, referenceFiles: string[] = []) => message(target, content, "docker", referenceFiles);
   // autobyteus-261: this node's discovery of its peers, over the same client.
-  const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
+  const discovery = new PeerNodeDiscovery({ peers: { list: async () => A_PEERS }, client });
   // A follow-up Task by run ID (DN-8), on the tool path.
   // autobyteus-587 RF-14 (SR-011): the Team on B is named with its node ("docker"); `null`: without it.
   const assign = async (taskId: string, node: string | null = "docker") => taskSide.assign(await root(), { identity },
@@ -288,7 +289,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   const closed = ClosedDelegations.inAppDataDir(dir);
   await closed.load();
   network.set(B_ID, new PeerGateway({
-    ownNodeId: async () => B_ID, capability: { isEnabled: () => true }, peers: peerDirectory(B_PEERS), receivedFiles: peerFiles.receivedFiles,
+    ownNodeId: async () => B_ID, peers: peerDirectory(B_PEERS), receivedFiles: peerFiles.receivedFiles,
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort,
       ...((starter) => ({ starter, teams: new RemoteTeamRunStarter({ starter }) }))(new DelegatedRunStarter({ agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teamRuns })),
       decisions: new PeerStartedRunDecisions() }),

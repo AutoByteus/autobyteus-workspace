@@ -55,9 +55,9 @@ describe('remoteCollaborationOffersStore', () => {
     ] })
   })
 
-  it('keeps the four worded refusal codes; any other refusal, a GraphQL error or a failed query is Not reachable', async () => {
+  it('keeps the worded refusal codes (661: no switch, so no REMOTE_COLLABORATION_OFF); any other refusal, a GraphQL error or a failed query is Not reachable', async () => {
     const store = useRemoteCollaborationOffersStore()
-    for (const code of ['REMOTE_COLLABORATION_OFF', 'PEER_NOT_REGISTERED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH']) {
+    for (const code of ['PEER_NOT_REGISTERED', 'PEER_NOT_PAIRED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH']) {
       apolloClientMock.query.mockResolvedValueOnce(refused(code))
       await store.ask('srv_b')
       expect(store.peers.srv_b).toEqual({ phase: 'unavailable', code })
@@ -77,17 +77,17 @@ describe('remoteCollaborationOffersStore', () => {
   it('askAll asks every peer at once; each settles at its own pace (a slow peer does not hold the others)', async () => {
     const slow = deferred()
     apolloClientMock.query.mockImplementation(({ variables }: { variables: { nodeId: string } }) =>
-      variables.nodeId === 'srv_slow' ? slow.promise : Promise.resolve(refused('REMOTE_COLLABORATION_OFF')))
+      variables.nodeId === 'srv_slow' ? slow.promise : Promise.resolve(refused('PEER_NOT_REGISTERED')))
     const store = useRemoteCollaborationOffersStore()
     store.askAll([{ nodeId: 'srv_fast' }, { nodeId: 'srv_slow' }])
     expect(apolloClientMock.query).toHaveBeenCalledTimes(2)
-    await vi.waitFor(() => expect(store.peers.srv_fast).toEqual({ phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' }))
+    await vi.waitFor(() => expect(store.peers.srv_fast).toEqual({ phase: 'unavailable', code: 'PEER_NOT_REGISTERED' }))
     expect(store.peers.srv_slow).toEqual({ phase: 'checking' })
     slow.resolve(refused('PEER_UNREACHABLE'))
     await vi.waitFor(() => expect(store.peers.srv_slow).toEqual({ phase: 'unavailable', code: 'PEER_UNREACHABLE' }))
   })
 
-  it('ignores a stale answer: the peer asked again, removed, the switch turned off or the tab left', async () => {
+  it('ignores a stale answer: the peer asked again, removed, or the tab left', async () => {
     const store = useRemoteCollaborationOffersStore()
     const first = deferred(); const second = deferred()
     apolloClientMock.query.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise)
@@ -120,7 +120,7 @@ describe('remoteCollaborationOffersStore', () => {
 
 /**
  * F-001 (autobyteus-267): through a real ApolloClient, a peer asked again while its earlier ask is still open (the tab
- * re-opened, the switch turned off and on) sends a second request, and the earlier answer is ignored.
+ * re-opened) sends a second request, and the earlier answer is ignored.
  */
 describe('remoteCollaborationOffersStore with a real ApolloClient', () => {
   it('sends a new request for each ask of the same peer, even while one is in flight; the stale answer is ignored', async () => {

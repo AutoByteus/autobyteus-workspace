@@ -2,8 +2,8 @@ import { Readable } from "node:stream";
 import { NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerDirectory } from "../settings/peer-directory.js";
-import type { RemoteCollaborationCapability } from "../settings/remote-collaboration-capability.js";
-import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
+import type { PeerConnector } from "./peer-connector.js";
+import type { PeerRequestSigner } from "./peer-request-signer.js";
 import { transportFailureReason } from "./transport-failure-reason.js";
 
 /** The relay node's provider relay route (C4): `<prefix>/<relayId>/<relayCredentialKind><provider path>`. */
@@ -27,29 +27,28 @@ export type PeerRelayCall = Readonly<{
  */
 export type PeerRelayOutcome =
   | Readonly<{ kind: "answered"; status: number; headers: Headers; body: Readable | null }>
-  | Readonly<{ kind: "notSent"; reason: "remoteCollaborationOff" | "peerNotPaired" | "identityPending" }>
+  | Readonly<{ kind: "notSent"; reason: "peerNotPaired" | "identityPending" }>
   | Readonly<{ kind: "unreachable"; detail: string }>;
 
 /**
- * The relayed side's transport of a provider call to its relay node (C4, R-F): signed with the pair's peer secret
- * (NA-9, the body's hash included), the reply streamed back. Timeouts are the transport's own per phase (connect
+ * The relayed side's transport of a provider call to its relay node (C4, R-F): signed with this node's key (contract
+ * §5, the body's hash included) and reached by `PeerConnector` like every peer request, the reply streamed back. Timeouts are the transport's own per phase (connect
  * 10 s; response headers 300 s for a slow first byte; 300 s between body chunks) and there is **no total time-out**:
  * a long streamed turn runs as long as its chunks keep coming (Node's `fetch` defaults, which this client keeps by
  * giving no abort signal).
  */
 export class PeerRelayClient {
   constructor(private readonly dependencies: Readonly<{
-    capability: Pick<RemoteCollaborationCapability, "isEnabled">;
-    peers: Pick<PeerDirectory, "findByNodeId" | "peerSecret">;
+    peers: Pick<PeerDirectory, "findByNodeId">;
+    signer: Pick<PeerRequestSigner, "headers">;
+    connector: Pick<PeerConnector, "target">;
     ownNodeId(): Promise<string>;
     fetch?: typeof fetch;
   }>) {}
 
   async relay(call: PeerRelayCall): Promise<PeerRelayOutcome> {
-    if (!this.dependencies.capability.isEnabled()) return { kind: "notSent", reason: "remoteCollaborationOff" };
     const peer: PeerNode | null = await this.dependencies.peers.findByNodeId(call.relayNodeId);
-    const secret = peer ? await this.dependencies.peers.peerSecret(peer.nodeId) : null;
-    if (!peer || !secret) return { kind: "notSent", reason: "peerNotPaired" };
+    if (!peer?.paired) return { kind: "notSent", reason: "peerNotPaired" };
     let fromNodeId: string;
     try {
       fromNodeId = await this.dependencies.ownNodeId();
@@ -64,18 +63,19 @@ export class PeerRelayClient {
     query.set("toNodeId", peer.nodeId);
     const routePath = `${REMOTE_PROVIDER_RELAYS_PATH}/${encodeURIComponent(call.relayId)}/${encodeURIComponent(call.relayCredentialKind)}`
       + `${providerPath}?${query.toString()}`;
-    const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl, routePath);
+    const target = this.dependencies.connector.target(peer, routePath);
+    if (target.kind === "unavailable") return { kind: "unreachable", detail: target.detail };
     const hasBody = call.body !== null && call.body.length > 0 && !["GET", "HEAD"].includes(call.method);
     const headers = new Headers(call.headers);
-    const signed = signPeerRequest({
-      secret, method: call.method, pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: hasBody ? call.body : null,
+    const signed = await this.dependencies.signer.headers({
+      method: call.method, pathWithQuery: target.pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: hasBody ? call.body : null,
     });
     for (const [name, value] of Object.entries(signed)) headers.set(name, value);
     // An empty body still declares its type so the relay route's parser hashes it (NA-9).
     if (!headers.has("content-type")) headers.set("content-type", "application/octet-stream");
     let response: Response;
     try {
-      response = await (this.dependencies.fetch ?? fetch)(url, {
+      response = await (this.dependencies.fetch ?? fetch)(target.url, {
         method: call.method,
         headers,
         redirect: "manual",

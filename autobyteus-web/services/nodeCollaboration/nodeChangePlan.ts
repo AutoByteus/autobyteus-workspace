@@ -5,8 +5,7 @@ import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
  * is this node (the window's node), "there" the row's node, "in list" the desktop's list.
  */
 export type NodeChangeStepId =
-  | 'turnOnHere' | 'turnOnThere'
-  /** autobyteus-437: the other node creates an invite, this node accepts it; both then hold the peer secret. */
+  /** autobyteus-661: the other node makes a grant, this node pairs with it; both then hold the other's node key. */
   | 'pair'
   | 'removeHere' | 'removeThere' | 'removeFromList'
   | 'renameHere' | 'renameInList'
@@ -29,8 +28,8 @@ export interface NodeChangeStep {
 }
 
 /**
- * `connect`: turn collaboration on for a node; `finish`: the steps still missing (fixing buttons, Try again);
- * `disconnect`: turn it off; `remove`; `rename`; `changeAddress`. Each has its run rule (design § Run Rules).
+ * `connect`: pair with a node; `finish`: the steps still missing (fixing buttons, Pair again, Try again);
+ * `disconnect`: unpair; `remove`; `rename`; `changeAddress`. Each has its run rule (design § Run Rules).
  */
 export type NodeChangePlanKind = 'connect' | 'finish' | 'disconnect' | 'remove' | 'rename' | 'changeAddress'
 

@@ -56,15 +56,4 @@ describe('nodeChangeDialogStore', () => {
     expect(h.list.setUnfinishedStep).toHaveBeenLastCalledWith('srv_b', null)
     expect(store.plan).toBeNull()
   })
-
-  it('turning this node on asks every row again (TR-713)', async () => {
-    const store = useNodeChangeDialogStore()
-    h.connector.plan.mockResolvedValueOnce(planOf('connect', [{ id: 'turnOnHere', status: 'todo' }, { id: 'pair', status: 'todo' }]))
-    await store.request('connect', 'srv_b')
-    h.connector.run.mockImplementationOnce(async (plan: any) => { plan.steps.forEach((step: any) => { step.status = 'done' }); plan.phase = 'done' })
-    const done = store.confirm()
-    await vi.advanceTimersByTimeAsync(700)
-    await done
-    expect(h.list.askAll).toHaveBeenCalled()
-  })
 })

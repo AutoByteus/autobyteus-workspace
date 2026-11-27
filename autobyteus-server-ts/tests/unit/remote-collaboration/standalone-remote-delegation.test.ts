@@ -45,6 +45,7 @@ import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/commun
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
+import { testConnector, testSigner } from "../../helpers/peer-node-keys.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
@@ -109,7 +110,8 @@ const buildNode = async (input: Readonly<{
   nodeId: string;
   memoryDir?: string;
   peers: PeerNode[];
-  enabled?: () => boolean;
+  /** Whether this node still holds its peers (false: it unpaired them, so it refuses their requests). */
+  paired?: () => boolean;
   network: Map<string, PeerGateway>;
   metadata?: Map<string, AgentRunMetadata>;
   /** The delegating node: its Task side is bound (its Task records kept across a restart). */
@@ -123,15 +125,15 @@ const buildNode = async (input: Readonly<{
   // autobyteus-587: a run's own folder, where its received files land (its configured memory folder).
   const runOf = (runId: string) => { let run = runs.get(runId); if (!run) { run = Object.assign(fakeRun(runId), { config: { get memoryDir() { return metadata.get(runId)?.memoryDir ?? null; } } }); runs.set(runId, run); } return run; };
   const resources = input.taskSide ?? new InMemoryTaskExecutionResources();
+  const paired = input.paired ?? (() => true);
   const peerDirectory = {
-    findByName: async (name: string) => input.peers.find((peer) => peer.name === name) ?? null,
-    peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => input.peers.find((peer) => peer.nodeId === nodeId) ?? null,
+    findByName: async (name: string) => (paired() ? input.peers.find((peer) => peer.name === name) ?? null : null),
+    findByNodeId: async (nodeId: string) => (paired() ? input.peers.find((peer) => peer.nodeId === nodeId) ?? null : null),
   };
-  const enabled = input.enabled ?? (() => true);
-  const client = new PeerClient({
-    peers: peerDirectory, capability: { isEnabled: enabled }, ownNodeId: async () => input.nodeId,
+  const client = new PeerClient({ signer: testSigner(), connector: testConnector(),
+    peers: peerDirectory, ownNodeId: async () => input.nodeId,
     fetch: (async (url: string, init: RequestInit) => {
-      const target = input.peers.find((peer) => url.startsWith(peer.baseUrl));
+      const target = input.peers.find((peer) => url.startsWith(peer.address));
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("fetch failed");
       const files = await peerFilesRequest(gateway, url, init, peerCallerOf(init.headers));
@@ -147,7 +149,7 @@ const buildNode = async (input: Readonly<{
     }) as never,
     // autobyteus-278: an observation socket bridged in process to the peer's gateway (the route's own logic).
     openWebSocket: (url: string, headers: Readonly<Record<string, string>>) => {
-      const target = input.peers.find((peer) => url.startsWith(peer.baseUrl.replace(/^http/, "ws")));
+      const target = input.peers.find((peer) => url.startsWith(peer.address.replace(/^http/, "ws")));
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("connect failed");
       let observation: { close(): void } | null = null;
@@ -223,7 +225,7 @@ const buildNode = async (input: Readonly<{
     models.available ? { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } } : { kind: "model_unavailable" as const })) } as never,
   { getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null })) });
   const gateway = new PeerGateway({
-    ownNodeId: async () => input.nodeId, capability: { isEnabled: enabled }, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
+    ownNodeId: async () => input.nodeId, peers: peerDirectory, receivedFiles: peerFiles.receivedFiles,
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")),
       starter: new DelegatedRunStarter({ teamRuns: {} as never, agentRuns: { prepareAgentRun: vi.fn(async (request) => {
       const runId = `publisher_r${++prepared}`;
@@ -286,12 +288,12 @@ const send = async (node: Node, from: { runId: string; address: string }, target
   message(node, from, target, content, node.nodeId === A_ID ? "docker" : "desktop", referenceFiles);
 const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split("\n").filter(Boolean).map((line) => JSON.parse(line));
 
-const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
+const twoNodes = async (options: { bPaired?: () => boolean } = {}) => {
   const network = new Map<string, PeerGateway>();
   const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
-    peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
-  const b = await buildNode({ nodeId: B_ID, network, enabled: options.bEnabled,
-    peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }] });
+    peers: [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
+  const b = await buildNode({ nodeId: B_ID, network, paired: options.bPaired,
+    peers: [{ nodeId: A_ID, name: "desktop", address: "http://host.docker.internal:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
   // The delegator's workspace: the only folder its files can be sent from (RF-3).
   await fs.mkdir(path.join(a.memoryDir, "work"), { recursive: true });
   a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: path.join(a.memoryDir, "work"), memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
@@ -456,9 +458,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const network = new Map<string, PeerGateway>();
     releases.splice(0).forEach((release) => release());
     const a2 = await buildNode({ nodeId: A_ID, network, memoryDir: a.memoryDir, metadata: a.metadata, taskSide: a.resources,
-      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
+      peers: [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
     const b2 = await buildNode({ nodeId: B_ID, network, memoryDir: b.memoryDir, metadata: b.metadata,
-      peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }] });
+      peers: [{ nodeId: A_ID, name: "desktop", address: "http://host.docker.internal:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
     // After the restart the delegating host is not live: B's reply restores it (AC-106). B's run is the sender, so it runs.
     b2.runOf("publisher_r1").active = true;
     expect(a2.runOf(DELEGATOR).active).toBe(false);
@@ -475,8 +477,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
   });
 
   it("refuses before anything is sent: files, a saved Task, an unknown node; and B's refusals leave nothing on A (AC-104, AC-108)", async () => {
-    let bOn = true;
-    const { a, b } = await twoNodes({ bEnabled: () => bOn });
+    let bPaired = true;
+    const { a, b } = await twoNodes({ bPaired: () => bPaired });
     // autobyteus-587 RF-3: a file outside the delegator's workspace is refused before anything reaches B.
     const outside = path.join(a.memoryDir, "secret.key");
     await fs.writeFile(outside, "key");
@@ -487,8 +489,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
       message: `The Agent Publisher on node "docker" cannot run there: its default model cannot be used: 'sonnet' is no longer offered by Claude Agent SDK, and Model Routing is off on node "docker".` });
     b.models.available = true;
-    bOn = false;
-    await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });
+    bPaired = false;
+    await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Node "docker" does not have this node registered as a peer, so it refused the request.' });
     expect(b.metadata.size).toBe(0);
     expect(a.resources.entries.size).toBe(0);
     expect(a.resources.adHocTaskIds()).toEqual([]);
@@ -534,13 +536,13 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
   });
 
   it("writes nothing when the peer refuses a message, and admits a message ID once (N-5)", async () => {
-    let bOn = true;
-    const { a, b } = await twoNodes({ bEnabled: () => bOn });
+    let bPaired = true;
+    const { a, b } = await twoNodes({ bPaired: () => bPaired });
     await delegate(a);
     await send(b, { runId: "publisher_r1", address: "/publisher" }, DELEGATOR, "Reply.");
-    bOn = false;
-    await expect(send(a, delegator, "publisher_r1", "Are you there?")).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF",
-      message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });
+    bPaired = false;
+    await expect(send(a, delegator, "publisher_r1", "Are you there?")).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_REGISTERED",
+      message: 'Node "docker" does not have this node registered as a peer, so it refused the request.' });
     const rootA = (await a.manager.resolveRoot(DELEGATOR))!;
     expect(rootA.getCommunicationSnapshot().messages.map((message) => message.content)).toEqual(["Reply."]);
     const replay = rootA.getCommunicationSnapshot().messages[0]!;
@@ -696,10 +698,10 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
     const network = new Map<string, PeerGateway>();
     const C_ID = "srv_node_c_000000000000000000000000000";
     const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
-      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
-    const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true, role: null },
-      { nodeId: C_ID, name: "laptop", baseUrl: "http://c:29695", addedAt: T0, paired: true, role: null }] });
-    const c = await buildNode({ nodeId: C_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
+      peers: [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
+    const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", address: "http://a:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false },
+      { nodeId: C_ID, name: "laptop", address: "http://c:29695", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
+    const c = await buildNode({ nodeId: C_ID, network, peers: [{ nodeId: B_ID, name: "docker", address: "http://b:29700", addedAt: T0, paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }] });
     a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
       llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
     a.runOf(DELEGATOR).active = true;

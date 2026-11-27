@@ -44,9 +44,8 @@ export const useNodeChangeDialogStore = defineStore('nodeChangeDialog', () => {
     const key = current.target.rowKey
     const failed = current.steps.find((entry) => entry.status === 'failed')
     list.setUnfinishedStep(key, (current.kind === 'connect' || current.kind === 'finish') && failed ? { ...failed } : null)
-    // Turning this node's switch on re-asks every row (TR-713); otherwise the row is asked again.
-    if (current.steps.some((entry) => entry.id === 'turnOnHere' && entry.status === 'done')) list.askAll()
-    else if (current.kind !== 'remove' || failed) list.askAgain(key)
+    // The row is asked again.
+    if (current.kind !== 'remove' || failed) list.askAgain(key)
   }
 
   /** Turn on / Make these changes / Turn off / Remove, and Try again: runs what is not done yet. */

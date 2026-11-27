@@ -1,6 +1,6 @@
 /**
  * autobyteus-581 C4 end to end in one process, two nodes: a relayed node (the real credential proxy host with C1, its
- * local relay route and peer forwarder, the real `PeerRelayClient` signing with the pair's secret) and a relay node
+ * local relay route and peer forwarder, the real `PeerRelayClient` signing with its node key) and a relay node
  * (a Fastify app with the real node access gate verifying the signature and body hash, the real remote routes and
  * `ProviderRelayPeerHandler`), and a fake provider on 127.0.0.1 standing in for every provider origin. A "runtime" is a
  * `fetch` to the relayed node's local relay with its pass in the provider's own credential header.
@@ -8,8 +8,8 @@
  * Covers: the credential attached per declared kind (API key; Claude login token with its OAuth beta; Grok's own
  * login), the body and the streamed reply unchanged, the
  * query kept without the peer envelope, the reply marking (a provider 401 stays the provider's), every refusal before a
- * provider call (relay node's switch off, an expired login, a missing key, unpaired on either side, a wrong secret,
- * remote collaboration off, the relay node unreachable), one C5 line per call with no secret in any line or log, and
+ * provider call (relay node's switch off, an expired login, a missing key, unpaired on either side, another node's key,
+ * the relay node unreachable), one C5 line per call with no secret in any line or log, and
  * the relayed body limit (QR-004: 32 MiB passes both nodes and the gate's body hash; one byte more is refused locally).
  * Dummy values only.
  */
@@ -31,15 +31,18 @@ import type { RelayedNodeSettings } from "../../../src/credential-proxy/provider
 import { createProviderRelayTable, ProviderRelays } from "../../../src/credential-proxy/provider-relays/provider-relays.js";
 import { PeerRelayClient } from "../../../src/remote-collaboration/channel/peer-relay-client.js";
 import { registerTestNodeAccess } from "../../helpers/node-access-test-gate.js";
+import { testConnector, testNodeKey, testSigner, type TestNodeKey } from "../../helpers/peer-node-keys.js";
 
 const RELAYED = "srv_relayed_00000000000000000000000000000";
 const RELAY = "srv_relaynode_000000000000000000000000000";
-const SECRET = "peer-secret-581";
+/** The relayed node's key (the relay node holds its public half) and another node's key. */
+const RELAYED_KEY = testNodeKey();
+const OTHER_KEY = testNodeKey();
 const ANTHROPIC_KEY = "sk-relay-anthropic-dummy-581";
 const CLAUDE_LOGIN_TOKEN = "oat-relay-login-dummy-581";
 const GROK_LOGIN = "grok-login-dummy-581";
 const GEMINI_KEY = "gemini-relay-dummy-581";
-const SECRETS = [ANTHROPIC_KEY, CLAUDE_LOGIN_TOKEN, GROK_LOGIN, GEMINI_KEY, SECRET];
+const SECRETS = [ANTHROPIC_KEY, CLAUDE_LOGIN_TOKEN, GROK_LOGIN, GEMINI_KEY];
 const BODY = JSON.stringify({ model: "claude-sonnet-5", stream: true, messages: [{ role: "user", content: "hi" }] });
 const SSE = ['event: message_start\ndata: {"type":"message_start"}\n\n', 'event: message_stop\ndata: {"type":"message_stop"}\n\n'];
 
@@ -51,15 +54,14 @@ describe("provider relay through a paired relay node (C4)", () => {
   const seen: Seen[] = [];
   let relayApp: FastifyInstance;
   let relayBaseUrl = "";
-  let relayPeerSecrets: Record<string, string> = {};
+  let relayPeerKeys: Record<string, string> = {};
   let loginTokensOn = false;
   let claudeLoginStored = true;
   let grokLogin: RelayLoginRead = { kind: "found", credential: { secret: GROK_LOGIN } };
   let activityDir = "";
   let host: CredentialProxyHost;
-  let remoteOn = true;
   let pairedHere = true;
-  let ownSecret = SECRET;
+  let ownKey: TestNodeKey = RELAYED_KEY;
   let relayAddress = "";
   let consoleLines: string[] = [];
 
@@ -84,8 +86,8 @@ describe("provider relay through a paired relay node (C4)", () => {
 
     activityDir = fs.mkdtempSync(path.join(os.tmpdir(), "relay-activity-"));
     relayApp = fastify();
-    await registerTestNodeAccess(relayApp, { ownNodeId: RELAY, peerSecrets: new Proxy({}, {
-      get: (_target, key: string) => relayPeerSecrets[key],
+    await registerTestNodeAccess(relayApp, { ownNodeId: RELAY, peerKeys: new Proxy({}, {
+      get: (_target, key: string) => relayPeerKeys[key],
     }) });
     const handler = new ProviderRelayPeerHandler({
       relays: new ProviderRelays(createProviderRelayTable(() => providerOrigin)),
@@ -132,13 +134,13 @@ describe("provider relay through a paired relay node (C4)", () => {
       management: () => { throw new Error("the relayed node read its vault"); },
       appDataDir: fs.mkdtempSync(path.join(os.tmpdir(), "relayed-node-")),
       peerRelayClient: () => new PeerRelayClient({
-        capability: { isEnabled: () => remoteOn },
-        peers: {
+                peers: {
           findByNodeId: async (nodeId) => (nodeId === RELAY && pairedHere
-            ? { nodeId: RELAY, name: "host", baseUrl: relayAddress, addedAt: "2026-11-26T00:00:00.000Z", paired: true, role: null }
+            ? { nodeId: RELAY, name: "host", address: relayAddress, addedAt: "2026-11-26T00:00:00.000Z", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false }
             : null),
-          peerSecret: async (nodeId) => (nodeId === RELAY && pairedHere ? ownSecret : null),
         },
+        signer: { headers: (input) => testSigner(ownKey).headers(input) },
+        connector: testConnector(),
         ownNodeId: async () => RELAYED,
       }),
     });
@@ -147,13 +149,12 @@ describe("provider relay through a paired relay node (C4)", () => {
 
   beforeEach(() => {
     seen.length = 0;
-    relayPeerSecrets = { [RELAYED]: SECRET };
+    relayPeerKeys = { [RELAYED]: RELAYED_KEY.publicKeyText };
     loginTokensOn = false;
     claudeLoginStored = true;
     grokLogin = { kind: "found", credential: { secret: GROK_LOGIN } };
-    remoteOn = true;
     pairedHere = true;
-    ownSecret = SECRET;
+    ownKey = RELAYED_KEY;
     relayAddress = relayBaseUrl;
     fs.rmSync(path.join(activityDir, "provider-relays"), { recursive: true, force: true });
     consoleLines = [];
@@ -281,29 +282,26 @@ describe("provider relay through a paired relay node (C4)", () => {
     expect(await providerRefusal.json()).toEqual({ type: "error", error: { type: "authentication_error", message: "provider says no" } });
   });
 
-  it("NAS-45 refuses before any provider call when the relay node does not accept this node: unpaired there, a wrong secret (AC-003)", async () => {
+  it("NAS-45 refuses before any provider call when the relay node does not accept this node: unpaired there, another node's key (AC-003)", async () => {
     await startRelayedNode(relayed());
     const access = await host.providerRelayAccess.prepareForRun(run, "anthropic", "autobyteus");
     const call = () => fetch(`${access.baseUrl}/v1/messages`, { method: "POST", body: BODY, headers: { "x-api-key": access.pass } });
-    relayPeerSecrets = {};
+    relayPeerKeys = {};
     expect(await (await call()).json()).toMatchObject({ error: { code: "RELAY_PEER_NOT_ACCEPTED" } });
-    relayPeerSecrets = { [RELAYED]: SECRET };
-    ownSecret = "a-different-secret";
+    relayPeerKeys = { [RELAYED]: RELAYED_KEY.publicKeyText };
+    ownKey = OTHER_KEY;
     expect(await (await call()).json()).toMatchObject({ error: { code: "RELAY_PEER_NOT_ACCEPTED" } });
     expect(seen).toHaveLength(0);
     expect(activity()).toEqual([]);
   });
 
-  it("refuses locally, never falling back to local credentials: not paired here, remote collaboration off, relay node unreachable", async () => {
+  it("refuses locally, never falling back to local credentials: not paired here, relay node unreachable", async () => {
     await startRelayedNode(relayed());
     const access = await host.providerRelayAccess.prepareForRun(run, "anthropic", "autobyteus");
     const call = () => fetch(`${access.baseUrl}/v1/messages`, { method: "POST", body: BODY, headers: { "x-api-key": access.pass } });
     pairedHere = false;
     expect(await (await call()).json()).toMatchObject({ error: { code: "RELAY_PEER_UNAVAILABLE" } });
     pairedHere = true;
-    remoteOn = false;
-    expect(await (await call()).json()).toMatchObject({ error: { code: "RELAY_PEER_UNAVAILABLE" } });
-    remoteOn = true;
     relayAddress = "http://127.0.0.1:9";
     const unreachable = await call();
     expect(unreachable.status).toBe(502);

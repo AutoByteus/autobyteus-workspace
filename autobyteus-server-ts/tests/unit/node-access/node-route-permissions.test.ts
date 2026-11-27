@@ -15,7 +15,12 @@ describe("route permissions", () => {
     expect(http("GET", "/mobile/*").kind).toBe("exempt");
     expect(http("POST", "/rest/remote-access/pairing-exchanges").kind).toBe("exempt");
     expect(http("POST", "/rest/node-access/setup-exchanges").kind).toBe("exempt");
-    expect(http("POST", "/rest/remote/peer-pairing-exchanges").kind).toBe("exempt");
+    // autobyteus-661 contract §2: the asker is not a peer yet (a grant or an outstanding request decides), before the
+    // /rest/remote PEER rule; Pair confirm and Unpair stay signed peer requests.
+    for (const route of ["/rest/remote/pair", "/rest/remote/pair-accepted", "/rest/remote/pair-rejected"]) expect(http("POST", route).kind).toBe("exempt");
+    for (const route of ["/rest/remote/pair-confirm", "/rest/remote/unpaired"]) expect(permitted(http("POST", route))).toEqual(["peer"]);
+    expect(http("GET", "/rest/remote/pair").kind).toBe("clients");
+    expect(permitted(http("POST", "/rest/remote/peer-pairing-exchanges")), "the retired invite exchange is a peer route like any other").toEqual(["peer"]);
     expect(http("OPTIONS", "*").kind).toBe("exempt");
     // The same paths with another method, and an upgrade, are not exempt.
     expect(http("PUT", "/rest/remote-access/status").kind).toBe("clients");

@@ -53,20 +53,21 @@ export const attachToBrowserContext = async (context) => {
 export const redactCredentials = (text) => String(text)
   .split(credential).join('own_…')
   .replace(/\b(own|mra|mhub|mcpg)_[A-Za-z0-9_-]{20,}/g, '$1_…')
-  .replace(/\babpi_[A-Za-z0-9_-]+/g, 'abpi_…')
   .replace(/access_token=[^&\s"']+/g, 'access_token=…')
-  .replace(/("peerSecret"\s*:\s*")[^"]*"/g, '$1…"');
+  .replace(/("grant"\s*:\s*")[^"]*"/g, '$1…"');
 
 /**
- * Pairs two nodes by invite (`createPeerInvite` on the inviter, `acceptPeerInvite` on the accepter): both then hold the
- * peer secret. `inviter` and `accepter` are owner GraphQL calls returning `data`. Returns the accepter's new peer row.
+ * Pairs two nodes the probe controls in one click (autobyteus-661 contract §3): the granting node makes a grant for an
+ * `own` node it names `askerName`; the asking node pairs with it at `granter.address` and names it `granterName`; the
+ * granting node keeps the first of the asking node's addresses that answers as it. `granter.gql` and `asker.gql` are
+ * owner GraphQL calls returning `data`. Returns the asking node's new peer row.
  */
-export const pairNodes = async ({ inviter, accepter, inviterName, accepterName }) => {
-  const invite = await inviter('mutation { createPeerInvite { inviteText } }');
-  const accepted = await accepter(
-    'mutation($inviteText: String!, $name: String!, $nameOnInviter: String) { acceptPeerInvite(inviteText: $inviteText, name: $name, nameOnInviter: $nameOnInviter) { nodeId name baseUrl paired } }',
-    { inviteText: invite.createPeerInvite.inviteText, name: inviterName, nameOnInviter: accepterName },
+export const pairNodes = async ({ granter, asker, granterName, askerName }) => {
+  const granted = await granter.gql('mutation($n: String) { createPairingGrant(relation: "own", nameForAsker: $n) { grant } }', { n: askerName });
+  const paired = await asker.gql(
+    'mutation($address: String!, $grant: String, $name: String) { pairWithNode(address: $address, grant: $grant, name: $name) { state peer { nodeId name address paired } } }',
+    { address: granter.address, grant: granted.createPairingGrant.grant, name: granterName },
   );
-  if (!accepted.acceptPeerInvite?.paired) throw new Error(`pairing ${inviterName} and ${accepterName} did not pair`);
-  return accepted.acceptPeerInvite;
+  if (paired.pairWithNode?.state !== 'paired') throw new Error(`pairing ${granterName} and ${askerName} did not pair`);
+  return paired.pairWithNode.peer;
 };

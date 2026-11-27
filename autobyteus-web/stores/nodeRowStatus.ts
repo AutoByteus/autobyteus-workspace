@@ -14,7 +14,7 @@ export interface NodeRow {
   entryIds: string[]
   /** Where this desktop opens the node (its first desktop entry). */
   windowAddress: string | null
-  /** This node's registration of it, when it has one; `peer.baseUrl` is the address this node uses. */
+  /** This node's pair with it, when it has one; `peer.address` is the address this node uses. */
   peer: PeerNode | null
   /** The peer name when it is a peer, the desktop label otherwise (DEC-705). */
   name: string
@@ -25,20 +25,20 @@ export interface NodeRow {
 export interface RowFacts {
   /** The window's identity probe of the row's address; `null` while it runs. */
   probe: NodeIdentityProbeResult | null
-  /** The other node's switch and peers, read by this window; `undefined` while reading, `null` when it cannot be read. */
-  remote: { switchOn: boolean; peers: PeerNode[] } | null | undefined
+  /** The other node's peers, read by this window; `undefined` while reading, `null` when it cannot be read. */
+  remote: { peers: PeerNode[] } | null | undefined
   /** "It → this node": asked on the other node once "this node → it" works; `undefined` while asking. */
   availability: NodeAvailability | null | undefined
   checkedAt: string | null
 }
 
 export type DirState =
-  | { state: 'working' | 'offHere' | 'offThere' | 'notRegisteredHere' | 'notRegisteredThere' | 'notPaired' | 'different' | 'checking' }
+  | { state: 'working' | 'notRegisteredHere' | 'notRegisteredThere' | 'notPaired' | 'different' | 'checking' }
   | { state: 'unreachable'; cause?: NodeProbeCause; host?: string; fromOther?: boolean }
 
-export type RowLineKind = 'unreachable' | 'different' | 'partial' | 'offThere' | 'notRegisteredThere' | 'notPaired' | 'notRegisteredHereInfo' | 'agentsOff'
-/** `pairAgain`: pair the two nodes (again): one step registers both and gives them their shared secret (autobyteus-437). */
-export type RowFix = 'turnOnThere' | 'pairAgain' | 'changeAddress' | 'checkAgain' | 'tryAgain' | 'turnOn'
+export type RowLineKind = 'unreachable' | 'different' | 'partial' | 'notRegisteredThere' | 'notPaired' | 'notRegisteredHereInfo' | 'agentsOff'
+/** `pairAgain`: pair the two nodes (again): one step stores both records, each with the other's node key (autobyteus-661). */
+export type RowFix = 'pairAgain' | 'changeAddress' | 'checkAgain' | 'tryAgain' | 'turnOn'
 export interface RowLine {
   kind: RowLineKind
   tone: 'warn' | 'error' | 'info'
@@ -68,34 +68,30 @@ const hostOfAddress = (address: string | null | undefined): string => {
 }
 
 /** "This node → it": this node's server asking the node (267's offer). */
-const outOf = (row: RowRow, switchOn: boolean, offer: PeerOffer | undefined): DirState => {
-  if (!switchOn) return { state: 'offHere' }
+const outOf = (row: RowRow, offer: PeerOffer | undefined): DirState => {
   if (!row.peer) return { state: 'notRegisteredHere' }
-  // A peer registered before peers paired: this node holds no secret for it and sends nothing (NAS-23).
+  // A pair made before node keys: this node holds no key of it and sends nothing (NAS-23, Pair again).
   if (!row.peer.paired) return { state: 'notPaired' }
   if (!offer || offer.phase === 'checking') return { state: 'checking' }
   if (offer.phase === 'available') return { state: 'working' }
   switch (offer.code) {
-    case 'REMOTE_COLLABORATION_OFF': return { state: 'offThere' }
     case 'PEER_NOT_REGISTERED': return { state: 'notRegisteredThere' }
-    // The other node holds no secret for this one (it removed this node, or registered it before peers paired).
+    // The other node holds no key of this one (it unpaired this node, or paired it before node keys).
     case 'PEER_NOT_PAIRED': return { state: 'notPaired' }
     case 'PEER_IDENTITY_MISMATCH': return { state: 'different' }
-    default: return { state: 'unreachable', cause: offer.reason ?? 'unreachable', host: hostOfAddress(row.peer.baseUrl) }
+    default: return { state: 'unreachable', cause: offer.reason ?? 'unreachable', host: hostOfAddress(row.peer.address) }
   }
 }
 
 /** "It → this node": what the other node has, and whether it admits this node now. */
-const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: string | null, out: DirState): DirState => {
+const inOf = (row: RowRow, facts: RowFacts, thisNodeId: string | null, out: DirState): DirState => {
   if (facts.remote === undefined) return { state: 'checking' }
   if (facts.remote === null) {
     return facts.probe && !facts.probe.ok
       ? { state: 'unreachable', cause: facts.probe.cause, host: hostOfAddress(row.windowAddress) }
       : { state: 'unreachable', cause: 'unreachable' }
   }
-  if (!facts.remote.switchOn) return { state: 'offThere' }
   if (!facts.remote.peers.some((peer) => peer.nodeId === thisNodeId)) return { state: 'notRegisteredThere' }
-  if (!switchOn) return { state: 'offHere' }
   if (!row.peer) return { state: 'notRegisteredHere' }
   if (out.state === 'notPaired') return out
   if (out.state !== 'working') return out.state === 'checking' ? { state: 'checking' } : { state: 'unreachable', cause: 'unreachable' }
@@ -103,11 +99,10 @@ const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: strin
   if (answer === undefined) return { state: 'checking' }
   if (answer === null) return { state: 'unreachable', cause: 'unreachable' }
   if (answer.available) return { state: 'working' }
-  if (answer.code === 'REMOTE_COLLABORATION_OFF') return { state: 'offHere' }
   if (answer.code === 'PEER_NOT_REGISTERED') return { state: 'notRegisteredHere' }
   if (answer.code === 'PEER_NOT_PAIRED') return { state: 'notPaired' }
   if (answer.code === 'PEER_IDENTITY_MISMATCH') return { state: 'different' }
-  const viaIt = facts.remote.peers.find((peer) => peer.nodeId === thisNodeId)?.baseUrl
+  const viaIt = facts.remote.peers.find((peer) => peer.nodeId === thisNodeId)?.address
   return { state: 'unreachable', cause: answer.reason ?? 'unreachable', host: hostOfAddress(viaIt), fromOther: true }
 }
 
@@ -115,42 +110,41 @@ type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'entryIds' | 'nodeId'>
 
 /**
  * A row's dot, directions and its one line (UI/UX spec § State Behavior, by priority): a step not finished; not
- * reachable; a different node; not collaborating (registered only by the other node, or not yet); and, with this
- * node's switch on, off there or not registered there. With this node's switch off, rows show no warnings.
+ * reachable; a different node; not collaborating (paired only by the other node, or not yet); not paired there, or a
+ * pair made before node keys (Pair again). There is no switch (autobyteus-661 D-4).
  */
 export const rowViewOf = (input: {
   row: RowRow
-  switchOn: boolean
   thisNodeId: string | null
   facts: RowFacts | undefined
   offer: PeerOffer | undefined
   /** The failed step of the last connect or finish run, while it is still not finished. */
   unfinishedStep: NodeChangeStep | null
 }): RowView => {
-  const { row, switchOn, facts, offer } = input
+  const { row, facts, offer } = input
   const peerOnly = !row.entryIds.length
-  const out = outOf(row, switchOn, offer)
+  const out = outOf(row, offer)
   const factsOf: RowFacts = facts ?? { probe: null, remote: undefined, availability: undefined, checkedAt: null }
-  const inState = inOf(row, switchOn, factsOf, input.thisNodeId, out)
+  const inState = inOf(row, factsOf, input.thisNodeId, out)
   const probeChecking = !peerOnly && factsOf.probe === null
   const remoteChecking = factsOf.probe?.ok === true && factsOf.remote === undefined
   const checking = !facts || probeChecking || remoteChecking || (Boolean(row.peer) && out.state === 'checking')
   const reachable = peerOnly
-    ? (switchOn && out.state !== 'checking' ? out.state !== 'unreachable' : null)
+    ? (out.state !== 'checking' ? out.state !== 'unreachable' : null)
     : factsOf.probe ? factsOf.probe.ok : null
   const different = out.state === 'different'
   const view: RowView = { checking, reachable, different, out, in: inState, line: null, offers: out.state === 'working' && offer?.phase === 'available' ? offer.entries : null }
   if (checking) return view
   const finished = out.state === 'working' && inState.state === 'working'
-  view.line = lineOf(row, switchOn, factsOf, out, reachable, finished ? null : input.unfinishedStep, input.thisNodeId)
+  view.line = lineOf(row, factsOf, out, reachable, finished ? null : input.unfinishedStep, input.thisNodeId)
   return view
 }
 
 const lineOf = (
-  row: RowRow, switchOn: boolean, facts: RowFacts, out: DirState, reachable: boolean | null, unfinished: NodeChangeStep | null, thisNodeId: string | null,
+  row: RowRow, facts: RowFacts, out: DirState, reachable: boolean | null, unfinished: NodeChangeStep | null, thisNodeId: string | null,
 ): RowLine | null => {
   // A step that did not finish is a row state of its own, with the button that finishes it.
-  if (row.peer && switchOn && unfinished?.error) {
+  if (row.peer && unfinished?.error) {
     return { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error, ...(unfinished.name ? { stepName: unfinished.name } : {}) }
   }
   if (reachable === false) {
@@ -163,12 +157,10 @@ const lineOf = (
   if (!row.peer) {
     if (!row.nodeId) return null
     // The other node has registered this node, but this node has not registered it.
-    if (facts.remote?.switchOn && facts.remote.peers.some((peer) => peer.nodeId === thisNodeId)) return { kind: 'notRegisteredHereInfo', tone: 'info', fix: 'turnOn' }
+    if (facts.remote?.peers.some((peer) => peer.nodeId === thisNodeId)) return { kind: 'notRegisteredHereInfo', tone: 'info', fix: 'turnOn' }
     return { kind: 'agentsOff', tone: 'info', fix: 'turnOn' }
   }
-  if (!switchOn) return null
   if (out.state === 'unreachable') return { kind: 'unreachable', tone: 'info', fix: 'checkAgain', cause: out.cause, host: out.host }
-  if (out.state === 'offThere') return { kind: 'offThere', tone: 'warn', fix: 'turnOnThere' }
   if (out.state === 'notRegisteredThere') return { kind: 'notRegisteredThere', tone: 'warn', fix: 'pairAgain' }
   if (out.state === 'notPaired') return { kind: 'notPaired', tone: 'warn', fix: 'pairAgain' }
   return null

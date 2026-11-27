@@ -60,8 +60,16 @@ export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snap
  */
 export const REMOTE_RECEIVED_FILES_STATUS_PATH = "/rest/remote/received-files/status";
 export const REMOTE_RECEIVED_FILES_PATH = "/rest/remote/received-files";
-/** autobyteus-437: the pairing exchange (exempt from credentials: the accepting node has no peer secret yet). */
-export const REMOTE_PEER_PAIRING_EXCHANGES_PATH = "/rest/remote/peer-pairing-exchanges";
+/**
+ * autobyteus-661 contract §2: the pairing messages. `pair`, `pair-accepted` and `pair-rejected` are exempt from
+ * credentials (the asking node is not a peer yet: a grant or an outstanding `requestId` decides); `pair-confirm` and
+ * `unpaired` are signed peer requests (§5).
+ */
+export const REMOTE_PAIR_PATH = "/rest/remote/pair";
+export const REMOTE_PAIR_ACCEPTED_PATH = "/rest/remote/pair-accepted";
+export const REMOTE_PAIR_REJECTED_PATH = "/rest/remote/pair-rejected";
+export const REMOTE_PAIR_CONFIRM_PATH = "/rest/remote/pair-confirm";
+export const REMOTE_UNPAIRED_PATH = "/rest/remote/unpaired";
 
 /** `toNodeId` is the pinned server ID of the peer being called; `fromNodeId` the caller's own. */
 export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;

@@ -1,40 +1,34 @@
 import type { TransportFailureReason } from "../channel/transport-failure-reason.js";
 
-/** A refused settings change (peer registration, address resolution), with a reason the owner reads in the Nodes tab. */
+/** A refused settings change (pairing, a peer's address or name), with a reason the owner reads in the Nodes tab. */
 export type RemoteCollaborationSettingsErrorCode =
-  | "REMOTE_COLLABORATION_OFF"
   | "PEER_URL_INVALID"
   | "PEER_UNREACHABLE"
   | "PEER_NOT_AUTOBYTEUS"
   | "PEER_IS_THIS_NODE"
   | "PEER_IDENTITY_MISMATCH"
-  | "PEER_ALREADY_REGISTERED"
   | "PEER_NAME_INVALID"
   | "PEER_NAME_TAKEN"
   | "PEER_NOT_FOUND"
+  /** autobyteus-661: a peer on the private network is reached by its machine; its address is not typed. */
+  | "PEER_ADDRESS_FIXED"
   /** autobyteus-426: the node at the address refuses the host name it was addressed by (its Host gate). */
   | "PEER_HOST_REFUSED"
   /** autobyteus-290: this node's, or the asked node's, identity is waiting for its data migration. */
   | "NODE_IDENTITY_NOT_MIGRATED"
-  /** autobyteus-437: the invite text is not an invite, or the inviting node refused its code (used or expired). */
-  | "PEER_INVITE_INVALID"
-  /** autobyteus-437: the inviting node refused the pairing for another reason (its message says why). */
-  | "PEER_PAIRING_REFUSED";
-
-/** What one address answered when this node looked for another node there (one-nodes-tab DS-005). */
-export type PeerAddressAttemptResult = TransportFailureReason | "not_autobyteus" | "different_node" | "identity_pending" | "host_refused";
-export type PeerAddressAttempt = Readonly<{ address: string; result: PeerAddressAttemptResult }>;
+  /** autobyteus-661 contract §3: the other node refused the pair request (its message says why). */
+  | "PEER_PAIRING_REFUSED"
+  /** autobyteus-661: no pair request with that ID waits here (answered, withdrawn, or dropped by a restart). */
+  | "PAIR_REQUEST_NOT_FOUND";
 
 /**
  * What the Nodes page words itself (one-nodes-tab REQ-707, REQ-708): the transport `reason` and the `address` of an
- * unreachable node; `loopbackInContainer` when this node runs in a container and the first address it tried was a
- * loopback address; every address tried when an address was looked for.
+ * unreachable node; `loopbackInContainer` when this node runs in a container and the address is a loopback address.
  */
 export type RemoteCollaborationSettingsErrorDetails = Readonly<{
   reason?: TransportFailureReason;
   address?: string;
   loopbackInContainer?: boolean;
-  attempts?: readonly PeerAddressAttempt[];
   /** The host name a node refused (`PEER_HOST_REFUSED`). */
   host?: string;
 }>;

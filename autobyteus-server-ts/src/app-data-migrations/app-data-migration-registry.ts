@@ -49,6 +49,7 @@ import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/del
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
 import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
 import { MemorySyncSourceIdNamesMigration } from "./migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.js";
+import { PeersToNodeKeysMigration } from "./migrations/peers-to-node-keys/peers-to-node-keys-migration.js";
 
 /**
  * Definition names as the application resolves them. The definition providers are loaded only when a migration needs a
@@ -187,6 +188,9 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // agents are runs of their own; registered after every released migration (guideline §4), then one follow-up per
     // writer or reader predecessor (each after it and ours) converts what that predecessor left.
     ...createAgentOrgUnitsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
+    // autobyteus-661 (D-2…D-4): pairings move to node keys: peers.json drops its shared secrets (baseUrl → address,
+    // role → sandbox) and .env loses ENABLE_REMOTE_COLLABORATION. Reads only its own files; no other migration touches them.
+    new PeersToNodeKeysMigration(appDataDir),
   ];
 };
 

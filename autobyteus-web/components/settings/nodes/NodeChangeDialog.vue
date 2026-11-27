@@ -113,7 +113,7 @@ const confirmClass = computed(() => `inline-flex justify-center rounded-md borde
 interface Line { step: NodeChangeStep; status: NodeChangeStepStatus; error?: NodeChangeStep['error'] }
 
 const SIDE: Partial<Record<NodeChangeStep['id'], 'here' | 'there' | 'both'>> = {
-  turnOnHere: 'here', removeHere: 'here', turnOnThere: 'there', removeThere: 'there', pair: 'both',
+  removeHere: 'here', removeThere: 'there', pair: 'both',
 }
 
 const lines = computed<Line[]>(() => (plan.value?.steps ?? []).map((step) => ({ step, status: step.status, error: step.error })))
@@ -132,8 +132,6 @@ const groups = computed(() => {
 const stepText = (step: NodeChangeStep): string => {
   const node = plan.value!.target.name
   switch (step.id) {
-    case 'turnOnHere': return t(k('step.turnOnHere'))
-    case 'turnOnThere': return t(k('step.turnOnThere'))
     case 'pair': return t(k('step.pair'), { node, name: step.name ?? '' })
     case 'removeHere': return t(k('step.unregisterHere'), { node })
     case 'removeThere': return t(k('step.unregisterThere'), { node })

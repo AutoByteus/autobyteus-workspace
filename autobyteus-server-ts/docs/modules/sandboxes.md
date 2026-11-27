@@ -15,7 +15,8 @@ a sealed node, reads the results and transcripts from the folders, and removes i
   - `sandbox-docker.ts`: the only owner of Docker calls (`docker run`, `exec`, `cp`, `rm -f -v`, `ps` by label), each
     an argument list; container environment values go by name, never in a command line;
   - `sandbox-pairing.ts`: the sandbox node's setup code over `docker exec`, its owner credential (memory only), the
-    pairing from an invite marked `sandbox`, and the package import;
+    pairing under node keys (a grant made on the sandbox, then `PeerPairing.pair`, saved marked `sandbox`), and the
+    package import;
   - `sandbox-records-store.ts`: `<app-data-dir>/sandboxes/sandboxes.json` (C6);
   - `sandbox-folders.ts`: the folder layout inside a sandbox and the rule for folders an agent gives it;
   - `sandbox-platform.ts`: the supported hosts (macOS with Docker Desktop);
@@ -45,7 +46,7 @@ destroy_sandbox { "sandboxId" } → { "removed": true, "foldersKept": true }
 ```
 
 A refusal is the tool's error `{ "error": { "code", "message" } }`: `SANDBOX_DOCKER_UNAVAILABLE`,
-`SANDBOX_REMOTE_COLLABORATION_OFF`, `SANDBOX_PLATFORM_NOT_SUPPORTED`, `SANDBOX_LIMIT_REACHED`,
+`SANDBOX_PLATFORM_NOT_SUPPORTED`, `SANDBOX_LIMIT_REACHED`,
 `SANDBOX_IMAGE_UNKNOWN`, `SANDBOX_PACKAGE_INVALID`, `SANDBOX_SHARED_FOLDER_INVALID`, `SANDBOX_START_FAILED`,
 `SANDBOX_NOT_FOUND`, `SANDBOX_NOT_YOURS`, `SANDBOX_NOT_READY`, `SANDBOX_ARGUMENT_INVALID` (a missing,
 wrong-typed or unknown argument). Any other error a tool raises is reported as `SANDBOX_TOOL_FAILED` with its message
@@ -54,7 +55,7 @@ creation that imported no team has no `teams`, and one given no shared folder ha
 
 ## Creation
 
-1. Checks: remote collaboration on (the sandbox pairs as a peer), the platform (macOS with Docker Desktop; other
+1. Checks: the platform (macOS with Docker Desktop; other
    hosts refuse `SANDBOX_PLATFORM_NOT_SUPPORTED`, FU-581-02), Docker answering, the image known, and each given
    folder: absolute, an existing directory, links resolved, and neither the user's home folder (or a parent of it)
    nor in or around `~/.ssh`, `~/.claude`, `~/.codex`, `~/.grok`, `~/.config`, `~/.aws`, `~/.gnupg`, `~/.docker`,
@@ -68,14 +69,17 @@ creation that imported no team has no `teams`, and one given no shared folder ha
    inside its data volume, so its runs' memory (`agents/<runId>/…`, and its indexes and semantic memory) is on the
    host; shared folders read-only) and fresh anonymous volumes for its data, `/root` and server packages. Its environment: the relay settings (`AUTOBYTEUS_PROVIDER_RELAY_PEER` = the
    host, and the relays and login-token runtimes the host offers now),
-   `AUTOBYTEUS_TEMP_WORKSPACE_DIR`, `ENABLE_REMOTE_COLLABORATION=true`, `AUTOBYTEUS_SERVER_HOST`; never a key, token,
-   credential or peer secret.
+   `AUTOBYTEUS_TEMP_WORKSPACE_DIR`, `AUTOBYTEUS_SERVER_HOST`; never a key, token or credential.
 5. Its setup code over `docker exec`; once its published port answers `GET /rest/health` (the node hands out codes a
    moment before its HTTP server takes connections), the code is exchanged once for an owner credential kept in memory
    for the creation only.
-6. Pairing: the host creates an invite marked `sandbox`; the sandbox accepts it (its name for the host: `host`; the
-   host's name for it: the `sandboxId`); the host's exchange saves the peer with `role: "sandbox"`. The sandbox
-   reaches the host at `host.docker.internal:<port>` (the host's loopback listener; the host sees it as `127.0.0.1`).
+6. Pairing under node keys (autobyteus-661 AR-001), the host driving both sides: with the owner credential, the host
+   has the sandbox make a pairing grant (`createPairingGrant(relation: own, nameForAsker: "host")`), then sends
+   `POST /rest/remote/pair` with the grant and its addresses. The sandbox keeps the first that answers with the host's
+   node ID from inside its container (`host.docker.internal:<port>`, the host's loopback listener; the host sees it as
+   `127.0.0.1`). The sandbox stores the host
+   (`own`, named `host`); the host stores the sandbox (`own`, named the `sandboxId`, `sandbox: true`). A sandbox from
+   before a restart is removed by the start sweep, so no sandbox pair outlives its host's run of it.
 7. Each package folder copied in (`docker cp`) and imported; the result lists the agents and teams the imports
    added, as the host addresses them over the peer channel.
 

@@ -104,7 +104,7 @@ describe("DelegatedRunStateHandler", () => {
     const agentRuns = { stopForTaskClosure: stop("agent") };
     const teamRuns = { stopForTaskClosure: stop("agent_team") };
     const handler = new DelegatedRunStateHandler({ roots: { storedLinkCheck } as never, closed, agentRuns, teamRuns });
-    const from = { nodeId: A, name: "desktop", baseUrl: "http://a", addedAt: T0.toISOString(), paired: true, role: null };
+    const from = { nodeId: A, name: "desktop", address: "http://a", addedAt: T0.toISOString(), paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
     const apply = (run: typeof AGENT | typeof TEAM, open: boolean) => handler.apply({ fromNodeId: A, toNodeId: "srv_b", run, open }, from);
     return { closed, order, storedLinkCheck, agentRuns, teamRuns, apply };
   };

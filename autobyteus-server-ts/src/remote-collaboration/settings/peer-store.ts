@@ -6,55 +6,74 @@ import {
   requiredString,
   requireKeys,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
+import type { PeerRelation } from "../domain/peer-node.js";
 import { remoteCollaborationSettingsPath, type AppDataDirSource } from "./settings-file-schema.js";
 
-/** A peer's lifecycle mark on this node (C11): `sandbox`, a sandbox this node created. Absent: a normal peer. */
-export type PeerRole = "sandbox";
-
-/** One row of `peers.json`: the peer and, once the two nodes paired, the secret they share (NA-9). */
+/**
+ * One row of `peers.json` (autobyteus-661 contract §1): the peer, its public node key (`null` for a pair made before
+ * node keys), where this node reaches it, its private-network machine and account (`null` when paired by plain
+ * address), whose node it is, and the sandbox mark.
+ */
 export type StoredPeer = Readonly<{
   nodeId: string;
   name: string;
-  baseUrl: string;
+  publicKey: string | null;
+  address: string;
+  machine: string | null;
+  account: string | null;
+  relation: PeerRelation | null;
+  sandbox: boolean;
   addedAt: string;
-  peerSecret: string | null;
-  role: PeerRole | null;
 }>;
 
-const parseRole = (value: unknown, label: string): PeerRole | null => {
+const optionalString = (value: unknown, label: string): string | null =>
+  value === undefined || value === null ? null : requiredString(value, label);
+
+const parseRelation = (value: unknown, label: string): PeerRelation | null => {
   if (value === undefined || value === null) return null;
-  if (value !== "sandbox") throw new Error(`${label} must be "sandbox" when present.`);
+  if (value !== "own" && value !== "teammate") throw new Error(`${label} must be "own" or "teammate" when present.`);
   return value;
 };
 
+/**
+ * A row read tolerantly (Data Migration Guideline §3): the fields this node uses, each checked; unknown fields are
+ * ignored and dropped on the next write. `publicKey`, `machine`, `account` and `relation` absent mean a pair made
+ * before node keys (the migration's rows); `sandbox` absent means no mark.
+ */
 const parsePeer = (value: unknown, label: string): StoredPeer => {
   const peer = objectRecord(value, label);
-  requireKeys(peer, ["nodeId", "name", "baseUrl", "addedAt"], label);
+  requireKeys(peer, ["nodeId", "name", "address", "addedAt"], label);
+  if (peer.sandbox !== undefined && typeof peer.sandbox !== "boolean") throw new Error(`${label}.sandbox must be a boolean when present.`);
   return {
     nodeId: requiredString(peer.nodeId, `${label}.nodeId`),
     name: requiredString(peer.name, `${label}.name`),
-    baseUrl: requiredString(peer.baseUrl, `${label}.baseUrl`),
+    publicKey: optionalString(peer.publicKey, `${label}.publicKey`),
+    address: requiredString(peer.address, `${label}.address`),
+    machine: optionalString(peer.machine, `${label}.machine`),
+    account: optionalString(peer.account, `${label}.account`),
+    relation: parseRelation(peer.relation, `${label}.relation`),
+    sandbox: peer.sandbox === true,
     addedAt: isoTimestamp(peer.addedAt, `${label}.addedAt`),
-    // Rows written before peers paired have no secret: an unpaired peer (Directly Usable, no migration).
-    peerSecret: peer.peerSecret === undefined || peer.peerSecret === null ? null : requiredString(peer.peerSecret, `${label}.peerSecret`),
-    // Rows written before roles existed have none: a normal peer (Directly Usable, no migration).
-    role: parseRole(peer.role, `${label}.role`),
   };
 };
 
-const toRow = (peer: StoredPeer): Record<string, string> => ({
+/** The exact row written: every field, `null` where unknown; `sandbox` only when set (contract §1, "absent otherwise"). */
+const toRow = (peer: StoredPeer): Record<string, string | boolean | null> => ({
   nodeId: peer.nodeId,
   name: peer.name,
-  baseUrl: peer.baseUrl,
+  publicKey: peer.publicKey,
+  address: peer.address,
+  machine: peer.machine,
+  account: peer.account,
+  relation: peer.relation,
+  ...(peer.sandbox ? { sandbox: true } : {}),
   addedAt: peer.addedAt,
-  ...(peer.peerSecret ? { peerSecret: peer.peerSecret } : {}),
-  ...(peer.role ? { role: peer.role } : {}),
 });
 
 /**
- * `<data>/remote-collaboration/peers.json` (`{ "peers": [...] }`), read with exact keys and written exactly
- * with the store's atomic JSON write, file mode 0600 (it holds peer secrets, NA-10). A missing file has no peers; a
- * file that cannot be read is reported and never rewritten. Only `PeerDirectory` uses it.
+ * `<data>/remote-collaboration/peers.json` (`{ "peers": [...] }`), written exactly with the store's atomic JSON write,
+ * file mode 0600. A missing file has no peers; a file that cannot be read (for example a released file the migration
+ * could not convert) is reported and never rewritten. Only `PeerDirectory` uses it.
  */
 export class PeerStore {
   constructor(private readonly config: AppDataDirSource) {}

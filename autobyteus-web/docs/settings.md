@@ -323,9 +323,8 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
   its own (• ✓ ✗ ○).
 
 - **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node (name, type,
-  address), its
-  remote collaboration switch (`ENABLE_REMOTE_COLLABORATION`, off by default, through
-  `remoteCollaborationCapabilityStore`, a `createBoundNodeCapabilityStore` capability), its
+  address), how its agents collaborate with paired nodes (no switch since autobyteus-661: a node
+  collaborates exactly with the nodes it is paired with), its
   explanation and the collapsed "How remote collaboration works" rules (any shared Agent or
   Agent Team; each agent's own default runtime and model, a team member without one uses its
   team's default; this node's temp workspace with tool calls auto-approved; a local login

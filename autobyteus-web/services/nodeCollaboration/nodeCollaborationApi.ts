@@ -1,11 +1,7 @@
 import type { ApolloClient } from '@apollo/client/core'
 import type { DocumentNode } from 'graphql'
-import {
-  GetPeerNodeAvailability,
-  GetRemoteCollaborationCapability,
-  GetRemoteCollaborationSettings,
-} from '~/graphql/queries/remoteCollaborationQueries'
-import { ChangePeerAddress, CreatePeerInvite, RemovePeerNode, SetRemoteCollaborationEnabled } from '~/graphql/mutations/remoteCollaborationMutations'
+import { GetPeerNodeAvailability, GetRemoteCollaborationSettings } from '~/graphql/queries/remoteCollaborationQueries'
+import { ChangePeerAddress, CreatePairingGrant, UnpairPeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
 import type { PeerNode } from '~/stores/remoteCollaborationStore'
 import { directNodeApolloClient } from '~/services/nodeCollaboration/directNodeApolloClient'
 import { windowFailureReason, type NodeTransportReason } from '~/utils/nodeIdentityProbe'
@@ -21,13 +17,12 @@ export type NodeAvailability = { available: true } | { available: false; code: s
  * deliver is a `NodeSettingsError` `PEER_UNREACHABLE` with the window's reason and the node's address.
  */
 export interface NodeCollaborationApi {
-  capability(): Promise<{ enabled: boolean }>
-  setEnabled(enabled: boolean): Promise<void>
   peers(): Promise<PeerNode[]>
-  /** autobyteus-437: an invite of that node for one other node to pair with it. */
-  createInvite(): Promise<{ inviteText: string; expiresAt: string }>
-  removePeer(nodeId: string): Promise<void>
-  changePeerAddress(nodeId: string, baseUrl: string): Promise<PeerNode>
+  /** autobyteus-661 contract §3: that node's one-time grant for one pair from a node this app controls (`own`). */
+  createGrant(input: { nameForAsker: string }): Promise<{ grant: string; expiresAt: string }>
+  /** Unpair on that node: it tells this node when it can reach it, and removes the pair there. */
+  unpairPeer(nodeId: string): Promise<void>
+  changePeerAddress(nodeId: string, address: string): Promise<PeerNode>
   peerNodeAvailability(nodeId: string): Promise<NodeAvailability>
 }
 
@@ -55,12 +50,11 @@ export const createNodeCollaborationApi = (
     deliver<T>(() => client.mutate<T>({ mutation: document, variables, errorPolicy: 'all' }) as never)
 
   return {
-    capability: async () => ({ enabled: (await query<{ remoteCollaborationCapability: { enabled: boolean } }>(GetRemoteCollaborationCapability)).remoteCollaborationCapability.enabled }),
-    setEnabled: async (enabled) => { await mutate(SetRemoteCollaborationEnabled, { enabled }) },
     peers: async () => (await query<{ peerNodes: PeerNode[] }>(GetRemoteCollaborationSettings)).peerNodes,
-    createInvite: async () => (await mutate<{ createPeerInvite: { inviteText: string; expiresAt: string } }>(CreatePeerInvite, {})).createPeerInvite,
-    removePeer: async (nodeId) => { await mutate(RemovePeerNode, { nodeId }) },
-    changePeerAddress: async (nodeId, address) => (await mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, baseUrl: address })).changePeerAddress,
+    createGrant: async ({ nameForAsker }) => (await mutate<{ createPairingGrant: { grant: string; expiresAt: string } }>(CreatePairingGrant,
+      { relation: 'own', forMachine: null, nameForAsker })).createPairingGrant,
+    unpairPeer: async (nodeId) => { await mutate(UnpairPeerNode, { nodeId }) },
+    changePeerAddress: async (nodeId, address) => (await mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, address })).changePeerAddress,
     peerNodeAvailability: async (nodeId) => {
       const answer = (await query<{ peerNodeAvailability: { available: boolean; refusalCode: string | null; unreachableReason: string | null } }>(
         GetPeerNodeAvailability, { nodeId })).peerNodeAvailability

@@ -59,24 +59,15 @@ export const failureText = (
 ): string => {
   const { node, fromNode } = context
   switch (failure.code) {
-    case 'PEER_UNREACHABLE': {
-      const first = failure.attempts?.[0]
-      if (first?.result === 'different_node') return t(k('address.different'))
-      if (first) return causeText(t, first.result, hostOf(first.address), fromNode)
-      return causeText(t, failure.reason, hostOf(failure.address), fromNode)
-    }
+    case 'PEER_UNREACHABLE': return causeText(t, failure.reason, hostOf(failure.address), fromNode)
     case 'PEER_IDENTITY_MISMATCH': return t(k('address.different'))
     case 'PEER_NOT_AUTOBYTEUS': return t(k('cause.notAutobyteus'))
     case 'PEER_HOST_REFUSED': return t(k('cause.hostRefused'), { host: failure.host ?? hostName(hostOf(failure.address)) })
     case 'NODE_IDENTITY_NOT_MIGRATED': return t(k('cause.identityPending'))
     case 'PEER_IS_THIS_NODE': return t(k('cause.thisNode'))
-    case 'REMOTE_COLLABORATION_OFF': return t(k('line.offThere'), { name: node })
     case 'PEER_NOT_REGISTERED': return t(k('line.notRegisteredThere'), { name: node })
     case 'PEER_NAME_INVALID': return t(k('rename.errorName'))
     case 'PEER_URL_INVALID': return t(k('add.errorAddress'))
-    // autobyteus-437: pairing (an invite used or expired; the inviting node refused; a node paired already).
-    case 'PEER_INVITE_INVALID': return t(k('error.inviteInvalid'))
-    case 'PEER_ALREADY_REGISTERED': return t(k('error.alreadyPaired'), { node })
     case 'PEER_NAME_TAKEN': return t(k('error.nameTaken'), { node, name: context.name ?? '' })
     default: return t(k('error.other'), { node, message: failure.message })
   }

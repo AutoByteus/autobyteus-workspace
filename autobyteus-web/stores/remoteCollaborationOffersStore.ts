@@ -11,7 +11,7 @@ export interface PeerOfferEntry {
 }
 
 /** The refusals the page words (UI/UX spec ST-03 … ST-06; autobyteus-437 not paired); any other reads as not reachable. */
-export const PEER_REFUSAL_CODES = ['REMOTE_COLLABORATION_OFF', 'PEER_NOT_REGISTERED', 'PEER_NOT_PAIRED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH'] as const
+export const PEER_REFUSAL_CODES = ['PEER_NOT_REGISTERED', 'PEER_NOT_PAIRED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH'] as const
 export type PeerRefusalCode = (typeof PEER_REFUSAL_CODES)[number]
 
 export type PeerOffer =
@@ -50,8 +50,8 @@ let nextToken = 1
  * What the Nodes page knows about each peer's offer now (autobyteus-267 DS-002; one-nodes-tab DS-004: "this node → it"). One state per peer:
  * checking, available (entries and the window's time the answer arrived) or unavailable (the refusal code). The node's
  * server asks the peer; the window never contacts it. Nothing is cached and nothing polls: peers are asked when the
- * tab opens, when the switch turns on, when one is added, and on Refresh. Each ask takes a token per peer; an answer
- * whose token is no longer current (the peer was removed or asked again, the switch turned off, the tab left) is ignored.
+ * tab opens, when one is added, and on Refresh. Each ask takes a token per peer; an answer whose token is no longer
+ * current (the peer was removed or asked again, the tab left) is ignored.
  */
 export const useRemoteCollaborationOffersStore = defineStore('remoteCollaborationOffers', {
   state: () => ({
@@ -61,7 +61,7 @@ export const useRemoteCollaborationOffersStore = defineStore('remoteCollaboratio
   }),
 
   actions: {
-    /** Every peer at once, each with its own waiting state (the tab opened with the switch on, or the switch turned on). */
+    /** Every peer at once, each with its own waiting state (the tab opened). */
     askAll(peers: ReadonlyArray<{ nodeId: string }>) {
       this.clear()
       peers.forEach((peer) => { void this.ask(peer.nodeId) })
@@ -99,7 +99,7 @@ export const useRemoteCollaborationOffersStore = defineStore('remoteCollaboratio
       delete this.tokens[nodeId]
     },
 
-    /** The switch turned off, or the tab was left: no states, and every answer on its way is ignored. */
+    /** The tab was left: no states, and every answer on its way is ignored. */
     clear() {
       this.peers = {}
       this.tokens = {}

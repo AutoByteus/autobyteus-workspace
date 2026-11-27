@@ -1938,7 +1938,7 @@ export type MoveMcpSecretsToVaultResult = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptPeerInvite: PeerNodeGql;
+  acceptPairRequest: PeerNodeGql;
   addProjectTaskComment: ProjectTask;
   addProjectWorkspace: Project;
   addSkillSource: Array<SkillSource>;
@@ -1948,6 +1948,7 @@ export type Mutation = {
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelAgentRuntimeSignIn: Scalars['Boolean']['output'];
   cancelEmbeddingModelDownload: Scalars['Boolean']['output'];
+  cancelPairRequest: Scalars['Boolean']['output'];
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
   changePeerAddress: PeerNodeGql;
   checkAgentPackageUpdates: Array<AgentPackage>;
@@ -1966,7 +1967,7 @@ export type Mutation = {
   createCustomProvider: ProviderCredentialSettingObject;
   createFileOrFolder: Scalars['String']['output'];
   createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
-  createPeerInvite: PeerInviteGql;
+  createPairingGrant: PairingGrantGql;
   createProject: Project;
   createProjectTask: ProjectTask;
   createSkill: Skill;
@@ -2004,11 +2005,13 @@ export type Mutation = {
   moveFileOrFolder: Scalars['String']['output'];
   moveMcpSecretsToVault: MoveMcpSecretsToVaultResult;
   openModelRouterAgent: Scalars['String']['output'];
+  pairWithNode: PairOutcomeGql;
   prepareAgentRun: PrepareAgentRunResult;
   probeCustomProvider: CustomProviderProbeResultObject;
   rebuildMemoryIndex: Scalars['Boolean']['output'];
   rebuildProjectTaskIndex: Scalars['Boolean']['output'];
   regenerateMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
+  rejectPairRequest: Scalars['Boolean']['output'];
   reloadAgentPackage: Array<AgentPackage>;
   reloadAgentPackageDefinitions: Scalars['Boolean']['output'];
   reloadApplicationPackage: Array<ApplicationPackage>;
@@ -2021,7 +2024,6 @@ export type Mutation = {
   removeExtension?: Maybe<ExtensionItemGql>;
   removeGitHubSkillSource: SkillSourceOperationResult;
   removeIntegrationSource: IntegrationSourceRemoval;
-  removePeerNode: Scalars['Boolean']['output'];
   removeProjectWorkspace: Project;
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
@@ -2044,7 +2046,6 @@ export type Mutation = {
   setExtensionEnabled?: Maybe<ExtensionItemGql>;
   setModelRouterLaunch: Scalars['JSON']['output'];
   setModelRoutingEnabled: Scalars['JSON']['output'];
-  setRemoteCollaborationEnabled: RemoteCollaborationCapabilityGql;
   setSearchConfig: Scalars['String']['output'];
   setUpdateCheckInterval: UpdateAutomationSettings;
   setUpdateChecksEnabled: UpdateChecksCapability;
@@ -2056,6 +2057,7 @@ export type Mutation = {
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
   testIntegration: IntegrationView;
   testMemoryHubConnection: MemoryHubConnectionTestResultGql;
+  unpairPeerNode: Scalars['Boolean']['output'];
   updateAgentDefinition: AgentDefinition;
   updateAgentOrgDefinition: AgentOrgDefinition;
   updateAgentPackage: Array<AgentPackage>;
@@ -2081,10 +2083,9 @@ export type Mutation = {
 };
 
 
-export type MutationAcceptPeerInviteArgs = {
-  inviteText: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  nameOnInviter?: InputMaybe<Scalars['String']['input']>;
+export type MutationAcceptPairRequestArgs = {
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -2134,13 +2135,18 @@ export type MutationCancelEmbeddingModelDownloadArgs = {
 };
 
 
+export type MutationCancelPairRequestArgs = {
+  requestId: Scalars['String']['input'];
+};
+
+
 export type MutationCancelPreparedAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
 };
 
 
 export type MutationChangePeerAddressArgs = {
-  baseUrl: Scalars['String']['input'];
+  address: Scalars['String']['input'];
   nodeId: Scalars['String']['input'];
 };
 
@@ -2221,6 +2227,13 @@ export type MutationCreateFileOrFolderArgs = {
 
 export type MutationCreateMemoryHubSourceCredentialArgs = {
   input?: InputMaybe<CreateMemoryHubCredentialInput>;
+};
+
+
+export type MutationCreatePairingGrantArgs = {
+  forMachine?: InputMaybe<Scalars['String']['input']>;
+  nameForAsker?: InputMaybe<Scalars['String']['input']>;
+  relation: Scalars['String']['input'];
 };
 
 
@@ -2394,6 +2407,14 @@ export type MutationMoveMcpSecretsToVaultArgs = {
 };
 
 
+export type MutationPairWithNodeArgs = {
+  address: Scalars['String']['input'];
+  grant?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  nodeId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationPrepareAgentRunArgs = {
   input: CreateAgentRunInput;
 };
@@ -2411,6 +2432,11 @@ export type MutationRebuildProjectTaskIndexArgs = {
 
 export type MutationRegenerateMemoryHubSourceCredentialArgs = {
   credentialId: Scalars['String']['input'];
+};
+
+
+export type MutationRejectPairRequestArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -2462,11 +2488,6 @@ export type MutationRemoveGitHubSkillSourceArgs = {
 
 export type MutationRemoveIntegrationSourceArgs = {
   sourceId: Scalars['String']['input'];
-};
-
-
-export type MutationRemovePeerNodeArgs = {
-  nodeId: Scalars['String']['input'];
 };
 
 
@@ -2590,11 +2611,6 @@ export type MutationSetModelRoutingEnabledArgs = {
 };
 
 
-export type MutationSetRemoteCollaborationEnabledArgs = {
-  enabled: Scalars['Boolean']['input'];
-};
-
-
 export type MutationSetSearchConfigArgs = {
   provider: Scalars['String']['input'];
   serpapiApiKey?: InputMaybe<Scalars['String']['input']>;
@@ -2642,6 +2658,11 @@ export type MutationTestIntegrationArgs = {
 
 export type MutationTestMemoryHubConnectionArgs = {
   input: TestMemoryHubConnectionInput;
+};
+
+
+export type MutationUnpairPeerNodeArgs = {
+  nodeId: Scalars['String']['input'];
 };
 
 
@@ -2759,10 +2780,25 @@ export type MutationWriteFileContentArgs = {
   workspaceId: Scalars['String']['input'];
 };
 
-export type PeerInviteGql = {
-  __typename?: 'PeerInviteGql';
+export type OutstandingPairRequestGql = {
+  __typename?: 'OutstandingPairRequestGql';
+  address: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  requestId: Scalars['String']['output'];
+  state: Scalars['String']['output'];
+};
+
+export type PairOutcomeGql = {
+  __typename?: 'PairOutcomeGql';
+  peer?: Maybe<PeerNodeGql>;
+  requestId?: Maybe<Scalars['String']['output']>;
+  state: Scalars['String']['output'];
+};
+
+export type PairingGrantGql = {
+  __typename?: 'PairingGrantGql';
   expiresAt: Scalars['String']['output'];
-  inviteText: Scalars['String']['output'];
+  grant: Scalars['String']['output'];
 };
 
 export type PeerNodeAvailabilityGql = {
@@ -2774,12 +2810,15 @@ export type PeerNodeAvailabilityGql = {
 
 export type PeerNodeGql = {
   __typename?: 'PeerNodeGql';
+  account?: Maybe<Scalars['String']['output']>;
   addedAt: Scalars['String']['output'];
-  baseUrl: Scalars['String']['output'];
+  address: Scalars['String']['output'];
+  machine?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   nodeId: Scalars['String']['output'];
   paired: Scalars['Boolean']['output'];
-  role?: Maybe<Scalars['String']['output']>;
+  relation?: Maybe<Scalars['String']['output']>;
+  sandbox: Scalars['Boolean']['output'];
 };
 
 export type PeerNodeOfferEntryGql = {
@@ -2794,6 +2833,17 @@ export type PeerNodeOfferGql = {
   entries?: Maybe<Array<PeerNodeOfferEntryGql>>;
   refusalCode?: Maybe<Scalars['String']['output']>;
   unreachableReason?: Maybe<Scalars['String']['output']>;
+};
+
+export type PendingPairRequestGql = {
+  __typename?: 'PendingPairRequestGql';
+  account?: Maybe<Scalars['String']['output']>;
+  address: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  machine?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  nodeId: Scalars['String']['output'];
+  receivedAt: Scalars['String']['output'];
 };
 
 export enum PersonalSetting {
@@ -3057,9 +3107,11 @@ export type Query = {
   modelRoutingDecisions: Scalars['JSON']['output'];
   modelRoutingStatistics: Scalars['JSON']['output'];
   modelRoutingStatus: Scalars['JSON']['output'];
+  outstandingPairRequests: Array<OutstandingPairRequestGql>;
   peerNodeAvailability: PeerNodeAvailabilityGql;
   peerNodeOffer: PeerNodeOfferGql;
   peerNodes: Array<PeerNodeGql>;
+  pendingPairRequests: Array<PendingPairRequestGql>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   project?: Maybe<Project>;
   projectRunHistory: ProjectRunHistoryObject;
@@ -3069,7 +3121,6 @@ export type Query = {
   providerCredentialSettings: Array<ProviderCredentialSettingObject>;
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
-  remoteCollaborationCapability: RemoteCollaborationCapabilityGql;
   runFolderWorkJournal?: Maybe<WorkJournalView>;
   runTree: Scalars['JSON']['output'];
   runtimeAvailability: RuntimeAvailabilityObject;
@@ -3641,13 +3692,6 @@ export type ReloadToolSchemaResult = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   tool?: Maybe<ToolDefinitionDetail>;
-};
-
-export type RemoteCollaborationCapabilityGql = {
-  __typename?: 'RemoteCollaborationCapabilityGql';
-  enabled: Scalars['Boolean']['output'];
-  settingKey: Scalars['String']['output'];
-  source: Scalars['String']['output'];
 };
 
 export type RemoveProjectWorkspaceInput = {
@@ -5426,26 +5470,24 @@ export type DeleteProjectTaskMutationVariables = Exact<{
 
 export type DeleteProjectTaskMutation = { __typename?: 'Mutation', deleteProjectTask: boolean };
 
-export type SetRemoteCollaborationEnabledMutationVariables = Exact<{
-  enabled: Scalars['Boolean']['input'];
+export type CreatePairingGrantMutationVariables = Exact<{
+  relation: Scalars['String']['input'];
+  forMachine?: InputMaybe<Scalars['String']['input']>;
+  nameForAsker?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type SetRemoteCollaborationEnabledMutation = { __typename?: 'Mutation', setRemoteCollaborationEnabled: { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string } };
+export type CreatePairingGrantMutation = { __typename?: 'Mutation', createPairingGrant: { __typename?: 'PairingGrantGql', grant: string, expiresAt: string } };
 
-export type CreatePeerInviteMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreatePeerInviteMutation = { __typename?: 'Mutation', createPeerInvite: { __typename?: 'PeerInviteGql', inviteText: string, expiresAt: string } };
-
-export type AcceptPeerInviteMutationVariables = Exact<{
-  inviteText: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  nameOnInviter?: InputMaybe<Scalars['String']['input']>;
+export type PairWithNodeMutationVariables = Exact<{
+  address: Scalars['String']['input'];
+  grant?: InputMaybe<Scalars['String']['input']>;
+  nodeId?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
+export type PairWithNodeMutation = { __typename?: 'Mutation', pairWithNode: { __typename?: 'PairOutcomeGql', state: string, requestId?: string | null, peer?: { __typename?: 'PeerNodeGql', nodeId: string, name: string, address: string, machine?: string | null, account?: string | null, relation?: string | null, sandbox: boolean, addedAt: string, paired: boolean } | null } };
 
 export type RenamePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5453,22 +5495,22 @@ export type RenamePeerNodeMutationVariables = Exact<{
 }>;
 
 
-export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
+export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, address: string, machine?: string | null, account?: string | null, relation?: string | null, sandbox: boolean, addedAt: string, paired: boolean } };
 
 export type ChangePeerAddressMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
-  baseUrl: Scalars['String']['input'];
+  address: Scalars['String']['input'];
 }>;
 
 
-export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
+export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, address: string, machine?: string | null, account?: string | null, relation?: string | null, sandbox: boolean, addedAt: string, paired: boolean } };
 
-export type RemovePeerNodeMutationVariables = Exact<{
+export type UnpairPeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
 }>;
 
 
-export type RemovePeerNodeMutation = { __typename?: 'Mutation', removePeerNode: boolean };
+export type UnpairPeerNodeMutation = { __typename?: 'Mutation', unpairPeerNode: boolean };
 
 export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -6001,19 +6043,12 @@ export type SearchProjectTasksQueryVariables = Exact<{
 
 export type SearchProjectTasksQuery = { __typename?: 'Query', searchProjectTasks: { __typename?: 'ProjectTaskSearchResult', matches: Array<{ __typename?: 'ProjectTaskSearchMatch', taskId: string, match: ProjectTaskMatchKind }>, meaningSearch: { __typename?: 'MeaningSearchStatus', state: MeaningSearchState, phase?: MeaningSearchPhase | null, done?: number | null, total?: number | null, reason?: string | null } } };
 
-export type RemoteCollaborationCapabilityFieldsFragment = { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string };
-
-export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null };
-
-export type GetRemoteCollaborationCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetRemoteCollaborationCapabilityQuery = { __typename?: 'Query', remoteCollaborationCapability: { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string } };
+export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, address: string, machine?: string | null, account?: string | null, relation?: string | null, sandbox: boolean, addedAt: string, paired: boolean };
 
 export type GetRemoteCollaborationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null }> };
+export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, address: string, machine?: string | null, account?: string | null, relation?: string | null, sandbox: boolean, addedAt: string, paired: boolean }> };
 
 export type GetPeerNodeOfferQueryVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -7049,21 +7084,17 @@ export const ProjectTaskFieldsFragmentDoc = gql`
   }
 }
     ${TaskRootFieldsFragmentDoc}`;
-export const RemoteCollaborationCapabilityFieldsFragmentDoc = gql`
-    fragment RemoteCollaborationCapabilityFields on RemoteCollaborationCapabilityGql {
-  enabled
-  settingKey
-  source
-}
-    `;
 export const PeerNodeFieldsFragmentDoc = gql`
     fragment PeerNodeFields on PeerNodeGql {
   nodeId
   name
-  baseUrl
+  address
+  machine
+  account
+  relation
+  sandbox
   addedAt
   paired
-  role
 }
     `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -10541,96 +10572,78 @@ export function useDeleteProjectTaskMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<DeleteProjectTaskMutation, DeleteProjectTaskMutationVariables>(DeleteProjectTaskDocument, options);
 }
 export type DeleteProjectTaskMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteProjectTaskMutation, DeleteProjectTaskMutationVariables>;
-export const SetRemoteCollaborationEnabledDocument = gql`
-    mutation SetRemoteCollaborationEnabled($enabled: Boolean!) {
-  setRemoteCollaborationEnabled(enabled: $enabled) {
-    ...RemoteCollaborationCapabilityFields
-  }
-}
-    ${RemoteCollaborationCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useSetRemoteCollaborationEnabledMutation__
- *
- * To run a mutation, you first call `useSetRemoteCollaborationEnabledMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSetRemoteCollaborationEnabledMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSetRemoteCollaborationEnabledMutation({
- *   variables: {
- *     enabled: // value for 'enabled'
- *   },
- * });
- */
-export function useSetRemoteCollaborationEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables>(SetRemoteCollaborationEnabledDocument, options);
-}
-export type SetRemoteCollaborationEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables>;
-export const CreatePeerInviteDocument = gql`
-    mutation CreatePeerInvite {
-  createPeerInvite {
-    inviteText
+export const CreatePairingGrantDocument = gql`
+    mutation CreatePairingGrant($relation: String!, $forMachine: String, $nameForAsker: String) {
+  createPairingGrant(
+    relation: $relation
+    forMachine: $forMachine
+    nameForAsker: $nameForAsker
+  ) {
+    grant
     expiresAt
   }
 }
     `;
 
 /**
- * __useCreatePeerInviteMutation__
+ * __useCreatePairingGrantMutation__
  *
- * To run a mutation, you first call `useCreatePeerInviteMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreatePeerInviteMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreatePairingGrantMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePairingGrantMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useCreatePeerInviteMutation();
+ * const { mutate, loading, error, onDone } = useCreatePairingGrantMutation({
+ *   variables: {
+ *     relation: // value for 'relation'
+ *     forMachine: // value for 'forMachine'
+ *     nameForAsker: // value for 'nameForAsker'
+ *   },
+ * });
  */
-export function useCreatePeerInviteMutation(options: VueApolloComposable.UseMutationOptions<CreatePeerInviteMutation, CreatePeerInviteMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>(CreatePeerInviteDocument, options);
+export function useCreatePairingGrantMutation(options: VueApolloComposable.UseMutationOptions<CreatePairingGrantMutation, CreatePairingGrantMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreatePairingGrantMutation, CreatePairingGrantMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreatePairingGrantMutation, CreatePairingGrantMutationVariables>(CreatePairingGrantDocument, options);
 }
-export type CreatePeerInviteMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>;
-export const AcceptPeerInviteDocument = gql`
-    mutation AcceptPeerInvite($inviteText: String!, $name: String!, $nameOnInviter: String) {
-  acceptPeerInvite(
-    inviteText: $inviteText
-    name: $name
-    nameOnInviter: $nameOnInviter
-  ) {
-    ...PeerNodeFields
+export type CreatePairingGrantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePairingGrantMutation, CreatePairingGrantMutationVariables>;
+export const PairWithNodeDocument = gql`
+    mutation PairWithNode($address: String!, $grant: String, $nodeId: String, $name: String) {
+  pairWithNode(address: $address, grant: $grant, nodeId: $nodeId, name: $name) {
+    state
+    requestId
+    peer {
+      ...PeerNodeFields
+    }
   }
 }
     ${PeerNodeFieldsFragmentDoc}`;
 
 /**
- * __useAcceptPeerInviteMutation__
+ * __usePairWithNodeMutation__
  *
- * To run a mutation, you first call `useAcceptPeerInviteMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAcceptPeerInviteMutation` returns an object that includes:
+ * To run a mutation, you first call `usePairWithNodeMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `usePairWithNodeMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useAcceptPeerInviteMutation({
+ * const { mutate, loading, error, onDone } = usePairWithNodeMutation({
  *   variables: {
- *     inviteText: // value for 'inviteText'
+ *     address: // value for 'address'
+ *     grant: // value for 'grant'
+ *     nodeId: // value for 'nodeId'
  *     name: // value for 'name'
- *     nameOnInviter: // value for 'nameOnInviter'
  *   },
  * });
  */
-export function useAcceptPeerInviteMutation(options: VueApolloComposable.UseMutationOptions<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>(AcceptPeerInviteDocument, options);
+export function usePairWithNodeMutation(options: VueApolloComposable.UseMutationOptions<PairWithNodeMutation, PairWithNodeMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<PairWithNodeMutation, PairWithNodeMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<PairWithNodeMutation, PairWithNodeMutationVariables>(PairWithNodeDocument, options);
 }
-export type AcceptPeerInviteMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>;
+export type PairWithNodeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<PairWithNodeMutation, PairWithNodeMutationVariables>;
 export const RenamePeerNodeDocument = gql`
     mutation RenamePeerNode($nodeId: String!, $name: String!) {
   renamePeerNode(nodeId: $nodeId, name: $name) {
@@ -10662,8 +10675,8 @@ export function useRenamePeerNodeMutation(options: VueApolloComposable.UseMutati
 }
 export type RenamePeerNodeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RenamePeerNodeMutation, RenamePeerNodeMutationVariables>;
 export const ChangePeerAddressDocument = gql`
-    mutation ChangePeerAddress($nodeId: String!, $baseUrl: String!) {
-  changePeerAddress(nodeId: $nodeId, baseUrl: $baseUrl) {
+    mutation ChangePeerAddress($nodeId: String!, $address: String!) {
+  changePeerAddress(nodeId: $nodeId, address: $address) {
     ...PeerNodeFields
   }
 }
@@ -10683,7 +10696,7 @@ export const ChangePeerAddressDocument = gql`
  * const { mutate, loading, error, onDone } = useChangePeerAddressMutation({
  *   variables: {
  *     nodeId: // value for 'nodeId'
- *     baseUrl: // value for 'baseUrl'
+ *     address: // value for 'address'
  *   },
  * });
  */
@@ -10691,33 +10704,33 @@ export function useChangePeerAddressMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<ChangePeerAddressMutation, ChangePeerAddressMutationVariables>(ChangePeerAddressDocument, options);
 }
 export type ChangePeerAddressMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ChangePeerAddressMutation, ChangePeerAddressMutationVariables>;
-export const RemovePeerNodeDocument = gql`
-    mutation RemovePeerNode($nodeId: String!) {
-  removePeerNode(nodeId: $nodeId)
+export const UnpairPeerNodeDocument = gql`
+    mutation UnpairPeerNode($nodeId: String!) {
+  unpairPeerNode(nodeId: $nodeId)
 }
     `;
 
 /**
- * __useRemovePeerNodeMutation__
+ * __useUnpairPeerNodeMutation__
  *
- * To run a mutation, you first call `useRemovePeerNodeMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemovePeerNodeMutation` returns an object that includes:
+ * To run a mutation, you first call `useUnpairPeerNodeMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUnpairPeerNodeMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRemovePeerNodeMutation({
+ * const { mutate, loading, error, onDone } = useUnpairPeerNodeMutation({
  *   variables: {
  *     nodeId: // value for 'nodeId'
  *   },
  * });
  */
-export function useRemovePeerNodeMutation(options: VueApolloComposable.UseMutationOptions<RemovePeerNodeMutation, RemovePeerNodeMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemovePeerNodeMutation, RemovePeerNodeMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemovePeerNodeMutation, RemovePeerNodeMutationVariables>(RemovePeerNodeDocument, options);
+export function useUnpairPeerNodeMutation(options: VueApolloComposable.UseMutationOptions<UnpairPeerNodeMutation, UnpairPeerNodeMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UnpairPeerNodeMutation, UnpairPeerNodeMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UnpairPeerNodeMutation, UnpairPeerNodeMutationVariables>(UnpairPeerNodeDocument, options);
 }
-export type RemovePeerNodeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemovePeerNodeMutation, RemovePeerNodeMutationVariables>;
+export type UnpairPeerNodeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UnpairPeerNodeMutation, UnpairPeerNodeMutationVariables>;
 export const DeleteStoredRunDocument = gql`
     mutation DeleteStoredRun($runId: String!) {
   deleteStoredRun(runId: $runId) {
@@ -13697,33 +13710,6 @@ export function useSearchProjectTasksLazyQuery(variables?: SearchProjectTasksQue
   return VueApolloComposable.useLazyQuery<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>(SearchProjectTasksDocument, variables, options);
 }
 export type SearchProjectTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>;
-export const GetRemoteCollaborationCapabilityDocument = gql`
-    query GetRemoteCollaborationCapability {
-  remoteCollaborationCapability {
-    ...RemoteCollaborationCapabilityFields
-  }
-}
-    ${RemoteCollaborationCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useGetRemoteCollaborationCapabilityQuery__
- *
- * To run a query within a Vue component, call `useGetRemoteCollaborationCapabilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRemoteCollaborationCapabilityQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetRemoteCollaborationCapabilityQuery();
- */
-export function useGetRemoteCollaborationCapabilityQuery(options: VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>(GetRemoteCollaborationCapabilityDocument, {}, options);
-}
-export function useGetRemoteCollaborationCapabilityLazyQuery(options: VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>(GetRemoteCollaborationCapabilityDocument, {}, options);
-}
-export type GetRemoteCollaborationCapabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRemoteCollaborationCapabilityQuery, GetRemoteCollaborationCapabilityQueryVariables>;
 export const GetRemoteCollaborationSettingsDocument = gql`
     query GetRemoteCollaborationSettings {
   peerNodes {

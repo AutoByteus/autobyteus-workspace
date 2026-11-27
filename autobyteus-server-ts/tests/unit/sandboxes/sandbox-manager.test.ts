@@ -41,7 +41,7 @@ const harness = (overrides: Partial<ConstructorParameters<typeof SandboxManager>
   const pairing = {
     connect: vi.fn(async (_id: string, baseUrl: string) => ({ baseUrl, graphql: vi.fn() })),
     pair: vi.fn(async (_session: unknown, sandboxId: string) => {
-      peers.push({ nodeId: `srv_${sandboxId}`, name: sandboxId, baseUrl: "http://127.0.0.1:1", addedAt: "t", paired: true, role: "sandbox" });
+      peers.push({ nodeId: `srv_${sandboxId}`, name: sandboxId, address: "http://127.0.0.1:1", addedAt: "t", paired: true, machine: null, account: null, relation: "own" as const, sandbox: true });
       return `srv_${sandboxId}`;
     }),
     importPackages: vi.fn(async () => ({ agents: [{ name: "Writer", kind: "agent" as const, address: "/Writer" }], teams: [] })),
@@ -55,8 +55,7 @@ const harness = (overrides: Partial<ConstructorParameters<typeof SandboxManager>
       list: async () => peers,
       remove: vi.fn(async (nodeId: string) => { peers = peers.filter((peer) => peer.nodeId !== nodeId); }),
     },
-    capability: { isEnabled: () => true },
-    checkPlatform: async () => ({ supported: true }),
+        checkPlatform: async () => ({ supported: true }),
     hostNodeId: async () => HOST,
     relayOffer: async () => ({ AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,openai", AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "" }),
     image: () => "autobyteus/autobyteus-server:1.5.15-beta.2",
@@ -104,7 +103,6 @@ describe("SandboxManager.create", () => {
       AUTOBYTEUS_PROVIDER_RELAYS: "anthropic,openai",
       AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES: "",
       AUTOBYTEUS_TEMP_WORKSPACE_DIR: "/home/autobyteus/workspace",
-      ENABLE_REMOTE_COLLABORATION: "true",
       AUTOBYTEUS_SERVER_HOST: "http://127.0.0.1:47581",
     });
     expect(spec.mounts).toEqual([
@@ -117,16 +115,14 @@ describe("SandboxManager.create", () => {
     h.manager.close();
   });
 
-  it("refuses with its reason and creates nothing: remote collaboration off, Docker or platform, no image (AC-014)", async () => {
-    const off = harness({ capability: { isEnabled: () => false } });
-    expect((await refusalOf(off.manager.create(CALLER, input()))).code).toBe("SANDBOX_REMOTE_COLLABORATION_OFF");
+  it("refuses with its reason and creates nothing: Docker or platform, no image (AC-014)", async () => {
     const noDocker = harness({ checkPlatform: async () => ({ supported: false, code: "SANDBOX_DOCKER_UNAVAILABLE", message: "start Docker" }) });
     expect((await refusalOf(noDocker.manager.create(CALLER, input()))).code).toBe("SANDBOX_DOCKER_UNAVAILABLE");
     const linux = harness({ checkPlatform: async () => ({ supported: false, code: "SANDBOX_PLATFORM_NOT_SUPPORTED", message: "macOS only" }) });
     expect((await refusalOf(linux.manager.create(CALLER, input()))).code).toBe("SANDBOX_PLATFORM_NOT_SUPPORTED");
     const dev = harness({ image: () => null });
     expect((await refusalOf(dev.manager.create(CALLER, input()))).code).toBe("SANDBOX_IMAGE_UNKNOWN");
-    for (const h of [off, noDocker, linux, dev]) {
+    for (const h of [noDocker, linux, dev]) {
       expect(h.started).toEqual([]);
       expect(await h.records.read()).toEqual([]);
     }
@@ -222,8 +218,8 @@ describe("using and removing a sandbox", () => {
     const h = harness();
     const created = await h.manager.create(CALLER, input());
     h.manager.close();
-    const orphan: PeerNode = { nodeId: "srv_orphan", name: "sbx_orphan", baseUrl: "http://x", addedAt: "t", paired: true, role: "sandbox" };
-    const normal: PeerNode = { nodeId: "srv_desktop", name: "desktop", baseUrl: "http://y", addedAt: "t", paired: true, role: null };
+    const orphan: PeerNode = { nodeId: "srv_orphan", name: "sbx_orphan", address: "http://x", addedAt: "t", paired: true, machine: null, account: null, relation: "own" as const, sandbox: true };
+    const normal: PeerNode = { nodeId: "srv_desktop", name: "desktop", address: "http://y", addedAt: "t", paired: true, machine: null, account: null, relation: "own" as const, sandbox: false };
     h.setPeers([...h.peers(), orphan, normal]);
     h.docker.listHostSandboxes.mockResolvedValueOnce(["sbx_leftover"]);
     const restarted = harness({ docker: h.docker as never, records: h.records, peers: { list: async () => h.peers(),

@@ -23,6 +23,11 @@ export type PeerSignedRequest = Readonly<{
   /** Path with query, as sent (`request.url`). */
   pathWithQuery: string;
   headers: Readonly<Record<string, string | string[] | undefined>>;
+  /**
+   * The machine and account the network program proved for a connection that arrived over the private network
+   * (autobyteus-661 REQ-003); absent or `null` for any other connection. A peer record's `machine` must match it (§5).
+   */
+  privateNetworkCaller?: Readonly<{ machine: string; account: string | null }> | null;
 }>;
 
 /** Verifies a peer request's signature headers; the body hash it signed is checked by the gate as the body arrives. */
@@ -50,9 +55,10 @@ export type ClientRevocationSource = Readonly<{
 }>;
 
 /**
- * The peer request headers (NA-9, design M-7). Every request a node sends its peer carries all six; the signature is
- * HMAC-SHA256 with the pair's peer secret over the method, path with query, both node IDs, the timestamp, the nonce
- * and the body hash. The gate checks the received body against `PEER_BODY_SHA256_HEADER` before any handler runs.
+ * The peer request headers (NA-9; autobyteus-661 contract §5). Every request a node sends its peer carries all six;
+ * the signature is Ed25519 with the sender's node key over both node IDs, the timestamp (ms), the nonce, the method,
+ * the path with query and the body hash. The gate checks the received body against `PEER_BODY_SHA256_HEADER` before
+ * any handler runs.
  */
 export const PEER_FROM_HEADER = "x-autobyteus-peer-from";
 export const PEER_TO_HEADER = "x-autobyteus-peer-to";
