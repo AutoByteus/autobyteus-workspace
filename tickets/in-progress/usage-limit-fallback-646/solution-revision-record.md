@@ -11,6 +11,7 @@
 | SR-004 | Design | ARCH-REV-001 Fail | AR-001..AR-005, residuals | design Ready (SR-003) | design Ready (SR-004) | REQ-005, REQ-008, REQ-009, AC-003, BEH-002 | Revisions R-1..R-6; to ARCH-REV-002 |
 | SR-005 | Design | Implementation question IQ-001 (two rows vs REQ-006) | IQ-001 | design Ready (SR-004) | design Ready (SR-005) | REQ-006, C-5 | `PendingRuntimeSwitch.cause` (structured); one row |
 | SR-006 | Design | Implementation question IQ-002 (history layer's origin) | IQ-002 | design Ready (SR-005) | design Ready (SR-006) | REQ-003, C-2, R-7 | New origin `agent_history` everywhere |
+| SR-007 | Requirements + Design | Implementation question IQ-003 (no hidden input path) | IQ-003 | Approved SR-004; design SR-006 | Approved SR-007; design SR-007 | REQ-006, R-7, R-9 | Continue message = labelled system notice row; FU-646-02 |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -75,3 +76,13 @@
 - Trigger: the implementation engineer. The history layer had no recorded launch source; the origin is persisted vocabulary.
 - Decision: a new origin `agent_history` in every place the vocabulary lives. C-2 `chosenBy` and R-7 `cause.chosenBy` use the same value (was `history`): one word, one meaning. No compatibility with older servers (DESIGN rule 9).
 - Intended behavior: unchanged.
+
+### SR-007 — The continue message is shown as a system notice
+
+- Trigger: the implementation engineer's built-server E2E. Every posted input is shown and recorded, so R-7's "no row of its own" can't hold without a hidden-input mechanism.
+- Decision, by the Solution Designer within the founder's direction ("show a clear platform notice row explaining the switch"):
+  - the continue message is a labelled platform notice row (the restart notice's pattern);
+  - REQ-006 now reads "one row explaining the switch, plus the continue instruction as a labelled system notice; nothing hidden";
+  - a hidden input was rejected for transparency and cost.
+- Founder informed in this conversation. Pre-existing native extra row: FU-646-02.
+- Intended behavior changed: yes, slightly (two labelled rows instead of one). Approval: Solution Designer within the direction; the founder is told.

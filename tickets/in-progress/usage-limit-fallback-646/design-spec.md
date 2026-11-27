@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-007` (SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -447,3 +447,26 @@ A delegated agent launched by the history layer (R-2) records the new origin `ag
 **Older servers:** a downgraded server rejecting the new value is not designed for (DESIGN rule 9: one release; no compatibility between versions).
 
 **Rejected:** recording the launch as `inherited`. It would store a false fact.
+
+### R-9 The continue message is a labelled system notice row (SR-007, implementation question IQ-003)
+
+The implementer showed, with the built-server E2E UL-01, that no input path is hidden from the person today. R-7's "the continue input publishes no row" is not possible without a new hidden-input mechanism. Every posted input:
+
+- shows in the input state while queued;
+- is recorded as a user trace by both memory writers, so it is replayed as a row.
+
+**Decision (Solution Designer, within the founder's direction "show a clear platform notice row explaining the switch"):** the continue message is posted as a **platform notice input**, the restart notice's pattern (`buildRestartNotice`: `SenderType.SYSTEM`, sender `system.runtime_handover`, `platformInputPrefaceMetadata` with its own notice id, the lifecycle observer that publishes the `SYSTEM_TASK_NOTIFICATION`). It is shown as a system notice row, never as a user row. Its text: "Continue the task where you left off."
+
+The person therefore sees:
+
+1. the marker row with the cause (R-7);
+2. the short continue notice.
+
+Both are labelled platform notices. REQ-006 is updated (SR-007).
+
+**Rejected:**
+
+- **(a), a hidden input.** The agent would act on text the person can't see, and it would be missing from the work journal. That is less transparent, and new code in autobyteus-ts native ingest, the server accumulator and the input-state projection, for one row's difference.
+- **Merging the instruction into the marker row.** The marker is rendered at activation from the pending switch, and the continue input is what triggers that activation; tying them is a coupling for no user gain.
+
+**Row 4, pre-existing:** on native AutoByteus the hand-over preface "[System: runtime hand-over] Another agent worked on this run before you…" is stored as a notice trace, so it shows as a second "Runtime changed" row after a reload, for every switch to AutoByteus, a person's included. That is not this ticket's change: follow-up FU-646-02.
