@@ -39,6 +39,11 @@ export class ExtensionLog {
     await this.writes.get(id);
   }
 
+  /** Resolves when every line appended so far, for every extension, is written (the node stops). */
+  async idleAll(): Promise<void> {
+    await Promise.all([...this.writes.values()]);
+  }
+
   async tail(id: string, lines = EXTENSION_LOG_TAIL_LINES): Promise<string[]> {
     await this.idle(id);
     try {

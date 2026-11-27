@@ -202,6 +202,22 @@ describe("ServerPartHost (contract §4)", () => {
     expect((await second.status()).message).toBe("1");
   });
 
+  it("T-4 CR-001: a stop right after a start reaches the module after it; ctx.dir is ready when the part loads", async () => {
+    const host = new ServerPartHost({ platform: "p", log: () => undefined });
+    await writePart(path.join(root, "f"), [
+      "const calls = [];",
+      "export default { install() {}, async status() { return { ready: true, message: calls.join(',') }; },",
+      "  async start(ctx) { calls.push('start'); }, async stop(ctx) { calls.push('stop'); }, actions: {} };",
+    ].join("\n"));
+    const part = await host.load("f", path.join(root, "f"), path.join(root, "f-data"));
+    await expect(fs.access(path.join(root, "f-data"))).resolves.toBeUndefined();
+    // Turned off (or removed) while it is starting: the module sees start, then stop, never the other order.
+    const starting = part.start();
+    const stopping = part.stop();
+    await Promise.all([starting, stopping]);
+    expect((await part.status()).message).toBe("start,stop");
+  });
+
   it("gives ctx.dir, ctx.platform and ctx.log, and refuses a status that never answers", async () => {
     const lines: string[] = [];
     const host = new ServerPartHost({ platform: "test-os-x64", log: (id, line) => lines.push(`${id}: ${line}`) });

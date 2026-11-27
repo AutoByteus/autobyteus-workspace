@@ -239,7 +239,7 @@ export class ExtensionManager {
     }
   }
 
-  /** Node shutdown: stops every loaded server part, each bounded. */
+  /** Node shutdown: stops every loaded server part, each bounded, then waits until every log line is written. */
   async stopAll(): Promise<void> {
     this.startTokens.clear();
     const parts = [...this.loaded.entries()];
@@ -248,6 +248,7 @@ export class ExtensionManager {
       const part = await loading.catch(() => null);
       await part?.stop(SERVER_PART_STOP_TIMEOUT_MS).catch((error) => console.warn(`EXTENSION_STOP_FAILED: ${id}: ${errorMessage(error)}`));
     }));
+    await this.deps.log.idleAll();
   }
 
   private async item(id: string): Promise<ExtensionItem | null> {
@@ -437,7 +438,9 @@ export class ExtensionManager {
     void (async () => {
       try {
         const part = await this.loadedPart(id);
-        if (!part.hasStart) return;
+        // Turned off, removed, updated or stopped while the part loaded: its stop may already have run, so it is not
+        // started after it (autobyteus-661 T-4 CR-001).
+        if (!current() || !part.hasStart) return;
         this.deps.log.append(id, "start: starting");
         await part.start();
         if (current()) this.deps.log.append(id, "start: started");

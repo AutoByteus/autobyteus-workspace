@@ -68,8 +68,9 @@ const bounded = <T>(promise: Promise<T>, timeoutMs: number, what: string): Promi
 /**
  * The Server Part Host: the boundary between AutoByteus and an extension's code. It imports a package's
  * `server/index.mjs` (each load with its own counter in the URL, so an update or a Remove + Install gets fresh module
- * state), checks its shape, builds the extension's context (`dir`, `platform`, `log`, and `progress` while
- * installing) and calls it.
+ * state), checks its shape, prepares its folder, builds the extension's context (`dir`, `platform`, `log`, and
+ * `progress` while installing) and calls it. `start` and `stop` call the module at once, so it sees them in the order
+ * they were asked.
  */
 export class ServerPartHost {
   private loads = 0;
@@ -101,6 +102,13 @@ export class ServerPartHost {
     if (!module || missing.length) {
       throw new ServerPartLoadError(`server/index.mjs does not export what an extension needs: ${missing.join(", ") || "a default export"}`);
     }
+    // ctx.dir is ready before anything is called, so `start` and `stop` reach the module in the order they are asked:
+    // a stop right after a start can never overtake it (autobyteus-661 T-4 CR-001).
+    try {
+      await fs.mkdir(dataDir, { recursive: true });
+    } catch (error) {
+      throw new ServerPartLoadError(`its folder could not be prepared: ${errorMessage(error)}`);
+    }
     return this.bind(id, module as ServerPartModule, dataDir, provides);
   }
 
@@ -124,8 +132,8 @@ export class ServerPartHost {
           }),
         }));
       }),
+      // Nothing is awaited before the module is called: `start` and `stop` reach it in call order.
       start: () => contained(async () => {
-        await ensureDir();
         await module.start?.(ctx);
       }),
       status: () => contained(async () => {
