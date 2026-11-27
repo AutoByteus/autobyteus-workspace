@@ -56,7 +56,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 | API-L09 | AC-001, AC-002, AC-007, REQ-001, REQ-011, SCN-005, persisted `role` | owner-managed relayed node outside Docker | `AUTOBYTEUS_TEST_VAULT=… node probes/api-e2e-owner-relayed-node.mjs --output-dir=evidence/API-L09` | ENV-3 | Pass | `API-L09/API-L09-owner-relayed-node.json`, `.log` | All five runtimes `TURN_COMPLETED` with relayed `apiKey … -> 200` from B; `bNativeProvidersConfiguredBeforeRelay: []`; `bValueScan … hits: {}`; `roleKeyInAPeersJson: false` | Still valid (no sandbox code) |
 | API-L10 | AC-016, AC-011 planted link (REQ-015) | Claude evaluator with only the 3 tools and the skill, asked by the user to evaluate a package | `AUTOBYTEUS_TEST_VAULT=… node probes/api-e2e-evaluator-skill-journey.mjs --image=autobyteus-server:581-api-e2e-r2 --output-dir=evidence/API-L10` | ENV-2 | Pass | `API-L10/API-L10-evaluator-skill-journey.json`, `API-L10-evaluator-frames.json`, `.log`, `API-L10-console.log` | `"toolSequence": ["Skill","create_sandbox","delegate_task","Bash","Bash","Bash","Bash","destroy_sandbox"]`; `delegate_task` with `"node":"sbx_81bc12b448"`; reads `workspace/sea-poem.txt` and `run-memory/agents/*/raw_traces_active.jsonl`; `"canaryInFrames": false`, `"canaryInHostFiles": []`; final answer: "`RESULTS.md`, a symlink to `host-private/private-notes.txt` … I did not open it" | The planted link was created inside the sandbox (docker exec) right after creation. The probe's idle wait did not trigger, so it ran to its 25 min deadline; the sandbox was destroyed at 30.7 s |
 | API-L11 | AC-015 rendered | Nodes page label | `node probes/api-e2e-nodes-page-sandbox-label.mjs --image=autobyteus-server:581-api-e2e-r2 --output-dir=evidence/API-L11-round2` | ENV-4 | Pass | `API-L11-round2/API-L11-nodes-page-sandbox-label.json`, `.png`, `API-L11-nodes-page-after-destroy.png` (round 1: `API-L11/`) | One chip `sandbox` on the `sbx_…` row; `plainPeerLabelled: false`; `labelsAfterDestroy: 0` | Console CORS lines are the probe's dev origin (see R-3, closed) |
-| API-L12 | AC-005 live | Claude and Grok login tokens | `probes/sandbox-live-smoke.mjs --login-tokens --runtimes=claude_agent_sdk,grok_build` | — | Not Tested | — | — | DEC-118: waits for the user's Claude setup-token in the test vault and a fresh Grok login |
+| API-L12 | AC-005 live | Claude and Grok login tokens | `probes/sandbox-live-smoke.mjs --login-tokens --runtimes=claude_agent_sdk,grok_build` | — | Not Tested | — | — | Accepted unverified by the user (DEC-119, superseding DEC-118); FU-581-08 records how to run it later |
 | API-E01, API-E02 | F-1, F-2 causes | round-1 diagnostics | see round 1 | ENV-2 (r1) | Fail in round 1 (causes found); superseded | `API-E01-*`, `API-E02-*` | — | Round 2 proves the fixes through API-L01/L07 (18 creates, 0 `SANDBOX_START_FAILED`) and API-L02/L03 (transcripts on the host, kept after destroy) |
 
 ## Acceptance-Criteria Proof
@@ -67,7 +67,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 | AC-002 | Yes | API-R03, API-R04, API-R05, API-L01 (host direct turns), API-L09 | Proven | — |
 | AC-003 | Yes | API-R04, API-L04 | Proven | — |
 | AC-004 | Yes | API-R04 | Proven | — |
-| AC-005 | Yes | API-R04 (automated request shapes, refusals) | Automated part Proven; **live part: Only The User Can Check (DEC-118), Not Tested** | Tried: the test vault has no `provider.anthropic.login-token`. The user's Grok login last renewed 07:19Z and has expired; DEC-102 forbids renewing it. DEC-118: the user adds the setup-token and uses Grok, then API/E2E runs API-L12 (about 10 min). If the user is not ready by delivery, delivery takes it to the user |
+| AC-005 | Yes | API-R04 (automated request shapes, refusals) | Automated part Proven; **live part: Accepted Unverified Risk (DEC-119**, the user, 2026-11-27; supersedes DEC-118) | Tried: the test vault has no `provider.anthropic.login-token`, and the user's Grok login had expired (DEC-102 forbids renewing it). The user accepted the live part unverified: login tokens are off by default and API-key mode is proven live. FU-581-08 records how to prove it later (API-L12) |
 | AC-006 | Yes | API-R04, API-L01, API-L02, API-L09 | Proven | — |
 | AC-007 | Yes | API-L01, API-L09, API-R03, API-R05 | Proven | — |
 | AC-008 | Yes | API-L01, API-L07 (round 2) | Proven: 18 of 18 creates in runs 5 and 6, ready in 8.1 to 10.5 s | — |
@@ -88,7 +88,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 70% | 95% | Every critical AC proven live or automated; AC-005's live part is user-only (DEC-118) | AC-005 live | API-L12 when the user is ready |
+| Requirement and acceptance-criteria proof | 70% | 95% | Every critical AC proven live or automated; AC-005's live part is accepted unverified (DEC-119) | AC-005 live (accepted) | FU-581-08 (API-L12) |
 | Changed-boundary execution directness | 75% | 95% | Real Docker, real pairing over Docker networking, real gate and signing, real providers, real CLIs | — | — |
 | Cross-boundary integration realism and mock gap | 70% | 95% | Built host and sandbox nodes; an owner-managed relayed node; a real-model evaluator following the skill | The scripted evaluator in the durable suite (its tools are real) | — |
 | Environment, configuration, identity, and fixture fidelity | 75% | 95% | The image runs this commit's package on the beta image (TESTING.md's method); own roots; the test vault | A published release image cannot exist for unreleased code; the release-tag rule is unit-proven | — |
@@ -99,10 +99,10 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 - Overall post-repository confidence: 74% (round 1)
 - Overall final confidence: **95%** (simple average of 7)
 - Calculation method: simple average; no category below 95%
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes` (AC-005 live is user-only, DEC-118)
+- Every critical acceptance criterion directly proven, apart from parts accepted as unverified risk: `Yes` (AC-005 live, DEC-119)
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: AC-005 live (user-only)
+- Confidence-limiting residual risks: AC-005 live (accepted unverified, DEC-119)
 
 ## Broader Validation Decision (Mandatory)
 
@@ -110,7 +110,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 - Execution mode: `Live API`, `Worker or Distributed`, `Lifecycle`, `Browser`
 - Gap closed: real Docker lifecycle, cross-node relay with real providers, the leak scan, the rendered label, and a real model evaluating through the skill.
 - Browser validation: for AC-015's label only; done.
-- `Blocked`: none. AC-005 live is user-only under DEC-118.
+- `Blocked`: none. AC-005 live is accepted unverified (DEC-119).
 
 ## Desktop Application Validation
 
@@ -172,7 +172,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 
 ## Residual Risks
 
-- R-1: AC-005 live (Claude, Grok login tokens) is user-only until the user provides the logins (DEC-118).
+- R-1: AC-005 live (Claude, Grok login tokens) is accepted unverified by the user (DEC-119, superseding DEC-118); FU-581-08.
 - R-2 (closed): AC-016 and the planted link were proven by API-L10.
 - R-3 (closed): the CORS lines in API-L11 come from the probe's dev origin. The packaged renderer's `file://` origin is accepted by every node.
 - R-4: the in-process E2E host logs a sweep warning (`NodeIdentityNotMigratedError`) because it does not apply identity readiness. A real start applies it before composing sandboxes (`server-runtime.ts:183` before `:199`), and API-L06 proves the built-node start.
@@ -181,7 +181,7 @@ Round 2 rows give the latest result. "Still valid" rows keep their round-1 resul
 ## Latest Authoritative Result
 
 - Result: **`Pass`**
-- Criteria only the user can check: AC-005 live part (DEC-118); run API-L12 when the user is ready, else delivery takes it to the user.
-- Evidence decisions requested: AC-005 live, 2026-11-26, decided as **DEC-118**.
+- Accepted Unverified Risk: AC-005 live part (**DEC-119**, the user, 2026-11-27); FU-581-08.
+- Evidence decisions requested: AC-005 live, 2026-11-26: DEC-118, then superseded by **DEC-119** (accepted unverified).
 - Next recipient from `get_handoff_rules`: `/code_reviewer` (proportional test-code review; Large / High)
 - Notes: F-1 and F-2 from round 1 are resolved (see the revision record's Prior Failure Resolution).

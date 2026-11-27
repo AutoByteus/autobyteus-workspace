@@ -75,3 +75,5 @@ None.
 - Remaining risks, blocked evidence, or untested scope:
   - AC-005 live is user-only (DEC-118, API-L12).
   - Doc notes D-1, D-2 and the C8 mount line.
+
+- Correction, 2026-11-27, no new round: DEC-119 (the user) supersedes DEC-118. AC-005's live part is now `Accepted Unverified Risk (DEC-119)` in the execution report, and API-L12 stays Not Tested (FU-581-08). The result and confidence are unchanged.

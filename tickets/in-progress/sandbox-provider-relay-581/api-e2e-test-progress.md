@@ -49,3 +49,4 @@
 | 2026-11-26 21:41 | API-L10 | Started |  | evaluator skill journey (Claude, background) |
 | 2026-11-26 22:10 | API-L10 | Completed | Pass | Claude evaluator with tools + skill: create, delegate (node), read file + transcripts, link seen and not opened, destroy; canary nowhere. evidence/API-L10/ |
 | 2026-11-26 22:15 | (round 2) | Completed | Pass | report rewritten (95%); API-REV-002 |
+| 2026-11-27 09:00 | API-L12 | Completed | Not Tested | DEC-119 supersedes DEC-118: the user accepted AC-005 live unverified (FU-581-08); report updated |
