@@ -1,0 +1,5 @@
+# Follow-ups — autobyteus-646
+
+| ID | Found by (role, document) | What, where | Evidence | Why outside this ticket | Urgent | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-646-01 | Solution Designer, conversation with the founder 2026-11-27 | **Token-cost budget for API-key runtimes**, the second user of the run event hub. A cost detector watches each run's `TOKEN_USAGE_UPDATED`, prices it (the token-usage ledger and pricing exist) and publishes `cost_budget_reached {agentRunId, data: {runtime, spent, budget}}` when a budget the person set is reached. A budget-guard listener then stops the run (existing Stop) or switches it to a cheaper runtime (the switch action of this ticket), possibly asking the Model Router | The founder's request in conversation; the hub of 646 is built for new kinds without change | The founder: "the cost budget stays out of this" | No | Add cost budgets for API-key runtimes on the run event hub: a budget setting (per runtime or per run), a cost detector publishing `cost_budget_reached`, and a budget-guard listener that stops or switches the run, with a notice row. | |
