@@ -14,7 +14,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`. Round 2 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1:
+- Current Code Review Revision ID: `CRR-003`. Round 3 is a `Targeted Delta Review` of `879030100d..5721f3f2c6` (IR-002, the fix `376b4bb9c0`).
+- Previous: `CRR-002`. Round 2 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1:
   - code tested: `9e508b3adf`;
   - API/E2E's commit: `488e231641`;
   - reproduction: SDD-16;
@@ -131,6 +132,23 @@ Pass on every check: no compatibility path, the dead code is removed, and no per
 | 9 | No Backward-Compatibility / Legacy | 9.5 | — |
 | 10 | Cleanup Completeness | 9.2 | The stale mock (C-3) |
 
+## Round 3 Delta Verification (CRR-003)
+
+**CR-001 is Resolved.**
+
+- **The fix (`teamRunOpenCoordinator.runTeamStreamRecovery`):**
+  - `beforeContextCommit` reads the focused member of the context being replaced.
+  - After the commit, `keepFocusAcrossRecovery` runs when that member differs from the candidate's focus and is in the new view. It loads the member with `ensureAuthoritativeTeamMemberProjection`, then focuses it, but only if the context is still current and the focus has not moved since. Then it refreshes the navigation projection, because the run tree reads the focus from it.
+  - A failed load keeps the read's member and logs a warning; the recovery still counts as success.
+  - The commit stays synchronous. It runs inside the shared attempt, before a joined reselect applies its own member, so an explicit reselect still wins.
+- **Cleanup:** C-3 is done (the stale mock is removed).
+- **Evidence:**
+  - IMP-007: three new coordinator specs, of which the moved-focus and failed-load cases are red on `9e508b3adf`; 20/20 pass;
+  - SDD-16 and SDD-17 pass, with the header and the tree row both on mate.
+  - Re-run by me: `services/runOpen`, `components/workspace/history` and the recovery store spec, 33 files and 319 tests passed.
+- **Held (the implementer's residual):** an inspection that started on the old context and is still loading its member when the commit lands rejects ("changed before selection commit"), so the earlier focus stays. Its window is that member load overlapping the commit, and SDD-16 did not hit it. The user's click can be repeated, and nothing is lost.
+- **Result:** Pass.
+
 ## Round 2 Failure-Origin Finding (CRR-002)
 
 ### CR-001 (F-1, formerly held C-2): a navigation to a member during a recovery is undone at the commit
@@ -180,6 +198,11 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
+- Review Decision: `Pass` (round 3, CRR-003). CR-001 is resolved.
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
+- Score Summary: 9.3 / 10.
+- Recommended Recipient: `/api_e2e_engineer`. Rerun SDD-16 and SDD-17 with the adjacent cases, then the test-code review of `488e231641`.
+- Round 2 result (CRR-002, superseded):
 - Review Decision: `Fail` (round 2, CRR-002). The failure origin is implementation: CR-001, `Local Fix` in `teamRunOpenCoordinator`.
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Recommended Recipient: `/implementation_engineer`. Then a targeted delta code review, then API/E2E (SDD-16, SDD-17).

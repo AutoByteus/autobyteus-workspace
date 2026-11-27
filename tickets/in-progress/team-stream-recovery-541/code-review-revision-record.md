@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-001 (new; was C-2) |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002), Targeted Delta | Fail | Pass | CR-001 (resolved) |
 
 ## Revision Entries
 
@@ -76,3 +77,40 @@ None (CRR-001 had no findings; C-2 is promoted to CR-001, and C-1 is rejected).
 - Remaining risks or uncertainty:
   - FU-001 (the NodeRow audit, on the base);
   - the test-code review of `488e231641` after a pass.
+
+### CRR-003: targeted delta review of IR-002 (Pass)
+
+- Canonical review report updated: `tickets/in-progress/team-stream-recovery-541/code-review-report.md` ("Round 3 Delta Verification")
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review` of `879030100d..5721f3f2c6`:
+  - `teamRunOpenCoordinator.ts` and its spec;
+  - the stale mock removed from `HistoricalTeamLazyHydration.integration.spec.ts`.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002); CR-001
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-002)
+- Current authoritative result: Pass, 9.3 / 10
+- What changed in the review result and why:
+  - The focus at the commit is carried: loaded, then focused, then the navigation projection refreshed.
+  - It is guarded against a further focus move and a replaced context, and a failed load is safe.
+  - An explicit reselect still applies after it.
+  - The specs are red on IR-001 and green now, and SDD-16 and SDD-17 pass.
+  - My re-run: 319 tests passed.
+- Supported product scenario / material-premise basis changes: none. Held: an inspection still loading when the commit lands keeps the earlier focus.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (CRR-002) | Resolved | IR-002 `376b4bb9c0` | IMP-007 (2 of 3 new specs red on IR-001; 20/20 green); SDD-16 green with the header and the tree row on mate; my re-run, 319 passed |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: runtime correctness back to 9.2.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - the held in-flight-inspection window;
+  - FU-001 (on the base);
+  - the test-code review of `488e231641` after the next pass.
