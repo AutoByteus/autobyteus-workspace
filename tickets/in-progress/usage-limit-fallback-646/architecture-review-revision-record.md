@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-002 | Round 2 / SR-004 (fixes for ARCH-REV-001) | SR-004 | Fail | Pass | AR-001 … AR-005 resolved |
 | ARCH-REV-003 | Round 3 / re-review at the 9-point bar (user's direction) | SR-004 | Pass | Fail | AR-006 … AR-009 new |
 | ARCH-REV-004 | Round 4 / SR-009 (fixes for ARCH-REV-003) | SR-009 | Fail | Fail | AR-006 … AR-009 resolved; AR-010, AR-011 new |
+| ARCH-REV-005 | Round 5 / SR-010 (fixes for ARCH-REV-004) | SR-010 | Fail | Pass (score 9) | AR-010, AR-011 resolved; AR-012 new (required, non-blocking) |
 
 ## Revision Entries
 
@@ -124,3 +125,28 @@ None.
 - Material classification changes: None (`Large`/`High`).
 - Recommended recipient: Solution Designer. The implementation engineer may proceed except on the root-follow placement and the read-based classification.
 - Remaining risks or uncertainty: DEC-008 pending the founder; routing log retention (follow-up); the peer-started E2E; the router template.
+
+### ARCH-REV-005 — SR-010: the root follows its own switch; late classification as its own event; Pass at 9
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646/tickets/in-progress/usage-limit-fallback-646/design-review-report.md` (§ Round 5 Review)
+- Review round and trigger: round 5. SR-010 at `9090a8a8a1` (Solution Designer's message, 2026-11-27).
+- Triggering role, report path, and finding IDs: Solution Designer; design-spec § R-15, § R-16; follow-ups FU-646-03; AR-010, AR-011.
+- Relevant solution revision IDs: SR-010.
+- Prior authoritative decision: `Fail` (ARCH-REV-004, score 8.5).
+- Current authoritative decision: `Pass`, score 9.
+- What changed in the review result:
+  - AR-010 and AR-011 are resolved.
+  - I traced the new `ERROR_CLASSIFIED` event through the run's event consumers. The websocket mapper would render it as an "Unmapped AgentRunEvent" error (`agent-run-event-message-mapper.ts:171-177`), and the presentation adapter would reject it (`collaboration-agent-presentation-adapter.ts:265-281`). The trace accumulator and the application projector already drop it.
+  - Recorded as AR-012, a required implementation item.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-010 | Open (Low) | Resolved | SR-010 R-15 | The root sets its own inherited launch from the returned metadata; no lifecycle → root-manager call |
+| AR-011 | Open (Medium) | Resolved | SR-010 R-16 | `ERROR` at once; `ERROR_CLASSIFIED` later; the detector acts on either once per turn |
+
+- New or remaining finding IDs: AR-012 (Design Impact, Low, required, non-blocking): explicit drops for `ERROR_CLASSIFIED` in the websocket mapper and the presentation adapter, plus a one-error-row test.
+- Material classification changes: None (`Large`/`High`).
+- Recommended recipient: implementation engineer (primary; the hold is lifted); Solution Designer (informational).
+- Remaining risks or uncertainty: DEC-008; FU-646-03; the peer-started E2E; the router template; Claude's SDK signal.

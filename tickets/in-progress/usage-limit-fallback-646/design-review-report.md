@@ -4,16 +4,16 @@
 
 - Upstream Requirements Doc: `tickets/in-progress/usage-limit-fallback-646/requirements-doc.md` (Approved, SR-003; AC-003 corrected at SR-004)
 - Upstream Investigation Notes: `tickets/in-progress/usage-limit-fallback-646/investigation-notes.md`
-- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-009)
+- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-010)
 - Reviewed Design Spec: `tickets/in-progress/usage-limit-fallback-646/design-spec.md` (Ready, SR-004; § SR-004 Revisions governs)
 - Supplemental Task Artifacts Reviewed: None (no supplements); `handoff-architecture-review.md`; `follow-ups.md` (FU-646-01)
-- Relevant Solution Revision IDs: SR-001 … SR-009
+- Relevant Solution Revision IDs: SR-001 … SR-010
 - Architecture Review Revision Record: `tickets/in-progress/usage-limit-fallback-646/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
 - Trigger: Solution Designer handoff "Architecture Design Complete", `Large`/`High`, 2026-11-27. The founder approved the data contract and policy; the router template text (C-7) is pending him and does not block this review.
-- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Fail` at the 9-point bar); rounds 1–2
-- Latest Authoritative Round: 4
+- Prior Review Round Reviewed: 4 (ARCH-REV-004, `Fail`, score 8.5); rounds 1–3
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646`, branch `codex/usage-limit-fallback-646` at `214300a403` (ticket docs only). Code read at the base `bc4351cad7` with `git show`:
   - `agent-execution/domain/agent-run-lifecycle-observer.ts`; `agent-run-platform-notices.ts:66-90`; `agent-run.ts:210-235`; `events/dispatch-processed-agent-run-events.ts`;
   - Codex: `events/codex-thread-lifecycle-event-converter.ts:48-105`, `events/codex-turn-event-converter.ts:56-85`, `thread/codex-thread-notification-handler.ts:75-110`;
@@ -376,36 +376,67 @@ Code read at `bc4351cad7` and on the branch for this round:
 - Required update: choose one and write it into C-4 and R-13. My recommendation is (b): an `ERROR` now and an `ERROR_CLASSIFIED {turn_id, error_kind}` (or equivalent) later, with the detector acting on either, still once per `(agentRunId, turn_id)` (R-3). Also say what the run's view shows meanwhile.
 - Recipient: Solution Designer.
 
+## Round 5 Review (ARCH-REV-005, SR-010 at `9090a8a8a1`)
+
+**Score: 9.** AR-010 and AR-011 are resolved, and the design meets the bar. One required implementation item (AR-012) is recorded below; it is a list of places, not a design change.
+
+| Prior finding | SR-010 response | Verification | Status |
+| --- | --- | --- | --- |
+| AR-010 | R-15: `switchRuntimeAutomatically` returns the committed metadata; `StandaloneAgentRunRoot.switchAgentRuntime` sets its own inherited launch in its gate; the lifecycle never calls the root manager | Matches the composition order (`general-process-run-supervisor.ts:283-325`) and what `refreshInheritedLaunch` does (`:206-212`) | Resolved |
+| AR-011 | R-16, option (b): `ERROR` at once as today; backends that classify by a later limits read emit `ERROR_CLASSIFIED {turn_id, error_kind}` only when the model is blocked; Codex keeps `error_kind` on `ERROR`; the detector acts on either, once per `(agentRunId, turn_id)`; the view shows the error and Error status meanwhile; not rendered, not stored | The run's status and later events are not delayed; one detector rule; the detector is the only reader | Resolved; see AR-012 for the event's other consumers |
+
+Code read at `bc4351cad7` for this round:
+- `services/agent-streaming/agent-run-event-message-mapper.ts:100-178`;
+- `agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts:265-300`;
+- `application-agent-streaming/services/application-agent-stream-event-projector.ts:20-42`;
+- `agent-memory/services/agent-run-memory-recorder.ts:40-45`; `runtime-memory-event-accumulator.ts:100-145`.
+
+### AR-012 — `ERROR_CLASSIFIED` must be dropped explicitly by every event projector (required, non-blocking)
+
+- Type: `Design Impact` (derived consumers, Principle 11); severity: Low; blocking: No. Required in implementation.
+- Protects: R-16 ("not rendered or stored"); REQ-006 (one explanation of the switch, no stray rows).
+- Problem: R-16 adds a new run-stream event type, but the design does not list its derived consumers. Two of them do not drop an unknown type today:
+  - the websocket mapper's `default` turns any unmapped event into an `ERROR` message, "Unmapped AgentRunEvent: …" (`agent-run-event-message-mapper.ts:171-177`). Without a case, every usage limit on Antigravity or Grok would show a second, bogus error in the conversation;
+  - the collaboration presentation adapter rejects an event it does not know as `AGENT_PRESENTATION_ADMISSION_FAILED` (`collaboration-agent-presentation-adapter.ts:265-281`).
+  The trace accumulator (`default: return`) and the application stream projector (`default: return null`) already drop it. The web client only sees what the mapper emits.
+- Required update (implementation):
+  - add an explicit drop for `ERROR_CLASSIFIED` in the websocket mapper and the presentation adapter;
+  - keep the accumulator and the application projector as they are, and say so in the handoff;
+  - add a test that an Antigravity or Grok usage limit shows exactly one error row, then the switch rows.
+  - The Solution Designer adds the consumer list to R-16 at the next revision of the spec.
+- Recipient: implementation engineer; Solution Designer informed.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Fail` (round 4, at the 9-point bar). The architecture is now about 8.5. AR-010 and AR-011 are the last two gaps; with them resolved I would score it 9.
+`Pass` (round 5). The design meets the 9-point bar. The behavior basis is confirmed, it is ready for implementation, and no in-scope machinery depends on an unsupported material premise.
 
 ## Findings
 
-Open: AR-010 (Low), AR-011 (Medium). AR-001 … AR-009 are resolved.
+No blocking finding. AR-001 … AR-011 are resolved. AR-012 is a required, non-blocking implementation item.
 
 ## Classification
 
-`Design Impact` (AR-010, AR-011). Route: Solution Designer.
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer. The implementation engineer may proceed with R-11 (except where the root follow sits), R-12 and R-14, and with Codex's classification. Hold the root-follow placement, and classification for Claude (if no SDK signal), Antigravity and Grok.
+Implementation engineer (primary; the hold is lifted). Solution Designer (informational).
 
 ## Residual Risks
 
-- **DEC-008** (switch records kept for 90 days) is pending the founder. 90 days is the default until then.
-- **The routing decision log** still grows without bound. Its retention is a founder decision (the "All" period). The Solution Designer should record it as a follow-up.
-- **Peer-started switch:** the two-server E2E planned in R-11 is the proof. If it shows the delegating node caches the launch, that is a Design Impact.
-- **The router template (R-6)** still waits for the founder.
+- **DEC-008** (switch records kept for 90 days) is pending the founder; 90 days is the default.
+- **FU-646-03** (retention of the routing decision log) is recorded as the founder's decision.
+- **The peer-started switch** is proven by the two-server E2E planned in R-11.
+- **The router template (R-6)** waits for the founder's recorded approval.
+- **Claude's SDK signal** is to be verified against a recorded payload. Without it, Claude uses the R-16 path.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (ARCH-REV-004)
-- Score: about 8.5 now; 9 with AR-010 and AR-011 resolved.
+- Review Decision: `Pass` (ARCH-REV-005)
+- Score: 9.
 - Material-Premise Gate: `Pass`.
-- Notes: R-11, R-12 and R-14 are accepted as designed; keep them.
+- Notes: `task_size=Large`, `architectural_risk=High`. The design is ready at SR-010 (`9090a8a8a1`); § R-11 … R-16 govern where earlier sections conflict.

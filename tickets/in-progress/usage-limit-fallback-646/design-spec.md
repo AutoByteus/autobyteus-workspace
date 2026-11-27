@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-010` (SR-010: § R-15, R-16 for ARCH-REV-004; SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-010` (ARCH-REV-005 Pass, score 9; AR-012 consumer list added to R-16; SR-010: § R-15, R-16 for ARCH-REV-004; SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -580,3 +580,9 @@ For runtimes classified by a limits read after the error (Antigravity, Grok, and
 - **Meanwhile:** the conversation shows the error and the run shows Error, as today. When the switch follows, its marker row and the continue notice appear (R-7, R-10).
 - **Not rendered or stored:** `ERROR_CLASSIFIED` is not rendered as a row and not recorded in the traces. Its only reader is the detector.
 - **Rejected:** holding the `ERROR` until the read completes. It would delay the run's status and every later event by up to 18 s, for every terminal error.
+- **Consumers of `ERROR_CLASSIFIED`** (AR-012, every reader of the run stream decides it explicitly; none renders it):
+  - the usage-limit detector acts on it (above);
+  - the websocket mapper (`agent-run-event-message-mapper.ts:171-177`) must skip it, not map it to an "Unmapped AgentRunEvent" ERROR;
+  - the presentation adapter (`collaboration-agent-presentation-adapter.ts:265-281`) must skip it, not reject it;
+  - the trace accumulator and the application stream projector already drop it (no change);
+  - the web client receives nothing.
