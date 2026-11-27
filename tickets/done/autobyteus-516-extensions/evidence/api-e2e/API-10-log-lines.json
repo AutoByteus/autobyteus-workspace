@@ -1,0 +1,8 @@
+{
+  "step": "eval",
+  "name": "API-10-log-lines",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:46:54.137Z",
+  "value": "2026-11-26T16:44:40.006Z install: voice-input 1.0.0 from http://127.0.0.1:53057/pkg/voice-input-1.0.0.tar.gz\n2026-11-26T16:44:40.023Z package verified: its SHA-256 matches the signed list of extensions\n2026-11-26T16:44:40.450Z install: runtime 0.3.2 for darwin-arm64 from https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.3.2/voice-input-runtime-darwin-arm64.tar.gz\n2026-11-26T16:44:40.783Z install: preparing the speech model mlx-community/whisper-small-mlx\n2026-11-26T16:45:56.864Z install: runtime 0.3.2 and model whisper-small-mlx ready\n2026-11-26T16:45:56.869Z install: voice-input 1.0.0 installed and turned on\n2026-11-26T16:45:56.870Z start: starting\n2026-11-26T16:45:56.871Z worker starting (mlx, runtime 0.3.2)\n2026-11-26T16:46:19.733Z worker ready (mlx)\n2026-11-26T16:46:19.734Z start: started\n2026-11-26T16:46:26.861Z settings: language en",
+  "ok": true
+}

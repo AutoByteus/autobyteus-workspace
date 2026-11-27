@@ -101,8 +101,21 @@ how to apply them; they do not replace user-approved product requirements.
      listens.
 
    They grow only by optional fields and new codes; nothing is renamed or
-   removed. A client shows the `message` of a code it does not know. Every other
-   contract stays a clean cut.
+   removed. A client shows the `message` of a code it does not know.
+
+   **The second exception: the extension contract** (the founder's decision
+   DEC-012, autobyteus-516). Extensions are released separately from the app, so
+   what an extension builds on is frozen across versions: its description file
+   `extension.json`, the package layout (and what its page may load), the signed
+   catalog, the server part's interface, and the page bridge (parts 1–5 of
+   `autobyteus-server-ts/docs/modules/extensions.md`). It grows only by optional
+   fields; `contractVersion` changes only for a change an older AutoByteus cannot
+   handle, and an AutoByteus shows an extension that needs a newer contract as
+   "Needs a newer AutoByteus". The node's own extension API (GraphQL, the action
+   and page routes, `state.json`) is one release with the app and stays a clean
+   cut.
+
+   Every other contract stays a clean cut.
 11. **Tests follow the code; they never hold it back.** Production code keeps no
    method, field, parameter, branch or value that only tests read, such as a request
    label that only a fake LLM inspects. When cleaning up production code breaks old
@@ -147,6 +160,22 @@ how to apply them; they do not replace user-approved product requirements.
    Two releases failed this way: `v1.5.9-beta.14` and `v1.5.11-beta.11`
    (records: `tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`,
    `tickets/done/release-beta-20261102/release-deployment-report.md`).
+
+13. **Contract first for features with data.** When a feature stores data or
+   exchanges it across a boundary (a stored file or record, an API or wire
+   message, a package or plugin format, a protocol between processes), design
+   that data contract before the code around it: every field, its meaning and
+   the code that reads it, and no field that nothing reads yet (contracts grow
+   later by optional fields). Then validate the contract with a small, honest
+   prototype against the real dependencies before designing the layers above
+   it, and record the result in the ticket. The prototype walks the feature's
+   main business flows through the contract (for example install, use, update,
+   remove, and the refusals), so the functionality is proved before the design. The layers above are shaped by the
+   data, so a wrong contract is the most expensive mistake to undo. A bug fix
+   that leaves the data unchanged does not need this. Example (autobyteus-516):
+   the extension contract was written first, cut to the fields Stage 1 reads,
+   and proved by a prototype with the real voice runtime before the design; the
+   prototype changed three details of it.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 
@@ -468,6 +497,9 @@ Use this short check within the existing design/review process—not as another
 standalone document or a new layer of bureaucracy:
 
 - [ ] Supported scenario, approved intent, and preserved guarantees are clear.
+- [ ] For a feature with stored or exchanged data, the data contract was
+      designed first, holds only fields that something reads, and a prototype
+      validated it (rule 13).
 - [ ] Clean functional architecture comes first; speculative performance and
       concurrency machinery is deferred until there is a demonstrated need.
 - [ ] The normal path comes first; additional edge-case handling has independent

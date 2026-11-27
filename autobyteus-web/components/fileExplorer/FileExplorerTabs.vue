@@ -88,7 +88,8 @@
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             >
-            <span class="truncate max-w-[150px]">{{ getFileName(file) }}</span>
+            <!-- A read-only tab (the Memory reader) shows names up to 320 px, the full name in its tooltip (autobyteus-608 DC-010). -->
+            <span class="truncate" :class="readOnly ? 'max-w-[320px]' : 'max-w-[150px]'" :title="readOnly ? getFileName(file) : undefined" data-test="file-tab-name">{{ getFileName(file) }}</span>
             <span
                 v-if="file === activeFile"
                 @click.stop="closeFile(file)"

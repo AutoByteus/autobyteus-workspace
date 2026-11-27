@@ -89,13 +89,6 @@ const paragraph = (folder: string) => `Your semantic memory is the folder \`${fo
 /** DEC-013 (autobyteus-554), with the global folder (copied from the requirements, not the source). */
 const globalSection = (folder: string) => `## Global Semantic Memory\n\nThe global semantic memory of this node is the folder \`${folder}\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.`;
 const section = (folder: string, global: string) => `## Semantic Memory\n\n${paragraph(folder)}\n\n${globalSection(global)}`;
-/** Instructions up to the runtime's Long-Running Commands section, which ends every composed prompt (autobyteus-483). */
-const beforeLongRunningCommands = (instructions: string): string => {
-  const at = instructions.lastIndexOf("\n\n## Long-Running Commands\n");
-  expect(at, "Long-Running Commands section").toBeGreaterThan(0);
-  expect(instructions.indexOf("\n## ", at + 2), "nothing after the Long-Running Commands section").toBe(-1);
-  return instructions.slice(0, at);
-};
 
 /** A recorder that runs the real CLI unchanged and appends its argv, stdin and stdout to one file per process. */
 const recorderSource = (realCommand: string, logPrefix: string) => `#!${process.execPath}
@@ -380,6 +373,10 @@ describeLive("agent semantic memory with real runtimes", () => {
       const summary = { runId, model: models.get(name), reply: reply.text.slice(0, 300), tools: reply.tools, failures: reply.failures,
         approvals: reply.approvals, errors: reply.errors, folder, files, workspaceFiles: filesUnder(ws),
         instructionsHaveSection: instructions.map((text) => text.includes(paragraph(folder))),
+        // autobyteus-649 AC-002: what the runtime received has no Long-Running Commands section; its last section heading.
+        instructionsHaveLongRunningCommands: instructions.map((text) => text.includes("Long-Running Commands")),
+        // (the recorded wire may carry the text JSON-escaped, so `\n` is read as a line break here)
+        instructionsLastHeading: instructions.map((text) => text.replace(/\\n/g, "\n").match(/^## .+$/gm)?.at(-1) ?? null),
         instructionsExcerpt: instructions[0] ? instructions[0].slice(Math.max(0, instructions[0].indexOf("## Project")),
           instructions[0].indexOf(paragraph(folder)) + paragraph(folder).length + 200) : null,
         ...(name === "codex" ? { wire: codexThreadRequests(`(keeper ${name})`).map(excerpt) } : {}),
@@ -393,6 +390,7 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(reply.approvals, "no approval asked for the agent's own memory").toEqual([]);
       expect(instructions.length, "instructions received").toBeGreaterThan(0);
       for (const text of instructions) expect(text).toContain(paragraph(folder));
+      for (const text of instructions) expect(text).not.toContain("Long-Running Commands"); // autobyteus-649 AC-002
       if (name === "autobyteus") {
         const system = instructions[0]!;
         expect(system).toContain(`(Project ID ${projects.A}). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n${section(folder, globalFolder())}\n\n## Working Environment`);
@@ -480,7 +478,8 @@ describeLive("agent semantic memory with real runtimes", () => {
       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(codeword);
       expect(wire.length).toBeGreaterThan(0);
-      expect(beforeLongRunningCommands(String(wire.at(-1)!.params.baseInstructions)).endsWith(`\n\n${section(folder, globalFolder())}`)).toBe(true);
+      // The semantic memory sections end the composed instructions; no Long-Running Commands section (autobyteus-649).
+      expect(String(wire.at(-1)!.params.baseInstructions).endsWith(`\n\n${section(folder, globalFolder())}`)).toBe(true);
       expect(wire.at(-1)!.params.config.sandbox_workspace_write).toEqual({ writable_roots: [folder, globalFolder()] });
       stream.socket.close();
     }, 900_000);

@@ -1,0 +1,18 @@
+# API-R06 gated exact tool-list suites (no model)
+# commands:
+#  env -i PATH HOME USER LOGNAME TMPDIR RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts --no-watch
+#  env -i PATH HOME=<temp> USER LOGNAME TMPDIR SEARCH_MEMORY_LIVE_E2E=agy ANTIGRAVITY_CLI_COMMAND=<abs fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts --no-watch
+# commit: 5c6ef6ee86 (code d624f09ce6); Node v22.23.1; codex-cli codex-cli 0.172.0; date 2026-11-26T17:18:49Z
+
+ ✓ tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts (1 test) 399ms
+     ✓ accepts enabled_tools: [] and connects to the Agent Tools endpoint  398ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+--- search-memory agy
+[2026-11-26T17:19:01.005Z] [WARN] [sandboxes] The sandbox start sweep did not finish: NodeIdentityNotMigratedError: This node's identity is waiting for its data migration.
+ ✓ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts (3 tests) 38874ms
+     ✓ SM-agy: a run of a definition without search_memory finds an earlier run and leaves itself out  25207ms
+     ✓ SM-agy-list: the run's Agent Tools MCP tools/list has search_memory once, listed or not  4437ms
+     ✓ SM-agy-upgrade: a run from before this build, restored, hears the notice once and has the tool  8540ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

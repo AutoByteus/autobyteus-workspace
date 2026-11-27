@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, provide, ref, toRef } from 'vue';
+import { computed, onBeforeUnmount, provide, ref, toRef, watch } from 'vue';
 import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
@@ -92,6 +92,8 @@ const activityStore = useAgentActivityStore();
 const effectiveRunId = computed(() => props.runId || props.conversation.id);
 const compactionActivities = computed(() => activityStore.getCompactionActivities(effectiveRunId.value));
 const filePreviewStatus = ref('');
+// The monitor is reused across runs: a status line about one run's file does not stay on another (autobyteus-647 D-6).
+watch(effectiveRunId, () => { filePreviewStatus.value = ''; });
 const revealTool = useWorkspaceToolReveal();
 // Taken in setup: it reads the route through inject, which the lazily created opener cannot (autobyteus-427).
 const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;

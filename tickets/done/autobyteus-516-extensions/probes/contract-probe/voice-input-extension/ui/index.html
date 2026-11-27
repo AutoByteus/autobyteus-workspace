@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Voice Input</title></head>
+<body style="font-family: system-ui; font-size: 14px">
+  <label>Language
+    <select id="language">
+      <option value="auto">Auto</option><option value="en">English</option><option value="zh">Chinese</option>
+    </select>
+  </label>
+  <p id="status">Loading…</p>
+  <script>
+    // Bridge (extension-contract.md part 5): only postMessage to the parent, only our own actions.
+    let next = 0;
+    const waiting = new Map();
+    const call = (action, input) => new Promise((resolve, reject) => {
+      const id = String(++next);
+      waiting.set(id, { resolve, reject });
+      parent.postMessage({ id, call: action, input }, '*');
+    });
+    window.addEventListener('message', (event) => {
+      if (event.source !== parent) return;
+      const pending = waiting.get(event.data?.id);
+      if (!pending) return;
+      waiting.delete(event.data.id);
+      event.data.ok ? pending.resolve(event.data.output) : pending.reject(new Error(event.data.error));
+    });
+    const select = document.getElementById('language');
+    const report = (probe) => parent.postMessage({ probe }, '*');
+
+    (async () => {
+      const results = {};
+      // 1. Bridge call to our own action.
+      try { results.getLanguage = (await call('getLanguage', {})).language; } catch (e) { results.getLanguage = 'ERROR ' + e.message; }
+      select.value = results.getLanguage;
+      // 2. Bridge call that changes a setting, then read it back.
+      try { await call('setLanguage', { language: 'zh' }); results.afterSet = (await call('getLanguage', {})).language; } catch (e) { results.afterSet = 'ERROR ' + e.message; }
+      try { await call('setLanguage', { language: results.getLanguage }); } catch {}
+      // 3. A call the extension does not have must fail cleanly.
+      try { await call('noSuchAction', {}); results.unknownAction = 'UNEXPECTED SUCCESS'; } catch (e) { results.unknownAction = 'refused: ' + e.message; }
+      // 4. The page must not reach the network itself (CSP connect-src 'none').
+      try { await fetch('/probe/secret'); results.directFetch = 'UNEXPECTED SUCCESS'; } catch (e) { results.directFetch = 'blocked: ' + e.name; }
+      // 5. Its origin must be opaque (sandbox without allow-same-origin).
+      results.origin = self.origin;
+      try { results.parentReadable = String(Boolean(parent.document)); } catch (e) { results.parentReadable = 'blocked: ' + e.name; }
+      document.getElementById('status').textContent = 'Ready';
+      report(results);
+    })();
+  </script>
+</body>
+</html>

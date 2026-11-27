@@ -8,6 +8,9 @@ import {
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
 import { remoteCollaborationSettingsPath, type AppDataDirSource } from "./settings-file-schema.js";
 
+/** A peer's lifecycle mark on this node (C11): `sandbox`, a sandbox this node created. Absent: a normal peer. */
+export type PeerRole = "sandbox";
+
 /** One row of `peers.json`: the peer and, once the two nodes paired, the secret they share (NA-9). */
 export type StoredPeer = Readonly<{
   nodeId: string;
@@ -15,7 +18,14 @@ export type StoredPeer = Readonly<{
   baseUrl: string;
   addedAt: string;
   peerSecret: string | null;
+  role: PeerRole | null;
 }>;
+
+const parseRole = (value: unknown, label: string): PeerRole | null => {
+  if (value === undefined || value === null) return null;
+  if (value !== "sandbox") throw new Error(`${label} must be "sandbox" when present.`);
+  return value;
+};
 
 const parsePeer = (value: unknown, label: string): StoredPeer => {
   const peer = objectRecord(value, label);
@@ -27,6 +37,8 @@ const parsePeer = (value: unknown, label: string): StoredPeer => {
     addedAt: isoTimestamp(peer.addedAt, `${label}.addedAt`),
     // Rows written before peers paired have no secret: an unpaired peer (Directly Usable, no migration).
     peerSecret: peer.peerSecret === undefined || peer.peerSecret === null ? null : requiredString(peer.peerSecret, `${label}.peerSecret`),
+    // Rows written before roles existed have none: a normal peer (Directly Usable, no migration).
+    role: parseRole(peer.role, `${label}.role`),
   };
 };
 
@@ -36,6 +48,7 @@ const toRow = (peer: StoredPeer): Record<string, string> => ({
   baseUrl: peer.baseUrl,
   addedAt: peer.addedAt,
   ...(peer.peerSecret ? { peerSecret: peer.peerSecret } : {}),
+  ...(peer.role ? { role: peer.role } : {}),
 });
 
 /**

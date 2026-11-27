@@ -1,0 +1,14 @@
+{
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "unknownBrowserErrors": [
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: net::ERR_REQUEST_RANGE_NOT_SATISFIABLE",
+   "known": false
+  }
+ ]
+}

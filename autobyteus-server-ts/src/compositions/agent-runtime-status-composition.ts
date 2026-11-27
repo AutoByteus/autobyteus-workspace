@@ -1,4 +1,5 @@
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
+import { getProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
 import type { ApplicationPlatformHostManagementContracts } from "../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { CodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { AgentRuntimeSignInReader } from "../runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
@@ -38,7 +39,7 @@ export const composeAgentRuntimeStatus = (input: Readonly<{
   applicationActiveAgentRuns: ApplicationPlatformHostManagementContracts["activeAgentRuns"];
 }>): AgentRuntimeStatusHandle => {
   const strategies = createAgentRuntimeStrategies({ codexClientManager: input.codexClientManager });
-  const signInReader = new AgentRuntimeSignInReader(strategies);
+  const signInReader = new AgentRuntimeSignInReader(strategies, getProcessProviderRelayAccess);
   const service = new AgentRuntimeStatusService({
     strategies,
     signInReader,

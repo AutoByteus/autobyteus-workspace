@@ -1100,8 +1100,8 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 | ------------------------------------- | ----------------------------------------------------- |
 | `~/.autobyteus/`                      | Canonical AutoByteus desktop data root                |
 | `~/.autobyteus/server-data/`          | Server runtime data                                   |
-| `~/.autobyteus/extensions/`           | Managed extension install root                        |
-| `~/.autobyteus/extensions/voice-input/` | Voice Input runtime, model, temp, and download assets |
+| `~/.autobyteus/server-data/extensions/` | The node's extensions: `state.json`, and per extension its package, data and log |
+| `~/.autobyteus/server-data/extensions/voice-input/data/` | Voice Input runtime, speech model, temp, and download assets |
 | `~/.autobyteus/server-data/db/`       | SQLite databases                                      |
 | `~/.autobyteus/server-data/logs/`     | Server logs                                           |
 | `~/.autobyteus/server-data/download/` | Downloaded assets                                     |
@@ -1123,9 +1123,8 @@ only these verified descendants of the already-authorized root:
 
 | Directory | Purpose |
 | --- | --- |
-| `<isolated-root>/server-data/` | Backend database, config, logs, downloads, memory, skills, and workspaces |
+| `<isolated-root>/server-data/` | Backend database, config, logs, downloads, memory, skills, extensions, and workspaces |
 | `<isolated-root>/logs/` | Electron main-process logs |
-| `<isolated-root>/extensions/` | Managed extension state |
 | `<isolated-root>/browser-artifacts/` | Application-owned browser artifacts |
 | `<isolated-root>/electron/user-data/` | Chromium profile, registry, local storage, cookies, caches, and persistent partitions |
 | `<isolated-root>/electron/session-data/` | Electron session data |
@@ -1283,16 +1282,24 @@ Deterministic Windows process-history and `taskkill` contracts are covered in
 the repository, but a real supported Windows-host CIM/`taskkill` run is still a
 platform validation responsibility rather than an inferred pass.
 
-### Managed Voice Input Extension
+### Voice Input Extension
 
-- Voice Input is delivered as a managed extension instead of being bundled into the base desktop installer.
+- Voice Input is an extension of the desktop's own node, not part of the base desktop installer. The Electron shell
+  holds no extension code: the node's Extension Manager installs it from AutoByteus's signed catalog and runs its
+  server part (see the server's [Extensions](../../autobyteus-server-ts/docs/modules/extensions.md)). Settings →
+  Extensions shows the card; every window, whichever node it is bound to, dictates with this computer's Voice Input.
 - Release provenance is pinned to the dedicated runtime repository:
-  - `AutoByteus/autobyteus-voice-runtime`
+  - `AutoByteus/autobyteus-voice-runtime` (the extension's server part pins one runtime version and checks its manifest's SHA-256)
 - The extension lifecycle is:
-  - `Install` downloads the platform runtime bundle into `~/.autobyteus/extensions/voice-input` and then performs local backend/model bootstrap for that machine
-  - `Enable` turns on shared composer/Project/Task dictation without re-downloading
-  - `Disable` turns off dictation while keeping the installed assets on disk
-  - `Remove` deletes the managed extension assets and resets Voice Input-specific state
+  - `Install` downloads the extension package, then the platform runtime bundle into
+    `~/.autobyteus/server-data/extensions/voice-input/data`, then performs local backend/model bootstrap for that machine; it ends On
+  - `Turn on` / `Turn off` start and stop the worker for dictation without re-downloading
+  - `Update` is offered when the signed catalog lists a newer version; it keeps the settings and the installed runtime, and a failed update keeps the old version running
+  - `Remove` deletes the extension's folder and its on/off entry
+- The microphone choice and the Test are the renderer's own (`localStorage`), not part of the extension.
+- The old desktop-only install in `~/.autobyteus/extensions` is deleted once, in the background, at the first start
+  after the update (the sealed client-data step `remove-desktop-voice-input-install`); Voice Input then shows Not installed
+  and is installed again from its card.
 - The published runtime release stays lightweight:
   - release assets include platform runtime bundles plus `voice-input-runtime-manifest.json`
   - bilingual model archives are not published as release assets
@@ -1331,26 +1338,26 @@ Project description, Project Task draft and Settings test controls:
   another destination. Settings uses source-scoped cancellation without a text
   sink. Source cancellation can invalidate a matching pending transcription too;
 - `disposeCapture()` releases streams/worklet/context without invalidating the
-  operation generation. Stop can release capture before local IPC transcription
-  and still deliver to a current target. It is not interchangeable with cleanup;
+  operation generation. Stop can release capture before the transcription request
+  to the embedded node and still deliver to a current target. It is not interchangeable with cleanup;
 - cancellation/cleanup increments the generation, clears the text sink and
-  settles a pending audio flush. An already dispatched uncancellable IPC remains
-  globally busy until its finally block settles; late text/error is ignored.
+  settles a pending audio flush. An already dispatched, uncancellable transcription
+  request remains globally busy until its finally block settles; late text/error is ignored.
   This avoids starting competing capture while pretending the worker stopped.
 
 Unavailable browser/extension/device capability leaves typed and file authoring
 usable, without sample-transcript fallback. Transcribed text remains editable
-and requires explicit Task Save/composer Send. Capture/IPC/fake-worker repository
+and requires explicit Task Save/composer Send. Capture/fake-extension repository
 fixtures prove these contracts, not real microphone permissions, official worker
-installation or live Electron transcription capability.
+installation or live transcription capability.
 
-Managed-extension HTTP test fixtures should build one immutable archive before
-listening and serve the captured bytes whose SHA appears in the manifest. Do not
+Extension HTTP test fixtures should build one immutable archive before
+listening and serve the captured bytes whose SHA appears in the catalog entry or runtime manifest. Do not
 regenerate archives per request, retry checksum failures or weaken verification.
 Synthetic archive-timestamp hazards are not proof of an actual installed failure.
 
-These destination/resource rules do not change managed release assets, local
-model policy, IPC result shape or persisted extension settings. See
+These destination/resource rules do not change runtime release assets, local
+model policy, the `transcribe` action's result shape or the extension's saved settings. See
 [Projects](projects.md#optional-local-voice-destination) for Project/Task authoring scope
 and the [composer voice lifetime regression](../tests/e2e/composer-voice-lifetime-probe.mjs)
 for repeatable renderer/native-browser coverage and its evidence limits.

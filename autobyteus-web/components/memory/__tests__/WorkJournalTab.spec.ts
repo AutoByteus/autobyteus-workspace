@@ -6,6 +6,9 @@ import { useMemoryJournalStore } from '~/stores/memoryJournalStore';
 import { useMemorySearchStore } from '~/stores/memorySearchStore';
 
 const FILE = { name: 'work_journal_active.md', lines: 6200, sizeKb: 512, firstDay: '2026-08-25', lastDay: '2026-08-27', days: [{ day: '2026-08-25', line: 5 }], open: true };
+const OLDER = { name: 'work_journal_000001.md', lines: 300, sizeKb: 24, firstDay: '2026-08-20', lastDay: '2026-08-21', days: [{ day: '2026-08-20', line: 2 }], open: false };
+
+vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
 const setup = () => {
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
@@ -38,7 +41,7 @@ describe('WorkJournalTab', () => {
     const { store, search, mountIt } = setup();
     store.subject = { kind: 'agent', runId: 'run-1', source: { type: 'LOCAL' } };
     store.runId = 'run-1';
-    store.files = [FILE];
+    store.files = [FILE, OLDER];
     store.selectedFile = FILE.name;
     store.from = 801;
     store.to = 1100;
@@ -93,5 +96,64 @@ describe('WorkJournalTab', () => {
     await wrapper.get('form').trigger('submit');
     expect(store.gotoLine).toHaveBeenCalledWith(5000);
     expect(wrapper.text()).toContain('Large file');
+  });
+
+  const opened = (files: typeof FILE[]) => {
+    const context = setup();
+    context.store.subject = { kind: 'agent', runId: 'run-1', source: { type: 'LOCAL' } };
+    context.store.files = files;
+    context.store.selectedFile = files[0]!.name;
+    context.store.from = 1;
+    context.store.to = 3;
+    context.store.lines = [{ n: 1, text: '[06:00:00] User: hello' }, { n: 2, text: '           HTTP/2 200' }, { n: 3, text: 'tail' }];
+    return context;
+  };
+
+  it('one journal file: no file list and no picker; its header names it (autobyteus-608 DC-008, VIS-012)', () => {
+    const wrapper = opened([FILE]).mountIt();
+    expect(wrapper.find('nav').exists()).toBe(false);
+    expect(wrapper.find('[data-test="work-journal-file-select"]').exists()).toBe(false);
+    const name = wrapper.get('[data-test="work-journal-file-name"]');
+    expect(name.text()).toBe('work_journal_active.md');
+    expect(name.classes()).not.toContain('hidden');
+  });
+
+  it('2+ journal files: the list at ≥ 1280 px, below it the header picker in place of the name; choosing a file loads it (TR-005, VIS-013, VIS-015)', async () => {
+    const { store, mountIt } = opened([FILE, OLDER]);
+    const wrapper = mountIt();
+    expect(wrapper.get('nav').classes()).toEqual(expect.arrayContaining(['hidden', 'xl:block']));
+    expect(wrapper.findAll('[data-test="work-journal-file"]')).toHaveLength(2);
+    expect(wrapper.get('[data-test="work-journal-file-name"]').classes()).toEqual(expect.arrayContaining(['hidden', 'xl:block']));
+    const picker = wrapper.get('select[data-test="work-journal-file-select"]');
+    expect(picker.element.parentElement?.classList.contains('xl:hidden')).toBe(true);
+    expect(picker.findAll('option').map((option) => option.text())).toEqual(['work_journal_active.md (Active)', 'work_journal_000001.md']);
+    expect(wrapper.get('label[for="work-journal-file-select"]').classes()).toContain('sr-only');
+    await picker.setValue('work_journal_000001.md');
+    expect(store.selectFile).toHaveBeenCalledWith('work_journal_000001.md');
+  });
+
+  it('Jump to day is the same picker; Go to line jumps on Enter with no Go button and no spinner (DC-009)', async () => {
+    const { store, mountIt } = opened([FILE]);
+    const wrapper = mountIt();
+    const day = wrapper.get('select[data-test="work-journal-day"]');
+    expect(day.classes()).toEqual(expect.arrayContaining(['appearance-none', 'text-xs']));
+    expect(day.element.parentElement?.querySelector('[data-icon="heroicons:chevron-down-20-solid"]')).not.toBeNull();
+    await day.setValue('5');
+    expect(store.gotoLine).toHaveBeenCalledWith(5);
+
+    expect(wrapper.find('form button').exists()).toBe(false);
+    const line = wrapper.get('[data-test="work-journal-line"]');
+    expect(line.classes()).toContain('no-spinner');
+    expect(line.attributes('enterkeyhint')).toBe('go');
+  });
+
+  it('fills the remaining height with its lines, not the viewport; a detail line indents by its leading spaces (DC-008)', () => {
+    const wrapper = opened([FILE]).mountIt();
+    const lines = wrapper.get('[data-test="work-journal-lines"]');
+    expect(lines.classes()).toEqual(expect.arrayContaining(['grow', 'basis-0', 'overflow-auto']));
+    expect(lines.attributes('class')).not.toMatch(/vh/);
+    const detail = wrapper.get('[data-line="2"] .journal-detail');
+    expect(detail.text()).toBe('HTTP/2 200');
+    expect((detail.element as HTMLElement).style.getPropertyValue('--indent')).toBe('11ch');
   });
 });

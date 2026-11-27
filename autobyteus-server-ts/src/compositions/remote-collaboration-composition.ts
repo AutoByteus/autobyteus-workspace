@@ -45,7 +45,9 @@ export const createLateRemoteCollaborationBinding = () => {
   };
   const channel: RemoteRunChannelAccess = () => read().client;
   const discovery: PeerDiscoveryAccess = () => read().discovery;
-  return Object.freeze({ channel, discovery, bind: (services: RemoteCollaborationServices) => { composed = services; } });
+  /** autobyteus-581: the credential proxy (composed earlier) relays a relayed node's provider calls through it. */
+  const peerRelays = () => read().peerRelays;
+  return Object.freeze({ channel, discovery, peerRelays, bind: (services: RemoteCollaborationServices) => { composed = services; } });
 };
 export type LateRemoteCollaborationBinding = ReturnType<typeof createLateRemoteCollaborationBinding>;
 

@@ -1,0 +1,83 @@
+{
+  "result": {
+    "project-task-manager": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 901,
+        "needs": 901
+      },
+      "group": {
+        "x": 351,
+        "y": 24,
+        "w": 311,
+        "needs": 311
+      },
+      "back": {
+        "x": 345,
+        "y": 24,
+        "w": 86,
+        "needs": 86
+      },
+      "h1": {
+        "x": 448,
+        "y": 24,
+        "w": 172,
+        "needs": 172
+      },
+      "h1Text": "Project Task Manager",
+      "filter": {
+        "x": 678,
+        "y": 21,
+        "w": 240,
+        "needs": 190
+      },
+      "switch": {
+        "x": 934,
+        "y": 20,
+        "w": 318,
+        "needs": 318
+      }
+    },
+    "capacity-planner": {
+      "header": {
+        "x": 351,
+        "y": 20,
+        "w": 901,
+        "needs": 901
+      },
+      "group": {
+        "x": 351,
+        "y": 20,
+        "w": 901,
+        "needs": 901
+      },
+      "back": {
+        "x": 345,
+        "y": 20,
+        "w": 86,
+        "needs": 86
+      },
+      "h1": {
+        "x": 448,
+        "y": 20,
+        "w": 550,
+        "needs": 550
+      },
+      "h1Text": "Quarterly Infrastructure Capac",
+      "filter": {
+        "x": 351,
+        "y": 59,
+        "w": 240,
+        "needs": 190
+      },
+      "switch": {
+        "x": 607,
+        "y": 58,
+        "w": 319,
+        "needs": 319
+      }
+    }
+  },
+  "errors": []
+}

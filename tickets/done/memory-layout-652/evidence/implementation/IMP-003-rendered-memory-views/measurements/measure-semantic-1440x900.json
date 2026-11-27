@@ -1,0 +1,95 @@
+{
+  "result": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "scroller": {
+      "scrollHeight": 900,
+      "clientHeight": 900
+    },
+    "header": {
+      "x": 351,
+      "y": 20,
+      "w": 1061,
+      "h": 49,
+      "bottom": 69,
+      "right": 1412
+    },
+    "contentTop": 85,
+    "panel": {
+      "x": 351,
+      "y": 85,
+      "w": 1061,
+      "h": 795,
+      "bottom": 880,
+      "right": 1412
+    },
+    "panelGapToBottom": 20,
+    "list": {
+      "x": 352,
+      "y": 86,
+      "w": 300,
+      "h": 793,
+      "bottom": 879,
+      "right": 652
+    },
+    "searchRowHeight": 46,
+    "tabInfo": {
+      "text": "deployment-checklist-and-rollback-pla.md",
+      "title": "deployment-checklist-and-rollback-pla.md",
+      "width": 285,
+      "truncated": false
+    },
+    "type": {
+      "h1": "22px",
+      "h2": null,
+      "h3": null,
+      "body": "14px",
+      "li": null
+    },
+    "headerText": "Software Engineering Team\n/\nSolution Designer\nEpisodic memory\n1\nSemantic memory",
+    "back": {
+      "text": "Software Engineering Team",
+      "label": "Back to Software Engineering Team"
+    },
+    "sectionTabs": 0,
+    "rows": [
+      "records",
+      "reflections",
+      "deployment-checklist-and-rollback-pla.md",
+      "lessons.md",
+      "network-settings-and-routing-facts.md",
+      "proposals.md"
+    ],
+    "icons": [
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      },
+      {
+        "tag": "svg",
+        "paths": 1,
+        "w": 14
+      }
+    ],
+    "copied": {
+      "label": "Copied",
+      "clipboard": "<stack-root>/data/memory/semantic/team-local-agent%3Asoftware-engineering-team%3Asolution_designer",
+      "path": "<stack-root>/data/memory/semantic/team-local-agent%3Asoftware-engineering-team%3Asolution_designer",
+      "after": "Copy folder path"
+    }
+  },
+  "errors": []
+}

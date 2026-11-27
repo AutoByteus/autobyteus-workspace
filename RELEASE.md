@@ -229,6 +229,25 @@ otherwise ship unnoticed.
   exception is the user explicitly waiving a named runtime at the release
   decision. Record the waiver and its reason in the delivery report.
 
+### Extensions catalog check
+
+Voice Input (and every later extension) is installed only from AutoByteus's
+signed catalog, which lives in its own repository and is released separately
+([AutoByteus Extensions](#autobyteus-extensions)). An app whose catalog does not
+work leaves users unable to install it, and the app's first start deletes the
+old desktop-only Voice Input install once, so a tag without a working catalog
+takes dictation away. Before every beta and stable tag, check both:
+
+- the built-in public key `EXTENSIONS_CATALOG_PUBLIC_KEY_PEM` in
+  `autobyteus-server-ts/src/extensions/catalog/extension-catalog-source.ts` is
+  not empty and equals the extensions repository's `catalog-public-key.pem`;
+- the repository's fixed release `catalog` holds `extensions-catalog.json` and
+  its `.sig`, and the catalog lists `voice-input`
+  (`gh release view catalog --repo AutoByteus/autobyteus-extensions --json assets`).
+
+A failing check is a blocker, not a waiver. The key and the first releases
+exist, so a failing check means something changed: fix it before the tag.
+
 ### Build-only release run
 
 A release has no build-only run before its tag (the user's decision). The
@@ -637,6 +656,34 @@ What the release workflows build, validate and need.
   - `IOS_ARTIFACT_PREFIX`
   - `IOS_XCODE_APP_PATH`
 - No git submodules are required in this workspace.
+
+### AutoByteus Extensions
+
+The extensions and the catalog AutoByteus trusts are maintained in the
+independent `AutoByteus/autobyteus-extensions` repository, with its own tags and
+two release workflows (*Release an extension*, tag `<id>-v<version>`; *Release
+the catalog*, the fixed release `catalog`) and *Check the signing key*, which
+signs and verifies with the secret and publishes nothing. Its README holds the
+order: package first, then the catalog. Desktop publication does not publish
+them, and their versions are independent of the app's. Nothing in it is
+released without the founder's word.
+
+- The catalog is signed with the Ed25519 private key kept only as that
+  repository's secret `EXTENSIONS_CATALOG_SIGNING_KEY`; the matching public key
+  is `catalog-public-key.pem` there and is built into the app
+  (`EXTENSIONS_CATALOG_PUBLIC_KEY_PEM`, see the
+  [Extensions catalog check](#extensions-catalog-check)). The key pair is
+  created on the founder's Mac by the setup script he approved, run on his
+  word, possibly by an agent. The script writes the private key straight into a
+  protected local file and into the repository secret
+  `EXTENSIONS_CATALOG_SIGNING_KEY`, and never prints it. No agent opens, reads,
+  copies or commits it. The private key exists only as that secret and in the
+  founder's own backup; he deletes the local file once it is backed up.
+- Changing the key (or its built-in copy) makes every installed app refuse the
+  other catalog: treat it like the server package key and the desktop signing
+  key, a coordinated change, never a fix for a failed run.
+- The extension contract and the node's side are documented in
+  `autobyteus-server-ts/docs/modules/extensions.md`.
 
 ### AutoByteus NFS assets
 

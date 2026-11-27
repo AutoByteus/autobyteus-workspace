@@ -6,7 +6,7 @@ import type { ClientIdentity } from "../../../src/node-access/domain/client-iden
 /** Design § Contract Between Nodes: the gateway's fixed admission order (REQ-114, AC-101, AC-102, AC-111). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
 /** The identity the node access gate established from the request's signature (node access model NA-9). */
 const PEER_CALLER: ClientIdentity = { kind: "peer", nodeId: PEER.nodeId };
 

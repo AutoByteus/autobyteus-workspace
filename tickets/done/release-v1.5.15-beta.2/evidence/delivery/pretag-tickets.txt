@@ -1,0 +1,32 @@
+# git log --merges --first-parent v1.5.15-beta.1..HEAD at 32aa87d429, 2026-11-25 (26 commits since v1.5.15-beta.1)
+91cb17b06d merge(viewer-polish-647): the file viewer has no line numbers, an empty media reference says so, iOS plays in its own player screen, one shared PDF worker (autobyteus-647)
+383c3a7d96 merge(remove-long-running-prompt-649): no runtime's system prompt carries the "Long-Running Commands" section; the habit lives as a best-practice note in global memory (autobyteus-649)
+
+# direct (non-merge, first-parent) commits since v1.5.15-beta.1
+32aa87d429 docs(viewer-polish-647): record the finalization (autobyteus-647)
+2bdfea0444 docs(remove-long-running-prompt-649): record the finalization (autobyteus-649, DR-001)
+bc4351cad7 docs(release-v1.5.15-beta.1): released and verified (4/4 workflows, 27/27 assets, pre-release, iOS 1.5.15 (361), Docker :beta moved and :latest unchanged at system level 2; Codex waived by 
+
+# released migrations, prisma, docker, workflows, scripts, RELEASE.md changed since v1.5.15-beta.1 (non-ticket, non-test):        0 files (test files: 0)
+# Codex-named files changed since v1.5.15-beta.1 (non-ticket): 2
+# non-ticket files changed since v1.5.15-beta.1:
+   4 autobyteus-web/tests/e2e
+   3 autobyteus-web/docs
+   3 autobyteus-server-ts/tests/unit/agent-execution/prompt
+   3 autobyteus-server-ts/tests/e2e/runtime
+   3 autobyteus-ios/AutoByteusMobileUITests
+   2 docs
+   2 autobyteus-web/components/fileExplorer/viewers/__tests__
+   2 autobyteus-server-ts/tests/unit/agent-execution/backends/acp
+   2 autobyteus-server-ts/src/agent-execution/prompt
+   2 autobyteus-server-ts/docs/modules
+   1 pnpm-lock.yaml
+   1 autobyteus-web/utils/pdf/__tests__
+   1 autobyteus-web/utils/pdf
+   1 autobyteus-web/components/workspace/collaboration/__tests__
+   1 autobyteus-web/components/workspace/collaboration
+   1 autobyteus-web/components/workspace/agent/__tests__
+   1 autobyteus-web/components/workspace/agent
+   1 autobyteus-web/components/mobile/views/__tests__
+   1 autobyteus-web/components/fileExplorer/viewers
+   1 autobyteus-web/components/fileExplorer/__tests__

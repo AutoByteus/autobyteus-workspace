@@ -15,7 +15,8 @@ const PAGES = 4;
 const PAGE_RATIO = 1.3;
 const layout = vi.hoisted(() => ({ sized: 0 }));
 
-vi.mock('vue-pdf-embed', () => ({
+vi.mock('~/utils/pdf/sharedPdfWorker', () => ({ getSharedPdfWorker: () => ({}) }));
+vi.mock('vue-pdf-embed/dist/index.essential.mjs', () => ({
   default: defineComponent({
     props: ['source', 'width'],
     emits: ['loaded', 'loading-failed'],

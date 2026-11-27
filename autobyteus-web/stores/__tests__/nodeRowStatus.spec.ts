@@ -6,8 +6,8 @@ import type { PeerOffer } from '~/stores/remoteCollaborationOffersStore'
 
 const A = 'srv_thisNodeAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 const B = 'srv_otherNodeBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true }
-const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true }
+const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true, role: null }
+const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true, role: null }
 
 const row = (overrides: Partial<NodeRow> = {}): NodeRow => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,

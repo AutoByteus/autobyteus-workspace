@@ -1,3 +1,6 @@
+import type { ProviderRelayRunAccess } from "../../../credential-proxy/provider-relays/provider-relay-access.js";
+import { processNodeRelayAccess } from "../../../credential-proxy/provider-relays/provider-relay-process-access.js";
+
 const DEFAULT_APP_SERVER_COMMAND = "codex";
 const DEFAULT_APP_SERVER_ARGS = ["app-server"];
 /**
@@ -48,3 +51,34 @@ export const resolveRequestTimeoutMs = (): number => {
 
 export const resolveLaunchCommand = (): string =>
   process.env.CODEX_APP_SERVER_COMMAND?.trim() || DEFAULT_APP_SERVER_COMMAND;
+
+/** One app-server process's arguments and environment. */
+export type CodexAppServerLaunch = Readonly<{ args: string[]; env: NodeJS.ProcessEnv }>;
+
+/** The node's own OpenAI credentials, which a relayed Codex never sees. */
+const CODEX_OWN_CREDENTIAL_ENV = ["OPENAI_API_KEY", "CODEX_API_KEY"] as const;
+
+/** The relay provider a relayed app-server's model calls use (API key, P-13): the node pass as its bearer. */
+const RELAY_PROVIDER_ID = "autobyteus_relay";
+
+const tomlString = (value: string): string => JSON.stringify(value);
+
+/**
+ * The app-server launch (one per working directory). Unrelayed: as configured, in the server's environment. On a
+ * relayed node (DS-001), a custom provider on the relay with the node pass as its bearer (`base_url`,
+ * `experimental_bearer_token`, P-13), and none of the node's own OpenAI keys. Always the API key: Codex cannot run on a
+ * relayed login token (DEC-115, IMP-12: in ChatGPT mode it sends model calls only to an HTTPS workspace backend).
+ */
+export const resolveCodexAppServerLaunch = (
+  relay: ProviderRelayRunAccess | null = processNodeRelayAccess("openai", "codex_app_server"),
+): CodexAppServerLaunch => {
+  if (!relay) return { args: parseArgs(), env: { ...process.env } };
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  for (const key of CODEX_OWN_CREDENTIAL_ENV) delete env[key];
+  const provider = `{name=${tomlString("AutoByteus relay")},base_url=${tomlString(`${relay.baseUrl}/v1`)},`
+    + `experimental_bearer_token=${tomlString(relay.pass)},wire_api="responses"}`;
+  return {
+    args: [...parseArgs(), "-c", `model_providers.${RELAY_PROVIDER_ID}=${provider}`, "-c", `model_provider=${RELAY_PROVIDER_ID}`],
+    env,
+  };
+};

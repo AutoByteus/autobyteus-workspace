@@ -14,6 +14,7 @@ import { ModelRoutingToolsMcpAdapterProvider } from "./model-routing-tools-mcp-a
 
 import { ProjectTaskToolsMcpAdapterProvider } from "./project-task-tools-mcp-adapter-provider.js";
 import { MemoryToolsMcpAdapterProvider } from "./memory-tools-mcp-adapter-provider.js";
+import { SandboxToolsMcpAdapterProvider } from "./sandbox-tools-mcp-adapter-provider.js";
 
 /** The static adapters of a host's Agent Tools MCP; the discovery tools read the host's discovery (autobyteus-500). */
 export const buildDefaultAgentToolMcpAdapterProviders = (input: Readonly<{ peerDiscovery: PeerDiscoveryAccess }>): AgentToolMcpAdapterProvider[] => [
@@ -30,4 +31,5 @@ export const buildDefaultAgentToolMcpAdapterProviders = (input: Readonly<{ peerD
   new ModelRoutingToolsMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),
   new MemoryToolsMcpAdapterProvider(),
+  new SandboxToolsMcpAdapterProvider(),
 ];

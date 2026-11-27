@@ -1,0 +1,19 @@
+{
+ "case": "MSP-118",
+ "result": "Pass",
+ "seconds": 3.5,
+ "shown": {
+  "status": "The file preview could not be opened.",
+  "screenshot": "MSP-118-desktop-status-in-run-a.png"
+ },
+ "otherRun": {
+  "status": "",
+  "statusElements": 0,
+  "screenshot": "MSP-118-desktop-run-b.png"
+ },
+ "backAgain": {
+  "status": "",
+  "statusElements": 0,
+  "screenshot": "MSP-118-desktop-run-a-again.png"
+ }
+}

@@ -13,7 +13,6 @@ export type DeliveryRoute = Readonly<{
   origin: string;
   /** Prefix added before the caller's path (empty for both GitHub routes). */
   basePath: string;
-  auth: DeliveryAuthFormat;
   /** Whether the request body is buffered (sent with its length) or streamed (git packs can be large). */
   buffersRequestBody: boolean;
   /** Whether a text or JSON response body is buffered so an echo of the token can be redacted. */
@@ -22,6 +21,9 @@ export type DeliveryRoute = Readonly<{
   mapsUnauthorizedToForbidden: boolean;
   allows(method: string, pathname: string): boolean;
 }>;
+
+/** An integration's route: a delivery route whose one credential header has this format. */
+export type IntegrationDeliveryRoute = DeliveryRoute & Readonly<{ auth: DeliveryAuthFormat }>;
 
 /** What a token check with the service answered. */
 export type TokenCheck =
@@ -36,7 +38,7 @@ export type TokenCheck =
  */
 export type DeliveryDefinition = Readonly<{
   id: IntegrationId;
-  routes: Readonly<Record<string, DeliveryRoute>>;
+  routes: Readonly<Record<string, IntegrationDeliveryRoute>>;
   /**
    * The variables a run's shell gets for this integration. `env` is the environment so far (the run's base
    * environment plus earlier integrations' variables): git config is appended after its `GIT_CONFIG_COUNT` entries.
@@ -136,7 +138,7 @@ export class DeliveryDefinitions {
     return this.byId.get(integrationId) ?? null;
   }
 
-  route(integrationId: string, routeId: string): DeliveryRoute | null {
+  route(integrationId: string, routeId: string): IntegrationDeliveryRoute | null {
     const routes = this.get(integrationId)?.routes;
     return routes && Object.prototype.hasOwnProperty.call(routes, routeId) ? routes[routeId]! : null;
   }

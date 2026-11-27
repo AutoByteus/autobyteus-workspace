@@ -1,0 +1,21 @@
+# IMP-11 Codex 0.171 ChatGPT-mode request targets (placeholders only, fake relay)
+# command: python3 -I probes/fake-relay.py 47581 <log> & docker run --rm --entrypoint bash -v probes/codex-chatgpt-base-url-probe.sh:/probe.sh:ro autobyteus-server:581-local /probe.sh
+# commit: ce0e69d8d7 image; date 2026-11-26T16:03Z; macOS arm64, Docker Desktop
+
+## Run 1: chatgpt_base_url only (the IR-001 shape)
+URL hosts seen by Codex (RUST_LOG=debug): 6 https://chatgpt.com/backend-api/codex/models (direct, NOT the relay); 1 https://auth.openai.com/oauth/token (refresh attempt with the placeholder); relay got only wham/*, ps/*, codex/analytics-events/*
+
+## Run 2: plus openai_base_url=<relay>/backend-api/codex
+Fake relay received (method path, credential headers present):
+3 GET /relay/openai/backend-api/codex/models authorization,chatgpt-account-id
+3 GET /relay/openai/backend-api/ps/plugins/installed authorization,chatgpt-account-id
+2 GET /relay/openai/backend-api/ps/plugins/suggested/codex authorization,chatgpt-account-id
+2 GET /relay/openai/backend-api/ps/plugins/tooling-state/turtle authorization,chatgpt-account-id
+8 GET /relay/openai/backend-api/wham/accounts/check authorization,chatgpt-account-id
+2 GET /relay/openai/backend-api/wham/settings/user authorization,chatgpt-account-id
+2 POST /relay/openai/backend-api/codex/analytics-events/events authorization,chatgpt-account-id
+2 POST /relay/openai/backend-api/ps/mcp 
+
+## Codex features list (in the image)
+responses_websockets removed false
+responses_websockets_v2 removed false

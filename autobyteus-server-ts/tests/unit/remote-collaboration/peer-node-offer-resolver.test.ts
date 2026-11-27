@@ -1,3 +1,4 @@
+import { testExtensionManager } from "../../helpers/test-extension-manager.js";
 import "reflect-metadata";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RemoteCollaborationSettingsResolver } from "../../../src/api/graphql/types/remote-collaboration-settings.js";
@@ -75,7 +76,7 @@ describe("one-nodes-tab settings operations", () => {
     const changeAddress = vi.fn(async (nodeId: string, baseUrl: string) => ({ nodeId, name: "docker", baseUrl, addedAt: "2026-10-20T09:00:00.000Z", paired: true }));
     bindWith({ peers: { changeAddress } });
     const resolver = new RemoteCollaborationSettingsResolver();
-    await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001", { requestAbortSignal: new AbortController().signal, clientIdentity: { kind: "owner", credentialId: "launch" } })).resolves.toMatchObject({ baseUrl: "http://host.docker.internal:8001" });
+    await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001", { extensions: testExtensionManager(), requestAbortSignal: new AbortController().signal, clientIdentity: { kind: "owner", credentialId: "launch" } })).resolves.toMatchObject({ baseUrl: "http://host.docker.internal:8001" });
     expect(changeAddress).toHaveBeenCalledWith("srv_b", "http://host.docker.internal:8001");
   });
 });

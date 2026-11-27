@@ -49,7 +49,7 @@ describe("PeerDirectory", () => {
   it("NAS-19 saves a paired peer with its secret in peers.json (mode 0600, exact keys); lists it as paired, never with the secret", async () => {
     const f = await directory();
     await expect(f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://localhost:29700", name: "docker", peerSecret: SECRET })).resolves.toEqual({
-      nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true });
+      nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null });
     const file = path.join(f.dir, "remote-collaboration", "peers.json");
     expect(await readJson(file)).toEqual({ peers: [
       { nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z", peerSecret: SECRET }] });
@@ -64,10 +64,10 @@ describe("PeerDirectory", () => {
     await fs.mkdir(path.join(f.dir, "remote-collaboration"), { recursive: true });
     await fs.writeFile(path.join(f.dir, "remote-collaboration", "peers.json"), JSON.stringify({ peers: [
       { nodeId: B, name: "nas", baseUrl: "http://localhost:8001", addedAt: "2026-10-01T09:00:00.000Z" }] }));
-    await expect(f.peers.list()).resolves.toEqual([{ nodeId: B, name: "nas", baseUrl: "http://localhost:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: false }]);
+    await expect(f.peers.list()).resolves.toEqual([{ nodeId: B, name: "nas", baseUrl: "http://localhost:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: false, role: null }]);
     await expect(f.peers.peerSecret(B)).resolves.toBeNull();
     await expect(f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://host.docker.internal:8001", name: "other", peerSecret: SECRET }))
-      .resolves.toEqual({ nodeId: B, name: "nas", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: true });
+      .resolves.toEqual({ nodeId: B, name: "nas", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: true, role: null });
   });
 
   it("refuses pairing this node itself and a peer that is already paired; a wanted name is made valid and unique", async () => {
@@ -101,7 +101,7 @@ describe("PeerDirectory", () => {
     const f = await directory();
     await f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
     await expect(f.peers.changeAddress(B, "host.docker.internal:8001")).resolves.toMatchObject({
-      nodeId: B, name: "docker", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-20T09:00:00.000Z", paired: true });
+      nodeId: B, name: "docker", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null });
     expect((await readJson(path.join(f.dir, "remote-collaboration", "peers.json"))).peers[0].baseUrl).toBe("http://host.docker.internal:8001");
     f.probe.fetchNodeId.mockResolvedValueOnce("srv_someone_else_000000000000000000000");
     await expect(f.peers.changeAddress(B, "http://wrong")).rejects.toMatchObject({ code: "PEER_IDENTITY_MISMATCH" });

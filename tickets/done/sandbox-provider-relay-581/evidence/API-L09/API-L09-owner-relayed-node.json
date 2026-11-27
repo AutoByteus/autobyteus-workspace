@@ -1,0 +1,110 @@
+{
+  "startedAt": "2026-11-26T17:40:22.898Z",
+  "node": "v22.23.1",
+  "result": "Pass",
+  "checks": {
+    "bNativeProvidersConfiguredBeforeRelay": [],
+    "pairing": {
+      "aSeesB": [
+        {
+          "name": "relayed-b",
+          "paired": true,
+          "role": null
+        }
+      ],
+      "bSeesA": [
+        {
+          "name": "relay-a",
+          "paired": true,
+          "role": null
+        }
+      ],
+      "roleKeyInAPeersJson": false
+    },
+    "bRuntimeStates": {
+      "codex_app_server": "SIGNED_IN",
+      "claude_agent_sdk": "SIGNED_IN",
+      "antigravity_cli": "SIGNED_OUT",
+      "grok_build": "SIGNED_IN",
+      "deepseek_harness": "SIGNED_IN"
+    },
+    "bNativeProvidersConfiguredRelayed": [
+      "ANTHROPIC",
+      "DEEPSEEK",
+      "GROK",
+      "OPENAI"
+    ],
+    "turns": {
+      "autobyteus": {
+        "model": "claude-haiku-5-5",
+        "completed": true,
+        "errors": [],
+        "relayedLines": [
+          "anthropic/apiKey POST /v1/messages -> 200"
+        ],
+        "allFromB": true
+      },
+      "claude_agent_sdk": {
+        "model": "haiku",
+        "completed": true,
+        "errors": [],
+        "relayedLines": [
+          "anthropic/apiKey POST /v1/messages -> 200"
+        ],
+        "allFromB": true
+      },
+      "codex_app_server": {
+        "model": "gpt-5.6-luna",
+        "completed": true,
+        "errors": [],
+        "relayedLines": [
+          "anthropic/apiKey POST /v1/messages -> 200",
+          "openai/apiKey POST /v1/responses -> 200"
+        ],
+        "allFromB": true
+      },
+      "grok_build": {
+        "model": "grok-4.20-0309-non-reasoning",
+        "completed": true,
+        "errors": [],
+        "relayedLines": [
+          "xai/apiKey GET /v1/models -> 200",
+          "xai/apiKey GET /v1/api-key -> 200",
+          "xai/apiKey GET /v1/models -> 200",
+          "xai/apiKey GET /v1/api-key -> 200",
+          "xai/apiKey POST /v1/chat/completions -> 200"
+        ],
+        "allFromB": true
+      },
+      "deepseek_harness": {
+        "model": "deepseek-v4-flash",
+        "completed": true,
+        "errors": [],
+        "relayedLines": [
+          "xai/apiKey POST /v1/chat/completions -> 200",
+          "xai/apiKey POST /v1/responses -> 200",
+          "deepseek/apiKey POST /anthropic/v1/messages -> 200"
+        ],
+        "allFromB": true
+      }
+    },
+    "bValueScan": {
+      "files": 5792,
+      "hits": {},
+      "needleIds": 8
+    },
+    "c5Keys": [
+      "at",
+      "durationMs",
+      "method",
+      "path",
+      "peerNodeId",
+      "relayCredentialKind",
+      "relayId",
+      "status"
+    ],
+    "c5SecretHits": []
+  },
+  "error": null,
+  "finishedAt": "2026-11-26T17:40:44.885Z"
+}

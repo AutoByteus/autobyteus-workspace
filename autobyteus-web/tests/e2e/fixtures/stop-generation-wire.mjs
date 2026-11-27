@@ -19,6 +19,14 @@
 //   interrupt (AGY always stops), so this stands in for a runtime that could not stop; the page's presentation is what
 //   it proves.
 // - `loseNextSend` / `dropAfterNextSend`: the same for the page's next `SEND_MESSAGE` (autobyteus-540 SCN-002).
+// - `withholdBeforeTeamIdle`: on a Team stream, the numbered frame (one with a `change_sequence`) right before the next
+//   `AGENT_STATUS` idle toward the page is withheld, never delivered: the idle status arrives past a gap, as after a lost
+//   event, when the Team has finished its work (autobyteus-541 AC-001). While armed, each numbered Team frame waits for the
+//   next one (their order kept); the option disarms itself once it withheld one.
+// - `withholdNextTeamEvent`: the next numbered frame toward the page on a Team stream is withheld, never delivered; the
+//   following one arrives past a gap, and the page keeps the statuses it had (autobyteus-541 AC-002).
+// Each link keeps the order of each direction's frames: one queue per direction, each frame due at its arrival plus the
+// delay or after the frame before it, whichever is later, drained in order by one timer (autobyteus-541 D-A8).
 // Every Stop- and send-related frame is logged with its time (`log`), so a case counts the Stops and messages the page
 // sent and reads the node's answers; an `AGENT_STREAM_SNAPSHOT`'s `input_state` (the run's queued input) is logged too.
 
@@ -77,6 +85,8 @@ export const createStopWire = () => {
     refuseStops: false,
     loseNextSend: false,
     dropAfterNextSend: false,
+    withholdBeforeTeamIdle: false,
+    withholdNextTeamEvent: false,
     /**
      * `{ at, link, dir, url, ...summary, note? }`: `up` page → node (when the page sent it), `down` node → page (when the page
      * received it), `node` a command answer as the node sent it (when it reached the wire, before any delay: the node's
@@ -102,18 +112,29 @@ export const createStopWire = () => {
    */
   wire.link = ({ url, sendToPage, sendToNode, closePage, closeNode }) => {
     const path = new URL(url).pathname;
-    const link = { id: wire.nextLinkId++, path, closed: false, dueUp: 0, dueDown: 0 };
+    const link = { id: wire.nextLinkId++, path, closed: false };
     if (wire.down) {
       wire.log.push({ at: Date.now(), link: link.id, dir: 'down', url: path, type: 'REFUSED (path down)' });
       return null;
     }
+    // One FIFO queue per direction: a frame is never delivered before one that arrived earlier (no per-frame timers,
+    // whose durations from two clock reads could invert two frames a millisecond apart: investigation A).
+    const queues = { up: { frames: [], lastDue: 0, timer: null }, down: { frames: [], lastDue: 0, timer: null } };
+    const drain = (queue) => {
+      queue.timer = null;
+      const now = Date.now();
+      while (queue.frames.length && queue.frames[0].due <= now) queue.frames.shift().deliver();
+      if (queue.frames.length) queue.timer = setTimeout(() => drain(queue), queue.frames[0].due - now);
+    };
     const schedule = (dir, deliver, extraMs) => {
+      const queue = queues[dir];
+      const arrival = Date.now();
       const delay = wire.latencyMs + extraMs;
-      const dueKey = dir === 'up' ? 'dueUp' : 'dueDown';
-      if (delay <= 0 && link[dueKey] <= Date.now()) { deliver(); return; }
-      const due = Math.max(Date.now() + delay, link[dueKey]);
-      link[dueKey] = due;
-      setTimeout(deliver, Math.max(0, due - Date.now()));
+      if (delay <= 0 && !queue.frames.length) { deliver(); return; }
+      const due = Math.max(arrival + delay, queue.lastDue);
+      queue.lastDue = due;
+      queue.frames.push({ due, deliver });
+      if (!queue.timer) queue.timer = setTimeout(() => drain(queue), Math.max(0, due - arrival));
     };
     link.drop = (reason) => {
       if (link.closed) return;
@@ -168,11 +189,31 @@ export const createStopWire = () => {
       let frame = null;
       try { frame = JSON.parse(String(text)); } catch { /* not JSON */ }
       if (frame?.type === 'AGENT_COMMAND_ACK') record(link, 'node', frame);
-      schedule('down', () => {
+      const toPage = (sendText, sendFrame) => schedule('down', () => {
         if (link.closed) return;
-        record(link, 'down', frame);
-        try { sendToPage(text); } catch { /* closed */ }
+        record(link, 'down', sendFrame);
+        try { sendToPage(sendText); } catch { /* closed */ }
       }, wire.extraToPageMs);
+      if (wire.withholdNextTeamEvent && path.startsWith('/ws/agent-team/') && Number.isInteger(frame?.payload?.change_sequence)) {
+        wire.withholdNextTeamEvent = false;
+        wire.log.push({ at: Date.now(), link: link.id, dir: 'down', url: path, ...summarize(frame), note: 'withheld by the wire' });
+        return;
+      }
+      if ((wire.withholdBeforeTeamIdle || link.heldTeamEvent) && path.startsWith('/ws/agent-team/') && Number.isInteger(frame?.payload?.change_sequence)) {
+        const held = link.heldTeamEvent;
+        link.heldTeamEvent = null;
+        if (held && wire.withholdBeforeTeamIdle && frame.type === 'AGENT_STATUS' && frame.payload.status === 'idle') {
+          wire.withholdBeforeTeamIdle = false;
+          wire.log.push({ at: Date.now(), link: link.id, dir: 'down', url: path, ...summarize(held.frame), note: 'withheld by the wire' });
+          toPage(text, frame);
+          return;
+        }
+        if (held) toPage(held.text, held.frame);
+        if (wire.withholdBeforeTeamIdle) link.heldTeamEvent = { text, frame };
+        else toPage(text, frame);
+        return;
+      }
+      toPage(text, frame);
     };
     wire.links.add(link);
     return link;
@@ -189,7 +230,7 @@ export const createStopWire = () => {
   /** Back to a plain path (between cases). */
   wire.reset = () => {
     Object.assign(wire, { latencyMs: 0, extraToPageMs: 0, down: false, loseNextStop: false, dropAfterNextStop: false, refuseStops: false,
-      loseNextSend: false, dropAfterNextSend: false });
+      loseNextSend: false, dropAfterNextSend: false, withholdBeforeTeamIdle: false, withholdNextTeamEvent: false });
   };
   /** The log since `from` (an index into `log`). */
   wire.since = (from) => wire.log.slice(from);

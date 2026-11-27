@@ -1,0 +1,44 @@
+# API-02 independent trust-chain check (autobyteus-657): the built-in key vs what AutoByteus/autobyteus-extensions publishes
+# node /tmp/657-api-scripts/chain-check.mjs <worktree> <empty download dir> (copy: probes/api-e2e/chain-check.mjs); Node's crypto only, not the app's verifier; nothing downloaded executed
+# Commit 45645fb079 (code a80cd0218f); macOS arm64, Node v22.23.1; 2026-11-26 20:06:20 CET
+{
+  "keyEqualsRepositoryBytes": true,
+  "keyType": "ed25519",
+  "fingerprint": "75d4d2f80ed35374e7956d736aed66111e3eac76b911eb2367428a27dc64ad4c",
+  "catalogBytes": 894,
+  "signatureVerifiesWithBuiltInKey": true,
+  "fixtureEqualsPublished": {
+    "catalog": true,
+    "sig": true
+  },
+  "tamperedVerifies": false,
+  "entries": [
+    {
+      "id": "voice-input",
+      "version": "1.0.0",
+      "offeredOn": "desktop-node",
+      "platforms": [
+        "darwin-arm64",
+        "darwin-x64",
+        "linux-x64",
+        "win32-x64"
+      ],
+      "contractVersion": 1,
+      "packageUrl": "https://github.com/AutoByteus/autobyteus-extensions/releases/download/voice-input-v1.0.0/voice-input-1.0.0.tar.gz",
+      "sha256": "57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d"
+    }
+  ],
+  "package voice-input": {
+    "bytes": 8483,
+    "sha256Matches": true,
+    "files": [
+      "server/",
+      "ui/",
+      "extension.json",
+      "server/index.mjs",
+      "ui/index.html"
+    ],
+    "extensionJsonEqualsEntry": true,
+    "pinnedRuntime": "0.3.2"
+  }
+}

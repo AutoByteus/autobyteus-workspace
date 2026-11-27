@@ -69,7 +69,8 @@ const configure = (input: { serverUrl: string; run: Run }) => {
         agentRunId, address: memberAddress, workspaceMetadata: null }),
     });
     context.value = view.getAgentContext(input.run.runId);
-    stream = new TeamStreamingService(endpoint + '/ws/agent-team');
+    // A gap here is the probe's to see; this page has no recovery owner (autobyteus-541 D-A1).
+    stream = new TeamStreamingService(endpoint + '/ws/agent-team', { onStreamRecoveryRequired: (notice) => console.warn('Team stream needs recovery', notice) });
     stream.connect(input.run.rootId, { view });
   }
   connected.value = false;

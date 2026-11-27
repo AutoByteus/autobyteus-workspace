@@ -245,6 +245,19 @@ element streams and seeks it, the phone apps play it in their own player
 itself, as for a Files video. Text, PDF and image references are read whole, as
 before.
 
+A zero-byte video or audio reference is an empty file, not a failed fetch
+(autobyteus-647 SR-003). An empty file has no byte 0, so the node answers the
+probe `416`, and only an empty file can make that probe unsatisfiable: the viewer
+decides on that status alone (`streams && response.status === 416`) and goes on
+to the media viewer, which reports "This video could not be played." (or "This
+audio …") with Retry, and the apps' own player shows its "could not be played"
+screen. It does not read `Content-Range`: the desktop dev window (an `http://`
+origin) calls the node across origins, and the node's CORS exposes no response
+headers to it, so the header reads `null` there (the packaged `file://` window
+does read it, as autobyteus-647 measured, but one rule serves every surface). Any other error, and a
+`416` to a request without a range, stays a fetch error, and a deleted reference
+still shows its "unavailable" message.
+
 There are no task-owned reference previews; the former task reference route
 and `TeamTaskReferenceViewer` are removed.
 

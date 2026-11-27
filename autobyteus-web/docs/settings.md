@@ -342,7 +342,9 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
   `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
   registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
-  a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
+  a peer, the desktop label otherwise. A peer this node created as a sandbox (`peer.role === 'sandbox'`, autobyteus-581: see
+  the server's [Sandboxes](../../autobyteus-server-ts/docs/modules/sandboxes.md)) shows a
+  "sandbox" chip beside its name; no other peer does. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a
   desktop entry. Two desktop entries of one node join into one row.
 - **A row**: a dot (reachable now, not reachable, a different node, checking), the name

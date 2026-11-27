@@ -1,198 +1,130 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { useExtensionsStore } from '../extensionsStore'
+import type { ExtensionItem, ExtensionList } from '~/types/extensions'
 
-const { addToastMock } = vi.hoisted(() => ({
-  addToastMock: vi.fn(),
+const { queryMock, mutateMock, toastMock, refreshAvailabilityMock, actionMock, windowNode } = vi.hoisted(() => ({
+  queryMock: vi.fn(),
+  mutateMock: vi.fn(),
+  toastMock: vi.fn(),
+  refreshAvailabilityMock: vi.fn(),
+  actionMock: vi.fn(),
+  windowNode: { isEmbeddedWindow: true, bindingRevision: 1, nodeBaseUrl: 'http://127.0.0.1:29695' },
 }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock, mutate: mutateMock }) }))
+vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: toastMock }) }))
+vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({ refreshAvailability: refreshAvailabilityMock }) }))
+vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => windowNode }))
+vi.mock('~/services/extensions/extensionActionClient', () => ({ callExtensionAction: actionMock }))
 
-vi.mock('~/composables/useToasts', () => ({
-  useToasts: () => ({
-    addToast: addToastMock,
-  }),
-}))
+import { EXTENSIONS_POLL_INTERVAL_MS, useExtensionsStore } from '../extensionsStore'
 
-function makeVoiceInputState(overrides: Record<string, unknown> = {}) {
-  return {
-    id: 'voice-input',
-    name: 'Voice Input',
-    description: 'Optional local dictation.',
-    status: 'not-installed',
-    enabled: false,
-    settings: {
-      languageMode: 'auto',
-      audioInputDeviceId: null,
-    },
-    message: '',
-    installProgress: null,
-    installedAt: null,
-    runtimeVersion: null,
-    modelVersion: null,
-    backendKind: null,
-    lastError: null,
-    ...overrides,
-  }
-}
+const item = (overrides: Partial<ExtensionItem> = {}): ExtensionItem => ({
+  id: 'voice-input', name: 'Voice Input', description: 'Dictate.', translations: null, platforms: ['darwin-arm64'],
+  state: 'notInstalled', catalogVersion: '1.0.0', notAvailableReason: null, progress: null, installedVersion: null,
+  enabled: null, ready: null, message: null, starting: false, update: null, failureMessage: null, ...overrides,
+})
+const list = (items: ExtensionItem[], catalog: ExtensionList['catalog'] = 'verified') => ({ data: { extensions: { catalog, platform: 'darwin-arm64', extensions: items } } })
+const installed = (overrides: Partial<ExtensionItem> = {}) => item({ state: 'installed', installedVersion: '1.0.0', enabled: true, ready: true, message: 'Ready.', update: 'none', ...overrides })
 
-describe('extensionsStore', () => {
+describe('extensionsStore (Settings → Extensions of this window\'s node)', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     setActivePinia(createPinia())
-    addToastMock.mockReset()
-    ;(window as typeof window & { electronAPI?: any }).electronAPI = {
-      getExtensionsState: vi.fn().mockResolvedValue([
-        makeVoiceInputState(),
-      ]),
-      installExtension: vi.fn().mockResolvedValue([
-        makeVoiceInputState({
-          status: 'installed',
-          enabled: false,
-          message: 'Voice Input is installed and disabled.',
-          installedAt: '2026-03-08T10:00:00.000Z',
-          runtimeVersion: '0.2.0',
-          modelVersion: 'fixture-model-v1',
-          backendKind: 'faster-whisper',
-        }),
-      ]),
-      enableExtension: vi.fn().mockResolvedValue([
-        makeVoiceInputState({
-          status: 'installed',
-          enabled: true,
-          message: 'Voice Input is installed and enabled.',
-          installedAt: '2026-03-08T10:00:00.000Z',
-          runtimeVersion: '0.2.0',
-          modelVersion: 'fixture-model-v1',
-          backendKind: 'faster-whisper',
-        }),
-      ]),
-      disableExtension: vi.fn().mockResolvedValue([
-        makeVoiceInputState({
-          status: 'installed',
-          enabled: false,
-          message: 'Voice Input is installed and disabled.',
-          installedAt: '2026-03-08T10:00:00.000Z',
-          runtimeVersion: '0.2.0',
-          modelVersion: 'fixture-model-v1',
-          backendKind: 'faster-whisper',
-        }),
-      ]),
-      updateVoiceInputSettings: vi.fn().mockResolvedValue([
-        makeVoiceInputState({
-          status: 'installed',
-          enabled: true,
-          settings: {
-            languageMode: 'zh',
-            audioInputDeviceId: 'virtual-source',
-          },
-          message: 'Voice Input is installed and enabled.',
-          installedAt: '2026-03-08T10:00:00.000Z',
-          runtimeVersion: '0.2.0',
-          modelVersion: 'fixture-model-v1',
-          backendKind: 'faster-whisper',
-        }),
-      ]),
-      removeExtension: vi.fn().mockResolvedValue([
-        makeVoiceInputState(),
-      ]),
-      reinstallExtension: vi.fn().mockResolvedValue([
-        makeVoiceInputState({
-          status: 'installed',
-          enabled: true,
-          settings: {
-            languageMode: 'zh',
-            audioInputDeviceId: 'virtual-source',
-          },
-          message: 'Voice Input is installed and enabled.',
-          installedAt: '2026-03-08T10:00:00.000Z',
-          runtimeVersion: '0.2.0',
-          modelVersion: 'fixture-model-v1',
-          backendKind: 'faster-whisper',
-        }),
-      ]),
-      openExtensionFolder: vi.fn().mockResolvedValue({
-        success: true,
-      }),
-    }
+    for (const mock of [queryMock, mutateMock, toastMock, refreshAvailabilityMock, actionMock]) mock.mockReset()
+    Object.assign(windowNode, { isEmbeddedWindow: true, bindingRevision: 1 })
+  })
+  afterEach(() => {
+    useExtensionsStore().close()
+    vi.useRealTimers()
   })
 
-  it('initializes from the electron bridge', async () => {
+  it('opens with a catalog fetch, then reads every second only while something installs, updates or starts (DS-009)', async () => {
+    queryMock.mockResolvedValueOnce(list([item({ state: 'installing', progress: { message: 'Downloading Voice Input 1.0.0', percent: null } })]))
     const store = useExtensionsStore()
-
-    await store.initialize()
-
-    expect(store.voiceInput?.status).toBe('not-installed')
-    expect(store.voiceInput?.enabled).toBe(false)
-    expect(window.electronAPI.getExtensionsState).toHaveBeenCalledOnce()
-  })
-
-  it('shows an immediate installing state before the install bridge resolves', async () => {
-    const store = useExtensionsStore()
-    await store.initialize()
-
-    let resolveInstall: ((value: any) => void) | undefined
-    window.electronAPI.installExtension = vi.fn().mockImplementation(
-      () => new Promise((resolve) => {
-        resolveInstall = resolve
-      }),
-    )
-
-    const installPromise = store.installExtension('voice-input')
-
+    await store.open()
+    expect(queryMock).toHaveBeenLastCalledWith(expect.objectContaining({ variables: { refreshCatalog: true } }))
     expect(store.isBusy).toBe(true)
-    expect(store.pendingAction).toBe('install')
-    expect(store.voiceInput?.status).toBe('installing')
-    expect(store.voiceInput?.enabled).toBe(false)
-    expect(store.voiceInput?.message).toContain('Fetching runtime manifest')
-    expect(store.voiceInput?.installProgress?.phase).toBe('fetching-manifest')
 
-    resolveInstall?.([
-      makeVoiceInputState({
-        status: 'installed',
-        enabled: false,
-        message: 'Voice Input is installed and disabled.',
-        installedAt: '2026-03-08T10:00:00.000Z',
-        runtimeVersion: '0.2.0',
-        modelVersion: 'fixture-model-v1',
-        backendKind: 'faster-whisper',
-      }),
-    ])
-
-    await installPromise
-
-    expect(store.isBusy).toBe(false)
-    expect(store.pendingAction).toBe(null)
-    expect(store.voiceInput?.status).toBe('installed')
-    expect(store.voiceInput?.enabled).toBe(false)
+    queryMock.mockResolvedValueOnce(list([installed({ starting: true })]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(queryMock).toHaveBeenLastCalledWith(expect.objectContaining({ variables: { refreshCatalog: false } }))
+    queryMock.mockResolvedValueOnce(list([installed()]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(queryMock).toHaveBeenCalledTimes(3)
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS * 3)
+    expect(queryMock).toHaveBeenCalledTimes(3)
   })
 
-  it('applies enable, settings, disable, and remove lifecycle updates', async () => {
+  it('allows Install and Update only with a verified catalog (V13)', async () => {
     const store = useExtensionsStore()
-    await store.initialize()
-
-    await store.installExtension('voice-input')
-    expect(store.voiceInput?.enabled).toBe(false)
-
-    await store.enableExtension('voice-input')
-    expect(store.voiceInput?.enabled).toBe(true)
-
-    await store.updateVoiceInputLanguageMode('zh')
-    expect(store.voiceInput?.settings.languageMode).toBe('zh')
-
-    await store.updateVoiceInputAudioInputDevice('virtual-source')
-    expect(store.voiceInput?.settings.audioInputDeviceId).toBe('virtual-source')
-
-    await store.disableExtension('voice-input')
-    expect(store.voiceInput?.enabled).toBe(false)
-
-    await store.removeExtension('voice-input')
-    expect(store.voiceInput?.status).toBe('not-installed')
+    queryMock.mockResolvedValueOnce(list([item()], 'unreachable'))
+    await store.open()
+    expect(store.canInstall).toBe(false)
+    queryMock.mockResolvedValueOnce(list([item()], 'verified'))
+    await store.refresh(true)
+    expect(store.canInstall).toBe(true)
   })
 
-  it('opens the managed extension folder through the electron bridge', async () => {
+  it('shows the owner note when the node refuses this credential (REQ-005)', async () => {
+    queryMock.mockRejectedValueOnce(Object.assign(new Error('This credential does not open this action.'), {
+      graphQLErrors: [{ extensions: { code: 'NODE_ROUTE_NOT_PERMITTED' } }],
+    }))
     const store = useExtensionsStore()
-    await store.initialize()
+    await store.open()
+    expect(store.notOwner).toBe(true)
+    expect(store.error).toBeNull()
+  })
 
-    await store.openExtensionFolder('voice-input')
+  it('installs on this window\'s node, says "Installed and on" while it starts, and tells this computer\'s voice store', async () => {
+    queryMock.mockResolvedValueOnce(list([item()]))
+    const store = useExtensionsStore()
+    await store.open()
+    mutateMock.mockResolvedValueOnce({ data: { installExtension: item({ state: 'installing', progress: { message: 'Downloading', percent: null } }) } })
+    queryMock.mockResolvedValueOnce(list([installed({ starting: true })]))
+    await store.install('voice-input')
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({ variables: { id: 'voice-input' } }))
+    expect(store.justInstalled['voice-input']).toBe(true)
+    expect(refreshAvailabilityMock).toHaveBeenCalled()
+    queryMock.mockResolvedValueOnce(list([installed()]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(store.justInstalled['voice-input']).toBeUndefined()
+  })
 
-    expect(window.electronAPI.openExtensionFolder).toHaveBeenCalledWith('voice-input')
+  it('tells this computer\'s voice store again when a followed install ends installed and ready (AR-001)', async () => {
+    queryMock.mockResolvedValueOnce(list([item({ state: 'installing', progress: { message: 'Preparing', percent: null } })]))
+    const store = useExtensionsStore()
+    await store.open()
+    refreshAvailabilityMock.mockClear()
+    queryMock.mockResolvedValueOnce(list([installed({ ready: false, starting: true })]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(refreshAvailabilityMock).toHaveBeenCalledTimes(1)
+    queryMock.mockResolvedValueOnce(list([installed({ ready: false, starting: true })]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(refreshAvailabilityMock).toHaveBeenCalledTimes(1)
+    queryMock.mockResolvedValueOnce(list([installed()]))
+    await vi.advanceTimersByTimeAsync(EXTENSIONS_POLL_INTERVAL_MS)
+    expect(refreshAvailabilityMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not tell the voice store about another node\'s window, and shows a refusal as a toast', async () => {
+    Object.assign(windowNode, { isEmbeddedWindow: false })
+    queryMock.mockResolvedValue(list([installed()]))
+    const store = useExtensionsStore()
+    await store.open()
+    mutateMock.mockRejectedValueOnce(new Error('voice-input is being installed, updated or removed.'))
+    await store.setEnabled('voice-input', false)
+    expect(toastMock).toHaveBeenCalledWith('voice-input is being installed, updated or removed.', 'error')
+    expect(refreshAvailabilityMock).not.toHaveBeenCalled()
+    expect(store.pending).toEqual({})
+  })
+
+  it('reads the log and calls a page action on this window\'s node', async () => {
+    queryMock.mockResolvedValueOnce({ data: { extensionLog: ['2026-11-26T10:00:00.000Z install: done'] } })
+    const store = useExtensionsStore()
+    await store.showLog('voice-input')
+    expect(store.logLines).toEqual(['2026-11-26T10:00:00.000Z install: done'])
+    actionMock.mockResolvedValueOnce({ language: 'en' })
+    await expect(store.callAction('voice-input', 'setLanguage', { language: 'en' })).resolves.toEqual({ language: 'en' })
+    expect(actionMock).toHaveBeenCalledWith('http://127.0.0.1:29695', 'voice-input', 'setLanguage', { json: { language: 'en' } })
   })
 })

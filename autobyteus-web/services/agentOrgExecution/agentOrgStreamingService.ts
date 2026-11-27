@@ -1,10 +1,8 @@
 import { readAgentOrgRunInspection } from './agentOrgRunInspection'
-import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures'
 import type { OrgWorkspaceSelection } from './agentOrgExecutionViewIndex'
 import {
   CollaborationStreamServerMessageSchema,
   type CollaborationStreamClientMessage,
-  type CollaborationStreamServerMessage,
 } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive } from 'vue'
 import type { ContextFilePath } from '~/types/conversation'
@@ -22,16 +20,9 @@ import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
 import { HeldUntilRebind } from '~/services/agentStreaming/heldUntilRebind'
-import { AgentOrgConnectionLostError, orgCommandFailure } from './agentOrgConnectionLostError'
+import { orgCommandFailure } from './agentOrgCommandFailures'
+import { AgentOrgPendingCommands } from './agentOrgPendingCommands'
 
-type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
-type PendingCommand = Readonly<{
-  commandType: CollaborationStreamClientMessage['type']
-  targetAgentRunId: string
-  resolve(): void
-  reject(error: Error): void
-  timeout: ReturnType<typeof setTimeout>
-}>
 type ExecutionCheckpoint = Readonly<{
   orgRunId: string
   changeSequence: number
@@ -51,9 +42,10 @@ export class AgentOrgStreamingService {
   private context: AgentOrgExecutionContext | null = null
   private processing: Promise<void> = Promise.resolve()
   private readonly readiness = new Set<{ resolve(): void; reject(error: Error): void }>()
-  private readonly pending = new Map<string, PendingCommand>()
   /** Stops lost with a connection that recovers: settled once the snapshot that makes the stream ready is applied. */
   private readonly interruptsAwaitingRebind = new HeldUntilRebind()
+  /** Its commands waiting for their answers. */
+  private readonly commands: AgentOrgPendingCommands
   private nextGenerationId = 0
   private activeGeneration: StreamGeneration | null = null
   private released = false
@@ -83,7 +75,13 @@ export class AgentOrgStreamingService {
       agentRunId: string
       commandId: string
     }>): void
-  }>) {}
+  }>) {
+    this.commands = new AgentOrgPendingCommands({
+      orgRunId: options.orgRunId,
+      interruptsAwaitingRebind: this.interruptsAwaitingRebind,
+      onAcceptedExternalUserMessage: (event) => options.onAcceptedExternalUserMessage?.(event),
+    })
+  }
 
   connect(): void {
     if (this.released) return
@@ -137,7 +135,7 @@ export class AgentOrgStreamingService {
       this.streamPhase = 'disconnected'
       const detail = 'AgentOrg stream closed before a complete synchronized view was available.'
       if (shouldRecover && this.context) this.context.requireReopen(detail)
-      this.rejectPending('AgentOrg stream closed before command acknowledgement.')
+      this.commands.rejectAll('AgentOrg stream closed before command acknowledgement.')
       // A credential refusal (autobyteus-435): connecting again would be refused again; a later connect starts over.
       if (shouldRecover && isCredentialRefusalClose(event.code, event.reason)) { this.reconnect.startOver(); this.interruptsAwaitingRebind.settle() }
       else if (shouldRecover) this.recoveryFailed(detail)
@@ -243,27 +241,7 @@ export class AgentOrgStreamingService {
 
   private async command(message: CollaborationStreamClientMessage): Promise<void> {
     this.requireReadyContext(message.type)
-    const socket = this.socket!
-    return new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        this.pending.delete(message.payload.command_id)
-        reject(new Error(`AgentOrg command '${message.payload.command_id}' acknowledgement timed out.`))
-      }, 15_000)
-      this.pending.set(message.payload.command_id, Object.freeze({
-        commandType: message.type,
-        targetAgentRunId: message.payload.target_agent_run_id,
-        resolve,
-        reject,
-        timeout,
-      }))
-      try {
-        socket.send(JSON.stringify(message))
-      } catch (cause) {
-        clearTimeout(timeout)
-        this.pending.delete(message.payload.command_id)
-        reject(orgCommandFailure(message.type, 'not_sent', this.detail(cause)))
-      }
-    })
+    return this.commands.send(this.socket!, message)
   }
 
   private async handleMessage(generation: StreamGeneration, raw: string): Promise<void> {
@@ -284,7 +262,7 @@ export class AgentOrgStreamingService {
     }
     if (message.type === 'AGENT_COMMAND_ACK') {
       if (this.streamPhase !== 'ready') throw new Error('AgentOrg command acknowledgement arrived before the snapshot barrier.')
-      this.acknowledge(message)
+      this.commands.acknowledge(message)
       return
     }
     if (message.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT') {
@@ -368,34 +346,6 @@ export class AgentOrgStreamingService {
       : this.isCurrent(generation)
   }
 
-  private acknowledge(message: CommandAck): void {
-    const command = this.pending.get(message.payload.command_id)
-    if (!command) {
-      throw new Error(`AgentOrg command acknowledgement '${message.payload.command_id}' has no pending command.`)
-    }
-    if (command.commandType !== message.payload.command_type
-      || command.targetAgentRunId !== message.payload.target_agent_run_id) {
-      throw new Error(`AgentOrg command acknowledgement '${message.payload.command_id}' identity mismatch.`)
-    }
-    clearTimeout(command.timeout)
-    this.pending.delete(message.payload.command_id)
-    if (message.payload.state === 'accepted') {
-      command.resolve()
-      if (command.commandType === 'SEND_MESSAGE') {
-        try {
-          this.options.onAcceptedExternalUserMessage?.({
-            orgRunId: this.options.orgRunId,
-            agentRunId: command.targetAgentRunId,
-            commandId: message.payload.command_id,
-          })
-        } catch (cause) {
-          console.error('Accepted AgentOrg message history refresh could not be requested.', cause)
-        }
-      }
-    } else command.reject(collaboratorAddRejectionOf(message.payload)
-      ?? new Error(message.payload.message ?? message.payload.code ?? 'AgentOrg command rejected.'))
-  }
-
   private failClosed(cause: unknown, generation: StreamGeneration): void {
     if (!this.isCurrent(generation)) return
     const detail = this.detail(cause)
@@ -404,7 +354,7 @@ export class AgentOrgStreamingService {
     this.streamPhase = 'disconnected'
     this.socket = null
     this.activeGeneration = null
-    this.rejectPending(detail)
+    this.commands.rejectAll(detail)
     // Recovery owns the retired generation from this point forward. Schedule it
     // before asking the browser to close so a transport-level close failure can
     // never strand the workspace after strict admission has failed.
@@ -439,7 +389,7 @@ export class AgentOrgStreamingService {
 
   /** The page was hidden ≥ 30 s: retire the current generation, then recover it from a fresh inspection. */
   private retireAndRecover(): void {
-    this.rejectPending('AgentOrg stream is re-synchronizing.')
+    this.commands.rejectAll('AgentOrg stream is re-synchronizing.')
     this.closeSocket('AgentOrg stream re-synchronizing')
     this.reconnect.attemptNow()
   }
@@ -455,7 +405,7 @@ export class AgentOrgStreamingService {
     this.socket = null
     this.activeGeneration = null
     generation?.socket.close(1000, reason)
-    this.rejectPending('AgentOrg stream closed before command acknowledgement.')
+    this.commands.rejectAll('AgentOrg stream closed before command acknowledgement.')
   }
 
   private async fetchCheckpoint(): Promise<ExecutionCheckpoint> {
@@ -492,15 +442,5 @@ export class AgentOrgStreamingService {
       throw new Error('AgentOrg recovery checkpoint changed without open execution work.')
     }
     return true
-  }
-
-  /** Commands lost with the connection fail (a message: `unknown`, 540 D-5); Stops are held until the rebind (D-W7). */
-  private rejectPending(message: string): void {
-    for (const pending of this.pending.values()) {
-      clearTimeout(pending.timeout)
-      if (pending.commandType === 'INTERRUPT_GENERATION') this.interruptsAwaitingRebind.hold(() => pending.reject(new AgentOrgConnectionLostError()))
-      else pending.reject(orgCommandFailure(pending.commandType, 'unknown', message))
-    }
-    this.pending.clear()
   }
 }

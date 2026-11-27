@@ -8,8 +8,9 @@ import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
-import type { TeamStreamRecoveryNotice } from '~/services/agentStreaming/TeamStreamingService';
+import { carryAgentContextPageState } from '~/types/agent/AgentContext';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
@@ -27,6 +28,7 @@ import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmissionContext,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
 import { buildClientInterruptCommandId, buildClientMessageId } from '~/services/agentStreaming/teamRunCommandIds';
@@ -60,6 +62,15 @@ type TerminatePayload = { terminateAgentTeamRun?: { success?: boolean; message?:
 export interface FocusedTeamMemberInterruptTarget { teamRunId: string; agentRunId: string }
 
 const cloneContextAttachment = (attachment: ContextAttachment): ContextAttachment => ({ ...attachment });
+/** Every Team stream publishes its failure for the recovery owner (autobyteus-541 D-A1). */
+const createTeamStreamingService = (): TeamStreamingService => new TeamStreamingService(useWindowNodeContextStore().getBoundEndpoints().teamWs, {
+  onStreamRecoveryRequired: ({ rootTeamRunId }) => useTeamStreamRecoveryStore().publishRequired(rootTeamRunId),
+});
+/** A send follows its member into the context a stream recovery committed meanwhile (autobyteus-541 D-A7). */
+const followCurrentMember = (handle: LocalUserSubmissionHandle, rootTeamRunId: string, agentRunId: string): void => {
+  const current = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId)?.view.getAgentContext(agentRunId);
+  if (current) retargetLocalUserSubmissionContext(handle, current);
+};
 
 const transferDraftPendingInputs = (
   draft: TeamLaunchDraft,
@@ -87,15 +98,12 @@ const transferDraftPendingInputs = (
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   state: () => ({
     stopPendingTeamIds: {} as Record<string, boolean>,
-    streamRecoveryNoticesByRootTeamRunId: {} as Record<string, TeamStreamRecoveryNotice>,
   }),
   getters: {
     hasDraftLaunchInFlight: (): boolean => useTeamRunConfigStore().hasInFlightLaunch,
     isDraftLaunchPending: () => (draftId: TeamLaunchDraft['draftId'] | null): boolean => (
       useTeamRunConfigStore().isDraftLaunchInFlight(draftId)
     ),
-    getTeamStreamRecoveryNotice: (state) => (rootTeamRunId: string): TeamStreamRecoveryNotice | null =>
-      state.streamRecoveryNoticesByRootTeamRunId[rootTeamRunId] ?? null,
   },
   actions: {
     connectToTeamStream(rootTeamRunId: string): TeamStreamingService | null {
@@ -108,15 +116,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (existing.connectionState === ConnectionState.DISCONNECTED) existing.connect(rootTeamRunId, context);
         return existing;
       }
-      const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
-      const service = new TeamStreamingService(wsEndpoint, {
-        onStreamRecoveryRequired: (notice) => {
-          this.streamRecoveryNoticesByRootTeamRunId = {
-            ...this.streamRecoveryNoticesByRootTeamRunId,
-            [notice.rootTeamRunId]: notice,
-          };
-        },
-      });
+      const service = createTeamStreamingService();
       teamStreamingServices.set(rootTeamRunId, service);
       service.connect(rootTeamRunId, context);
       return service;
@@ -127,13 +127,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       return teamStreamingServices.get(rootTeamRunId)?.isReopenRequired ?? false;
     },
     async ensureTeamStreamConnected(rootTeamRunId: string): Promise<TeamStreamingService> {
-      const service = this.connectToTeamStream(rootTeamRunId);
-      if (!service) throw new Error(`Unable to connect Team stream for '${rootTeamRunId}'.`);
-      if (service.isReopenRequired) {
-        throw new Error('TEAM_STREAM_REOPEN_REQUIRED: Select this Team member again to reload the complete conversation.');
-      }
+      if (!this.connectToTeamStream(rootTeamRunId)) throw new Error(`Unable to connect Team stream for '${rootTeamRunId}'.`);
+      // A recovering stream is waited for as a connecting one: its replacement is the Team's current service (541 D-A4).
       const timeoutAt = Date.now() + 10_000;
       while (Date.now() < timeoutAt) {
+        const service = teamStreamingServices.get(rootTeamRunId);
+        if (!service) throw new MessageNotDeliveredError('not_sent', `Team stream for '${rootTeamRunId}' was closed.`);
         if (service.connectionState === ConnectionState.CONNECTED && service.isReady) return service;
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
@@ -155,15 +154,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       if (input.candidateContext.view.getRootTeamRunId() !== input.rootTeamRunId) {
         throw new Error('Candidate Team context root identity mismatch.');
       }
-      const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
-      const candidate = new TeamStreamingService(wsEndpoint, {
-        onStreamRecoveryRequired: (notice) => {
-          this.streamRecoveryNoticesByRootTeamRunId = {
-            ...this.streamRecoveryNoticesByRootTeamRunId,
-            [notice.rootTeamRunId]: notice,
-          };
-        },
-      });
+      const candidate = createTeamStreamingService();
       let timeout: ReturnType<typeof setTimeout> | null = null;
       try {
         await Promise.race([
@@ -182,11 +173,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           throw new Error(`Team stream '${input.rootTeamRunId}' changed before recovery commit.`);
         }
         input.beforeContextCommit?.();
+        // In the same synchronous commit, each member's page state goes with it (541 D-A6); one gone loses it.
+        previousContext.view.listAgentContextEntries().forEach(({ agentRunId, agentContext }) => {
+          const next = input.candidateContext.view.getAgentContext(agentRunId);
+          if (next) carryAgentContextPageState(agentContext, next);
+        });
         contexts.replaceTeamContext(input.rootTeamRunId, previousContext, input.candidateContext);
         teamStreamingServices.set(input.rootTeamRunId, candidate);
-        const notices = { ...this.streamRecoveryNoticesByRootTeamRunId };
-        delete notices[input.rootTeamRunId];
-        this.streamRecoveryNoticesByRootTeamRunId = notices;
+        useTeamStreamRecoveryStore().clear(input.rootTeamRunId);
         previousService.disconnect();
         return candidate;
       } catch (error) {
@@ -200,9 +194,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const service = teamStreamingServices.get(rootTeamRunId);
       if (!service) return;
       service.disconnect(); teamStreamingServices.delete(rootTeamRunId);
-      const notices = { ...this.streamRecoveryNoticesByRootTeamRunId };
-      delete notices[rootTeamRunId];
-      this.streamRecoveryNoticesByRootTeamRunId = notices;
+      useTeamStreamRecoveryStore().clear(rootTeamRunId);
     },
     /** Closes every Team stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
     disconnectAllTeamStreams(): void { for (const rootTeamRunId of [...teamStreamingServices.keys()]) this.disconnectTeamStream(rootTeamRunId); },
@@ -340,10 +332,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         finalizeLocalSubmissionAttachments(localSubmission, plan.retainedMessageAttachments);
         void useRunHistoryStore().refreshTreeQuietly();
         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
+        followCurrentMember(localSubmission, rootTeamRunId, targetAgentRunId);
         await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey, mentions: toCollaboratorMentionDtos(text, mentions) });
+        followCurrentMember(localSubmission, rootTeamRunId, targetAgentRunId);
         acceptLocalSubmission(localSubmission);
       } catch (error) {
         if (localSubmission) {
+          followCurrentMember(localSubmission, rootTeamRunId!, targetAgentRunId!);
           // A rejected add posted nothing: the notice shows and the draft stays as typed. A message that did not reach
           // the root comes back with its notice, the member's status unchanged (autobyteus-540 D-4, D-5).
           if (failLocalSubmission(localSubmission, error) !== 'failed') return;

@@ -3,6 +3,7 @@ import { RemoteCollaborationSettingsError } from "./domain/remote-collaboration-
 import { NodeIdentityNotMigratedError } from "../remote-access/services/node-identity-service.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
+import { PeerRelayClient } from "./channel/peer-relay-client.js";
 import type { ReceivedFilesHandler } from "./channel/peer-gateway.js";
 import {
   PeerGateway,
@@ -45,6 +46,8 @@ export type RemoteCollaborationServices = Readonly<{
   pairing: PeerPairingService;
   /** autobyteus-437: the peer credential kind of the node's request gate (DS-005). */
   peerRequestVerifier: PeerRequestSignatureVerifier;
+  /** autobyteus-581: a relayed node's provider calls to its relay node (C4). */
+  peerRelays: PeerRelayClient;
 }>;
 
 /**
@@ -61,7 +64,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   runsInContainer?(): boolean;
   /** autobyteus-587: the node's received files, which a peer uploads into before its message or work packet. */
   receivedFiles: ReceivedFilesHandler;
-  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
+  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier" | "peerRelays">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runningAgents: RunningAgentsHandler; runViews: RemoteRunViewHandler; delegatedRunStates: DelegatedRunStatesHandler;
     peerRunMembers: PeerRunMembersHandler;
@@ -108,7 +111,8 @@ export const composeRemoteCollaboration = (input: Readonly<{
     ownNodeId: input.ownNodeId,
     peerSecret: (nodeId) => peers.peerSecret(nodeId),
   });
-  return Object.freeze({ ...services, gateway, discovery, addresses, pairing, peerRequestVerifier });
+  const peerRelays = new PeerRelayClient({ capability, peers, ownNodeId: input.ownNodeId });
+  return Object.freeze({ ...services, gateway, discovery, addresses, pairing, peerRequestVerifier, peerRelays });
 };
 
 let processServices: RemoteCollaborationServices | null = null;

@@ -13,9 +13,13 @@ import {
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
 import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
 import {
+  buildClaudeRelayedSpawnEnvironment,
   buildClaudeSdkSpawnEnvironment,
   resolveClaudeSdkAuthMode,
 } from "./claude-sdk-spawn-environment.js";
+import type { ProviderRelayRunAccess } from "../../../credential-proxy/provider-relays/provider-relay-access.js";
+import { processNodeRelayAccess } from "../../../credential-proxy/provider-relays/provider-relay-process-access.js";
+import { relayedNodeSettings } from "../../../credential-proxy/provider-relays/provider-relay-settings.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import { normalizeModelDescriptors, toModelInfo } from "./claude-sdk-model-normalizer.js";
 import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
@@ -70,6 +74,8 @@ export type ClaudeSdkStreamingSessionOptions = {
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
   /** Variables added to this run session's CLI process (the run's integration variables); never a credential. */
   extraEnvironment?: Readonly<Record<string, string>>;
+  /** On a relayed node: the run's relay access (its pass and kind), required there. */
+  providerRelay?: ProviderRelayRunAccess;
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
@@ -177,7 +183,7 @@ export class ClaudeSdkClient {
     if (!queryFn) return [];
     let spawnEnvironment: Record<string, string | undefined>;
     try {
-      spawnEnvironment = await this.resolveSpawnEnvironment();
+      spawnEnvironment = await this.resolveSpawnEnvironment(processNodeRelayAccess("anthropic", "claude_agent_sdk"));
     } catch {
       return [];
     }
@@ -205,7 +211,7 @@ export class ClaudeSdkClient {
   async readUsage(options: Readonly<{ deadline: ReadDeadline }>): Promise<unknown> {
     const queryFn = this.resolveFunction(await this.loadModuleSafe(), "query");
     if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
-    const env = await this.resolveSpawnEnvironment();
+    const env = await this.resolveSpawnEnvironment(processNodeRelayAccess("anthropic", "claude_agent_sdk"));
     return withClaudeControlQuery({ queryFn, env, deadline: options.deadline }, async (control) => {
       const usage = control.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET;
       if (typeof usage !== "function") throw new Error("Claude SDK usage request is unavailable.");
@@ -245,7 +251,7 @@ export class ClaudeSdkClient {
         const queryFn = this.resolveFunction(sdk, "query");
         if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
         // Only the run session's spawn gets the run's variables (not the model-listing or control queries).
-        const spawnEnvironment = { ...(await this.resolveSpawnEnvironment()), ...(options.extraEnvironment ?? {}) };
+        const spawnEnvironment = { ...(await this.resolveSpawnEnvironment(options.providerRelay ?? null)), ...(options.extraEnvironment ?? {}) };
         control.assertAccepting();
         if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
         const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
@@ -352,7 +358,15 @@ export class ClaudeSdkClient {
     };
   }
 
-  private async resolveSpawnEnvironment(): Promise<Record<string, string | undefined>> {
+  /**
+   * The CLI's environment. On a relayed node only the relay's (the auth policy and the vault are skipped), and a
+   * launch without a relay access refuses loudly; elsewhere the node's own sign-in by its auth mode.
+   */
+  private async resolveSpawnEnvironment(relay: ProviderRelayRunAccess | null): Promise<Record<string, string | undefined>> {
+    if (relayedNodeSettings()) {
+      if (!relay) throw new Error("PROVIDER_RELAY_UNAVAILABLE: this node is relayed, but Claude was launched without its relay.");
+      return buildClaudeRelayedSpawnEnvironment(process.env, relay);
+    }
     if (resolveClaudeSdkAuthMode(process.env) !== "api-key") {
       return buildClaudeSdkSpawnEnvironment(process.env);
     }

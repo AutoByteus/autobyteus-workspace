@@ -1,0 +1,14 @@
+[2.1s] container autobyteus-sandbox-484-6ba081d9 started on 127.0.0.1:50320
+[13.9s] node answered with a setup code (local control socket)
+[14.0s] setup exchange: owner credential issued (kept in memory)
+[14.0s] GraphQL without credential: HTTP 401
+[14.1s] server log vault lines: 2 Secret vault: test vault /run/autobyteus-test-vault (read-only)
+[14.1s] providers with a key (from the vault): ANTHROPIC, DEEPSEEK, GEMINI, GLM, GROK, KIMI, OPENAI
+[14.1s] ordinary server setting write (not the vault): ok
+[15.4s] agent runtimes sign-in: codex_app_server=SIGNED_OUT, claude_agent_sdk=SIGNED_OUT, antigravity_cli=SIGNED_OUT, grok_build=SIGNED_OUT, deepseek_harness=not installed
+[20.8s] leak scan during the turn (exit 0): process environments holding a secret: claude(920): provider.anthropic.api-key | scanned 1020 files (448.9 MiB) for 10 configured secrets | LEAK_SCAN CLEAN
+[21.1s] smoke claude_agent_sdk/haiku: TURN_COMPLETED in 5.6s; reply contains SANDBOX-OK: true; agent shell saw ANTHROPIC_API_KEY length 109
+[25.5s] leak scan after the run (exit 0): process environments holding a secret: none | scanned 1021 files (448.9 MiB) for 10 configured secrets | LEAK_SCAN CLEAN
+[25.5s] container writable layer: 170MB (virtual 6.16GB)
+[25.6s] fresh volumes used: 688K /home/autobyteus/data 447M /root
+[26.5s] container removed with its anonymous volumes: true

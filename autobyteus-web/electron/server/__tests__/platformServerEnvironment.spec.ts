@@ -94,6 +94,7 @@ describe('platform server environment handoff', () => {
       baseDataRoot: path.join(root, 'data'),
       environmentPolicy,
       developmentRendererOrigin,
+      releaseVersion: '1.5.15-test',
     }, serverRoot)
 
     await manager.launchForTest()
@@ -127,6 +128,8 @@ describe('platform server environment handoff', () => {
         const { env, manager } = await launchWithPolicy(policy)
         expect(env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL).toMatch(/^own_[A-Za-z0-9_-]{43}$/)
         expect(manager.getLaunchOwnerCredential()).toBe(env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL)
+        // autobyteus-581: the node learns the app's release, so its sandboxes start from the same server image.
+        expect(env.AUTOBYTEUS_RELEASE_VERSION).toBe('1.5.15-test')
         expect(process.env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL).toBeUndefined()
         const first = env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL
         await manager.launchForTest()

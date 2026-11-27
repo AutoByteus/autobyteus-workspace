@@ -1,0 +1,13 @@
+{
+  "step": "memory-mic",
+  "name": "API-13-docker-window-after-off",
+  "window": "docker-516",
+  "at": "2026-11-26T16:53:44.386Z",
+  "hasFocus": true,
+  "micButtons": 1,
+  "micButtonsEnabled": 1,
+  "screenshots": [
+    "API-13-docker-window-after-off.png"
+  ],
+  "ok": true
+}

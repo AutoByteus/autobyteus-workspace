@@ -1,0 +1,15 @@
+# API-15 build-only desktop release run (autobyteus-516; DESIGN.md rule 12, RELEASE.md § Build-only release run)
+# bash scripts/check_secrets.sh origin/personal..HEAD → 'secret gate: PASS (no secrets found)' (11 commits)
+# git push origin HEAD:refs/heads/codex/autobyteus-516-extensions; pnpm release:test --ref codex/autobyteus-516-extensions; 2026-11-26
+run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/45869596069
+headSha 75eab7845a68d42018fb66c5dbe0f6445576c5fb
+created 2026-11-26T17:39:38Z updated 2026-11-26T18:11:04Z
+status completed conclusion success
+  Resolve Release Metadata: success
+  Build Linux x64: success
+  Build Windows x64: success
+  Build macOS ARM64: success
+  Build macOS Intel x64: success
+  Build Linux ARM64: success
+  Sign authenticated Linux desktop releases: skipped
+  Publish GitHub Release: skipped

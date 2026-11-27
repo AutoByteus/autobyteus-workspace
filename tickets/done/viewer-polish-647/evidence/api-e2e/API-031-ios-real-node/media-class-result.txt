@@ -1,0 +1,13 @@
+	 Executed 10 tests, with 0 failures (0 unexpected) in 259.340 (259.350) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 259.340 (259.351) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 259.340 (259.353) seconds
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests test0PairsWithTheNodeByItsLink]' passed (5.718 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testAAnMP3FromTheChatLinkPlaysInTheAppsPlayer]' passed (29.517 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testBTheMP3ReopenedFetchesOnlyTheProbe]' passed (18.048 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testCAnM4AOverASlowerLinkSeeksByRange]' passed (23.796 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testDATeamsMediaReferencesPlayInTheAppsPlayer]' passed (33.993 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testEAMediaReferenceStaysAsItIsWhileMessagesArrive]' passed (31.161 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testFTheOtherReferencesShowInThePage]' passed (47.594 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testGOggAndWebMStayInThePage]' passed (25.710 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testHEachWayToLeaveThePlayerClosesIt]' passed (27.904 seconds).
+Test Case '-[AutoByteusMobileUITests.NativeMediaRealNodeUITests testZRemovingTheNodeFromTheApp]' passed (15.900 seconds).

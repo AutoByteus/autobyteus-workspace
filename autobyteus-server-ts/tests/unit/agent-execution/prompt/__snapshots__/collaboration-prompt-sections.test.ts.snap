@@ -90,13 +90,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a task agent team 1`] = `
@@ -185,13 +179,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a team without handoff rules 1`] = `
@@ -280,13 +268,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of a user-started team 1`] = `
@@ -379,13 +361,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a member of an organization's team 1`] = `
@@ -478,13 +454,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a standalone agent 1`] = `
@@ -539,13 +509,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in a Team run 1`] = `
@@ -602,13 +566,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in an Agent run 1`] = `
@@ -665,13 +623,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent in an Org run 1`] = `
@@ -728,13 +680,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the native AutoByteus path > renders the approved text for a task agent with handoff rules 1`] = `
@@ -799,13 +745,7 @@ The global semantic memory of this node is the folder \`/memory/semantic-global\
 - When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
 - Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
 - Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
-- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
-
-## Long-Running Commands
-
-- Run a long build or test suite once with \`run_bash\` and \`run_in_background\`. You are told its exit code when it ends; act on that notice. Background commands have no time limit, but they stop when the run ends.
-- A foreground command is killed at its \`timeout_seconds\` (default 30), so give a command you wait on enough time.
-- Do not wait with loops of \`sleep\` or repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a direct agent of an organization 1`] = `
@@ -875,13 +815,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a task agent team 1`] = `
@@ -947,13 +881,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a team without handoff rules 1`] = `
@@ -1019,13 +947,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of a user-started team 1`] = `
@@ -1095,13 +1017,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a member of an organization's team 1`] = `
@@ -1171,13 +1087,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a standalone agent 1`] = `
@@ -1209,13 +1119,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in a Team run 1`] = `
@@ -1249,13 +1153,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in an Agent run 1`] = `
@@ -1289,13 +1187,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent in an Org run 1`] = `
@@ -1329,13 +1221,7 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;
 
 exports[`collaboration prompt on the shared (Codex, Claude, ACP, AGY) path > renders the approved text for a task agent with handoff rules 1`] = `
@@ -1377,11 +1263,5 @@ Your semantic memory is the folder \`/memory/semantic/agent\`. It belongs to you
 
 ## Global Semantic Memory
 
-The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory.
-
-## Long-Running Commands
-
-- Start a long build or test suite once with \`exec_command\`. When it outlasts its wait, it keeps running in its session.
-- To wait for it, call \`write_stdin\` on that same session with empty input and a long \`yield_time_ms\`, as often as needed, instead of starting it again.
-- Do not wait with loops of \`sleep\` or short repeated checks, and never start the same command again while it still runs, or a second command that only waits for it."
+The global semantic memory of this node is the folder \`/memory/semantic-global\`. It is shared by every agent on this node, in every Project and team: facts that are true for everyone, such as what the product is, the words it uses and the user's standing rules. Read it when you need such facts. Write there only what is true for every agent; keep what only you need in your own semantic memory."
 `;

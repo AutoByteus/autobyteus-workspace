@@ -1,0 +1,16 @@
+# IMP-04
+# Command: python3 negative-controls.py: break one guard, run tests/unit/extensions + extensions-routes, restore
+# Commit: 38058ec630 source (restored after each control; git status clean)
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+N1 own actions only: Tests  2 failed | 34 passed (36) | caught by: ['× gates actions: not installed, off, unknown or inherited name, failing action; bytes and JSON reach it 26ms', '× calls an action with JSON or a WAV body and answers { output } or { code, message } 7ms']
+N2 late start ignored after Off: Tests  1 failed | 35 passed (36) | caught by: ['× turns off (stop) and on (start); a late start() after Off is ignored (Guidance) 50ms']
+N3 GraphQL owner check: Tests  1 failed | 35 passed (36) | caught by: ['× NAS-43 refuses a phone or no credential on the list, every mutation, actions and pages (AC-006) 14ms']
+N4 route table owner action: Tests  2 failed | 34 passed (36) | caught by: ['× classifies every extension route as owner only (SP-1) 5ms', '× starts the extensions that are on after the node listens, and stops them all at shutdown (DS-006) 135ms']
+N5 package SHA-256: Tests  2 failed | 34 passed (36) | caught by: ['× fails the install on a checksum mismatch: Failed with the reason and Install again; nothing installed (V13-02) 5027ms', '× gates actions: not installed, off, unknown or inherited name, failing action; bytes and JSON reach it 31ms']
+N6 page path inside ui/: Tests  2 failed | 34 passed (36) | caught by: ['× removes: stop, delete the folder, then the entry; Install works again 71ms', "× serves the page's files from package/ui only 32ms"]
+N7 catalog signature: Tests  2 failed | 34 passed (36) | caught by: ['× refuses Install and Update when the catalog fetch does not verify, and keeps installed ones listed (V13) 165ms', '× verifies the exact bytes, skips unreadable entries, and keeps the last verified copy 24ms']
+N8 unreadable state is everything Off: Tests  1 failed | 35 passed (36) | caught by: ['× reads an unreadable state.json as everything Off and does not rewrite it until a change (V12-02) 24ms']
+N9 busy refusal: Tests  1 failed | 35 passed (36) | caught by: ['× installs: package.new → install(ctx) with progress → package/ → enabled true → start (AC-002, DEC-015) 19ms']
+N10 update keeps the old package on failure: Tests  1 failed | 35 passed (36) | caught by: ['× keeps the old version working when an update fails: message and Update still offered (AC-003) 5030ms']

@@ -20,6 +20,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.list.empty': '还没有其他节点。添加一个，即可打开它的窗口或让智能体与它协作。',
   'settings.components.settings.NodesPage.row.agentsHint': '远程协作：让本节点和该节点上的智能体协同工作',
   'settings.components.settings.NodesPage.row.agentsLabel': '让智能体与 {{name}} 协作',
+  'settings.components.settings.NodesPage.row.sandboxLabel': '沙箱',
   'settings.components.settings.NodesPage.row.rename': '点击重命名',
   'settings.components.settings.NodesPage.row.reachable': '当前可达',
   'settings.components.settings.NodesPage.row.notReachable': '当前不可达',

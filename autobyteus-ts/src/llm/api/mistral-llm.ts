@@ -16,6 +16,7 @@ import {
   resolveProviderApiKeyResolver,
   type ProviderApiKeyResolver,
 } from '../../secrets/provider-api-key-resolver.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm-endpoint.js';
 
 const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
@@ -30,11 +31,13 @@ const MISTRAL_FINISH_TABLE: LlmFinishTable = {
 export class MistralLLM extends BaseLLM {
   private clientPromise: Promise<Mistral> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly endpoint: LLMEndpoint | undefined;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) {
     super(model, config);
     this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
+    this.endpoint = endpoint;
     this._renderer = new MistralPromptRenderer();
   }
 
@@ -45,7 +48,10 @@ export class MistralLLM extends BaseLLM {
 
   private async initializeClient(): Promise<Mistral> {
     const secret = await this.apiKeyResolver.resolve(LLMProvider.MISTRAL);
-    return new Mistral({ apiKey: secret.revealToTrustedConsumer() });
+    return new Mistral({
+      apiKey: secret.revealToTrustedConsumer(),
+      ...(this.endpoint ? { serverURL: providerAddressThrough('https://api.mistral.ai', this.endpoint) } : {}),
+    });
   }
 
   private toTokenUsage(usage: unknown): LlmTokenUsageObservation | null {

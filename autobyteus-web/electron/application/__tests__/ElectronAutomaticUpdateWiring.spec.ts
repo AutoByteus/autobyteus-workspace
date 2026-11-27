@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => ({
   updaterOptions: [] as Array<{ recoverAfterFailedInstall?: () => void; testFeedUrl?: string }>,
   serverManager: { stopServer: vi.fn(), isServerProcessGone: vi.fn(), setRuntimeEnvOverrides: vi.fn() },
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn(), close: vi.fn(), child: vi.fn() },
-  app: { setDesktopName: vi.fn(), on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
+  app: { setDesktopName: vi.fn(), on: vi.fn(), quit: vi.fn(), exit: vi.fn(), relaunch: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), getVersion: vi.fn(() => '1.5.15-test'), isPackaged: false },
 }))
 
 vi.mock('electron', () => ({
@@ -28,8 +28,6 @@ vi.mock('../../updater/appUpdater', () => ({
   AppUpdater: class { constructor(options: (typeof mocks.updaterOptions)[number]) { mocks.updaterOptions.push(options) } },
 }))
 vi.mock('../../updater/disabledAppUpdater', () => ({ DisabledAppUpdater: class {} }))
-vi.mock('../../extensionIpcHandlers', () => ({ registerExtensionIpcHandlers: vi.fn() }))
-vi.mock('../../extensions/managedExtensionService', () => ({ ManagedExtensionService: class {} }))
 vi.mock('../../browser/browser-runtime', () => ({ BrowserRuntime: class {}, startBrowserRuntime: vi.fn() }))
 vi.mock('../../browser/register-browser-shell-ipc-handlers', () => ({ registerBrowserShellIpcHandlers: vi.fn() }))
 vi.mock('../../browser/browser-bridge-auth-registry', () => ({ BrowserBridgeAuthRegistry: class {} }))

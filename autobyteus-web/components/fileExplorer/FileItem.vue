@@ -29,7 +29,7 @@
           <svg v-if="!file.is_file" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#87CEEB" class="w-full h-full">
             <path d="M20 18c0 .55-.45 1-1 1H5c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h5l2 1h7c.55 0 1 .45 1 1v11z"/>
           </svg>
-          <i v-else class="fas fa-file text-gray-500"></i>
+          <Icon v-else :icon="DRAG_PREVIEW_FILE_ICON" class="h-full w-full text-gray-500" aria-hidden="true" />
         </div>
         <span class="drag-preview-text">{{ file.name }}</span>
       </div>
@@ -67,13 +67,8 @@
              <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
         </svg>
 
-        <!-- File Icons (refined) -->
-        <i v-else-if="file.name.endsWith('.js') || file.name.endsWith('.ts')" class="fab fa-js text-yellow-500 text-xs"></i>
-        <i v-else-if="file.name.endsWith('.vue')" class="fab fa-vuejs text-green-500 text-xs"></i>
-        <i v-else-if="file.name.endsWith('.html')" class="fab fa-html5 text-orange-500 text-xs"></i>
-        <i v-else-if="file.name.endsWith('.css')" class="fab fa-css3-alt text-blue-500 text-xs"></i>
-        <i v-else-if="file.name.endsWith('.md')" class="fab fa-markdown text-blue-400 text-xs"></i>
-        <i v-else-if="file.name.endsWith('.json')" class="fas fa-code text-yellow-600 text-xs"></i>
+        <!-- File icons by kind, local Iconify icons (autobyteus-608 DC-011). -->
+        <Icon v-else-if="kindIcon" :icon="kindIcon.icon" class="h-3.5 w-3.5" :class="kindIcon.tone" aria-hidden="true" data-test="file-item-icon" />
         <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-gray-400">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
         </svg>
@@ -112,8 +107,10 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import type { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer'
 import { createFileExplorerNodeContextTarget } from '~/utils/fileExplorer/contextMenu'
 import type { FileExplorerRenameRequest, RequestFileExplorerContextMenu } from '~/utils/fileExplorer/contextMenu'
+import { DRAG_PREVIEW_FILE_ICON, fileItemIcon } from '~/utils/fileExplorer/fileItemIcon'
 
 const props = defineProps<{ file: TreeNode }>()
+const kindIcon = computed(() => (props.file.is_file ? fileItemIcon(props.file.name) : null))
 const explorer = inject<ReturnType<typeof useWorkspaceFileExplorer>>('workspaceFileExplorer')!
 if (!explorer) throw new Error("FileItem must be used within a component providing 'workspaceFileExplorer'")
 const panelActive = inject<ComputedRef<boolean>>('fileExplorerPanelActive', computed(() => true))

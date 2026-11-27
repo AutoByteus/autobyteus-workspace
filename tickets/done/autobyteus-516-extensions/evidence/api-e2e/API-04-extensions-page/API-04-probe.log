@@ -1,0 +1,16 @@
+# API-04 Extensions page probe with the U1/U2 update cases (autobyteus-516)
+# Command: pnpm -C autobyteus-web test:e2e:extensions-page --extensions-repo=/Users/normy/autobyteus_org/autobyteus-extensions --skip-server-build --output-dir=<new>  (server dist built this round from 3961790ab6 code)
+# Run 1 (/tmp/516-api-04): R1-R8 Pass, U1/U2 Fail in the new probe helper (the card's settings section is collapsed after a page load; the update itself succeeded, API-04-run1-U1-failure.png); probe fixed (recordTest opens the section)
+# Run 2 (/tmp/516-api-04b) below; macOS arm64, Node v22.23.1, headless Chrome; 2026-11-26
+Pass R1 This computer's Extensions: Voice Input Not installed from the verified catalog (V1-01, V2-01)
+Pass R2 Install: phases without a percent, then Installed and on, Getting ready, then On and Ready (V2-02…V2-05, AC-002, REQ-012)
+Pass R3 The packaged page through the real node: loads, shows the installed runtime and folder, saves the language; nothing refused (AC-002 page check, V7-01)
+Pass R4 Microphone panel and Test: records the fake microphone and transcribes with this computer's Voice Input (V8-01…V8-04, AC-007)
+Pass R5 A voice surface shows the microphone button: Memory search (V5-01)
+Pass R6 View log, then Off hides the microphone in another page, and On again (V11-01, V4, AR-001)
+Pass R7 Chinese app: translated card and page texts (VIS-L-01, VIS-L-02); phone width layout (VIS-N-01, N-02)
+Pass U1 Update 1.0.0 → 1.0.1 from a newer catalog release: Update offered, On and the language kept, the Test dictates with the new package; one worker (AC-003, V9-01, V9-02)
+Pass U2 A broken 1.0.2 release: "Update to 1.0.2 failed: …", Update still offered, 1.0.1 still On and dictating (AC-003 failure outcome)
+Pass R8 Remove: confirmation, Removing, Not installed; the folder is gone (V10-01…V10-03)
+result Pass; evidence /tmp/516-api-04b/evidence.json
+exit 0

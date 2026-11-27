@@ -1,0 +1,41 @@
+{
+  "result": {
+    "teamRuns": {
+      "names": [
+        {
+          "text": "Software Engineering Team",
+          "w": 73,
+          "needs": 219,
+          "srOnly": false
+        }
+      ],
+      "backW": 86,
+      "rows": [
+        3,
+        2
+      ]
+    },
+    "run": {
+      "names": [
+        {
+          "text": "solution_designer",
+          "w": 143,
+          "needs": 143,
+          "srOnly": false
+        },
+        {
+          "text": "Review the launch checklist wi",
+          "w": 34,
+          "needs": 276,
+          "srOnly": false
+        }
+      ],
+      "backW": 213,
+      "rows": [
+        3,
+        2
+      ]
+    }
+  },
+  "errors": []
+}

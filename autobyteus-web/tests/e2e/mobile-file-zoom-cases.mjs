@@ -17,11 +17,11 @@ import zlib from 'node:zlib';
 import { randomUUID } from 'node:crypto';
 
 /** A PDF of `pageCount` pages, each with a heading and lines of small print. */
-const multiPagePdf = (pageCount) => {
+export const multiPagePdf = (pageCount, label = 'RESUME-472') => {
   const pages = Array.from({ length: pageCount }, (_, index) => index);
   const objects = ['<< /Type /Catalog /Pages 2 0 R >>', `<< /Type /Pages /Kids [${pages.map(i => `${3 + i * 2} 0 R`).join(' ')}] /Count ${pageCount} >>`];
   for (const i of pages) {
-    const lines = [`BT /F1 20 Tf 40 760 Td (RESUME-472 PAGE ${i + 1}) Tj ET`,
+    const lines = [`BT /F1 20 Tf 40 760 Td (${label} PAGE ${i + 1}) Tj ET`,
       ...Array.from({ length: 40 }, (_, line) => `BT /F1 7 Tf 40 ${730 - line * 16} Td (Small print line ${line + 1} of page ${i + 1}: experience, skills, education.) Tj ET`)];
     const stream = lines.join('\n');
     objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents ${4 + i * 2} 0 R /Resources << /Font << /F1 ${3 + pageCount * 2} 0 R >> >> >>`);

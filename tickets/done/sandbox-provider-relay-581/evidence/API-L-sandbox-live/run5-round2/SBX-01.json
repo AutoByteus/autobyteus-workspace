@@ -1,0 +1,114 @@
+{
+  "readyMs": 8067,
+  "resultKeys": [
+    "agents",
+    "expiresAt",
+    "image",
+    "nodeId",
+    "peerName",
+    "runMemoryFolder",
+    "sandboxId",
+    "sharedFolders",
+    "workspaceFolder"
+  ],
+  "agents": [
+    {
+      "name": "Sandbox Worker",
+      "address": "/sandbox_worker"
+    }
+  ],
+  "sharedFolders": [
+    {
+      "name": "inputs",
+      "pathInSandbox": "/home/autobyteus/shared/inputs"
+    }
+  ],
+  "limits": "6442450944 4000000000 bridge",
+  "hostPeers": [
+    {
+      "name": "sbx_49ac35449b",
+      "paired": true,
+      "role": "sandbox"
+    }
+  ],
+  "network": "internet 200 host 200",
+  "sandboxPeers": [
+    {
+      "name": "host",
+      "paired": true
+    }
+  ],
+  "availability": {
+    "available": true,
+    "refusalCode": null
+  },
+  "runtimeStates": {
+    "codex_app_server": "SIGNED_IN",
+    "claude_agent_sdk": "SIGNED_IN",
+    "antigravity_cli": "SIGNED_OUT",
+    "grok_build": "SIGNED_IN",
+    "deepseek_harness": "NOT_INSTALLED"
+  },
+  "turns": {
+    "autobyteus": {
+      "model": "claude-haiku-5-5",
+      "completed": true,
+      "errors": []
+    },
+    "claude_agent_sdk": {
+      "model": "haiku",
+      "completed": true,
+      "errors": []
+    },
+    "codex_app_server": {
+      "model": "gpt-5.6-luna",
+      "completed": true,
+      "errors": []
+    },
+    "grok_build": {
+      "model": "grok-4.20-0309-non-reasoning",
+      "completed": true,
+      "errors": []
+    }
+  },
+  "relayedLines": {
+    "anthropic/apiKey/200": 3,
+    "openai/apiKey/200": 1,
+    "xai/apiKey/200": 5
+  },
+  "relayedPaths": [
+    "anthropic/apiKey POST /v1/messages -> 200",
+    "anthropic/apiKey POST /v1/messages -> 200",
+    "anthropic/apiKey POST /v1/messages -> 200",
+    "openai/apiKey POST /v1/responses -> 200",
+    "xai/apiKey GET /v1/models -> 200",
+    "xai/apiKey GET /v1/api-key -> 200",
+    "xai/apiKey GET /v1/models -> 200",
+    "xai/apiKey GET /v1/api-key -> 200",
+    "xai/apiKey POST /v1/chat/completions -> 200"
+  ],
+  "directTurns": {
+    "autobyteus": {
+      "model": "claude-haiku-5-5",
+      "completed": true
+    },
+    "claude_agent_sdk": {
+      "model": "haiku",
+      "completed": true
+    }
+  },
+  "c5LinesDuringDirectTurns": [
+    {
+      "fromSandbox": true,
+      "relay": "xai",
+      "path": "/v1/chat/completions",
+      "status": 200
+    },
+    {
+      "fromSandbox": true,
+      "relay": "xai",
+      "path": "/v1/responses",
+      "status": 200
+    }
+  ]
+}

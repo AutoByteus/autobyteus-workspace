@@ -30,7 +30,12 @@ afterEach(() => {
   for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true });
 });
 
-const RELAY_ACCESS = { baseUrl: "http://127.0.0.1:41000/relay/deepseek", apiKey: "rp_run-pass" };
+/** A provider relay access double: only the relay's address is read by discovery. */
+const RELAY_ACCESS_DOUBLE = {
+  isRelayed: () => false, routeFor: vi.fn(), routeForNativeProvider: vi.fn(), statusOf: vi.fn(),
+  prepareForRun: vi.fn(), prepareForNode: vi.fn(), observe: vi.fn(),
+};
+const RELAY_ACCESS = { baseUrl: "http://127.0.0.1:41000/relay/deepseek", pass: "rp_run-pass", relayCredentialKind: "apiKey" as const };
 
 describe("the AutoByteus-owned dsh home (DEC-007)", () => {
   it("writes the home patch and the literal instructions plugin, rewriting a file only when it differs, through a temporary file", async () => {
@@ -82,7 +87,7 @@ describe("the dsh launch profile", () => {
     vi.stubEnv("DSH_PERMISSION_MODE", "danger-full-access");
     const home = new DeepSeekHarnessHome(tempRoot());
     const profile = createDeepSeekHarnessLaunchProfile(() => home);
-    expect(profile.providerRelayId).toBe("deepseek");
+    expect(profile.relay).toEqual({ relayId: "deepseek", runtimeKind: "deepseek_harness", use: "always" });
     const launch = await profile.runLaunch({
       runId: "run-1", workingDirectory: "/work/repo/sub", instructions: "Be terse.", model: "deepseek-v4-flash",
       reasoningEffort: "max", relayAccess: RELAY_ACCESS,
@@ -91,7 +96,7 @@ describe("the dsh launch profile", () => {
     expect(launch.env).toMatchObject({
       DSH_HOME: home.homeDir,
       DEEPSEEK_API_KEY: "rp_run-pass",
-      DEEPSEEK_BASE_URL: "http://127.0.0.1:41000/relay/deepseek",
+      DEEPSEEK_BASE_URL: "http://127.0.0.1:41000/relay/deepseek/anthropic",
       AUTOBYTEUS_DSH_SKILLS_DIR: path.join("/work/repo/sub", ".dsh", "skills"),
     });
     expect(launch.env.DSH_PERMISSION_MODE).toBeUndefined();
@@ -111,8 +116,8 @@ describe("the dsh launch profile", () => {
   it("gives discovery the relay's address and a placeholder (dsh lists its models only with a key) — no pass, no key, no run files", async () => {
     vi.stubEnv("DEEPSEEK_API_KEY", "sk-inherited-from-dotenv");
     const home = new DeepSeekHarnessHome(tempRoot());
-    const launch = await createDeepSeekHarnessLaunchProfile(() => home).discoveryLaunch({ relayBaseUrl: RELAY_ACCESS.baseUrl });
-    expect(launch.env).toMatchObject({ DSH_HOME: home.homeDir, DEEPSEEK_BASE_URL: RELAY_ACCESS.baseUrl });
+    const launch = await createDeepSeekHarnessLaunchProfile(() => home).discoveryLaunch({ relayBaseUrl: RELAY_ACCESS.baseUrl, nodeRelayAccess: null });
+    expect(launch.env).toMatchObject({ DSH_HOME: home.homeDir, DEEPSEEK_BASE_URL: `${RELAY_ACCESS.baseUrl}/anthropic` });
     expect(launch.env.DEEPSEEK_API_KEY).toBe("autobyteus-model-discovery");
     expect(launch.env.AUTOBYTEUS_DSH_INSTRUCTIONS_FILE).toBeUndefined();
     expect(launch.env.AUTOBYTEUS_DSH_SKILLS_DIR).toBeUndefined();
@@ -145,7 +150,7 @@ describe("dsh model discovery (DS-005)", () => {
       message: "DeepSeek Harness needs the AutoByteus credential proxy, which this host does not run.",
     });
     const starting = await discoverDeepSeekHarnessModels({ relayAccess: {
-      prepareForRun: vi.fn(), observe: vi.fn(), relayBaseUrl: () => { throw new Error("Credential proxy is not ready."); },
+      ...RELAY_ACCESS_DOUBLE, relayBaseUrl: () => { throw new Error("Credential proxy is not ready."); },
     } }).catch((error) => error);
     expect(toDeepSeekHarnessDiagnostic(starting)).toEqual({
       code: "DEEPSEEK_HARNESS_RELAY_NOT_READY", message: "The credential proxy is starting; try again.",
@@ -155,7 +160,7 @@ describe("dsh model discovery (DS-005)", () => {
   it("reports dsh not installed when its command does not run", async () => {
     vi.stubEnv("DEEPSEEK_HARNESS_COMMAND", path.join(os.tmpdir(), "no-such-dsh-command"));
     const failure = await discoverDeepSeekHarnessModels({ relayAccess: {
-      prepareForRun: vi.fn(), observe: vi.fn(), relayBaseUrl: () => "http://127.0.0.1:1/relay/deepseek",
+      ...RELAY_ACCESS_DOUBLE, relayBaseUrl: () => "http://127.0.0.1:1/relay/deepseek",
     } }).catch((error) => error);
     expect(toDeepSeekHarnessDiagnostic(failure).code).toBe("DEEPSEEK_HARNESS_CLI_UNAVAILABLE");
   });
@@ -176,7 +181,7 @@ describe("dsh on the Agent Runtimes page and in availability (DS-006)", () => {
     });
     getStatusForConsumer.mockResolvedValueOnce("CONFIGURED" as never);
     expect(await strategy.readSignIn("dsh", "/tmp")).toEqual({ state: "signedIn" });
-    expect(getStatusForConsumer).toHaveBeenCalledWith({ kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" });
+    expect(getStatusForConsumer).toHaveBeenCalledWith({ kind: "providerRelay", relayId: "deepseek", relayCredentialKind: "apiKey" });
     expect(await strategy.readUsageLimits("dsh", "/tmp", { deadline: { endsAt: Date.now() + 1000 } })).toEqual({ state: "not_reported" });
   });
 

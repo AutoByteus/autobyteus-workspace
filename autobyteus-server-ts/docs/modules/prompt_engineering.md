@@ -17,7 +17,6 @@ text.
 
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
-- `src/agent-execution/prompt/long-running-command-sections.ts`
 - `src/agent-execution/prompt/markdown-heading-containment.ts`
 - `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` (tool descriptions)
@@ -49,12 +48,11 @@ Each section has one owner:
 | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
-| `Long-Running Commands` | The runtime's own text in `long-running-command-sections.ts`, passed to the composer by each backend ([below](#long-running-commands-section)) | Every runtime, always last of the Carpenter sections |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
 The shared logical order is Agent Identity, optional Team Instruction, the
 collaboration sections for the agent's role, the optional Project section and
-the Semantic Memory and Global Semantic Memory sections, then Long-Running Commands. The Project section reads: "You work in the
+the Semantic Memory and Global Semantic Memory sections. The Project section reads: "You work in the
 Project <name> (Project ID <id>). Use this Project ID with the Project tools; ask
 the user before working on another Project." The two semantic memory sections are
 exactly:
@@ -73,41 +71,12 @@ with `<folder>` the agent's absolute folder and `<global>` the node's global fol
 [Agent Memory](./agent_memory.md#semantic-memory)); the composer refuses a relative path. All
 five runtime paths (native AutoByteus, Codex, Claude, Antigravity, ACP/Grok)
 compose it the same way. Native AutoByteus appends
-Working Environment, Bash Operating Practice, File And Directory Practice and
-Long-Running Commands in that order, then the native core appends its terminal
+Working Environment, Bash Operating Practice and File And Directory Practice in
+that order, then the native core appends its terminal
 configured-skills catalog. Blank optional values omit their line, subsection, or section; they do
 not produce empty headings. An invalid required name, native workspace, Team
 identity/delivery binding, or unresolved Carpenter placeholder stops bootstrap
 before provider invocation.
-
-### Long-Running Commands Section
-
-Every runtime's prompt ends with a short (at most about 8 lines) `## Long-Running
-Commands` section that teaches one habit in that runtime's own terms: start a long
-build or test suite once, with the runtime's background mechanism; act on its
-completion notice where the runtime gives one, otherwise wait on the same job;
-never wait with loops of short sleeps; never start the same command again while it
-runs, or a second command that only waits for it; and state the runtime's limit
-where it has one. Each text names only that runtime's tools. The texts live in
-`long-running-command-sections.ts`:
-
-| Runtime | Section | Mechanism it names |
-| --- | --- | --- |
-| Claude Agent SDK | `CLAUDE_LONG_RUNNING_COMMAND_SECTION` | `run_in_background`, the automatic completion notice; the 2-hour limit |
-| Codex App Server | `CODEX_LONG_RUNNING_COMMAND_SECTION` | `exec_command`, then `write_stdin` with empty input and a long `yield_time_ms` (Codex sends no completion notice) |
-| Grok Build | `GROK_LONG_RUNNING_COMMAND_SECTION` | `run_terminal_command` with `block_until_ms: 0`, then `get_command_or_subagent_output` with a positive `timeout_ms` (at most 1 hour per call) |
-| Antigravity CLI | `ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION` | `run_command`; a command still running after `WaitMsBeforeAsync` continues in the background and AGY notifies the agent |
-| DeepSeek Harness | `GENERIC_LONG_RUNNING_COMMAND_SECTION` | general terms (its shell tool's background mechanism is not investigated) |
-| Native AutoByteus | `NATIVE_LONG_RUNNING_COMMAND_SECTION` | `run_bash` with `run_in_background` and its exit-code notice; background commands have no time limit; a foreground command is killed at its `timeout_seconds` (default 30) |
-
-`composeSharedCarpenterPrompt` requires the section as an input
-(`longRunningCommandSection`; a blank one fails fast), so a new runtime cannot
-ship without choosing its text. The ACP session profile carries it for Grok and
-DeepSeek; the Claude, Codex and Antigravity bootstrappers pass theirs;
-`composeNativeAutoByteusPrompt` appends the native text after File And Directory
-Practice. The section text is the one place a runtime's mechanism or limit is
-stated to its agent: when a runtime's tool, notice or limit changes, change its
-text here.
 
 Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
 owning section. A heading inside a same-or-longer Markdown fence remains content,

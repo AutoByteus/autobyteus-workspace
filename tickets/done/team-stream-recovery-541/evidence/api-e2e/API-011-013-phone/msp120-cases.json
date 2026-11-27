@@ -1,0 +1,44 @@
+{
+ "cases": {
+  "MSP-120": {
+   "result": "Pass",
+   "seconds": 37.1,
+   "teamRunId": "delivery_team_f4a22228b9c3406eb8e400d4d0afe079",
+   "refusedReads": 5,
+   "sendable": true,
+   "noticeAfterMs": 10050,
+   "during": {
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN during-exhausted-16pg",
+    "shown": false
+   },
+   "failuresAtNotice": 5,
+   "noticeAfterGapMs": 15174,
+   "subtitle": "Idle \u00b7 in Delivery Team",
+   "recovery": {
+    "withheld": {
+     "type": "AGENT_STATUS",
+     "seq": 20
+    },
+    "recoveredAfterMs": 31056,
+    "gapSeen": true,
+    "failedAttempts": 5,
+    "replacementLink": 11
+   },
+   "noticeAfterRecovery": 0,
+   "after": {
+    "subtitle": "Idle \u00b7 in Delivery Team",
+    "shown": true
+   }
+  }
+ },
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "unknownBrowserErrors": []
+}

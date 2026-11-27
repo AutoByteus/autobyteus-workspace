@@ -1,0 +1,50 @@
+{
+  "delegatedTo": "/sandbox_worker",
+  "answer": {
+    "content": "done",
+    "referenceFiles": 1
+  },
+  "referenceContentMatches": true,
+  "workspaceFile": "report-a7eb6003.md",
+  "transcripts": [
+    "agents/latency_sandbox_d7d976_f192fcc2f365489da5a3fa04feca2f81/raw_traces_active.jsonl",
+    "agents/sandbox_worker_633b48deea1245a08941ce051f18a3e6/raw_traces_active.jsonl",
+    "agents/turn_autobyteus_bb31cf_bccdafac014b4ca887123f8db3b2dbb5/raw_traces_active.jsonl",
+    "agents/turn_claude_agent_sdk_9ea6a2_36b244c8253d46ecab843f541573b3a8/raw_traces_active.jsonl",
+    "agents/turn_codex_app_server_38f4b6_ef228597d85d445180b62014a7faa78b/raw_traces_active.jsonl",
+    "agents/turn_grok_build_0193db_72ae64e27d004a2fa3f79de52455bf7a/raw_traces_active.jsonl"
+  ],
+  "sharedReadOnly": "shared input\ntouch=1",
+  "leakScan": {
+    "needleIds": 11,
+    "sandboxFiles": {
+      "roots": [
+        "/home",
+        "/root",
+        "/run",
+        "/tmp",
+        "/var"
+      ],
+      "bytes": 662446080,
+      "hits": []
+    },
+    "processes": {
+      "count": 46,
+      "bytes": 13171,
+      "hits": []
+    },
+    "containerEnv": [],
+    "workspace": {
+      "hits": {},
+      "files": 1,
+      "links": 0
+    },
+    "runMemory": {
+      "hits": {},
+      "files": 50,
+      "links": 0
+    },
+    "c5Log": [],
+    "toolResults": []
+  }
+}

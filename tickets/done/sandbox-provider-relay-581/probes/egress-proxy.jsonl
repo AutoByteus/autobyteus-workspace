@@ -1,0 +1,4 @@
+{"decision": "started", "allow": ["host.docker.internal:47581"], "t": 1795670155.3}
+{"method": "GET", "target": "host.docker.internal:47581", "decision": "allow-listed", "t": 1795670157.9}
+{"method": "CONNECT", "target": "host.docker.internal:47581", "decision": "allow-listed", "t": 1795670158.1}
+{"method": "GET", "target": "host.docker.internal:8001", "decision": "deny-private", "t": 1795670158.2}

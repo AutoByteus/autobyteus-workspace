@@ -1,0 +1,37 @@
+# iOS App Store Connect Release run 45629381562 attempt 1, job 'Build And Test iOS App': the one failing UI smoke test (selected tests: Executed 8 tests, with 1 failure)
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.7199630Z Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' started.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.7704200Z     t =     0.00s Start Test at 2026-11-25 14:17:29.686
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.7962120Z     t =     0.02s Set Up
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.8463300Z     t =     0.02s Open org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.8578870Z     t =     0.02s     Launch org.autobyteus.mobile
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:29.8876260Z     t =     0.02s         Terminate org.autobyteus.mobile:24190
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:30.9178780Z 2026-11-25 14:17:30.887 xcodebuild[17618:53593] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:30.9180010Z 2026-11-25 14:17:30.887 xcodebuild[17618:53593] [MT] IDELaunchParametersSnapshot: no debugger version
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:35.0257770Z     t =     5.20s         Setting up automation session
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:35.1881820Z     t =     5.41s         Wait for org.autobyteus.mobile to idle
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:36.5049590Z     t =     6.60s Waiting 30.0s for "start.scan" Button to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:37.5323780Z     t =     7.67s     Checking `Expect predicate `existsNoRetry == 1` for object "start.scan" Button`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:37.7040770Z     t =     7.67s         Checking existence of `"start.scan" Button`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:38.8857370Z     t =     8.95s Tap "start.scan" Button
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:38.8858180Z     t =     8.95s     Wait for org.autobyteus.mobile to idle
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:39.0574620Z     t =     9.05s     Find the "start.scan" Button
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:42.1137530Z     t =    12.01s     Check for interrupting elements affecting "start.scan" Button
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:43.1894010Z     t =    12.80s     Synthesize event
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:44.8102990Z     t =    14.33s     Wait for org.autobyteus.mobile to idle
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:45.1653490Z     t =    14.65s Waiting 30.0s for "Demo code found" StaticText to exist
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:45.8610970Z     t =    15.81s     Checking `Expect predicate `existsNoRetry == 1` for object "Demo code found" StaticText`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:45.8612880Z     t =    15.81s         Checking existence of `"Demo code found" StaticText`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:47.3435130Z     t =    17.20s         Capturing element debug description
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:48.0130230Z     t =    17.88s     Checking `Expect predicate `existsNoRetry == 1` for object "Demo code found" StaticText`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:48.1778470Z     t =    17.88s         Checking existence of `"Demo code found" StaticText`
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:17:49.3635010Z     t =    19.51s Ignoring failure to get hierarchy for remote element in process 24629 (Error getting main window kAXErrorServerNotFound)
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:18:27.2792300Z /Users/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-ios/AutoByteusMobileUITests/DemoUITests.swift:48: error: -[AutoByteus
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:19:03.5023750Z Test Case '-[AutoByteusMobileUITests.DemoUITests testScanningTheDemoCodeOpensTheDemo]' failed (93.656 seconds).
+...
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:54.3904330Z Failing tests:
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:54.3904590Z 
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:54.3904790Z Test session results, code coverage, and logs:
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:54.3905590Z 	/Users/runner/work/_temp/ios-smoke/AutoByteusMobile.xcresult
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:54.3906030Z 
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:12.8048610Z Test Suite 'Selected tests' failed at 2026-11-25 14:20:12.761.
+Build And Test iOS App	Generate, build, and run implementation checks	2026-11-25T14:20:12.8075920Z 	 Executed 8 tests, with 1 failure (0 unexpected) in 278.909 (278.942) seconds

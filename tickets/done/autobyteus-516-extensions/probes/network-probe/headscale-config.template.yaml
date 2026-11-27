@@ -1,0 +1,37 @@
+# Probe-only Headscale config: coordination server on this Mac's loopback only.
+server_url: http://127.0.0.1:18080
+listen_addr: 127.0.0.1:18080
+metrics_listen_addr: 127.0.0.1:19090
+grpc_listen_addr: 127.0.0.1:50443
+grpc_allow_insecure: false
+noise:
+  private_key_path: __SCRATCH__/noise_private.key
+prefixes:
+  v4: 100.80.0.0/16
+  v6: fd7a:115c:a1e0:80::/64
+  allocation: sequential
+derp:
+  server:
+    enabled: false
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+  auto_update_enabled: false
+  update_frequency: 24h
+disable_check_updates: true
+database:
+  type: sqlite
+  sqlite:
+    path: __SCRATCH__/db.sqlite
+log:
+  level: warn
+dns:
+  magic_dns: false
+  base_domain: probe.internal
+  override_local_dns: false
+  nameservers:
+    global: []
+unix_socket: __SCRATCH__/headscale.sock
+unix_socket_permission: "0770"
+policy:
+  mode: file
+  path: ""

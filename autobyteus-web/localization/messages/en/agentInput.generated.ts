@@ -24,6 +24,8 @@ const messages = {
   'agentInput.components.agentInput.GroupedSelect.auto_execute_tools': 'Auto-execute Tools',
   'agentInput.components.agentInput.GroupedSelect.no_models_found': 'No models found.',
   'agentInput.components.agentInput.GroupedSelect.search_models': 'Search models...',
+  'agentInput.components.agentInput.MessagePrimaryActionButton.send_message': 'Send message',
+  'agentInput.components.agentInput.MessagePrimaryActionButton.stop_generation': 'Stop generation',
 } satisfies TranslationCatalog;
 
 export default messages;

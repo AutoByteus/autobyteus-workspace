@@ -11,13 +11,6 @@ import type {
   BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from '../types/browserShell'
-import type {
-  ExtensionId,
-  ManagedExtensionState,
-  UpdateVoiceInputSettingsPayload,
-  VoiceInputTranscriptionRequest,
-  VoiceInputTranscriptionResult,
-} from './extensions/types'
 import type { ServerStatusSnapshot } from '../types/serverStatus'
 
 type Cleanup = () => void
@@ -144,18 +137,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // In sandboxed renderers, `file.path` is removed. This is the secure way to get the real path.
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
 
-  getExtensionsState: () => ipcRenderer.invoke('extensions:get-state') as Promise<ManagedExtensionState[]>,
-  installExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:install', extensionId) as Promise<ManagedExtensionState[]>,
-  enableExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:enable', extensionId) as Promise<ManagedExtensionState[]>,
-  disableExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:disable', extensionId) as Promise<ManagedExtensionState[]>,
-  updateVoiceInputSettings: (extensionId: ExtensionId, payload: UpdateVoiceInputSettingsPayload) =>
-    ipcRenderer.invoke('extensions:update-voice-input-settings', extensionId, payload) as Promise<ManagedExtensionState[]>,
-  removeExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:remove', extensionId) as Promise<ManagedExtensionState[]>,
-  reinstallExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:reinstall', extensionId) as Promise<ManagedExtensionState[]>,
-  openExtensionFolder: (extensionId: ExtensionId) =>
-    ipcRenderer.invoke('extensions:open-folder', extensionId) as Promise<{ success: boolean; error?: string }>,
-  transcribeVoiceInput: (request: VoiceInputTranscriptionRequest) =>
-    ipcRenderer.invoke('voice-input:transcribe', request) as Promise<VoiceInputTranscriptionResult>,
 })
 
 // The previous global drop handler has been removed.

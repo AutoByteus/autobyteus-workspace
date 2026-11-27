@@ -1,0 +1,54 @@
+# API-R05 whole server E2E suite
+# command: env -i PATH HOME=<fresh temp> TMPDIR pnpm test:e2e
+# commit: 5c6ef6ee86 (code = d624f09ce6; + uncommitted API/E2E test files: the gated sandbox suite is skipped without its gate)
+# environment: macOS arm64, Node v22.23.1; date 2026-11-26T16:57:21Z
+
+# excerpt: tool-list, node-access and relay-related files, then the summary (full log: API-R05-server-e2e-suite-full.log.gz)
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+ ✓ tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts (1 test) 55ms
+
+ Test Files  128 passed | 176 skipped (304)
+      Tests  575 passed | 829 skipped (1404)
+   Start at  17:57:27
+   Duration  1261.89s (transform 19.23s, setup 6.82s, import 409.68s, tests 818.03s, environment 16ms)
+
+exit 0

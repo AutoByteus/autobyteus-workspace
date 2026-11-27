@@ -1,0 +1,225 @@
+{
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-115": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "case": {
+  "result": "Pass",
+  "seconds": 16.1,
+  "teamRunId": "empty_refs_647_1e365c515ef44024aa9f5ff82f96a7c6",
+  "desktop": {
+   "empty": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [
+     "This video could not be played.Retry"
+    ],
+    "text": "empty-647.mp4 <probe-root>/alpha/workspace/refs-647/empty-647.mp4 This video could not be played. Retry",
+    "screenshot": "MSP-115-desktop-empty-647.mp4.png"
+   },
+   "gone": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [],
+    "text": "gone-647.mp4 <probe-root>/alpha/workspace/refs-647/gone-647.mp4 Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+    "screenshot": "MSP-115-desktop-gone-647.mp4.png"
+   }
+  },
+  "phone": {
+   "empty": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [
+     "This video could not be played.Retry"
+    ],
+    "text": "empty-647.mp4 This video could not be played. Retry",
+    "screenshot": "MSP-115-phone-empty-647.mp4.png"
+   },
+   "gone": {
+    "video": false,
+    "videoError": null,
+    "src": null,
+    "alerts": [],
+    "text": "gone-647.mp4 Reference file unavailable The file may have been deleted, moved, or become unreadable.",
+    "screenshot": "MSP-115-phone-gone-647.mp4.png"
+   }
+  },
+  "referenceAnswers": {
+   "desktop": [
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+     "range": "bytes=0-0",
+     "status": 416,
+     "contentRange": "bytes */0"
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+     "range": "bytes=0-",
+     "status": 416,
+     "contentRange": "bytes */0"
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/8c8ce76ddd7314381093bfc4c3c6baef4eb528c6d23f37d099b871823113b956/content",
+     "range": "bytes=0-0",
+     "status": 404,
+     "contentRange": null
+    }
+   ],
+   "phone": [
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+     "range": "bytes=0-0",
+     "status": 416,
+     "contentRange": "bytes */0"
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+     "range": null,
+     "status": 200,
+     "contentRange": null
+    },
+    {
+     "case": "MSP-115",
+     "url": "\u2026/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/8c8ce76ddd7314381093bfc4c3c6baef4eb528c6d23f37d099b871823113b956/content",
+     "range": "bytes=0-0",
+     "status": 404,
+     "contentRange": null
+    }
+   ]
+  }
+ },
+ "browserErrors": [
+  {
+   "case": "MSP-115",
+   "line": "desktop console: Failed to load resource: the server responded with a status of 416 (Range Not Satisfiable)",
+   "known": true,
+   "cause": "a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one"
+  },
+  {
+   "case": "MSP-115",
+   "line": "desktop console: Failed to load resource: the server responded with a status of 416 (Range Not Satisfiable)",
+   "known": true,
+   "cause": "a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one"
+  },
+  {
+   "case": "MSP-115",
+   "line": "desktop console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "known": true,
+   "cause": "a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 416 (Range Not Satisfiable)",
+   "known": true,
+   "cause": "a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: net::ERR_REQUEST_RANGE_NOT_SATISFIABLE",
+   "known": true,
+   "cause": "the empty file reached the player (SR-003): its video element asks the empty downloaded blob for a range"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "known": true,
+   "cause": "a reference probe answered as designed: 404 for the deleted file, 416 bytes */0 for the empty one"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  },
+  {
+   "case": "MSP-115",
+   "line": "phone console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+   "known": true,
+   "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+  }
+ ],
+ "failedRequests": [
+  {
+   "case": "MSP-115",
+   "label": "desktop",
+   "url": "http://127.0.0.1:<port>/rest/collaboration-messages/agent_team/empty_refs_647_1e365c515ef44024aa9f5ff82f96a7c6/messages/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+   "error": "net::ERR_ABORTED"
+  },
+  {
+   "case": "MSP-115",
+   "label": "phone",
+   "url": "http://<phone host>:56665/rest/collaboration-messages/agent_team/empty_refs_647_1e365c515ef44024aa9f5ff82f96a7c6/messages/collabmsg_7FXR8hu2jT-lffT4hAogayt_mXTq2HYH/references/50686f6871c95e9078959d7f63ff586b773c853f9153a3c7a0fea95ce3e1c111/content",
+   "error": "net::ERR_ABORTED"
+  },
+  {
+   "case": "MSP-115",
+   "label": "phone",
+   "url": "blob:http://<phone host>:56665/a3d860ba-81a6-469e-b37f-62cbd7a12113",
+   "error": "net::ERR_REQUEST_RANGE_NOT_SATISFIABLE"
+  }
+ ]
+}

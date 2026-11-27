@@ -1,0 +1,11 @@
+# Extensions catalog check (RELEASE.md) after the beta was published, 2026-11-27T06:47:46Z, tag v1.5.15-beta.3 (release commit 32edb7532d): public data only; the private signing key was never opened
+## the key built into the TAGGED source (git show v1.5.15-beta.3:…), the repository's key, the live catalog
+built-in key present and not empty: True
+built-in key equals the repository's catalog-public-key.pem: True
+catalog top-level keys: ['extensions']
+ids in the catalog: ['voice-input']
+catalog lists voice-input: True
+signature file: 88 chars, base64 decodes to 64 bytes
+key type: ed25519 | catalog bytes: 894 | signature verifies with the built-in key: true
+catalog files identical to the pre-tag check: yes
+extensions-catalog.json, extensions-catalog.json.sig

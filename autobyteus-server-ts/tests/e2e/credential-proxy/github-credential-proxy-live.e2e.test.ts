@@ -207,7 +207,7 @@ describe.skipIf(!GATE)("GitHub through the Integrations page against real GitHub
     const access = new IntegrationAccessRule({
       catalog, definitions, skills, agentDefinitions: { getAgentDefinitionById: async (id) => agents.get(id) ?? null },
     });
-    const host = createCredentialProxyHost({ integrationsDir, definitions, management: () => management, catalog, access, skillSources: null });
+    const host = createCredentialProxyHost({ integrationsDir, definitions, relayed: null, peerRelayClient: () => { throw new Error("not relayed"); }, management: () => management, catalog, access, skillSources: null });
     const outputs: string[] = [];
     try {
       await host.listen();

@@ -26,6 +26,7 @@ import {
   resolveProviderApiKeyResolver,
   type ProviderApiKeyResolver,
 } from '../../secrets/provider-api-key-resolver.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm-endpoint.js';
 import {
   applySafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
@@ -266,11 +267,13 @@ const splitClaudeContentBlocks = (blocks: ContentBlock[] | null | undefined): { 
 export class AnthropicLLM extends BaseLLM {
   private clientPromise: Promise<Anthropic> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly endpoint: LLMEndpoint | undefined;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) {
     super(model, config);
     this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
+    this.endpoint = endpoint;
     this._renderer = new AnthropicPromptRenderer();
   }
 
@@ -281,7 +284,10 @@ export class AnthropicLLM extends BaseLLM {
 
   private async initializeClient(): Promise<Anthropic> {
     const secret = await this.apiKeyResolver.resolve(LLMProvider.ANTHROPIC);
-    return new Anthropic({ apiKey: secret.revealToTrustedConsumer() });
+    return new Anthropic({
+      apiKey: secret.revealToTrustedConsumer(),
+      ...(this.endpoint ? { baseURL: providerAddressThrough('https://api.anthropic.com', this.endpoint) } : {}),
+    });
   }
 
   /**

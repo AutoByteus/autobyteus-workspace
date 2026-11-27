@@ -77,8 +77,8 @@ const A_ID = "srv_node_a_000000000000000000000000000";
 const B_ID = "srv_node_b_000000000000000000000000000";
 const DELEGATOR = "assistant_a1";
 const T0 = "2026-10-21T09:00:00.000Z";
-const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }];
-const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }];
+const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }];
+const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }];
 type Network = Map<string, PeerGateway>;
 
 const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new PeerClient({

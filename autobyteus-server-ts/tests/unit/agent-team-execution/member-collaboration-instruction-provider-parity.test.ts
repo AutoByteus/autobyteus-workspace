@@ -4,7 +4,6 @@ import {
   composeNativeAutoByteusPrompt,
   composeSharedCarpenterPrompt,
 } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
-import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { renderCollaborationSections } from "../../../src/agent-execution/prompt/collaboration-prompt-sections.js";
 import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
@@ -35,7 +34,7 @@ describe("member collaboration instruction provider parity", () => {
     });
     const expected = renderCollaborationSections(memberExecutionContext);
     const providerSharedPrompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",
@@ -73,7 +72,7 @@ describe("member collaboration instruction provider parity", () => {
 
   it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
     const providerSharedPrompt = composeSharedCarpenterPrompt({
-      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext: null, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+      semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global", agentDefinition, memberExecutionContext: null,
     });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       semanticMemoryPath: "/memory/semantic/agent", globalSemanticMemoryPath: "/memory/semantic-global",

@@ -1,7 +1,7 @@
 import { Readable } from "node:stream";
 import type { IncomingHttpHeaders } from "node:http";
 import type { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
-import type { DeliveryRoute } from "./delivery-definitions.js";
+import type { DeliveryAuthFormat, DeliveryRoute } from "./delivery-definitions.js";
 
 /** Why the proxy answers instead of GitHub: refusals (`403`) and an unreachable upstream (`502`). */
 export type CredentialProxyErrorCode =
@@ -36,7 +36,7 @@ export type ForwardResponse = Readonly<{
 
 /** Request headers never forwarded: the caller's credentials (a relay's pass), our own host, proxy and hop-by-hop headers. */
 const DROPPED_REQUEST_HEADERS = new Set([
-  "authorization", "x-api-key", "cookie", "host", "connection", "keep-alive", "transfer-encoding", "te", "trailer", "upgrade",
+  "authorization", "x-api-key", "x-goog-api-key", "cookie", "host", "connection", "keep-alive", "transfer-encoding", "te", "trailer", "upgrade",
   "expect", "accept-encoding", "content-length",
 ]);
 const DROPPED_RESPONSE_HEADERS = new Set([
@@ -88,15 +88,51 @@ export const buildUpstreamUrl = (route: DeliveryRoute, method: string, rawPathAn
   return upstream;
 };
 
-const setCredential = (headers: Headers, route: DeliveryRoute, token: string): void => {
-  if (route.auth === "x-api-key") headers.set("x-api-key", token);
-  else if (route.auth === "bearer") headers.set("authorization", `Bearer ${token}`);
-  else headers.set("authorization", `Basic ${Buffer.from(`x-access-token:${token}`, "utf8").toString("base64")}`);
+/**
+ * The credential an upstream call carries: the headers set on it, and the secret values in them, which are redacted
+ * from the reply. Built at the moment of forwarding and never logged.
+ */
+export type UpstreamCredential = Readonly<{ headers: Readonly<Record<string, string>>; secrets: readonly string[] }>;
+
+/** An integration route's one credential header, from its token (revealed here, for this call only). */
+export const integrationCredential = (auth: DeliveryAuthFormat, token: SecretValue): UpstreamCredential => {
+  const secret = token.revealToTrustedConsumer();
+  const headers: Record<string, string> = auth === "x-api-key" ? { "x-api-key": secret }
+    : auth === "bearer" ? { authorization: `Bearer ${secret}` }
+      : { authorization: `Basic ${Buffer.from(`x-access-token:${secret}`, "utf8").toString("base64")}` };
+  return Object.freeze({ headers, secrets: Object.freeze([secret]) });
 };
 
 /**
- * Forwards one checked call (DS-005). The token is revealed only while the upstream credential header is set; it never
- * enters a log, an error or the activity record. The proxy never follows a redirect: a `Location` on the route's own
+ * The caller's headers that may travel on: without the caller's credentials (a pass), our own host, proxy and
+ * hop-by-hop headers.
+ */
+export const forwardableRequestHeaders = (incoming: IncomingHttpHeaders): Headers => {
+  const headers = new Headers();
+  for (const [name, value] of Object.entries(incoming)) {
+    const lower = name.toLowerCase();
+    if (value === undefined || DROPPED_REQUEST_HEADERS.has(lower) || lower.startsWith("proxy-")) continue;
+    headers.set(lower, Array.isArray(value) ? value.join(", ") : value);
+  }
+  return headers;
+};
+
+/** A reply's headers that may travel on (no hop-by-hop, length, encoding or cookie). */
+export const forwardableResponseHeaders = (incoming: Headers, drop: readonly string[] = []): Record<string, string> => {
+  const headers: Record<string, string> = {};
+  incoming.forEach((value, name) => {
+    if (!DROPPED_RESPONSE_HEADERS.has(name) && !drop.includes(name)) headers[name] = value;
+  });
+  return headers;
+};
+
+const redact = (text: string, secrets: readonly string[]): string =>
+  secrets.reduce((current, secret) => (secret ? current.split(secret).join(REDACTED) : current), text);
+
+/**
+ * Forwards one checked call (DS-005) with the credential headers the caller built for it; the credential never enters
+ * a log, an error or the activity record, and its values are redacted from the reply's headers (and text bodies when
+ * the route asks). The proxy never follows a redirect: a `Location` on the route's own
  * origin is rewritten through the proxy for the same route and pass, any other `Location` is passed unchanged.
  */
 export class CredentialProxyForwarder {
@@ -105,20 +141,14 @@ export class CredentialProxyForwarder {
   async forward(input: Readonly<{
     route: DeliveryRoute;
     request: ForwardRequest;
-    token: SecretValue;
-    /** This route's address for the caller's pass, for rewriting a same-origin `Location`. */
-    proxyRouteBase: string;
+    credential: UpstreamCredential;
+    /** This route's address for the caller's pass, for rewriting a same-origin `Location` (absent: passed as sent). */
+    proxyRouteBase?: string;
   }>): Promise<ForwardResponse> {
-    const { route, request } = input;
+    const { route, request, credential } = input;
     const upstream = buildUpstreamUrl(route, request.method, request.rawPathAndQuery);
-    const headers = new Headers();
-    for (const [name, value] of Object.entries(request.headers)) {
-      const lower = name.toLowerCase();
-      if (value === undefined || DROPPED_REQUEST_HEADERS.has(lower) || lower.startsWith("proxy-")) continue;
-      headers.set(lower, Array.isArray(value) ? value.join(", ") : value);
-    }
-    const token = input.token.revealToTrustedConsumer();
-    setCredential(headers, route, token);
+    const headers = forwardableRequestHeaders(request.headers);
+    for (const [name, value] of Object.entries(credential.headers)) headers.set(name, value);
     // Identity responses only: the body passes through (or is redacted) exactly as the upstream sent it.
     headers.set("accept-encoding", "identity");
     const hasBody = request.body !== null && !["GET", "HEAD"].includes(request.method);
@@ -142,11 +172,12 @@ export class CredentialProxyForwarder {
     const responseHeaders: Record<string, string> = {};
     response.headers.forEach((value, name) => {
       if (DROPPED_RESPONSE_HEADERS.has(name)) return;
-      responseHeaders[name] = value.split(token).join(REDACTED);
+      responseHeaders[name] = redact(value, credential.secrets);
     });
     const location = response.headers.get("location");
     if (location) {
-      responseHeaders.location = this.rewriteLocation(route, upstream, location, input.proxyRouteBase).split(token).join(REDACTED);
+      const target = input.proxyRouteBase === undefined ? location : this.rewriteLocation(route, upstream, location, input.proxyRouteBase);
+      responseHeaders.location = redact(target, credential.secrets);
     }
 
     if (!response.body || request.method === "HEAD") {
@@ -154,7 +185,7 @@ export class CredentialProxyForwarder {
     }
     if (route.redactsTextBodies && TEXT_CONTENT.test(response.headers.get("content-type") ?? "")) {
       const text = Buffer.from(await response.arrayBuffer()).toString("utf8");
-      return { status: response.status, headers: responseHeaders, body: Buffer.from(text.split(token).join(REDACTED), "utf8") };
+      return { status: response.status, headers: responseHeaders, body: Buffer.from(redact(text, credential.secrets), "utf8") };
     }
     return {
       status: response.status,

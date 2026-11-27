@@ -291,9 +291,9 @@ const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split
 const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
   const network = new Map<string, PeerGateway>();
   const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
-    peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+    peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
   const b = await buildNode({ nodeId: B_ID, network, enabled: options.bEnabled,
-    peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
+    peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }] });
   // The delegator's workspace: the only folder its files can be sent from (RF-3).
   await fs.mkdir(path.join(a.memoryDir, "work"), { recursive: true });
   a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: path.join(a.memoryDir, "work"), memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
@@ -458,9 +458,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const network = new Map<string, PeerGateway>();
     releases.splice(0).forEach((release) => release());
     const a2 = await buildNode({ nodeId: A_ID, network, memoryDir: a.memoryDir, metadata: a.metadata, taskSide: a.resources,
-      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
     const b2 = await buildNode({ nodeId: B_ID, network, memoryDir: b.memoryDir, metadata: b.metadata,
-      peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
+      peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true, role: null }] });
     // After the restart the delegating host is not live: B's reply restores it (AC-106). B's run is the sender, so it runs.
     b2.runOf("publisher_r1").active = true;
     expect(a2.runOf(DELEGATOR).active).toBe(false);
@@ -698,10 +698,10 @@ describe("autobyteus-591: a closed Task's remote agent run stops on its node; a 
     const network = new Map<string, PeerGateway>();
     const C_ID = "srv_node_c_000000000000000000000000000";
     const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
-      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
-    const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true },
-      { nodeId: C_ID, name: "laptop", baseUrl: "http://c:29695", addedAt: T0, paired: true }] });
-    const c = await buildNode({ nodeId: C_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
+    const b = await buildNode({ nodeId: B_ID, network, peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://a:29695", addedAt: T0, paired: true, role: null },
+      { nodeId: C_ID, name: "laptop", baseUrl: "http://c:29695", addedAt: T0, paired: true, role: null }] });
+    const c = await buildNode({ nodeId: C_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true, role: null }] });
     a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
       llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
     a.runOf(DELEGATOR).active = true;

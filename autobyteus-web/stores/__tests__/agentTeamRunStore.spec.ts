@@ -6,6 +6,7 @@ import { useAgentTeamRunStore } from '../agentTeamRunStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore'
 import { TeamStreamingService } from '~/services/agentStreaming'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
@@ -339,7 +340,18 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockAttachContext).toHaveBeenCalledWith(replacement)
   })
 
-  it('latches one persistent recovery notice and blocks ordinary service reuse', () => {
+  // autobyteus-541 D-A1: a failed stream publishes `required` for the one recovery owner; with none it fails loudly.
+  it('a failed stream with no recovery owner registered throws instead of waiting silently', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-no-owner' })
+    setActiveTeam(team)
+    useAgentTeamRunStore().connectToTeamStream('team-no-owner')
+    const options = mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }
+    expect(() => options.onStreamRecoveryRequired({ kind: 'team_stream_recovery_required', rootTeamRunId: 'team-no-owner' }))
+      .toThrow("No Team stream recovery owner is registered for 'team-no-owner'.")
+  })
+
+  it('latches one persistent recovery state and blocks ordinary service reuse', () => {
+    useTeamStreamRecoveryStore().registerOwner()
     const team = twoMemberTeam({ teamRunId: 'team-reopen-latched' })
     setActiveTeam(team)
     const store = useAgentTeamRunStore()
@@ -355,12 +367,17 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(store.connectToTeamStream('team-reopen-latched')).toBe(service)
     expect(mockAttachContext).not.toHaveBeenCalledWith(replacement)
     expect(mockConnect).toHaveBeenCalledTimes(1)
-    expect(store.getTeamStreamRecoveryNotice('team-reopen-latched')).toEqual({
-      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched',
-    })
+    expect(useTeamStreamRecoveryStore().stateOf('team-reopen-latched')).toBe('required')
+    // The owner's progress is kept when the stream publishes again (a failing candidate is that recovery's attempt).
+    useTeamStreamRecoveryStore().setProgress('team-reopen-latched', 'exhausted')
+    options.onStreamRecoveryRequired({ kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched' })
+    expect(useTeamStreamRecoveryStore().stateOf('team-reopen-latched')).toBe('exhausted')
+    store.disconnectTeamStream('team-reopen-latched')
+    expect(useTeamStreamRecoveryStore().stateOf('team-reopen-latched')).toBeNull()
   })
 
   it('commits one ready recovery candidate over the unchanged failed entries', async () => {
+    useTeamStreamRecoveryStore().registerOwner()
     const failed = twoMemberTeam({ teamRunId: 'team-recovery-commit' })
     setActiveTeam(failed)
     const store = useAgentTeamRunStore()
@@ -382,10 +399,11 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       'team-recovery-commit', failed, candidate,
     )
     expect(mockDisconnect).toHaveBeenCalledTimes(1)
-    expect(store.getTeamStreamRecoveryNotice('team-recovery-commit')).toBeNull()
+    expect(useTeamStreamRecoveryStore().stateOf('team-recovery-commit')).toBeNull()
   })
 
-  it('preserves failed entries and notice when the candidate handshake rejects', async () => {
+  it('preserves failed entries and recovery state when the candidate handshake rejects', async () => {
+    useTeamStreamRecoveryStore().registerOwner()
     const failed = twoMemberTeam({ teamRunId: 'team-recovery-reject' })
     setActiveTeam(failed)
     const store = useAgentTeamRunStore()
@@ -405,9 +423,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(teamContextsStoreMock.replaceTeamContext).not.toHaveBeenCalled()
     expect(mockDisconnect).toHaveBeenCalledTimes(1)
-    expect(store.getTeamStreamRecoveryNotice('team-recovery-reject')).toEqual({
-      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-reject',
-    })
+    expect(useTeamStreamRecoveryStore().stateOf('team-recovery-reject')).toBe('required')
   })
 
   it('terminates once, keeps the view\'s stream, and stops only the Team\'s own members (autobyteus-461 SR-045)', async () => {

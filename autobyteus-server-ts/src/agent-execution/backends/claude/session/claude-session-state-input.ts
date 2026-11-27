@@ -1,4 +1,5 @@
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
@@ -15,6 +16,8 @@ export type ClaudeSessionDependencies = {
   agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
   /** The run's integration variables for the CLI's shell (`null`: none on this host). */
   integrationRunAccess?: IntegrationRunAccess | null;
+  /** The relay of a relayed node's runs (`null`: this host runs no credential proxy). */
+  providerRelayAccess?: ProviderRelayAccess | null;
   systemInstructionCaptureService?: SystemInstructionCaptureService;
   isRunSessionActive: () => boolean;
   terminateRunSession: () => Promise<void>;

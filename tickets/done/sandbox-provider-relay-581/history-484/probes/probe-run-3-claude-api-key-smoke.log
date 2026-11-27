@@ -1,0 +1,12 @@
+[1.4s] container autobyteus-sandbox-484-aac65a33 started on 127.0.0.1:50080
+[17.0s] node answered with a setup code (local control socket)
+[17.1s] setup exchange: owner credential issued (kept in memory)
+[17.1s] GraphQL without credential: HTTP 401
+[17.2s] server log vault lines: 2 Secret vault: test vault /run/autobyteus-test-vault (read-only)
+[17.2s] providers with a key (from the vault): ANTHROPIC, DEEPSEEK, GEMINI, GLM, GROK, KIMI, OPENAI
+[17.3s] ordinary server setting write (not the vault): ok
+[19.1s] agent runtimes sign-in: codex_app_server=SIGNED_OUT, claude_agent_sdk=SIGNED_OUT, antigravity_cli=SIGNED_OUT, grok_build=SIGNED_OUT, deepseek_harness=not installed
+[25.0s] smoke claude_agent_sdk/haiku: TURN_COMPLETED in 5.7s; reply contains SANDBOX-OK: true
+[27.6s] container writable layer: 95.1MB (virtual 6.09GB)
+[27.7s] fresh volumes used: 688K /home/autobyteus/data 447M /root
+[28.3s] container removed with its anonymous volumes: true

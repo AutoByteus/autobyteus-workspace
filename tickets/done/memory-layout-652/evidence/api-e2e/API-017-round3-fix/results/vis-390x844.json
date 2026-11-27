@@ -1,0 +1,149 @@
+{
+  "result": {
+    "global": {
+      "panel": {
+        "top": 195,
+        "bottom": 828,
+        "toWindowBottom": 16,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "openTab": "glossary.md",
+      "sectionTabs": 3
+    },
+    "agents": {
+      "firstCard": {
+        "top": 195,
+        "bottom": 275,
+        "toWindowBottom": 569,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "cards": [
+        "Project Task Manager\n\n11/26/2026, 7:56:00 AM",
+        "Research Assistant\n\n11/26/2026, 7:56:00 AM",
+        "Solution Designer\n\n11/26/2026, 7:56:00 AM",
+        "Daily Assistant",
+        "Quarterly Infrastructure Capacity Planning And Forecasting Assistant"
+      ]
+    },
+    "episodic": {
+      "firstCard": {
+        "top": 163,
+        "bottom": 239,
+        "toWindowBottom": 605,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "header": "Memory / Project Task Manager Episodic 2 Semantic",
+      "sectionTabs": 0
+    },
+    "members": {
+      "firstCard": {
+        "top": 119,
+        "bottom": 173,
+        "toWindowBottom": 671,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "header": "Memory / Software Engineering Team Members 2 Runs 1"
+    },
+    "runs": {
+      "firstCard": {
+        "top": 163,
+        "bottom": 313,
+        "toWindowBottom": 531,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "filterInHeader": 1
+    },
+    "semantic": {
+      "panel": {
+        "top": 119,
+        "bottom": 828,
+        "toWindowBottom": 16,
+        "width": 300,
+        "pageScrolls": false
+      },
+      "back": "Software Engineering Team",
+      "belongsTo": 0,
+      "openTab": "lessons.md",
+      "listNames": [
+        {
+          "name": "records",
+          "cut": false
+        },
+        {
+          "name": "reflections",
+          "cut": false
+        },
+        {
+          "name": "lessons.md",
+          "cut": false
+        },
+        {
+          "name": "network-settings-and-routing-facts.md",
+          "cut": false
+        },
+        {
+          "name": "proposals.md",
+          "cut": false
+        },
+        {
+          "name": "release-handbook.md",
+          "cut": false
+        }
+      ]
+    },
+    "journal-one": {
+      "card": {
+        "bottom": 828,
+        "toWindowBottom": 16
+      },
+      "header": "Project Task Manager / Project Task Manager Rename the helper and update callers Work Journal Raw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Rename the helper and update callers",
+        "tooltip": "project_task_manager_8bf35559eb9c4cf9830d05cd6def0ab9 · <stack-root>/workspace/launch-app"
+      },
+      "filesNav": [],
+      "pickerVisible": 0
+    },
+    "raw-one": {
+      "picker": [],
+      "name": [
+        "raw_traces_active.jsonl (active) · 2 records"
+      ],
+      "apply": 0,
+      "spinner": "textfield"
+    },
+    "journal-multi": {
+      "card": {
+        "bottom": 828,
+        "toWindowBottom": 16
+      },
+      "header": "Project Task Manager / Project Task Manager Plan the release notes for the launch Work Journal Raw Traces",
+      "title": {
+        "test": "memory-inspector-run-title",
+        "text": "Plan the release notes for the launch",
+        "tooltip": "project_task_manager_7b0491ffb79243178df2ee9c560fbcdb · <stack-root>/workspace/launch-app"
+      },
+      "filesNav": [],
+      "pickerVisible": 1
+    },
+    "raw-multi": {
+      "picker": [
+        [
+          "raw_traces_active.jsonl (active) · 2 records",
+          "raw_traces_000002.jsonl · 6 records",
+          "raw_traces_000001.jsonl · 6 records"
+        ]
+      ],
+      "name": [],
+      "apply": 0,
+      "spinner": "textfield"
+    }
+  },
+  "errors": []
+}

@@ -1,0 +1,26 @@
+{
+  "extensions": [
+    {
+      "id": "voice-input",
+      "name": "Voice Input",
+      "description": "Dictate instead of typing. Speech becomes text on this computer. Uses the microphone; downloads about 2 GB on install.",
+      "version": "1.0.0",
+      "contractVersion": 1,
+      "offeredOn": "desktop-node",
+      "platforms": [
+        "darwin-arm64",
+        "darwin-x64",
+        "linux-x64",
+        "win32-x64"
+      ],
+      "translations": {
+        "zh-CN": {
+          "name": "语音输入",
+          "description": "用说话代替打字。语音在这台电脑上转成文字。使用麦克风；安装时下载约 2 GB。"
+        }
+      },
+      "packageUrl": "https://github.com/AutoByteus/autobyteus-extensions/releases/download/voice-input-v1.0.0/voice-input-1.0.0.tar.gz",
+      "sha256": "57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d"
+    }
+  ]
+}

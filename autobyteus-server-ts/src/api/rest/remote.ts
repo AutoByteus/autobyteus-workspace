@@ -5,7 +5,23 @@ import type { RemoteCollaborationServices } from "../../remote-collaboration/rem
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
 import type { RunAgentObservation } from "../../agent-collaboration/execution/remote/run-agent-access.js";
 import { TRANSFERRED_FILE_PIECE_MAX_BYTES } from "../../agent-collaboration/execution/remote/transferred-files.js";
+import type { ProviderRelayPeerHandler } from "../../credential-proxy/provider-relay-peer/provider-relay-peer-handler.js";
+import { RELAYED_BODY_MAX_BYTES } from "../../credential-proxy/provider-relays/provider-relay-peer-forwarder.js";
 
+
+/**
+ * The provider path and query of a relayed call, from the raw URL: what follows `/provider-relays/<relay>/<kind>`, with
+ * the peer envelope's `fromNodeId`/`toNodeId` removed (the provider never sees them).
+ */
+const relayedProviderPath = (rawUrl: string): string => {
+  const match = /\/provider-relays\/[^/?#]+\/[^/?#]+(\/[^?#]*)?(?:\?([^#]*))?/.exec(rawUrl);
+  const path = match?.[1] || "/";
+  const query = new URLSearchParams(match?.[2] ?? "");
+  query.delete("fromNodeId");
+  query.delete("toNodeId");
+  const rest = query.toString();
+  return rest ? `${path}?${rest}` : path;
+};
 
 type PeerSocket = Readonly<{
   send(payload: string): void;
@@ -20,7 +36,11 @@ type PeerSocket = Readonly<{
  * the gateway. Registered by the studio with its remote collaboration (autobyteus-500 FU-011); a host without one has
  * no such routes.
  */
-export async function registerRemoteCollaborationRoutes(app: FastifyInstance, remote: RemoteCollaborationServices): Promise<void> {
+export async function registerRemoteCollaborationRoutes(
+  app: FastifyInstance,
+  remote: RemoteCollaborationServices,
+  providerRelays: Pick<ProviderRelayPeerHandler, "handle">,
+): Promise<void> {
   const send = (reply: { code(status: number): { send(payload: unknown): unknown } }, response: PeerGatewayResponse<unknown>) =>
     reply.code(response.status).send(response.answer);
   type Gateway = RemoteCollaborationServices["gateway"];
@@ -58,6 +78,32 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance, re
         offset: request.query.offset, size: request.query.size, bytes: request.body ?? Buffer.alloc(0),
       }, getClientIdentity(request))),
     );
+  });
+
+  // autobyteus-581 C4: a relayed peer's provider call. Any body type is read whole as raw bytes in this scope only, so
+  // the gate hashes it against the signature before the handler runs (NA-9); the reply streams back, marked.
+  await app.register(async (relayScope) => {
+    relayScope.removeAllContentTypeParsers();
+    relayScope.addContentTypeParser("*", { parseAs: "buffer" }, (_request, body, done) => done(null, body));
+    relayScope.route<{ Params: { relayId: string; kind: string; "*": string }; Querystring: Record<string, string | undefined> }>({
+      method: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      url: "/remote/provider-relays/:relayId/:kind/*",
+      bodyLimit: RELAYED_BODY_MAX_BYTES,
+      handler: async (request, reply) => {
+        const caller = getClientIdentity(request);
+        if (caller?.kind !== "peer") return reply.code(403).send({ code: "NODE_ROUTE_NOT_PERMITTED", message: "Peers only." });
+        const answer = await providerRelays.handle({
+          peerNodeId: caller.nodeId,
+          relayId: request.params.relayId,
+          relayCredentialKind: request.params.kind,
+          method: request.method,
+          rawPathAndQuery: relayedProviderPath(request.raw.url ?? ""),
+          headers: request.headers,
+          body: Buffer.isBuffer(request.body) ? request.body : null,
+        });
+        return reply.code(answer.status).headers(answer.headers).send(answer.body ?? "");
+      },
+    });
   });
 
   // autobyteus-437: the inviting node's side of peer pairing (exempt: the caller has no peer secret yet).

@@ -31,14 +31,11 @@ const row = (overrides: Partial<CollaborationRunMemoryRow> = {}): CollaborationR
 
 const mountDetail = (props: Partial<InstanceType<typeof CollaborationMemoryDetail>['$props']> = {}) => mount(CollaborationMemoryDetail, {
   props: {
-    title: 'Software Team',
     rows: [row()],
     loading: false,
     error: null,
     page: 1,
     totalPages: 1,
-    search: '',
-    readOnly: false,
     ...props,
   },
 });
@@ -60,25 +57,28 @@ const orgRow = () => row({
 });
 
 describe('CollaborationMemoryDetail', () => {
-  it('renders concise runs with every member display name and run ID (AC-010)', () => {
+  it('renders concise runs: title with the time beside it, the workspace, name-only member chips; run IDs in tooltips (AC-010, autobyteus-608 DC-006)', () => {
     const wrapper = mountDetail();
 
+    // The run list only: no header, title, filter or Back (the team or org page's header has them, DC-012).
     expect(wrapper.find('header').exists()).toBe(false);
-    expect(wrapper.find('h1').text()).toBe('Software Team');
+    expect(wrapper.find('h1').exists()).toBe(false);
+    expect(wrapper.find('input').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Team');
     expect(wrapper.text()).not.toContain('ID:');
-    expect(wrapper.find('input').attributes('placeholder')).toMatch(/search runs/i);
     // No "Members" label (the chips say who they are).
     expect(wrapper.text()).not.toContain('Members');
-    expect(wrapper.text()).toContain('/tmp/team-project');
-    const memberButtons = wrapper.findAll('article button');
-    const spans = memberButtons.map((button) => button.findAll('span').map((span) => span.text()));
-    expect(spans[0]).toEqual(['Lead', 'member-1']);
-    // A team run's own agents only: a run it delegated to is a run of its own (autobyteus-461).
-    expect(spans[1]).toEqual(['Writer', 'member-2']);
-    for (const button of memberButtons) {
-      expect(button.find('span').text()).not.toBe('');
-    }
+    const title = wrapper.get('article h3');
+    expect(title.text()).toBe('Planning run');
+    expect(title.attributes('title')).toBe('team-run-1');
+    expect(title.element.parentElement?.textContent).toMatch(/2026/);
+    expect(wrapper.get('article p').text()).toBe('/tmp/team-project');
+    expect(wrapper.text()).not.toContain('team-run-1');
+    const memberButtons = wrapper.findAll('[data-test="collaboration-member"]');
+    expect(memberButtons.map((button) => button.text())).toEqual(['Lead', 'Writer']);
+    // A team run's own agents only: a run it delegated to is a run of its own (autobyteus-461). Run IDs in the tooltips.
+    expect(memberButtons.map((button) => button.attributes('title'))).toEqual(['member-1', 'member-2']);
+    expect(wrapper.text()).not.toContain('member-1');
   });
 
   it('renders a flat team without groups as a single row of member buttons', () => {
@@ -133,28 +133,26 @@ describe('CollaborationMemoryDetail', () => {
     ]);
   });
 
-  it('emits search, member, paging, retry and back intents without reading any store', async () => {
-    const wrapper = mountDetail({ page: 2, totalPages: 3, search: 'plan' });
-    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('plan');
-
-    await wrapper.find('input').setValue(' planning ');
-    await wrapper.find('input').trigger('keyup.enter');
-    expect(wrapper.emitted('search')).toEqual([['planning']]);
+  it("emits member (with the run's summary, autobyteus-608 DEC-002), paging and retry intents without reading any store", async () => {
+    const wrapper = mountDetail({ page: 2, totalPages: 3 });
 
     await wrapper.findAll('article button')[1]!.trigger('click');
     expect(wrapper.emitted('inspectMember')?.[0]?.[0]).toBe('team-run-1');
     expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/writer', agentRunId: 'member-2' });
+    expect(wrapper.emitted('inspectMember')?.[0]?.[2]).toBe('Planning run');
+
+    // A run without a summary carries no title: the run page falls back to its run ID.
+    const untitled = mountDetail({ rows: [row({ summary: '' })] });
+    await untitled.findAll('article button')[0]!.trigger('click');
+    expect(untitled.emitted('inspectMember')?.[0]?.[2]).toBeNull();
 
     await wrapper.findAll('button').find((button) => button.text() === 'Next')!.trigger('click');
     await wrapper.findAll('button').find((button) => button.text() === 'Prev')!.trigger('click');
     expect(wrapper.emitted('changePage')).toEqual([[3], [1]]);
     expect(wrapper.text()).toContain('Page 2 / 3');
-
-    await wrapper.findAll('button')[0]!.trigger('click');
-    expect(wrapper.emitted('back')).toHaveLength(1);
   });
 
-  it('shows loading, error with retry, empty and read-only states', async () => {
+  it('shows loading, error with retry and empty states', async () => {
     expect(mountDetail({ rows: [], loading: true }).text()).toMatch(/loading runs/i);
 
     const failed = mountDetail({ rows: [], error: 'boom' });
@@ -163,6 +161,5 @@ describe('CollaborationMemoryDetail', () => {
     expect(failed.emitted('retry')).toHaveLength(1);
 
     expect(mountDetail({ rows: [] }).text()).toMatch(/no runs match/i);
-    expect(mountDetail({ readOnly: true }).text()).toMatch(/imported/i);
   });
 });

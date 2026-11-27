@@ -1,0 +1,8 @@
+# Desktop Release run 45629380472 attempt 1: the two cancelled macOS jobs (job annotations; the jobs never started a step)
+job 139259004833 Build macOS Intel x64: conclusion cancelled, started 2026-11-25T14:01:52Z, completed 2026-11-25T14:16:52Z, steps 0, runner 
+  failure: The job was not acquired by Runner of type hosted even after multiple attempts
+  notice: Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+job 139259005079 Build macOS ARM64: conclusion cancelled, started 2026-11-25T14:01:52Z, completed 2026-11-25T14:16:52Z, steps 0, runner 
+  failure: The job was not acquired by Runner of type hosted even after multiple attempts
+  notice: Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+# other jobs of the run: Build Linux x64, Linux ARM64, Windows x64, Sign authenticated Linux desktop releases: success; Publish GitHub Release: skipped

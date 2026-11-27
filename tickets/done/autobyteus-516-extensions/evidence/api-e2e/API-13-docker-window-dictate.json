@@ -1,0 +1,23 @@
+{
+  "step": "memory-mic",
+  "name": "API-13-docker-window-dictate",
+  "window": "docker-516",
+  "at": "2026-11-26T16:52:47.742Z",
+  "micButtons": 1,
+  "micButtonsEnabled": 1,
+  "inserted": [
+    "Please summarize the meeting notes and send them to the team."
+  ],
+  "ms": 509,
+  "transcribeRequests": [
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "http://127.0.0.1:56339/rest/extensions/voice-input/actions/transcribe"
+    }
+  ],
+  "screenshots": [
+    "API-13-docker-window-dictate.png"
+  ],
+  "ok": true
+}

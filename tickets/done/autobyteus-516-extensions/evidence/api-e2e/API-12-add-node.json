@@ -1,0 +1,21 @@
+{
+  "step": "add-node",
+  "name": "API-12-add-node",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:50:36.517Z",
+  "upsert": "ok",
+  "connect": [
+    "ok",
+    "states"
+  ],
+  "open": "opened",
+  "node": {
+    "id": "docker-516",
+    "name": "Docker Test Node",
+    "baseUrl": "http://127.0.0.1:57499",
+    "nodeType": "remote",
+    "createdAt": "2026-11-26T16:50:36.588Z",
+    "updatedAt": "2026-11-26T16:50:36.588Z"
+  },
+  "ok": true
+}

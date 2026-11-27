@@ -1,0 +1,12 @@
+# IMP-04-focused-and-new-tests.log
+# command: vitest run <the 13 failed files + new relay/sandbox/launch-shape/peer-role tests + tests/integration/credential-proxy>
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+     × refuses a fifth sandbox (AC-014) and an image Docker cannot find 112ms
+     × refuses shared folders and packages that reach the user's home, credentials or app data (DEC-113, R-G) 26ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/sandboxes/sandbox-manager.test.ts > SandboxManager.create > refuses a fifth sandbox (AC-014) and an image Docker cannot find
+ FAIL  tests/unit/sandboxes/sandbox-manager.test.ts > SandboxManager.create > refuses shared folders and packages that reach the user's home, credentials or app data (DEC-113, R-G)
+ Test Files  1 failed | 29 passed (30)
+      Tests  2 failed | 246 passed (248)

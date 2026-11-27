@@ -1,0 +1,584 @@
+{
+ "run": "probe-full",
+ "counts": {
+  "Pass": 105,
+  "Fail": 9
+ },
+ "cases": {
+  "MSP-01": {
+   "result": "Pass",
+   "seconds": 14.6,
+   "error": null
+  },
+  "MSP-15": {
+   "result": "Pass",
+   "seconds": 28.9,
+   "error": null
+  },
+  "MSP-02": {
+   "result": "Pass",
+   "seconds": 17.1,
+   "error": null
+  },
+  "MSP-03": {
+   "result": "Pass",
+   "seconds": 9,
+   "error": null
+  },
+  "MSP-04": {
+   "result": "Pass",
+   "seconds": 2.6,
+   "error": null
+  },
+  "MSP-05": {
+   "result": "Pass",
+   "seconds": 6.3,
+   "error": null
+  },
+  "MSP-06": {
+   "result": "Pass",
+   "seconds": 7.9,
+   "error": null
+  },
+  "MSP-07": {
+   "result": "Pass",
+   "seconds": 12.2,
+   "error": null
+  },
+  "MSP-38": {
+   "result": "Pass",
+   "seconds": 7.4,
+   "error": null
+  },
+  "MSP-08": {
+   "result": "Pass",
+   "seconds": 15,
+   "error": null
+  },
+  "MSP-33": {
+   "result": "Pass",
+   "seconds": 19.8,
+   "error": null
+  },
+  "MSP-36": {
+   "result": "Pass",
+   "seconds": 5.2,
+   "error": null
+  },
+  "MSP-16": {
+   "result": "Pass",
+   "seconds": 129.7,
+   "error": null
+  },
+  "MSP-43": {
+   "result": "Pass",
+   "seconds": 9.8,
+   "error": null
+  },
+  "MSP-47": {
+   "result": "Pass",
+   "seconds": 26.7,
+   "error": null
+  },
+  "MSP-48": {
+   "result": "Pass",
+   "seconds": 8.5,
+   "error": null
+  },
+  "MSP-49": {
+   "result": "Pass",
+   "seconds": 5.7,
+   "error": null
+  },
+  "MSP-59": {
+   "result": "Pass",
+   "seconds": 2.9,
+   "error": null
+  },
+  "MSP-78": {
+   "result": "Pass",
+   "seconds": 8.1,
+   "error": null
+  },
+  "MSP-104": {
+   "result": "Pass",
+   "seconds": 4.4,
+   "error": null
+  },
+  "MSP-94": {
+   "result": "Pass",
+   "seconds": 16.1,
+   "error": null
+  },
+  "MSP-95": {
+   "result": "Pass",
+   "seconds": 9.9,
+   "error": null
+  },
+  "MSP-96": {
+   "result": "Pass",
+   "seconds": 6.7,
+   "error": null
+  },
+  "MSP-97": {
+   "result": "Pass",
+   "seconds": 8.7,
+   "error": null
+  },
+  "MSP-102": {
+   "result": "Pass",
+   "seconds": 75.6,
+   "error": null
+  },
+  "MSP-103": {
+   "result": "Pass",
+   "seconds": 11.3,
+   "error": null
+  },
+  "MSP-105": {
+   "result": "Fail",
+   "seconds": 41.8,
+   "error": "Timed out waiting for the run screen of team:order_team_df0540b168cd4dd6b2ebbed9e73260b2/team_member:order_team_df0540b168cd4dd6b2ebbed9e73260b2:order_lead_05177b7583054fff91f22fc5abacd929"
+  },
+  "MSP-14": {
+   "result": "Pass",
+   "seconds": 1.3,
+   "error": null
+  },
+  "MSP-10": {
+   "result": "Pass",
+   "seconds": 5.2,
+   "error": null
+  },
+  "MSP-11": {
+   "result": "Pass",
+   "seconds": 38.3,
+   "error": null
+  },
+  "MSP-12": {
+   "result": "Pass",
+   "seconds": 69.6,
+   "error": null
+  },
+  "MSP-20": {
+   "result": "Pass",
+   "seconds": 101.9,
+   "error": null
+  },
+  "MSP-09": {
+   "result": "Pass",
+   "seconds": 23.2,
+   "error": null
+  },
+  "MSP-19": {
+   "result": "Pass",
+   "seconds": 58.3,
+   "error": null
+  },
+  "MSP-17": {
+   "result": "Fail",
+   "seconds": 32.8,
+   "error": "Timed out waiting for the run screen of org:delivery_org_7838a63a6cc347019b53889a6a78b7f9/agent:changelog_helper_38ab527df11e49dea89e17d8802e075d"
+  },
+  "MSP-73": {
+   "result": "Pass",
+   "seconds": 37.5,
+   "error": null
+  },
+  "MSP-18": {
+   "result": "Pass",
+   "seconds": 143.9,
+   "error": null
+  },
+  "MSP-66": {
+   "result": "Pass",
+   "seconds": 5,
+   "error": null
+  },
+  "MSP-60": {
+   "result": "Pass",
+   "seconds": 5.6,
+   "error": null
+  },
+  "MSP-74": {
+   "result": "Pass",
+   "seconds": 48,
+   "error": null
+  },
+  "MSP-61": {
+   "result": "Fail",
+   "seconds": 11.5,
+   "error": "REQ-006 another runtime clears the model; Save waits for a model"
+  },
+  "MSP-62": {
+   "result": "Pass",
+   "seconds": 6,
+   "error": null
+  },
+  "MSP-63": {
+   "result": "Pass",
+   "seconds": 6.2,
+   "error": null
+  },
+  "MSP-64": {
+   "result": "Pass",
+   "seconds": 2.9,
+   "error": null
+  },
+  "MSP-65": {
+   "result": "Fail",
+   "seconds": 23.1,
+   "error": "REQ-008 after the stop the phone stays on Settings with the rows open"
+  },
+  "MSP-67": {
+   "result": "Pass",
+   "seconds": 11.5,
+   "error": null
+  },
+  "MSP-68": {
+   "result": "Pass",
+   "seconds": 6.2,
+   "error": null
+  },
+  "MSP-69": {
+   "result": "Pass",
+   "seconds": 8.5,
+   "error": null
+  },
+  "MSP-70": {
+   "result": "Pass",
+   "seconds": 14.8,
+   "error": null
+  },
+  "MSP-71": {
+   "result": "Pass",
+   "seconds": 4.8,
+   "error": null
+  },
+  "MSP-72": {
+   "result": "Pass",
+   "seconds": 1.4,
+   "error": null
+  },
+  "MSP-80": {
+   "result": "Pass",
+   "seconds": 32.1,
+   "error": null
+  },
+  "MSP-81": {
+   "result": "Pass",
+   "seconds": 32,
+   "error": null
+  },
+  "MSP-82": {
+   "result": "Fail",
+   "seconds": 62.4,
+   "error": "The message \"MSP-82-org-member-start\" did not start a turn (a lost send)"
+  },
+  "MSP-83": {
+   "result": "Pass",
+   "seconds": 51.1,
+   "error": null
+  },
+  "MSP-84": {
+   "result": "Pass",
+   "seconds": 161.9,
+   "error": null
+  },
+  "MSP-85": {
+   "result": "Pass",
+   "seconds": 47.3,
+   "error": null
+  },
+  "MSP-86": {
+   "result": "Pass",
+   "seconds": 7.3,
+   "error": null
+  },
+  "MSP-87": {
+   "result": "Fail",
+   "seconds": 64.2,
+   "error": "Timed out waiting for Send enabled"
+  },
+  "MSP-88": {
+   "result": "Pass",
+   "seconds": 24.5,
+   "error": null
+  },
+  "MSP-13": {
+   "result": "Pass",
+   "seconds": 13.2,
+   "error": null
+  },
+  "MSP-21": {
+   "result": "Pass",
+   "seconds": 78.5,
+   "error": null
+  },
+  "MSP-22": {
+   "result": "Pass",
+   "seconds": 70.5,
+   "error": null
+  },
+  "MSP-23": {
+   "result": "Pass",
+   "seconds": 35.7,
+   "error": null
+  },
+  "MSP-24": {
+   "result": "Pass",
+   "seconds": 80.9,
+   "error": null
+  },
+  "MSP-25": {
+   "result": "Pass",
+   "seconds": 15.2,
+   "error": null
+  },
+  "MSP-26": {
+   "result": "Pass",
+   "seconds": 2.7,
+   "error": null
+  },
+  "MSP-34": {
+   "result": "Pass",
+   "seconds": 60.6,
+   "error": null
+  },
+  "MSP-27": {
+   "result": "Pass",
+   "seconds": 23.8,
+   "error": null
+  },
+  "MSP-35": {
+   "result": "Pass",
+   "seconds": 57.3,
+   "error": null
+  },
+  "MSP-28": {
+   "result": "Pass",
+   "seconds": 5.4,
+   "error": null
+  },
+  "MSP-29": {
+   "result": "Pass",
+   "seconds": 0.8,
+   "error": null
+  },
+  "MSP-30": {
+   "result": "Pass",
+   "seconds": 8.2,
+   "error": null
+  },
+  "MSP-89": {
+   "result": "Pass",
+   "seconds": 37.8,
+   "error": null
+  },
+  "MSP-91": {
+   "result": "Pass",
+   "seconds": 50.3,
+   "error": null
+  },
+  "MSP-92": {
+   "result": "Fail",
+   "seconds": 25.8,
+   "error": "while it loads the reference viewer says so (\"Loading reference file...\"), never \"not available\""
+  },
+  "MSP-31": {
+   "result": "Pass",
+   "seconds": 17.8,
+   "error": null
+  },
+  "MSP-37": {
+   "result": "Pass",
+   "seconds": 193,
+   "error": null
+  },
+  "MSP-90": {
+   "result": "Pass",
+   "seconds": 10,
+   "error": null
+  },
+  "MSP-56": {
+   "result": "Pass",
+   "seconds": 27.1,
+   "error": null
+  },
+  "MSP-57": {
+   "result": "Pass",
+   "seconds": 27.3,
+   "error": null
+  },
+  "MSP-58": {
+   "result": "Fail",
+   "seconds": 36.2,
+   "error": "Timed out waiting for the run screen"
+  },
+  "MSP-39": {
+   "result": "Pass",
+   "seconds": 11,
+   "error": null
+  },
+  "MSP-40": {
+   "result": "Pass",
+   "seconds": 7.4,
+   "error": null
+  },
+  "MSP-41": {
+   "result": "Pass",
+   "seconds": 13,
+   "error": null
+  },
+  "MSP-42": {
+   "result": "Pass",
+   "seconds": 18,
+   "error": null
+  },
+  "MSP-44": {
+   "result": "Pass",
+   "seconds": 63.8,
+   "error": null
+  },
+  "MSP-45": {
+   "result": "Pass",
+   "seconds": 18.2,
+   "error": null
+  },
+  "MSP-46": {
+   "result": "Pass",
+   "seconds": 12.4,
+   "error": null
+  },
+  "MSP-100": {
+   "result": "Pass",
+   "seconds": 40.1,
+   "error": null
+  },
+  "MSP-101": {
+   "result": "Pass",
+   "seconds": 11.5,
+   "error": null
+  },
+  "MSP-50": {
+   "result": "Pass",
+   "seconds": 26.4,
+   "error": null
+  },
+  "MSP-51": {
+   "result": "Pass",
+   "seconds": 20,
+   "error": null
+  },
+  "MSP-52": {
+   "result": "Pass",
+   "seconds": 35,
+   "error": null
+  },
+  "MSP-108": {
+   "result": "Pass",
+   "seconds": 22.8,
+   "error": null
+  },
+  "MSP-110": {
+   "result": "Pass",
+   "seconds": 6.6,
+   "error": null
+  },
+  "MSP-109": {
+   "result": "Pass",
+   "seconds": 6.2,
+   "error": null
+  },
+  "MSP-111": {
+   "result": "Pass",
+   "seconds": 16.3,
+   "error": null
+  },
+  "MSP-112": {
+   "result": "Pass",
+   "seconds": 20.1,
+   "error": null
+  },
+  "MSP-113": {
+   "result": "Pass",
+   "seconds": 2.6,
+   "error": null
+  },
+  "MSP-114": {
+   "result": "Pass",
+   "seconds": 7.5,
+   "error": null
+  },
+  "MSP-115": {
+   "result": "Fail",
+   "seconds": 74.4,
+   "error": "desktop: the empty video reference opens as an empty file (its player, no error); phone: the empty video reference opens as an empty file (its player, no error)"
+  },
+  "MSP-116": {
+   "result": "Pass",
+   "seconds": 24,
+   "error": null
+  },
+  "MSP-117": {
+   "result": "Pass",
+   "seconds": 14.9,
+   "error": null
+  },
+  "MSP-118": {
+   "result": "Pass",
+   "seconds": 3.4,
+   "error": null
+  },
+  "MSP-53": {
+   "result": "Pass",
+   "seconds": 0.7,
+   "error": null
+  },
+  "MSP-54": {
+   "result": "Pass",
+   "seconds": 1,
+   "error": null
+  },
+  "MSP-55": {
+   "result": "Pass",
+   "seconds": 5,
+   "error": null
+  },
+  "MSP-75": {
+   "result": "Pass",
+   "seconds": 23.9,
+   "error": null
+  },
+  "MSP-76": {
+   "result": "Pass",
+   "seconds": 14,
+   "error": null
+  },
+  "MSP-77": {
+   "result": "Pass",
+   "seconds": 14.3,
+   "error": null
+  },
+  "MSP-99": {
+   "result": "Pass",
+   "seconds": 82.5,
+   "error": null
+  },
+  "MSP-93": {
+   "result": "Pass",
+   "seconds": 22.5,
+   "error": null
+  },
+  "MSP-32": {
+   "result": "Pass",
+   "seconds": 0,
+   "error": null
+  }
+ },
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

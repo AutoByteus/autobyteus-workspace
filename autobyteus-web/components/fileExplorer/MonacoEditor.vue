@@ -135,6 +135,13 @@ const initMonaco = async () => {
     readOnly: props.readOnly,
     wordWrap: wordWrapState.value,
     fontSize: editorFontPx.value,
+    // A reading-first viewer: no line numbers, folding column or glyph margin, only a small margin before the text, so
+    // the content takes the width (autobyteus-647 D-1). A caller may still override them.
+    lineNumbers: 'off',
+    lineNumbersMinChars: 0,
+    glyphMargin: false,
+    folding: false,
+    lineDecorationsWidth: 6,
     ...restOptions
   });
 

@@ -1,0 +1,42 @@
+# API-R09 fresh-start desktop build
+# commit: 5c6ef6ee86e4426203c6a734272cc7a148332cd8 (code d624f09ce6); Node v22.23.1; date 2026-11-26T17:42:02Z
+
+clone at 5c6ef6ee86
+== pnpm install --frozen-lockfile
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.5s using pnpm v10.28.2
+install exit 0
+== build:electron:mac -- --arm64
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+> autobyteus@1.5.15-beta.2 guard:web-boundary /private/tmp/api581/fresh/clone/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.15-beta.2 guard:localization-boundary /private/tmp/api581/fresh/clone/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 39.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 24.2s
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+  '/private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.2.dmg.blockmap',
+  '/private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.2.dmg',
+  '/private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.2.zip.blockmap',
+  '/private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.15-beta.2.zip'
+]
+build exit 0
+== Verify bundled Prisma ARM64 engine target
+prisma verify exit 0
+== Verify packaged terminal runtime ARM64
+[terminal-runtime] ok target helper: /private/tmp/api581/fresh/clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api581/fresh/clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+terminal verify (resources) exit 0
+[terminal-runtime] ok target helper: /private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+terminal verify (app) exit 0
+[terminal-runtime] ok selected helper: /private/tmp/api581/fresh/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+spawn probe exit 0

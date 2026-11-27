@@ -42,7 +42,6 @@ import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrati
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
-  applyActiveRuntimePlaceholder,
   applyMemberOrHistoryStatusSnapshot,
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
@@ -325,12 +324,9 @@ export const reconcileDiscoveredActiveRuns = async (
     const activeRun = activeAgentRunById.get(runId);
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
+      // Its stream's snapshot sets its status; until then it keeps the last one shown (autobyteus-541 D-C1).
       existingContext.config.isLocked = true;
-      const streamConnected = agentRunStore.isAgentStreamReady(runId);
-      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true, streamConnected });
-      if (!streamConnected) {
-        agentRunStore.connectToAgentStream(runId);
-      }
+      if (!agentRunStore.isAgentStreamReady(runId)) agentRunStore.connectToAgentStream(runId);
       continue;
     }
 
@@ -371,21 +367,11 @@ export const reconcileDiscoveredActiveRuns = async (
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.view.setRootTeamActive(true);
-      const streamReopenRequired = agentTeamRunStore.isTeamStreamReopenRequired(teamRunId);
-      const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
-      if (!streamReopenRequired) {
-        // Retired executions keep their terminal history status even when the root is active.
-        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
-          agentContext.config.isLocked = true;
-          applyActiveRuntimePlaceholder(agentContext, {
-            preserveExistingLive: true,
-            streamConnected,
-          });
-        });
-      }
-      if (!streamConnected && !streamReopenRequired) {
-        agentTeamRunStore.connectToTeamStream(teamRunId);
-      }
+      // Its members keep their last status until the stream's snapshot (autobyteus-541 D-C1); a recovering stream is
+      // its recovery owner's.
+      if (agentTeamRunStore.isTeamStreamReopenRequired(teamRunId)) continue;
+      existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => { agentContext.config.isLocked = true; });
+      if (!agentTeamRunStore.isTeamStreamReady(teamRunId)) agentTeamRunStore.connectToTeamStream(teamRunId);
       continue;
     }
 

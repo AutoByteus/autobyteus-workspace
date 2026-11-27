@@ -1,0 +1,19 @@
+{
+  "otherRunCodes": [
+    "SANDBOX_NOT_YOURS",
+    "SANDBOX_NOT_YOURS"
+  ],
+  "anonymousVolumes": 3,
+  "destroyResult": {
+    "removed": true,
+    "foldersKept": true
+  },
+  "after": {
+    "containers": [],
+    "volumesLeft": [],
+    "sandboxPeers": 0,
+    "records": 0,
+    "workspaceKept": true,
+    "runMemoryKept": true
+  }
+}

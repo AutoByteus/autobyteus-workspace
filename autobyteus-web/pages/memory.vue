@@ -17,6 +17,7 @@
     <MemoryInspector
       v-else-if="currentView === 'agent-inspector' || currentView === 'team-inspector' || currentView === 'org-inspector'"
       :back-label="inspectorBackLabel"
+      :back-text="inspectorBackText"
       @back="backFromInspector"
       @open-index="changeSection('index')"
     />
@@ -24,6 +25,7 @@
       v-else-if="currentView === 'folder-inspector' && folderRun"
       :folder-run="folderRun"
       :back-label="inspectorBackLabel"
+      :back-text="inspectorBackText"
       @back="backFromInspector"
       @open-index="changeSection('index')"
     />
@@ -88,14 +90,26 @@ const browseNode = computed(() => parseMemoryBrowseNode(queryValue('node')));
 const folderRun = computed(() => {
   const runKey = queryValue('runKey');
   if (currentView.value !== 'folder-inspector' || !runKey) return null;
-  return { runKey, runId: queryValue('runId') ?? runKey.split('/').pop() ?? runKey, agentName: queryValue('agentName') ?? null, groupName: queryValue('teamName') ?? null };
+  return {
+    runKey,
+    runId: queryValue('runId') ?? runKey.split('/').pop() ?? runKey,
+    agentName: queryValue('agentName') ?? null,
+    groupName: queryValue('teamName') ?? null,
+    runLabel: queryValue('runLabel') ?? null,
+  };
 });
 
 /** Back from a run: to the search results, to the owner page it was opened from, or to Memory. */
+const inspectorBackName = computed((): string | null => (queryValue('back') ? queryValue('backName') ?? null : null));
+/** What Back shows: where it goes (autobyteus-608 DC-007). */
+const inspectorBackText = computed(() => {
+  if (queryValue('q')) return t('memory.inspector.search_results');
+  return inspectorBackName.value ?? t('memory.page.title');
+});
+/** Back's accessible name and tooltip. */
 const inspectorBackLabel = computed(() => {
-  if (queryValue('q')) return 'Back to search results';
-  const backName = queryValue('backName');
-  if (queryValue('back') && backName) return t('memory.semantic.back_to', { name: backName });
+  if (queryValue('q')) return t('memory.inspector.back_to_search_results');
+  if (inspectorBackName.value) return t('memory.semantic.back_to', { name: inspectorBackName.value });
   return t('memory.components.memory.AgentMemoryDetail.back_to_memory');
 });
 
@@ -228,6 +242,7 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
     memberAddress: queryValue('memberAddress') ?? null,
     memberName: queryValue('memberName') ?? null,
     lastUpdatedAt: queryValue('updatedAt') ?? null,
+    runLabel: queryValue('runLabel') ?? null,
   };
   if (currentView.value === 'agent-inspector') {
     const runId = queryValue('runId');
@@ -312,7 +327,6 @@ const openSearchResult = (result: SearchResult, match: SearchMatch) => {
     agentDefinitionId: subject.agentDefinitionId,
     agentName: result.agentName,
     runId: subject.runId,
-    runLabel: result.runId,
     workspace: result.workspace,
     ...lines,
   });
@@ -324,9 +338,12 @@ const changeSource = async (sourceKey: string) => {
   await pushMemory({ view: 'home', section: 'browse', node: queryValue('node'), pane: queryValue('pane') });
 };
 
-/** An agent's episode opens that run's Work Journal / Raw traces inspector; Back returns to the agent's page. */
+/**
+ * An agent's episode opens that run's Work Journal / Raw traces inspector; Back returns to the agent's page. The run's
+ * title is its summary or Task title, never its run ID: the page shows the run ID itself when there is none (DEC-002).
+ */
 const openEpisode = (episode: AgentEpisode, agentName: string) => {
-  const back = { back: browseNode.value.key, backName: agentName, updatedAt: episode.lastActivityAt ?? null };
+  const back = { back: browseNode.value.key, backName: agentName, updatedAt: episode.lastActivityAt ?? null, runLabel: episode.summary || episode.taskTitle || null };
   const subject = episode.subject;
   if (subject.kind === 'TEAM_MEMBER') {
     return pushMemory({ view: 'team-inspector', teamName: episode.place?.name, teamRunId: subject.teamRunId, agentRunId: subject.agentRunId, memberName: agentName, ...back });
@@ -343,19 +360,21 @@ const openEpisode = (episode: AgentEpisode, agentName: string) => {
     agentDefinitionId: subject.agentDefinitionId,
     agentName,
     runId: subject.runId,
-    runLabel: episode.summary || episode.taskTitle || episode.runId,
     workspace: episode.workspaceRootPath ?? null,
     ...back,
   });
 };
 
-/** A member of a team's or org's run (its Runs tab) opens that member's inspector; Back returns to the Runs tab. */
-const inspectGroupMember = (runId: string, member: CollaborationMemberMemoryTargetSummary, groupName: string) => {
+/**
+ * A member of a team's or org's run (its Runs tab) opens that member's inspector; Back returns to the Runs tab. The run's
+ * summary is the member run page's title (DEC-002).
+ */
+const inspectGroupMember = (runId: string, member: CollaborationMemberMemoryTargetSummary, groupName: string, runLabel: string | null) => {
   const owner = ownerOf(browseNode.value);
   if (!owner) return;
   const common = {
     agentRunId: member.agentRunId, memberAddress: member.memberAddress, memberName: member.displayName,
-    updatedAt: member.lastUpdatedAt ?? null, back: browseNode.value.key, backPane: 'runs', backName: groupName,
+    updatedAt: member.lastUpdatedAt ?? null, back: browseNode.value.key, backPane: 'runs', backName: groupName, runLabel,
   };
   if (owner.kind === 'org') return pushMemory({ view: 'org-inspector', orgDefinitionId: owner.id, orgName: groupName, orgRunId: runId, ...common });
   return pushMemory({ view: 'team-inspector', teamDefinitionId: owner.id, teamName: groupName, teamRunId: runId, ...common });

@@ -1,0 +1,41 @@
+# IMP-03-server-unit-suite-excerpt.log
+# command: pnpm -C autobyteus-server-ts test:unit (first full run, before the test updates; failures listed were fixed and rerun in IMP-04)
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+     × keeps required tool registration behind the single lifecycle readiness owner 2003ms
+     × passes raw run llmConfig to LLMFactory without wrapping it as extraParams 11ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+     × NAS-19 saves a paired peer with its secret in peers.json (mode 0600, exact keys); lists it as paired, never with the secret 20ms
+     × NAS-23 a peer registered before peers paired reads as unpaired; pairing it keeps its name and history and sets address and secret 3ms
+     × launches with the run's relay access and instructions, selects model and effort, and applies provider-call effects in the turn 49ms
+     × maps all collaborators exactly while sharing process leaves and isolating executions 5ms
+     × reads 'signed in' from the vault's value-free status of the DeepSeek key and says where to set it (DEC-018) 5ms
+     × registers Core first, eight server units next, and Search last with ordered results 5ms
+     × memoizes concurrent and repeated registration to one sticky result 1ms
+     × names a server registrar failure, never starts Search, and never retries 2ms
+     × names every scenario of the contract's table (NAS-01…) in at least one test 646ms
+     × finds no tracked code importing an untracked file in this repository 2092ms
+     × equals the web codegen output for the current server schema, and the check fails on a changed schema 2913ms
+     × treats every importer credential alias as a credential variable 4ms
+     × cover every platform tool the registry offers 13ms
+     × contains no xAI/Grok names, `_x.ai` handling or Grok imports 18ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner
+ FAIL  tests/architecture/node-access-boundaries.test.ts > node access boundaries > names every scenario of the contract's table (NAS-01…) in at least one test
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema
+ FAIL  tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > cover every platform tool the registry offers
+ FAIL  tests/unit/agent-execution/agent-provider-factory-builder.test.ts > AgentProviderFactoryBuilder > maps all collaborators exactly while sharing process leaves and isolating executions
+ FAIL  tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > NAS-19 saves a paired peer with its secret in peers.json (mode 0600, exact keys); lists it as paired, never with the secret
+ FAIL  tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > NAS-23 a peer registered before peers paired reads as unpaired; pairing it keeps its name and history and sets address and secret
+ FAIL  tests/unit/secret-management/test-vault-policy.test.ts > test-vault test policy > treats every importer credential alias as a credential variable
+ FAIL  tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, eight server units next, and Search last with ordered results
+ FAIL  tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+ FAIL  tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+ FAIL  tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > contains no xAI/Grok names, `_x.ai` handling or Grok imports
+ FAIL  tests/unit/runtime-management/deepseek-harness/deepseek-harness-runtime.test.ts > dsh on the Agent Runtimes page and in availability (DS-006) > reads 'signed in' from the vault's value-free status of the DeepSeek key and says where to set it (DEC-018)
+ FAIL  tests/unit/agent-execution/backends/deepseek-harness/deepseek-harness-acp-run.test.ts > DeepSeek Harness on the shared ACP backend > launches with the run's relay access and instructions, selects model and effort, and applies provider-call effects in the turn
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+ Test Files  13 failed | 1076 passed | 5 skipped (1094)
+      Tests  16 failed | 9082 passed | 9 skipped (9107)

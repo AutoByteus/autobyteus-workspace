@@ -1,0 +1,14 @@
+# API-02 composer voice lifetime probe (autobyteus-516)
+# Command: pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <new>; Node v22.23.1; headless Chrome; 2026-11-26
+# Run 1: B-001 Fail 'waiting for … Start voice input to be visible' (API-02-run1-evidence.json): the window-start availability read (plugin 22, new in this ticket) is in flight before the fixture's fetch stub; Apollo de-duplicates the page's own reads onto it, and the probe's network route answered it without extensions. Diagnosis: one GetExtensions fetch at 0.9 s from directNodeApolloClient.boundedFetch, store availabilityGeneration 3, voiceInput null.
+# Fix (test only): the probe's route answers GetExtensions; the fixture's fetch-level copy removed.
+# Run 2:
+result Pass
+B-001 Pass Run caller survives repeated publications and Stop appends once/no Send
+B-002 Pass Chat 390px viewport keyboard Start/Stop retains draft and no Send
+B-003 Pass Publication during deferred native microphone acquisition preserves startup
+B-004 Pass Genuine member change during startup disposes late acquired native stream
+B-005 Pass Publication during pending transcription preserves once-only append
+B-006 Pass Genuine member switch rejects late pending transcription
+B-007 Pass Composer teardown cancels and disposes actual native capture
+pageErrors [] failures []

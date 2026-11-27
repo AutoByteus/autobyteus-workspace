@@ -5,6 +5,7 @@ import {
 } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { createProcessAgentProviderFactoryBuilder } from "../../../src/compositions/create-process-agent-provider-factory-builder.js";
 import { OFF_DISCOVERY } from "../../helpers/explicit-host-collaborators.js";
+import { providerRelayAccessDouble } from "../../helpers/provider-relay-access-double.js";
 
 const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
   workspaceManager: { marker: "workspace" } as never,
@@ -165,7 +166,7 @@ describe("AgentProviderFactoryBuilder", () => {
     const capabilityA = { marker: "application-capability-a" };
     const capabilityB = { marker: "application-capability-b" };
     const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})), integrationsStartingOnRestart: vi.fn(async () => []) };
-    const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
+    const providerRelayAccess = providerRelayAccessDouble();
     const first = builder.createForExecution({ peerDiscovery: OFF_DISCOVERY,
       agentDefinitionService: definitionA as never,
       agentToolMcpRunSessions: runSessionsA as never,
@@ -187,8 +188,10 @@ describe("AgentProviderFactoryBuilder", () => {
     expect((first.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBe(integrationRunAccess);
     expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.integrationRunAccess).toBe(integrationRunAccess);
     expect((second.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBeNull();
-    // Grok calls its provider itself, whatever the composition gives.
-    expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.providerRelayAccess).toBeNull();
+    // Every backend gets the composition's provider relays: Grok, native and Claude use them on a relayed node (DS-001).
+    expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.providerRelayAccess).toBe(providerRelayAccess);
+    expect((first.autoByteus as unknown as { options: Record<string, unknown> }).options.providerRelayAccess).toBe(providerRelayAccess);
+    expect((first.claude as unknown as Record<string, Record<string, unknown>>).sessionManager!.providerRelayAccess).toBe(providerRelayAccess);
 
     expect(Object.isFrozen(builder)).toBe(true);
     expect(Object.isFrozen(first)).toBe(true);

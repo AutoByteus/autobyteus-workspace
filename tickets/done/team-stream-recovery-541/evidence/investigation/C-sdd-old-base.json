@@ -1,0 +1,59 @@
+{
+ "SDD-12": {
+  "result": "Pass",
+  "timeline": [
+   [
+    0,
+    "Idle"
+   ],
+   [
+    3687,
+    "Initializing"
+   ]
+  ],
+  "afterUp": "Idle",
+  "seconds": 19
+ },
+ "SDD-09": {
+  "result": "Pass",
+  "beforeCut": "Idle",
+  "before": "Idle",
+  "timeline": [
+   [
+    203,
+    "Initializing"
+   ]
+  ],
+  "sendable": {
+   "label": "Send message",
+   "enabled": false
+  },
+  "view": {
+   "head": [
+    "L",
+    "lead",
+    "Initializing"
+   ],
+   "status": "Initializing",
+   "notice": {
+    "certainty": "not_sent",
+    "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+   },
+   "draft": "PLAIN team-timeout-6174",
+   "count": 0
+  },
+  "sendAfterNotice": {
+   "label": "Send message",
+   "enabled": false
+  },
+  "afterUp": {
+   "status": "Idle",
+   "label": "Send message",
+   "enabled": true
+  },
+  "noticeAfterMs": 10046,
+  "sent": 0,
+  "lossAlone": "Initializing",
+  "seconds": 13
+ }
+}

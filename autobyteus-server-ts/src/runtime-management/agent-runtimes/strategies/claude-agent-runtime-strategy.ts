@@ -4,6 +4,10 @@ import path from "node:path";
 import { RuntimeKind } from "../../runtime-kind-enum.js";
 import { resolveClaudeCodeExecutablePath } from "../../claude/client/claude-sdk-executable-path.js";
 import { getClaudeSdkClient, type ClaudeSdkClient } from "../../claude/client/claude-sdk-client.js";
+import { resolveClaudeSdkAuthMode } from "../../claude/client/claude-sdk-spawn-environment.js";
+import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
+import type { SecretManagementService } from "../../../secret-management/services/secret-management-service.js";
+import type { SecretConsumerIdentity } from "../../../secret-management/domain/secret-id.js";
 import { commandTimeout } from "../../read-deadline.js";
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
@@ -49,9 +53,14 @@ const readUpdateChannel = async (): Promise<"latest" | "stable"> => {
   }
 };
 
+/** The vault entry Claude's API-key mode hands to the CLI. */
+const CLAUDE_API_KEY: SecretConsumerIdentity = Object.freeze({ kind: "agentRuntime", runtimeKind: "claude_agent_sdk", credentialSlot: "apiKey" });
+
 export const createClaudeAgentRuntimeStrategy = (dependencies: Readonly<{
   /** The Agent SDK client whose control query reads usage; the process-wide client by default. */
   claudeSdkClient?: Pick<ClaudeSdkClient, "readUsage">;
+  management?: () => Pick<SecretManagementService, "getStatusForConsumer">;
+  env?: NodeJS.ProcessEnv;
 }> = {}): AgentRuntimeStrategy => ({
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   // Anthropic does not allow third-party products to offer claude.ai login without approval (UD-006).
@@ -69,6 +78,17 @@ export const createClaudeAgentRuntimeStrategy = (dependencies: Readonly<{
    * the exit code. Without JSON, the plain-text "logged in" fallback application readiness has always accepted.
    */
   async readSignIn(executable, _cwd, options = {}): Promise<SignInReading> {
+    // FU-001: in API-key mode the server hands the vault's key to the CLI, so the vault decides, not `claude auth`.
+    if (resolveClaudeSdkAuthMode(dependencies.env ?? process.env) === "api-key") {
+      try {
+        const management = dependencies.management ?? (() => getSecretVaultRuntime().requireService());
+        return await management().getStatusForConsumer(CLAUDE_API_KEY) === "CONFIGURED"
+          ? { state: "signedIn" }
+          : { state: "signedOut", detail: "The Anthropic API key is not set in AutoByteus. Save it in Settings → API Keys." };
+      } catch (error) {
+        return { state: "unknown", detail: error instanceof Error ? error.message : String(error) };
+      }
+    }
     const result = await runRuntimeCommand(
       executable, ["auth", "status", "--json"], commandTimeout(options.deadline, SHORT_COMMAND_TIMEOUT_MS));
     const loggedIn = readLoggedIn(result.stdout);

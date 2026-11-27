@@ -1,4 +1,5 @@
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { normalizeSessionMessages } from "../claude-runtime-message-normalizers.js";
@@ -40,6 +41,7 @@ export class ClaudeSessionManager {
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
     private readonly integrationRunAccess: IntegrationRunAccess | null = null,
+    private readonly providerRelayAccess: ProviderRelayAccess | null = null,
   ) {
     if (!agentToolMcpRunSessions) {
       throw new Error("Claude Agent Tools MCP run-session activator is required.");
@@ -172,6 +174,7 @@ export class ClaudeSessionManager {
       toolingCoordinator: this.toolingCoordinator,
       agentToolMcpRunSessions: this.agentToolMcpRunSessions,
       integrationRunAccess: this.integrationRunAccess,
+      providerRelayAccess: this.providerRelayAccess,
       isRunSessionActive: () => this.sessions.get(runId) === exact(),
       terminateRunSession: () => this.releaseExactSession(exact()),
     };

@@ -1,0 +1,16 @@
+{
+  "firstTurn": true,
+  "afterUnpair": {
+    "completed": true,
+    "errors": [
+      "LLM_PROVIDER_ERROR: Error in Anthropic streaming: Error: 403 {\"type\":\"error\",\"error\":{\"type\":\"permission_error\",\"code\":\"RELAY_PEER_NOT_ACCEPTED\",\"message\":\"The relay node does not accept this node: it"
+    ],
+    "mentionsRelayPeerNotAccepted": true
+  },
+  "c5LinesAfterUnpair": 0,
+  "destroy": {
+    "removed": true,
+    "foldersKept": true
+  },
+  "containersLeft": 0
+}

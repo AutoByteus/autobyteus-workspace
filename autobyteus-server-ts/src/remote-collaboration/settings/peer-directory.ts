@@ -6,7 +6,7 @@ import type { PeerNode } from "../domain/peer-node.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
 import { loopbackInContainer } from "./peer-address-resolver.js";
 import type { RemoteCollaborationCapability } from "./remote-collaboration-capability.js";
-import type { PeerStore, StoredPeer } from "./peer-store.js";
+import type { PeerRole, PeerStore, StoredPeer } from "./peer-store.js";
 
 /** How the directory learns the server identity behind a URL (`PeerClient`'s identity probe). */
 export type PeerIdentityProbe = Readonly<{
@@ -24,6 +24,7 @@ const toPeerNode = (stored: StoredPeer): PeerNode => Object.freeze({
   baseUrl: stored.baseUrl,
   addedAt: stored.addedAt,
   paired: stored.peerSecret !== null,
+  role: stored.role,
 });
 
 /** A valid peer name from any wanted text, unique among `taken` with " 2", " 3", … (the Nodes page's naming rule). */
@@ -38,8 +39,11 @@ const uniqueName = (wanted: string, taken: readonly string[]): string => {
   }
 };
 
-/** A peer as pairing saves it: the address this node reaches it at and the secret both nodes now share. */
-export type PairedPeerInput = Readonly<{ nodeId: string; name: string; baseUrl: string; peerSecret: string }>;
+/**
+ * A peer as pairing saves it: the address this node reaches it at, the secret both nodes now share, and its lifecycle
+ * mark when this node created it as a sandbox (C11, saved with the peer).
+ */
+export type PairedPeerInput = Readonly<{ nodeId: string; name: string; baseUrl: string; peerSecret: string; role?: PeerRole | null }>;
 
 /**
  * The peers of this node (DEC-101, REQ-102): save a peer pairing found (node access model NA-9), change a peer's
@@ -94,13 +98,14 @@ export class PeerDirectory implements ClientRevocationSource {
           `The node is already paired as '${existing.name}'. Remove it first to pair again.`);
       }
       const saved: StoredPeer = existing
-        ? Object.freeze({ ...existing, baseUrl: input.baseUrl, peerSecret: input.peerSecret })
+        ? Object.freeze({ ...existing, baseUrl: input.baseUrl, peerSecret: input.peerSecret, role: input.role ?? null })
         : Object.freeze({
           nodeId: input.nodeId,
           name: uniqueName(input.name, peers.map((peer) => peer.name)),
           baseUrl: input.baseUrl,
           addedAt: (this.dependencies.now?.() ?? new Date()).toISOString(),
           peerSecret: input.peerSecret,
+          role: input.role ?? null,
         });
       await this.write(existing ? peers.map((peer) => (peer.nodeId === saved.nodeId ? saved : peer)) : [...peers, saved]);
       return toPeerNode(saved);

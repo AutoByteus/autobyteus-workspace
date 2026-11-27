@@ -1,0 +1,20 @@
+{
+  "result": {
+    "sources": [
+      "Local Memory",
+      "Imported: Beta Node"
+    ],
+    "importedValue": "imported:beta-source",
+    "topBar": "Browse | Search | Index | Global | Agents | Agent Teams | Agent Orgs | Memory source",
+    "cards": [
+      "beta-writer 11/20/2026, 9:00:00 AM"
+    ],
+    "agentHeader": "Memory / beta-writer Imported · read-only Episodic memory 1 Semantic memory",
+    "badgeInHeader": 1,
+    "semantic": {
+      "notSynced": 1,
+      "text": "Semantic memory is not part of synced memory Memory Sync copies runs and their Work Journals. An agent’s semantic memory stays on the node where the agent runs."
+    }
+  },
+  "errors": []
+}

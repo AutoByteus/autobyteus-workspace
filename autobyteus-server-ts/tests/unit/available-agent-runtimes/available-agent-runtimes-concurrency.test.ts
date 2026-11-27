@@ -48,7 +48,7 @@ const serviceOver = (manager: CodexAppServerClientManager) => {
   const catalog = new CodexModelCatalog(manager);
   return new AvailableAgentRuntimesService({
     strategies: [codex],
-    signInReader: new AgentRuntimeSignInReader([codex]),
+    signInReader: new AgentRuntimeSignInReader([codex], () => null),
     modelCatalog: {
       runtimeModelSelectionCatalog: async (kind, workspace, options = {}) => {
         const offeredModels: ModelInfo[] = kind === RuntimeKind.CODEX_APP_SERVER ? await catalog.listModels(workspace, options) : [];
@@ -111,7 +111,7 @@ describe("available agent runtimes: concurrent reads and the Codex client (CR-00
     };
     const service = new AvailableAgentRuntimesService({
       strategies: [strategy],
-      signInReader: new AgentRuntimeSignInReader([strategy]),
+      signInReader: new AgentRuntimeSignInReader([strategy], () => null),
       modelCatalog: {
         runtimeModelSelectionCatalog: async () => ({ offeredModels: [{ model_identifier: "m", display_name: "M" } as ModelInfo], findExactCurrent: () => null }),
         reloadProviderModelCatalog: async () => { throw new Error("not used"); },

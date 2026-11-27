@@ -1,0 +1,17 @@
+# IMP-06
+# Command: pnpm -C autobyteus-web test:electron --run
+# Commit: d2934d630f
+# Environment: macOS 26 (darwin-arm64), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-26
+
+      Tests  1 failed | 542 passed (543)
+   × actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child 1016ms
+ FAIL  server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+ Test Files  1 failed | 64 passed (65)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+## The one failure: PortOwnerInspectorFaults 'enforces the real 1000ms subprocess deadline' threw
+##   ENOENT: no such file or directory, open '<tmp>/port-owner-fault-…/child-pid'  (line 81)
+## Cause: the fixture's /bin/sh child had not written its pid receipt before the inspector's real 1000 ms deadline
+## killed it. The run shared the Mac with my concurrent jobs (a 1.8 GB voice runtime/model install, the server unit and
+## integration suites), so a shell start took longer than 1 s. The test and PortOwnerInspector are not touched by this
+## change. Rerun alone on the same commit: 11/11 passed (electron/vitest.config.ts run server/__tests__/PortOwnerInspectorFaults.spec.ts).

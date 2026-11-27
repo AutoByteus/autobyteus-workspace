@@ -13,7 +13,7 @@ import { NodeSettingsError } from '~/utils/nodeSettingsError'
 const A = 'srv_thisNodeAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 const B = 'srv_node8003BBBBBBBBBBBBBBBBBBBBBBBBBBBB'
 const peer = (nodeId: string, name: string, baseUrl = 'http://x', paired = true): PeerNode =>
-  ({ nodeId, name, baseUrl, addedAt: '2026-10-23T08:00:00.000Z', paired })
+  ({ nodeId, name, baseUrl, addedAt: '2026-10-23T08:00:00.000Z', paired, role: null })
 const refusal = (code: string, extra: Record<string, unknown> = {}) => new NodeSettingsError({ code, message: code, ...extra })
 
 const target: NodeChangeTarget = { rowKey: B, name: '8003', nodeId: B, entryIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }

@@ -26,7 +26,6 @@ import {
 import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run-context.js";
 import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
-import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../prompt/long-running-command-sections.js";
 import { getAgentSemanticMemory, preparedSemanticMemoryFolders, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 
 export class ClaudeSessionBootstrapper {
@@ -107,7 +106,6 @@ export class ClaudeSessionBootstrapper {
       project: runContext.config.project,
       semanticMemoryPath: semanticMemory.agentFolder,
       globalSemanticMemoryPath: semanticMemory.globalFolder,
-      longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
     });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,

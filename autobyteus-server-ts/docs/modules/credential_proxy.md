@@ -17,8 +17,10 @@ a capability that works only while the run is active and only for what its agent
 is allowed.
 
 The proxy also forwards a runtime's own model calls through a **provider relay**
-(DeepSeek Harness → DeepSeek's Messages API), adding the provider key from the
-vault, so the runtime never holds the key. See [Provider Relays](#provider-relays).
+(DeepSeek Harness → DeepSeek's Messages API on every node; every supported
+runtime on a relayed node, through its relay node), adding the provider credential
+outside the runtime, so the runtime never holds it. See
+[Provider Relays](#provider-relays).
 
 ## TS Source
 
@@ -40,16 +42,21 @@ vault, so the runtime never holds the key. See [Provider Relays](#provider-relay
   - `integration-connection-service.ts`: connect (token checked with the service
     first), test, disconnect, per integration;
   - `run-pass-registry.ts`: in-memory run passes, each with the run's
-    integration grants and its provider relay grant;
+    integration grants and its provider relay grants (with their relay credential
+    kind), and a relayed node's node pass;
   - `run-pass-revocation.ts`: `RunPassRevocation`, the one way a pass ends
     (`CredentialProxyHost.runPasses`, used by the run managers);
   - `integration-run-access.ts`: `IntegrationRunAccess`, what backends call; its
     read `integrationsStartingOnRestart` tells [Skill Update Notices](./skill_update_notices.md)
     which integrations a skill added mid-run grants that the run's pass does not
     hold yet (their access starts at a restart; nothing is granted);
-  - `provider-relays/`: the provider relays (definitions, the `/relay/…` route
-    family, the Messages stream reader, `ProviderRelayAccess` with its per-run
-    observers, the process relay slot);
+  - `provider-relays/`: the provider relays (definitions C3, the relayed-node
+    settings C1, the `/relay/…` route family, the refusals, the relayed side's
+    peer forwarder, the Messages stream reader, `ProviderRelayAccess` with its
+    per-run observers, the process relay slot);
+  - `provider-relay-peer/`: the relay node's side of relayed calls (the handler,
+    the activity log, the Grok login reader, the relay offer a new
+    sandbox gets);
   - `credential-proxy-forwarder.ts`: the caller-path checks and one forwarded call;
   - `credential-proxy-routes.ts`, `credential-proxy-local-server.ts`: the
     loopback listener and its integration route (`/r/…`); the listener also
@@ -235,61 +242,134 @@ GitHub's delivery definition:
 
 ## Provider Relays
 
-A provider relay is the proxy's app-owned forwarding of one runtime's
-model-provider calls (not Model Routing, and not an integration). One exists:
-`deepseek`, for DeepSeek Harness (see
-[DeepSeek Harness Runtime](./deepseek_harness_runtime.md)).
+A provider relay is the proxy's app-owned forwarding of one provider's model
+calls (not Model Routing, and not an integration). The relays (C3,
+`provider-relays/provider-relays.ts`) each have an API-key route and, for three of
+them, a login-token route. Paths are the provider's own (base path empty), as a
+client given the relay as its endpoint calls them; only inference, model-listing
+and the CLIs' own account paths are allowed.
 
-| Relay | Upstream | Auth | Allowed | Key |
-| --- | --- | --- | --- | --- |
-| `deepseek` | `https://api.deepseek.com`, base path `/anthropic` | `x-api-key: <key>` | `POST /anthropic/v1/messages` only | `provider.deepseek.api-key` (consumer `agentRuntime/deepseek_harness/apiKey`) |
+| Relay | Upstream | API key attached | Login token attached |
+| --- | --- | --- | --- |
+| `anthropic` | `api.anthropic.com` (`/v1/messages`, `/v1/messages/count_tokens`, `/v1/models`) | `x-api-key` (`provider.anthropic.api-key`) | `Authorization: Bearer` (`provider.anthropic.login-token`, C9); Claude Code's own `anthropic-beta` passes |
+| `openai` | `api.openai.com` (`/v1/responses…`, `/v1/chat/completions`, `/v1/models`) | `Authorization: Bearer` (`provider.openai.api-key`) | none (DEC-115) |
+| `xai` | `api.x.ai` (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, models, `/v1/api-key`) | `Authorization: Bearer` (`provider.grok.api-key`) | the relay node's own Grok login, Bearer |
+| `deepseek` | `api.deepseek.com` (`POST /anthropic/v1/messages` for DeepSeek Harness, `POST /chat/completions` for native DeepSeek) | `x-api-key` (`provider.deepseek.api-key`) | none |
+| `gemini` | `generativelanguage.googleapis.com` (`generateContent`, `streamGenerateContent`, `countTokens`, models) | `x-goog-api-key` (AI Studio key) | none |
+| `kimi`, `glm`, `qwen`, `mistral`, `minimax` | the provider's chat API | `Authorization: Bearer` (the provider's key) | none |
 
-**A run's access.** The ACP launcher calls
-`ProviderRelayAccess.prepareForRun({runId, agentDefinitionId}, relayId)` when
-the runtime's launch profile names a relay: it refuses with
-`RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in
-Settings → API Keys.` when the vault holds no key, and otherwise grants the relay
-on the run's pass (the same pass as its integrations; `issue` and `clearGrants`
-keep the relay grant) and returns the relay's base URL
-(`http://127.0.0.1:<port>/relay/deepseek`) and the pass. The runtime sends the
-pass in its API-key header; the base URL holds no pass. A composition without a
-proxy (the standalone application host) gives no relay access: such a runtime is
-refused before it starts (`PROVIDER_RELAY_UNAVAILABLE`).
+Every key is read through the consumer `providerRelay/<relayId>/<kind>`, which
+only the proxy uses; no runtime ever receives it.
 
-**The route** `/relay/<relayId>/<path>`, in order:
+**Who uses a relay.** `ProviderRelayAccess` is the only owner of the decision.
+On an unrelayed node only DeepSeek Harness goes through a relay (`deepseek`),
+with this node's own key; every other runtime calls its provider itself. On a
+**relayed node** (`AUTOBYTEUS_PROVIDER_RELAY_PEER` set, C1) every supported
+runtime goes through its relay and the relay node attaches the credential:
+
+| C1 setting (read once at start) | Meaning |
+| --- | --- |
+| `AUTOBYTEUS_PROVIDER_RELAY_PEER` | The relay node's node ID (a paired peer). Empty: not relayed. |
+| `AUTOBYTEUS_PROVIDER_RELAYS` | The relays the relay node has API keys for. |
+| `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES` | The runtimes (`claude_agent_sdk`, `grok_build`) that run on the relay node's login token. Codex always uses the API key: in ChatGPT mode it sends its model calls only to an HTTPS workspace backend, which a loopback relay is not (DEC-115). |
+
+A runtime listed in the third setting uses `loginToken` on its relay, otherwise
+`apiKey` when its relay is listed, otherwise it is signed out with the reason
+(`routeFor`, `statusOf`). Native (AutoByteus) providers always use `apiKey`
+(`routeForNativeProvider`); local providers (Ollama, LM Studio, custom
+endpoints) stay direct. Antigravity cannot be relayed and is signed out on a
+relayed node. A malformed value stops startup (`PROVIDER_RELAY_SETTINGS_INVALID`).
+
+**A run's access.** `prepareForRun(run, relayId, runtimeKind)` grants the relay on
+the run's pass with its relay credential kind and returns the relay's base URL,
+the pass and the kind. Unrelayed, it refuses with `RELAY_KEY_NOT_SET` when the
+vault holds no key; relayed, it refuses with `RELAY_NOT_LISTED` when C1 offers no
+credential for that runtime (no local vault check). `prepareForNode(relayId,
+runtimeKind)` gives a relayed node's shared processes (Codex app-servers, Claude
+control queries, Grok discovery) the **node pass**. The launch shapes:
+
+| Runtime | Relay variables |
+| --- | --- |
+| Native (AutoByteus) | the autobyteus-ts client's endpoint is the relay (FU-003); the pass is its key |
+| Claude Agent SDK | `ANTHROPIC_BASE_URL`; `ANTHROPIC_API_KEY` (apiKey) or `CLAUDE_CODE_OAUTH_TOKEN` (loginToken); none of the node's own Claude credentials |
+| Codex | a custom provider on the relay with the node pass as its bearer (always the API key, DEC-115) |
+| Grok Build | `GROK_XAI_API_BASE_URL`; `XAI_API_KEY` (apiKey) or `GROK_AUTH_PROVIDER_ACCESS_TOKEN` (loginToken) |
+| DeepSeek Harness | `DEEPSEEK_BASE_URL=<relay>/anthropic`, `DEEPSEEK_API_KEY=<pass>` (every node) |
+
+A relayed launch without the proxy (the standalone application host) refuses
+loudly (`PROVIDER_RELAY_UNAVAILABLE`); it never launches directly.
+
+**The local route** `/relay/<relayId>/<path>`, in order:
 
 1. loopback gate, else `NOT_LOOPBACK` (403 `permission_error`);
 2. a known relay, else `PATH_NOT_ALLOWED` (404 `not_found_error`);
-3. a live pass in `x-api-key`, else `RUN_PASS_INVALID` (401
+3. a live pass in the runtime's credential header (`x-api-key`,
+   `Authorization: Bearer` or `x-goog-api-key`), else `RUN_PASS_INVALID` (401
    `authentication_error`);
-4. the pass holds this relay's grant, else `RELAY_NOT_ALLOWED` (403
-   `permission_error`);
-5. the path and method (the same caller-path checks as integrations), else
-   `PATH_NOT_ALLOWED`;
-6. the key from the vault, else `RELAY_KEY_NOT_SET` (403 `permission_error`);
-7. the forwarded call: the caller's `x-api-key` dropped and the key set; the body
-   streamed and the reply streamed back, both unchanged; an unreachable upstream
-   is `UPSTREAM_UNREACHABLE` (502 `api_error`).
+4. the pass holds this relay's grant (its kind), else `RELAY_NOT_ALLOWED` (403);
+5. the path and method on that kind's route, else `PATH_NOT_ALLOWED`;
+6. unrelayed: the key from the vault, else `RELAY_KEY_NOT_SET` (403), and the call
+   forwarded with it; relayed: the call sent to the relay node (below).
+
+**Relayed calls (C4).** On a relayed node the call (the pass and every local
+credential header dropped, the body read whole up to 32 MiB) is signed with the
+pair's peer secret and sent to
+`/rest/remote/provider-relays/<relayId>/<kind><path>?fromNodeId=…&toNodeId=…`
+on the relay node (`PeerRelayClient`; timeouts: connect 10 s, response headers
+300 s, 300 s between body chunks, no total). The relay node's gate admits the
+peer by its signature (NA-9); its handler (`ProviderRelayPeerHandler`) then, in
+order: refuses an unknown relay, kind, path or method (`PATH_NOT_ALLOWED`); a
+`loginToken` call while its `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS` is off
+(`RELAY_LOGIN_TOKENS_OFF`); a missing credential (`RELAY_KEY_NOT_SET`,
+`RELAY_LOGIN_TOKEN_NOT_SET`) or an expired Grok login
+(`RELAY_LOGIN_EXPIRED`); then forwards with exactly the declared kind's
+credential (no swap) and writes one activity line. Every reply it sends is marked
+`x-autobyteus-relay-reply: forwarded | refused`; the relayed side passes a marked
+reply unchanged (a provider 401 stays the provider's) and maps an unmarked one:
+401 → `RELAY_PEER_NOT_ACCEPTED`, 403 with a code → `RELAY_PEER_REFUSED`, 503
+`NODE_IDENTITY_NOT_MIGRATED` → `RELAY_PEER_UNAVAILABLE`, any other →
+`RELAY_PEER_FAILED`. Before sending it refuses `RELAY_PEER_UNAVAILABLE` (not a
+paired peer, or remote collaboration off), `RELAY_BODY_TOO_LARGE`, and after
+`RELAY_PEER_UNREACHABLE`. There is never a fallback to local credentials.
 
 Refusals use the Anthropic Messages error envelope,
 `{"type":"error","error":{"type":<type>,"code":<code>,"message":<text>}}`, the
-only failure shape whose text the runtime shows; `authentication_error` and
-`permission_error` are never retried by it. The relay logs no pass and no header
-value, and writes no activity record.
+only failure shape whose text every runtime shows; `authentication_error` and
+`permission_error` are never retried. The relays log no pass and no header value.
 
-**Provider call observations.** For each forwarded call the relay reports to the
-run's observers (`ProviderRelayAccess.observe(runId, listener)`, removed by the
-returned function, exactly that registration): `started` (with the purpose:
-`compaction` when the relay's compaction header is `1`, else `turn`),
-`activity` (at most once a second per call while the reply streams) and
-`finished` (the status, and the usage and stop reason read from the Messages
-stream) synchronously when the upstream reply ends. The ACP session turns them
-into effects; the proxy never builds AutoByteus events.
+**Login tokens (C9, C10).** Off unless the relay node's owner sets
+`AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS=true`. Claude's comes from `claude
+setup-token`, stored once with `pnpm secrets:import` (`CLAUDE_CODE_OAUTH_TOKEN=…`
+in the source file → `provider.anthropic.login-token`), never in the plain-text
+settings. Grok's is the relay node's own login (`~/.grok/auth.json`), read for
+each call and never renewed by AutoByteus; an expired one is refused so its owner
+signs in again. Codex has no login-token mode through a relay (DEC-115).
+
+**Provider relay activity (C5).** On the relay node,
+`<app-data-dir>/provider-relays/activity.jsonl`: one line per relayed call,
+refusals too: `at`, `peerNodeId`, `relayId`, `relayCredentialKind`, `method`,
+`path` (no query), `status` or `error`, `durationMs`. The line is written when the
+provider's response headers arrive, so `durationMs` of a forwarded call is the
+time to those headers, not to the end of a streamed body; a refusal's is the time
+to refuse. Never a header value, body, key, token or pass.
+
+**Provider call observations.** For each forwarded call of a relay that reads its
+stream (only `deepseek` today) the route reports to the run's observers
+(`ProviderRelayAccess.observe(runId, listener)`, removed by the returned
+function, exactly that registration): `started` (with the purpose: `compaction`
+when the relay's compaction header is `1`, else `turn`), `activity` (at most once
+a second per call while the reply streams) and `finished` (the status, and the
+usage and stop reason read from the Messages stream) synchronously when the reply
+ends. The ACP session turns them into effects; the proxy never builds AutoByteus
+events.
 
 **Process relay slot.** The studio composition sets the process's
 `ProviderRelayAccess` when it creates the proxy host (before it listens) and
-clears it when it closes it. Only the model catalog and runtime availability,
-which are process singletons, read it; the standalone host never sets it.
+clears it when it closes it. The process singletons read it: the model catalog,
+runtime availability and sign-in, the native provider settings, the Claude client
+and the Codex app-servers (`processNodeRelayAccess`), and Grok discovery. On a
+relayed node a singleton that finds no slot refuses loudly; the standalone host
+never sets it.
 
 ## Activity Log
 
@@ -377,7 +457,7 @@ limited to the needed repositories).
   is disabled, or its source was removed), a missing token, a path or host outside
   the definition, a non-loopback caller.
 - **Provider relays.** The DeepSeek relay forwards only `POST
-  /anthropic/v1/messages` to `api.deepseek.com`, only for a live pass with the
+  /anthropic/v1/messages` (and native DeepSeek's `POST /chat/completions`) to `api.deepseek.com`, only for a live pass with the
   relay grant, only from loopback. An agent with integrations sees its pass in its
   integration addresses and could call the relay itself: it then gets model calls
   on the user's key, never the key.

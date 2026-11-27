@@ -9,10 +9,6 @@ export function getCanonicalServerDataPath(baseDataPath: string = getCanonicalBa
   return path.join(baseDataPath, 'server-data')
 }
 
-export function getCanonicalExtensionsPath(baseDataPath: string = getCanonicalBaseDataPath()): string {
-  return path.join(baseDataPath, 'extensions')
-}
-
 export function getCanonicalLogsPath(baseDataPath: string = getCanonicalBaseDataPath()): string {
   return path.join(baseDataPath, 'logs')
 }

@@ -1,0 +1,10 @@
+# API-R01 (round 2) server typecheck + API-R03b sandbox and architecture unit tests
+# commands: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/sandboxes tests/architecture --no-watch
+# commit: 56faf1ad73 (code 7296a698d6) + uncommitted suite edit; Node v22.23.1; date 2026-11-26T18:05:07Z
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.8s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 28.9s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+ Test Files  15 passed (15)
+      Tests  83 passed (83)

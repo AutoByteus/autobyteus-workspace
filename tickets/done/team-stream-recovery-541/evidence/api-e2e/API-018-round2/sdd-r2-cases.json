@@ -1,0 +1,346 @@
+{
+ "result": "Fail",
+ "cleanup": {
+  "frontend": "stopped",
+  "backend": "stopped",
+  "dataRootRemoved": true
+ },
+ "browserErrors": [
+  "Failed to open workspace execution link: Error: Team context 'send_team_3640_2e2903a171364eb69ad89304b0975be6' changed before selection commit.\n    at openWorkspaceExecutionLink (<frontend>/_nuxt/services/workspace/workspaceNavigationService.ts:84:50)\n    at async applyRouteSelection (<frontend>/_nuxt/composables/workspace/useWorkspaceRouteSelection.ts:53:22)"
+ ],
+ "cases": {
+  "SDD-13": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "timeline": [
+    [
+     0,
+     "Idle"
+    ]
+   ],
+   "sendDisabledAt": null,
+   "afterUp": "Idle",
+   "seconds": 21
+  },
+  "SDD-07": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "before": "Idle",
+   "view": {
+    "head": [
+     "S3",
+     "hello agent",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN not-bound-3640",
+    "count": 0
+   },
+   "sendAfterNotice": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10041,
+   "sent": 0,
+   "frames": [
+    "0 L44 down /ws/agent-team DROPPED (the page's path is down)",
+    "0 L45 down /ws/agent DROPPED (the page's path is down)",
+    "699 L46 down /ws/agent REFUSED (path down)",
+    "1003 L47 down /ws/agent-team REFUSED (path down)",
+    "2702 L48 down /ws/agent REFUSED (path down)",
+    "2956 L49 down /ws/agent REFUSED (path down)",
+    "2956 L50 down /ws/agent-team REFUSED (path down)",
+    "3960 L51 down /ws/agent-team REFUSED (path down)",
+    "4788 L52 down /ws/agent-package-definitions REFUSED (path down)",
+    "4788 L53 down /ws/update-notifications REFUSED (path down)",
+    "5962 L54 down /ws/agent-team REFUSED (path down)",
+    "7955 L55 down /ws/agent REFUSED (path down)",
+    "7955 L56 down /ws/agent-team REFUSED (path down)",
+    "8959 L57 down /ws/agent-team REFUSED (path down)",
+    "10790 L58 down /ws/run-status REFUSED (path down)",
+    "10791 L59 down /ws/agent-collaboration REFUSED (path down)",
+    "10969 L60 down /ws/agent-team REFUSED (path down)",
+    "12958 L61 down /ws/agent CONNECTED",
+    "12958 L61 down /ws/agent AGENT_STATUS idle",
+    "12959 L61 down /ws/agent AGENT_STREAM_SNAPSHOT input_state={\"revision\":5,\"entries\":[]}",
+    "12960 L62 down /ws/agent-team CONNECTED",
+    "12960 L62 down /ws/agent-team TEAM_EXECUTION_VIEW_SNAPSHOT",
+    "12960 L62 down /ws/agent-team RUN_TREE_SNAPSHOT"
+   ],
+   "seconds": 13
+  },
+  "SDD-12": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "timeline": [
+    [
+     0,
+     "Idle"
+    ]
+   ],
+   "sendDisabledAt": null,
+   "afterUp": "Idle",
+   "seconds": 19
+  },
+  "SDD-09": {
+   "result": "Pass",
+   "beforeCut": "Idle",
+   "before": "Idle",
+   "timeline": [
+    [
+     209,
+     "Idle"
+    ]
+   ],
+   "sendable": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "view": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN team-timeout-3640",
+    "count": 0
+   },
+   "sendAfterNotice": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "afterUp": {
+    "status": "Idle",
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10029,
+   "sent": 0,
+   "seconds": 13
+  },
+  "SDD-14": {
+   "result": "Pass",
+   "gap": {
+    "withheld": {
+     "type": "TURN_COMPLETED",
+     "seq": 34
+    },
+    "recoveredAfterMs": 36,
+    "gapSeen": true,
+    "failedAttempts": 0,
+    "replacementLink": 107
+   },
+   "before": "Idle",
+   "after": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": null,
+    "draft": "",
+    "count": 1
+   },
+   "recoveryNotice": 0,
+   "sentAfter": {
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "status": "Idle",
+    "notice": null,
+    "draft": "",
+    "count": 1
+   },
+   "sends": [
+    107
+   ],
+   "seconds": 0
+  },
+  "SDD-15": {
+   "result": "Pass",
+   "refusedReads": 5,
+   "failuresAtNotice": 5,
+   "noticeAfterGapMs": 15040,
+   "shownStatus": "Idle",
+   "sendable": {
+    "label": "Send message",
+    "enabled": true
+   },
+   "noticeAfterMs": 10042,
+   "during": {
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "draft": "PLAIN during-exhausted-3640",
+    "count": 0
+   },
+   "recovery": {
+    "withheld": {
+     "type": "AGENT_STATUS",
+     "seq": 54
+    },
+    "recoveredAfterMs": 31047,
+    "gapSeen": true,
+    "failedAttempts": 5,
+    "replacementLink": 113
+   },
+   "after": {
+    "status": "Idle",
+    "notice": {
+     "certainty": "not_sent",
+     "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+    },
+    "count": 1
+   },
+   "noticeAfterRecovery": 0,
+   "seconds": 31
+  },
+  "SDD-93": {
+   "result": "Fail",
+   "error": "the member the link opened is focused after both settle",
+   "details": {
+    "before": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Idle"
+     ]
+    },
+    "recovery": {
+     "withheld": {
+      "type": "TURN_COMPLETED",
+      "seq": 85
+     },
+     "recoveredAfterMs": 36,
+     "gapSeen": true,
+     "failedAttempts": 0,
+     "replacementLink": 114
+    },
+    "commitDuringHold": true,
+    "after": {
+     "rows": {
+      "lead": "true",
+      "mate": null
+     },
+     "head": [
+      "L",
+      "lead",
+      "Idle"
+     ]
+    },
+    "lines": [
+     "Failed to open workspace execution link: Error: Team context 'send_team_3640_2e2903a171364eb69ad89304b0975be6' changed before selection commit.\n    at openWorkspaceExecutionLink (<frontend>"
+    ],
+    "heldMs": 6001
+   },
+   "seconds": 9
+  },
+  "SDD-16": {
+   "result": "Pass",
+   "atLead": {
+    "rows": {
+     "lead": "true",
+     "mate": null
+    },
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ],
+    "url": ""
+   },
+   "afterLink": {
+    "rows": {
+     "lead": null,
+     "mate": "true"
+    },
+    "head": [
+     "M",
+     "mate",
+     "Offline"
+    ],
+    "url": ""
+   },
+   "recovery": {
+    "withheld": {
+     "type": "TURN_COMPLETED",
+     "seq": 102
+    },
+    "recoveredAfterMs": 5043,
+    "gapSeen": true,
+    "failedAttempts": 0,
+    "replacementLink": 115
+   },
+   "afterCommit": {
+    "rows": {
+     "lead": null,
+     "mate": "true"
+    },
+    "head": [
+     "M",
+     "mate",
+     "Offline"
+    ],
+    "url": ""
+   },
+   "heldReads": 2,
+   "mateRunId": "send_mate_3640_50c83ee4ec5c44d8abae89d4de3206ba",
+   "seconds": 8
+  },
+  "SDD-17": {
+   "result": "Pass",
+   "before": {
+    "rows": {
+     "lead": "true",
+     "mate": null
+    },
+    "head": [
+     "L",
+     "lead",
+     "Idle"
+    ]
+   },
+   "recovery": {
+    "withheld": {
+     "type": "TURN_COMPLETED",
+     "seq": 119
+    },
+    "recoveredAfterMs": 5035,
+    "gapSeen": true,
+    "failedAttempts": 0,
+    "replacementLink": 116
+   },
+   "afterCommit": {
+    "rows": {
+     "lead": null,
+     "mate": "true"
+    },
+    "head": [
+     "M",
+     "mate",
+     "Offline"
+    ]
+   },
+   "heldReads": 2,
+   "seconds": 9
+  }
+ }
+}

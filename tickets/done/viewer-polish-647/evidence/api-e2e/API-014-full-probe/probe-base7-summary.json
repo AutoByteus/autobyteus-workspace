@@ -1,0 +1,38 @@
+{
+ "run": "base bc4351cad7 fresh clone, --cases=MSP-17,MSP-61,MSP-65,MSP-82,MSP-87,MSP-92,MSP-58",
+ "cases": {
+  "MSP-17": {
+   "result": "Fail",
+   "error": "Timed out waiting for the run screen of org:delivery_org_3f13845ed34541fba2c542f92cab4f94/agent:changelog_helper_c2dccfe8a23e479aac3ba6aba49fac57"
+  },
+  "MSP-61": {
+   "result": "Fail",
+   "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-runtime-select-toggle\"]')\n    - locator resolved to <button disabled type=\"button\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-testid=\"mobile-run-runtime-select-toggle\" class=\"flex h-14 w-full "
+  },
+  "MSP-65": {
+   "result": "Fail",
+   "error": "REQ-008 after the stop the phone stays on Settings with the rows open"
+  },
+  "MSP-82": {
+   "result": "Fail",
+   "error": "The message \"MSP-82-org-member-start\" did not start a turn (a lost send)"
+  },
+  "MSP-87": {
+   "result": "Fail",
+   "error": "Timed out waiting for Send enabled"
+  },
+  "MSP-92": {
+   "result": "Pass",
+   "error": "None"
+  },
+  "MSP-58": {
+   "result": "Fail",
+   "error": "Timed out waiting for the run screen"
+  }
+ },
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

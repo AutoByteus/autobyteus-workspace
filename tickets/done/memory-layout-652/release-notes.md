@@ -1,0 +1,10 @@
+## The Memory page has a cleaner layout, and file lists show an icon for every kind of file
+
+(For the release that includes this change. User-facing. No user action is needed, so there is no "What you need to do" section.)
+
+- **One header row on an agent, team, org or run page.** Back (showing where it goes), the name, and the page's controls sit in a single row, without the Browse, Search and Index tabs above it. The name stays visible at every window width: when the row does not fit, the controls move to a row of their own. Browse, Search and Index remain on the Memory home pages (on Browse, in one top bar with the Global, Agents, Agent Teams and Agent Orgs tabs).
+- **Less repeated information.** Cards no longer print the ID (hover over the name to see it), an agent team's page no longer says "Agent Team", and Global memory has no title above its files.
+- **The semantic memory reader fills the window.** The file list is 300 px wide with **Copy folder path** at its foot (it copies the real path and says "Copied"), the first document at the folder's root opens when you arrive, and the text is sized to read comfortably. The Work Journal fills the window too, with no page scrolling on a desktop.
+- **Pickers only when there is something to pick.** A run with one journal file shows no file list and no picker, and a run with one raw-trace file shows its name. With two or more files you get a list (on a wide window) or a picker. Raw Traces has a single **Show** field that applies when you press Enter, with no number arrows and no Apply button; Go to line works the same way.
+- **A run's page is titled by its summary.** An agent's run, and a member's run opened from a team or org run, show the run's summary beside Back. A run opened from a search result shows its run ID and workspace.
+- **File lists show an icon for every kind of file.** In the Files panel, the Skills page and the Memory reader, JavaScript, TypeScript, Vue, HTML, CSS and JSON files, which showed blank or missing icons, now have their icons, and Markdown files have a document icon. A file you are only reading in the Memory reader shows a longer name on its tab.

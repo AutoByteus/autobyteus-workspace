@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
+import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
   kind: 'send' | 'interrupt';
@@ -37,7 +38,9 @@ const props = defineProps<{
 
 defineEmits<{ (event: 'activate'): void }>();
 
-const label = computed(() => props.title
-  || (props.kind === 'interrupt' ? 'Stop generation' : 'Send message'));
+const { t } = useLocalization();
+const label = computed(() => props.title || t(props.kind === 'interrupt'
+  ? 'agentInput.components.agentInput.MessagePrimaryActionButton.stop_generation'
+  : 'agentInput.components.agentInput.MessagePrimaryActionButton.send_message'));
 const iconSizeClass = computed(() => (props.compact ? 'h-4 w-4' : 'h-5 w-5'));
 </script>

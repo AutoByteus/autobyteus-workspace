@@ -1,0 +1,11 @@
+### phone-probe: pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-119,MSP-120 --output-dir=/tmp/del541/phone
+
+> autobyteus@1.5.15-beta.3 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/team-stream-recovery-541/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-119,MSP-120 --output-dir=/tmp/del541/phone
+
+[mobile-shell] MSP-119 …
+[mobile-shell] MSP-119 Pass
+[mobile-shell] MSP-120 …
+[mobile-shell] MSP-120 Pass
+mobile-shell probe: Pass
+exit 0

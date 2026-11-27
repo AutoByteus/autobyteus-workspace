@@ -1,0 +1,9 @@
+# API-E01 diagnostic: a fresh sandbox node hands out its setup code before its published HTTP port answers
+# command: node API-E01-setup-code-vs-http-race.mjs autobyteus-server:581-api-e2e 4 (polls every ~100 ms: the setup code over docker exec, and GET /rest/health on the published port)
+# image: autobyteus-server:581-api-e2e (package from d624f09ce6); Docker Desktop 29.0.1; Node v22.23.1; date 2026-11-26T17:34:02Z
+# meaning: httpGapAfterCodeMs > 0 and httpErrorAfterCode = UND_ERR_SOCKET -> a request right after the code fails with "fetch failed" (SandboxPairing.connect makes exactly one)
+
+{"run":0,"setupCodeMs":18372,"httpAnswersMs":18586,"httpGapAfterCodeMs":214,"httpErrorAfterCode":"UND_ERR_SOCKET"}
+{"run":1,"setupCodeMs":16220,"httpAnswersMs":16421,"httpGapAfterCodeMs":201,"httpErrorAfterCode":"UND_ERR_SOCKET"}
+{"run":2,"setupCodeMs":12793,"httpAnswersMs":13013,"httpGapAfterCodeMs":220,"httpErrorAfterCode":"UND_ERR_SOCKET"}
+{"run":3,"setupCodeMs":13810,"httpAnswersMs":13876,"httpGapAfterCodeMs":66,"httpErrorAfterCode":null}

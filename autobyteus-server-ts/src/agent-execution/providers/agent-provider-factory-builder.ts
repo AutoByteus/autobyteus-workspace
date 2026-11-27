@@ -200,6 +200,7 @@ export const createAgentProviderFactoryBuilder = (
         process.workspaceManager,
         process.claude.sdkClient,
         integrationRunAccess,
+        input.providerRelayAccess,
       );
       return Object.freeze({
         autoByteus: new AutoByteusAgentRunBackendFactory({
@@ -213,6 +214,7 @@ export const createAgentProviderFactoryBuilder = (
           waitForIdle: process.autoByteus.waitForIdle,
           applicationAgentTools: input.applicationAgentTools,
           integrationRunAccess,
+          providerRelayAccess: input.providerRelayAccess,
           peerDiscovery: input.peerDiscovery,
         }),
         codex: new CodexAgentRunBackendFactory(
@@ -230,6 +232,7 @@ export const createAgentProviderFactoryBuilder = (
           workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
           mcpSessions: input.agentToolMcpRunSessions,
           integrationRunAccess,
+          providerRelayAccess: input.providerRelayAccess,
         }),
         deepSeekHarness: createDeepSeekHarnessAgentRunBackendFactory({
           definitions: input.agentDefinitionService, skills: process.skillService,

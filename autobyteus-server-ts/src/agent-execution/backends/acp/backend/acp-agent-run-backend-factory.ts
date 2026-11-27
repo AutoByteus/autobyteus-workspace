@@ -156,7 +156,6 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
       semanticMemoryPath: prepared.semanticMemory.agentFolder,
       globalSemanticMemoryPath: prepared.semanticMemory.globalFolder,
-      longRunningCommandSection: this.deps.sessionProfile.longRunningCommandSection,
     });
   }
 

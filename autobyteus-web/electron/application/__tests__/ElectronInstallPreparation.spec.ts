@@ -13,7 +13,7 @@ const mocks = vi.hoisted(() => ({
 }))
 
 vi.mock('electron', () => ({
-  app: { on: vi.fn(), quit: vi.fn(), exit: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
+  app: { on: vi.fn(), quit: vi.fn(), exit: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), getVersion: vi.fn(() => '1.5.15-test'), isPackaged: false },
   BrowserWindow: { getAllWindows: () => [] }, dialog: {}, ipcMain: { handle: vi.fn(), on: vi.fn() }, shell: {},
 }))
 vi.mock('electron-is-dev', () => ({ default: true }))
@@ -24,8 +24,6 @@ vi.mock('../../updater/appUpdater', () => ({
   AppUpdater: class { constructor(options: { prepareForInstall: () => Promise<void> }) { mocks.prepareForInstall = options.prepareForInstall } },
 }))
 vi.mock('../../updater/disabledAppUpdater', () => ({ DisabledAppUpdater: class {} }))
-vi.mock('../../extensionIpcHandlers', () => ({ registerExtensionIpcHandlers: vi.fn() }))
-vi.mock('../../extensions/managedExtensionService', () => ({ ManagedExtensionService: class {} }))
 vi.mock('../../browser/browser-runtime', () => ({ BrowserRuntime: class {}, startBrowserRuntime: vi.fn() }))
 vi.mock('../../browser/register-browser-shell-ipc-handlers', () => ({ registerBrowserShellIpcHandlers: vi.fn() }))
 vi.mock('../../browser/browser-bridge-auth-registry', () => ({ BrowserBridgeAuthRegistry: class {} }))

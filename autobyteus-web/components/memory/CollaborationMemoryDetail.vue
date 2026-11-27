@@ -1,37 +1,23 @@
 <template>
-  <!-- autobyteus-554: `embedded` is the team or org page's Runs tab on the Memory page (no back link or title). -->
-  <div :class="embedded ? 'space-y-5' : 'mx-auto max-w-7xl space-y-5 p-8'">
-    <button v-if="!embedded" class="text-sm font-medium text-blue-600 hover:underline" @click="$emit('back')">← {{ $t('memory.components.memory.CollaborationMemoryDetail.back_to_memory') }}</button>
-
-    <div class="flex flex-wrap items-center gap-3" :class="embedded ? 'justify-end' : 'justify-between'">
-      <div v-if="!embedded" class="flex items-center gap-3">
-        <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
-        <span v-if="readOnly" class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">{{ $t('memory.components.memory.common.importedReadOnly') }}</span>
-      </div>
-      <div class="relative w-full sm:w-80">
-        <Icon icon="heroicons:magnifying-glass-20-solid" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-        <input v-model="searchInput" type="text" :placeholder="$t('memory.components.memory.CollaborationMemoryDetail.search_runs')" :aria-label="$t('memory.browse.filter_label')" class="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" @keyup.enter="applySearch" />
-      </div>
-    </div>
-
+  <!-- A team's or org's runs, its page's Runs tab (autobyteus-554); the page's header holds the filter (autobyteus-608). -->
+  <div class="space-y-3" data-test="collaboration-runs">
     <div v-if="loading && rows.length === 0" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.CollaborationMemoryDetail.loading_runs') }}</div>
     <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
       {{ error }}
-      <button class="ml-2 font-semibold underline" @click="$emit('retry')">Retry</button>
+      <button class="ml-2 font-semibold underline" @click="$emit('retry')">{{ $t('memory.results.retry') }}</button>
     </div>
     <div v-else-if="rows.length === 0" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.CollaborationMemoryDetail.no_runs_match_this_filter') }}</div>
     <div v-else class="space-y-4">
-      <article v-for="row in rows" :key="row.runId" class="rounded-lg border border-gray-200 bg-white p-5">
-        <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-          <div class="min-w-0">
-            <h3 class="break-words font-semibold text-gray-900">{{ row.summary || row.runId }}</h3>
-            <p class="mt-1 break-all font-mono text-xs text-gray-500">{{ row.runId }}</p>
-            <p v-if="row.workspaceRootPath" class="mt-1 break-all text-xs text-gray-500">{{ row.workspaceRootPath }}</p>
-          </div>
-          <span v-if="row.lastUpdatedAt" class="shrink-0 text-xs text-gray-500">{{ formatTimestamp(row.lastUpdatedAt) }}</span>
+      <!-- No run ID line (DC-006): it is in the title's tooltip (the filter still matches it); the time beside the title;
+           member chips show the member, its run ID in the chip's tooltip. -->
+      <article v-for="row in rows" :key="row.runId" class="rounded-lg border border-gray-200 bg-white p-4" data-test="collaboration-run">
+        <div class="flex min-w-0 items-baseline justify-between gap-3">
+          <h3 class="min-w-0 break-words text-sm font-semibold text-gray-900" :title="row.runId">{{ row.summary || row.runId }}</h3>
+          <span v-if="row.lastUpdatedAt" class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(row.lastUpdatedAt) }}</span>
         </div>
-        <MemoryBadges class="mt-3" :memory="row.memory" />
-        <div class="mt-4">
+        <p v-if="row.workspaceRootPath" class="mt-0.5 truncate text-xs text-gray-500" :title="row.workspaceRootPath">{{ row.workspaceRootPath }}</p>
+        <MemoryBadges class="mt-2" :memory="row.memory" />
+        <div class="mt-3">
           <div class="space-y-2">
             <div
               v-for="block in memberBlocks(row)"
@@ -60,12 +46,13 @@
                 <button
                   v-for="{ member, label } in block.members"
                   :key="`${row.runId}:${member.agentRunId}`"
-                  class="max-w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-xs hover:border-blue-300 hover:bg-blue-50"
+                  class="max-w-full rounded-md border border-gray-200 px-2.5 py-1 text-left text-xs hover:border-blue-300 hover:bg-blue-50"
                   :data-execution-kind="member.executionKind"
-                  @click="$emit('inspectMember', row.runId, member)"
+                  :title="member.agentRunId"
+                  data-test="collaboration-member"
+                  @click="$emit('inspectMember', row.runId, member, row.summary || null)"
                 >
-                  <span class="block break-all font-semibold text-gray-800">{{ label }}</span>
-                  <span class="block break-all font-mono text-gray-500">{{ member.agentRunId }}</span>
+                  <span class="block break-all font-medium text-gray-800">{{ label }}</span>
                 </button>
               </div>
             </div>
@@ -83,45 +70,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { CollaborationMemberMemoryTargetSummary, CollaborationRunMemoryRow } from '~/types/memory';
 import MemoryBadges from './MemoryBadges.vue';
 import { buildCollaborationMemberBlocks } from './collaborationMemberTree';
 
-/** Presentational run list with members for one team or org definition; the page owns data and actions. */
-const props = defineProps<{
-  title: string;
+/** A team's or org's runs with their members, presentational: the page owns the data, the filter and the actions. */
+defineProps<{
   rows: CollaborationRunMemoryRow[];
   loading: boolean;
   error: string | null;
   page: number;
   totalPages: number;
-  search: string;
-  readOnly: boolean;
-  embedded?: boolean;
 }>();
-const emit = defineEmits<{
-  back: [];
-  search: [query: string];
+defineEmits<{
   changePage: [page: number];
   retry: [];
-  inspectMember: [runId: string, member: CollaborationMemberMemoryTargetSummary];
+  /** `runLabel`: the run's summary, the member run page's title (autobyteus-608 DEC-002). */
+  inspectMember: [runId: string, member: CollaborationMemberMemoryTargetSummary, runLabel: string | null];
 }>();
 
 const { t, resolvedLocale } = useLocalization();
-const searchInput = ref(props.search);
-
-watch(() => props.search, (value) => { searchInput.value = value; });
-
-const applySearch = () => emit('search', searchInput.value.trim());
-let filterTimer: ReturnType<typeof setTimeout> | null = null;
-watch(searchInput, (value) => {
-  if (value.trim() === props.search) return;
-  if (filterTimer) clearTimeout(filterTimer);
-  filterTimer = setTimeout(applySearch, 300);
-});
 
 /** Each run's members as blocks: its own agents, then configured and task teams (REQ-012). */
 const memberBlocks = (row: CollaborationRunMemoryRow) => buildCollaborationMemberBlocks(row.memberTargets);

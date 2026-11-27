@@ -1,0 +1,32 @@
+# API-07 demo operation coverage and iOS demo build (autobyteus-516; GraphQL operations changed)
+# Commit 75eab7845a; macOS arm64, Node v22.23.1; 2026-11-26
+# NUXT_TEST=true pnpm -C autobyteus-web exec vitest run scripts/__tests__/mobileBuildChecks.spec.ts; autobyteus-ios/scripts/prepare-demo-web.sh --build; pnpm -C autobyteus-web build:mobile-web (restores the phone bundle the demo build overwrites)
+
+## demo operation coverage spec
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  18:48:29
+   Duration  631ms (transform 52ms, setup 105ms, collect 13ms, tests 244ms, environment 0ms, prepare 67ms)
+
+exit 0
+## prepare-demo-web.sh --build
+[nitro] ℹ Prerendered 21 routes in 0.669 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+The demo answers all 261 compiled operations (handled or listed as unreachable).
+Demo web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/dist-mobile-demo/public
+Demo web content copied to /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-ios/DemoWeb ( 12M).
+exit 0
+## build:mobile-web (restore the phone bundle)
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+The /mobile build holds no demo code.
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/dist-mobile/public
+exit 0

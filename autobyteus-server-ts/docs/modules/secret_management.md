@@ -133,13 +133,24 @@ governance and keeps its Codex-owned authentication behavior.
   "not visible" to a request without a token (a private repository). The ID is
   not in `isKnownSecretId`: it is not a provider credential for batch import or
   test-vault status. See [Credential Proxy](credential_proxy.md).
-- **The DeepSeek Harness key** uses the consumer
-  `{ kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" }`,
-  bound to `provider.deepseek.api-key` (the same entry the native DeepSeek
-  provider uses, set in Settings → API Keys). Only the credential proxy's DeepSeek
-  provider relay resolves it, per forwarded call; dsh never receives it. Its
-  value-free status is the runtime's "signed in" on the Agent Runtimes page. See
-  [DeepSeek Harness Runtime](deepseek_harness_runtime.md).
+- **Provider relay credentials** use the consumer
+  `{ kind: "providerRelay", relayId, relayCredentialKind }`. API keys are bound to
+  the provider's own entry (`deepseek` → `provider.deepseek.api-key`, `anthropic`
+  → `provider.anthropic.api-key`, `openai`, `xai` → `provider.grok.api-key`,
+  `gemini` → the AI Studio key, `kimi`, `glm`, `qwen`, `mistral`, `minimax`); the
+  one login token is `provider.anthropic.login-token` (autobyteus-581 C9). Only the
+  credential proxy resolves them, per forwarded call: for DeepSeek Harness on every
+  node, and on a relay node for the calls its relayed peers send; no runtime ever
+  receives one. The DeepSeek key's value-free status is DeepSeek Harness's "signed
+  in" on the Agent Runtimes page. See [Credential Proxy](credential_proxy.md#provider-relays)
+  and [DeepSeek Harness Runtime](deepseek_harness_runtime.md).
+- **The Claude login token** (`provider.anthropic.login-token`) is a token from
+  `claude setup-token`, stored once by the relay node's owner with the explicit
+  import (`pnpm secrets:import`, source line `CLAUDE_CODE_OAUTH_TOKEN=…`), never in
+  the plain-text settings. It is used only for relayed calls whose relay credential
+  kind is `loginToken`, and only while the node's
+  `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS` is `true`. It is a fixed ID, so
+  test-vault status lists it.
 - Provider clients take a `ProviderApiKeyResolver` and call it lazily when
   constructing the SDK/client for an authorized operation. The server always
   passes its own resolver. autobyteus-ts owns the vault format's read side
@@ -234,7 +245,15 @@ not be described as live provider metadata.
   account/configuration behavior and do not resolve a vault credential;
 - `api-key`: resolve the `agentRuntime/claude_agent_sdk/apiKey` consumer from
   `provider.anthropic.api-key` immediately before launch and replace only
-  `ANTHROPIC_API_KEY` in the otherwise established launch environment.
+  `ANTHROPIC_API_KEY` in the otherwise established launch environment. In this
+  mode the runtime's sign-in is the vault entry's status (autobyteus-581 FU-001),
+  not `claude auth status`, so launch checks and the Model Router accept it.
+
+On a relayed node (`AUTOBYTEUS_PROVIDER_RELAY_PEER` set) none of these apply: the
+CLI gets the relay and the run's pass only (`ANTHROPIC_BASE_URL` with
+`ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN` by the relay credential kind),
+and none of the node's own Claude credentials. See
+[Credential Proxy](credential_proxy.md#provider-relays).
 
 All three modes preserve the baseline SDK options, tools, MCP/session behavior,
 home/account semantics, and caller environment apart from that one explicit

@@ -1,0 +1,563 @@
+{
+  "startedAt": "2026-11-26T17:14:45.758Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue",
+  "pagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/pages/api-e2e-composer-voice-lifetime.vue",
+  "cases": {
+    "B-001": {
+      "result": "Pass",
+      "description": "Run caller survives repeated publications and Stop appends once/no Send",
+      "observations": {
+        "initial": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": true,
+          "transcribing": false,
+          "captureStats": true,
+          "level": 0.9644098877906799,
+          "pendingMedia": false,
+          "pendingTranscribe": false,
+          "key": "composer-svkpej633zh",
+          "current": true,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 0,
+          "cancellations": 0,
+          "transcribe": 0,
+          "tracks": [
+            "live"
+          ],
+          "audioContexts": [
+            "running"
+          ],
+          "wavs": [],
+          "diagnostics": null,
+          "outcome": "recording",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": false,
+          "publications": 3,
+          "wrappersChanged": 3,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 320812,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 160384
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 3341,
+            "rms": 0.22344171931107823,
+            "peak": 1,
+            "sampleCount": 160384
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-002": {
+      "result": "Pass",
+      "description": "Chat 390px viewport keyboard Start/Stop retains draft and no Send",
+      "observations": {
+        "kind": "chat",
+        "visible": true,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingTranscribe": false,
+        "publications": 1,
+        "wrappersChanged": 1,
+        "sends": 0,
+        "stops": 1,
+        "cancellations": 0,
+        "transcribe": 1,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [
+          "closed"
+        ],
+        "wavs": [
+          {
+            "byteLength": 11564,
+            "riff": 1380533830,
+            "wave": 1463899717,
+            "rate": 48000,
+            "samples": 5760
+          }
+        ],
+        "diagnostics": {
+          "inputSampleRate": 48000,
+          "wavSampleRate": 48000,
+          "durationMs": 120,
+          "rms": 0.611638331087302,
+          "peak": 1,
+          "sampleCount": 5760
+        },
+        "outcome": "transcript-ready",
+        "error": null,
+        "leadDraft": "existing draft dictated words",
+        "reviewerDraft": ""
+      }
+    },
+    "B-003": {
+      "result": "Pass",
+      "description": "Publication during deferred native microphone acquisition preserves startup",
+      "observations": {
+        "pending": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": true,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": true,
+          "pendingTranscribe": false,
+          "key": "composer-ww3bfdrhktc",
+          "current": true,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 0,
+          "cancellations": 0,
+          "transcribe": 0,
+          "tracks": [
+            "live"
+          ],
+          "audioContexts": [],
+          "wavs": [],
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": false,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 8492,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 4224
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 88,
+            "rms": 0.5779678692598753,
+            "peak": 1,
+            "sampleCount": 4224
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-004": {
+      "result": "Pass",
+      "description": "Genuine member change during startup disposes late acquired native stream",
+      "observations": {
+        "kind": "run",
+        "visible": true,
+        "focused": "reviewer",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingTranscribe": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 1,
+        "transcribe": 0,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [],
+        "wavs": [],
+        "error": null,
+        "leadDraft": "existing draft",
+        "reviewerDraft": ""
+      }
+    },
+    "B-005": {
+      "result": "Pass",
+      "description": "Publication during pending transcription preserves once-only append",
+      "observations": {
+        "pending": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": true,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": true,
+          "key": "composer-chum0zqoxhc",
+          "current": true,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 14636,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 7296
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "lead",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": false,
+          "publications": 1,
+          "wrappersChanged": 1,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 0,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 14636,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 7296
+            }
+          ],
+          "diagnostics": {
+            "inputSampleRate": 48000,
+            "wavSampleRate": 48000,
+            "durationMs": 152,
+            "rms": 0.6122922870375775,
+            "peak": 1,
+            "sampleCount": 7296
+          },
+          "outcome": "transcript-ready",
+          "error": null,
+          "leadDraft": "existing draft dictated words",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-006": {
+      "result": "Pass",
+      "description": "Genuine member switch rejects late pending transcription",
+      "observations": {
+        "cancelled": {
+          "kind": "run",
+          "visible": true,
+          "focused": "reviewer",
+          "starting": false,
+          "recording": false,
+          "transcribing": true,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": true,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 1,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 6956,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 3456
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        },
+        "final": {
+          "kind": "run",
+          "visible": true,
+          "focused": "reviewer",
+          "starting": false,
+          "recording": false,
+          "transcribing": false,
+          "captureStats": false,
+          "level": 0,
+          "pendingMedia": false,
+          "pendingTranscribe": false,
+          "publications": 0,
+          "wrappersChanged": 0,
+          "sends": 0,
+          "stops": 1,
+          "cancellations": 1,
+          "transcribe": 1,
+          "tracks": [
+            "ended"
+          ],
+          "audioContexts": [
+            "closed"
+          ],
+          "wavs": [
+            {
+              "byteLength": 6956,
+              "riff": 1380533830,
+              "wave": 1463899717,
+              "rate": 48000,
+              "samples": 3456
+            }
+          ],
+          "diagnostics": null,
+          "outcome": "transcribing",
+          "error": null,
+          "leadDraft": "existing draft",
+          "reviewerDraft": ""
+        }
+      }
+    },
+    "B-007": {
+      "result": "Pass",
+      "description": "Composer teardown cancels and disposes actual native capture",
+      "observations": {
+        "kind": "run",
+        "visible": false,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingTranscribe": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 1,
+        "transcribe": 0,
+        "tracks": [
+          "ended"
+        ],
+        "audioContexts": [
+          "closed"
+        ],
+        "wavs": [],
+        "diagnostics": null,
+        "outcome": "recording",
+        "error": null,
+        "leadDraft": "existing draft",
+        "reviewerDraft": ""
+      }
+    }
+  },
+  "pageErrors": [],
+  "apiRequests": [
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    },
+    {
+      "operationName": "GetExtensions",
+      "variables": {
+        "refreshCatalog": false
+      },
+      "query": "query GetExtensions($refreshCatalog: Boolean = false) {\n  extensions(refreshCatalog: $refreshCatalog) {\n    catalog\n    platform\n    extensions {\n      ...ExtensionItemFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ExtensionItemFields on ExtensionItemGql {\n  id\n  name\n  description\n  translations\n  platforms\n  state\n  catalogVersion\n  notAvailableReason\n  progress {\n    message\n    percent\n    __typename\n  }\n  installedVersion\n  enabled\n  ready\n  message\n  starting\n  update\n  failureMessage\n  __typename\n}"
+    }
+  ],
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": false,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingTranscribe": false,
+      "publications": 0,
+      "wrappersChanged": 0,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 1,
+      "transcribe": 0,
+      "tracks": [
+        "ended"
+      ],
+      "audioContexts": [
+        "closed"
+      ],
+      "wavs": [],
+      "diagnostics": null,
+      "outcome": "recording",
+      "error": null,
+      "leadDraft": "existing draft",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 37898
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 33938,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  },
+  "failures": [],
+  "port": 63295,
+  "baseUrl": "http://127.0.0.1:63295",
+  "devPid": 33938,
+  "browserPid": 37898,
+  "browserVersion": "158.0.8127.88",
+  "result": "Pass",
+  "finishedAt": "2026-11-26T17:15:05.226Z"
+}

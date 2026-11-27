@@ -112,7 +112,7 @@ describe('app font-size fixed-px audit', () => {
     expect(SETTINGS_COMPONENT_FILES.length).toBeGreaterThan(0);
     expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/DisplaySettingsManager.vue');
     expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/providerApiKey/ProviderApiKeyEditor.vue');
-    expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/VoiceInputExtensionCard.vue');
+    expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/extensions/ExtensionCard.vue');
     expect(TARGETED_FILES).toContain('pages/settings.vue');
   });
 

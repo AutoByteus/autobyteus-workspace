@@ -11,6 +11,7 @@ import type { RunPassHolder, RunPassRegistry } from "./run-pass-registry.js";
 import {
   buildUpstreamUrl,
   CredentialProxyError,
+  integrationCredential,
   type CredentialProxyErrorCode,
   type CredentialProxyForwarder,
 } from "./credential-proxy-forwarder.js";
@@ -94,8 +95,10 @@ export const registerCredentialProxyRoutes = async (
     };
 
     if (!deps.gate.validateRequest(request).ok) return fail("NOT_LOOPBACK");
-    holder = deps.passes.lookup(pass);
-    if (!holder) return fail("RUN_PASS_INVALID");
+    const found = deps.passes.lookup(pass);
+    // A node pass (a relayed node's shared processes) holds no integration.
+    if (found?.kind !== "run") return fail("RUN_PASS_INVALID");
+    holder = found;
     const definition = deps.definitions.get(integrationId);
     const route = deps.definitions.route(integrationId, routeId);
     if (!definition || !route) return fail("PATH_NOT_ALLOWED");
@@ -117,7 +120,7 @@ export const registerCredentialProxyRoutes = async (
     try {
       const response = await deps.forwarder.forward({
         route,
-        token,
+        credential: integrationCredential(route.auth, token),
         request: { method: request.method, rawPathAndQuery, headers: request.headers, body: request.raw },
         proxyRouteBase: proxyRouteBase(deps.proxyBaseUrl(), pass, integrationId, routeId),
       });

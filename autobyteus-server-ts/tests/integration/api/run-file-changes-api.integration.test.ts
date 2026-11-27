@@ -10,6 +10,7 @@ import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { registerGraphql } from "../../../src/api/graphql/index.js";
+import { testExtensionManager } from "../../helpers/test-extension-manager.js";
 import { registerRunFileChangeRoutes } from "../../../src/api/rest/run-file-changes.js";
 import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -196,7 +197,7 @@ describe("Run file changes API integration", () => {
 
     app = fastify();
     await registerRunFileChangeRoutes(app, { projectionService });
-    await registerGraphql(app);
+    await registerGraphql(app, { extensions: testExtensionManager() });
   });
 
   afterAll(async () => {

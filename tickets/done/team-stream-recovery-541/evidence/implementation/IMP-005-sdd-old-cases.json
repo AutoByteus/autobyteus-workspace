@@ -1,0 +1,130 @@
+{
+  "result": "Fail",
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "stopped",
+    "backend": "stopped",
+    "dataRootRemoved": true
+  },
+  "cases": {
+    "SDD-13": {
+      "result": "Fail",
+      "error": "the shown status stays the one before the loss for 15 s (no Initializing)",
+      "details": {
+        "beforeCut": "Idle",
+        "timeline": [
+          [
+            0,
+            "Idle"
+          ],
+          [
+            3399,
+            "Initializing"
+          ]
+        ],
+        "sendDisabledAt": 3404,
+        "afterUp": "Idle"
+      },
+      "seconds": 21
+    },
+    "SDD-07": {
+      "result": "Fail",
+      "error": "nothing sent; the message gone; the text back; the status unchanged",
+      "details": {
+        "beforeCut": "Idle",
+        "before": "Idle",
+        "view": {
+          "head": [
+            "SE",
+            "hello agent",
+            "Initializing"
+          ],
+          "status": "Initializing",
+          "notice": {
+            "certainty": "not_sent",
+            "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+          },
+          "draft": "PLAIN not-bound-ef91",
+          "count": 0
+        },
+        "sendAfterNotice": {
+          "label": "Send message",
+          "enabled": false
+        },
+        "noticeAfterMs": 10005,
+        "sent": 0
+      },
+      "seconds": 13
+    },
+    "SDD-12": {
+      "result": "Fail",
+      "error": "the shown status stays the one before the loss for 15 s (no Initializing)",
+      "details": {
+        "beforeCut": "Idle",
+        "timeline": [
+          [
+            0,
+            "Idle"
+          ],
+          [
+            3819,
+            "Initializing"
+          ]
+        ],
+        "sendDisabledAt": 3827,
+        "afterUp": "Idle"
+      },
+      "seconds": 19
+    },
+    "SDD-09": {
+      "result": "Fail",
+      "error": "the status the one before the loss throughout (never Initializing or Error)",
+      "details": {
+        "beforeCut": "Idle",
+        "before": "Idle",
+        "timeline": [
+          [
+            204,
+            "Initializing"
+          ]
+        ],
+        "sendable": {
+          "label": "Send message",
+          "enabled": true
+        },
+        "view": {
+          "head": [
+            "L",
+            "lead",
+            "Initializing"
+          ],
+          "status": "Initializing",
+          "notice": {
+            "certainty": "not_sent",
+            "text": "Your message was not sent: not connected to the node. It is back in the message box; send it again."
+          },
+          "draft": "PLAIN team-timeout-ef91",
+          "count": 0
+        },
+        "sendAfterNotice": {
+          "label": "Send message",
+          "enabled": false
+        },
+        "afterUp": {
+          "status": "Idle",
+          "label": "Send message",
+          "enabled": true
+        },
+        "noticeAfterMs": 10027,
+        "sent": 0
+      },
+      "seconds": 15
+    },
+    "SDD-14": {
+      "result": "Fail",
+      "error": "Timed out: the page's replacement Team stream snapshot",
+      "details": null,
+      "seconds": 30
+    }
+  }
+}

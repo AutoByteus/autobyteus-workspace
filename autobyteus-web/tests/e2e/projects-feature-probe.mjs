@@ -457,7 +457,8 @@ try {
       await page.locator('input[type=file]').setInputFiles({ name: 'failed.txt', mimeType: 'text/plain', buffer: Buffer.from('retry fixture') });
       await page.getByTestId('task-page-save-error').waitFor();
       await waitFor('attachment retry available', async () => !(await page.getByTestId('task-attach-files').isDisabled()));
-      assert(await page.getByTestId('task-page-save-error').innerText() === 'Controlled context upload failure. Try attaching again.', 'File failure remains actionable');
+      // The attachment failure line is the app's own localized text, never the server's (contextFileFailureMessage.ts).
+      assert(await page.getByTestId('task-page-save-error').innerText() === "Couldn't attach failed.txt.", 'File failure remains actionable');
       assert(await page.locator('#task-page-description').inputValue() === '  Browser task\nFull second line  ', 'File failure retains typed draft');
       assert((await api.tasks(nodeA, project.projectId)).length === 0, 'Failed upload does not save task');
       obs.uploadFailure = { textRetained: true, savedTasks: 0, retryAvailable: true }; await screenshot('task-new-upload-error');

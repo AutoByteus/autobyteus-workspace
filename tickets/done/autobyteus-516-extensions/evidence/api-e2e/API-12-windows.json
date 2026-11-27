@@ -1,0 +1,23 @@
+{
+  "step": "windows",
+  "name": "API-12-windows",
+  "window": "embedded-local",
+  "at": "2026-11-26T16:50:40.910Z",
+  "windows": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+      "context": {
+        "windowId": 2,
+        "entryId": "docker-516"
+      }
+    },
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+      "context": {
+        "windowId": 1,
+        "entryId": "embedded-local"
+      }
+    }
+  ],
+  "ok": true
+}

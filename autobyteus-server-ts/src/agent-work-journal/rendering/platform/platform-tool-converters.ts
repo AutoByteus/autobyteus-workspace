@@ -4,6 +4,7 @@ import { mediaToolConverters } from "./media-tool-converters.js";
 import { messageToolConverters } from "./message-tool-converters.js";
 import type { PlatformToolConverter } from "./platform-line-parts.js";
 import { projectTaskToolConverters } from "./project-task-tool-converters.js";
+import { sandboxToolConverters } from "./sandbox-tool-converters.js";
 
 /**
  * The platform tools: tools every runtime can call under the same plain name, so their neutral line
@@ -16,4 +17,5 @@ export const platformToolConverters: ReadonlyMap<string, PlatformToolConverter> 
   ...browserToolConverters,
   ...mediaToolConverters,
   ...discoveryToolConverters,
+  ...sandboxToolConverters,
 ]);

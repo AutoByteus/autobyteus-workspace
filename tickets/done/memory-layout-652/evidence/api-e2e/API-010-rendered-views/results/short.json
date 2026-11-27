@@ -1,0 +1,24 @@
+{
+  "result": {
+    "panel": {
+      "top": 85,
+      "toWindowBottom": 20,
+      "height": 615
+    },
+    "pageScroll": false,
+    "readerScroll": {
+      "scrollHeight": 6684,
+      "clientHeight": 567,
+      "lastVisible": true
+    },
+    "panelAfterScroll": {
+      "top": 85,
+      "toWindowBottom": 20
+    },
+    "journal": {
+      "top": 85,
+      "toWindowBottom": 20
+    }
+  },
+  "errors": []
+}

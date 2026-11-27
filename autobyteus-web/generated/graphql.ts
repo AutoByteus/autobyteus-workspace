@@ -1349,6 +1349,39 @@ export type EventMonitorUserVisual = {
   visualId: Scalars['ID']['output'];
 };
 
+export type ExtensionItemGql = {
+  __typename?: 'ExtensionItemGql';
+  catalogVersion?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  failureMessage?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  installedVersion?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  notAvailableReason?: Maybe<Scalars['String']['output']>;
+  platforms: Array<Scalars['String']['output']>;
+  progress?: Maybe<ExtensionProgressGql>;
+  ready?: Maybe<Scalars['Boolean']['output']>;
+  starting: Scalars['Boolean']['output'];
+  state: Scalars['String']['output'];
+  translations?: Maybe<Scalars['JSON']['output']>;
+  update?: Maybe<Scalars['String']['output']>;
+};
+
+export type ExtensionListGql = {
+  __typename?: 'ExtensionListGql';
+  catalog: Scalars['String']['output'];
+  extensions: Array<ExtensionItemGql>;
+  platform: Scalars['String']['output'];
+};
+
+export type ExtensionProgressGql = {
+  __typename?: 'ExtensionProgressGql';
+  message: Scalars['String']['output'];
+  percent?: Maybe<Scalars['Float']['output']>;
+};
+
 export type GeminiConfigurationCommandResult = {
   __typename?: 'GeminiConfigurationCommandResult';
   credentialSetting: ProviderCredentialSettingObject;
@@ -1966,6 +1999,7 @@ export type Mutation = {
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   indexAllProjectTasks: Scalars['Int']['output'];
   indexProjectTasks: Scalars['Boolean']['output'];
+  installExtension?: Maybe<ExtensionItemGql>;
   markUpdateNotificationsRead: Array<UpdateNotification>;
   moveFileOrFolder: Scalars['String']['output'];
   moveMcpSecretsToVault: MoveMcpSecretsToVaultResult;
@@ -1984,6 +2018,7 @@ export type Mutation = {
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
   removeEmbeddingModel: Scalars['Boolean']['output'];
+  removeExtension?: Maybe<ExtensionItemGql>;
   removeGitHubSkillSource: SkillSourceOperationResult;
   removeIntegrationSource: IntegrationSourceRemoval;
   removePeerNode: Scalars['Boolean']['output'];
@@ -2006,6 +2041,7 @@ export type Mutation = {
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setAutomaticUpdates: UpdateAutomationSettings;
+  setExtensionEnabled?: Maybe<ExtensionItemGql>;
   setModelRouterLaunch: Scalars['JSON']['output'];
   setModelRoutingEnabled: Scalars['JSON']['output'];
   setRemoteCollaborationEnabled: RemoteCollaborationCapabilityGql;
@@ -2026,6 +2062,7 @@ export type Mutation = {
   updateAgentPackage: Array<AgentPackage>;
   updateAgentRuntime: Scalars['Boolean']['output'];
   updateAgentTeamDefinition: AgentTeamDefinition;
+  updateExtension?: Maybe<ExtensionItemGql>;
   updateGitHubSkillSource: SkillSourceOperationResult;
   updateIntegrationSource: Array<IntegrationSourceView>;
   updateMemoryHubConfig: MemorySyncStatusGql;
@@ -2341,6 +2378,11 @@ export type MutationIndexProjectTasksArgs = {
 };
 
 
+export type MutationInstallExtensionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationMoveFileOrFolderArgs = {
   destinationPath: Scalars['String']['input'];
   sourcePath: Scalars['String']['input'];
@@ -2406,6 +2448,11 @@ export type MutationRemoveApplicationPackageArgs = {
 
 export type MutationRemoveEmbeddingModelArgs = {
   modelId: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveExtensionArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -2526,6 +2573,12 @@ export type MutationSetAutomaticUpdatesArgs = {
 };
 
 
+export type MutationSetExtensionEnabledArgs = {
+  enabled: Scalars['Boolean']['input'];
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationSetModelRouterLaunchArgs = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
@@ -2620,6 +2673,11 @@ export type MutationUpdateAgentRuntimeArgs = {
 
 export type MutationUpdateAgentTeamDefinitionArgs = {
   input: UpdateAgentTeamDefinitionInput;
+};
+
+
+export type MutationUpdateExtensionArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -2727,6 +2785,7 @@ export type PeerNodeGql = {
   name: Scalars['String']['output'];
   nodeId: Scalars['String']['output'];
   paired: Scalars['Boolean']['output'];
+  role?: Maybe<Scalars['String']['output']>;
 };
 
 export type PeerNodeOfferEntryGql = {
@@ -2942,6 +3001,8 @@ export type Query = {
   collaboratorMentionCandidates: CollaboratorMentionCandidatesPayload;
   definitionProblems: Array<DefinitionProblem>;
   embeddingModelsStatus: EmbeddingModelsStatus;
+  extensionLog: Array<Scalars['String']['output']>;
+  extensions: ExtensionListGql;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
   getAgentOrgExecutionCheckpoint: AgentOrgExecutionCheckpointPayload;
@@ -3132,6 +3193,16 @@ export type QueryCollaboratorMentionCandidatesArgs = {
 
 export type QueryDefinitionProblemsArgs = {
   kind: DefinitionKind;
+};
+
+
+export type QueryExtensionLogArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryExtensionsArgs = {
+  refreshCatalog?: Scalars['Boolean']['input'];
 };
 
 
@@ -4972,6 +5043,35 @@ export type IndexAllProjectTasksMutationVariables = Exact<{ [key: string]: never
 
 export type IndexAllProjectTasksMutation = { __typename?: 'Mutation', indexAllProjectTasks: number };
 
+export type InstallExtensionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type InstallExtensionMutation = { __typename?: 'Mutation', installExtension?: { __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null } | null };
+
+export type UpdateExtensionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type UpdateExtensionMutation = { __typename?: 'Mutation', updateExtension?: { __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null } | null };
+
+export type RemoveExtensionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RemoveExtensionMutation = { __typename?: 'Mutation', removeExtension?: { __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null } | null };
+
+export type SetExtensionEnabledMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetExtensionEnabledMutation = { __typename?: 'Mutation', setExtensionEnabled?: { __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null } | null };
+
 export type WriteFileContentMutationVariables = Exact<{
   workspaceId: Scalars['String']['input'];
   filePath: Scalars['String']['input'];
@@ -5358,7 +5458,7 @@ export type AcceptPeerInviteMutationVariables = Exact<{
 }>;
 
 
-export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type RenamePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5366,7 +5466,7 @@ export type RenamePeerNodeMutationVariables = Exact<{
 }>;
 
 
-export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type ChangePeerAddressMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5374,7 +5474,7 @@ export type ChangePeerAddressMutationVariables = Exact<{
 }>;
 
 
-export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type RemovePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5600,6 +5700,22 @@ export type EmbeddingSettingsStatusQueryVariables = Exact<{ [key: string]: never
 
 
 export type EmbeddingSettingsStatusQuery = { __typename?: 'Query', embeddingModelsStatus: { __typename?: 'EmbeddingModelsStatus', activeModelId: string, defaultModelId: string, onDiskBytes: number, models: Array<{ __typename?: 'EmbeddingModelInfo', id: string, displayName: string, languages: Array<string>, downloadBytes: number, file: { __typename?: 'EmbeddingModelFile', state: EmbeddingModelFileStateKind, done?: number | null, total?: number | null, reason?: string | null }, activeDisplay?: { __typename?: 'EmbeddingActiveModelDisplay', state: EmbeddingActiveDisplayState, phase?: EmbeddingPreparingPhase | null, done?: number | null, total?: number | null, reason?: string | null } | null }> }, projectTaskIndexes: Array<{ __typename?: 'ProjectTaskIndex', projectId: string, name: string, state: ProjectTaskIndexState, done?: number | null, total?: number | null, changed?: number | null }> };
+
+export type ExtensionItemFieldsFragment = { __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null };
+
+export type GetExtensionsQueryVariables = Exact<{
+  refreshCatalog?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type GetExtensionsQuery = { __typename?: 'Query', extensions: { __typename?: 'ExtensionListGql', catalog: string, platform: string, extensions: Array<{ __typename?: 'ExtensionItemGql', id: string, name: string, description: string, translations?: any | null, platforms: Array<string>, state: string, catalogVersion?: string | null, notAvailableReason?: string | null, installedVersion?: string | null, enabled?: boolean | null, ready?: boolean | null, message?: string | null, starting: boolean, update?: string | null, failureMessage?: string | null, progress?: { __typename?: 'ExtensionProgressGql', message: string, percent?: number | null } | null }> } };
+
+export type GetExtensionLogQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetExtensionLogQuery = { __typename?: 'Query', extensionLog: Array<string> };
 
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -5900,7 +6016,7 @@ export type SearchProjectTasksQuery = { __typename?: 'Query', searchProjectTasks
 
 export type RemoteCollaborationCapabilityFieldsFragment = { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string };
 
-export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean };
+export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null };
 
 export type GetRemoteCollaborationCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5910,7 +6026,7 @@ export type GetRemoteCollaborationCapabilityQuery = { __typename?: 'Query', remo
 export type GetRemoteCollaborationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean }> };
+export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null }> };
 
 export type GetPeerNodeOfferQueryVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -6732,6 +6848,29 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
+export const ExtensionItemFieldsFragmentDoc = gql`
+    fragment ExtensionItemFields on ExtensionItemGql {
+  id
+  name
+  description
+  translations
+  platforms
+  state
+  catalogVersion
+  notAvailableReason
+  progress {
+    message
+    percent
+  }
+  installedVersion
+  enabled
+  ready
+  message
+  starting
+  update
+  failureMessage
+}
+    `;
 export const IntegrationFieldsFragmentDoc = gql`
     fragment IntegrationFields on IntegrationView {
   id
@@ -6937,6 +7076,7 @@ export const PeerNodeFieldsFragmentDoc = gql`
   baseUrl
   addedAt
   paired
+  role
 }
     `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -8743,6 +8883,123 @@ export function useIndexAllProjectTasksMutation(options: VueApolloComposable.Use
   return VueApolloComposable.useMutation<IndexAllProjectTasksMutation, IndexAllProjectTasksMutationVariables>(IndexAllProjectTasksDocument, options);
 }
 export type IndexAllProjectTasksMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<IndexAllProjectTasksMutation, IndexAllProjectTasksMutationVariables>;
+export const InstallExtensionDocument = gql`
+    mutation InstallExtension($id: String!) {
+  installExtension(id: $id) {
+    ...ExtensionItemFields
+  }
+}
+    ${ExtensionItemFieldsFragmentDoc}`;
+
+/**
+ * __useInstallExtensionMutation__
+ *
+ * To run a mutation, you first call `useInstallExtensionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useInstallExtensionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useInstallExtensionMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInstallExtensionMutation(options: VueApolloComposable.UseMutationOptions<InstallExtensionMutation, InstallExtensionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<InstallExtensionMutation, InstallExtensionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<InstallExtensionMutation, InstallExtensionMutationVariables>(InstallExtensionDocument, options);
+}
+export type InstallExtensionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<InstallExtensionMutation, InstallExtensionMutationVariables>;
+export const UpdateExtensionDocument = gql`
+    mutation UpdateExtension($id: String!) {
+  updateExtension(id: $id) {
+    ...ExtensionItemFields
+  }
+}
+    ${ExtensionItemFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateExtensionMutation__
+ *
+ * To run a mutation, you first call `useUpdateExtensionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateExtensionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateExtensionMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateExtensionMutation(options: VueApolloComposable.UseMutationOptions<UpdateExtensionMutation, UpdateExtensionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateExtensionMutation, UpdateExtensionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateExtensionMutation, UpdateExtensionMutationVariables>(UpdateExtensionDocument, options);
+}
+export type UpdateExtensionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateExtensionMutation, UpdateExtensionMutationVariables>;
+export const RemoveExtensionDocument = gql`
+    mutation RemoveExtension($id: String!) {
+  removeExtension(id: $id) {
+    ...ExtensionItemFields
+  }
+}
+    ${ExtensionItemFieldsFragmentDoc}`;
+
+/**
+ * __useRemoveExtensionMutation__
+ *
+ * To run a mutation, you first call `useRemoveExtensionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveExtensionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveExtensionMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveExtensionMutation(options: VueApolloComposable.UseMutationOptions<RemoveExtensionMutation, RemoveExtensionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveExtensionMutation, RemoveExtensionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveExtensionMutation, RemoveExtensionMutationVariables>(RemoveExtensionDocument, options);
+}
+export type RemoveExtensionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveExtensionMutation, RemoveExtensionMutationVariables>;
+export const SetExtensionEnabledDocument = gql`
+    mutation SetExtensionEnabled($id: String!, $enabled: Boolean!) {
+  setExtensionEnabled(id: $id, enabled: $enabled) {
+    ...ExtensionItemFields
+  }
+}
+    ${ExtensionItemFieldsFragmentDoc}`;
+
+/**
+ * __useSetExtensionEnabledMutation__
+ *
+ * To run a mutation, you first call `useSetExtensionEnabledMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSetExtensionEnabledMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSetExtensionEnabledMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *     enabled: // value for 'enabled'
+ *   },
+ * });
+ */
+export function useSetExtensionEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetExtensionEnabledMutation, SetExtensionEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetExtensionEnabledMutation, SetExtensionEnabledMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SetExtensionEnabledMutation, SetExtensionEnabledMutationVariables>(SetExtensionEnabledDocument, options);
+}
+export type SetExtensionEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetExtensionEnabledMutation, SetExtensionEnabledMutationVariables>;
 export const WriteFileContentDocument = gql`
     mutation WriteFileContent($workspaceId: String!, $filePath: String!, $content: String!) {
   writeFileContent(
@@ -11790,6 +12047,68 @@ export function useEmbeddingSettingsStatusLazyQuery(options: VueApolloComposable
   return VueApolloComposable.useLazyQuery<EmbeddingSettingsStatusQuery, EmbeddingSettingsStatusQueryVariables>(EmbeddingSettingsStatusDocument, {}, options);
 }
 export type EmbeddingSettingsStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<EmbeddingSettingsStatusQuery, EmbeddingSettingsStatusQueryVariables>;
+export const GetExtensionsDocument = gql`
+    query GetExtensions($refreshCatalog: Boolean = false) {
+  extensions(refreshCatalog: $refreshCatalog) {
+    catalog
+    platform
+    extensions {
+      ...ExtensionItemFields
+    }
+  }
+}
+    ${ExtensionItemFieldsFragmentDoc}`;
+
+/**
+ * __useGetExtensionsQuery__
+ *
+ * To run a query within a Vue component, call `useGetExtensionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExtensionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetExtensionsQuery({
+ *   refreshCatalog: // value for 'refreshCatalog'
+ * });
+ */
+export function useGetExtensionsQuery(variables: GetExtensionsQueryVariables | VueCompositionApi.Ref<GetExtensionsQueryVariables> | ReactiveFunction<GetExtensionsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetExtensionsQuery, GetExtensionsQueryVariables>(GetExtensionsDocument, variables, options);
+}
+export function useGetExtensionsLazyQuery(variables: GetExtensionsQueryVariables | VueCompositionApi.Ref<GetExtensionsQueryVariables> | ReactiveFunction<GetExtensionsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetExtensionsQuery, GetExtensionsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetExtensionsQuery, GetExtensionsQueryVariables>(GetExtensionsDocument, variables, options);
+}
+export type GetExtensionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetExtensionsQuery, GetExtensionsQueryVariables>;
+export const GetExtensionLogDocument = gql`
+    query GetExtensionLog($id: String!) {
+  extensionLog(id: $id)
+}
+    `;
+
+/**
+ * __useGetExtensionLogQuery__
+ *
+ * To run a query within a Vue component, call `useGetExtensionLogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExtensionLogQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetExtensionLogQuery({
+ *   id: // value for 'id'
+ * });
+ */
+export function useGetExtensionLogQuery(variables: GetExtensionLogQueryVariables | VueCompositionApi.Ref<GetExtensionLogQueryVariables> | ReactiveFunction<GetExtensionLogQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetExtensionLogQuery, GetExtensionLogQueryVariables>(GetExtensionLogDocument, variables, options);
+}
+export function useGetExtensionLogLazyQuery(variables?: GetExtensionLogQueryVariables | VueCompositionApi.Ref<GetExtensionLogQueryVariables> | ReactiveFunction<GetExtensionLogQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetExtensionLogQuery, GetExtensionLogQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetExtensionLogQuery, GetExtensionLogQueryVariables>(GetExtensionLogDocument, variables, options);
+}
+export type GetExtensionLogQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetExtensionLogQuery, GetExtensionLogQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)

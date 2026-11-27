@@ -23,7 +23,6 @@ export type E2EElectronPathPlan = Readonly<{
   baseDataRoot: string
   serverData: string
   logs: string
-  extensions: string
   browserArtifacts: string
   userData: string
   sessionData: string
@@ -103,7 +102,6 @@ export function buildE2EElectronPathPlan(
     baseDataRoot: root,
     serverData: path.join(root, 'server-data'),
     logs: path.join(root, 'logs'),
-    extensions: path.join(root, 'extensions'),
     browserArtifacts: path.join(root, 'browser-artifacts'),
     userData: path.join(root, 'electron', 'user-data'),
     sessionData: path.join(root, 'electron', 'session-data'),

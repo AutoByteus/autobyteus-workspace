@@ -1,0 +1,43 @@
+diff --git a/autobyteus-ios/AutoByteusMobile/Media/NativeMediaPlayer.swift b/autobyteus-ios/AutoByteusMobile/Media/NativeMediaPlayer.swift
+index 35ee5a1ac8..fff95d96cd 100644
+--- a/autobyteus-ios/AutoByteusMobile/Media/NativeMediaPlayer.swift
++++ b/autobyteus-ios/AutoByteusMobile/Media/NativeMediaPlayer.swift
+@@ -51,6 +51,8 @@ final class NativeMediaPlayerViewController: UIViewController {
+ 
+     required init?(coder: NSCoder) { nil }
+ 
++    deinit { NSLog("API647DIAG host deinit") }
++
+     override var prefersStatusBarHidden: Bool { landscape }
+     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { landscape ? .landscape : .allButUpsideDown }
+ 
+@@ -256,7 +258,9 @@ final class NativeMediaPlayerViewController: UIViewController {
+ 
+     override func viewDidDisappear(_ animated: Bool) {
+         super.viewDidDisappear(animated)
++        NSLog("API647DIAG host viewDidDisappear isBeingDismissed=%d presenting=%d", isBeingDismissed ? 1 : 0, presentingViewController == nil ? 0 : 1)
+         guard isBeingDismissed || presentingViewController == nil else { return }
++        NSLog("API647DIAG host teardown runs")
+         playerController.player?.pause()
+         playerController.player = nil
+         loader?.invalidate()
+diff --git a/autobyteus-ios/AutoByteusMobileCore/Media/MediaAudioSession.swift b/autobyteus-ios/AutoByteusMobileCore/Media/MediaAudioSession.swift
+index e61b1dacca..c27e527b92 100644
+--- a/autobyteus-ios/AutoByteusMobileCore/Media/MediaAudioSession.swift
++++ b/autobyteus-ios/AutoByteusMobileCore/Media/MediaAudioSession.swift
+@@ -22,6 +22,7 @@ public final class MediaAudioSession {
+         do {
+             try session.setCategory(.playback, mode: .moviePlayback)
+             try session.setActive(true)
++            NSLog("API647DIAG session begin: active, category %@", session.category.rawValue)
+             return true
+         } catch {
+             Self.log("could not be started", error)
+@@ -47,6 +48,7 @@ public final class MediaAudioSession {
+         } catch {
+             Self.log("category could not be restored", error)
+         }
++        NSLog("API647DIAG session end: deactivated=%d, category now %@", deactivated ? 1 : 0, session.category.rawValue)
+         return deactivated
+     }
+ 

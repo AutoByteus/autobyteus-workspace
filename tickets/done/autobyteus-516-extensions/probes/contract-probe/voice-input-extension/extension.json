@@ -1,0 +1,9 @@
+{
+  "id": "voice-input",
+  "name": "Voice Input",
+  "description": "Dictate instead of typing. Speech becomes text on this computer. Uses the microphone; downloads about 500 MB on install.",
+  "version": "1.0.0",
+  "contractVersion": 1,
+  "offeredOn": "desktop-node",
+  "platforms": ["darwin-arm64", "darwin-x64", "linux-x64", "win32-x64"]
+}

@@ -1,5 +1,5 @@
 import { BaseLLM } from './base.js';
-import { LLMModel, ModelInfo } from './models.js';
+import { LLMModel, ModelInfo, type GeminiLLMClientClass, type LLMClientClass } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig } from './utils/llm-config.js';
@@ -19,6 +19,7 @@ import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
+import { LLM_ENDPOINT_PROVIDERS, type LLMEndpoint } from './llm-endpoint.js';
 import { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 export { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 
@@ -219,6 +220,8 @@ export class LLMFactory {
     configInput?: LLMFactoryConfigInput,
     apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
+    /** Where the client sends its calls instead of the provider (a provider relay); the provider's own address when absent. */
+    endpoint?: LLMEndpoint,
   ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
@@ -231,10 +234,11 @@ export class LLMFactory {
       const config = LLMFactory.composeEffectiveConfig(model, configInput);
       if (model.provider === LLMProvider.GEMINI) {
         if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
-        return new LLMClass(model, config, apiKeyResolver, geminiRuntimeResolver);
+        return new (LLMClass as GeminiLLMClientClass)(model, config, apiKeyResolver, geminiRuntimeResolver, endpoint);
       }
       if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
-      return new LLMClass(model, config, apiKeyResolver);
+      if (endpoint && !LLM_ENDPOINT_PROVIDERS.has(model.provider)) throw new Error(`LLM_ENDPOINT_NOT_SUPPORTED: ${model.provider}`);
+      return new (LLMClass as Exclude<LLMClientClass, GeminiLLMClientClass>)(model, config, apiKeyResolver, endpoint);
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(

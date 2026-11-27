@@ -1,0 +1,14 @@
+# Server Docker Release run 45629380553 attempt 1, job 'Build Server Image (linux/arm64)', step 'Build and push the image': apt-get update got 503 from Launchpad mirrors (lines of the log)
+2026-11-25T14:03:27.2299329Z #17 40.58   503  Service Unavailable [IP: 185.125.189.187 443]
+2026-11-25T14:04:08.1482132Z #17 81.50   503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:20.8342554Z #17 94.18   503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:32.0376604Z #17 105.4   503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:34.4386905Z #17 107.6 W: Failed to fetch https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu/dists/noble/InRelease  503  Service Unavailable [IP: 185.125.189.187 443]
+2026-11-25T14:04:34.4388633Z #17 107.6 E: Failed to fetch https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu/dists/noble/main/binary-arm64/Packages  503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:34.4390922Z #17 ERROR: process "/bin/sh -c apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 100
+2026-11-25T14:04:34.5350519Z 94.18   503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:34.5352289Z 105.4   503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:34.5353122Z 107.6 W: Failed to fetch https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu/dists/noble/InRelease  503  Service Unavailable [IP: 185.125.189.187 443]
+2026-11-25T14:04:34.5354342Z 107.6 E: Failed to fetch https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu/dists/noble/main/binary-arm64/Packages  503  Service Unavailable [IP: 185.125.189.186 443]
+2026-11-25T14:04:34.5383333Z ERROR: failed to build: failed to solve: process "/bin/sh -c apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 100
+2026-11-25T14:04:34.6651520Z ##[error]buildx failed with: ERROR: failed to build: failed to solve: process "/bin/sh -c apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 100

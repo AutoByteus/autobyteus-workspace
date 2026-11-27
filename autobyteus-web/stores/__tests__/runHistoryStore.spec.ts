@@ -1468,6 +1468,101 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalledWith('run-live-1');
   });
 
+  // autobyteus-541 D-C1 (DEC-002, AC-004): a refresh never puts an Initializing placeholder on an existing context; its
+  // stream's snapshot sets the status, and until then the last one shown (and its Send) stays.
+  const listActiveRun = (runId: string) => queryMock.mockResolvedValue({
+    data: {
+      listWorkspaceRunHistory: [
+        buildWorkspaceHistoryGroup({
+          workspaceRootPath: '/ws/a',
+          workspaceName: 'a',
+          agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{
+            runId, summary: 'Live task', lastActivityAt: '2026-01-01T00:00:00.000Z',
+            lastKnownStatus: 'ACTIVE', status: 'running', isActive: true,
+          }] }],
+          teamRuns: [],
+        }),
+      ],
+    },
+    errors: [],
+  });
+  const existingRun = (runId: string, currentStatus: string) => {
+    agentContextsStoreMock.runs.set(runId, {
+      config: { isLocked: false },
+      state: { runId, conversation: { id: runId, messages: [] }, currentStatus },
+    });
+    return agentContextsStoreMock.runs.get(runId);
+  };
+
+  it.each(['idle', 'running'])('keeps a disconnected active run %s on refresh and reconnects its stream', async (status) => {
+    listActiveRun('run-dropped');
+    const context = existingRun('run-dropped', status);
+    agentRunStoreMock.isAgentStreamReady.mockReturnValue(false);
+
+    await useRunHistoryStore().fetchTree();
+
+    expect(context.state.currentStatus).toBe(status);
+    expect(context.config.isLocked).toBe(true);
+    expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-dropped');
+  });
+
+  // ARCH-REV-001 N-3: a run started elsewhere stays Offline here until its stream says otherwise (a send to it then
+  // marks its activation pending: agentRunStore.spec "marks a resume of a offline run before connecting").
+  it('keeps an Offline context whose run became active Offline until its stream, and connects it', async () => {
+    listActiveRun('run-started-elsewhere');
+    const context = existingRun('run-started-elsewhere', 'offline');
+    agentRunStoreMock.isAgentStreamReady.mockReturnValue(false);
+
+    await useRunHistoryStore().fetchTree();
+
+    expect(context.state.currentStatus).toBe('offline');
+    expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-started-elsewhere');
+  });
+
+  it('keeps a disconnected active Team\'s member statuses on refresh and reconnects its stream', async () => {
+    queryMock.mockResolvedValue({
+      data: {
+        listWorkspaceRunHistory: [
+          buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a',
+            workspaceName: 'a',
+            agents: [],
+            teamRuns: [{
+              teamRunId: 'team-dropped', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+              coordinatorAddress: '/lead', workspaceRootPath: '/ws/a', summary: 'Live team task',
+              lastActivityAt: '2026-01-01T00:00:00.000Z', lastKnownStatus: 'ACTIVE', status: 'running',
+              deleteLifecycle: 'READY', isActive: true,
+              members: [
+                { memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-lead', workspaceRootPath: '/ws/a', status: 'running' },
+                { memberAddress: '/worker', displayName: 'Worker', agentRunId: 'member-worker', workspaceRootPath: '/ws/a', status: 'idle' },
+              ],
+            }],
+          }),
+        ],
+      },
+      errors: [],
+    });
+    const lead = testAgentNode('/lead', { displayName: 'Lead', agentRunId: 'member-lead' });
+    const worker = testAgentNode('/worker', { displayName: 'Worker', agentRunId: 'member-worker' });
+    const team = buildTestTeamContext({
+      teamRunId: 'team-dropped', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      rootChildren: [lead, worker], coordinatorAddress: lead.address, workspaceRootPath: '/ws/a', isActive: true,
+      configuration: { workspaceId: 'ws-1', isLocked: false },
+    });
+    team.view.getAgentContext('member-lead')!.state.currentStatus = 'running' as any;
+    team.view.getAgentContext('member-worker')!.state.currentStatus = 'idle' as any;
+    teamContextsStoreMock.teams.set('team-dropped', team);
+    agentTeamRunStoreMock.isTeamStreamReady.mockReturnValue(false);
+    agentTeamRunStoreMock.isTeamStreamReopenRequired.mockReturnValue(false);
+
+    await useRunHistoryStore().fetchTree();
+
+    expect(team.view.getAgentContext('member-lead')!.state.currentStatus).toBe('running');
+    expect(team.view.getAgentContext('member-worker')!.state.currentStatus).toBe('idle');
+    expect(team.view.getAgentContext('member-worker')!.config.isLocked).toBe(true);
+    expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-dropped');
+  });
+
   it('returns backend readiness error on fetchTree when backend is not ready', async () => {
     windowNodeContextStoreMock.waitForBoundBackendReady.mockResolvedValueOnce(false);
     windowNodeContextStoreMock.lastReadyError = 'Backend down';
@@ -1584,7 +1679,8 @@ describe('runHistoryStore', () => {
     expect(store.isRuntimeLockedForRun('run-1')).toBe(true);
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: 'running',
+        // Its own status is not known on the page yet: Initializing until its stream's, never Running (541 D-B1).
+        status: 'initializing',
         config: expect.objectContaining({
           runtimeKind: 'codex_app_server',
         }),
@@ -1781,7 +1877,8 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: 'run-stale-1',
-        status: 'running',
+        // Its own status is not known on the page yet: Initializing until its stream's, never Running (541 D-B1).
+        status: 'initializing',
         config: expect.objectContaining({
           isLocked: true,
         }),

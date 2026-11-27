@@ -1,0 +1,26 @@
+	 Executed 4 tests, with 0 failures (0 unexpected) in 124.209 (124.216) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 124.209 (124.217) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 124.209 (124.218) seconds
+APPCLOSE gone=true
+CONTROLS close=true scrubber=true title=true appBack=false
+MARK after-app-close 1795602435074
+MARK app-close 1795602424891
+MARK open-alpha-647.pdf-0 1795602329111
+MARK open-alpha-647.pdf-1 1795602355167
+MARK open-beta-647.pdf-0 1795602337806
+MARK open-beta-647.pdf-1 1795602363825
+MARK open-gamma-647.pdf-0 1795602346520
+MARK open-gamma-647.pdf-1 1795602372517
+MARK tap-mp3 1795602416847
+MARK video-controls-hold 1795602404458
+MARK video-controls-shown 1795602402259
+PDF alpha-647.pdf round 0 errorText=false
+PDF alpha-647.pdf round 1 errorText=false
+PDF beta-647.pdf round 0 errorText=false
+PDF beta-647.pdf round 1 errorText=false
+PDF gamma-647.pdf round 0 errorText=false
+PDF gamma-647.pdf round 1 errorText=false
+Test Case '-[AutoByteusMobileUITests.Viewer647TempUITests test0Pairs]' passed (5.641 seconds).
+Test Case '-[AutoByteusMobileUITests.Viewer647TempUITests testBThreePDFsAndAJSONFileInThePage]' passed (70.746 seconds).
+Test Case '-[AutoByteusMobileUITests.Viewer647TempUITests testCWideVideoControlsShown]' passed (20.973 seconds).
+Test Case '-[AutoByteusMobileUITests.Viewer647TempUITests testYTheAppReplacingItsScreenWhileThePlayerShows]' passed (26.848 seconds).

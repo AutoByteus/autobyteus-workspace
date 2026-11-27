@@ -3,7 +3,6 @@ import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-prepara
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import {
@@ -433,8 +432,10 @@ describe("CodexThreadBootstrapper", () => {
         const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools }), guard);
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write");
         expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Global Semantic Memory");
-        // autobyteus-483 AC-011: Codex's own Long-Running Commands section ends the instructions.
-        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions?.endsWith(`\n\n${CODEX_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
+        // autobyteus-649 AC-001: no Long-Running Commands section; the global semantic memory section ends the instructions.
+        const instructions = runContext.runtimeContext.codexThreadConfig.baseInstructions ?? "";
+        expect(instructions.slice(instructions.lastIndexOf("\n\n## ") + 5)).toMatch(/^Global Semantic Memory\n/);
+        expect(instructions).not.toContain("Long-Running Commands");
       }
     });
   });

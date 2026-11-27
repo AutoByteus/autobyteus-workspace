@@ -17,7 +17,7 @@ import { useNodeAccessStore } from '~/stores/nodeAccessStore'
  */
 
 const B = 'srv_studioBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x', paired: true }
+const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x', paired: true, role: null as 'sandbox' | null }
 const row = (overrides: Partial<Row> = {}): Row => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer, name: 'studio', isEmbedded: false, ...overrides,
 })
@@ -55,6 +55,14 @@ describe('NodeRow', () => {
     expect(get(wrapper, 'node-remove').attributes('aria-label')).toBe('Remove studio')
     expect(wrapper.find(`[data-testid="node-line-${B}"]`).exists()).toBe(false)
     expect(summary(wrapper)).toBe('1 Agent')
+  })
+
+  // autobyteus-581 AC-015: a sandbox this node created is labelled; a normal peer is not.
+  it('labels a sandbox peer "sandbox" next to its name, and a normal peer not', () => {
+    const sandbox = mountRow(row({ peer: { ...peer, name: 'sbx_0a1b2c3d4e', role: 'sandbox' }, name: 'sbx_0a1b2c3d4e' }), settled())
+    expect(get(sandbox, 'node-sandbox-label').text()).toBe('sandbox')
+    const normal = mountRow(row(), settled())
+    expect(normal.find(`[data-testid="node-sandbox-label-${B}"]`).exists()).toBe(false)
   })
 
   it('shows the server version line for a remote node only', () => {

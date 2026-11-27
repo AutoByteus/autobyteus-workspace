@@ -1,0 +1,11 @@
+# API-06 packaged Electron harness (autobyteus-516)
+# Commands (autobyteus-web): pnpm test:e2e:electron ; pnpm test:e2e:electron:isolation (electron-launch-profile-probe.mjs, changed by IR-002/CR-001)
+# Commit 8fcbb9bda3 (code 3961790ab6); macOS arm64; Electron 42.11.16; 2026-11-26
+## test:e2e:electron
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":54829,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-4PXzMb","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:54829","healthUrl":"http://127.0.0.1:54829/rest/health"}
+exit 0
+## test:e2e:electron:isolation
+> node tests/e2e/electron-launch-profile-probe.mjs
+[typecheck] PASS
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-516-extensions/autobyteus-web/test-results/electron-launch-profile/electron-launch-profile-evidence.json
+exit 0

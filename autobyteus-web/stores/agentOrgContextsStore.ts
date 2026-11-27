@@ -1,10 +1,8 @@
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { TeamWorkspacePatch } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
-import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
-import { assertAgentOrgRunConfigChange } from '~/services/agentOrgExecution/agentOrgRunConfigAdoption'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { readAgentOrgRunConfig, updateStoppedAgentOrgRunConfig } from '~/services/runConfigEditing/agentOrgRunConfigClient'
+import { prepareAgentOrgConfigWorkspaces } from '~/services/runConfigEditing/agentOrgConfigWorkspaces'
 import type { ExistingAgentOrgModelConfigPatch } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
 import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
@@ -423,28 +421,6 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (operations.value[orgRunId] || inspections.has(orgRunId)) throw new Error('Org operation is already pending.')
     return org
   }
-  const prepareConfigWorkspaces = async (org: AgentOrgExecutionContext, tree: AgentOrgExecutionTree,
-    isCurrent: () => boolean): Promise<ReadonlyMap<string, WorkspaceMetadata | null>> => {
-    // The read carries the Org's own configuration only; its view's rows are its delegated runs' (CR-461-088).
-    assertAgentOrgRunConfigChange(org.executionTree, tree)
-    const roots = new Set<string>()
-    for (const member of tree.rootOrg.members) {
-      const agents = 'agentRunId' in member ? [member] : member.members
-      for (const agent of agents) {
-        const old = org.index.requireAgent(agent.agentRunId).source.launchConfiguration.workspaceRootPath
-        const config = org.getAgentContext(agent.agentRunId)?.config
-        const root = agent.launchConfiguration.workspaceRootPath
-        if (root && (root !== old || !config?.workspaceId || !config.workspaceMetadata)) roots.add(root)
-      }
-    }
-    const metadata = new Map<string, WorkspaceMetadata | null>()
-    for (const root of roots) {
-      const resolved = await useRunHistoryStore().resolveWorkspaceMetadataByRootPath(root).catch(() => null)
-      if (!isCurrent()) return metadata
-      metadata.set(root, resolved)
-    }
-    return metadata
-  }
   /**
    * autobyteus-265: a target change (context released, node switched, Org operation pending) refuses the read.
    * A refresh of the same Org's own view (its stream's reload after a live Save) reads again, up to the bound.
@@ -468,7 +444,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       const canonical = await readAgentOrgRunConfig(orgRunId)
       if (!consistent()) continue
       if (!canonical.isActive && stopped()) {
-        const metadata = await prepareConfigWorkspaces(org, canonical.executionTree,
+        const metadata = await prepareAgentOrgConfigWorkspaces(org, canonical.executionTree,
           () => !targetChanged() && !viewRefreshed() && stopped())
         if (!consistent()) continue
         if (!stopped()) throw stale()
@@ -492,7 +468,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       if (!current()) throw new Error('Org configuration Save target changed; refresh canonical configuration.')
       if (result.canonicalExecutionTree && !result.isActive) {
         const tree = parseAgentOrgExecutionTree(result.canonicalExecutionTree)
-        const metadata = await prepareConfigWorkspaces(org, tree, current)
+        const metadata = await prepareAgentOrgConfigWorkspaces(org, tree, current)
         if (!current()) throw new Error('Org configuration Save target changed; refresh canonical configuration.')
         org.applyRunConfig(tree, result.isActive, metadata)
       }

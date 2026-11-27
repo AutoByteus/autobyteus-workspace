@@ -1,0 +1,45 @@
+{
+  "startedAt": "2026-11-26T18:12:46.705Z",
+  "node": "v22.23.1",
+  "image": "autobyteus-server:581-api-e2e-r2",
+  "result": "Pass",
+  "checks": {
+    "hostPeers": [
+      {
+        "name": "plain-peer",
+        "paired": true,
+        "role": null
+      },
+      {
+        "name": "sbx_6cb04f210c",
+        "paired": true,
+        "role": "sandbox"
+      }
+    ],
+    "labels": [
+      {
+        "key": "srv_s6CkuSHR9LmOyI3rQIkJsYhMsjX4Ub8B",
+        "text": "sandbox",
+        "rowText": "sbx_6cb04f210csandbox127.0.0.1:585122 Agents"
+      }
+    ],
+    "sandboxNameShown": true,
+    "plainPeerShown": true,
+    "plainPeerLabelled": false,
+    "labelsAfterDestroy": 0,
+    "sandboxNameAfterDestroy": false
+  },
+  "browserErrors": [
+    "console: Access to fetch at 'http://127.0.0.1:58512/rest/remote-access/status' from origin 'http://127.0.0.1:58427' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "console: Failed to load resource: net::ERR_FAILED",
+    "console: Access to fetch at 'http://127.0.0.1:58512/rest/remote-access/status' from origin 'http://127.0.0.1:58427' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "console: Failed to load resource: net::ERR_FAILED"
+  ],
+  "cleanup": {
+    "containersRemovedByFailsafe": 0,
+    "rootRemoved": true,
+    "frontendExited": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-26T18:13:29.807Z"
+}

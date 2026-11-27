@@ -1,0 +1,20 @@
+{
+  "atLimit": {
+    "calls": 5,
+    "ready": 3,
+    "refusals": [
+      "SANDBOX_LIMIT_REACHED",
+      "SANDBOX_LIMIT_REACHED"
+    ],
+    "containers": 4,
+    "records": 4,
+    "creators": 4
+  },
+  "remoteCollaborationOff": "SANDBOX_REMOTE_COLLABORATION_OFF",
+  "homeFolderShared": "SANDBOX_SHARED_FOLDER_INVALID",
+  "left": {
+    "containers": 0,
+    "records": 0,
+    "sandboxPeers": 0
+  }
+}
