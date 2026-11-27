@@ -1,5 +1,5 @@
 import { createPrivateKey, createPublicKey, generateKeyPairSync, randomBytes } from "node:crypto";
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import fs from "node:fs";
 import net from "node:net";
 import os from "node:os";
@@ -33,7 +33,7 @@ const serverRoot = path.resolve(import.meta.dirname, "../../..");
 const appEntry = path.join(serverRoot, "dist", "app.js");
 
 type Json = Record<string, any>;
-type Node = { name: string; port: number; baseUrl: string; dataDir: string; nodeId: string; child: ChildProcessWithoutNullStreams | null; logs: string[] };
+type Node = { name: string; port: number; baseUrl: string; dataDir: string; nodeId: string; child: ChildProcess | null; logs: string[] };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const freePort = () => new Promise<number>((resolve, reject) => {
