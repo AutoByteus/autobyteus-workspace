@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007` (SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-008` (SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -470,3 +470,26 @@ Both are labelled platform notices. REQ-006 is updated (SR-007).
 - **Merging the instruction into the marker row.** The marker is rendered at activation from the pending switch, and the continue input is what triggers that activation; tying them is a coupling for no user gain.
 
 **Row 4, pre-existing:** on native AutoByteus the hand-over preface "[System: runtime hand-over] Another agent worked on this run before you…" is stored as a notice trace, so it shows as a second "Runtime changed" row after a reload, for every switch to AutoByteus, a person's included. That is not this ticket's change: follow-up FU-646-02.
+
+### R-10 The continue message: an ordinary system input presented as a notice (SR-008, implementation question IQ-004; replaces R-9's mechanism, keeps R-9's outcome)
+
+The implementer showed, in the code, that R-9's mechanism (a notice-only input, the restart notice's pattern) loses the hand-over:
+
+- an input that already is a platform notice never carries another preface (`agent-run-input-preface-dispatch.ts` `canCarryPreface`);
+- so the switch's turn would run without "[System: runtime hand-over] … read work_journal …" (REQ-005, AC-003).
+
+Also, sender `system.runtime_handover` is deliberately not recorded on external runtimes (marker-echo rule), so such a row would vanish after a reload.
+
+**Decision (adopting the implementer's proposal):**
+
+- **The input:** the continue message stays an **ordinary SYSTEM input**, so the hand-over preface combines into it on the same turn. Its own text: "Continue the task where you left off."
+- **A new generic message-metadata tag** `presentAsNotice: { senderId }` (autobyteus-ts, beside the preface tag) means "record and show this input as a notice from that sender, not as a user message":
+  - native `MemoryIngestInputProcessor` records the input part as a `system_task_notification` trace from that sender;
+  - the server's `RuntimeMemoryEventAccumulator.recordForwardedUserMessage` records no user trace for it. The run's published notice (lifecycle observer, as the restart notice) is recorded through the recorded-sender set.
+- **The sender** is `system.usage_limit`: the usage-limit listener's sender, recorded, labelled "Runtime changed" in the web. It is also the sender of the no-fallback Error notice.
+- **The person sees:**
+  1. the marker row (R-7);
+  2. "Continue the task where you left off." as a labelled notice;
+  3. on AutoByteus, also FU-646-02's pre-existing hand-over row.
+
+  No user row. The queued input-state entry shows briefly until forwarded, as for any input. Nothing is hidden from the person (REQ-006).

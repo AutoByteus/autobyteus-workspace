@@ -12,6 +12,7 @@
 | SR-005 | Design | Implementation question IQ-001 (two rows vs REQ-006) | IQ-001 | design Ready (SR-004) | design Ready (SR-005) | REQ-006, C-5 | `PendingRuntimeSwitch.cause` (structured); one row |
 | SR-006 | Design | Implementation question IQ-002 (history layer's origin) | IQ-002 | design Ready (SR-005) | design Ready (SR-006) | REQ-003, C-2, R-7 | New origin `agent_history` everywhere |
 | SR-007 | Requirements + Design | Implementation question IQ-003 (no hidden input path) | IQ-003 | Approved SR-004; design SR-006 | Approved SR-007; design SR-007 | REQ-006, R-7, R-9 | Continue message = labelled system notice row; FU-646-02 |
+| SR-008 | Design | Implementation question IQ-004 (R-9 loses the hand-over) | IQ-004 | design SR-007 | design SR-008 | REQ-005, REQ-006, R-9, R-10 | `presentAsNotice` tag; sender `system.usage_limit` |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -86,3 +87,9 @@
   - a hidden input was rejected for transparency and cost.
 - Founder informed in this conversation. Pre-existing native extra row: FU-646-02.
 - Intended behavior changed: yes, slightly (two labelled rows instead of one). Approval: Solution Designer within the direction; the founder is told.
+
+### SR-008 — Continue message keeps the hand-over
+
+- Trigger: the implementation engineer. R-9's notice-only input carries no hand-over preface (`canCarryPreface`), and `system.runtime_handover` is not recorded on external runtimes.
+- Decision: the implementer's proposal. An ordinary SYSTEM input (the hand-over combines into it) with the generic tag `presentAsNotice {senderId}`, recorded and shown as a notice from `system.usage_limit`. REQ-005 and REQ-006 both hold; R-9's outcome is unchanged.
+- Intended behavior: unchanged from SR-007.
