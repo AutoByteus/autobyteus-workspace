@@ -27,7 +27,7 @@ All paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/usag
   - The detector is runtime-agnostic.
 - **Exhaustion.** The exhaustion view (C-3) is derived from the events.
 - **The switch.**
-  - The switch listener chooses where the run continues: the Model Router through a switch request and `submit_runtime_switch` (C-7), else this agent's history (C-8).
+  - The switch listener chooses where the run continues: the Model Router through a switch request and `submit_runtime_switch` (C-7), else this agent's history (C-8), else the node fallback (R-17). Only when nothing is usable is there no fallback.
   - The run's root switches it with its own operation (R-11): checks from the run's own state (R-12), a quiet stop, the commit with the pending switch and cause, the root's own follow (R-15), and the continue notice (R-10).
   - Every outcome is recorded (C-2).
 - **Delegation.** Exhaustion is checked on every layer's launch, and the history layer (`agent_history`, R-2/R-8) is used when a layer was skipped as exhausted.
@@ -42,7 +42,7 @@ All paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/usag
   - `58da06f7e2` R-10 notice input, E2E;
   - `434d5489d5` SR-009/SR-010;
   - plus the final commit with this handoff (tests, E2E, docs).
-- **Implementation cycle:** IR-001 (cumulative; `implementation-revision-record.md`).
+- **Implementation cycle:** IR-002, cumulative (`implementation-revision-record.md`). IR-002 applies SR-011 (R-17 node fallback tier, R-18 no-fallback text, R-19 launch origin = who chose) for code review CRR-001 (CR-646-01 … 03).
 - **Implementation questions** raised and answered by the Solution Designer:
   - IQ-001 → SR-005 (cause);
   - IQ-002 → SR-006 (`agent_history`);
@@ -66,7 +66,9 @@ All paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/usag
 | REQ-005, R-11, R-12, R-15 Agent root switch | `agent-execution/services/standalone-automatic-runtime-switch.ts` (own checks/texts, `commitRunRuntimeSwitch`), lifecycle `checkAutomaticRuntimeSwitch`/`switchRuntimeAutomatically`, `standalone-agent-run-root.ts` `switchAgentRuntime` | unit (root, automatic switch); UL-01, UL-02; ULP-01 (peer-started run switches on its node, alpha shows the new launch) |
 | REQ-005, R-11 Team member switch | `team-member-runtime-switch.ts`, `team-member-runtime-switch-committer.ts` (only that member, `applySelectionToConfiguredMember`) | unit (incl. restart and `already_switched`); UL-04 (live switch, then restart, answers on AutoByteus) |
 | REQ-006, R-7, R-9, R-10 what is shown | marker from `pendingRuntimeSwitch.cause` (`runtime-switch.ts`); continue input with `present_as_notice` (autobyteus-ts `present-as-notice-metadata.ts`, native `memory-ingest-input-processor.ts`, server accumulator), notice published on forwarding | unit (native and accumulator memory, listener); UL-01 rows: marker, notice, no user row; hand-over in the continue turn's own message |
-| REQ-007 no fallback | listener `noFallbackText`, sender `system.usage_limit` | unit; UL-05 |
+| REQ-004, R-17 node fallback | `fallback-chooser.ts` `nodeFallbackPick`, `fallbackLaunch`; `agent-launch-history.ts` `launchesOfNode` | unit; UL-09; resolver node fallback before a refusal |
+| REQ-007, R-18 no fallback (nothing usable) | listener `noFallbackText` (`resetKnown`), sender `system.usage_limit` | unit; UL-05 (nothing usable) |
+| R-19 launch origin = who chose | `automaticSwitchLaunchSource` (`runtime-selection-rule.ts`), `launchSource` in both commit primitives | unit (commit, Team member, automatic switch); UL-01, UL-09, ULP-01 metadata |
 | REQ-008 no loops | R-12 state guard in each root; detector once per (run, turn) | unit; UL-01 |
 | C-2, R-14 records and retention | `model-routing/stores/switch-record-log.ts`, `utils/sealed-jsonl-log.ts` `removeSealedOlderThan` | unit (31 d, 90 d) |
 | C-6 setting | `model-routing-settings.ts`, GraphQL `setUsageLimitSwitchEnabled`, status `usageLimitSwitchEnabled`, `ModelRoutingSetup.vue` | unit (server, web); UL-07; browser probe MRD-01 |
@@ -108,8 +110,7 @@ All paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/usag
 - **DEC-008 pending.** Switch records are kept 90 days (the default).
 - **Claude.** No recorded Agent SDK usage-limit payload exists in the repo, so Claude classifies by the limits read (R-13's fallback). An SDK signal can replace it later in the Claude backend only.
 - **Codex.** The thread-status failure is not tagged. In Codex's order, the `error` notification ends the turn first, so no status-derived `ERROR` follows (unit test documents it). Every `ERROR` a usage-limit turn emits carries `error_kind`.
-- **No-fallback wording.** C-5's "No other runtime is usable." also shows when other runtimes are usable but this agent's history has none of them (router off). Wording is the designer's call.
-- **Source of a switched Team member.** `applySelectionToConfiguredMember` records the member's launch source as `settings` (V-11) after an automatic switch, the same as after a Save. The pending switch's `cause` carries the automatic fact.
+- **A router-chosen switch's launch source** (R-19) needs a task kind (the source schema requires one for `model_router`). The switch has no Task, so it records "runtime switch", with the router's reason as the choice reason.
 - **Pre-existing, outside this ticket:**
   - An `ERROR` is a live row only. The stored conversation keeps no error row (UL-08 asserts live and stored separately).
   - On AutoByteus the hand-over preface shows as a second notice after a reload (FU-646-02).
@@ -145,8 +146,12 @@ All paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/usag
 | autobyteus-ts agent and memory tests | 873 pass. Whole suite: the 3 local-LM Studio tests fail identically with the base ingest code (A/B in log): environment | `evidence/IMP-06-autobyteus-ts.log` |
 | Web typecheck, guards, localization audit, codegen check, affected tests (240) | Pass | `evidence/IMP-07-web.log` |
 | Contracts package tests | Pass | `evidence/IMP-08-contracts.log` |
-| Built-server E2E UL-01 … UL-08 | 8/8 pass | `evidence/IMP-03-usage-limit-switch-e2e.log` + receipt |
-| Two-server E2E ULP-01 | Pass | `evidence/IMP-09-usage-limit-peer-e2e.log` + receipt |
+| Built-server E2E UL-01 … UL-08 (before SR-011) | 8/8 pass | `evidence/IMP-03-usage-limit-switch-e2e.log` + receipt |
+| Two-server E2E ULP-01 (before SR-011) | Pass | `evidence/IMP-09-usage-limit-peer-e2e.log` + receipt |
+| SR-011: server unit / integration | 1103 files pass / 92 pass | `evidence/IMP-11`, `IMP-12` |
+| SR-011: web and contracts | Pass | `evidence/IMP-13` |
+| SR-011: built-server E2E UL-01 … UL-09 | 9/9 pass | `evidence/IMP-14` + receipt |
+| SR-011: two-server E2E ULP-01 | Pass | `evidence/IMP-15` + receipt |
 | Earlier full-suite runs (before SR-009) | Pass | `evidence/IMP-01`, `IMP-02` |
 
 ## Frontend Rendered-Result Check

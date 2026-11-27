@@ -10,7 +10,7 @@ export type UsableRuntime = Readonly<{ runtimeKind: string; models: readonly str
 export type AgentLaunchHistoryEntry = Readonly<{ runtimeKind: string; llmModelIdentifier: string; runs: number; lastUsedAt: string }>;
 
 export type SwitchOutcomeKind = "switched" | "no_fallback" | "switch_failed";
-export type SwitchChosenBy = "model_router" | "agent_history";
+export type SwitchChosenBy = "model_router" | "agent_history" | "node_fallback";
 
 /**
  * One handled usage-limit event (autobyteus-646 C-2), in `<appData>/model-routing/switches_*.jsonl`. `to` is null when

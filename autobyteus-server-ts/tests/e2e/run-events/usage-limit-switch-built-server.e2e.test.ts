@@ -17,8 +17,9 @@
  *          has no switch section until R-6), so history decides, with the router's failure recorded.
  *   UL-04  a Team member: the coordinator on Codex is switched while the Team runs; its tree holds the new launch; after a
  *          graceful restart it answers on AutoByteus and Codex gets no turn.
- *   UL-05  no fallback (no usable runtime in the agent's history): the run stays on Codex with one Error notice; C-2
- *          `no_fallback`.
+ *   UL-05  nothing usable (AutoByteus' model server down, every AGY model used up): the run stays on Codex with one
+ *          Error notice pointing to Settings (R-18); C-2 `no_fallback`.
+ *   UL-09  no history of this agent, AutoByteus usable: the node fallback (R-17), recorded as `node_fallback` (R-19).
  *   UL-06  delegation: an agent whose default is the exhausted Codex model is started from its history, with the note.
  *   UL-07  the setting off: the event is logged, nothing is switched or recorded.
  *   UL-08  Antigravity, which gives no usage-limit signal (R-16): its ERROR goes out at once (one live error row), its
@@ -86,6 +87,8 @@ class ScriptedModel {
   private readonly scripts = new Map<string, Array<(request: ModelRequest) => Reply>>();
   private server: Server | null = null;
   origin = "";
+  /** While true, the model list is not served: the node's AutoByteus LM Studio provider is left out (not usable). */
+  down = false;
   script(tag: string, steps: Array<(request: ModelRequest) => Reply>): void { this.scripts.set(tag, [...steps]); }
   of(text: string): ModelRequest[] { return this.requests.filter((request) => request.all.includes(text)); }
   async listen(): Promise<void> {
@@ -97,6 +100,7 @@ class ScriptedModel {
   async close(): Promise<void> { this.server?.closeAllConnections(); await new Promise<void>((resolve) => this.server ? this.server.close(() => resolve()) : resolve()); }
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     if (req.method === "GET") {
+      if (this.down) { res.writeHead(503); res.end(); return; }
       res.setHeader("content-type", "application/json");
       res.end(JSON.stringify({ models: [{ key: MODEL_KEY, max_context_length: 65536, loaded_instances: [{ config: { context_length: 65536 } }] }] }));
       return;
@@ -243,13 +247,16 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
   /** The continue turn's request: its last user message carries the hand-over and the continue text together. */
   const continueTurnOf = (runId: string) => model.requests.find((entry) => entry.lastUser.includes(CONTINUE) && entry.all.includes(runId));
 
+  /** The scripted AGY usage read: the named models' group used up until RESET_AT. */
+  const agyUsage = (models: string) => fs.writeFile(path.join(node.root, "agy-usage.json"), JSON.stringify({ status: "SUCCESS", response: "",
+    usage: { total_tokens: 0 }, command: { name: "usage", data: { groups: [{ name: "Retiring", description: `Models within this group: ${models}`,
+      buckets: [{ id: "r-weekly", name: "Weekly", window: "weekly", remaining_fraction: 0, reset_time: RESET_AT }] }] } } }));
+
   beforeAll(async () => {
     await fs.access(path.join(SERVER_DIR, "dist", "app.js"));
     await model.listen();
     node = await TestNode.create({ LMSTUDIO_HOSTS: model.origin });
-    await fs.writeFile(path.join(node.root, "agy-usage.json"), JSON.stringify({ status: "SUCCESS", response: "", usage: { total_tokens: 0 },
-      command: { name: "usage", data: { groups: [{ name: "Retiring", description: "Models within this group: Retiring test model",
-        buckets: [{ id: "r-weekly", name: "Weekly", window: "weekly", remaining_fraction: 0, reset_time: RESET_AT }] }] } } }));
+    await agyUsage("Retiring test model");
     await node.setCodex("ok");
     session = await node.start();
     const models = (await session.gql(`mutation{reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`))
@@ -288,7 +295,9 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
     expect(switches).toEqual([{ at: expect.any(String), agentRunId: runId, agentDefinitionId: operator, from: { runtimeKind: CODEX, llmModelIdentifier: CODEX_MODEL },
       to: { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel }, chosenBy: "agent_history", reason: "most used by this agent in the last 30 days",
       routerFailure: "Model Routing is off", outcome: "switched" }]);
-    expect(await node.metadata(runId)).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel });
+    // R-19: the run's launch records who chose it.
+    expect(await node.metadata(runId)).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel,
+      launchSource: { origin: "agent_history", fallbacks: [] } });
     // The rows of the switch, after the failed input (R-7, R-10): the marker and the continue notice, both labelled notices;
     // no user row. On AutoByteus the hand-over preface is stored as a notice too, which a reload shows (FU-646-02, pre-existing).
     const rows = await until(async () => {
@@ -396,20 +405,45 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
     evidence["UL-04"] = { teamRunId, coordinator, launch: switched.launchConfiguration };
   }, 360_000);
 
-  it("UL-05 no fallback: the run stays on Codex with one Error notice; C-2 no_fallback", async () => {
+  it("UL-05 nothing usable (R-17, R-18): the run stays on Codex with one Error notice that points to Settings; C-2 no_fallback", async () => {
     const lonely = await definition("lonely");
     await node.setCodex("limit");
     const runId = await agentRun(lonely, CODEX, CODEX_MODEL);
+    // Nothing else can run: AutoByteus' LM Studio stops answering and every AGY model shows used up.
+    model.down = true;
+    await agyUsage("Gemini test, Retiring test model");
+    try {
+      const stream = await openStream(session, "agent", runId);
+      stream.send(runId, "CASE:UL-05 Do the work.");
+      const records = await until(async () => (await switchesOf(runId)).length ? switchesOf(runId) : null, "the no-fallback record", 90_000);
+      expect(records).toEqual([expect.objectContaining({ to: null, chosenBy: null, reason: null, routerFailure: null, outcome: "no_fallback" })]);
+      const notice = `Usage limits reached: Codex App Server until ${RESET_TEXT}. No other runtime can run now. Choose one in the run's Settings to continue.`;
+      await until(() => stream.frames.some((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.content === notice), "the Error notice");
+      expect(stream.frames.filter((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.content === notice), "one notice").toHaveLength(1);
+      expect(await node.metadata(runId)).toMatchObject({ runtimeKind: CODEX, llmModelIdentifier: CODEX_MODEL });
+      stream.close();
+      evidence["UL-05"] = { runId, records, notice };
+    } finally {
+      model.down = false;
+      await agyUsage("Retiring test model");
+    }
+  }, 180_000);
+
+  it("UL-09 the agent has no history but AutoByteus is usable (R-17, R-19): it switches by the node fallback, recorded as chosen by the node", async () => {
+    const newcomer = await definition("newcomer");
+    await node.setCodex("limit");
+    const runId = await agentRun(newcomer, CODEX, CODEX_MODEL);
     const stream = await openStream(session, "agent", runId);
-    stream.send(runId, "CASE:UL-05 Do the work.");
-    const records = await until(async () => (await switchesOf(runId)).length ? switchesOf(runId) : null, "the no-fallback record", 90_000);
-    expect(records).toEqual([expect.objectContaining({ to: null, chosenBy: null, reason: null, routerFailure: "Model Routing is off", outcome: "no_fallback" })]);
-    const notice = `Usage limits reached: Codex App Server until ${RESET_TEXT}. No other runtime is usable.`;
-    await until(() => stream.frames.some((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.content === notice), "the Error notice");
-    expect(stream.frames.filter((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.content === notice), "one notice").toHaveLength(1);
-    expect(await node.metadata(runId)).toMatchObject({ runtimeKind: CODEX, llmModelIdentifier: CODEX_MODEL });
+    stream.send(runId, "CASE:UL-09 Start the work.");
+    const records = await until(async () => (await switchesOf(runId)).length ? switchesOf(runId) : null, "the switch record", 90_000);
+    expect(records).toEqual([expect.objectContaining({ to: { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel }, chosenBy: "node_fallback",
+      reason: "most used on this node in the last 30 days", routerFailure: "Model Routing is off", outcome: "switched" })]);
+    await until(() => continueTurnOf(runId), "the continue message reached AutoByteus", 90_000);
+    expect(await node.metadata(runId)).toMatchObject({ runtimeKind: "autobyteus", launchSource: { origin: "node_fallback", fallbacks: [] } });
+    const rows = (await conversation(runId)) as Json[];
+    expect(rows.filter((row) => row.content === marker("Chosen by the node.")), "the marker names the node").toHaveLength(1);
     stream.close();
-    evidence["UL-05"] = { runId, records, notice };
+    evidence["UL-09"] = { runId, records };
   }, 180_000);
 
   it("UL-06 delegation: a default on the exhausted Codex model is skipped; the agent starts from its history with the note", async () => {

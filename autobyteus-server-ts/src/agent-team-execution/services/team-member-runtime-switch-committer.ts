@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { applySelectionToConfiguredMember, type RuntimeSelection } from "../../run-history/domain/runtime-selection-rule.js";
+import { applySelectionToConfiguredMember, automaticSwitchLaunchSource, type RuntimeSelection } from "../../run-history/domain/runtime-selection-rule.js";
 import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 
@@ -49,7 +49,9 @@ export class TeamMemberRuntimeSwitchCommitter {
           if (!current || !memberStillOn(current, expectation.from)) throw new MemberAlreadySwitchedError(memberAddress);
           const switchId = randomUUID();
           const nextTree: TeamRunExecutionTreeSnapshot = { ...tree, rootTeam: { ...tree.rootTeam,
-            members: tree.rootTeam.members.map((node) => node === current ? applySelectionToConfiguredMember(node, selection, switchId) : node) } };
+            // R-19: the member's launch records who chose it.
+            members: tree.rootTeam.members.map((node) => node === current
+              ? applySelectionToConfiguredMember(node, selection, switchId, selection.cause ? automaticSwitchLaunchSource(selection.cause) : undefined) : node) } };
           return {
             nextTree,
             requiresWrite: true,

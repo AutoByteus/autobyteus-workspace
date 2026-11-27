@@ -11,7 +11,7 @@ import type { RunEvent, UsageLimitReachedData } from "../run-event-types.js";
 import type { ExhaustedModel } from "./runtime-exhaustion-view.js";
 
 type Launch = Readonly<{ runtimeKind: string; llmModelIdentifier: string }>;
-type ChosenBy = "model_router" | "agent_history";
+type ChosenBy = "model_router" | "agent_history" | "node_fallback";
 
 /** The run's agent, as the switch needs it (from the live run and its agent definition). */
 export type SwitchSubject = Readonly<{ agentDefinitionId: string; agentName: string; agentDescription: string | null }>;
@@ -44,15 +44,21 @@ export const CONTINUE_TEXT = "Continue the task where you left off.";
 /** A notice shown in the run's conversation (published by the run, so it is recorded with its turn). */
 export type ShownNotice = Readonly<{ text: string; messageId?: string; turnId?: string | null }>;
 
-/** C-5: the Error notice when nothing is usable, each exhausted runtime with when it is usable again (its earliest reset). */
+/**
+ * R-18: the Error notice when nothing is usable (R-17 makes that the only no-fallback case): every exhausted runtime with
+ * when it is usable again (its earliest known reset), or "for about an hour" when it gave none; then where to go.
+ */
 export const noFallbackText = (exhausted: readonly ExhaustedModel[]): string => {
-  const earliest = new Map<string, string>();
+  const earliest = new Map<string, string | null>();
   for (const model of exhausted) {
     const known = earliest.get(model.runtimeKind);
-    if (!known || Date.parse(model.until) < Date.parse(known)) earliest.set(model.runtimeKind, model.until);
+    const until = model.resetKnown ? model.until : null;
+    if (known === undefined || (until && (!known || Date.parse(until) < Date.parse(known)))) earliest.set(model.runtimeKind, until ?? known ?? null);
   }
-  const listed = [...earliest.entries()].map(([runtimeKind, until]) => `${agentRuntimeName(runtimeKind)} until ${resetTimeText(until)}`);
-  return `${listed.length ? `Usage limits reached: ${listed.join("; ")}.` : "A usage limit was reached."} No other runtime is usable.`;
+  const listed = [...earliest.entries()].map(([runtimeKind, until]) =>
+    `${agentRuntimeName(runtimeKind)} ${until ? `until ${resetTimeText(until)}` : "for about an hour"}`);
+  return `${listed.length ? `Usage limits reached: ${listed.join("; ")}.` : "A usage limit was reached."} `
+    + "No other runtime can run now. Choose one in the run's Settings to continue.";
 };
 
 /**

@@ -87,5 +87,10 @@ describe("AgentLaunchHistory (C-8)", () => {
       { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", runs: 2, lastUsedAt: "2026-11-24T00:00:00.000Z" },
       { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", runs: 1, lastUsedAt: "2026-11-20T00:00:00.000Z" },
     ]);
+    // R-17: the node's launches across every agent (the writer's Agent run and Team member count too).
+    await expect(history.launchesOfNode()).resolves.toEqual([
+      { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", runs: 3, lastUsedAt: "2026-11-24T00:00:00.000Z" },
+      { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", runs: 2, lastUsedAt: "2026-11-24T00:00:00.000Z" },
+    ]);
   });
 });

@@ -38,6 +38,7 @@ const runSettingsMessages = {
   'runSettings.delegated.source.agent_default': 'Agent default',
   'runSettings.delegated.source.team_default': 'Team default',
   'runSettings.delegated.source.agent_history': 'Chosen from its history',
+  'runSettings.delegated.source.node_fallback': 'Chosen by the node',
   'runSettings.delegated.source.inherited': 'Inherited from the run',
   'runSettings.delegated.source.configured': 'As configured in this run',
   'runSettings.delegated.source.notRecorded': 'Source not recorded',

@@ -9,11 +9,12 @@ export type SkippableLaunchLayer = ConfiguredLaunchLayer | "model_router";
 
 /**
  * Where an agent's (or a Team's) launch values came from: a configured layer, the node's Model Router, this agent's
- * history (autobyteus-646 R-8: after a default was skipped as exhausted and the router did not choose), the run root,
+ * history or the node's fallback (autobyteus-646 R-8, R-17: after a default was skipped as exhausted and the router did
+ * not choose; R-19: also an automatic runtime switch's chooser), the run root,
  * (for a delegated copy) the configured placement of the coordinating run it was started from (`configured`), or the
  * user's own Settings edit (`settings`, autobyteus-461 V-11: the edit is the run's own launch, shown with no origin).
  */
-export type LaunchConfigurationOrigin = ConfiguredLaunchLayer | "model_router" | "agent_history" | "inherited" | "configured" | "settings";
+export type LaunchConfigurationOrigin = ConfiguredLaunchLayer | "model_router" | "agent_history" | "node_fallback" | "inherited" | "configured" | "settings";
 
 export type LaunchConfigurationFallbackReason =
   | "incomplete"
@@ -55,7 +56,7 @@ export type LaunchConfigurationSource =
     }>;
 
 export const LAUNCH_CONFIGURATION_ORIGINS: readonly LaunchConfigurationOrigin[] = [
-  "agent_default", "team_default", "model_router", "agent_history", "inherited", "configured", "settings",
+  "agent_default", "team_default", "model_router", "agent_history", "node_fallback", "inherited", "configured", "settings",
 ];
 export const CONFIGURED_LAUNCH_LAYERS: readonly ConfiguredLaunchLayer[] = ["agent_default", "team_default"];
 export const SKIPPABLE_LAUNCH_LAYERS: readonly SkippableLaunchLayer[] = ["agent_default", "team_default", "model_router"];

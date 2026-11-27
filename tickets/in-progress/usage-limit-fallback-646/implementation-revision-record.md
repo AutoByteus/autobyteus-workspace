@@ -27,3 +27,34 @@
   - `IMP-10` (browser probe).
   - IMP-01/02 are the earlier full runs before SR-009.
 - **Handoff:** `implementation-handoff.md` → code review.
+
+## IR-002 — SR-011 (code review CRR-001: CR-646-01 … 03) applied
+
+- **Basis:** design-spec.md § R-17 … R-19 (SR-011, commit 230bcc534b).
+- **CR-646-02 → R-17 (node fallback):**
+  - `FallbackChooser` tiers: router → `agent_history` → `node_fallback` → nothing usable.
+    - The node fallback (`nodeFallbackPick`) takes the node's most-used usable runtime and model over 30 days across every agent (`AgentLaunchHistory.launchesOfNode`), else the first usable runtime in the report's order with its first usable model.
+    - `no_fallback` now means nothing is usable.
+  - Delegation (`fallbackLaunch`, the `FallbackLaunchPort`, formerly the history port): after an exhausted skip, the agent's history comes before the inherited launch as before; the node fallback comes only when the inherited launch can't run (or there is none), before a refusal.
+- **CR-646-01 → R-18 (no-fallback text):**
+  - The text is "Usage limits reached: … No other runtime can run now. Choose one in the run's Settings to continue."
+  - It names every exhausted runtime with its earliest known reset, or "for about an hour" (`ExhaustedModel.resetKnown`).
+- **CR-646-03 → R-19 (launch origin):**
+  - The commit primitives take the launch source (`buildRuntimeSwitchMetadata`/`commitAgentRunRuntimeSwitch`/`commitRunRuntimeSwitch` `launchSource`, `applySelectionToConfiguredMember`'s 4th parameter), defaulting to `settings` for the person's Save.
+  - The automatic switch records `automaticSwitchLaunchSource(cause)`. For `model_router` the router's reason is the choice reason, with task kind "runtime switch".
+  - `node_fallback` is added wherever `agent_history` was:
+    - origins, schema list, contracts DTO and dist;
+    - `DecisionLaunchSource`, decision log, statistics;
+    - `ORIGIN_LABEL` "chosen by the node";
+    - C-2/cause `chosenBy`;
+    - the marker ("Chosen by the node.");
+    - web types, colours, labels (en, zh-CN).
+- **Tests:**
+  - unit: chooser tiers, resolver node fallback, the R-18 text, the commit source, the Team member source, node launch history, marker and cause parsing;
+  - E2E: UL-05 now makes nothing usable (AutoByteus' model server down, every AGY model used up); new UL-09 (no history → `node_fallback`, recorded in the launch source and the marker); UL-01 and ULP-01 check the recorded launch source.
+- **Evidence:**
+  - `IMP-11` (server unit: 1103 files pass);
+  - `IMP-12` (integration: 92 pass);
+  - `IMP-13` (web and contracts pass);
+  - `IMP-14` (built-server E2E 9/9);
+  - `IMP-15` (two-server E2E pass).

@@ -14,6 +14,12 @@ import { AGENT_LAUNCH_HISTORY_DAYS_MS } from "../domain/runtime-switch-types.js"
 
 /** The history safety net's reason (C-2 `reason`). */
 export const HISTORY_CHOICE_REASON = "most used by this agent in the last 30 days";
+/** The node fallback's reasons (R-17): its usable history, else its runtime list's order. */
+export const NODE_HISTORY_CHOICE_REASON = "most used on this node in the last 30 days";
+export const NODE_FIRST_USABLE_CHOICE_REASON = "the first usable runtime on this node";
+
+/** A fallback launch and who chose it (C-2 `chosenBy`, R-19's launch origin). */
+export type ChosenLaunch = Readonly<{ launch: SwitchLaunch; chosenBy: SwitchChosenBy; reason: string }>;
 
 /** Which models are exhausted now (C-3); the exhaustion view, read structurally (model-routing imports no listener). */
 export type ExhaustionReading = Readonly<{
@@ -67,15 +73,31 @@ export const historyPick = (history: readonly AgentLaunchHistoryEntry[], usable:
 };
 
 /**
- * Chooses where an agent continues when its runtime cannot (autobyteus-646 DS-003, REQ-004): the Model Router first,
- * when Model Routing is on and the router's own launch is not exhausted (C-7, 40 s, it may fail); then this agent's
- * history (C-8); otherwise there is no fallback. Also the delegation's history layer (R-2). It never switches anything.
+ * The node fallback (R-17): of the node's launches across all agents that are usable now, the runtime and model with the
+ * most runs (ties: the most recently used); when none is usable, the first usable runtime in the node's runtime list
+ * (the report's order) with its first usable model. Deterministic, never random. Null when nothing is usable.
+ */
+export const nodeFallbackPick = (nodeHistory: readonly AgentLaunchHistoryEntry[], usable: readonly UsableRuntime[]): ChosenLaunch | null => {
+  const used = nodeHistory.find((entry) => usable.some((runtime) => runtime.runtimeKind === entry.runtimeKind && runtime.models.includes(entry.llmModelIdentifier)));
+  if (used) return { launch: { runtimeKind: used.runtimeKind, llmModelIdentifier: used.llmModelIdentifier }, chosenBy: "node_fallback", reason: NODE_HISTORY_CHOICE_REASON };
+  const first = usable.find((runtime) => runtime.models.length);
+  return first ? { launch: { runtimeKind: first.runtimeKind, llmModelIdentifier: first.models[0]! }, chosenBy: "node_fallback", reason: NODE_FIRST_USABLE_CHOICE_REASON } : null;
+};
+
+/**
+ * Chooses where an agent continues when its runtime cannot (autobyteus-646 DS-003, REQ-004, R-17), in order: the Model
+ * Router, when Model Routing is on and the router's own launch is not exhausted (C-7, 40 s, it may fail); this agent's
+ * history (C-8); the node fallback; otherwise nothing is usable and there is no fallback. Also the delegation's layers
+ * after an exhausted skip (R-2, R-17). It never switches anything.
  */
 export class FallbackChooser {
   constructor(private readonly dependencies: Readonly<{
     readNodeRuntimes(): Promise<NodeRuntimesReading>;
     exhaustion: ExhaustionReading;
-    history: Readonly<{ launchesOf(agentDefinitionId: string): Promise<readonly AgentLaunchHistoryEntry[]> }>;
+    history: Readonly<{
+      launchesOf(agentDefinitionId: string): Promise<readonly AgentLaunchHistoryEntry[]>;
+      launchesOfNode(): Promise<readonly AgentLaunchHistoryEntry[]>;
+    }>;
     switchRecords: Readonly<{ recentOf(agentDefinitionId: string, since: Date): Promise<readonly SwitchRecord[]> }>;
     router: Readonly<{ requestSwitch(request: RuntimeSwitchRequest): Promise<RuntimeSwitchRequestOutcome> }>;
     now?: () => Date;
@@ -94,18 +116,33 @@ export class FallbackChooser {
     if (routed.kind === "chosen") {
       return { kind: "chosen", launch: routed.launch, chosenBy: "model_router", reason: routed.reason, routerFailure: null };
     }
-    const picked = historyPick(history, usable);
-    return picked
-      ? { kind: "chosen", launch: picked, chosenBy: "agent_history", reason: HISTORY_CHOICE_REASON, routerFailure: routed.reason }
-      : { kind: "no_fallback", routerFailure: routed.reason };
+    const fromHistory = historyPick(history, usable);
+    const picked: ChosenLaunch | null = fromHistory
+      ? { launch: fromHistory, chosenBy: "agent_history", reason: HISTORY_CHOICE_REASON }
+      : nodeFallbackPick(await this.nodeHistory(), usable);
+    // Something is usable, so the node fallback always finds one; no_fallback is only "nothing is usable" (R-18).
+    return picked ? { kind: "chosen", ...picked, routerFailure: routed.reason } : { kind: "no_fallback", routerFailure: routed.reason };
   }
 
-  /** The delegation's history layer (R-2): this agent's history pick among what is usable now; null when nothing is. */
-  async historyLaunch(agentDefinitionId: string): Promise<SwitchLaunch | null> {
+  /**
+   * The delegation's layers after an exhausted skip (R-2, R-17): this agent's history pick among what is usable now,
+   * then (only when `withNodeFallback`, the inherited launch can't run either) the node fallback; null when none.
+   */
+  async fallbackLaunch(agentDefinitionId: string, withNodeFallback: boolean): Promise<ChosenLaunch | null> {
     const facts = await this.readFacts();
     if (!facts) return null;
+    const usable = usableRuntimesNow(facts, this.dependencies.exhaustion);
     const history = await this.dependencies.history.launchesOf(agentDefinitionId).catch(() => []);
-    return historyPick(history, usableRuntimesNow(facts, this.dependencies.exhaustion));
+    const picked = historyPick(history, usable);
+    if (picked) return { launch: picked, chosenBy: "agent_history", reason: HISTORY_CHOICE_REASON };
+    return withNodeFallback ? nodeFallbackPick(await this.nodeHistory(), usable) : null;
+  }
+
+  private nodeHistory(): Promise<readonly AgentLaunchHistoryEntry[]> {
+    return this.dependencies.history.launchesOfNode().catch((error: unknown) => {
+      console.warn(`Runtime fallback: this node's launch history could not be read (${String(error)}).`);
+      return [] as const;
+    });
   }
 
   private async askRouter(request: FallbackRequest, usable: readonly UsableRuntime[], history: readonly AgentLaunchHistoryEntry[]):

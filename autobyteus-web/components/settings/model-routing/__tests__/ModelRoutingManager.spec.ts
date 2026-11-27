@@ -89,7 +89,7 @@ const decisions = (): RoutingDecisionPage => {
   ] }
 }
 const statistics = (): RoutingStatistics => ({
-  totalAgents: 3, sources: { model_router: 1, agent_default: 1, team_default: 0, agent_history: 0, inherited: 1 }, routerFailures: 1,
+  totalAgents: 3, sources: { model_router: 1, agent_default: 1, team_default: 0, agent_history: 0, node_fallback: 0, inherited: 1 }, routerFailures: 1,
   taskKinds: [{ taskKind: 'implementation', count: 1, runtimes: [{ runtimeKind: 'codex_app_server', count: 1 }],
     models: [{ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', count: 1 }] }],
   notRouted: { count: 2, runtimes: [{ runtimeKind: 'claude_agent_sdk', count: 2 }], models: [{ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', count: 2 }] },

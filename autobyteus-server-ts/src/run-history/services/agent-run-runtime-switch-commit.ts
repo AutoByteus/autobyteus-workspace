@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 import { applyRuntimeSelection, type RuntimeSelection } from "../domain/runtime-selection-rule.js";
-import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
+import { SETTINGS_LAUNCH_SOURCE, type LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
@@ -17,6 +17,11 @@ export const buildRuntimeSwitchMetadata = (input: {
   selection: RunSelectionToCommit;
   /** The identity of a new switch; ignored when a switch is already pending (it keeps its own). */
   switchId: string;
+  /**
+   * The source a changing commit records (autobyteus-646 R-19): a person's Save is `settings` (the default); an automatic
+   * switch names who chose its launch.
+   */
+  launchSource?: LaunchConfigurationSource;
 }): AgentRunMetadata => {
   const { metadata } = input;
   const { pendingRuntimeSwitch: _pending, launchSource, ...rest } = metadata;
@@ -33,7 +38,7 @@ export const buildRuntimeSwitchMetadata = (input: {
   return {
     ...rest,
     // An edit becomes the run's own launch, recorded as one (design V-11): the source it had described the launch it replaces.
-    ...(isDeepStrictEqual(next, before) ? (launchSource ? { launchSource } : {}) : { launchSource: SETTINGS_LAUNCH_SOURCE }),
+    ...(isDeepStrictEqual(next, before) ? (launchSource ? { launchSource } : {}) : { launchSource: input.launchSource ?? SETTINGS_LAUNCH_SOURCE }),
     ...next.binding,
     ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}),
   };
@@ -46,11 +51,13 @@ export const commitAgentRunRuntimeSwitch = async (input: {
   archived: boolean;
   selection: RunSelectionToCommit;
   switchId: string;
+  launchSource?: LaunchConfigurationSource;
 }): Promise<AgentRunModelConfigCommitResult> => {
   const metadata = await input.metadataStore.readMetadata(input.runId);
   if (!metadata || !input.cataloged) return { kind: "not_found", metadata };
   if (input.archived) return { kind: "archived", metadata };
-  const next = buildRuntimeSwitchMetadata({ metadata, selection: input.selection, switchId: input.switchId });
+  const next = buildRuntimeSwitchMetadata({ metadata, selection: input.selection, switchId: input.switchId,
+    ...(input.launchSource ? { launchSource: input.launchSource } : {}) });
   if (isDeepStrictEqual(next, metadata)) return { kind: "unchanged", metadata };
   const matches = (stored: AgentRunMetadata | null): boolean => stored !== null && isDeepStrictEqual(stored, next);
   try {

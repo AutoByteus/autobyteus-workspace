@@ -23,15 +23,19 @@ const teamPlan = (members: Record<string, DefaultLaunchConfig | null>): Collabor
   teamDefault: null, ...identity,
 });
 
-/** Codex gpt-sol is exhausted until Nov 27, 09:00 UTC; history picks Claude sonnet for `operator` and `worker`. */
-const resolverOf = (picks: Record<string, string | null> = { operator: "sonnet", worker: "sonnet" }) => {
+/**
+ * Codex gpt-sol is exhausted until Nov 27, 09:00 UTC; history picks Claude sonnet for `operator` and `worker`; the node
+ * fallback (R-17), when asked, picks `nodePick` on AutoByteus.
+ */
+const resolverOf = (picks: Record<string, string | null> = { operator: "sonnet", worker: "sonnet" }, nodePick: string | null = null) => {
   const validator = {
     validate: vi.fn(),
     validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
       inputs.map(({ selection }) => ({ kind: "valid", selection }))),
   } as unknown as RunModelSelectionValidator;
-  const historyLaunch = vi.fn(async (agentDefinitionId: string) => picks[agentDefinitionId]
-    ? { runtimeKind: "claude_agent_sdk", llmModelIdentifier: picks[agentDefinitionId]! } : null);
+  const fallbackLaunch = vi.fn(async (agentDefinitionId: string, withNodeFallback: boolean) => picks[agentDefinitionId]
+    ? { runtimeKind: "claude_agent_sdk", llmModelIdentifier: picks[agentDefinitionId]!, chosenBy: "agent_history" as const }
+    : withNodeFallback && nodePick ? { runtimeKind: "autobyteus", llmModelIdentifier: nodePick, chosenBy: "node_fallback" as const } : null);
   const resolver = new CollaboratorLaunchResolver({
     usability: new LaunchUsabilityCheck({
       availability: { getRuntimeAvailability: async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null }) } as never,
@@ -39,10 +43,10 @@ const resolverOf = (picks: Record<string, string | null> = { operator: "sonnet",
       exhaustion: { isExhausted: (runtimeKind, model) => runtimeKind === "codex_app_server" && model === "gpt-sol" ? { until: "2026-11-27T09:00:00.000Z" } : null },
     }),
     router: NO_MODEL_ROUTING,
-    history: { historyLaunch },
+    fallback: { fallbackLaunch },
   });
   return { resolve: async (plans: CollaboratorDefinitionPlan[], base: Parameters<CollaboratorLaunchResolver["resolve"]>[1] = { kind: "inherited", launch: root }) =>
-    (await resolver.resolve(plans, base, WORK)).plans, historyLaunch };
+    (await resolver.resolve(plans, base, WORK)).plans, fallbackLaunch };
 };
 
 const EXHAUSTED_FALLBACK = { layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", reason: "blocked",
@@ -62,26 +66,34 @@ describe("delegation launch: exhaustion and the history layer (R-2, R-8)", () =>
   });
 
   it("an exhausted inherited launch also brings in history; a skip for another reason keeps today's order", async () => {
-    const { resolve, historyLaunch } = resolverOf();
+    const { resolve, fallbackLaunch } = resolverOf();
     const [plan] = await resolve([agentPlan(null)]);
     expect(plan).toMatchObject({ launchConfiguration: { runtimeKind: "claude_agent_sdk" }, launchSource: { origin: "agent_history", fallbacks: [] } });
     const usable = { ...root, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus" };
-    historyLaunch.mockClear();
+    fallbackLaunch.mockClear();
     const [incomplete] = await resolve([agentPlan({ runtimeKind: null, llmModelIdentifier: null, llmConfig: null } as never)], { kind: "inherited", launch: usable });
     expect(incomplete).toMatchObject({ launchConfiguration: usable, launchSource: { origin: "inherited" } });
-    expect(historyLaunch).not.toHaveBeenCalled();
+    expect(fallbackLaunch).not.toHaveBeenCalled();
   });
 
-  it("nothing in history and the inherited launch exhausted: refused, naming the exhaustion", async () => {
+  it("R-17: nothing in history and the inherited launch exhausted: the node fallback before a refusal; nothing usable: refused, naming the exhaustion", async () => {
+    const node = resolverOf({}, "local-model");
+    const [plan] = await node.resolve([agentPlan(codexDefault)]);
+    expect(plan).toMatchObject({ launchConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: "local-model" },
+      launchSource: { origin: "node_fallback", fallbacks: [EXHAUSTED_FALLBACK] } });
+    expect(node.fallbackLaunch).toHaveBeenCalledWith("operator", true);
+    expect(launchNotesOf([{ name: "Operator", subject: "agent", launch: plan!.kind === "agent" ? plan!.launchConfiguration : null!,
+      source: plan!.kind === "agent" ? plan!.launchSource : null! }])[0]).toMatch(/\(chosen by the node\)\.$/);
     const { resolve } = resolverOf({});
     await expect(resolve([agentPlan(codexDefault)])).rejects.toThrow(/gpt-sol is exhausted until 2026-11-27 09:00 UTC/);
   });
 
-  it("an exhausted default with a usable inherited launch and no history: the inherited launch, the exhaustion noted", async () => {
-    const { resolve } = resolverOf({});
+  it("an exhausted default with a usable inherited launch and no history: the inherited launch, the exhaustion noted (no node fallback)", async () => {
+    const { resolve, fallbackLaunch } = resolverOf({}, "local-model");
     const usable = { ...root, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus" };
     const [plan] = await resolve([agentPlan(codexDefault)], { kind: "inherited", launch: usable });
     expect(plan).toMatchObject({ launchConfiguration: usable, launchSource: { origin: "inherited", fallbacks: [EXHAUSTED_FALLBACK] } });
+    expect(fallbackLaunch).toHaveBeenCalledWith("operator", false);
   });
 
   it("Team members: a history-launched member runs on its own launch; the others keep theirs", async () => {

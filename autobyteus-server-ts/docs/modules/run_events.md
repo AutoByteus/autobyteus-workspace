@@ -69,7 +69,7 @@ Each runtime's backend classifies its own errors, as `error_kind: "usage_limit"`
   - It chooses (`FallbackChooser`), then has the run's root switch it (`RunRuntimeSwitcher`, `agent-collaboration/execution/services/run-runtime-switcher.ts`), with the failed launch as `from`.
   - A root that finds the agent still in its turn is asked once more after the run's next idle status.
   - Every outcome is recorded (C-2), except `already_switched`.
-  - With no fallback, the run stays in Error and shows one notice from `system.usage_limit`: "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC; …. No other runtime is usable."
+  - With nothing usable (R-17 makes that the only no-fallback case), the run stays in Error and shows one notice from `system.usage_limit` (R-18): "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC. No other runtime can run now. Choose one in the run's Settings to continue." Every exhausted runtime is named, with "for about an hour" when its reset is unknown.
 - `src/compositions/run-events-composition.ts`: `composeRunEvents` (before the run supervisor: the log's retention, the hub, the exhaustion view, the detector, the model-blocked reading) and `startSwitching` (once the roots and Model Routing exist), released at shutdown.
 
 ### The switch in each root (R-11, R-12, R-15)
@@ -80,20 +80,20 @@ The automatic switch is its own operation, never the person's Settings Save; its
   1. `StandaloneAutomaticRuntimeSwitch.check` (agent-execution/services) decides. `already_switched` when the run is no longer on the failed launch or a switch is pending (R-12, the run's own state, so it holds across a restart). A refusal for an archived run, a missing record or a model that can't run.
   2. The quiet stop.
   3. The commit (`commitRunRuntimeSwitch` with the pending switch and its cause), in the run's transition lane.
-  4. The root sets its own inherited launch from the committed metadata (R-15).
+  4. The root sets its own inherited launch from the committed metadata (R-15). The launch records who chose it as its source (R-19: `model_router`, `agent_history` or `node_fallback`; a person's Save records `settings`).
   5. The continue message.
 
   A run another node delegated here switches too (CM-10): `canSwitchRuntime`'s peer rule is the person's Settings rule. The delegating node shows the new launch on its next read of the run's summary.
 - **Team root:** `RootTeamRun.switchAgentRuntime` → `TeamMemberRuntimeSwitch`. In order:
   1. The same checks.
   2. The member's quiet stop.
-  3. `TeamMemberRuntimeSwitchCommitter`, which commits only that member through `applySelectionToConfiguredMember`.
+  3. `TeamMemberRuntimeSwitchCommitter`, which commits only that member through `applySelectionToConfiguredMember`, with the launch source of who chose it (R-19).
   4. The handle's `replaceSelection`.
   5. The continue message.
 
 ## What the person and the agent see
 
-- **The marker row** is rendered from the pending switch's stored `cause`: "Codex App Server usage limit reached (resets Nov 27, 09:00 UTC) — switched to Claude Agent SDK (opus). Chosen by the Model Router: <reason>." The history version ends "Chosen from this agent's history." (R-7).
+- **The marker row** is rendered from the pending switch's stored `cause`: "Codex App Server usage limit reached (resets Nov 27, 09:00 UTC) — switched to Claude Agent SDK (opus). Chosen by the Model Router: <reason>." The history version ends "Chosen from this agent's history.", the node fallback's "Chosen by the node." (R-7, R-17).
 - **The continue notice** (R-9, R-10): "Continue the task where you left off."
   - It is an ordinary SYSTEM input, so the hand-over preface combines into it on the same turn.
   - It is tagged `present_as_notice` (autobyteus-ts), so memory records it as a notice from `system.usage_limit`, never as a user message.
@@ -106,7 +106,7 @@ The automatic switch is its own operation, never the person's Settings Save; its
 - `tests/unit/run-events/`: hub and log retention, exhaustion view, detector, switch listener.
 - `tests/unit/agent-execution/backends/shared/late-usage-limit-classification.test.ts`, `tests/unit/agent-execution/standalone-automatic-runtime-switch.test.ts`.
 - `tests/unit/agent-collaboration/execution/error-classified-presentation.test.ts`, `tests/unit/services/agent-streaming/agent-stream-sequence.test.ts` (AR-012).
-- Built-server E2E: `tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts` (UL-01 … UL-08, `RUN_USAGE_LIMIT_SWITCH_E2E=1`) and the two-server `tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts` (ULP-01, `RUN_USAGE_LIMIT_PEER_E2E=1`).
+- Built-server E2E: `tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts` (UL-01 … UL-09, `RUN_USAGE_LIMIT_SWITCH_E2E=1`) and the two-server `tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts` (ULP-01, `RUN_USAGE_LIMIT_PEER_E2E=1`).
 - `tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` (`error_kind`).
 - `tests/unit/agent-execution/runtime-switch-cause.test.ts`.
 - The roots' switch: `tests/unit/standalone-agent-run-root/standalone-root-runtime-switch.test.ts`, `tests/unit/agent-team-execution/team-member-runtime-switch.test.ts`.

@@ -3,7 +3,8 @@ import { z } from "zod";
  * Where an agent's (or a Team's) launch values came from and the layers skipped before it; `configured` marks a copy
  * started from a configured placement of the coordinating run; `model_router` a choice of the node's Model Router,
  * with its one-sentence reason and task kind (autobyteus-32); `agent_history` the agent's most-used usable launch after
- * a default was skipped as exhausted (autobyteus-646 R-8). Absent on records written before sources existed
+ * a default was skipped as exhausted (autobyteus-646 R-8), `node_fallback` the node's own choice after it (R-17); both
+ * also name who chose an automatic runtime switch (R-19). Absent on records written before sources existed
  * ("not recorded").
  */
 export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodUnion<readonly [z.ZodObject<{
@@ -11,6 +12,7 @@ export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodUnion
         agent_default: "agent_default";
         team_default: "team_default";
         agent_history: "agent_history";
+        node_fallback: "node_fallback";
         inherited: "inherited";
         configured: "configured";
         settings: "settings";

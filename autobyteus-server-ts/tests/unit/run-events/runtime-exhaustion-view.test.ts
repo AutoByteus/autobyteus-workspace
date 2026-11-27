@@ -40,8 +40,8 @@ describe("RuntimeExhaustionView", () => {
     ]);
     await exhaustion.load();
     expect(exhaustion.exhaustedNow()).toEqual([
-      { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", until: "2026-11-26T08:00:00.000Z" },
-      { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", until: "2026-11-27T09:00:00.000Z" },
+      { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", until: "2026-11-26T08:00:00.000Z", resetKnown: true },
+      { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-6.1-terra", until: "2026-11-27T09:00:00.000Z", resetKnown: true },
     ]);
   });
 });

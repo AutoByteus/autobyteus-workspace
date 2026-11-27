@@ -194,7 +194,8 @@ describe.skipIf(!ENABLED)("A peer-started run switches runtime on its own node",
     expect(records).toEqual([expect.objectContaining({ agentDefinitionId: worker, from: { runtimeKind: "codex_app_server", llmModelIdentifier: CODEX_MODEL },
       to: { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel }, chosenBy: "agent_history", outcome: "switched" })]);
     const metadata = JSON.parse(await fs.readFile(path.join(betaRoot, "memory", "agents", peerRunId, "run_metadata.json"), "utf8")) as Json;
-    expect(metadata).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel });
+    expect(metadata).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel,
+      launchSource: { origin: "agent_history", fallbacks: [] } });
     expect(metadata.delegatedFrom?.nodeId, "a run another node started").toBeTruthy();
 
     // Alpha reads the peer run's launch fresh while a view holds it (its run-status feed, as the delegator's tree does):

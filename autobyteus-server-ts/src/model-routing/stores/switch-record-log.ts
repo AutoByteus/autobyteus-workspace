@@ -3,7 +3,7 @@ import { SealedJsonlLog } from "../../utils/sealed-jsonl-log.js";
 import type { SwitchLaunch, SwitchRecord } from "../domain/runtime-switch-types.js";
 
 const OUTCOMES: readonly string[] = ["switched", "no_fallback", "switch_failed"];
-const CHOSEN_BY: readonly (string | null)[] = ["model_router", "agent_history", null];
+const CHOSEN_BY: readonly (string | null)[] = ["model_router", "agent_history", "node_fallback", null];
 
 const isText = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 const nullableText = (value: unknown): value is string | null => value === null || typeof value === "string";

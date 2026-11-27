@@ -453,6 +453,7 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -551,6 +552,7 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";

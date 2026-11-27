@@ -20,6 +20,9 @@ describe("the hand-over marker of an automatic switch", () => {
     expect(buildRuntimeSwitchBetween({ runId: "r", to: TO, pending: { switchId: "s", from: FROM,
       cause: { kind: "usage_limit", resetAt: null, chosenBy: "agent_history", reason: null } } }).markerText)
       .toBe("Codex App Server usage limit reached — switched to Claude Agent SDK (opus). Chosen from this agent's history.");
+    expect(buildRuntimeSwitchBetween({ runId: "r", to: TO, pending: { switchId: "s", from: FROM,
+      cause: { kind: "usage_limit", resetAt: null, chosenBy: "node_fallback", reason: null } } }).markerText)
+      .toBe("Codex App Server usage limit reached — switched to Claude Agent SDK (opus). Chosen by the node.");
   });
 
   it("without a cause stays today's text", () => {
@@ -36,7 +39,7 @@ describe("the stored cause", () => {
 
   it.each([
     [{ ...ROUTER, kind: "cost_budget" }, "kind must be usage_limit"],
-    [{ ...ROUTER, chosenBy: "person" }, "chosenBy must be model_router or agent_history"],
+    [{ ...ROUTER, chosenBy: "person" }, "chosenBy must be model_router, agent_history or node_fallback"],
     [{ kind: "usage_limit", resetAt: null, chosenBy: "agent_history" }, "missing required field(s): reason"],
   ])("a malformed cause makes the record unreadable (%j)", (cause, message) => {
     expect(() => parsePendingRuntimeSwitch({ switchId: "s", from: FROM, cause })).toThrow(message);

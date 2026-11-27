@@ -42,9 +42,11 @@ copy; the router never does:
 4. this agent's history (origin `agent_history`, autobyteus-646 R-2/R-8), only
    when one of its layers was skipped as **exhausted** and the router did not
    choose: its most-used usable runtime of the last 30 days, with the model it
-   last used there (`FallbackChooser.historyLaunch`);
+   last used there (`FallbackChooser.fallbackLaunch`);
 5. the delegator's launch (inherited), on this node only;
-6. otherwise the delegation is refused, and the refusal says why.
+6. after an exhausted skip, when the inherited launch can't run either (or
+   there is none): the node fallback (origin `node_fallback`, R-17);
+7. otherwise the delegation is refused, and the refusal says why.
 
 "Can run now" (`launch-preferences/launch-usability-check.ts`) checks the
 runtime is installed (U1), signed in (U3), the model exists (U2), its runtime is
@@ -127,8 +129,12 @@ another runtime. The detection and the event are the run event hub's
   runtimes and models usable now: in the node's report (installed, signed in),
   not blocked, not exhausted. The router is asked first, when Model Routing is
   on and the router's own launch is not exhausted; then this agent's history;
-  otherwise there is no fallback. A history choice's reason is "most used by this
-  agent in the last 30 days".
+  then the node fallback (R-17): the runtime and model most used on this node in
+  the last 30 days across all agents that are usable now, else the first usable
+  runtime in the node's runtime list with its first usable model (never random).
+  There is no fallback only when nothing is usable. The reasons: "most used by
+  this agent in the last 30 days", "most used on this node in the last 30 days",
+  "the first usable runtime on this node".
 - **The switch request** (`ModelRouter.requestSwitch`, C-7). It goes through the
   same queue and 40 s budget as a routing request, as a system notice from
   `system.model_router` that starts with "Switch request <id>"
@@ -143,8 +149,8 @@ another runtime. The detection and the event are the run event hub's
 - **Switch records** (`stores/switch-record-log.ts`, C-2):
   `<appData>/model-routing/switches_active.jsonl`, sealed at 4 MB, one line per
   handled event: `at`, `agentRunId`, `agentDefinitionId`, `from`, `to` (null
-  without a fallback), `chosenBy` (`model_router | agent_history`, null without a
-  fallback), `reason`, `routerFailure`, `outcome` (`switched | no_fallback |
+  without a fallback), `chosenBy` (`model_router | agent_history | node_fallback`,
+  null without a fallback; the same values as the launch origin, R-19), `reason`, `routerFailure`, `outcome` (`switched | no_fallback |
   switch_failed`). The switch request reads this agent's records of the last
   30 days. Sealed files whose last record is older than 90 days are deleted
   (R-14; DEC-008, the default until the founder decides); the routing decision

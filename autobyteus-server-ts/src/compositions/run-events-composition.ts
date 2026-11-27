@@ -17,7 +17,7 @@ import { RuntimeExhaustionView } from "../run-events/listeners/runtime-exhaustio
 import { UsageLimitSwitchListener } from "../run-events/listeners/usage-limit-switch-listener.js";
 import { RunEventHub } from "../run-events/run-event-hub.js";
 import { RunEventLog } from "../run-events/run-event-log.js";
-import { configureAgentHistoryLaunch, configureRuntimeExhaustion } from "../launch-preferences/launch-fallback-ports.js";
+import { configureFallbackLaunch, configureRuntimeExhaustion } from "../launch-preferences/launch-fallback-ports.js";
 import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
 import { AgentLaunchHistory } from "../run-history/services/agent-launch-history.js";
 import { AgentRunHistoryIndexStore } from "../run-history/store/agent-run-history-index-store.js";
@@ -143,8 +143,11 @@ export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) 
       records: switchRecords,
     });
     unsubscribeSwitching = hub.subscribe("usage_limit_reached", (event) => listener.handle(event));
-    // R-2: delegation's history layer.
-    historyBinding = configureAgentHistoryLaunch(chooser);
+    // R-2, R-17: delegation's layers after an exhausted skip (this agent's history, then the node fallback).
+    historyBinding = configureFallbackLaunch({ fallbackLaunch: async (agentDefinitionId, withNodeFallback) => {
+      const chosen = await chooser.fallbackLaunch(agentDefinitionId, withNodeFallback);
+      return chosen && chosen.chosenBy !== "model_router" ? { ...chosen.launch, chosenBy: chosen.chosenBy } : null;
+    } });
     return chooser;
   };
 

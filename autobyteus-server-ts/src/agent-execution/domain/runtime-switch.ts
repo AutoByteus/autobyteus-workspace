@@ -69,13 +69,13 @@ export const resetTimeText = (iso: string): string => {
 /**
  * An automatic switch's marker (autobyteus-646 R-7), rendered from its stored facts: "Codex usage limit reached (resets
  * Nov 27, 09:00 UTC) — switched to Claude (opus). Chosen by the Model Router: <reason>." (or "Chosen from this agent's
- * history.").
+ * history.", or "Chosen by the node." for R-17's node fallback).
  */
 const causeMarkerText = (cause: RuntimeSwitchCause, from: RuntimeSwitchSide, to: RuntimeSwitchSide): string => {
   const reset = cause.resetAt ? ` (resets ${resetTimeText(cause.resetAt)})` : "";
   const chosen = cause.chosenBy === "model_router"
     ? `Chosen by the Model Router${cause.reason ? `: ${cause.reason.trim().replace(/\.+$/, "")}` : ""}.`
-    : "Chosen from this agent's history.";
+    : cause.chosenBy === "node_fallback" ? "Chosen by the node." : "Chosen from this agent's history.";
   return `${agentRuntimeName(from.runtimeKind)} usage limit reached${reset} — switched to ${label(to)}. ${chosen}`;
 };
 

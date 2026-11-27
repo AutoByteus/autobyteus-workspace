@@ -1,0 +1,7 @@
+# command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# commit: 230bcc534b + uncommitted SR-011 changes
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T11:04:18Z
+ Test Files  92 passed | 21 skipped (113)
+      Tests  523 passed | 71 skipped (594)
+   Duration  179.24s (transform 10.12s, setup 2.48s, import 77.34s, tests 89.32s, environment 6ms)

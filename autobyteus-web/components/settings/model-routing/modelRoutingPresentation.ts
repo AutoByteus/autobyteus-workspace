@@ -13,7 +13,7 @@ export const runtimeColor = (runtimeKind: string): string => RUNTIME_COLORS[runt
 
 /** The source bar's colours: the router is the emphasis, defaults quiet, an inherited launch the warm exception. */
 export const SOURCE_COLORS: Readonly<Record<DecisionLaunchSource, string>> = {
-  model_router: '#1e293b', agent_default: '#94a3b8', team_default: '#cbd5e1', agent_history: '#64748b', inherited: '#f59e0b',
+  model_router: '#1e293b', agent_default: '#94a3b8', team_default: '#cbd5e1', agent_history: '#64748b', node_fallback: '#475569', inherited: '#f59e0b',
 }
 
 export const SOURCE_KEY: Readonly<Record<DecisionLaunchSource, string>> = {
@@ -21,6 +21,7 @@ export const SOURCE_KEY: Readonly<Record<DecisionLaunchSource, string>> = {
   agent_default: 'settings.modelRouting.source.agent_default',
   team_default: 'settings.modelRouting.source.team_default',
   agent_history: 'settings.modelRouting.source.agent_history',
+  node_fallback: 'settings.modelRouting.source.node_fallback',
   inherited: 'settings.modelRouting.source.inherited',
 }
 

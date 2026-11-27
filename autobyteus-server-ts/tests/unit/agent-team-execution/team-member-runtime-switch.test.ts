@@ -43,6 +43,8 @@ describe("RootTeamRun.switchAgentRuntime", () => {
     const member = f.root.getExecutionTreeSnapshot().rootTeam.members.find((node) => node.agentRunId === "run-coordinator")!;
     expect(member.launchConfiguration).toMatchObject({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus" });
     expect(member.pendingRuntimeSwitch).toMatchObject({ from: { runtimeKind: RuntimeKind.CODEX_APP_SERVER }, cause: CAUSE });
+    // R-19: the member's launch records who chose it, not the person's `settings`.
+    expect(member.launchSource).toEqual({ origin: "agent_history", fallbacks: [] });
     const stored = await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT);
     expect(stored!.rootTeam.members.find((node) => node.agentRunId === "run-coordinator")!.pendingRuntimeSwitch).toEqual(member.pendingRuntimeSwitch);
     expect(coordinator.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining({

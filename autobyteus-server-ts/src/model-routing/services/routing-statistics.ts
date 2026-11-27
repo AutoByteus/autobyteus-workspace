@@ -74,7 +74,7 @@ export class RoutingStatistics {
   async forPeriod(period: RoutingStatisticsPeriod): Promise<RoutingStatisticsView> {
     const since = period === "all" ? null : this.now() - period * DAY_MS;
     const records = (await this.log.readAll()).filter((record) => since === null || Date.parse(record.recordedAt) >= since);
-    const sources: Record<DecisionLaunchSource, number> = { model_router: 0, agent_default: 0, team_default: 0, agent_history: 0, inherited: 0 };
+    const sources: Record<DecisionLaunchSource, number> = { model_router: 0, agent_default: 0, team_default: 0, agent_history: 0, node_fallback: 0, inherited: 0 };
     for (const record of records) sources[record.source] += 1;
     const routed = records.filter((record) => record.source === "model_router");
     return Object.freeze({

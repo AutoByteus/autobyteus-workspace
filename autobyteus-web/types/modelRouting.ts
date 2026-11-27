@@ -24,7 +24,7 @@ export type ModelRoutingStatus = Readonly<{
   agentRunId: string | null
 }>
 
-export type DecisionLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'agent_history' | 'inherited'
+export type DecisionLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'agent_history' | 'node_fallback' | 'inherited'
 
 export type RoutingDecisionRecord = Readonly<{
   recordedAt: string

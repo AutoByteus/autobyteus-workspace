@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentLaunchHistoryEntry, RuntimeSwitchRequest } from "../../../src/model-routing/domain/runtime-switch-types.js";
-import { FallbackChooser, HISTORY_CHOICE_REASON, historyPick, usableRuntimesNow } from "../../../src/model-routing/services/fallback-chooser.js";
+import { FallbackChooser, HISTORY_CHOICE_REASON, NODE_FIRST_USABLE_CHOICE_REASON, NODE_HISTORY_CHOICE_REASON, historyPick, nodeFallbackPick,
+  usableRuntimesNow } from "../../../src/model-routing/services/fallback-chooser.js";
 import { nodeFacts } from "./model-routing-fixtures.js";
 
 const NOW = new Date("2026-11-27T08:00:00.000Z");
@@ -14,12 +15,13 @@ const exhaustion = (exhausted: readonly string[] = ["codex_app_server/gpt-sol"])
 const entry = (runtimeKind: string, llmModelIdentifier: string, runs: number, lastUsedAt: string): AgentLaunchHistoryEntry =>
   ({ runtimeKind, llmModelIdentifier, runs, lastUsedAt });
 
-const chooserOf = (input: Partial<{ history: AgentLaunchHistoryEntry[]; exhausted: string[]; answer: Awaited<ReturnType<FallbackChooser["choose"]>> | null }> = {}) => {
+const chooserOf = (input: Partial<{ history: AgentLaunchHistoryEntry[]; nodeHistory: AgentLaunchHistoryEntry[]; exhausted: string[];
+  answer: Awaited<ReturnType<FallbackChooser["choose"]>> | null }> = {}) => {
   const requestSwitch = vi.fn(async (_request: RuntimeSwitchRequest) => input.answer ?? { kind: "failed" as const, reason: "no valid answer within 40 seconds" });
   const chooser = new FallbackChooser({
     readNodeRuntimes: async () => nodeFacts({ signedOut: [] }),
     exhaustion: exhaustion(input.exhausted),
-    history: { launchesOf: async () => input.history ?? [] },
+    history: { launchesOf: async () => input.history ?? [], launchesOfNode: async () => input.nodeHistory ?? [] },
     switchRecords: { recentOf: async () => [] },
     router: { requestSwitch: requestSwitch as never },
     now: () => NOW,
@@ -81,16 +83,27 @@ describe("FallbackChooser (DS-003, REQ-004)", () => {
     expect(exhaustedRouter.requestSwitch).not.toHaveBeenCalled();
   });
 
-  it("no fallback: nothing usable, or the router could not choose and history has nothing usable", async () => {
-    const everything = ["claude_agent_sdk/sonnet", "autobyteus/deepseek-chat", "codex_app_server/gpt-sol"];
-    await expect(chooserOf({ exhausted: everything }).chooser.choose(request)).resolves.toEqual({ kind: "no_fallback", routerFailure: null });
-    await expect(chooserOf({ history: [entry("codex_app_server", "gpt-sol", 5, "2026-11-26T00:00:00.000Z")] }).chooser.choose(request))
-      .resolves.toEqual({ kind: "no_fallback", routerFailure: "Model Routing is off" });
+  it("R-17: no history of this agent usable: the node fallback, its most-used usable launch, else the first usable runtime in the node's order", async () => {
+    const nodeHistory = [entry("codex_app_server", "gpt-sol", 9, "2026-11-26T00:00:00.000Z"), entry("autobyteus", "deepseek-chat", 4, "2026-11-20T00:00:00.000Z"),
+      entry("claude_agent_sdk", "sonnet", 4, "2026-11-10T00:00:00.000Z")];
+    await expect(chooserOf({ history: [entry("codex_app_server", "gpt-sol", 5, "2026-11-26T00:00:00.000Z")], nodeHistory }).chooser.choose(request))
+      .resolves.toEqual({ kind: "chosen", launch: { runtimeKind: "autobyteus", llmModelIdentifier: "deepseek-chat" }, chosenBy: "node_fallback",
+        reason: NODE_HISTORY_CHOICE_REASON, routerFailure: "Model Routing is off" });
+    await expect(chooserOf().chooser.choose(request)).resolves.toEqual({ kind: "chosen", launch: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" },
+      chosenBy: "node_fallback", reason: NODE_FIRST_USABLE_CHOICE_REASON, routerFailure: "Model Routing is off" });
+    expect(nodeFallbackPick([], [])).toBeNull();
   });
 
-  it("historyLaunch: the delegation's history layer", async () => {
-    await expect(chooserOf({ history: [entry("claude_agent_sdk", "sonnet", 1, "2026-11-22T00:00:00.000Z")] }).chooser.historyLaunch("operator"))
-      .resolves.toEqual({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" });
-    await expect(chooserOf().chooser.historyLaunch("operator")).resolves.toBeNull();
+  it("no fallback only when nothing is usable", async () => {
+    const everything = ["claude_agent_sdk/sonnet", "autobyteus/deepseek-chat", "codex_app_server/gpt-sol"];
+    await expect(chooserOf({ exhausted: everything }).chooser.choose(request)).resolves.toEqual({ kind: "no_fallback", routerFailure: null });
+  });
+
+  it("fallbackLaunch: the delegation's layers; the node fallback only when asked (the inherited launch can't run)", async () => {
+    await expect(chooserOf({ history: [entry("claude_agent_sdk", "sonnet", 1, "2026-11-22T00:00:00.000Z")] }).chooser.fallbackLaunch("operator", false))
+      .resolves.toEqual({ launch: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" }, chosenBy: "agent_history", reason: HISTORY_CHOICE_REASON });
+    await expect(chooserOf().chooser.fallbackLaunch("operator", false)).resolves.toBeNull();
+    await expect(chooserOf().chooser.fallbackLaunch("operator", true)).resolves.toMatchObject({ chosenBy: "node_fallback",
+      launch: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" } });
   });
 });

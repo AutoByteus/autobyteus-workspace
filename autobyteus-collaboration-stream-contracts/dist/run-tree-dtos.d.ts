@@ -40,6 +40,7 @@ export declare const runTreeLaunchDtoSchema: z.ZodObject<{
             agent_default: "agent_default";
             team_default: "team_default";
             agent_history: "agent_history";
+            node_fallback: "node_fallback";
             inherited: "inherited";
             configured: "configured";
             settings: "settings";
@@ -131,6 +132,7 @@ export declare const runTreeRowDtoSchema: z.ZodObject<{
                 agent_default: "agent_default";
                 team_default: "team_default";
                 agent_history: "agent_history";
+                node_fallback: "node_fallback";
                 inherited: "inherited";
                 configured: "configured";
                 settings: "settings";
@@ -231,6 +233,7 @@ export declare const runTreeChangeDtoSchema: z.ZodObject<{
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -329,6 +332,7 @@ export declare const runTreeChangeDtoSchema: z.ZodObject<{
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -430,6 +434,7 @@ export declare const runTreeChangedEventDtoSchema: z.ZodObject<{
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -528,6 +533,7 @@ export declare const runTreeChangedEventDtoSchema: z.ZodObject<{
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -635,6 +641,7 @@ export declare const runTreeDtoSchema: z.ZodObject<{
                     agent_default: "agent_default";
                     team_default: "team_default";
                     agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";

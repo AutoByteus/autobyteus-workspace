@@ -35,7 +35,9 @@ const parseRuntimeSwitchCause = (value: unknown, label: string): RuntimeSwitchCa
   const cause = objectRecord(value, label);
   requireKeys(cause, ["kind", "resetAt", "chosenBy", "reason"], label);
   if (cause.kind !== "usage_limit") throw new Error(`${label}.kind must be usage_limit.`);
-  if (cause.chosenBy !== "model_router" && cause.chosenBy !== "agent_history") throw new Error(`${label}.chosenBy must be model_router or agent_history.`);
+  if (cause.chosenBy !== "model_router" && cause.chosenBy !== "agent_history" && cause.chosenBy !== "node_fallback") {
+    throw new Error(`${label}.chosenBy must be model_router, agent_history or node_fallback.`);
+  }
   return { kind: "usage_limit", resetAt: nullableString(cause.resetAt, `${label}.resetAt`), chosenBy: cause.chosenBy,
     reason: nullableString(cause.reason, `${label}.reason`) };
 };

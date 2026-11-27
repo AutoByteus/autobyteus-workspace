@@ -772,7 +772,8 @@ shows what its Model Router chose (server side:
   Routing is on: a run whose runtime reaches its usage limit continues on another
   usable runtime, chosen by the router when Model Routing is on, otherwise the
   one the agent used most ([Run Events](../../autobyteus-server-ts/docs/modules/run_events.md)).
-  A Decisions source "Agent history" marks a delegated launch from that history.
+  Decisions sources "Agent history" and "Node fallback" mark a delegated launch
+  chosen after an exhausted default (autobyteus-646 R-8, R-17).
 - **Names** (autobyteus-313): the page names runtimes and models as the rest of
   the app does (`modelRoutingNames.ts`): a runtime by its one name
   (`agentRuntimeName`, "Claude Agent SDK"; `GLOSSARY.md`, Agent Runtimes), a model

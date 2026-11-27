@@ -4,6 +4,7 @@ import type { RunModelSelectionValidationResult, RunModelSelectionValidator } fr
 import type { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunMetadata, RuntimeSwitchCause } from "../../run-history/store/agent-run-metadata-types.js";
+import { automaticSwitchLaunchSource } from "../../run-history/domain/runtime-selection-rule.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunManager } from "./agent-run-manager.js";
 import { selectionContextFor } from "./stopped-run-selection-context.js";
@@ -67,6 +68,8 @@ export class StandaloneAutomaticRuntimeSwitch {
       runId: input.agentRunId,
       selection: { runtimeKind: input.launch.runtimeKind, ...planned.selection, continuation: planned.continuation, cause: input.cause },
       switchId: randomUUID(),
+      // R-19: the launch records who chose it.
+      launchSource: automaticSwitchLaunchSource(input.cause),
     });
     switch (committed.kind) {
       case "committed": return { kind: "switched", metadata: committed.metadata };

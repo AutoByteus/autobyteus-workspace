@@ -39,7 +39,9 @@ describe("StandaloneAutomaticRuntimeSwitch", () => {
     expect(s.validate).toHaveBeenLastCalledWith(expect.objectContaining({ selection: { llmModelIdentifier: "opus", llmConfig: null },
       context: expect.objectContaining({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, handOver: "available" }) }));
     expect(s.commitRunRuntimeSwitch).toHaveBeenCalledWith({ runId: "run-1", switchId: expect.any(String),
-      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: { effort: "default" }, continuation: "hand_over", cause: CAUSE } });
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: { effort: "default" }, continuation: "hand_over", cause: CAUSE },
+      // R-19: the launch records who chose it, never the person's `settings`.
+      launchSource: { origin: "agent_history", fallbacks: [] } });
   });
 
   it("R-12: a run no longer on the failed launch, or with a switch pending, is already switched", async () => {

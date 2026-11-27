@@ -6,8 +6,11 @@ export const EXHAUSTION_COOLDOWN_MS = 60 * 60 * 1000;
 /** How far back the startup read goes: the longest reset seen is a billing period, at most a month (R-5). */
 export const EXHAUSTION_LOOKBACK_MS = 31 * 24 * 60 * 60 * 1000;
 
-/** One runtime's model that is exhausted now, and until when. */
-export type ExhaustedModel = Readonly<{ runtimeKind: string; llmModelIdentifier: string; until: string }>;
+/**
+ * One runtime's model that is exhausted now, and until when; `resetKnown` is false when that time is the event's `at`
+ * plus the cooldown (the runtime gave no reset time).
+ */
+export type ExhaustedModel = Readonly<{ runtimeKind: string; llmModelIdentifier: string; until: string; resetKnown: boolean }>;
 
 type UsageLimitEvent = RunEvent<"usage_limit_reached">;
 
@@ -54,7 +57,8 @@ export class RuntimeExhaustionView {
         const until = untilOf(event);
         const known = latest.get(key);
         if (!known || Date.parse(known.until) < until) {
-          latest.set(key, Object.freeze({ runtimeKind: event.data.runtimeKind, llmModelIdentifier: model, until: new Date(until).toISOString() }));
+          latest.set(key, Object.freeze({ runtimeKind: event.data.runtimeKind, llmModelIdentifier: model, until: new Date(until).toISOString(),
+            resetKnown: event.data.resetAt !== null }));
         }
       }
     }

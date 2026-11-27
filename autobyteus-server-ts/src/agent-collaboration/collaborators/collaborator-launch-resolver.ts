@@ -7,7 +7,7 @@ import {
   type LaunchUsabilityCheck,
   type LaunchVerdict,
 } from "../../launch-preferences/launch-usability-check.js";
-import type { AgentHistoryLaunchPort } from "../../launch-preferences/launch-fallback-ports.js";
+import type { FallbackLaunchPort } from "../../launch-preferences/launch-fallback-ports.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   DelegationRouting,
@@ -67,7 +67,7 @@ const cloneLaunch = (value: AgentLaunchConfiguration): AgentLaunchConfiguration 
   workspaceRootPath: value.workspaceRootPath,
 });
 
-const source = (origin: "agent_default" | "team_default" | "agent_history" | "inherited", fallbacks: readonly LaunchConfigurationFallback[] = []): LaunchConfigurationSource =>
+const source = (origin: "agent_default" | "team_default" | "agent_history" | "node_fallback" | "inherited", fallbacks: readonly LaunchConfigurationFallback[] = []): LaunchConfigurationSource =>
   Object.freeze({ origin, fallbacks: Object.freeze([...fallbacks]) });
 
 const routedSource = (choice: LaunchChoice, fallbacks: readonly LaunchConfigurationFallback[]): LaunchConfigurationSource => Object.freeze({
@@ -97,8 +97,8 @@ export class CollaboratorLaunchResolver {
   constructor(private readonly dependencies: Readonly<{
     usability: Pick<LaunchUsabilityCheck, "check">;
     router: ModelRouterPort;
-    /** autobyteus-646 R-2: the history layer; without it there is none. */
-    history?: AgentHistoryLaunchPort;
+    /** autobyteus-646 R-2, R-17: the layers after an exhausted skip (agent history, node fallback); without it there are none. */
+    fallback?: FallbackLaunchPort;
   }>) {}
 
   /** The entry plans, and whether Model Routing was on for this resolution (its decisions are then recorded, REQ-012). */
@@ -161,7 +161,8 @@ export class CollaboratorLaunchResolver {
         routerFailure = routerFallback("router_failed", outcome.reason);
       }
     }
-    const historyLaunches = await this.historyLaunches(uncovered.filter((slot) => !choices.has(slot.address)), slots, verdicts);
+    const historyLaunches = await this.fallbackLaunches(uncovered.filter((slot) => !choices.has(slot.address)), slots, verdicts,
+      inherited !== null && verdicts.inherited?.usable !== false);
     const routerState: DelegatedRunRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
     // A routed launch takes the workspace and auto-approve every candidate takes (§ 3.3), with the model's default settings.
     const context = launchContextOf(base);
@@ -177,7 +178,7 @@ export class CollaboratorLaunchResolver {
       const fromHistory = historyLaunches.get(slot.key);
       if (fromHistory) {
         return { launch: Object.freeze({ runtimeKind: fromHistory.runtimeKind as RuntimeKind, llmModelIdentifier: fromHistory.llmModelIdentifier,
-          llmConfig: null, ...context }), source: source("agent_history", fallbacks) };
+          llmConfig: null, ...context }), source: source(fromHistory.chosenBy, fallbacks) };
       }
       if (!inherited) return noUsableLayer(plan, planned.fallbacks, routerState);
       if (verdicts.inherited?.usable === false) throw inheritedLayerRefusal(plan, inherited, verdicts.inherited);
@@ -209,7 +210,7 @@ export class CollaboratorLaunchResolver {
         }
         const resolved = finish(plan, { key: member, address: member.address, name: member.name, description: member.description, role: member.role,
           agentDefinitionId: member.agentDefinitionId }, planned);
-        if (resolved.source.origin === "model_router" || resolved.source.origin === "agent_history") {
+        if (resolved.source.origin === "model_router" || resolved.source.origin === "agent_history" || resolved.source.origin === "node_fallback") {
           return Object.freeze({ ...layout, launchConfiguration: resolved.launch, followsTeam: false, launchSource: resolved.source });
         }
         // The run root's launch: it follows the Team's launch, which is that launch (the Team default is not usable).
@@ -244,7 +245,7 @@ export class CollaboratorLaunchResolver {
     if (team?.usable === true) return { launch: team.launch, source: source("team_default") };
     // A skipped Team default is noted at Team level unless every member without its own default was routed (each
     // routed member's note already names it).
-    const ownLaunch = (member: CollaboratorEntryPlanMember) => member.launchSource?.origin === "model_router" || member.launchSource?.origin === "agent_history";
+    const ownLaunch = (member: CollaboratorEntryPlanMember) => ["model_router", "agent_history", "node_fallback"].includes(member.launchSource?.origin ?? "");
     const routedOnly = members.some(ownLaunch) && !members.some((member) => member.followsTeam);
     const fallbacks = teamFallback && !routedOnly ? [teamFallback] : [];
     if (inherited) return { launch: inherited, source: source("inherited", fallbacks) };
@@ -254,32 +255,34 @@ export class CollaboratorLaunchResolver {
     const coordinatorSource = coordinator.launchSource;
     return {
       launch: coordinator.launchConfiguration,
-      source: coordinatorSource?.origin === "model_router" || coordinatorSource?.origin === "agent_history"
+      source: coordinatorSource?.origin === "model_router" || coordinatorSource?.origin === "agent_history" || coordinatorSource?.origin === "node_fallback"
         ? Object.freeze({ ...coordinatorSource, fallbacks: Object.freeze(fallbacks) })
         : source("agent_default", fallbacks),
     };
   }
 
   /**
-   * The history layer (autobyteus-646 R-2): for each agent nothing covered and the router did not choose for, when one of
-   * its layers was skipped as exhausted (its own or Team default, or the inherited launch), this agent's history pick
-   * among what is usable now. A skip for any other reason keeps the order as before.
+   * The layers after an exhausted skip (autobyteus-646 R-2, R-17): for each agent nothing covered and the router did not
+   * choose for, when one of its layers was skipped as exhausted (its own or Team default, or the inherited launch), this
+   * agent's history pick among what is usable now; when the inherited launch can't run either, then the node fallback,
+   * before a refusal. A skip for any other reason keeps the order as before.
    */
-  private async historyLaunches(
+  private async fallbackLaunches(
     slots: readonly AgentSlot[],
     plans: ReadonlyMap<object, SlotPlan>,
     verdicts: Readonly<{ exhausted: ReadonlySet<LaunchConfigurationFallback>; inherited: InheritedLaunchVerdict | null }>,
-  ): Promise<ReadonlyMap<object, Readonly<{ runtimeKind: string; llmModelIdentifier: string }>>> {
-    const history = this.dependencies.history;
-    const picks = new Map<object, Readonly<{ runtimeKind: string; llmModelIdentifier: string }>>();
-    if (!history) return picks;
+    inheritedCanRun: boolean,
+  ): Promise<ReadonlyMap<object, Readonly<{ runtimeKind: string; llmModelIdentifier: string; chosenBy: "agent_history" | "node_fallback" }>>> {
+    const fallback = this.dependencies.fallback;
+    const picks = new Map<object, Readonly<{ runtimeKind: string; llmModelIdentifier: string; chosenBy: "agent_history" | "node_fallback" }>>();
+    if (!fallback) return picks;
     const inheritedExhausted = verdicts.inherited?.usable === false && verdicts.inherited.exhausted === true;
     for (const slot of slots) {
       const planned = plans.get(slot.key);
       if (planned?.kind !== "uncovered") continue;
-      if (!inheritedExhausted && !planned.fallbacks.some((fallback) => verdicts.exhausted.has(fallback))) continue;
-      const pick = await history.historyLaunch(slot.agentDefinitionId).catch((error: unknown) => {
-        console.warn(`Delegation: the history of '${slot.agentDefinitionId}' could not be read (${String(error)}).`);
+      if (!inheritedExhausted && !planned.fallbacks.some((skipped) => verdicts.exhausted.has(skipped))) continue;
+      const pick = await fallback.fallbackLaunch(slot.agentDefinitionId, !inheritedCanRun).catch((error: unknown) => {
+        console.warn(`Delegation: the fallback launch of '${slot.agentDefinitionId}' could not be read (${String(error)}).`);
         return null;
       });
       if (pick) picks.set(slot.key, pick);

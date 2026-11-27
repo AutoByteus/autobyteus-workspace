@@ -37,8 +37,8 @@ const listenerOf = (input: Partial<{ enabled: boolean; choice: SwitchChoice; out
     switcher: { switchAgentRuntime },
     nextIdle,
     exhaustion: { exhaustedNow: () => [
-      { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", until: "2026-11-27T09:00:00.000Z" },
-      { runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", until: "2026-11-25T18:00:00.000Z" },
+      { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", until: "2026-11-27T09:00:00.000Z", resetKnown: true },
+      { runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", until: "2026-11-25T07:43:00.000Z", resetKnown: false },
     ] },
     showNotice,
     records: { record },
@@ -88,9 +88,15 @@ describe("UsageLimitSwitchListener (DS-003)", () => {
     expect(f.switchAgentRuntime).not.toHaveBeenCalled();
     expect(f.showNotice).toHaveBeenCalledOnce();
     expect(f.showNotice).toHaveBeenCalledWith("run-1",
-      { text: "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC; Antigravity CLI until Nov 25, 18:00 UTC. No other runtime is usable." });
+      { text: "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC; Antigravity CLI for about an hour. No other runtime can run now. "
+        + "Choose one in the run's Settings to continue." });
     expect(f.record).toHaveBeenCalledWith(expect.objectContaining({ to: null, chosenBy: null, reason: null, outcome: "no_fallback" }));
-    expect(noFallbackText([])).toBe("A usage limit was reached. No other runtime is usable.");
+    expect(noFallbackText([])).toBe("A usage limit was reached. No other runtime can run now. Choose one in the run's Settings to continue.");
+    // R-18: a runtime with one known and one unknown reset shows the known one.
+    expect(noFallbackText([
+      { runtimeKind: "codex_app_server", llmModelIdentifier: "a", until: "2026-11-25T07:43:00.000Z", resetKnown: false },
+      { runtimeKind: "codex_app_server", llmModelIdentifier: "b", until: "2026-11-27T09:00:00.000Z", resetKnown: true },
+    ])).toMatch(/^Usage limits reached: Codex App Server until Nov 27, 09:00 UTC\. /);
   });
 
   it("not quiet: asked once more after the next idle status; a second refusal or no idle is switch_failed", async () => {
