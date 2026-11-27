@@ -25,12 +25,20 @@
 //   SDD-06 (agent)  AC-003, AC-004 (b)  The message is lost on the way to a run a Stop took offline (the node cannot say
 //          its queued input): text (b), the text back in the box.
 //   SDD-07 (agent)  AC-004 (a)  The path is down when the user sends: after the 10 s wait, text (a), the message gone, the
-//          text back, the status unchanged.
+//          text back, the status the one before the loss, and Send enabled (autobyteus-541 AC-004).
+//   SDD-13 (agent)  autobyteus-541 AC-004: the path down for 15 s and no send: the run's shown status stays the one before
+//          the loss (a history refresh puts no Initializing on it); Send stays enabled.
 //   SDD-08 (team)   AC-004 (b)  A Team member's message lost on the way: text (b), the text back, the member's status
 //          unchanged.
 //   SDD-09 (team)   AC-004 (a)  The path is down when the user sends to a Team member: the Team's 10 s wait ends with
-//          text (a), the message gone, the text back, the status as the loss left it (SDD-12).
-//   SDD-12 (team)   control for SDD-09: the path down for 15 s and no send: the member's shown status on its own.
+//          text (a), the message gone, the text back; the status the one before the loss, Send enabled right after the
+//          loss and after the notice (autobyteus-541 AC-004).
+//   SDD-12 (team)   autobyteus-541 AC-004: the path down for 15 s and no send: the member's shown status stays the one
+//          before the loss (no Initializing).
+//   SDD-14 (team)   autobyteus-541 AC-001: a real gap: another window's message to the member, the wire withholding the
+//          frame before its idle status (`fixtures/team-stream-gap.mjs`). With no reselect the page replaces its Team stream
+//          within one attempt (≤ 3 s), shows the member's status as the node has it (Idle) and the other window's message,
+//          shows no notice, and a message sent right after starts its turn on the new stream.
 //   SDD-10 (agent)  REQ-003, UC-001  A new run's first message with the path down: text (a), the text back; with the path
 //          back, sending again starts the turn on the same new run.
 //   SDD-11 (agent)  AC-003 (b), design residual  The message reached the node for a run a Stop took offline and the path
@@ -54,6 +62,7 @@ import { attachToBrowserContext, attachToProbeProcess, ownerHeaders, ownerSocket
 import { probeOutputDir, prepareOutputDir } from './fixtures/probe-output-dir.mjs';
 import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 import { createStopWire } from './fixtures/stop-generation-wire.mjs';
+import { teamStreamGap } from './fixtures/team-stream-gap.mjs';
 
 attachToProbeProcess();
 const require = createRequire(import.meta.url);
@@ -214,6 +223,8 @@ try {
   page = await context.newPage();
   page.on('pageerror', (e) => evidence.browserErrors.push(`pageerror: ${e.message}`));
   const consoleLog = fs.createWriteStream(path.join(outputDir, 'console.log'));
+  const consoleLines = [];
+  page.on('console', (m) => consoleLines.push(m.text()));
   page.on('console', (m) => consoleLog.write(`${new Date().toISOString()} ${m.type()} ${redactCredentials(m.text()).slice(0, 600)}\n`));
   // A cold Nuxt dev server may reload once for dependency optimization; a not-delivered send logs its detail on purpose.
   page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization|Failed to load resource|Error sending user input/.test(m.text())) evidence.browserErrors.push(redactCredentials(m.text())); });
@@ -284,9 +295,36 @@ try {
   const sentBound = (from, target) => wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE' && f.url === target.path).map((s) => ({
     link: s.link, bound: wire.log.some((f) => f.link === s.link && f.dir === 'down' && (target.kind === 'agent' ? f.type === 'CONNECTED' : f.type === 'RUN_TREE_SNAPSHOT') && f.at <= s.at) }));
 
+  /**
+   * The page's path down for 15 s and no send: the shown status, sampled every 200 ms, stays the one before the loss, and
+   * Send stays enabled (autobyteus-541 AC-004, DEC-002; on the base, a history refresh turned it Initializing).
+   */
+  const pathDownControl = async (target, waitBack) => {
+    await dismiss();
+    const beforeCut = await view();
+    wire.cut('the page\'s path is down');
+    const at = Date.now();
+    const timeline = [[0, beforeCut.status]];
+    let sendDisabledAt = null;
+    while (Date.now() - at < 15_000) {
+      const v = await view();
+      if (timeline.at(-1)[1] !== v.status) timeline.push([Date.now() - at, v.status]);
+      if (sendDisabledAt === null && (await label()) === SEND && !(await primary().isEnabled().catch(() => false))) sendDisabledAt = Date.now() - at;
+      await sleep(200);
+    }
+    const upAt = Date.now();
+    wire.up();
+    await until('the stream back', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === waitBack), 90_000).catch(() => undefined);
+    await sleep(2000);
+    const details = { beforeCut: beforeCut.status, timeline, sendDisabledAt, afterUp: (await view()).status };
+    assert(timeline.length === 1 && !timeline.some(([, status]) => status === 'Initializing'), 'the shown status stays the one before the loss for 15 s (no Initializing)', details);
+    assert(sendDisabledAt === null, 'Send stays enabled while the path is down', details);
+    return details;
+  };
+
   for (const kind of ['agent', 'team']) {
     const target = targets[kind];
-    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09'];
+    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-13', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09', 'SDD-14'];
     if (selected && !ids.some((id) => selected.has(id))) continue;
     await open(target);
     // The first message starts the run's runtime.
@@ -400,10 +438,13 @@ try {
         return details;
       });
 
+      await runCase('SDD-13', () => pathDownControl(target, 'AGENT_STREAM_SNAPSHOT'));
+
       await runCase('SDD-07', async () => {
         await dismiss();
         await textarea().fill('');
         const marker = `not-bound-${tag}`;
+        const beforeCut = await view();
         const from = wire.log.length; const since = Date.now();
         wire.cut('the page\'s path is down');
         await sleep(500);
@@ -415,13 +456,16 @@ try {
         const noticeAfterMs = Date.now() - sentAt;
         await sleep(500);
         const v = await view(marker);
+        const sendAfterNotice = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
         await shot('SDD-07-not-bound');
         const upAt = Date.now();
         wire.up();
         await until('this run\'s stream rebound', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === 'AGENT_STREAM_SNAPSHOT'), 90_000).catch(() => undefined);
-        const details = { before: before.status, view: v, noticeAfterMs, sent: wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE').length, frames: frames(from, since).slice(0, 40) };
+        const details = { beforeCut: beforeCut.status, before: before.status, view: v, sendAfterNotice, noticeAfterMs, sent: wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE').length, frames: frames(from, since).slice(0, 40) };
         assert(v.notice?.certainty === 'not_sent' && v.notice.text === TEXT_A && noticeAfterMs >= 9_000, 'after the 10 s wait: text (a)', details);
         assert(details.sent === 0 && v.count === 0 && v.draft === `PLAIN ${marker}` && v.status === before.status, 'nothing sent; the message gone; the text back; the status unchanged', details);
+        // autobyteus-541 AC-004: the status is the one before the loss, and the text can be sent again.
+        assert(v.status === beforeCut.status && sendAfterNotice.label === SEND && sendAfterNotice.enabled === true, 'the status the one before the loss; Send enabled after the notice', details);
         return details;
       });
 
@@ -517,20 +561,7 @@ try {
         return details;
       });
 
-      await runCase('SDD-12', async () => {
-        // Control for SDD-09: the page's path down, no send: what the member's shown status does on its own.
-        await dismiss();
-        const beforeCut = await view();
-        wire.cut('the page\'s path is down');
-        const at = Date.now();
-        const timeline = [[0, beforeCut.status]];
-        while (Date.now() - at < 15_000) { const v = await view(); if (timeline.at(-1)[1] !== v.status) timeline.push([Date.now() - at, v.status]); await sleep(200); }
-        const upAt = Date.now();
-        wire.up();
-        await until('the Team stream back', async () => wire.log.some((f) => f.at >= upAt && f.dir === 'down' && f.url === target.path && f.type === 'RUN_TREE_SNAPSHOT'), 90_000).catch(() => undefined);
-        await sleep(2000);
-        return { timeline, afterUp: (await view()).status };
-      });
+      await runCase('SDD-12', () => pathDownControl(target, 'RUN_TREE_SNAPSHOT'));
 
       await runCase('SDD-09', async () => {
         await dismiss();
@@ -539,8 +570,8 @@ try {
         const beforeCut = await view();
         const from = wire.log.length; const since = Date.now();
         wire.cut('the page\'s path is down');
-        // The user sends right after the loss: within ~1 s the loss alone turns an active Team's member to Initializing,
-        // whose Send is disabled (SDD-12; FU-003).
+        // The user sends right after the loss (on the base, the loss turned the member Initializing within ~1 s and disabled
+        // Send: 540 FU-003, fixed by autobyteus-541 D-C1).
         await sleep(500);
         const before = await view();
         const sendable = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
@@ -560,11 +591,37 @@ try {
         const afterUp = { status: (await view()).status, label: await label(), enabled: await primary().isEnabled().catch(() => null) };
         const details = { beforeCut: beforeCut.status, before: before.status, timeline, sendable, view: v, sendAfterNotice, afterUp, noticeAfterMs, sent: wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE').length };
         assert(v.notice?.certainty === 'not_sent' && v.notice.text === TEXT_A && noticeAfterMs >= 9_000, 'the Team\'s 10 s wait ends with text (a)', details);
-        // The send leaves the status alone: it is the one before the send, or the one the loss alone gives (SDD-12).
-        const lossAlone = evidence.cases['SDD-12']?.timeline?.at(-1)?.[1] ?? null;
-        details.lossAlone = lossAlone;
         assert(details.sent === 0 && v.count === 0 && v.draft === `PLAIN ${marker}`, 'nothing sent; the message gone; the text back', details);
-        assert(v.status !== 'Error' && (v.status === before.status || v.status === lossAlone), 'the status as the send found it or as the loss alone leaves it (never Error)', details);
+        // autobyteus-541 AC-004: the status is the one before the loss throughout, and Send is enabled before and after.
+        assert(v.status === beforeCut.status && before.status === beforeCut.status && timeline.every(([, status]) => status === beforeCut.status),
+          'the status the one before the loss throughout (never Initializing or Error)', details);
+        assert(sendable.label === SEND && sendable.enabled === true && sendAfterNotice.label === SEND && sendAfterNotice.enabled === true,
+          'Send enabled right after the loss and after the notice', details);
+        return details;
+      });
+
+      await runCase('SDD-14', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `gap-${tag}`;
+        const before = await view();
+        const gap = await teamStreamGap({ wire, socketBase: stack.backendUrl.replace(/^http/, 'ws'), teamRunId: target.teamRunId,
+          agentRunId: target.agentRunId, content: `PLAIN ${marker}`, until, consoleLines });
+        await until('the other window\'s message in the view', async () => (await view(marker)).count >= 1, 30_000).catch(() => undefined);
+        const after = await view(marker);
+        const recoveryNotice = await page.locator('[role="alert"]', { hasText: 'Live updates could not recover automatically' }).count();
+        await shot('SDD-14-team-recovered');
+        // A message right after goes on the new stream and starts its turn.
+        const from = wire.log.length;
+        await typeAndSend(`PLAIN after-${marker}`);
+        await until('the reply after the gap', async () => (await view(`after-${marker}`)).count >= 1 && (await view()).status === 'Idle', 30_000).catch(() => undefined);
+        const sentAfter = await view(`after-${marker}`);
+        const sends = wire.since(from).filter((f) => f.dir === 'up' && f.type === 'SEND_MESSAGE' && f.url === target.path);
+        const details = { gap, before: before.status, after, recoveryNotice, sentAfter, sends: sends.map((f) => f.link) };
+        assert(gap.gapSeen, 'the page saw the gap', details);
+        assert(gap.failedAttempts === 0 && gap.recoveredAfterMs <= 3_000, 'recovered by itself within one attempt (≤ 3 s), with no reselect', details);
+        assert(after.status === 'Idle' && after.count >= 1 && !after.notice && recoveryNotice === 0, 'the node\'s status (Idle) and the other window\'s message; no notice', details);
+        assert(sends.length === 1 && sends[0].link === gap.replacementLink && sentAfter.count >= 1 && !sentAfter.notice, 'a message right after went on the new stream and was answered', details);
         return details;
       });
     }
