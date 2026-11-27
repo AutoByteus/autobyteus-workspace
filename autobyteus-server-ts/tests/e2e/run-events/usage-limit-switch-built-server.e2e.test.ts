@@ -25,6 +25,14 @@
  *   UL-08  Antigravity, which gives no usage-limit signal (R-16): its ERROR goes out at once (one live error row), its
  *          backend's limits read after it sends ERROR_CLASSIFIED (no client frame), and the run switches (the scripted
  *          AGY CLI `runtime_error` "quota" turn; its scripted usage read shows the run's model used up).
+ *   UL-11  delegation by the node fallback (R-17): the delegator runs on the AGY model UL-08 left exhausted (the inherited
+ *          launch can't run), the target's default is the exhausted Codex model and it has no history: the copy starts
+ *          on the node fallback, the result's note says so, and the copy's launch records `node_fallback`.
+ *   UL-12  a Team member switched by the node fallback: the coordinator (no history) on Codex reaches the limit; the
+ *          Team tree holds its new launch and the record names the node.
+ *   UL-10  not quiet: the person's second message is still running on Codex (held 4 s) when the switch decided at the
+ *          first failure arrives; the switch waits for the run's next idle status (after that turn ends), switches once,
+ *          and the hand-over carries both messages.
  *
  * Gate: RUN_USAGE_LIMIT_SWITCH_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build` for this worktree. No
  * credentials. macOS/Linux. About 3 minutes. Run (in autobyteus-server-ts):
@@ -519,5 +527,96 @@ describe.skipIf(!ENABLED)("A usage limit switches the run's runtime (built serve
     ]);
     stream.close();
     evidence["UL-08"] = { runId, records, shown };
+  }, 180_000);
+
+  it("UL-11 delegation by the node fallback: the inherited launch is exhausted, the default is exhausted and there is no history; the copy starts on the node fallback, noted and recorded", async () => {
+    // In order after UL-01 (the Codex model remembered exhausted) and UL-08 (the AGY model remembered exhausted).
+    const tester = await definition("tester", [], { runtimeKind: CODEX, llmModelIdentifier: CODEX_MODEL, llmConfig: null });
+    const lead = await definition("delegating-lead", ["delegate_task"]);
+    // The delegator's own launch is the AGY model UL-08 recorded as exhausted: the inherited launch can't run.
+    const leadRun = await agentRun(lead, "antigravity_cli", AGY_LIMITED_MODEL);
+    const testerName = (await session.gql(`query($id:String!){agentDefinition(id:$id){name}}`, { id: tester })).agentDefinition.name as string;
+    const address = `/${testerName.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")}`;
+    const stream = await openStream(session, "agent", leadRun);
+    const call = `CALL_TOOL:${JSON.stringify({ name: "delegate_task", arguments: { recipient_address: address, description: "CASE:UL-11C Write the tests." } })}`;
+    stream.send(leadRun, call);
+    const answer = await until(() => {
+      // The reply streams as SEGMENT_CONTENT or SEGMENT_CONTENT_BATCH (items with their deltas).
+      const text = stream.frames.flatMap((frame) => frame.type === "SEGMENT_CONTENT" ? [String(frame.payload.delta ?? "")]
+        : frame.type === "SEGMENT_CONTENT_BATCH" ? ((frame.payload.items ?? []) as Json[]).map((item) => String(item.delta ?? "")) : []).join("");
+      return text.includes("CALLED:") ? text : null;
+    }, "the delegation result", 120_000);
+    const result = JSON.parse(answer.slice(answer.indexOf("CALLED:") + "CALLED:".length)) as Json;
+    const resultText = JSON.stringify(result);
+    expect(resultText, resultText).toContain(`it runs on AutoByteus / ${autobyteusModel} (chosen by the node)`);
+    expect(resultText).toContain(`${CODEX_MODEL} is exhausted until`);
+    const copyRunId = (JSON.stringify(result).match(/"target_agent_run_id\\?":\\?"([^"\\]+)/) ?? [])[1] ?? "";
+    expect(copyRunId, resultText).toBeTruthy();
+    expect(await node.metadata(copyRunId)).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel,
+      launchSource: expect.objectContaining({ origin: "node_fallback" }) });
+    expect((await jsonLines(node.codexLog)).filter((turn) => turn.text.includes("CASE:UL-11C")), "the copy never started on Codex").toEqual([]);
+    stream.close();
+    evidence["UL-11"] = { result, copyRunId, copyLaunch: (await node.metadata(copyRunId)).launchSource };
+  }, 180_000);
+
+  it("UL-12 a Team member is switched by the node fallback (no history); the Team tree holds its new launch", async () => {
+    const lead = await definition("fresh-lead");
+    const helper = await definition("fresh-helper");
+    const teamDefinitionId = (await session.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
+      { input: { name: `usage-limit-team-nf-${randomUUID().slice(0, 6)}`, description: "usage limit E2E team (node fallback)", instructions: "Answer briefly.",
+        coordinatorMemberName: "lead", nodes: [{ memberName: "lead", ref: lead, refScope: "SHARED" }, { memberName: "helper", ref: helper, refScope: "SHARED" }] } }))
+      .createAgentTeamDefinition.id as string;
+    const codexLaunch = { runtimeKind: CODEX, llmModelIdentifier: CODEX_MODEL, autoExecuteTools: true, workspaceRootPath: node.workspace };
+    const autoLaunch = { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel, autoExecuteTools: true, workspaceRootPath: node.workspace };
+    const created = (await session.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
+      { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...codexLaunch }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: lead, ...codexLaunch }, { memberAddress: "/helper", agentDefinitionId: helper, ...autoLaunch }] } })).createAgentTeamRun;
+    expect(created.success, created.message).toBe(true);
+    const teamRunId = created.teamRunId as string;
+    const coordinatorOf = (tree: Json) => (tree.rootTeam.members as Json[]).find((member) => member.address === tree.rootTeam.coordinatorAddress)!;
+    const coordinator = coordinatorOf(await node.tree(teamRunId)).agentRunId as string;
+    await node.setCodex("limit");
+    const stream = await openStream(session, "agent-team", teamRunId);
+    stream.send(coordinator, "CASE:UL-12 Coordinate the launch.");
+    const continued = await until(() => continueTurnOf(coordinator), "the member continued", 120_000);
+    expect(await handedOverJournal(continued)).toContain("CASE:UL-12 Coordinate the launch.");
+    expect(await switchesOf(coordinator)).toEqual([expect.objectContaining({ to: { runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel },
+      chosenBy: "node_fallback", reason: "most used on this node in the last 30 days", outcome: "switched" })]);
+    const switched = coordinatorOf(await node.tree(teamRunId));
+    expect(switched.launchConfiguration, "the Team tree holds the member's new launch").toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel });
+    const rows = (await conversation(coordinator).catch(() => null)) as Json[] | null;
+    stream.close();
+    evidence["UL-12"] = { teamRunId, coordinator, launch: switched.launchConfiguration, launchSource: switched.launchSource ?? null, rows: rows?.length ?? null };
+  }, 240_000);
+
+  it("UL-10 not quiet: the person's second message is still running on Codex when the switch arrives; the switch waits for that turn's end, then switches once and hands both messages over", async () => {
+    const analyst = await definition("analyst");
+    await history(analyst, "UL-10H");
+    await node.setCodex("limit");
+    const runId = await agentRun(analyst, CODEX, CODEX_MODEL);
+    const stream = await openStream(session, "agent", runId);
+    // The first message fails on the limit at once; the person's next one, sent as soon as the first reached Codex, is a
+    // turn of its own (HOLD_LIMIT) still at work for 4 s on Codex when the switch decided at the first failure arrives.
+    stream.send(runId, "CASE:UL-10 Analyse the logs.");
+    await until(async () => (await jsonLines(node.codexLog)).some((entry) => entry.text.includes("CASE:UL-10 Analyse")), "the first turn reached Codex", 30_000);
+    stream.send(runId, "CASE:UL-10 Also check the alerts. HOLD_LIMIT:4000");
+    const request = await until(() => continueTurnOf(runId), "the continue message reached AutoByteus", 120_000);
+    const turns = (await jsonLines(node.codexLog)).filter((entry) => entry.text.includes("CASE:UL-10"));
+    expect(turns.map((entry) => entry.text.includes("HOLD_LIMIT")), "two Codex turns, the second held").toEqual([false, true]);
+    const ends = await jsonLines(`${node.codexLog}.ends.jsonl`);
+    const secondEnded = ends.find((entry) => entry.turnId === turns[1]!.turnId);
+    expect(secondEnded, "the held turn ended on Codex").toBeTruthy();
+    const events = await eventsOf(runId);
+    const records = await switchesOf(runId);
+    expect(records, "one switch").toEqual([expect.objectContaining({ outcome: "switched", chosenBy: "agent_history" })]);
+    // The switch was decided at the first failure, while the second turn was still at work, and happened after that turn ended.
+    expect(Date.parse(events[0]!.at), "the first event before the held turn's end").toBeLessThan(Date.parse(secondEnded!.endedAt));
+    expect(Date.parse(records[0]!.at), "the switch after the held turn's end").toBeGreaterThanOrEqual(Date.parse(secondEnded!.endedAt));
+    const journal = await handedOverJournal(request);
+    expect(journal, "the hand-over carries both messages").toContain("CASE:UL-10 Analyse the logs.");
+    expect(journal).toContain("CASE:UL-10 Also check the alerts.");
+    expect(session.output(), "never reported as not switched").not.toContain(`agent run '${runId}' was not switched`);
+    stream.close();
+    evidence["UL-10"] = { runId, events: events.map((event) => event.at), heldTurnEndedAt: secondEnded!.endedAt, switchedAt: records[0]!.at };
   }, 180_000);
 });

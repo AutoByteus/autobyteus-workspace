@@ -7,6 +7,10 @@
  * LM Studio-compatible scripted model). The copy fails on Codex on beta, switches on beta to AutoByteus (C-2 `switched`,
  * its metadata), and alpha's tree, which reads the peer run's launch fresh while a view holds the run (its run-status
  * feed), shows beta's new launch.
+ * ULP-02 (R-17, the delegation's node fallback): after ULP-01 beta remembers its Codex model as exhausted. Alpha delegates
+ * to another shared worker on beta whose default is that model and which has no history there; a run another node starts
+ * has no inherited launch, so the copy starts on beta's node fallback (its most-used usable launch, AutoByteus), recorded
+ * as `node_fallback`, with no Codex turn, and alpha's result names the choice.
  *
  * Gate: RUN_USAGE_LIMIT_PEER_E2E=1. Prerequisite: `pnpm -C autobyteus-server-ts build`. No credentials. About 1 minute.
  * Run (in autobyteus-server-ts):
@@ -120,6 +124,8 @@ const openSocket = async (node: Node, runId: string) => {
 
 describe.skipIf(!ENABLED)("A peer-started run switches runtime on its own node", () => {
   let root = "";
+  /** What ULP-01 sets up for ULP-02 (the same two nodes). */
+  const shared: { root: string; autobyteusModel?: string; delegatorRunId?: string; socket?: WebSocket } = { root: "" };
   let alpha: Node | undefined;
   let beta: Node | undefined;
   let model: Awaited<ReturnType<typeof scriptedModel>> | undefined;
@@ -134,6 +140,7 @@ describe.skipIf(!ENABLED)("A peer-started run switches runtime on its own node",
 
   it("ULP-01: the copy alpha delegated fails on beta's Codex, switches on beta to its history runtime, and alpha's tree shows beta's new launch", async () => {
     root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "usage-limit-peer-e2e-")));
+    shared.root = root;
     model = await scriptedModel();
     const betaRoot = path.join(root, "beta");
     await fs.mkdir(betaRoot, { recursive: true });
@@ -216,6 +223,7 @@ describe.skipIf(!ENABLED)("A peer-started run switches runtime on its own node",
       throw error;
     });
     expect(row.launch).toMatchObject({ runtimeKind: "autobyteus", llmModelIdentifier: autobyteusModel });
+    Object.assign(shared, { autobyteusModel, delegatorRunId, socket });
 
     if (process.env.USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR) {
       await fs.mkdir(process.env.USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR, { recursive: true });
@@ -224,4 +232,38 @@ describe.skipIf(!ENABLED)("A peer-started run switches runtime on its own node",
           delegatedFrom: metadata.delegatedFrom }, alphaTreeRow: row }, null, 2)}\n`);
     }
   }, 400_000);
+
+  it("ULP-02: a worker whose default is beta's exhausted Codex model and which has no history there starts on beta's node fallback (no inherited launch on a peer)", async () => {
+    expect(alpha && beta && shared.socket, "ULP-01 set up both nodes").toBeTruthy();
+    const betaRoot = path.join(shared.root, "beta");
+    const workerName = `Fresh worker ${randomUUID().slice(0, 6)}`;
+    const worker = (await beta!.gql("mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}", { input: { name: workerName,
+      role: "engineer", description: "A shared worker without history", instructions: "Follow the request.", toolNames: [], skillNames: [],
+      defaultLaunchConfig: { runtimeKind: "codex_app_server", llmModelIdentifier: CODEX_MODEL, llmConfig: null } } })).createAgentDefinition.id as string;
+    const codexTurnsBefore = (await jsonLines(path.join(betaRoot, "codex-turns.jsonl"))).length;
+    const conversationOf = async () => JSON.stringify((await alpha!.gql("query($id:String!){getRunProjection(runId:$id){conversation}}", { id: shared.delegatorRunId })).getRunProjection?.conversation ?? []);
+    const before = await conversationOf();
+    const call = { name: "delegate_task", arguments: { node: "beta", recipient_address: `/${segment(workerName)}`, description: "Draft the changelog." } };
+    sendMessage(shared.socket!, shared.delegatorRunId!, `CALL_TOOL:${JSON.stringify(call)}`);
+    const after = await until(async () => {
+      const now = await conversationOf();
+      return now.length > before.length && /target_agent_run_id/.test(now.slice(before.length)) ? now : null;
+    }, "the second delegate_task result", 90_000);
+    const fresh = after.slice(before.length);
+    const peerRunId = fresh.match(/target_agent_run_id\\?"\s*:\s*\\?"([^"\\]+)/)?.[1] ?? "";
+    expect(peerRunId, fresh.slice(0, 2000)).toBeTruthy();
+    const metadata = JSON.parse(await fs.readFile(path.join(betaRoot, "memory", "agents", peerRunId, "run_metadata.json"), "utf8")) as Json;
+    expect(metadata).toMatchObject({ agentDefinitionId: worker, runtimeKind: "autobyteus", llmModelIdentifier: shared.autobyteusModel,
+      launchSource: expect.objectContaining({ origin: "node_fallback" }) });
+    expect(metadata.delegatedFrom?.nodeId, "a run another node started").toBeTruthy();
+    expect(fresh, "alpha's result names the node's choice").toContain("chosen by the node");
+    await wait(1_000);
+    expect((await jsonLines(path.join(betaRoot, "codex-turns.jsonl"))).length, "the copy never started on Codex").toBe(codexTurnsBefore);
+    if (process.env.USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR) {
+      await fs.mkdir(process.env.USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR, { recursive: true });
+      await fs.writeFile(path.join(process.env.USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR, "ULP-02.json"), `${JSON.stringify({ peerRunId, worker,
+        betaMetadata: { runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier, launchSource: metadata.launchSource },
+        alphaResult: fresh.slice(0, 3000) }, null, 2)}\n`);
+    }
+  }, 300_000);
 });

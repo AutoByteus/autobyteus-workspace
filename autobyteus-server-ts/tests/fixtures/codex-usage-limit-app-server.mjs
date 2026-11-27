@@ -9,7 +9,7 @@
 //   ok    -> one agent message "CODEX_OK <n>" and `turn/completed` (completed);
 //   limit -> the three terminal errors of one turn, as Codex sends them for a used-up limit: the `error` notification
 //            (codexErrorInfo usageLimitExceeded, willRetry false), `thread/status/changed` to failed, and
-//            `turn/completed` (failed, the same codexErrorInfo).
+//            `turn/completed` (failed, the same codexErrorInfo); `HOLD_LIMIT:<ms>` in a turn's text holds them that long.
 // Each turn/start is logged to CODEX_FAKE_LOG ({threadId, turnId, model, text, mode}), one JSON line.
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import readline from 'node:readline';
@@ -72,9 +72,16 @@ for await (const line of readline.createInterface({ input: process.stdin })) {
       notify('turn/completed', { threadId: params.threadId, turn: { ...turn, status: 'completed', error: null } });
     } else {
       const error = { message: "You've hit your usage limit. Try again later.", codexErrorInfo: 'usageLimitExceeded', additionalDetails: null };
-      notify('error', { threadId: params.threadId, turnId: turn.id, error, willRetry: false });
-      notify('thread/status/changed', { threadId: params.threadId, turnId: turn.id, status: { type: 'failed' } });
-      notify('turn/completed', { threadId: params.threadId, turn: { ...turn, status: 'failed', error } });
+      const fail = () => {
+        notify('error', { threadId: params.threadId, turnId: turn.id, error, willRetry: false });
+        notify('thread/status/changed', { threadId: params.threadId, turnId: turn.id, status: { type: 'failed' } });
+        notify('turn/completed', { threadId: params.threadId, turn: { ...turn, status: 'failed', error } });
+        if (process.env.CODEX_FAKE_LOG) appendFileSync(`${process.env.CODEX_FAKE_LOG}.ends.jsonl`, `${JSON.stringify({ turnId: turn.id, endedAt: new Date().toISOString() })}\n`);
+      };
+      // `HOLD_LIMIT:<ms>` in the turn's text keeps the turn running that long before it fails (a turn still at work when
+      // a switch arrives); the end's time goes to CODEX_FAKE_LOG.ends.jsonl ({turnId, endedAt}).
+      const holdMs = Number(/HOLD_LIMIT:(\d+)/.exec(textOf(params.input))?.[1] ?? 0);
+      if (holdMs > 0) setTimeout(fail, holdMs); else fail();
     }
     continue;
   }
