@@ -46,7 +46,7 @@ export const createTeamFlatExecutionCallbacks = (input: {
     const adapted = new CollaborationAgentPresentationEventAdapter(
       (agentRunId) => agentRunId === identity.agentRunId ? identity : null,
     ).adapt(identity, event);
-    if (adapted.kind === "filtered_collaboration_duplicate") return;
+    if (adapted.kind === "filtered_collaboration_duplicate" || adapted.kind === "not_presented") return;
     if (adapted.kind === "publish" && adapted.event.eventType === "MEMBER_INPUT_MESSAGE") {
       input.publish({
         eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,

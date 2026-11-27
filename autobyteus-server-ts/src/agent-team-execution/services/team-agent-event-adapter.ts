@@ -10,6 +10,7 @@ import type { TeamAgentEvent } from "../domain/team-agent-event.js";
 export type TeamAgentEventAdaptationResult =
   | Readonly<{ kind: "publish"; event: TeamAgentEvent }>
   | Readonly<{ kind: "filtered_collaboration_duplicate" }>
+  | Readonly<{ kind: "not_presented" }>
   | Readonly<{ kind: "rejected"; code: "TEAM_AGENT_EVENT_ADMISSION_FAILED"; message: string }>;
 
 export type ResolveTeamMemberIdentityByAgentRunId = (
@@ -51,7 +52,7 @@ export class TeamAgentEventAdapter {
 
   adapt(event: AgentRunEvent): TeamAgentEventAdaptationResult {
     const result: AgentRunPresentationAdaptationResult = this.shared.adapt(event);
-    if (result.kind === "filtered_collaboration_duplicate") return result;
+    if (result.kind === "filtered_collaboration_duplicate" || result.kind === "not_presented") return result;
     if (result.kind === "rejected") return Object.freeze({
       kind: "rejected",
       code: "TEAM_AGENT_EVENT_ADMISSION_FAILED",

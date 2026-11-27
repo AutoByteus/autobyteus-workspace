@@ -1,8 +1,9 @@
 /**
- * autobyteus-646 R-1 (Team root): one member of a live Team switches runtime in the root's gate. The member stops
- * quietly (its handle stays registered), its new launch and pending switch (with its cause, R-7) are committed into the
- * Team tree and stored, its handle's selection is swapped, then the continue message is posted to it. The other members
- * keep running. Real root, flat backend, manager and tree persistence; only the provider execution is a double.
+ * autobyteus-646 R-11, R-12 (Team root): one member of a live Team switches runtime automatically in the root's gate. Its
+ * own checks first (still on the failed launch, no pending switch), then the member stops quietly (its handle stays
+ * registered), only its new launch and pending switch (with its cause, R-7) are committed into the Team tree and stored,
+ * its handle's selection is swapped, then the continue message is posted to it. The other members keep running. Real
+ * root, flat backend, manager and tree persistence; only the provider execution is a double.
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -15,9 +16,10 @@ afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
 
 const CAUSE = { kind: "usage_limit" as const, resetAt: "2026-11-27T09:00:00.000Z", chosenBy: "agent_history" as const, reason: null };
 const request = (): AgentRuntimeSwitchRequest => ({
+  from: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "test-model" },
   launch: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null },
   cause: CAUSE,
-  notice: new AgentInputUserMessage("Continue the task where you left off.", SenderType.SYSTEM, null, { sender_id: "system.runtime_handover" }),
+  notice: new AgentInputUserMessage("Continue the task where you left off.", SenderType.SYSTEM, null, { sender_id: "system.usage_limit" }),
 });
 const userMessage = () => AgentInputUserMessage.fromDict({ content: "Start.", context_files: null,
   metadata: { input_origin: "user_message", message_id: "m-1", dedupe_key: "d-1" } });
@@ -58,6 +60,18 @@ describe("RootTeamRun.switchAgentRuntime", () => {
     await expect(f.root.switchAgentRuntime("run-coordinator", request())).resolves.toEqual({ kind: "not_quiet" });
     expect(f.root.getExecutionTreeSnapshot()).toBe(before);
     expect(f.handles.get("run-coordinator")!.handle.replaceSelection).not.toHaveBeenCalled();
+  });
+
+  it("R-12: a member no longer on the failed launch, or with a switch pending, is already switched: nothing stopped, committed or posted", async () => {
+    const f = await failedCoordinator();
+    const before = f.root.getExecutionTreeSnapshot();
+    await expect(f.root.switchAgentRuntime("run-coordinator", { ...request(), from: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "other" } }))
+      .resolves.toEqual({ kind: "already_switched" });
+    expect(f.root.getExecutionTreeSnapshot()).toBe(before);
+    expect(f.handles.get("run-coordinator")!.finish).not.toHaveBeenCalled();
+    // After one switch, the same event finds the member switched (its launch moved and a switch is pending).
+    await expect(f.root.switchAgentRuntime("run-coordinator", request())).resolves.toEqual({ kind: "switched" });
+    await expect(f.root.switchAgentRuntime("run-coordinator", request())).resolves.toEqual({ kind: "already_switched" });
   });
 
   it("an agent that is not a member is refused", async () => {

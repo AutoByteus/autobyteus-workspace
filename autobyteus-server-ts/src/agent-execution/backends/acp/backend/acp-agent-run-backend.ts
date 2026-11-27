@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { LateUsageLimitClassification } from "../../shared/late-usage-limit-classification.js";
 import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
@@ -84,7 +85,12 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   /** The run's Agent Tools changed since the session was opened: the next turn start reopens it. */
   private reopenPending = false;
 
+  /** autobyteus-646 R-16: ACP runtimes (Grok) give no usage-limit signal; their limits read after a terminal error classifies it. */
+  private readonly lateClassification: LateUsageLimitClassification;
+
   constructor(private readonly input: AcpAgentRunBackendInput) {
+    this.lateClassification = new LateUsageLimitClassification({ runId: input.context.runId, runtimeKind: input.context.config.runtimeKind,
+      llmModelIdentifier: () => input.context.config.llmModelIdentifier, deliver: (events) => this.publish(events) });
     this.pendingSystemInstruction = new PendingSystemInstructionEvent(input.pendingSystemInstruction);
     this.sink = input.sink;
     this.toolExposure = input.agentTools.exposure;
@@ -116,7 +122,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   publish(events: readonly AgentRunEvent[]): void {
     if (events.length === 0) return;
     this.eventQueue = this.eventQueue
-      .then(async () => { for (const listener of this.listeners) await listener(events); })
+      .then(async () => { for (const listener of this.listeners) await listener(events); this.lateClassification.observe(events); })
       .catch((error: unknown) => {
         // A failing source listener stops this backend; AgentRun owns public delivery.
         logger.warn(`ACP_EVENT_PUBLISH_FAILED: run=${this.runId}: ${String(error)}`);

@@ -35,6 +35,20 @@ describe("SwitchRecordLog (C-2)", () => {
     expect(recent.map((entry) => [entry.at, entry.outcome])).toEqual([["2026-11-25T00:00:00.000Z", "no_fallback"], ["2026-11-20T00:00:00.000Z", "switched"]]);
   });
 
+  it("R-14 (DEC-008): sealed files whose last record is older than 90 days are removed; newer ones and the active file stay", async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "switch-log-"));
+    dirs.push(dir);
+    const log = new SwitchRecordLog({ dir, rotationLimitBytes: 10, now: () => new Date("2026-08-01T00:00:00Z") });
+    await log.record(record("2026-07-01T00:00:00.000Z"));
+    await log.record(record("2026-10-01T00:00:00.000Z"));
+    await log.record(record("2026-11-20T00:00:00.000Z"));
+    const sealed = (await fs.readdir(dir)).filter((name) => name !== "switches_active.jsonl").sort();
+    expect(sealed).toEqual(["switches_000001.jsonl", "switches_000002.jsonl", "switches_000003.jsonl"]);
+    const removed = await log.removeExpired(new Date("2026-11-27T00:00:00Z"));
+    expect(removed).toEqual([sealed[0]]);
+    await expect(log.recentOf("operator", new Date("2026-01-01T00:00:00Z"))).resolves.toHaveLength(2);
+  });
+
   it("skips an unreadable line with a warning", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "switch-log-"));
     dirs.push(dir);

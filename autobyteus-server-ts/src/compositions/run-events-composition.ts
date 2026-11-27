@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { RunRuntimeSwitcher } from "../agent-collaboration/execution/services/run-runtime-switcher.js";
 import type { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
+import { configureModelBlockedReading } from "../agent-execution/backends/shared/late-usage-limit-classification.js";
 import { AgentRunEventType } from "../agent-execution/domain/agent-run-event.js";
 import { USAGE_LIMIT_NOTICE_SENDER_ID } from "../agent-execution/domain/system-task-notification-senders.js";
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
@@ -78,12 +79,20 @@ const nextIdle = (agentRunId: string): Promise<boolean> => new Promise((resolve)
  * subscribes is in the log only.
  */
 export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) => {
-  const hub = new RunEventHub({ log: new RunEventLog({ appDataDir: input.appDataDir }) });
-  const exhaustion = new RuntimeExhaustionView({ log: new RunEventLog({ appDataDir: input.appDataDir }) });
+  const eventLog = new RunEventLog({ appDataDir: input.appDataDir });
+  // R-14: sealed files past the retention go at startup (and after each seal).
+  await eventLog.removeExpired().catch((error: unknown) => console.warn(`Run events: old log files could not be removed: ${String(error)}`));
+  const hub = new RunEventHub({ log: eventLog });
+  const exhaustion = new RuntimeExhaustionView({ log: eventLog });
   await exhaustion.load().catch((error: unknown) => console.warn(`Run events: the usage limits in force could not be read: ${String(error)}`));
   const unsubscribeExhaustion = hub.subscribe("usage_limit_reached", (event) => exhaustion.record(event));
   // R-2: delegation's launch check reads exhaustion always.
   const exhaustionBinding = configureRuntimeExhaustion(exhaustion);
+  // R-16: the backends without a usage-limit signal classify by their runtime's limits read after a terminal error.
+  const blockedReadingBinding = configureModelBlockedReading({ isModelBlocked: async (runtimeKind, llmModelIdentifier) => {
+    const entry = await findAvailableAgentRuntimesService()?.readRuntime(runtimeKind);
+    return Boolean(entry && Array.isArray(entry.models) && entry.models.find((model) => model.id === llmModelIdentifier)?.blocked);
+  } });
   let historyBinding: Readonly<{ close(): void }> | null = null;
   const detector = new UsageLimitDetector({
     publish: (event) => hub.publish(event),
@@ -97,6 +106,7 @@ export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) 
     agentDefinitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   }>): FallbackChooser => {
     const switchRecords = new SwitchRecordLog({ dir: switchRecordLogDir(wiring.appDataDir) });
+    void switchRecords.removeExpired().catch((error: unknown) => console.warn(`Switch records: old log files could not be removed: ${String(error)}`));
     const chooser = new FallbackChooser({
       readNodeRuntimes, exhaustion, history: launchHistory(wiring.memoryDir), switchRecords,
       router: { requestSwitch: (request) => findModelRouting()?.router.requestSwitch(request)
@@ -116,7 +126,7 @@ export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) 
         if (!run) return null;
         const definition = await wiring.agentDefinitions.getAgentDefinitionById(run.config.agentDefinitionId).catch(() => null);
         return { agentDefinitionId: run.config.agentDefinitionId, agentName: definition?.name ?? run.config.agentDefinitionId,
-          agentDescription: definition?.description?.trim() || null, runtimeKind: run.runtimeKind, llmModelIdentifier: run.config.llmModelIdentifier };
+          agentDescription: definition?.description?.trim() || null };
       },
       chooser,
       switcher: { switchAgentRuntime: (agentRunId, action) => switcher.switchAgentRuntime(agentRunId,
@@ -140,6 +150,6 @@ export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) 
 
   return Object.freeze({
     hub, exhaustion, detector, startSwitching,
-    close: () => { unsubscribeSwitching?.(); unsubscribeExhaustion(); historyBinding?.close(); exhaustionBinding.close(); },
+    close: () => { unsubscribeSwitching?.(); unsubscribeExhaustion(); historyBinding?.close(); exhaustionBinding.close(); blockedReadingBinding.close(); },
   });
 };

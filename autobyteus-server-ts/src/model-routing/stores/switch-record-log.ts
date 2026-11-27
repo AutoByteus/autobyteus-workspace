@@ -30,6 +30,14 @@ const parseRecord = (value: unknown): SwitchRecord | string => {
     routerFailure: record.routerFailure as string | null, outcome: record.outcome as SwitchRecord["outcome"] });
 };
 
+const atOf = (value: unknown): number | null => {
+  const at = Date.parse(String((value as { at?: unknown } | null)?.at ?? ""));
+  return Number.isFinite(at) ? at : null;
+};
+
+/** How long switch records are kept (R-14, DEC-008: 90 days, the default until the founder decides). */
+export const SWITCH_RECORD_RETENTION_DAYS = 90;
+
 /**
  * The switch records (autobyteus-646 C-2): one line per handled usage-limit event, beside the routing decisions in
  * `<appData>/model-routing/` (`switches_active.jsonl`, sealed at 4 MB). An unreadable line is skipped with a warning
@@ -38,8 +46,14 @@ const parseRecord = (value: unknown): SwitchRecord | string => {
 export class SwitchRecordLog {
   private readonly log: SealedJsonlLog;
 
-  constructor(options: Readonly<{ dir: string; rotationLimitBytes?: number }>) {
-    this.log = new SealedJsonlLog({ dir: options.dir, baseName: "switches", ...(options.rotationLimitBytes ? { rotationLimitBytes: options.rotationLimitBytes } : {}) });
+  constructor(options: Readonly<{ dir: string; rotationLimitBytes?: number; now?: () => Date }>) {
+    this.log = new SealedJsonlLog({ dir: options.dir, baseName: "switches", retention: { days: SWITCH_RECORD_RETENTION_DAYS, timeOf: atOf }, ...(options.now ? { now: options.now } : {}),
+      ...(options.rotationLimitBytes ? { rotationLimitBytes: options.rotationLimitBytes } : {}) });
+  }
+
+  /** Deletes the sealed files past the retention (R-14); run once at startup. */
+  removeExpired(now?: Date): Promise<readonly string[]> {
+    return this.log.removeSealedOlderThan(undefined, now);
   }
 
   record(record: SwitchRecord): Promise<void> {

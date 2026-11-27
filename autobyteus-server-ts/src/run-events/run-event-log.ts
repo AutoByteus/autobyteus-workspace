@@ -2,6 +2,14 @@ import path from "node:path";
 import { SealedJsonlLog } from "../utils/sealed-jsonl-log.js";
 import { parseRunEventOfKind, type RunEvent, type RunEventKind } from "./run-event-types.js";
 
+const atOf = (value: unknown): number | null => {
+  const at = Date.parse(String((value as { at?: unknown } | null)?.at ?? ""));
+  return Number.isFinite(at) ? at : null;
+};
+
+/** How long run events are kept (R-14): their readers need at most 31 days (R-5). */
+export const RUN_EVENT_RETENTION_DAYS = 31;
+
 /**
  * The run event log (C-1): `<appData>/run-events/events_active.jsonl`, one envelope per line, sealed as
  * `events_NNNNNN.jsonl` at 4 MB. A line that can't be read is skipped and logged (DESIGN rule 7); a line of another or
@@ -10,9 +18,15 @@ import { parseRunEventOfKind, type RunEvent, type RunEventKind } from "./run-eve
 export class RunEventLog {
   private readonly log: SealedJsonlLog;
 
-  constructor(options: Readonly<{ appDataDir: string; rotationLimitBytes?: number }>) {
+  constructor(options: Readonly<{ appDataDir: string; rotationLimitBytes?: number; now?: () => Date }>) {
     this.log = new SealedJsonlLog({ dir: path.join(options.appDataDir, "run-events"), baseName: "events",
+      retention: { days: RUN_EVENT_RETENTION_DAYS, timeOf: atOf }, ...(options.now ? { now: options.now } : {}),
       ...(options.rotationLimitBytes ? { rotationLimitBytes: options.rotationLimitBytes } : {}) });
+  }
+
+  /** Deletes the sealed files past the retention (R-14); run once at startup. */
+  removeExpired(now?: Date): Promise<readonly string[]> {
+    return this.log.removeSealedOlderThan(undefined, now);
   }
 
   append(event: RunEvent): Promise<void> {

@@ -1,5 +1,4 @@
-/** The run `ERROR` payload's `error_kind` for a usage limit (autobyteus-646 C-4). */
-export const USAGE_LIMIT_ERROR_KIND = "usage_limit";
+import { USAGE_LIMIT_ERROR_KIND } from "../../../domain/agent-run-error-kind.js";
 
 /**
  * The `error_kind` field a Codex error adds to its run `ERROR` (C-4): `usage_limit` when Codex says so itself

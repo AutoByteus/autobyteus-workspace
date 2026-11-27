@@ -18,7 +18,7 @@ const EVENT: RunEvent<"usage_limit_reached"> = {
   at: "2026-11-25T06:43:00.000Z", kind: "usage_limit_reached", agentRunId: "run-1",
   data: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", blockedModels: ["gpt-sol"], resetAt: "2026-11-27T09:00:00.000Z" },
 };
-const SUBJECT = { agentDefinitionId: "operator", agentName: "operator", agentDescription: null, runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol" };
+const SUBJECT = { agentDefinitionId: "operator", agentName: "operator", agentDescription: null };
 const ROUTED: SwitchChoice = { kind: "chosen", launch: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus" }, chosenBy: "model_router",
   reason: "Claude worked well.", routerFailure: null };
 
@@ -53,6 +53,7 @@ describe("UsageLimitSwitchListener (DS-003)", () => {
     await f.listener.handle(EVENT);
     expect(f.choose).toHaveBeenCalledWith({ agentDefinitionId: "operator", agentName: "operator", agentDescription: null, why: EVENT.data });
     const action = f.switchAgentRuntime.mock.calls[0]![1];
+    expect(action.from).toEqual({ runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol" });
     expect(action.launch).toEqual({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null });
     expect(action.cause).toEqual({ kind: "usage_limit", resetAt: "2026-11-27T09:00:00.000Z", chosenBy: "model_router", reason: "Claude worked well." });
     expect(action.notice.content).toBe(CONTINUE_TEXT);
@@ -109,26 +110,20 @@ describe("UsageLimitSwitchListener (DS-003)", () => {
     expect(failed.record).toHaveBeenCalledWith(expect.objectContaining({ outcome: "switch_failed" }));
   });
 
-  it("setting off, a run no longer live, or already on another runtime: nothing is chosen or recorded", async () => {
-    for (const f of [listenerOf({ enabled: false }), listenerOf({ subject: null }), listenerOf({ subject: { ...SUBJECT, runtimeKind: "claude_agent_sdk" } })]) {
+  it("setting off, or a run no longer live: nothing is chosen or recorded", async () => {
+    for (const f of [listenerOf({ enabled: false }), listenerOf({ subject: null })]) {
       await f.listener.handle(EVENT);
       expect(f.choose).not.toHaveBeenCalled();
       expect(f.record).not.toHaveBeenCalled();
     }
   });
 
-  it("R-3: one switch in flight per run; an event for that run meanwhile is not acted on", async () => {
-    let release!: (choice: SwitchChoice) => void;
-    let calls = 0;
-    const f = listenerOf({ choose: () => ++calls === 1 ? new Promise<SwitchChoice>((resolve) => { release = resolve; }) : Promise.resolve(ROUTED) });
-    const first = f.listener.handle(EVENT);
-    await vi.waitFor(() => expect(f.choose).toHaveBeenCalled());
-    await f.listener.handle({ ...EVENT, at: "2026-11-25T06:43:01.000Z" });
-    release(ROUTED);
-    await first;
-    expect(f.choose).toHaveBeenCalledOnce();
-    expect(f.switchAgentRuntime).toHaveBeenCalledOnce();
+  it("R-12: the root finds the run already switched (its own state): nothing is recorded, no notice; asked again, again the root decides", async () => {
+    const f = listenerOf({ outcomes: [{ kind: "already_switched" }, { kind: "already_switched" }] });
     await f.listener.handle(EVENT);
-    expect(f.choose).toHaveBeenCalledTimes(2);
+    await f.listener.handle({ ...EVENT, at: "2026-11-25T06:43:01.000Z" });
+    expect(f.switchAgentRuntime).toHaveBeenCalledTimes(2);
+    expect(f.record).not.toHaveBeenCalled();
+    expect(f.showNotice).not.toHaveBeenCalled();
   });
 });

@@ -7,15 +7,11 @@ import {
   applyTeamRunSelectionPatches,
   resolveTeamRunSelectionTargets,
   type TeamRunSelectionPatch,
-  type TeamRunSelectionTarget,
 } from "./team-run-selection-mutator.js";
 
-type SaveRefusal = { kind: "refused"; outcome: RunModelConfigUpdateOutcome; message: string; fieldErrors?: readonly RunModelConfigFieldError[] };
-
-export type StoppedTeamLaunchSavePlan = SaveRefusal | { kind: "planned"; nextTree: TeamRunExecutionTreeSnapshot };
-
-/** The validated targets of a Team scope save (the canonical selection and the decided continuation each), or the refusal. */
-export type TeamLaunchSelectionPlan = SaveRefusal | { kind: "planned"; targets: readonly TeamRunSelectionTarget[] };
+export type StoppedTeamLaunchSavePlan =
+  | { kind: "refused"; outcome: RunModelConfigUpdateOutcome; message: string; fieldErrors?: readonly RunModelConfigFieldError[] }
+  | { kind: "planned"; nextTree: TeamRunExecutionTreeSnapshot };
 
 /**
  * AR-004: the stopped Team run's Save plan — its own model settings, validated in one catalog read — as the tree to
@@ -26,20 +22,6 @@ export const planStoppedTeamLaunchSave = async (input: {
   configuredPatches: readonly TeamRunSelectionPatch[];
   validator: RunModelSelectionValidator;
 }): Promise<StoppedTeamLaunchSavePlan> => {
-  const plan = await planTeamLaunchSelection(input);
-  return plan.kind === "refused" ? plan : { kind: "planned", nextTree: applyTeamRunSelectionPatches(input.tree, plan.targets) };
-};
-
-/**
- * The validation half of a Team scope save, against `tree`: the targets with their canonical selection and decided
- * continuation, ready for `applyTeamRunSelectionPatches`, or the refusal. A live Team member's automatic switch
- * (autobyteus-646 R-1) applies them to the tree current at its commit.
- */
-export const planTeamLaunchSelection = async (input: {
-  tree: TeamRunExecutionTreeSnapshot;
-  configuredPatches: readonly TeamRunSelectionPatch[];
-  validator: RunModelSelectionValidator;
-}): Promise<TeamLaunchSelectionPlan> => {
   const { tree } = input;
   let targets;
   try {
@@ -77,5 +59,5 @@ export const planTeamLaunchSelection = async (input: {
       continuation: result.kind === "valid" ? result.continuation : "same_session" as const,
     };
   });
-  return { kind: "planned", targets: normalizedTargets };
+  return { kind: "planned", nextTree: applyTeamRunSelectionPatches(tree, normalizedTargets) };
 };

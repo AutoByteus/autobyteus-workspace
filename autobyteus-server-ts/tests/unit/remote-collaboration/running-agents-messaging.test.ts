@@ -29,7 +29,7 @@ import { RunningAgents } from "../../../src/agent-collaboration/running/running-
 import { RunningAgentsListing } from "../../../src/agent-collaboration/running/running-agents-listing.js";
 import { listRunningAgentsFor } from "../../../src/agent-tools/agent-discovery/list-running-agents-contract.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
-import { UNUSED_STOPPED_SELECTION_SAVE } from "../../helpers/runtime-switch-fakes.js";
+import { UNUSED_AUTOMATIC_SWITCH } from "../../helpers/runtime-switch-fakes.js";
 
 /**
  * autobyteus-492 in one process, two nodes (only HTTP and the runtimes replaced): real standalone roots and their logs,
@@ -124,7 +124,7 @@ const buildNode = async (input: Readonly<{ nodeId: string; peers: PeerNode[]; ne
       getActiveRun: (runId) => (runs.get(runId)?.active ? runs.get(runId) as never : null),
       activateRunAgent: activateHost,
       terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
-      ...UNUSED_STOPPED_SELECTION_SAVE,
+      ...UNUSED_AUTOMATIC_SWITCH,
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
     rootDependencies: { taskRecords: resources, delegationIndex: taskSide.tree, viewStreams: views, remoteChannel: () => client, receivedFiles: peerFiles.receivedFiles },

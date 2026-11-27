@@ -1,4 +1,5 @@
 import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
+import { LateUsageLimitClassification } from "../../shared/late-usage-limit-classification.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -32,10 +33,19 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly eventConverter: ClaudeSessionEventConverter;
   private unsubscribeFromSession: (() => void) | null = null;
+  /**
+   * autobyteus-646 R-16: no recorded Agent SDK usage-limit payload is known, so Claude is classified by its limits read
+   * after a terminal error, as Antigravity and Grok are.
+   */
+  private readonly lateClassification: LateUsageLimitClassification;
 
   constructor(context: ClaudeRunContext, session: ClaudeSession) {
     this.context = context;
     this.session = session;
+    this.lateClassification = new LateUsageLimitClassification({ runId: context.runId, runtimeKind: context.config.runtimeKind,
+      llmModelIdentifier: () => context.config.llmModelIdentifier,
+      deliver: (events) => void this.publishSourceEvents(events).catch((error: unknown) =>
+        logger.error(`Failed to deliver a Claude error classification for run '${this.runId}': ${String(error)}`)) });
     this.eventConverter = new ClaudeSessionEventConverter(
       this.runId,
       () => this.getLifecycleSnapshot(),
@@ -225,5 +235,6 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     for (const listener of this.sourceListeners) {
       await listener(events);
     }
+    this.lateClassification.observe(events);
   }
 }

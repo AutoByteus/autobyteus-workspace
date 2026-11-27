@@ -9,7 +9,8 @@ export const ACCEPTING_MODEL_SELECTION_VALIDATOR = {
     ({ kind: "valid" as const, selection: input.selection, continuation: "hand_over" as const })),
 } as unknown as RunModelSelectionValidator;
 
-/** autobyteus-646: a stopped-run selection save a test never reaches (an automatic switch's); a call fails loudly. */
-export const UNUSED_STOPPED_SELECTION_SAVE = Object.freeze({
-  updateStoppedSelection: async (): Promise<never> => { throw new Error("unexpected stopped-run selection save"); },
+/** autobyteus-646: the standalone automatic switch (R-11) a test never reaches; a call fails loudly. */
+export const UNUSED_AUTOMATIC_SWITCH = Object.freeze({
+  checkAutomaticRuntimeSwitch: async (): Promise<never> => { throw new Error("unexpected automatic runtime switch check"); },
+  switchRuntimeAutomatically: async (): Promise<never> => { throw new Error("unexpected automatic runtime switch"); },
 });

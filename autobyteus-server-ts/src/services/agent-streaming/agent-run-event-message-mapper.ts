@@ -86,6 +86,12 @@ const TIMED_MESSAGE_TYPES: ReadonlySet<ServerMessageType> = new Set([
   ServerMessageType.ERROR, ServerMessageType.COMPACTION_STATUS,
 ]);
 
+/**
+ * Whether a run event is sent to clients at all. autobyteus-646 R-16: `ERROR_CLASSIFIED` (a late error classification,
+ * read only by the usage-limit detector) is dropped here, before mapping, never shown as an "Unmapped" error.
+ */
+export const isClientRunEvent = (event: AgentRunEvent): boolean => event.eventType !== AgentRunEventType.ERROR_CLASSIFIED;
+
 export class AgentRunEventMessageMapper {
   map(event: AgentRunEvent): ServerMessage {
     const message = this.mapPayload(event);

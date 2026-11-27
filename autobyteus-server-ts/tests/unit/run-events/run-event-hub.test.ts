@@ -30,12 +30,26 @@ describe("RunEventLog", () => {
   });
 
   it("seals the active file at the limit, reads newest file first and stops at a file older than the time", async () => {
-    const log = new RunEventLog({ appDataDir, rotationLimitBytes: 10 });
+    const log = new RunEventLog({ appDataDir, rotationLimitBytes: 10, now: () => new Date("2026-10-20T00:00:00Z") });
     await log.append(event("2026-10-01T00:00:00.000Z", "old"));
     await log.append(event("2026-11-25T00:00:00.000Z", "new"));
     expect((await fs.readdir(path.join(appDataDir, "run-events"))).sort()).toEqual(["events_000001.jsonl", "events_000002.jsonl"]);
     const read = await log.readSince("usage_limit_reached", new Date("2026-11-01T00:00:00Z"));
     expect(read.map((entry) => entry.agentRunId)).toEqual(["new"]);
+  });
+
+  it("R-14: removes sealed files whose last line is past 31 days, at startup and after each seal; the active file stays", async () => {
+    let now = new Date("2026-10-10T00:00:00Z");
+    const log = new RunEventLog({ appDataDir, rotationLimitBytes: 10, now: () => now });
+    await log.append(event("2026-10-01T00:00:00.000Z", "run-old"));
+    await log.append(event("2026-11-20T00:00:00.000Z", "run-new"));
+    now = new Date("2026-11-25T00:00:00Z");
+    await log.append(event("2026-11-24T00:00:00.000Z", "run-newest"));
+    expect((await fs.readdir(path.join(appDataDir, "run-events"))).sort()).toEqual(["events_000002.jsonl", "events_000003.jsonl"]);
+    now = new Date("2027-01-01T00:00:00Z");
+    await fs.writeFile(path.join(appDataDir, "run-events", "events_active.jsonl"), `${JSON.stringify(event("2026-12-31T00:00:00.000Z", "run-active"))}\n`);
+    await expect(log.removeExpired()).resolves.toEqual(["events_000002.jsonl", "events_000003.jsonl"]);
+    expect(await fs.readdir(path.join(appDataDir, "run-events"))).toEqual(["events_active.jsonl"]);
   });
 
   it("skips an unreadable line with a warning, and keeps an unknown kind out of a kind's read", async () => {

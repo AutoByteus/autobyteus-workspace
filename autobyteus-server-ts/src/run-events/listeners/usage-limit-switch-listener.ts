@@ -14,7 +14,7 @@ type Launch = Readonly<{ runtimeKind: string; llmModelIdentifier: string }>;
 type ChosenBy = "model_router" | "agent_history";
 
 /** The run's agent, as the switch needs it (from the live run and its agent definition). */
-export type SwitchSubject = Readonly<{ agentDefinitionId: string; agentName: string; agentDescription: string | null } & Launch>;
+export type SwitchSubject = Readonly<{ agentDefinitionId: string; agentName: string; agentDescription: string | null }>;
 
 /** The chooser's answer (`FallbackChooser.choose`, read structurally). */
 export type SwitchChoice =
@@ -23,12 +23,14 @@ export type SwitchChoice =
 
 /** The switch action's request and outcome (`RunRuntimeSwitcher.switchAgentRuntime`, read structurally). */
 export type SwitchAction = Readonly<{
+  from: Launch;
   launch: Launch & Readonly<{ llmConfig: null }>;
   cause: Readonly<{ kind: "usage_limit"; resetAt: string | null; chosenBy: ChosenBy; reason: string | null }>;
   notice: AgentInputUserMessage;
   postOptions: AgentRunInputOptions;
 }>;
-export type SwitchActionOutcome = Readonly<{ kind: "switched" }> | Readonly<{ kind: "not_quiet" }> | Readonly<{ kind: "failed"; reason: string }>;
+export type SwitchActionOutcome = Readonly<{ kind: "switched" }> | Readonly<{ kind: "not_quiet" }> | Readonly<{ kind: "already_switched" }>
+  | Readonly<{ kind: "failed"; reason: string }>;
 
 /** One C-2 line (`SwitchRecordLog.record`, read structurally). */
 export type HandledSwitch = Readonly<{
@@ -57,13 +59,11 @@ export const noFallbackText = (exhausted: readonly ExhaustedModel[]): string => 
  * The switch policy (autobyteus-646 DS-003, REQ-004..008): on `usage_limit_reached`, when the setting is on, it chooses
  * where the run's agent continues (the router, then history), has the agent's root switch it (a quiet stop, the pending
  * switch with its cause, the continue message as a system input that shows no row), and records the outcome (C-2). With
- * nothing usable it shows one Error notice. At most one switch is in flight per run; an event for a run whose switch is
- * in flight is not acted on again. A root that finds the agent still in its turn is asked once more after the run's next
- * idle status.
+ * nothing usable it shows one Error notice. Whether the run is already switched is the root's to say, from the run's own
+ * state (R-12: no longer on the failed launch, or a switch pending): then nothing is recorded. A root that finds the agent
+ * still in its turn is asked once more after the run's next idle status.
  */
 export class UsageLimitSwitchListener {
-  private readonly inFlight = new Set<string>();
-
   constructor(private readonly dependencies: Readonly<{
     /** `AUTOBYTEUS_USAGE_LIMIT_SWITCH_ENABLED`, read at each event. */
     enabled(): boolean;
@@ -85,16 +85,7 @@ export class UsageLimitSwitchListener {
       console.info(`Usage limit switch: off; agent run '${agentRunId}' stays in Error.`);
       return;
     }
-    if (this.inFlight.has(agentRunId)) {
-      console.info(`Usage limit switch: agent run '${agentRunId}' is already being switched.`);
-      return;
-    }
-    this.inFlight.add(agentRunId);
-    try {
-      await this.switchRun(event);
-    } finally {
-      this.inFlight.delete(agentRunId);
-    }
+    await this.switchRun(event);
   }
 
   private async switchRun(event: RunEvent<"usage_limit_reached">): Promise<void> {
@@ -102,10 +93,6 @@ export class UsageLimitSwitchListener {
     const subject = await this.dependencies.describeRun(agentRunId);
     if (!subject) {
       console.info(`Usage limit switch: agent run '${agentRunId}' is no longer live; nothing to switch.`);
-      return;
-    }
-    if (subject.runtimeKind !== why.runtimeKind) {
-      console.info(`Usage limit switch: agent run '${agentRunId}' already runs on ${subject.runtimeKind}; nothing to switch.`);
       return;
     }
     const from: Launch = { runtimeKind: why.runtimeKind, llmModelIdentifier: why.llmModelIdentifier };
@@ -125,6 +112,7 @@ export class UsageLimitSwitchListener {
       // memory records it as one, and the run publishes it once forwarded.
       const messageId = randomUUID();
       return {
+        from,
         launch: { ...choice.launch, llmConfig: null },
         cause: { kind: "usage_limit", resetAt: why.resetAt, chosenBy: choice.chosenBy, reason: choice.chosenBy === "model_router" ? choice.reason : null },
         notice: new AgentInputUserMessage(CONTINUE_TEXT, SenderType.SYSTEM, null, {
@@ -148,6 +136,10 @@ export class UsageLimitSwitchListener {
         : { kind: "failed", reason: "its turn did not end in time" };
     }
     const target = `${choice.launch.runtimeKind} · ${choice.launch.llmModelIdentifier} (${choice.chosenBy})`;
+    if (outcome.kind === "already_switched") {
+      console.info(`Usage limit switch: agent run '${agentRunId}' is no longer on ${from.runtimeKind} · ${from.llmModelIdentifier}, or a switch is pending; nothing to switch.`);
+      return;
+    }
     if (outcome.kind === "switched") console.info(`Usage limit switch: agent run '${agentRunId}' switched to ${target}.`);
     else console.warn(`Usage limit switch: agent run '${agentRunId}' was not switched to ${target}: ${outcome.kind === "failed" ? outcome.reason : "it was not quiet"}.`);
     await this.record({ ...base, to: choice.launch, chosenBy: choice.chosenBy, reason: choice.reason,

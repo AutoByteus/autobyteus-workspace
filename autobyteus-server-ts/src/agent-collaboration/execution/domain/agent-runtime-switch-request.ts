@@ -8,6 +8,8 @@ import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.
  * with its pending switch, R-7), and the continue message posted to it as a system input (C-5).
  */
 export type AgentRuntimeSwitchRequest = Readonly<{
+  /** The launch that failed (the event's runtime and model): the root acts only while the agent is still on it (R-12). */
+  from: Readonly<{ runtimeKind: string; llmModelIdentifier: string }>;
   launch: Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }>;
   cause: RuntimeSwitchCause;
   notice: AgentInputUserMessage;
@@ -23,4 +25,6 @@ export type AgentRuntimeSwitchRequest = Readonly<{
 export type AgentRuntimeSwitchOutcome =
   | Readonly<{ kind: "switched" }>
   | Readonly<{ kind: "not_quiet" }>
+  /** R-12: the agent is no longer on the failed launch, or a switch is already pending; nothing changed. */
+  | Readonly<{ kind: "already_switched" }>
   | Readonly<{ kind: "failed"; reason: string }>;

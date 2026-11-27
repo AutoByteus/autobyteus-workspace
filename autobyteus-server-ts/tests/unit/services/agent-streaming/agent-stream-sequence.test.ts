@@ -74,6 +74,15 @@ describe("AgentStreamSequence snapshot", () => {
     expect(result.base_sequence).toBe(3);
   });
 
+  it("autobyteus-646 AR-012: ERROR_CLASSIFIED never reaches a client (no frame, no \"Unmapped AgentRunEvent\" error)", async () => {
+    const run = harness();
+    run.emit({ eventType: AgentRunEventType.ERROR_CLASSIFIED, runId: RUN, statusHint: null, occurredAt: 1795452909697,
+      payload: { turn_id: "t9", error_kind: "usage_limit" } } as AgentRunEvent);
+    const result = await run.snapshot();
+    expect(result.turn_frames).toEqual([]);
+    expect(result.base_sequence).toBe(0);
+  });
+
   it("a completed turn still in the external writer's queue appears once, from its frames", async () => {
     const run = harness();
     run.emit(...segment("t1", "s1"), completed("t1"));

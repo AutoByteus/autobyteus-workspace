@@ -9,7 +9,7 @@ import type {
 import type { AgentLaunchConfiguration } from "../domain/team-run-config.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
-import type { PendingRuntimeSwitch, RuntimeSwitchCause } from "../../run-history/store/agent-run-metadata-types.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import { applySelectionToConfiguredMember } from "../../run-history/domain/runtime-selection-rule.js";
 
 export type TeamRunSelectionScopeKind = "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
@@ -21,8 +21,6 @@ export type TeamRunSelectionPatch = Readonly<{
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
-  /** An automatic switch's facts (autobyteus-646 R-7), stored with the member's pending switch; a person's save has none. */
-  cause?: RuntimeSwitchCause;
 }>;
 
 export type TeamRunSelectionTarget = Readonly<{

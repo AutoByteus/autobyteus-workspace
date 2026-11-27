@@ -30,6 +30,11 @@ export enum AgentRunEventType {
   ARTIFACT_PERSISTED = "ARTIFACT_PERSISTED",
   FILE_CHANGE = "FILE_CHANGE",
   ERROR = "ERROR",
+  /**
+   * autobyteus-646 R-16: a backend's late classification of an `ERROR` it emitted earlier, once its runtime's limits read
+   * finished (`{ turn_id, error_kind }`). Read only by the usage-limit detector: never rendered as a row, never stored.
+   */
+  ERROR_CLASSIFIED = "ERROR_CLASSIFIED",
 }
 
 export interface AgentRunEvent {
