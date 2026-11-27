@@ -15,10 +15,11 @@ const codexDefault: DefaultLaunchConfig = { runtimeKind: RuntimeKind.CODEX_APP_S
 const claudeDefault: DefaultLaunchConfig = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null };
 const identity = { addedAt: "2026-11-27T00:00:00.000Z", addedViaAgentRunId: "pm" };
 const agentPlan = (agentDefault: DefaultLaunchConfig | null): CollaboratorDefinitionPlan =>
-  ({ kind: "agent", name: "Operator", address: "/operator" as never, agentDefinitionId: "operator", agentDefault, ...identity });
+  ({ kind: "agent", name: "Operator", address: "/operator" as never, agentDefinitionId: "operator", agentDefault, description: "Operates.", role: null, ...identity });
 const teamPlan = (members: Record<string, DefaultLaunchConfig | null>): CollaboratorDefinitionPlan => ({
-  kind: "agent_team", name: "Team", address: "/team" as never, teamDefinitionId: "team", coordinatorAddress: "/team/lead" as never, handoffs: [],
-  members: Object.entries(members).map(([name, agentDefault]) => ({ address: `/team/${name}` as never, agentDefinitionId: name, agentDefault })),
+  kind: "agent_team", name: "Team", address: "/team" as never, description: "A team.", teamDefinitionId: "team", coordinatorAddress: "/team/lead" as never, handoffs: [],
+  members: Object.entries(members).map(([name, agentDefault]) => ({ address: `/team/${name}` as never, name, agentDefinitionId: name, agentDefault,
+    description: `${name} member.`, role: null })),
   teamDefault: null, ...identity,
 });
 

@@ -1,5 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { AgentRuntimeSwitchOutcome, AgentRuntimeSwitchRequest } from "../../agent-collaboration/execution/domain/agent-runtime-switch-request.js";
 import type { TeamMemberSwitchControl } from "../backends/team-run-backend.js";
@@ -20,7 +21,7 @@ export class TeamMemberRuntimeSwitch {
     validator: RunModelSelectionValidator;
     committer: Pick<TeamMemberRuntimeSwitchCommitter, "commit">;
     memberControl(agentRunId: string): Promise<TeamMemberSwitchControl | null>;
-    post(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
+    post(agentRunId: string, message: AgentInputUserMessage, postOptions?: AgentRunInputOptions): Promise<AgentOperationResult>;
   }>) {}
 
   async run(agentRunId: string, request: AgentRuntimeSwitchRequest): Promise<AgentRuntimeSwitchOutcome> {
@@ -44,7 +45,7 @@ export class TeamMemberRuntimeSwitch {
     const launch = committed.launchConfiguration;
     control.replaceSelection({ runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig,
       platformAgentRunId: committed.platformAgentRunId, ...(committed.pendingRuntimeSwitch ? { pendingRuntimeSwitch: committed.pendingRuntimeSwitch } : {}) });
-    const posted = await this.dependencies.post(agentRunId, request.notice);
+    const posted = await this.dependencies.post(agentRunId, request.notice, request.postOptions);
     return posted.accepted ? { kind: "switched" }
       : { kind: "failed", reason: `the continue message was not taken (${posted.message ?? posted.code ?? "not accepted"})` };
   }

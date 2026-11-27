@@ -1,9 +1,12 @@
+import { randomUUID } from "node:crypto";
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
+import { presentAsNoticeMetadata } from "autobyteus-ts/agent/message/present-as-notice-metadata.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { resetTimeText } from "../../agent-execution/domain/runtime-switch.js";
-import { RUNTIME_HANDOVER_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
+import { USAGE_LIMIT_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
+import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { RunEvent, UsageLimitReachedData } from "../run-event-types.js";
 import type { ExhaustedModel } from "./runtime-exhaustion-view.js";
 
@@ -23,6 +26,7 @@ export type SwitchAction = Readonly<{
   launch: Launch & Readonly<{ llmConfig: null }>;
   cause: Readonly<{ kind: "usage_limit"; resetAt: string | null; chosenBy: ChosenBy; reason: string | null }>;
   notice: AgentInputUserMessage;
+  postOptions: AgentRunInputOptions;
 }>;
 export type SwitchActionOutcome = Readonly<{ kind: "switched" }> | Readonly<{ kind: "not_quiet" }> | Readonly<{ kind: "failed"; reason: string }>;
 
@@ -32,10 +36,11 @@ export type HandledSwitch = Readonly<{
   reason: string | null; routerFailure: string | null; outcome: "switched" | "no_fallback" | "switch_failed";
 }>;
 
-/** C-5: the continue message the agent reads on its new runtime. */
-export const continueText = (why: UsageLimitReachedData, to: Launch): string =>
-  `Your last turn stopped because ${agentRuntimeName(why.runtimeKind)} reached its usage limit. You now run on `
-  + `${agentRuntimeName(to.runtimeKind)} (${to.llmModelIdentifier}) and have your work journal. Continue the task where you left off.`;
+/** R-10: the continue message, shown to the person as a notice; the hand-over preface combines into it. */
+export const CONTINUE_TEXT = "Continue the task where you left off.";
+
+/** A notice shown in the run's conversation (published by the run, so it is recorded with its turn). */
+export type ShownNotice = Readonly<{ text: string; messageId?: string; turnId?: string | null }>;
 
 /** C-5: the Error notice when nothing is usable, each exhausted runtime with when it is usable again (its earliest reset). */
 export const noFallbackText = (exhausted: readonly ExhaustedModel[]): string => {
@@ -68,7 +73,7 @@ export class UsageLimitSwitchListener {
     /** Resolves true at the run's next idle status, false when it does not come in time. */
     nextIdle(agentRunId: string): Promise<boolean>;
     exhaustion: Readonly<{ exhaustedNow(): readonly ExhaustedModel[] }>;
-    showNotice(agentRunId: string, text: string): Promise<void>;
+    showNotice(agentRunId: string, notice: ShownNotice): Promise<void>;
     records: Readonly<{ record(record: HandledSwitch): Promise<void> }>;
     now?: () => Date;
   }>) {}
@@ -110,19 +115,32 @@ export class UsageLimitSwitchListener {
     const base = { agentRunId, agentDefinitionId: subject.agentDefinitionId, from, routerFailure: choice.routerFailure };
     if (choice.kind === "no_fallback") {
       console.info(`Usage limit switch: no usable runtime for agent run '${agentRunId}'${choice.routerFailure ? ` (router: ${choice.routerFailure})` : ""}; it stays in Error.`);
-      await this.dependencies.showNotice(agentRunId, noFallbackText(this.dependencies.exhaustion.exhaustedNow()))
+      await this.dependencies.showNotice(agentRunId, { text: noFallbackText(this.dependencies.exhaustion.exhaustedNow()) })
         .catch((error: unknown) => console.warn(`Usage limit switch: the notice of agent run '${agentRunId}' could not be shown: ${String(error)}`));
       await this.record({ ...base, to: null, chosenBy: null, reason: null, outcome: "no_fallback" });
       return;
     }
-    const action = (): SwitchAction => ({
-      launch: { ...choice.launch, llmConfig: null },
-      cause: { kind: "usage_limit", resetAt: why.resetAt, chosenBy: choice.chosenBy, reason: choice.chosenBy === "model_router" ? choice.reason : null },
-      notice: new AgentInputUserMessage(continueText(why, choice.launch), SenderType.SYSTEM, null, {
-        sender_id: RUNTIME_HANDOVER_NOTICE_SENDER_ID,
-        [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-      }),
-    });
+    const action = (): SwitchAction => {
+      // R-10: an ordinary SYSTEM input (the hand-over preface combines into it on the same turn), presented as a notice:
+      // memory records it as one, and the run publishes it once forwarded.
+      const messageId = randomUUID();
+      return {
+        launch: { ...choice.launch, llmConfig: null },
+        cause: { kind: "usage_limit", resetAt: why.resetAt, chosenBy: choice.chosenBy, reason: choice.chosenBy === "model_router" ? choice.reason : null },
+        notice: new AgentInputUserMessage(CONTINUE_TEXT, SenderType.SYSTEM, null, {
+          sender_id: USAGE_LIMIT_NOTICE_SENDER_ID,
+          message_id: messageId,
+          [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
+          ...presentAsNoticeMetadata({ senderId: USAGE_LIMIT_NOTICE_SENDER_ID }),
+        }),
+        postOptions: {
+          lifecycleObserver: (fact) => {
+            if (fact.kind !== "forwarded") return;
+            void this.dependencies.showNotice(agentRunId, { text: CONTINUE_TEXT, messageId, turnId: fact.turnId ?? null }).catch(() => undefined);
+          },
+        },
+      };
+    };
     let outcome = await this.attempt(agentRunId, action());
     if (outcome.kind === "not_quiet") {
       outcome = await this.dependencies.nextIdle(agentRunId)

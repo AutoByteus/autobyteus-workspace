@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { AgentRunInputOptions } from "../../../agent-execution/input/agent-run-input-contract.js";
 import type { RuntimeSwitchCause } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 
@@ -10,6 +11,8 @@ export type AgentRuntimeSwitchRequest = Readonly<{
   launch: Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }>;
   cause: RuntimeSwitchCause;
   notice: AgentInputUserMessage;
+  /** Passed to the post unchanged: the observer that publishes the continue notice once forwarded (R-10). */
+  postOptions?: AgentRunInputOptions;
 }>;
 
 /**

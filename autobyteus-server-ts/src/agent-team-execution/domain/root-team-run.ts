@@ -197,7 +197,7 @@ export class RootTeamRun {
     this.memberSwitch = new TeamMemberRuntimeSwitch({ getTree: () => this.tree, validator: options.modelSelectionValidator,
       committer: new TeamMemberRuntimeSwitchCommitter(treeCommits),
       memberControl: async (agentRunId) => (await this.requireContainingTeamRun(agentRunId)).directAgentControl(agentRunId),
-      post: (agentRunId, message) => this.executeAgentCommand(agentRunId, { kind: "post_message", message }) });
+      post: (agentRunId, message, postOptions) => this.executeAgentCommand(agentRunId, { kind: "post_message", message, ...(postOptions ? { postOptions } : {}) }) });
     this.membershipChanges = new TeamMembershipCommitter({ rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
       assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),

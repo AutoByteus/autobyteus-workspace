@@ -1,8 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
-import { RUNTIME_HANDOVER_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
+import { readPresentAsNotice } from "autobyteus-ts/agent/message/present-as-notice-metadata.js";
+import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { USAGE_LIMIT_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
 import {
-  continueText,
+  CONTINUE_TEXT,
   noFallbackText,
   UsageLimitSwitchListener,
   type SwitchAction,
@@ -45,19 +48,25 @@ const listenerOf = (input: Partial<{ enabled: boolean; choice: SwitchChoice; out
 };
 
 describe("UsageLimitSwitchListener (DS-003)", () => {
-  it("switches with the cause and a continue message that shows no row, then records C-2", async () => {
+  it("switches with the cause and a continue message presented as a notice (R-10), then records C-2", async () => {
     const f = listenerOf();
     await f.listener.handle(EVENT);
     expect(f.choose).toHaveBeenCalledWith({ agentDefinitionId: "operator", agentName: "operator", agentDescription: null, why: EVENT.data });
     const action = f.switchAgentRuntime.mock.calls[0]![1];
     expect(action.launch).toEqual({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null });
     expect(action.cause).toEqual({ kind: "usage_limit", resetAt: "2026-11-27T09:00:00.000Z", chosenBy: "model_router", reason: "Claude worked well." });
-    expect(action.notice.content).toBe(continueText(EVENT.data, ROUTED.kind === "chosen" ? ROUTED.launch : null!));
-    expect(action.notice.content).toBe("Your last turn stopped because Codex App Server reached its usage limit. You now run on Claude Agent SDK (opus) "
-      + "and have your work journal. Continue the task where you left off.");
-    expect(action.notice.metadata).toMatchObject({ sender_id: RUNTIME_HANDOVER_NOTICE_SENDER_ID, [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true });
-    expect(action.notice.metadata).not.toHaveProperty("platform_input_preface");
+    expect(action.notice.content).toBe(CONTINUE_TEXT);
+    expect(CONTINUE_TEXT).toBe("Continue the task where you left off.");
+    expect(action.notice.senderType).toBe(SenderType.SYSTEM);
+    expect(action.notice.metadata).toMatchObject({ sender_id: USAGE_LIMIT_NOTICE_SENDER_ID, message_id: expect.any(String),
+      [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true });
+    expect(readPresentAsNotice(action.notice.metadata)).toEqual({ senderId: USAGE_LIMIT_NOTICE_SENDER_ID });
+    // An ordinary input, not a platform notice: the hand-over preface can combine into it on the same turn.
+    expect(readPlatformInputPreface(action.notice.metadata)).toBeNull();
     expect(f.showNotice).not.toHaveBeenCalled();
+    // Once forwarded, the run publishes the notice with the input's id and turn (so it is recorded once, with its turn).
+    action.postOptions.lifecycleObserver?.({ kind: "forwarded", acceptedAt: "2026-11-25T06:43:06.000Z", dispatchKind: "start_turn", turnId: "turn-9" } as never);
+    expect(f.showNotice).toHaveBeenCalledWith("run-1", { text: CONTINUE_TEXT, messageId: action.notice.metadata.message_id, turnId: "turn-9" });
     expect(f.record).toHaveBeenCalledWith({ at: "2026-11-25T06:43:05.000Z", agentRunId: "run-1", agentDefinitionId: "operator",
       from: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol" }, to: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus" },
       chosenBy: "model_router", reason: "Claude worked well.", routerFailure: null, outcome: "switched" });
@@ -78,7 +87,7 @@ describe("UsageLimitSwitchListener (DS-003)", () => {
     expect(f.switchAgentRuntime).not.toHaveBeenCalled();
     expect(f.showNotice).toHaveBeenCalledOnce();
     expect(f.showNotice).toHaveBeenCalledWith("run-1",
-      "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC; Antigravity CLI until Nov 25, 18:00 UTC. No other runtime is usable.");
+      { text: "Usage limits reached: Codex App Server until Nov 27, 09:00 UTC; Antigravity CLI until Nov 25, 18:00 UTC. No other runtime is usable." });
     expect(f.record).toHaveBeenCalledWith(expect.objectContaining({ to: null, chosenBy: null, reason: null, outcome: "no_fallback" }));
     expect(noFallbackText([])).toBe("A usage limit was reached. No other runtime is usable.");
   });

@@ -8,6 +8,7 @@ import { SenderType } from '../sender-type.js';
 import { resolveInterAgentSenderId } from '../message/inter-agent-sender.js';
 import { LLMUserMessage } from '../../llm/user-message.js';
 import { readPlatformInputPreface, stripPlatformInputPreface } from '../message/platform-input-preface-metadata.js';
+import { readPresentAsNotice } from '../message/present-as-notice-metadata.js';
 
 /**
  * The source event of every input trace this processor writes: the user message and, for an input carrying a platform
@@ -56,6 +57,16 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
       dedupeKey: typeof original.metadata?.dedupe_key === 'string' ? original.metadata.dedupe_key : undefined,
     };
 
+    // autobyteus-646 R-10: an input presented as a notice is recorded as a system notice trace from its sender.
+    const presentAsNotice = readPresentAsNotice(original.metadata);
+    const recordInput = (content: string, llmMessage: LLMUserMessage) => presentAsNotice
+      ? memoryManager.appendRawTrace({
+        turnId, traceType: 'system_task_notification', content, senderId: presentAsNotice.senderId, sourceEvent: NATIVE_INPUT_TRACE_SOURCE_EVENT,
+        messageId: identity.messageId,
+      }).id
+      : memoryManager.ingestUserMessage(llmMessage, turnId, NATIVE_INPUT_TRACE_SOURCE_EVENT, fileAttachments,
+        resolveInterAgentSenderId(original.metadata), identity);
+
     const preface = readPlatformInputPreface(original.metadata);
     if (preface) {
       // The model sees the notice and the input together; history keeps them apart: one system
@@ -67,26 +78,20 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
       }).id];
       const inputContent = stripPlatformInputPreface(llmUserMessage.content, preface);
       if (inputContent !== null) {
-        traceIds.push(memoryManager.ingestUserMessage(
-          new LLMUserMessage({
-            content: inputContent,
-            image_urls: llmUserMessage.image_urls,
-            audio_urls: llmUserMessage.audio_urls,
-            video_urls: llmUserMessage.video_urls,
-          }),
-          turnId, NATIVE_INPUT_TRACE_SOURCE_EVENT, fileAttachments, resolveInterAgentSenderId(original.metadata), identity,
-        ));
+        traceIds.push(recordInput(inputContent, new LLMUserMessage({
+          content: inputContent,
+          image_urls: llmUserMessage.image_urls,
+          audio_urls: llmUserMessage.audio_urls,
+          video_urls: llmUserMessage.video_urls,
+        })));
       }
       context.state.activeTurn?.recordInputRawTraceIds(traceIds);
       console.debug(`MemoryIngestInputProcessor stored a platform notice and its input with turnId ${turnId}`);
       return message;
     }
 
-    memoryManager.ingestUserMessage(
-      llmUserMessage, turnId, NATIVE_INPUT_TRACE_SOURCE_EVENT, fileAttachments,
-      resolveInterAgentSenderId(original.metadata),
-      identity,
-    );
+    const traceId = recordInput(llmUserMessage.content, llmUserMessage);
+    if (presentAsNotice) context.state.activeTurn?.recordInputRawTraceIds([traceId]);
     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
     return message;
   }

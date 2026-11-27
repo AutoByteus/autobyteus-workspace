@@ -123,11 +123,12 @@ export const composeRunEvents = async (input: Readonly<{ appDataDir: string }>) 
         { ...action, launch: { ...action.launch, runtimeKind: action.launch.runtimeKind as RuntimeKind } }) },
       nextIdle,
       exhaustion,
-      showNotice: async (agentRunId, text) => {
+      showNotice: async (agentRunId, notice) => {
         const run = AgentRunManager.getInstance().getActiveRun(agentRunId);
         if (!run) return;
         await run.publishEvent({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: agentRunId, statusHint: null,
-          payload: { sender_id: USAGE_LIMIT_NOTICE_SENDER_ID, content: text, message_id: randomUUID() } });
+          payload: { sender_id: USAGE_LIMIT_NOTICE_SENDER_ID, content: notice.text, message_id: notice.messageId ?? randomUUID(),
+            ...(notice.turnId ? { turn_id: notice.turnId } : {}) } });
       },
       records: switchRecords,
     });

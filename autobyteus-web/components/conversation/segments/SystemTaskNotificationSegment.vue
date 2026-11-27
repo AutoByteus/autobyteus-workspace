@@ -56,6 +56,8 @@ const TOOL_LIST_UPDATE_NOTICE_HEADER = '[Platform notice — tools updated]';
 const TOOL_LIST_UPDATE_NOTICE_LEAD = 'Your tools changed.';
 /** The agent runtime switch marker: its sender (live notice and recorded marker). */
 const RUNTIME_HANDOVER_NOTICE_SENDER_ID = 'system.runtime_handover';
+/** autobyteus-646: the usage-limit switch's notices (the continue message, no runtime usable). */
+const USAGE_LIMIT_NOTICE_SENDER_ID = 'system.usage_limit';
 /** The platform's background task notice: its sender, or its header (replayed history, Team streams). */
 const BACKGROUND_TASK_NOTICE_SENDER_ID = 'system.background_task_notifier';
 const BACKGROUND_TASK_NOTICE_HEADER = '[Platform notice — background tasks finished]';
@@ -81,7 +83,8 @@ const isToolsUpdate = computed(() =>
   props.segment.senderId === TOOL_LIST_UPDATE_NOTICE_SENDER_ID
   || props.segment.content.startsWith(TOOL_LIST_UPDATE_NOTICE_HEADER));
 
-const isRuntimeChange = computed(() => props.segment.senderId === RUNTIME_HANDOVER_NOTICE_SENDER_ID);
+const isRuntimeChange = computed(() => props.segment.senderId === RUNTIME_HANDOVER_NOTICE_SENDER_ID
+  || props.segment.senderId === USAGE_LIMIT_NOTICE_SENDER_ID);
 
 const isRestartReminder = computed(() =>
   props.segment.senderId === RESTART_REMINDER_NOTICE_SENDER_ID
