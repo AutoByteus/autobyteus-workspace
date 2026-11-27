@@ -41,6 +41,8 @@ const gatedWebSocketRoutes = (): string[] => sourceFiles(join(API, "websocket"))
 
 const ALLOWED_GATE_IMPORTS = new Set([
   "getClientIdentity",
+  // autobyteus-661: the private network's caller of a request, as the gate saw the connection (a reader, like the identity).
+  "getPrivateNetworkCaller",
   "registerOpenSocket",
   "getWebSocketRefusal",
   "WEBSOCKET_ACCESS_TOKEN_QUERY_KEY",

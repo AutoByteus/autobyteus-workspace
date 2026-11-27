@@ -4,6 +4,7 @@ import type { ClientRevocationSource } from "../../node-access/domain/credential
 import type { NetworkAdmissionCheck } from "../../node-access/domain/network-admission-facts.js";
 import { NODE_ACCESS_REFUSALS, type NodeAccessRefusal } from "../../node-access/domain/node-access-refusal.js";
 import type { NodeCredentialResolver } from "../../node-access/services/node-credential-resolver.js";
+import { privateNetworkCallerOf, type PrivateNetworkCaller } from "../../private-network/private-network-listener.js";
 import { routeAccessFor } from "./node-route-permissions.js";
 import type { ClosableSocket, OpenSocketRegistry } from "./open-socket-registry.js";
 
@@ -42,7 +43,10 @@ export class NodeAccessGate {
 
   async decide(request: FastifyRequest): Promise<GateDecision> {
     const socket = request.raw.socket;
-    if (!(await this.admission.admits({ clientAddress: socket?.remoteAddress, localAddress: socket?.localAddress }))) {
+    // autobyteus-661 REQ-003: a connection the network program handed over carries its caller; it is a private-network
+    // connection (admitted as such, never as this computer), and a peer's request on it must come from its machine.
+    const caller = privateNetworkCallerOf(socket);
+    if (!(await this.admission.admits({ clientAddress: socket?.remoteAddress, localAddress: socket?.localAddress, privateNetwork: caller !== null }))) {
       return { ok: false, refusal: NODE_ACCESS_REFUSALS.networkRefused };
     }
 
@@ -61,6 +65,7 @@ export class NodeAccessGate {
       pathWithQuery: request.url,
       headers: request.headers,
       webSocketQueryCredential: upgrade ? readWebSocketQueryCredential(request) : null,
+      privateNetworkCaller: caller ? { machine: caller.machine, account: caller.account } : null,
     });
     if (!verification.ok) {
       return verification;
@@ -85,6 +90,13 @@ const webSocketRefusals = new WeakMap<object, NodeAccessRefusal>();
 export const admitRequest = (request: FastifyRequest, identity: ClientIdentity, openSockets: OpenSocketRegistry): void => {
   admittedRequests.set(request.raw, Object.freeze({ identity, openSockets }));
 };
+
+/**
+ * The private network's caller of this request (its machine, account and address), or `null` for a connection that
+ * did not come over the private network (autobyteus-661). Routes read it here, never from a header.
+ */
+export const getPrivateNetworkCaller = (request: FastifyRequest): PrivateNetworkCaller | null =>
+  privateNetworkCallerOf(request.raw.socket);
 
 /** The client identity the gate established for this request; `null` on an exempt or tool endpoint. */
 export const getClientIdentity = (request: FastifyRequest): ClientIdentity | null =>

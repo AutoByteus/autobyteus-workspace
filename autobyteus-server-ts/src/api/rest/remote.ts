@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
-import { getClientIdentity, registerOpenSocket } from "../security/node-access-gate.js";
+import { getClientIdentity, getPrivateNetworkCaller, registerOpenSocket } from "../security/node-access-gate.js";
 import type { RemoteCollaborationServices } from "../../remote-collaboration/remote-collaboration-services.js";
 import type { PeerGatewayResponse } from "../../remote-collaboration/channel/peer-gateway.js";
 import type { PairingResponse } from "../../remote-collaboration/pairing/peer-pairing.js";
@@ -109,14 +109,18 @@ export async function registerRemoteCollaborationRoutes(
 
   // autobyteus-661 contract §2: the pairing messages. `pair`, `pair-accepted` and `pair-rejected` are exempt (the asker
   // is not a peer yet; a grant or this node's outstanding request decides); `pair-confirm` and `unpaired` are signed.
-  // Every connection here comes by a plain address (no caller), until the private network's listener marks its own.
+  // A connection over the private network carries its caller (machine, account), which the pair keeps in its record.
+  const callerOf = (request: FastifyRequest) => {
+    const caller = getPrivateNetworkCaller(request);
+    return caller ? { machine: caller.machine, account: caller.account } : null;
+  };
   const pairing = (path: string, handle: (request: FastifyRequest) => Promise<PairingResponse> | PairingResponse) =>
     app.post(path, async (request: FastifyRequest, reply) => {
       const response = await handle(request);
       return reply.code(response.status).send(response.answer);
     });
-  pairing("/remote/pair", (request) => remote.pairing.receivePair(request.body, null));
-  pairing("/remote/pair-accepted", (request) => remote.pairing.receivePairAccepted(request.body, null));
+  pairing("/remote/pair", (request) => remote.pairing.receivePair(request.body, callerOf(request)));
+  pairing("/remote/pair-accepted", (request) => remote.pairing.receivePairAccepted(request.body, callerOf(request)));
   pairing("/remote/pair-rejected", (request) => remote.pairing.receivePairRejected(request.body));
   pairing("/remote/pair-confirm", (request) => remote.pairing.receivePairConfirm(request.body, getClientIdentity(request)));
   pairing("/remote/unpaired", (request) => remote.pairing.receiveUnpaired(getClientIdentity(request)));

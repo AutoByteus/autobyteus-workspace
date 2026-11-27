@@ -95,6 +95,7 @@ import { composeUpdateNotifications, type UpdateNotifications } from "./update-n
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
 import { composeExtensions } from "./extensions-composition.js";
+import { composePrivateNetwork, type PrivateNetwork } from "./private-network-composition.js";
 import type { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { readExtensionCatalogSource } from "../extensions/catalog/extension-catalog-source.js";
 import { thisPlatform } from "../extensions/domain/extension-description.js";
@@ -206,11 +207,13 @@ export const buildStudioServer = async (input: {
   let releaseModelRouting: (() => void) | null = null;
   let episodicCatalog: EpisodicCatalog | null = null;
   let extensions: ExtensionManager | null = null;
+  let privateNetwork: PrivateNetwork | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
     await extensions?.stopAll();
+    await privateNetwork?.close();
     await episodicCatalog?.stop();
     if (episodicCatalog) releaseProcessEpisodicCatalog(episodicCatalog);
     await nodeAccess?.close();
@@ -422,6 +425,7 @@ export const buildStudioServer = async (input: {
       routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     nativeShutdown.install(app);
+    privateNetwork = await composePrivateNetwork({ dataDir: input.appConfig.getAppDataDir(), httpServer: () => app.server });
     app.addHook("onClose", async () => nativeShutdown.close(async () => {
       try {
         await currentApplicationRuntime.lifecycle.stop();

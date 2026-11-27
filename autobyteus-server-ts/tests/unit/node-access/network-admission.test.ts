@@ -52,6 +52,12 @@ describe("NetworkAdmission", () => {
     await expect(cafe.admission.admits(from("10.20.1.1", "10.20.0.5"))).resolves.toBe(false);
   });
 
+  it("autobyteus-661 REQ-003 admits a connection the network program handed over (no address: it came on the caller socket)", async () => {
+    const f = admission({ runsInContainer: false, tailscaleAddresses: [], localNetwork: null });
+    await expect(f.admission.admits({ clientAddress: undefined, localAddress: undefined, privateNetwork: true })).resolves.toBe(true);
+    await expect(f.admission.admits({ clientAddress: undefined, localAddress: undefined })).resolves.toBe(false);
+  });
+
   it("NAS-28 admits a network listed in AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS", async () => {
     const f = admission({ ...HOME, localNetwork: null }, [parseIpNetwork("10.8.0.0/16")!]);
     await expect(f.admission.admits(from("10.8.3.4", "10.8.0.2"))).resolves.toBe(true);

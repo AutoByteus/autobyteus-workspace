@@ -18,7 +18,15 @@ export type NetworkAdmissionFactsSource = Readonly<{
 }>;
 
 /** The two addresses of one connection, as Node reports them (`socket.remoteAddress`, `socket.localAddress`). */
-export type ConnectionAddresses = Readonly<{ clientAddress: string | undefined; localAddress: string | undefined }>;
+export type ConnectionAddresses = Readonly<{
+  clientAddress: string | undefined;
+  localAddress: string | undefined;
+  /**
+   * The connection came over the private network: the network program handed it to the node with its caller
+   * (autobyteus-661 REQ-003). Such a connection is admitted by that fact, never as one from this computer.
+   */
+  privateNetwork?: boolean;
+}>;
 
 /** Whether a connection arrived from a network this node accepts (NA-3); `NetworkAdmission` implements it. */
 export type NetworkAdmissionCheck = Readonly<{ admits(connection: ConnectionAddresses): Promise<boolean> }>;

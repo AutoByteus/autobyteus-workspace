@@ -79,6 +79,8 @@ export class NetworkAdmission implements NetworkAdmissionCheck {
   }
 
   private matches(snapshot: AdmissionSnapshot, connection: ConnectionAddresses): boolean {
+    // autobyteus-661 REQ-003: the network program proved the caller; the node's private network is its own admission.
+    if (connection.privateNetwork) return true;
     const client = normalizeClientAddress(connection.clientAddress);
     if (!client) return false;
     if (client.family === "ipv4" ? client.normalized.startsWith("127.") : client.normalized === "::1") return true;
