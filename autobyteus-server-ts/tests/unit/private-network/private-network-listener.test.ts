@@ -14,7 +14,8 @@ import {
 /**
  * autobyteus-661 DS-2, REQ-003: the network program hands each private-network connection to the node over the caller
  * socket with one preamble line; the node's HTTP server then serves it, and only such a connection carries a caller.
- * A short temp folder keeps the Unix socket path under the platform limit.
+ * The hand-over runs on every platform: a Unix socket (a short temp folder keeps its path under the platform limit), and
+ * on Windows a named pipe (AR-005; run on a GitHub Actions Windows runner, check 12 of PoC 2a).
  */
 
 const cleanups: Array<() => Promise<void> | void> = [];
@@ -51,12 +52,16 @@ const exchange = (connect: () => net.Socket, payload: string) => new Promise<{ a
 const request = (url = "/rest/health") => `GET ${url} HTTP/1.1\r\nHost: 100.88.80.80:8000\r\nConnection: close\r\n\r\n`;
 const bodyOf = (answer: string) => JSON.parse(answer.slice(answer.indexOf("\r\n\r\n") + 4).match(/\{.*\}/s)![0]);
 
-describe.skipIf(process.platform === "win32")("PrivateNetworkListener (Unix socket)", () => {
-  it("REQ-003: a handed-over connection is served by the node's HTTP server, with the caller its preamble names", async () => {
+describe("PrivateNetworkListener (Unix socket; named pipe on Windows)", () => {
+  it("REQ-003 AR-005: a handed-over connection is served by the node's HTTP server, with the caller its preamble names", async () => {
     const node = await startNode();
-    expect(node.listener.socketPath()).toBe(path.join(path.resolve(node.dataDir), "private-network", "caller.sock"));
-    expect(fs.statSync(node.listener.socketPath()!).mode & 0o777).toBe(0o600);
-    expect(fs.statSync(path.dirname(node.listener.socketPath()!)).mode & 0o777).toBe(0o700);
+    if (process.platform === "win32") {
+      expect(node.listener.socketPath()).toMatch(/^\\\\\.\\pipe\\autobyteus-private-network-[0-9a-f]{24}$/);
+    } else {
+      expect(node.listener.socketPath()).toBe(path.join(path.resolve(node.dataDir), "private-network", "caller.sock"));
+      expect(fs.statSync(node.listener.socketPath()!).mode & 0o777).toBe(0o600);
+      expect(fs.statSync(path.dirname(node.listener.socketPath()!)).mode & 0o777).toBe(0o700);
+    }
     const { answer } = await exchange(() => net.createConnection(node.listener.socketPath()!),
       `AUTOBYTEUS-CALLER ${JSON.stringify(CALLER)}\n${request("/rest/remote/info?x=1")}`);
     expect(answer).toMatch(/^HTTP\/1\.1 200/);
