@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-006` (SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -429,3 +429,21 @@ The implementer found, in the code at b40ee8d202, that every runtime switch alre
   - option (b), two rows, which goes against REQ-006;
   - option (c), suppressing the marker, which needs the same field plus a branch;
   - storing the rendered sentence, which goes against the project's stored-facts rule.
+
+### R-8 The launch origin of the history layer: `agent_history` (SR-006, implementation question IQ-002)
+
+A delegated agent launched by the history layer (R-2) records the new origin `agent_history`, added to every place the origin vocabulary lives:
+
+- `LaunchConfigurationSource.origin` (`agent-collaboration/domain/launch-configuration-source.ts`) and the schema list `LAUNCH_CONFIGURATION_ORIGINS` (`run-history/store/launch-configuration-source-schema.ts`);
+- `DecisionLaunchSource` in the routing decision log (`model-routing/stores/routing-decision-log.ts`, through `routing-decision-draft.ts`);
+- the launch note label (`ORIGIN_LABEL`): "(chosen from its history)";
+- the web types and rows (`autobyteus-web/types/modelRouting.ts`, `utils/runSettings/delegatedLaunchRows.ts`).
+
+**One word, one meaning (Principle 15).** The same value names the same thing in C-2 and R-7:
+
+- C-2 `chosenBy`: `model_router | agent_history` (was `history`);
+- R-7 `cause.chosenBy`: `model_router | agent_history`.
+
+**Older servers:** a downgraded server rejecting the new value is not designed for (DESIGN rule 9: one release; no compatibility between versions).
+
+**Rejected:** recording the launch as `inherited`. It would store a false fact.
