@@ -168,13 +168,65 @@ for the user interaction contract.
     rejected before Team or Agent conversation mutation, enters the persistent
     `reopen_required` phase once, closes the stale transport, and blocks commands
     and ordinary reconnect rather than silently dropping later output.
-  - Team-stream recovery is an explicit history-selection workflow, not a
-    structural-snapshot refresh. Reselecting a member performs a root execution
-    checkpoint, exact per-Agent conversation hydration, and a second checkpoint;
-    open work or a changed checkpoint produces localized wait/retry feedback and
-    leaves the failed context selected. Only a candidate stream whose snapshot
-    base equals the stable checkpoint can atomically replace the failed service
-    and fully hydrated context.
+  - A Team stream that needs recovery recovers by itself, on desktop and phone,
+    with no reselect (autobyteus-541), as the Org stream does. The service
+    enters `reopen_required` once and its required option `onStreamRecoveryRequired`
+    publishes `required` for the Team to `stores/teamStreamRecoveryStore.ts`
+    (`required` → `recovering` → `exhausted`, cleared at the commit or when the
+    Team's stream is disconnected); publishing with no owner registered throws,
+    so a missing wiring fails loudly. The one owner,
+    `services/runOpen/teamStreamAutoRecovery.ts`, is started by the client plugin
+    `plugins/teamStreamRecovery.client.ts` (the desktop and the phone load the same
+    app). It watches the store and runs one recovery per Team on the shared reconnect
+    schedule ([Live Run Stream Reconnection](#live-run-stream-reconnection)). Each
+    attempt is `reopenTeamRunAfterStreamLoss` with `selectRun: false`; success ends
+    the recovery, a failed attempt calls `connectionLost()`, and at the fifth
+    consecutive failure the state becomes `exhausted` and the attempts go on. A
+    recovery ends without counting a failure when the Team's context is gone or its
+    current service no longer needs one. A stopped Team's open view keeps its
+    stream, so it is recovered too.
+  - The verified replacement is the one a reselect always ran: a root execution
+    checkpoint, exact per-Agent conversation hydration for the focused member, and
+    a second checkpoint. It refuses to commit while the Team has open work
+    (`TEAM_STREAM_RECOVERY_WAIT`) or when the checkpoint changed
+    (`TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED`); each is a failed attempt that tries
+    again, so a gap in the middle of a long turn recovers only after the turn ends,
+    and the notice can show first. A user's own reselect that meets either shows
+    the localized wait or retry message (`stream_recovery_wait`, `stream_recovery_retry`:
+    the Runs view, the run list and the phone's run opening) and leaves the failed
+    context selected. Only a candidate stream whose snapshot base
+    equals the stable checkpoint atomically replaces the failed service and the
+    fully hydrated context. `reopenTeamRunAfterStreamLoss` is single-flight per Team:
+    a user's reselect during a recovery joins it, then loads and focuses the member
+    the user chose (when the joined recovery failed, it runs its own attempt).
+    A member the user moved to while the recovery's read ran, by any path (the run
+    tree, an execution link, a mounted Team's inspection), stays focused: the commit
+    reads the focus from the context being replaced and
+    `keepFocusAcrossRecovery` focuses that member on the recovered context once its
+    projection is loaded.
+  - The page's own state survives the commit. In the same synchronous commit of
+    `agentTeamRunStore.replaceFailedTeamStream`, for every member in both contexts
+    (by agent run ID), `carryAgentContextPageState` moves the draft being typed
+    (`requirement`, context file paths, requested skills and mentions), a returned
+    draft's `messageNotDelivered`, `collaboratorAddFailure` and `submissionPending` to
+    the new member context; a member that left the tree loses them. `interruptPending`
+    is not carried: the failed service settled its Stops (`connection_lost`) first, and
+    the new context's status decides the button.
+  - While a Team stream recovers, its members keep their last known status, Stop
+    answers `not_sent` ("Stop was not sent: not connected…"), and a send waits in
+    `ensureTeamStreamConnected` (up to 10 s, for the Team's current service, which
+    after a commit is the replacement; never "Select this Team member again"). A send
+    in flight follows the member: when the wait returns, and again before a failure is
+    shown, `sendMessageToFocusedMember` resolves the member's current context, and
+    `retargetLocalUserSubmissionContext` moves the handle there (a shown message's
+    row moves unless the server's echo is already there; a held send with mentions
+    shows no row until the root accepts it), so the outcome lands on the context the
+    user sees. Past 10 s the send ends `not_sent` with the text back (autobyteus-540).
+    Only at `exhausted` do the Team views (desktop `TeamWorkspaceView`, phone
+    `MobileRunTargetView`) show the localized notice
+    `workspace.team.recovery.exhausted` ("Live updates could not recover automatically.
+    Select this Team member again to reload the complete conversation."); a commit
+    clears it.
   - `sendMessageToFocusedMember()`: uses the focused exact
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
@@ -494,6 +546,21 @@ that live stream remains authoritative, but terminal `offline` or `error` histor
 projections replace a stale `running` even when a caller asks to preserve live
 state, which removes the Stop button. A later live `AGENT_STATUS { status: "idle" }`
 likewise removes it.
+
+A history refresh of a run or Team whose context already exists changes no status
+(autobyteus-541): the context keeps the last status shown, and its stream's snapshot
+sets the truth. The refresh locks the context and reconnects a stream that is merely
+disconnected; it does not write an `Initializing` placeholder (which had overwritten the
+last status and disabled Send for nothing, for a standalone run and a Team member alike),
+and a recovering Team stream is its recovery owner's, not the refresh's. Opening a run
+that is live shows its real status: `openAgentRun` takes the run's own status as the
+page knows it (`runStatusStore.statusOf`, the one the Runs row showed when it was
+clicked) and uses `Initializing` only until the stream's first status when that is
+unknown; never a `Running` placeholder, so an idle run never offers Stop at open. A stopped
+run opens `Offline`. When another part of the page built the run's context while the open
+read it, the open reads once more with the context it now holds; if that changed again, it
+keeps and selects the current context and patches nothing. "changed before projection
+commit" is no longer thrown, and only a failed read is an error.
 
 Standalone run-history termination eligibility is a separate lifecycle fact from
 the displayed five-state health value and from the Stop button. A current local run
@@ -1798,8 +1865,11 @@ decides how it connects, what counts as success, and how it catches up.
   | Collaboration (`AgentRunCollaborationStreamingService`) | Opens the socket | The snapshot is accepted | Closes the socket, then attempt |
 
   Further rules per owner:
-  - Team: `connect()` starts the scheduler over. `reopen_required` stays terminal, with
-    no retries.
+  - Team: `connect()` starts the scheduler over. `reopen_required` stays terminal for the
+    service itself, with no transport retries: a separate recovery owner
+    (`teamStreamAutoRecovery`, one scheduler per Team on this same schedule) replaces the
+    failed service with a verified one, as the rules under
+    [`agentTeamRunStore.ts`](#agentteamrunstorets-agent-teams) describe.
   - Org and collaboration: a persistent failure reports the error and rejects readiness.
     A 4004 close starts the collaboration scheduler over; a credential-refusal close starts
     either one over (the Org's context still requires a reopen).

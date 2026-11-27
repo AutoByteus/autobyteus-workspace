@@ -1,0 +1,10 @@
+## A Team's live view recovers by itself, and opening or refreshing a run shows its real status
+
+(For the release that includes this change. User-facing. No user action is needed, so there is no "What you need to do" section.)
+
+- **A Team's live view recovers on its own.** When a Team's live connection loses an update or drops, the view now reloads the conversation by itself, on the desktop and on the phone, instead of waiting for you to select the Team member again. The members keep their last status meanwhile. If you type, send a message or switch to another member while it recovers, nothing is lost: your draft, a message that could not be sent and its notice, and a message still being sent follow you to the new view, and the member you chose stays selected. A message sent during the recovery waits for it for up to 10 seconds, then comes back to the message box with the usual "not sent" notice.
+- **You hear about it only when it keeps failing.** After the fifth failed attempt the Team's view says "Live updates could not recover automatically. Select this Team member again to reload the complete conversation." (also in Chinese). The attempts go on, and the notice goes away once the view recovers. While a Team member is in the middle of a long turn the reload waits for the turn to end, so the notice can appear first.
+- **A refresh no longer resets a run's status.** When the run history refreshes while an open run's or Team member's live connection is down, it keeps the status it had (it no longer flips to "Initializing" and disables Send until the connection answers).
+- **Opening a run shows its real status.** An idle run you open no longer shows a Stop button for a moment: the run opens with the status the Runs list already showed for it, or "Initializing" until its live connection says.
+- **Opening a run while the page is loading the same run no longer fails.** The rare "changed before projection commit" error is gone: the open reads once more and shows the run.
+- **"Send message" and "Stop generation" are translated.** The composer's button labels follow the app's language (they were English in Chinese).
