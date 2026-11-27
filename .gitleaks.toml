@@ -243,3 +243,20 @@ regexes = [
 paths = [
   '''^autobyteus-server-ts/src/runtime-management/agent-runtimes/strategies/claude-agent-runtime-strategy\.ts$''',
 ]
+
+# private-network (autobyteus-661): the peers-to-node-keys migration test synthesizes released `peers.json` rows with a
+# made-up `peerSecret` each: base64url of the words "secret-paired", "secret-sandbox" and "secret-null". They are
+# fixture text standing in for the old peer secrets the migration deletes, not credentials; checked by shape and
+# context (implementation, 2026-11-27), never used anywhere else. Only these exact values, only for the generic rule,
+# and only in that test file.
+[[allowlists]]
+description = "Made-up peerSecret fixture values in the autobyteus-661 migration test (generic rule only)"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''^(?:c2VjcmV0LXBhaXJlZA|c2VjcmV0LXNhbmRib3g|c2VjcmV0LW51bGw)$''',
+]
+paths = [
+  '''^autobyteus-server-ts/tests/app-data-migrations/peers-to-node-keys/peers-to-node-keys-migration\.test\.ts$''',
+]
