@@ -1,0 +1,84 @@
+# v1.5.15-beta.3 (BETA) published state, 2026-11-27T06:47:18Z
+## workflow runs (final)
+Desktop Release run 45949936418: completed success, attempt 1
+Server Docker Release run 45949936457: completed success, attempt 1
+Android APK Release run 45949936379: completed success, attempt 1
+iOS App Store Connect Release run 45949936372: completed success, attempt 1
+## jobs of run 45949936418 (latest attempt)
+  Resolve Release Metadata: success
+  Build Windows x64: success
+  Build macOS ARM64: success
+  Build macOS Intel x64: success
+  Build Linux x64: success
+  Build Linux ARM64: success
+  Sign authenticated Linux desktop releases: success
+  Publish GitHub Release: success
+## jobs of run 45949936457 (latest attempt)
+  Resolve Release Metadata: success
+  Build Server Image (linux/arm64): success
+  Build Server Image (linux/amd64): success
+  Publish Server Image: success
+  Publish Server Package (linux/arm64): success
+  Publish Server Package (linux/amd64): success
+## jobs of run 45949936379 (latest attempt)
+  Resolve Android Release Metadata: success
+  Build Android APK: success
+  Publish Android APK To GitHub Release: success
+## jobs of run 45949936372 (latest attempt)
+  Resolve iOS Release Metadata: success
+  Build And Test iOS App: success
+  Validate iOS Publish Secrets: success
+  Archive And Upload To App Store Connect: success
+## release
+name v1.5.15-beta.3; prerelease true draft false tag v1.5.15-beta.3 target 32edb7532dcbc7dce5ee9e150e3a230991608e4f
+GitHub Latest: v1.5.14
+assets: 27
+2026-11-27T06:15:14Z	AutoByteus_personal_android-1.5.15-beta.3-release.apk
+2026-11-27T06:15:14Z	AutoByteus_personal_android-1.5.15-beta.3-release.apk.sha256
+2026-11-27T06:17:32Z	autobyteus-server-1.5.15-beta.3-linux-arm64.tar.gz
+2026-11-27T06:17:39Z	autobyteus-server-1.5.15-beta.3-linux-arm64.json
+2026-11-27T06:17:40Z	autobyteus-server-1.5.15-beta.3-linux-arm64.json.sig
+2026-11-27T06:17:52Z	autobyteus-server-1.5.15-beta.3-linux-x64.tar.gz
+2026-11-27T06:17:58Z	autobyteus-server-1.5.15-beta.3-linux-x64.json
+2026-11-27T06:17:59Z	autobyteus-server-1.5.15-beta.3-linux-x64.json.sig
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-arm64-1.5.15-beta.3.AppImage
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-arm64-1.5.15-beta.3.AppImage.release.json
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-arm64-1.5.15-beta.3.AppImage.release.json.sig
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-x64-1.5.15-beta.3.AppImage
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-x64-1.5.15-beta.3.AppImage.release.json
+2026-11-27T06:37:08Z	AutoByteus_personal_linux-x64-1.5.15-beta.3.AppImage.release.json.sig
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-arm64-1.5.15-beta.3.dmg
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-arm64-1.5.15-beta.3.dmg.blockmap
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-arm64-1.5.15-beta.3.zip
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-arm64-1.5.15-beta.3.zip.blockmap
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-x64-1.5.15-beta.3.dmg
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-x64-1.5.15-beta.3.dmg.blockmap
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-x64-1.5.15-beta.3.zip
+2026-11-27T06:37:08Z	AutoByteus_personal_macos-x64-1.5.15-beta.3.zip.blockmap
+2026-11-27T06:37:08Z	AutoByteus_personal_windows-1.5.15-beta.3.exe
+2026-11-27T06:37:34Z	latest-linux-arm64.yml
+2026-11-27T06:37:34Z	latest-linux.yml
+2026-11-27T06:37:34Z	latest-mac.yml
+2026-11-27T06:37:34Z	latest.yml
+ORDER: 27 assets; 6 server files, last 2026-11-27T06:17:59Z ; latest*.yml 4 first 2026-11-27T06:37:34Z ; every latest*.yml newer than all server files: True
+{'android': 2, 'server': 6, 'latest': 4, 'desktop': 15}
+## docker (registry API)
+autobyteus/autobyteus-server:1.5.15-beta.3 -> sha256:3563156dab41b78577ce121f4048f9b89f5e08d9dba1602eb090a88107ade1cb
+autobyteus/autobyteus-server:beta -> sha256:3563156dab41b78577ce121f4048f9b89f5e08d9dba1602eb090a88107ade1cb
+autobyteus/autobyteus-server:latest -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:1.5.14 -> sha256:70dee9a69e29e055e7608dc621ec6e4dffa8171fc0f260af81ae2ddb9060161f
+autobyteus/autobyteus-server:1.5.15-beta.2 -> sha256:218d2f1f1c9cd62009cf33f3215f2aec9ef6ec5a55f019000af413a396748123
+  index entry linux/amd64 sha256:d820566502cb17d41b32db77a75c1bdf5779845fa202bb0b113f097ecd1c1202
+  index entry linux/arm64 sha256:fdfd1c70cd0ef7d8a1fb0ce54058ec7719c28a83546ac1df29bee9c9c3dcc966
+## docker run log: system level and digests
+  Build Server Image (linux/arm64) | 2026-11-27T06:09:54.3238089Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/arm64) | 2026-11-27T06:13:10.5816136Z #46 25.83 Wrote server-package.json: 1.5.15-beta.3 linux-arm64, Node modules 127, system level 2, 66 migrations
+  Build Server Image (linux/amd64) | 2026-11-27T06:09:54.2475178Z System level 2: the system part is unchanged (61cd87f9a8cca3c3df207db0d7b36807f3dace192b9288b00102ff9c809725b7)
+  Build Server Image (linux/amd64) | 2026-11-27T06:12:49.8263306Z #46 16.71 Wrote server-package.json: 1.5.15-beta.3 linux-x64, Node modules 127, system level 2, 66 migrations
+  Publish Server Image | 2026-11-27T06:15:58.1602326Z The pushed ***/***-server:1.5.15-beta.3 index lists linux/amd64 sha256:d820566502cb17d41b32db77a75c1bdf5779845fa202bb0b113f097ecd1c1202 and linux/arm64 sha256:fdfd1c70cd0ef7d8a1fb0ce54058ec7719c28a83546ac1df29bee9c9c3dcc966.
+  Publish Server Image | 2026-11-27T06:16:05.8391422Z Moved `***/***-server:beta` to `***/***-server:1.5.15-beta.3`.
+## released server package descriptions: systemLevel
+  x64 1.5.15-beta.3 systemLevel 2
+  arm64 1.5.15-beta.3 systemLevel 2
+## release body (generated)
+first line: **Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.15-beta.2...v1.5.15-beta.3; length 222; Full Changelog lines: 2
