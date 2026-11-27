@@ -48,7 +48,7 @@ export type PairOutcome = Readonly<{ state: "paired"; peer: PeerNode }> | Readon
 /** A received message's HTTP answer. */
 export type PairingResponse = Readonly<{ status: number; answer: Readonly<Record<string, unknown>> }>;
 
-type Grant = Readonly<{ relation: PeerRelation; forMachine: string | null; nameForAsker: string | null; expiresAtMs: number }>;
+type Grant = Readonly<{ relation: PeerRelation; forNodeId: string; forMachine: string | null; nameForAsker: string | null; expiresAtMs: number }>;
 type Pending = PendingPairRequest & Readonly<{ requestId: string; publicKey: string }>;
 type Outstanding = Readonly<{ requestId: string; address: string; name: string | null; state: "waiting" | "declined"; createdAt: string }>;
 type Identity = Readonly<{ nodeId: string; name: string; publicKey: string }>;
@@ -99,7 +99,7 @@ export class PeerPairing {
   private readonly outstanding = new Map<string, Outstanding>();
 
   constructor(private readonly dependencies: Readonly<{
-    peers: Pick<PeerDirectory, "assertPairable" | "savePairedPeer" | "findByNodeId" | "remove">;
+    peers: Pick<PeerDirectory, "assertPairable" | "savePairedPeer" | "findByNodeId" | "remove" | "peerKey">;
     client: Pick<PeerPairingClient, "send" | "sendSigned">;
     /** Asks an address which node answers there (its exempt identity route), within the given bound. */
     probe: Readonly<{ fetchNodeId(address: string, timeoutMs?: number): ReturnType<PeerIdentityProbe["fetchNodeId"]> }>;
@@ -112,26 +112,41 @@ export class PeerPairing {
     now?(): number;
   }>) {}
 
-  /** On B (owner): a one-time grant for one pair from a node this app controls (case 1). */
-  createGrant(input: Readonly<{ relation: PeerRelation; forMachine?: string | null; nameForAsker?: string | null }>): Readonly<{ grant: string; expiresAt: string }> {
+  /**
+   * On B (owner): a one-time grant for one pair from one node this app controls (case 1): only `forNodeId` may use it
+   * (CR-001). It also answers B's own addresses, in order, so A can find one that reaches B (CR-002).
+   */
+  createGrant(input: Readonly<{ relation: PeerRelation; forNodeId: string; forMachine?: string | null; nameForAsker?: string | null }>): Readonly<{
+    grant: string; expiresAt: string; addresses: readonly string[];
+  }> {
+    if (!NODE_ID_PATTERN.test(input.forNodeId)) throw new RemoteCollaborationSettingsError("PEER_NOT_FOUND", "A grant names the node it is for (its node ID).");
     this.forgetExpiredGrants();
     const grant = generateOneTimeCode();
     const expiresAtMs = this.now() + GRANT_TTL_MS;
     this.grants.set(hashSecret(grant), Object.freeze({
-      relation: input.relation, forMachine: input.forMachine?.trim() || null, nameForAsker: input.nameForAsker?.trim() || null, expiresAtMs,
+      relation: input.relation, forNodeId: input.forNodeId, forMachine: input.forMachine?.trim() || null,
+      nameForAsker: input.nameForAsker?.trim() || null, expiresAtMs,
     }));
-    return Object.freeze({ grant, expiresAt: new Date(expiresAtMs).toISOString() });
+    return Object.freeze({ grant, expiresAt: new Date(expiresAtMs).toISOString(), addresses: Object.freeze(addressesOf(this.dependencies.ownAddresses())) });
   }
 
   /**
    * On A (owner): pair with the node at `address`. With B's grant it pairs at once (`paired`); without, it asks and
    * waits for B's owner (`waiting`). `nodeId`: the node the app expects there (refused when another answers); `name`:
-   * this node's label for B. B finds where it reaches this node among this node's addresses.
+   * this node's label for B. B finds where it reaches this node among this node's addresses. With `nodeId`, A finds
+   * where it reaches B: the first of `address` (the window's) and then B's own `addresses` (the grant's answer) that
+   * answers as B (CR-002).
    */
   async pair(input: Readonly<{
-    address: string; grant?: string | null; nodeId?: string | null; name?: string | null; sandbox?: boolean;
+    address: string; addresses?: readonly string[] | null; grant?: string | null; nodeId?: string | null; name?: string | null; sandbox?: boolean;
   }>): Promise<PairOutcome> {
-    const address = addressOf(input.address);
+    addressOf(input.address);
+    const candidates = addressesOf([input.address, ...(input.addresses ?? [])]);
+    const address = input.nodeId ? await this.answeringAddress(input.nodeId, candidates) : candidates[0]!;
+    if (!address) {
+      throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `That node answers at none of its addresses from this node; the first tried was ${candidates[0]}.`,
+        { address: candidates[0] });
+    }
     const own = await this.ownIdentity();
     const addresses = addressesOf(this.dependencies.ownAddresses());
     if (!addresses.length) throw new RemoteCollaborationSettingsError("PEER_URL_INVALID", "This node knows no address another node could reach it at.");
@@ -176,11 +191,14 @@ export class PeerPairing {
     if (!asker || !offered.length) return refused(400, "PAIR_REQUEST_INVALID", "The pair request is incomplete.");
     return this.answering(async () => {
       await this.dependencies.peers.assertPairable(asker.nodeId);
+      // CR-001: a node held with a key is never taken over by a request with another key, with or without a grant.
+      const held = await this.dependencies.peers.peerKey(asker.nodeId);
+      if (held?.publicKey && held.publicKey !== asker.publicKey) return refused(409, "PEER_KEY_CONFLICT", "This node is already paired with that node under another key: Unpair it first.");
       const withGrant = typeof message.grant === "string" && message.grant ? hashSecret(message.grant.trim()) : null;
       if (withGrant) {
         this.forgetExpiredGrants();
         const grant = this.grants.get(withGrant);
-        if (!grant || (grant.forMachine !== null && grant.forMachine !== caller?.machine)) {
+        if (!grant || grant.forNodeId !== asker.nodeId || (grant.forMachine !== null && grant.forMachine !== caller?.machine)) {
           return refused(403, "PAIRING_GRANT_INVALID", "This pairing grant is not valid here. Pair again.");
         }
       } else if (typeof message.requestId !== "string" || !REQUEST_ID_PATTERN.test(message.requestId)) {

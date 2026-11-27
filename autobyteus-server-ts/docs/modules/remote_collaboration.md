@@ -63,8 +63,10 @@ later slices.
 `PeerConnector`, like every peer sender.
 
 - **Your own nodes, one click.** The app that controls both asks B for a grant (`createPairingGrant(relation,
-  forMachine?, nameForAsker?)`: one use, 10 minutes, kept as a hash in memory), then has A pair with it
-  (`pairWithNode(address, grant, nodeId?, name?)`): A sends `POST /rest/remote/pair {nodeId, name, publicKey,
+  forNodeId, forMachine?, nameForAsker?)`: for A's node ID only, one use, 10 minutes, kept as a hash in memory; it
+  answers B's own ordered `addresses`), then has A pair with it (`pairWithNode(address, addresses?, grant, nodeId?,
+  name?)`): A asks the window's address of B, then B's addresses, and keeps the first that answers with B's node ID
+  (CR-002); A sends `POST /rest/remote/pair {nodeId, name, publicKey,
   addresses, grant}` (`addresses`: where B may reach A, in A's order: its configured and current addresses, the Docker
   host alias when it listens on loopback, its interface addresses; at most 8). B checks the grant (unused, unexpired,
   `forMachine` = the caller's machine when set), asks each address's identity route at once (5 s each) and keeps the
@@ -80,6 +82,10 @@ later slices.
   same node, and only then stores B (`teammate`). When A does not take the acceptance, B removes its record again.
   Reject (`rejectPairRequest`) sends `pair-rejected` (A shows "declined"); Cancel (`cancelPairRequest`) drops A's
   outstanding request, so a later acceptance is refused (`outstandingPairRequests`).
+- **Key rule (CR-001).** A pair never replaces a key this node holds: a pair request for a `nodeId` held with
+  another key is refused `PEER_KEY_CONFLICT` (409, "Unpair it first"), with or without a grant, before any pending
+  request is made; `PeerDirectory.savePairedPeer` refuses it too, so A's save, Accept and sandboxes cannot replace a
+  key either. The same key pairs again (Leave, new machine); a row without a key takes the key (Pair again).
 - **Unpair** (`unpairPeerNode`): a signed `POST /rest/remote/unpaired` to the peer when it can be reached, then the
   record here is removed and its open sockets close (NA-11). A node that receives `unpaired` removes its record of the
   caller. An unreachable peer keeps its record until its next request is refused.

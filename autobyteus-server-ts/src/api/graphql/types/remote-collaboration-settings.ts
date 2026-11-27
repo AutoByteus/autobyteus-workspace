@@ -31,6 +31,8 @@ export class PeerNodeGql {
 export class PairingGrantGql {
   @Field(() => String) grant!: string;
   @Field(() => String) expiresAt!: string;
+  /** This node's own addresses, in order: the asking node pairs at the first that answers as this node (CR-002). */
+  @Field(() => [String]) addresses!: string[];
 }
 
 /** What Pair did: `paired` (with the peer), or `waiting` for the other node's owner (with this node's request ID). */
@@ -171,35 +173,41 @@ export class RemoteCollaborationSettingsResolver {
   }
 
   /**
-   * On B: a one-time grant (10 minutes) for one pair from a node the same app controls. `forMachine`: the asking
-   * node's private-network machine, when it asks over the private network; `nameForAsker`: B's name for it.
+   * On B: a one-time grant (10 minutes) for one pair from a node the same app controls. `forNodeId`: the one node that
+   * may use it; `forMachine`: the asking node's private-network machine, when it asks over the private network;
+   * `nameForAsker`: B's name for it. It answers B's own addresses too.
    */
   @Mutation(() => PairingGrantGql)
   createPairingGrant(
     @Arg("relation", () => String) relation: string,
+    @Arg("forNodeId", () => String) forNodeId: string,
     @Arg("forMachine", () => String, { nullable: true }) forMachine: string | null,
     @Arg("nameForAsker", () => String, { nullable: true }) nameForAsker: string | null,
     @Ctx() context: GraphqlRequestContext,
   ): PairingGrantGql {
     requireOwner(context);
-    return { ...getProcessRemoteCollaboration().pairing.createGrant({ relation: relationOf(relation), forMachine, nameForAsker }) };
+    try {
+      const created = getProcessRemoteCollaboration().pairing.createGrant({ relation: relationOf(relation), forNodeId, forMachine, nameForAsker });
+      return { grant: created.grant, expiresAt: created.expiresAt, addresses: [...created.addresses] };
+    } catch (error) { throw error instanceof GraphQLError ? error : settingsError(error); }
   }
 
   /**
    * On A: Pair with the node at `address`: with B's `grant`, paired at once; without, a request B's owner Accepts.
-   * `nodeId`: the node expected there; `name`: this node's label for B. B finds where it reaches this node among this
-   * node's addresses.
+   * `nodeId`: the node expected there; `addresses`: B's own addresses (the grant's answer), tried after `address`;
+   * `name`: this node's label for B. B finds where it reaches this node among this node's addresses.
    */
   @Mutation(() => PairOutcomeGql)
   pairWithNode(
     @Arg("address", () => String) address: string,
+    @Arg("addresses", () => [String], { nullable: true }) addresses: string[] | null,
     @Arg("grant", () => String, { nullable: true }) grant: string | null,
     @Arg("nodeId", () => String, { nullable: true }) nodeId: string | null,
     @Arg("name", () => String, { nullable: true }) name: string | null,
     @Ctx() context: GraphqlRequestContext,
   ): Promise<PairOutcomeGql> {
     requireOwner(context);
-    return guarded(async () => toOutcome(await getProcessRemoteCollaboration().pairing.pair({ address, grant, nodeId, name })));
+    return guarded(async () => toOutcome(await getProcessRemoteCollaboration().pairing.pair({ address, addresses, grant, nodeId, name })));
   }
 
   @Mutation(() => PeerNodeGql)

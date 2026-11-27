@@ -113,7 +113,7 @@ await fs.mkdir(outputDir, { recursive: true });
 try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
   const [alpha, beta] = await Promise.all([serverAt('alpha'), serverAt('beta')]);
-  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql }, granterName: NODE, askerName: 'alpha-node' });
+  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql, address: alpha.baseUrl }, granterName: NODE, askerName: 'alpha-node' });
   const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
   const def = async (node, name) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
     { i: { name, role: 'assistant', description: `${name} (Messages probe)`, instructions: 'Help.', toolNames: [], defaultLaunchConfig: agy } })).createAgentDefinition.id;

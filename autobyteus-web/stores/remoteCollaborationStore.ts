@@ -48,9 +48,9 @@ export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore
      * nodes, one click), otherwise a request its owner accepts. `name` is this node's name for it; `nodeId` the node
      * expected there.
      */
-    async pair(input: { address: string; grant?: string | null; nodeId?: string | null; name?: string | null }): Promise<PairOutcome> {
+    async pair(input: { address: string; addresses?: string[] | null; grant?: string | null; nodeId?: string | null; name?: string | null }): Promise<PairOutcome> {
       const outcome = (await this.mutate<{ pairWithNode: { state: string; requestId: string | null; peer: PeerNode | null } }>(PairWithNode, {
-        address: input.address, grant: input.grant ?? null, nodeId: input.nodeId ?? null, name: input.name ?? null,
+        address: input.address, addresses: input.addresses ?? null, grant: input.grant ?? null, nodeId: input.nodeId ?? null, name: input.name ?? null,
       })).pairWithNode
       if (outcome.state === 'paired' && outcome.peer) {
         const paired = outcome.peer

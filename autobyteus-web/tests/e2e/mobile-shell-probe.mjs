@@ -414,7 +414,7 @@ const setUp = async () => {
   const team = async (node, name, coordinatorMemberName, nodes, launch) => (await node.gql('mutation($i:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$i){id}}',
     { i: { name, description: `${name} (phone probe)`, instructions: 'Work together.', coordinatorMemberName, nodes, ...(launch ? { defaultLaunchConfig: launch } : {}) } })).createAgentTeamDefinition.id;
 
-  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql }, granterName: PEER, askerName: 'alpha-node' }); // one click (autobyteus-661)
+  await pairNodes({ granter: { gql: beta.gql, address: beta.baseUrl }, asker: { gql: alpha.gql, address: alpha.baseUrl }, granterName: PEER, askerName: 'alpha-node' }); // one click (autobyteus-661)
 
   // Beta: what the PTM delegates to on another node.
   const publisher = await def(beta, 'Publisher', { launch: agy });

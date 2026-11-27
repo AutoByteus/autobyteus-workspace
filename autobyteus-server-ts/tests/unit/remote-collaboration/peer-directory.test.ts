@@ -65,6 +65,14 @@ describe("PeerDirectory", () => {
       .resolves.toEqual({ nodeId: B, name: "nas", address: "http://host.docker.internal:8001", machine: null, account: null, relation: "own" as const, sandbox: true, addedAt: T0, paired: true });
   });
 
+  it("NAS-53 CR-001 never replaces a held key: another key for a paired node is PEER_KEY_CONFLICT; the same key renews the record", async () => {
+    const f = await directory();
+    await f.peers.savePairedPeer(paired());
+    await expect(f.peers.savePairedPeer(paired({ publicKey: testNodeKey().publicKeyText }))).rejects.toMatchObject({ code: "PEER_KEY_CONFLICT" });
+    await expect(f.peers.peerKey(B)).resolves.toEqual({ publicKey: KEY_B, machine: null });
+    await expect(f.peers.savePairedPeer(paired({ machine: "machine-new", account: "ryan@example.com" }))).resolves.toMatchObject({ machine: "machine-new", name: "docker" });
+  });
+
   it("refuses pairing this node itself; a wanted name is made valid and unique", async () => {
     const f = await directory();
     await expect(f.peers.assertPairable(SELF)).rejects.toMatchObject({ code: "PEER_IS_THIS_NODE" });

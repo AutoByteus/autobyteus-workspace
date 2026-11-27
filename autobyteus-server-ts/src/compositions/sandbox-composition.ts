@@ -30,6 +30,7 @@ export const composeSandboxes = (input: Readonly<{
     records: new SandboxRecordsStore(input.appDataDir),
     pairing: new SandboxPairing({
       docker, pairing: input.remote.pairing, discovery: input.remote.discovery,
+      hostNodeId: () => getNodeIdentityService().getNodeId(),
     }),
     peers: input.remote.peers,
     checkPlatform: () => checkSandboxPlatform(docker),

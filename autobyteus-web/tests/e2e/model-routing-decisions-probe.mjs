@@ -160,7 +160,7 @@ try {
     evidence.observations[`${node.name}Status`] = (await gql(node, 'mutation{setModelRoutingEnabled(enabled:true)}')).setModelRoutingEnabled;
   }
   // The nodes pair by invite (autobyteus-437 DS-004).
-  await pairNodes({ granter: { gql: (q, v) => gql(beta, q, v), address: beta.url }, asker: { gql: (q, v) => gql(alpha, q, v) }, granterName: LABEL.beta, askerName: LABEL.alpha });
+  await pairNodes({ granter: { gql: (q, v) => gql(beta, q, v), address: beta.url }, asker: { gql: (q, v) => gql(alpha, q, v), address: alpha.url }, granterName: LABEL.beta, askerName: LABEL.alpha });
   const ids = {};
   ids.manager = await definition(alpha, 'Manager');
   ids.lead = await definition(alpha, 'Lead', { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: null });

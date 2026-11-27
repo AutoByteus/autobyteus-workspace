@@ -22,9 +22,10 @@ describe('nodeCollaborationApi', () => {
     const c = client()
     const api = createNodeCollaborationApi('http://localhost:8003', c as never)
     // autobyteus-661: the other node makes the grant this node then pairs with (an own node, named for this node).
-    c.mutate.mockResolvedValueOnce({ data: { createPairingGrant: { grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z' } } })
-    await expect(api.createGrant({ nameForAsker: 'My Mac' })).resolves.toEqual({ grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z' })
-    expect(c.mutate.mock.calls[0]![0].variables).toEqual({ relation: 'own', forMachine: null, nameForAsker: 'My Mac' })
+    c.mutate.mockResolvedValueOnce({ data: { createPairingGrant: { grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z', addresses: ['http://192.168.2.31:8003'] } } })
+    await expect(api.createGrant({ forNodeId: 'srv_a', nameForAsker: 'My Mac' })).resolves.toEqual({ grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z',
+      addresses: ['http://192.168.2.31:8003'] })
+    expect(c.mutate.mock.calls[0]![0].variables).toEqual({ relation: 'own', forNodeId: 'srv_a', forMachine: null, nameForAsker: 'My Mac' })
     c.mutate.mockResolvedValueOnce({ data: { unpairPeerNode: true } })
     await api.unpairPeer('srv_a')
     expect(c.mutate.mock.calls[1]![0].variables).toEqual({ nodeId: 'srv_a' })
@@ -34,7 +35,7 @@ describe('nodeCollaborationApi', () => {
     const c = client()
     const api = createNodeCollaborationApi('http://localhost:8003', c as never)
     c.mutate.mockResolvedValueOnce({ errors: [{ message: 'not permitted', extensions: { code: 'NODE_ROUTE_NOT_PERMITTED' } }] })
-    const refused = await api.createGrant({ nameForAsker: 'My Mac' }).catch((e) => e)
+    const refused = await api.createGrant({ forNodeId: 'srv_a', nameForAsker: 'My Mac' }).catch((e) => e)
     expect(refused).toBeInstanceOf(NodeSettingsError)
     expect(refused.failure).toMatchObject({ code: 'NODE_ROUTE_NOT_PERMITTED' })
     c.mutate.mockRejectedValueOnce(Object.assign(new Error('Failed to fetch'), { networkError: new TypeError('Failed to fetch') }))

@@ -25,7 +25,7 @@ const world = (input: { herePeers?: PeerNode[]; therePeers?: PeerNode[]; thereDo
   const herePeers = input.herePeers ?? []
   const there: NodeCollaborationApi = {
     peers: vi.fn(async () => { if (input.thereDown) throw refusal('PEER_UNREACHABLE', { reason: 'refused' }); return input.therePeers ?? [] }),
-    createGrant: vi.fn(async ({ nameForAsker }) => { log(`there.createGrant(${nameForAsker})`); return { grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z' } }),
+    createGrant: vi.fn(async ({ forNodeId, nameForAsker }) => { log(`there.createGrant(${forNodeId},${nameForAsker})`); return { grant: 'grant-1', expiresAt: '2026-11-08T10:10:00.000Z', addresses: ['http://192.168.2.31:8003'] } }),
     unpairPeer: vi.fn(async (nodeId) => log(`there.unpairPeer(${nodeId})`)),
     changePeerAddress: vi.fn(),
     peerNodeAvailability: vi.fn(),
@@ -33,7 +33,7 @@ const world = (input: { herePeers?: PeerNode[]; therePeers?: PeerNode[]; thereDo
   const deps: NodeCollaborationConnectorDependencies = {
     here: {
       loadPeers: vi.fn(async () => herePeers),
-      pairWith: vi.fn(async ({ address, grant, nodeId, name }) => log(`here.pairWith(${address},${grant},${nodeId},${name})`)),
+      pairWith: vi.fn(async ({ address, addresses, grant, nodeId, name }) => log(`here.pairWith(${address},${addresses.join('|')},${grant},${nodeId},${name})`)),
       renamePeer: vi.fn(async (nodeId, name) => log(`here.rename(${nodeId},${name})`)),
       unpairPeer: vi.fn(async (nodeId) => log(`here.unpairPeer(${nodeId})`)),
       changePeerAddress: vi.fn(async (nodeId, url) => log(`here.changeAddress(${nodeId},${url})`)),
@@ -111,14 +111,14 @@ describe('nodeCollaborationConnector plans', () => {
 })
 
 describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
-  it('NAS-19 NAS-48 connect: a grant there (its name for this node), then Pair here at the address this window reaches it at', async () => {
+  it('NAS-19 NAS-48 connect: a grant there for this node (its name for it, its addresses), then Pair here at the window\'s address or one of those (CR-002)', async () => {
     const f = world()
     const plan = await f.connector.plan('connect', target, here)
     await f.connector.run(plan)
     expect(plan.phase).toBe('done')
     expect(f.calls).toEqual([
-      'there.createGrant(Embedded Node)',
-      `here.pairWith(http://localhost:8003,grant-1,${B},8003)`,
+      `there.createGrant(${A},Embedded Node)`,
+      `here.pairWith(http://localhost:8003,http://192.168.2.31:8003,grant-1,${B},8003)`,
     ])
   })
 
@@ -133,7 +133,7 @@ describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
     f.calls.length = 0
     await f.connector.run(plan)
     expect(plan.phase).toBe('done')
-    expect(f.calls).toEqual([`here.unpairPeer(${B})`, 'there.createGrant(Embedded Node)', `here.pairWith(http://localhost:8003,grant-1,${B},8003)`])
+    expect(f.calls).toEqual([`here.unpairPeer(${B})`, `there.createGrant(${A},Embedded Node)`, `here.pairWith(http://localhost:8003,http://192.168.2.31:8003,grant-1,${B},8003)`])
   })
 
   it('a pairing refused there fails the pair step with the code (the row re-plans with fresh facts)', async () => {

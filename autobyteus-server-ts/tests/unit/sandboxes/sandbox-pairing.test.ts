@@ -18,6 +18,7 @@ const pairingWith = (fetchImpl: typeof fetch, overrides: { exec?: ReturnType<typ
   } as never,
   pairing: { pair: overrides.pair ?? vi.fn() } as never,
   discovery: { listAvailableAgents: vi.fn() } as never,
+  hostNodeId: async () => "srv_host_000000000000000000000000000000",
   fetch: fetchImpl,
 });
 
@@ -67,7 +68,8 @@ describe("SandboxPairing.pair (autobyteus-661 AR-001)", () => {
     const exec = vi.fn();
     const pair = vi.fn(async () => ({ state: "paired", peer: { nodeId: "srv_sandbox", sandbox: true } }));
     await expect(pairingWith(vi.fn() as never, { exec, pair }).pair(session(graphql), "sbx_1")).resolves.toBe("srv_sandbox");
-    expect(graphql).toHaveBeenCalledWith('mutation { createPairingGrant(relation: "own", nameForAsker: "host") { grant } }');
+    expect(graphql).toHaveBeenCalledWith('mutation($host: String!) { createPairingGrant(relation: "own", forNodeId: $host, nameForAsker: "host") { grant } }',
+      { host: "srv_host_000000000000000000000000000000" });
     expect(pair).toHaveBeenCalledWith({ address: BASE, grant: "grant-1", name: "sbx_1", sandbox: true });
     expect(exec).not.toHaveBeenCalled();
   });

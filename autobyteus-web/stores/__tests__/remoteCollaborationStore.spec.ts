@@ -33,7 +33,7 @@ describe('remoteCollaborationStore', () => {
     const store = useRemoteCollaborationStore()
     apolloClientMock.mutate.mockResolvedValueOnce({ data: { pairWithNode: { state: 'paired', requestId: null, peer } } })
     await expect(store.pair({ address: 'http://localhost:29700', grant: 'grant-1', nodeId: SRV_B, name: 'docker' })).resolves.toEqual({ state: 'paired', peer })
-    expect(apolloClientMock.mutate.mock.calls[0]![0].variables).toEqual({ address: 'http://localhost:29700', grant: 'grant-1', nodeId: SRV_B, name: 'docker' })
+    expect(apolloClientMock.mutate.mock.calls[0]![0].variables).toEqual({ address: 'http://localhost:29700', addresses: null, grant: 'grant-1', nodeId: SRV_B, name: 'docker' })
     expect(store.peers).toEqual([peer])
     // Without a grant the other owner decides: nothing is listed yet.
     apolloClientMock.mutate.mockResolvedValueOnce({ data: { pairWithNode: { state: 'waiting', requestId: 'req-1', peer: null } } })

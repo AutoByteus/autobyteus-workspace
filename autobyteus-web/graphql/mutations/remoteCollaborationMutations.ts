@@ -3,18 +3,19 @@ import { PeerNodeFields } from '~/graphql/queries/remoteCollaborationQueries'
 
 /** autobyteus-661 contract §3: on node B, a one-time grant for one pair from a node the same app controls. */
 export const CreatePairingGrant = gql`
-  mutation CreatePairingGrant($relation: String!, $forMachine: String, $nameForAsker: String) {
-    createPairingGrant(relation: $relation, forMachine: $forMachine, nameForAsker: $nameForAsker) {
+  mutation CreatePairingGrant($relation: String!, $forNodeId: String!, $forMachine: String, $nameForAsker: String) {
+    createPairingGrant(relation: $relation, forNodeId: $forNodeId, forMachine: $forMachine, nameForAsker: $nameForAsker) {
       grant
       expiresAt
+      addresses
     }
   }
 `
 
 /** autobyteus-661 contract §3: on node A, Pair with the node at `address` (with B's grant: at once). */
 export const PairWithNode = gql`
-  mutation PairWithNode($address: String!, $grant: String, $nodeId: String, $name: String) {
-    pairWithNode(address: $address, grant: $grant, nodeId: $nodeId, name: $name) {
+  mutation PairWithNode($address: String!, $addresses: [String!], $grant: String, $nodeId: String, $name: String) {
+    pairWithNode(address: $address, addresses: $addresses, grant: $grant, nodeId: $nodeId, name: $name) {
       state
       requestId
       peer {

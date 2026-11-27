@@ -103,13 +103,17 @@ export class PeerDirectory implements ClientRevocationSource {
 
   /**
    * Saves a pair `PeerPairing` just made (contract §3): a new row named `name` (made valid and unique), or, for a node
-   * already listed (Pair again: a pair made before node keys, or a peer whose machine changed), its row with the new
-   * key, address, machine and relation, its name kept. `addedAt` is the moment of this pair.
+   * already listed (Pair again: a pair made before node keys, or the same key on a new machine), its row with the new
+   * key, address, machine and relation, its name kept. `addedAt` is the moment of this pair. A row that holds another
+   * key is never replaced (contract §1 key rule, CR-001): `PEER_KEY_CONFLICT`, Unpair it first.
    */
   savePairedPeer(input: PairedPeerInput): Promise<PeerNode> {
     return this.serialized(async () => {
       const peers = await this.storedPeers();
       const existing = peers.find((peer) => peer.nodeId === input.nodeId);
+      if (existing?.publicKey && existing.publicKey !== input.publicKey) {
+        throw new RemoteCollaborationSettingsError("PEER_KEY_CONFLICT", `This node is already paired with '${existing.name}' under another key: Unpair it first.`);
+      }
       const saved: StoredPeer = Object.freeze({
         nodeId: input.nodeId,
         name: existing?.name ?? uniqueName(input.name, peers.map((peer) => peer.name)),

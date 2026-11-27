@@ -57,16 +57,18 @@ export const redactCredentials = (text) => String(text)
   .replace(/("grant"\s*:\s*")[^"]*"/g, '$1…"');
 
 /**
- * Pairs two nodes the probe controls in one click (autobyteus-661 contract §3): the granting node makes a grant for an
- * `own` node it names `askerName`; the asking node pairs with it at `granter.address` and names it `granterName`; the
- * granting node keeps the first of the asking node's addresses that answers as it. `granter.gql` and `asker.gql` are
- * owner GraphQL calls returning `data`. Returns the asking node's new peer row.
+ * Pairs two nodes the probe controls in one click (autobyteus-661 contract §3): the granting node makes a grant for the
+ * asking node (its node ID, CR-001) that it names `askerName`, and answers its own addresses; the asking node pairs at the
+ * first of `granter.address` and those that answers as the granting node (CR-002) and names it `granterName`. `gql` are
+ * owner GraphQL calls returning `data`; `address` is where the probe reaches each node. Returns the asking node's new peer row.
  */
 export const pairNodes = async ({ granter, asker, granterName, askerName }) => {
-  const granted = await granter.gql('mutation($n: String) { createPairingGrant(relation: "own", nameForAsker: $n) { grant } }', { n: askerName });
+  const nodeIdAt = async (address) => (await (await fetch(`${address}/rest/remote-access/status`)).json()).nodeId;
+  const granted = await granter.gql('mutation($f: String!, $n: String) { createPairingGrant(relation: "own", forNodeId: $f, nameForAsker: $n) { grant addresses } }',
+    { f: await nodeIdAt(asker.address), n: askerName });
   const paired = await asker.gql(
-    'mutation($address: String!, $grant: String, $name: String) { pairWithNode(address: $address, grant: $grant, name: $name) { state peer { nodeId name address paired } } }',
-    { address: granter.address, grant: granted.createPairingGrant.grant, name: granterName },
+    'mutation($address: String!, $addresses: [String!], $grant: String, $nodeId: String, $name: String) { pairWithNode(address: $address, addresses: $addresses, grant: $grant, nodeId: $nodeId, name: $name) { state peer { nodeId name address paired } } }',
+    { address: granter.address, addresses: granted.createPairingGrant.addresses, grant: granted.createPairingGrant.grant, nodeId: await nodeIdAt(granter.address), name: granterName },
   );
   if (paired.pairWithNode?.state !== 'paired') throw new Error(`pairing ${granterName} and ${askerName} did not pair`);
   return paired.pairWithNode.peer;

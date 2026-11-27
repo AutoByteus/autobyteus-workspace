@@ -18,6 +18,8 @@ export type RemoteCollaborationSettingsErrorCode =
   | "NODE_IDENTITY_NOT_MIGRATED"
   /** autobyteus-661 contract §3: the other node refused the pair request (its message says why). */
   | "PEER_PAIRING_REFUSED"
+  /** autobyteus-661 CR-001: this node already holds that node with another key; Unpair it first. */
+  | "PEER_KEY_CONFLICT"
   /** autobyteus-661: no pair request with that ID waits here (answered, withdrawn, or dropped by a restart). */
   | "PAIR_REQUEST_NOT_FOUND";
 

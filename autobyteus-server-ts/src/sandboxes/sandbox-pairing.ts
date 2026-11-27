@@ -44,6 +44,8 @@ export class SandboxPairing {
     docker: Pick<SandboxDocker, "exec" | "copyInto" | "makeDirectory">;
     pairing: Pick<PeerPairing, "pair">;
     discovery: Pick<PeerNodeDiscovery, "listAvailableAgents">;
+    /** This host's node ID: the grant the sandbox makes is for this node only (CR-001). */
+    hostNodeId(): Promise<string>;
     fetch?: typeof fetch;
   }>) {}
 
@@ -114,7 +116,8 @@ export class SandboxPairing {
     let grant: string;
     try {
       grant = (await session.graphql<{ createPairingGrant: { grant: string } }>(
-        'mutation { createPairingGrant(relation: "own", nameForAsker: "host") { grant } }',
+        'mutation($host: String!) { createPairingGrant(relation: "own", forNodeId: $host, nameForAsker: "host") { grant } }',
+        { host: await this.deps.hostNodeId() },
       )).createPairingGrant.grant;
     } catch (error) {
       throw failed(error);

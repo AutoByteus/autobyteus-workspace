@@ -81,7 +81,8 @@ const signedRequestWorks = async (from: TestNode, to: TestNode): Promise<boolean
 describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
   it("NAS-48 AC-004 a grant from B pairs A and B at once: both store the other's key, relation own; signed requests work both ways", async () => {
     const a = await makeNode("alpha"); const b = await makeNode("beta");
-    const { grant, expiresAt } = b.pairing.createGrant({ relation: "own" });
+    const { grant, expiresAt, addresses } = b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId });
+    expect(addresses).toEqual([b.address]);
     expect(Date.parse(expiresAt)).toBeGreaterThan(Date.now());
     await expect(a.pairing.pair({ address: b.address, grant, nodeId: b.nodeId })).resolves.toMatchObject({
       state: "paired", peer: { nodeId: b.nodeId, name: "beta", address: b.address, relation: "own", paired: true, machine: null, account: null } });
@@ -94,27 +95,30 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
   it("NAS-48 a grant works once; a used, expired, unknown or other-machine grant is refused and nothing is stored", async () => {
     let now = Date.parse("2026-11-27T10:00:00.000Z");
     const a = await makeNode("alpha"); const b = await makeNode("beta", { now: () => now }); const c = await makeNode("gamma");
-    const { grant } = b.pairing.createGrant({ relation: "own" });
-    await a.pairing.pair({ address: b.address, grant });
+    const { grant } = b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId });
+    // CR-001: a grant is for one node: another node presenting it is refused, and the grant stays for its node.
+    await expect(a.pairing.pair({ address: b.address, grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED", message: expect.stringContaining("not valid") });
+    await c.pairing.pair({ address: b.address, grant });
+    await expect(c.pairing.unpair(b.nodeId)).resolves.toBeUndefined();
     await expect(c.pairing.pair({ address: b.address, grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED", message: expect.stringContaining("not valid") });
-    const expiring = b.pairing.createGrant({ relation: "own" });
+    const expiring = b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId });
     now += 10 * 60 * 1000 + 1;
     await expect(c.pairing.pair({ address: b.address, grant: expiring.grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED" });
     await expect(c.pairing.pair({ address: b.address, grant: "made-up" })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED" });
     // A grant for a machine on the private network is not used from a plain address (no caller).
-    const forMachine = b.pairing.createGrant({ relation: "own", forMachine: "machine-gamma" });
+    const forMachine = b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId, forMachine: "machine-gamma" });
     await expect(b.pairing.receivePair({ nodeId: c.nodeId, name: "gamma", publicKey: c.key.publicKeyText, addresses: [c.address], grant: forMachine.grant }, null))
       .resolves.toMatchObject({ status: 403, answer: { code: "PAIRING_GRANT_INVALID" } });
     await expect(b.pairing.receivePair({ nodeId: c.nodeId, name: "gamma", publicKey: c.key.publicKeyText, addresses: [c.address], grant: forMachine.grant },
       { machine: "machine-gamma", account: "ryan@example.com" })).resolves.toMatchObject({ status: 200 });
     expect((await b.peers.findByNodeId(c.nodeId))).toMatchObject({ machine: "machine-gamma", account: "ryan@example.com" });
-    expect((await b.peers.list()).map((peer) => peer.nodeId).sort()).toEqual([a.nodeId, c.nodeId].sort());
-    expect(await c.peers.list()).toEqual([]);
+    expect((await b.peers.list()).map((peer) => peer.nodeId)).toEqual([c.nodeId]);
+    expect(await a.peers.list()).toEqual([]);
   });
 
   it("NAS-46 a host pairs its sandbox: the sandbox names it `host`, the host saves the sandbox marked `sandbox`", async () => {
     const host = await makeNode("host"); const sandbox = await makeNode("sbx");
-    const { grant } = sandbox.pairing.createGrant({ relation: "own", nameForAsker: "host" });
+    const { grant } = sandbox.pairing.createGrant({ relation: "own", forNodeId: host.nodeId, nameForAsker: "host" });
     await expect(host.pairing.pair({ address: sandbox.address, grant, name: "sbx_0a1b2c3d4e", sandbox: true }))
       .resolves.toMatchObject({ state: "paired", peer: { name: "sbx_0a1b2c3d4e", sandbox: true, relation: "own" } });
     await expect(sandbox.peers.findByNodeId(host.nodeId)).resolves.toMatchObject({ name: "host", sandbox: false });
@@ -123,8 +127,9 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
 
   it("refuses another node answering at the address, and pairing with this node itself", async () => {
     const a = await makeNode("alpha"); const b = await makeNode("beta");
-    await expect(a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own" }).grant, nodeId: nodeIdOf("other") }))
-      .rejects.toMatchObject({ code: "PEER_IDENTITY_MISMATCH" });
+    // Another node answers at the address: with the node ID expected, nothing answers as it there, so nothing is sent.
+    await expect(a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant, nodeId: nodeIdOf("other") }))
+      .rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
     await expect(a.pairing.receivePair({ nodeId: a.nodeId, name: "alpha", publicKey: a.key.publicKeyText, addresses: [a.address], requestId: "r".repeat(22) }, null))
       .resolves.toMatchObject({ status: 409, answer: { code: "PEER_IS_THIS_NODE" } });
     for (const bad of [{}, { nodeId: b.nodeId, name: "beta", publicKey: "not-a-key", addresses: [b.address], requestId: "r".repeat(22) },
@@ -141,7 +146,7 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
     const nowhere = "http://nowhere:1";
     const a = await makeNode("alpha", { addresses: [nowhere, other.address, "http://alpha:29700"] });
     const b = await makeNode("beta");
-    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own" }).grant });
+    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant });
     await expect(b.peers.findByNodeId(a.nodeId)).resolves.toMatchObject({ address: a.address });
     // The same on a request without a grant: the pending request shows the answering address.
     const c = await makeNode("gamma", { addresses: [nowhere, "http://gamma:29700"] });
@@ -153,14 +158,44 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
     const other = await makeNode("other");
     const a = await makeNode("alpha", { addresses: ["http://nowhere:1", other.address] });
     const b = await makeNode("beta");
-    const { grant } = b.pairing.createGrant({ relation: "own" });
+    const { grant } = b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId });
     await expect(a.pairing.pair({ address: b.address, grant })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED",
       message: "This node reaches the asking node at none of the addresses it gave." });
     await expect(a.pairing.pair({ address: b.address })).rejects.toMatchObject({ code: "PEER_PAIRING_REFUSED" });
     expect([...await a.peers.list(), ...await b.peers.list(), ...b.pairing.pendingRequests(), ...a.pairing.outstandingRequests()]).toEqual([]);
-    // The grant was not spent by the refused request.
-    const reachable = await makeNode("delta");
-    await expect(reachable.pairing.pair({ address: b.address, grant })).resolves.toMatchObject({ state: "paired" });
+    // The grant was not spent by the refused request: offered an address that answers as A, it still pairs.
+    await expect(b.pairing.receivePair({ nodeId: a.nodeId, name: "alpha", publicKey: a.key.publicKeyText, addresses: ["http://alpha:29700"], grant }, null))
+      .resolves.toMatchObject({ status: 200 });
+  });
+
+  it("CR-002 one click: A pairs at the first of the window's address and B's own addresses that answers as B", async () => {
+    const a = await makeNode("alpha"); const b = await makeNode("beta");
+    const granted = b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId });
+    // The window reaches B at an address A cannot use (another computer's loopback): A finds B in B's own list.
+    await expect(a.pairing.pair({ address: "http://127.0.0.1:1", addresses: ["http://nowhere:2", ...granted.addresses], grant: granted.grant, nodeId: b.nodeId }))
+      .resolves.toMatchObject({ state: "paired", peer: { nodeId: b.nodeId, address: b.address } });
+    const c = await makeNode("gamma");
+    await expect(c.pairing.pair({ address: "http://127.0.0.1:1", addresses: ["http://nowhere:2"], grant: b.pairing.createGrant({ relation: "own", forNodeId: c.nodeId }).grant, nodeId: b.nodeId }))
+      .rejects.toMatchObject({ code: "PEER_UNREACHABLE", details: { address: "http://127.0.0.1:1" } });
+  });
+
+  it("NAS-53 CR-001 a node held with a key is not taken over: another key is refused with or without a grant, no pending request; the same key pairs again", async () => {
+    const a = await makeNode("alpha"); const b = await makeNode("beta");
+    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant });
+    const impostor = testNodeKey();
+    const claim = { nodeId: a.nodeId, name: "alpha", publicKey: impostor.publicKeyText, addresses: [a.address] };
+    await expect(b.pairing.receivePair({ ...claim, requestId: "r".repeat(22) }, null)).resolves.toEqual({ status: 409,
+      answer: { code: "PEER_KEY_CONFLICT", message: "This node is already paired with that node under another key: Unpair it first." } });
+    expect(b.pairing.pendingRequests()).toEqual([]);
+    const grant = b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant;
+    await expect(b.pairing.receivePair({ ...claim, grant }, null)).resolves.toMatchObject({ status: 409, answer: { code: "PEER_KEY_CONFLICT" } });
+    expect(await signedRequestWorks(a, b)).toBe(true);
+    // The same key pairs again (for example after Leave, on a new machine): the record is kept, renewed.
+    await expect(a.pairing.pair({ address: b.address, grant })).resolves.toMatchObject({ state: "paired" });
+    await expect(b.peers.findByNodeId(a.nodeId)).resolves.toMatchObject({ paired: true, name: "alpha" });
+    // Unpair first, then a pair with another key is a new pair.
+    await a.pairing.unpair(b.nodeId);
+    await expect(b.pairing.receivePair({ ...claim, requestId: "s".repeat(22) }, null)).resolves.toMatchObject({ status: 202 });
   });
 
   it("NAS-23 Pair again: a pair made before node keys is replaced in place, its name kept", async () => {
@@ -168,7 +203,7 @@ describe("PeerPairing: your own nodes, one click (contract §3 case 1)", () => {
     await fs.mkdir(path.dirname(a.file), { recursive: true });
     await fs.writeFile(a.file, JSON.stringify({ peers: [{ nodeId: b.nodeId, name: "nas", address: "http://old:8001", addedAt: "2026-10-01T09:00:00.000Z" }] }));
     expect(await signedRequestWorks(b, a)).toBe(false);
-    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own" }).grant });
+    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant });
     await expect(a.peers.list()).resolves.toEqual([expect.objectContaining({ nodeId: b.nodeId, name: "nas", address: b.address, paired: true })]);
     expect(await signedRequestWorks(b, a)).toBe(true);
   });
@@ -248,7 +283,7 @@ describe("PeerPairing: a node this app does not control (contract §3 case 2)", 
 describe("PeerPairing: Unpair (contract §2)", () => {
   it("NAS-52 AC-008 Unpair tells the other node with a signed message; both records are gone and requests are refused", async () => {
     const a = await makeNode("alpha"); const b = await makeNode("beta");
-    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own" }).grant });
+    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant });
     await a.pairing.unpair(b.nodeId);
     expect(await a.peers.list()).toEqual([]);
     expect(await b.peers.list()).toEqual([]);
@@ -258,7 +293,7 @@ describe("PeerPairing: Unpair (contract §2)", () => {
 
   it("an unreachable peer is still unpaired here; its own record stays until its next request is refused", async () => {
     const a = await makeNode("alpha"); const b = await makeNode("beta");
-    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own" }).grant });
+    await a.pairing.pair({ address: b.address, grant: b.pairing.createGrant({ relation: "own", forNodeId: a.nodeId }).grant });
     network.delete(b.address);
     await a.pairing.unpair(b.nodeId);
     expect(await a.peers.list()).toEqual([]);

@@ -74,7 +74,7 @@ creation that imported no team has no `teams`, and one given no shared folder ha
    moment before its HTTP server takes connections), the code is exchanged once for an owner credential kept in memory
    for the creation only.
 6. Pairing under node keys (autobyteus-661 AR-001), the host driving both sides: with the owner credential, the host
-   has the sandbox make a pairing grant (`createPairingGrant(relation: own, nameForAsker: "host")`), then sends
+   has the sandbox make a pairing grant (`createPairingGrant(relation: own, forNodeId: <host>, nameForAsker: "host")`), then sends
    `POST /rest/remote/pair` with the grant and its addresses. The sandbox keeps the first that answers with the host's
    node ID from inside its container (`host.docker.internal:<port>`, the host's loopback listener; the host sees it as
    `127.0.0.1`). The sandbox stores the host

@@ -2232,6 +2232,7 @@ export type MutationCreateMemoryHubSourceCredentialArgs = {
 
 export type MutationCreatePairingGrantArgs = {
   forMachine?: InputMaybe<Scalars['String']['input']>;
+  forNodeId: Scalars['String']['input'];
   nameForAsker?: InputMaybe<Scalars['String']['input']>;
   relation: Scalars['String']['input'];
 };
@@ -2409,6 +2410,7 @@ export type MutationMoveMcpSecretsToVaultArgs = {
 
 export type MutationPairWithNodeArgs = {
   address: Scalars['String']['input'];
+  addresses?: InputMaybe<Array<Scalars['String']['input']>>;
   grant?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nodeId?: InputMaybe<Scalars['String']['input']>;
@@ -2797,6 +2799,7 @@ export type PairOutcomeGql = {
 
 export type PairingGrantGql = {
   __typename?: 'PairingGrantGql';
+  addresses: Array<Scalars['String']['output']>;
   expiresAt: Scalars['String']['output'];
   grant: Scalars['String']['output'];
 };
@@ -5472,15 +5475,17 @@ export type DeleteProjectTaskMutation = { __typename?: 'Mutation', deleteProject
 
 export type CreatePairingGrantMutationVariables = Exact<{
   relation: Scalars['String']['input'];
+  forNodeId: Scalars['String']['input'];
   forMachine?: InputMaybe<Scalars['String']['input']>;
   nameForAsker?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type CreatePairingGrantMutation = { __typename?: 'Mutation', createPairingGrant: { __typename?: 'PairingGrantGql', grant: string, expiresAt: string } };
+export type CreatePairingGrantMutation = { __typename?: 'Mutation', createPairingGrant: { __typename?: 'PairingGrantGql', grant: string, expiresAt: string, addresses: Array<string> } };
 
 export type PairWithNodeMutationVariables = Exact<{
   address: Scalars['String']['input'];
+  addresses?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   grant?: InputMaybe<Scalars['String']['input']>;
   nodeId?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -10573,14 +10578,16 @@ export function useDeleteProjectTaskMutation(options: VueApolloComposable.UseMut
 }
 export type DeleteProjectTaskMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteProjectTaskMutation, DeleteProjectTaskMutationVariables>;
 export const CreatePairingGrantDocument = gql`
-    mutation CreatePairingGrant($relation: String!, $forMachine: String, $nameForAsker: String) {
+    mutation CreatePairingGrant($relation: String!, $forNodeId: String!, $forMachine: String, $nameForAsker: String) {
   createPairingGrant(
     relation: $relation
+    forNodeId: $forNodeId
     forMachine: $forMachine
     nameForAsker: $nameForAsker
   ) {
     grant
     expiresAt
+    addresses
   }
 }
     `;
@@ -10599,6 +10606,7 @@ export const CreatePairingGrantDocument = gql`
  * const { mutate, loading, error, onDone } = useCreatePairingGrantMutation({
  *   variables: {
  *     relation: // value for 'relation'
+ *     forNodeId: // value for 'forNodeId'
  *     forMachine: // value for 'forMachine'
  *     nameForAsker: // value for 'nameForAsker'
  *   },
@@ -10609,8 +10617,14 @@ export function useCreatePairingGrantMutation(options: VueApolloComposable.UseMu
 }
 export type CreatePairingGrantMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePairingGrantMutation, CreatePairingGrantMutationVariables>;
 export const PairWithNodeDocument = gql`
-    mutation PairWithNode($address: String!, $grant: String, $nodeId: String, $name: String) {
-  pairWithNode(address: $address, grant: $grant, nodeId: $nodeId, name: $name) {
+    mutation PairWithNode($address: String!, $addresses: [String!], $grant: String, $nodeId: String, $name: String) {
+  pairWithNode(
+    address: $address
+    addresses: $addresses
+    grant: $grant
+    nodeId: $nodeId
+    name: $name
+  ) {
     state
     requestId
     peer {
@@ -10634,6 +10648,7 @@ export const PairWithNodeDocument = gql`
  * const { mutate, loading, error, onDone } = usePairWithNodeMutation({
  *   variables: {
  *     address: // value for 'address'
+ *     addresses: // value for 'addresses'
  *     grant: // value for 'grant'
  *     nodeId: // value for 'nodeId'
  *     name: // value for 'name'

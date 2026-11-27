@@ -18,8 +18,11 @@ export type NodeAvailability = { available: true } | { available: false; code: s
  */
 export interface NodeCollaborationApi {
   peers(): Promise<PeerNode[]>
-  /** autobyteus-661 contract §3: that node's one-time grant for one pair from a node this app controls (`own`). */
-  createGrant(input: { nameForAsker: string }): Promise<{ grant: string; expiresAt: string }>
+  /**
+   * autobyteus-661 contract §3: that node's one-time grant for one pair from one node this app controls (`own`,
+   * `forNodeId`), with that node's own addresses (where the asking node may reach it).
+   */
+  createGrant(input: { forNodeId: string; nameForAsker: string }): Promise<{ grant: string; expiresAt: string; addresses: string[] }>
   /** Unpair on that node: it tells this node when it can reach it, and removes the pair there. */
   unpairPeer(nodeId: string): Promise<void>
   changePeerAddress(nodeId: string, address: string): Promise<PeerNode>
@@ -51,8 +54,8 @@ export const createNodeCollaborationApi = (
 
   return {
     peers: async () => (await query<{ peerNodes: PeerNode[] }>(GetRemoteCollaborationSettings)).peerNodes,
-    createGrant: async ({ nameForAsker }) => (await mutate<{ createPairingGrant: { grant: string; expiresAt: string } }>(CreatePairingGrant,
-      { relation: 'own', forMachine: null, nameForAsker })).createPairingGrant,
+    createGrant: async ({ forNodeId, nameForAsker }) => (await mutate<{ createPairingGrant: { grant: string; expiresAt: string; addresses: string[] } }>(
+      CreatePairingGrant, { relation: 'own', forNodeId, forMachine: null, nameForAsker })).createPairingGrant,
     unpairPeer: async (nodeId) => { await mutate(UnpairPeerNode, { nodeId }) },
     changePeerAddress: async (nodeId, address) => (await mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, address })).changePeerAddress,
     peerNodeAvailability: async (nodeId) => {

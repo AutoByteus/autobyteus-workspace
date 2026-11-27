@@ -19,8 +19,11 @@ export interface NodeCollaborationConnectorDependencies {
   here: {
     /** This node's peers, read again so a plan uses fresh facts. */
     loadPeers(): Promise<PeerNode[]>
-    /** autobyteus-661: this node pairs with the node at `address` using that node's grant (one click: both are this app's). */
-    pairWith(input: { address: string; grant: string; nodeId: string; name: string }): Promise<unknown>
+    /**
+     * autobyteus-661: this node pairs with that node using its grant (one click: both are this app's), at the first of
+     * `address` (where this window reaches it) and `addresses` (its own list) that answers as it.
+     */
+    pairWith(input: { address: string; addresses: string[]; grant: string; nodeId: string; name: string }): Promise<unknown>
     renamePeer(nodeId: string, name: string): Promise<unknown>
     /** Unpair here (the other node is told when this node can reach it). */
     unpairPeer(nodeId: string): Promise<void>
@@ -137,8 +140,8 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
     const nodeId = plan.target.nodeId
     switch (current.id) {
       case 'pair': {
-        const { grant } = await api(plan).createGrant({ nameForAsker: current.nameThere! })
-        await deps.here.pairWith({ address: requireId(plan.target.windowAddress, plan.target.name), grant,
+        const { grant, addresses } = await api(plan).createGrant({ forNodeId: requireId(plan.here.nodeId, plan.here.name), nameForAsker: current.nameThere! })
+        await deps.here.pairWith({ address: requireId(plan.target.windowAddress, plan.target.name), addresses, grant,
           nodeId: requireId(nodeId, plan.target.name), name: current.name! })
         return
       }

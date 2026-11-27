@@ -18,13 +18,16 @@ export const pairNodes = async (input: Readonly<{
   /** The granting node's name for the asking node. */
   askerName: string;
 }>): Promise<Record<string, any>> => {
+  // The grant is for the asking node only (CR-001): its node ID, from its public status route.
+  const askerNodeId = ((await (await fetch(`${input.asker.address}/rest/remote-access/status`)).json()) as { nodeId: string }).nodeId;
   const granted = await input.granter.gql(
-    "mutation($nameForAsker: String) { createPairingGrant(relation: \"own\", nameForAsker: $nameForAsker) { grant } }",
-    { nameForAsker: input.askerName },
+    "mutation($forNodeId: String!, $nameForAsker: String) { createPairingGrant(relation: \"own\", forNodeId: $forNodeId, nameForAsker: $nameForAsker) { grant addresses } }",
+    { forNodeId: askerNodeId, nameForAsker: input.askerName },
   );
+  const granterNodeId = ((await (await fetch(`${input.granter.address}/rest/remote-access/status`)).json()) as { nodeId: string }).nodeId;
   const paired = await input.asker.gql(
-    "mutation($address: String!, $grant: String, $name: String) { pairWithNode(address: $address, grant: $grant, name: $name) { state peer { nodeId name address paired relation } } }",
-    { address: input.granter.address, grant: granted.createPairingGrant.grant, name: input.granterName },
+    "mutation($address: String!, $addresses: [String!], $grant: String, $nodeId: String, $name: String) { pairWithNode(address: $address, addresses: $addresses, grant: $grant, nodeId: $nodeId, name: $name) { state peer { nodeId name address paired relation } } }",
+    { address: input.granter.address, addresses: granted.createPairingGrant.addresses, grant: granted.createPairingGrant.grant, nodeId: granterNodeId, name: input.granterName },
   );
   if (paired.pairWithNode.state !== "paired") throw new Error(`The nodes did not pair: ${JSON.stringify(paired)}`);
   return paired.pairWithNode.peer;
