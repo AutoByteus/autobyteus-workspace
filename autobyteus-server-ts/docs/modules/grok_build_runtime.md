@@ -27,7 +27,7 @@ runtime".
 | --- | --- | --- |
 | `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize` (90 s, `AGENT_START_TIMEOUT_MS`, the one start-up bound of every ACP agent) and the other short requests (30 s, `REQUEST_TIMEOUT_MS`; session opens keep 120 s, prompts have none), per-`sessionId` callback routing, an optional listener for notifications that carry no session (`onConnectionNotification`, used only by the discovery handshake; a run registers none, so connection-wide notifications stay dropped there), buffering for sessions still being opened; an inbound stage hands every notification to its session synchronously and in wire order, before a later frame, a response included, reaches the SDK: a `session/prompt` response can no longer overtake the notifications that preceded it), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
 | `agent-execution/backends/acp/` | ACP (neutral) | `AcpAgentRunBackendFactory` (create/restore sequencing, rollback, start-time error conversion), `AcpAgentRunBackend`, `AcpAgentSession` (session state machine), `AcpPermissionBridge`, `AcpSessionUpdateConverter`, `AcpPromptBuilder`, session-profile contract |
-| `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; no provider relay), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
+| `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; on a relayed node the xAI provider relay: `GROK_XAI_API_BASE_URL` and the pass in `XAI_API_KEY` or `GROK_AUTH_PROVIDER_ACCESS_TOKEN`, see [Credential Proxy](./credential_proxy.md#provider-relays)), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
 | `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), prompt signals (`grok-build-prompt-signals.ts`), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
 | `llm-management/services/grok-build-model-catalog.ts` | Catalog | Handshake-based `ModelInfo[]` |
 
@@ -79,7 +79,9 @@ modules.
   **offered** catalog membership plus a valid target schema.
 - **Authentication.** Authentication belongs to Grok: the CLI's own login,
   or `XAI_API_KEY` inherited from the server environment. AutoByteus adds no
-  vault binding or credential relay. Settings -> Agent Runtimes shows the
+  vault binding. On a relayed node (autobyteus-581) Grok holds no credential: its
+  calls go through the xAI provider relay to the relay node, and its sign-in is
+  the relay's (C1). Elsewhere Settings -> Agent Runtimes shows the
   sign-in state (from `grok models`) and can start Grok's own
   `grok login --oauth` on the desktop's own node, or on a remote node that
   can open a browser on its own desktop, such as a Docker node

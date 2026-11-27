@@ -5,7 +5,9 @@ import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import {
   releaseNothing,
   type AcpAgentLaunchProfile,
+  type AcpDiscoveryLaunchRequest,
   type AcpLaunch,
+  type AcpRelayAccess,
   type AcpRunLaunchRequest,
 } from "../acp/acp-agent-launch-profile.js";
 
@@ -93,11 +95,33 @@ export const normalizeGrokBuildModels = (modelState: unknown): ModelInfo[] => {
   return models;
 };
 
+/** The node's own xAI credentials, which a relayed Grok never sees. */
+const GROK_OWN_CREDENTIAL_ENV = ["XAI_API_KEY", "GROK_API_KEY", "GROK_AUTH_PROVIDER_ACCESS_TOKEN", "GROK_XAI_API_BASE_URL"] as const;
+
 /**
- * One Grok process: model and effort as arguments (both absent for discovery), the server environment plus the switches,
- * and workspace trust for a run.
+ * On a relayed node: xAI's address is the relay (`GROK_XAI_API_BASE_URL`, P-7) and the pass travels in the variable of
+ * the relay credential kind: `XAI_API_KEY` (API key) or `GROK_AUTH_PROVIDER_ACCESS_TOKEN` (login token, U-2).
  */
-const grokLaunch = (model: string | null, reasoningEffort: string | null, trustWorkspace: boolean): AcpLaunch => Object.freeze({
+const grokRelayEnvironment = (relay: AcpRelayAccess | null): NodeJS.ProcessEnv => {
+  if (!relay) return { ...process.env };
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  for (const key of GROK_OWN_CREDENTIAL_ENV) delete env[key];
+  env.GROK_XAI_API_BASE_URL = `${relay.baseUrl}/v1`;
+  if (relay.relayCredentialKind === "loginToken") env.GROK_AUTH_PROVIDER_ACCESS_TOKEN = relay.pass;
+  else env.XAI_API_KEY = relay.pass;
+  return env;
+};
+
+/**
+ * One Grok process: model and effort as arguments (both absent for discovery), the server environment (with the relay
+ * on a relayed node) plus the switches, and workspace trust for a run.
+ */
+const grokLaunch = (
+  model: string | null,
+  reasoningEffort: string | null,
+  trustWorkspace: boolean,
+  relay: AcpRelayAccess | null,
+): AcpLaunch => Object.freeze({
   // One process per run: `--no-leader` overrides a user config that enables the shared leader.
   args: [
     "agent", "--no-leader",
@@ -105,15 +129,18 @@ const grokLaunch = (model: string | null, reasoningEffort: string | null, trustW
     ...(reasoningEffort ? ["--reasoning-effort", reasoningEffort] : []),
     "stdio",
   ],
-  env: { ...process.env, ...GROK_BUILD_DISABLED_TOOL_ENV, ...(trustWorkspace ? GROK_BUILD_RUN_TRUST_ENV : {}) },
+  env: { ...grokRelayEnvironment(relay), ...GROK_BUILD_DISABLED_TOOL_ENV, ...(trustWorkspace ? GROK_BUILD_RUN_TRUST_ENV : {}) },
   release: releaseNothing,
 });
 
-/** Grok keeps the instructions it got at `session/new` (`_meta.rules`) and calls its provider itself. */
+/**
+ * Grok keeps the instructions it got at `session/new` (`_meta.rules`) and calls its provider itself, or, on a relayed
+ * node, through the xAI relay.
+ */
 export const grokBuildLaunchProfile: AcpAgentLaunchProfile = Object.freeze({
   agentLabel: GROK_BUILD_AGENT_LABEL,
-  providerRelayId: null,
+  relay: Object.freeze({ relayId: "xai", runtimeKind: "grok_build", use: "whenRelayed" }),
   command: grokBuildCommand,
-  runLaunch: async (request: AcpRunLaunchRequest) => grokLaunch(request.model, request.reasoningEffort, true),
-  discoveryLaunch: async () => grokLaunch(null, null, false),
+  runLaunch: async (request: AcpRunLaunchRequest) => grokLaunch(request.model, request.reasoningEffort, true, request.relayAccess),
+  discoveryLaunch: async (request: AcpDiscoveryLaunchRequest) => grokLaunch(null, null, false, request.nodeRelayAccess),
 });

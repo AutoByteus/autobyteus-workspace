@@ -101,6 +101,8 @@ describe("git smart HTTP through the credential proxy", () => {
     const grant = { integrationId: "github", skillName: "github-integration", sourceId: "local:/tmp/integrations" };
     host = createCredentialProxyHost({
       integrationsDir,
+      relayed: null,
+      peerRelayClient: () => { throw new Error("not relayed"); },
       definitions: new DeliveryDefinitions([createGitHubDeliveryDefinition({ apiOrigin: origin, gitOrigin: origin })]),
       access: {
         grantsForAgent: async (agentDefinitionId: string) => (agentDefinitionId === "agent-git" ? [grant] : []),

@@ -24,12 +24,12 @@ export type FixtureRow = { dir: "in" | "out"; msg: Record<string, any> };
  * `onRunLaunch` sees each run launch request; `release` is each run launch's release.
  */
 export const fakeAcpLaunchProfile = (agentLabel: string, fixtureEnv: () => Record<string, string>, options: {
-  providerRelayId?: string | null;
+  relay?: AcpAgentLaunchProfile["relay"];
   onRunLaunch?: (request: AcpRunLaunchRequest) => void;
   release?: () => Promise<void>;
 } = {}): AcpAgentLaunchProfile => ({
   agentLabel,
-  providerRelayId: options.providerRelayId ?? null,
+  relay: options.relay ?? null,
   command: () => process.execPath,
   runLaunch: async (request) => {
     options.onRunLaunch?.(request);

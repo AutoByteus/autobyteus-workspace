@@ -22,7 +22,7 @@ import { NO_FILES_RECEIVED } from "../../../helpers/explicit-host-collaborators.
  */
 
 const SELF = "srv_beta_0000000000000000000000000000";
-const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", baseUrl: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
+const ALPHA: PeerNode = { nodeId: "srv_alpha_000000000000000000000000000", name: "alpha", baseUrl: "http://alpha:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
 const statusOf = (value: string) => ({ type: "AGENT_STATUS", payload: { status: value, background_tasks_running: 0, trigger: null, tool_name: null, error_message: null,
   error_details: null, recoverableBlock: null } }) as never;
 /** What a live run's subscription sends at once (its current state), before the gateway has answered. */
@@ -58,7 +58,7 @@ const startNodeB = async () => {
   await app.register(websocket);
   // B's gate admits A by its signed upgrade.
   await registerTestNodeAccess(app, { ownNodeId: SELF, peerSecrets: { [ALPHA.nodeId]: PEER_SECRET } });
-  await app.register(async (rest) => registerRemoteCollaborationRoutes(rest, services.current as never), { prefix: "/rest" });
+  await app.register(async (rest) => registerRemoteCollaborationRoutes(rest, services.current as never, { handle: async () => { throw new Error("no relay"); } }), { prefix: "/rest" });
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
   const port = typeof address === "object" && address ? address.port : 0;

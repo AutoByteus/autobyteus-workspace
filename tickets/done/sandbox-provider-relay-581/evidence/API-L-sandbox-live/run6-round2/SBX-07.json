@@ -1,0 +1,11 @@
+{
+  "aliveWhileDown": 2,
+  "recordsBeforeRestart": 1,
+  "afterStart": {
+    "containers": 0,
+    "sandboxPeers": 0,
+    "records": 0,
+    "peersOfThoseNodes": 0,
+    "foldersKept": true
+  }
+}

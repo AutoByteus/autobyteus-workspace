@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeSelection } from './gemini-runtime.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm/llm-endpoint.js';
 
 export type GeminiRuntime = 'vertex' | 'api_key';
 export interface GeminiRuntimeInfo {
@@ -12,14 +13,20 @@ export interface GeminiRuntimeInfo {
 export async function initializeGeminiClientWithRuntime(
   selection: GeminiRuntimeSelection,
   resolver: ProviderApiKeyResolver,
-  transport: { singleAttempt?: boolean } = {},
+  /** `endpoint`: calls go through it instead of Google (a provider relay); AI Studio only. */
+  transport: { singleAttempt?: boolean; endpoint?: LLMEndpoint } = {},
 ): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
-  const httpOptions = transport.singleAttempt ? { retryOptions: { attempts: 1 } } : undefined;
+  const retry = transport.singleAttempt ? { retryOptions: { attempts: 1 } } : {};
+  const httpOptions = transport.singleAttempt ? retry : undefined;
+  if (transport.endpoint && selection.kind !== 'aiStudio') throw new Error('GEMINI_ENDPOINT_NEEDS_AI_STUDIO');
   switch (selection.kind) {
     case 'aiStudio': {
       const secret = await resolver.resolve('GEMINI', 'geminiAiStudioApiKey');
+      const studioHttpOptions = transport.endpoint
+        ? { ...retry, baseUrl: providerAddressThrough('https://generativelanguage.googleapis.com', transport.endpoint) }
+        : httpOptions;
       return {
-        client: new GoogleGenAI({ httpOptions, apiKey: secret.revealToTrustedConsumer() }),
+        client: new GoogleGenAI({ httpOptions: studioHttpOptions, apiKey: secret.revealToTrustedConsumer() }),
         runtimeInfo: { runtime: 'api_key', project: null, location: null },
       };
     }

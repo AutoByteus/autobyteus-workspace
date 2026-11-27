@@ -78,6 +78,8 @@ describe("credential proxy host", () => {
     allowed = new Set(["agent-a"]);
     host = createCredentialProxyHost({
       integrationsDir: dir,
+      relayed: null,
+      peerRelayClient: () => { throw new Error("not relayed"); },
       definitions: new DeliveryDefinitions([createGitHubDeliveryDefinition({ apiOrigin: upstreamOrigin, gitOrigin: upstreamOrigin })]),
       access: {
         grantsForAgent: async (agentDefinitionId: string) => (allowed.has(agentDefinitionId) ? [grant] : []),

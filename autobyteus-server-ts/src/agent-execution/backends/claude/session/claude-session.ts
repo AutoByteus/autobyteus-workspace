@@ -365,6 +365,7 @@ export class ClaudeSession {
       agentToolsMcpSessionState: this.agentToolsMcpSessionState,
       toolingCoordinator: this.dependencies.toolingCoordinator,
       integrationRunAccess: this.dependencies.integrationRunAccess ?? null,
+      providerRelayAccess: this.dependencies.providerRelayAccess ?? null,
     }) });
   }
 

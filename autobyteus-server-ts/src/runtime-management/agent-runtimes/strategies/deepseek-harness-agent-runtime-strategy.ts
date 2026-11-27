@@ -4,7 +4,11 @@ import {
   DEEPSEEK_HARNESS_NPM_PACKAGE,
   deepSeekHarnessCommand,
 } from "../../deepseek-harness/deepseek-harness-identity.js";
-import { createDeepSeekProviderRelay, providerRelayKeyMissingText } from "../../../credential-proxy/provider-relays/provider-relays.js";
+import { providerRelayKeyMissingText } from "../../../credential-proxy/provider-relays/provider-relays.js";
+import type { SecretConsumerIdentity } from "../../../secret-management/domain/secret-id.js";
+
+/** The vault entry the DeepSeek relay attaches to dsh's calls on this node. */
+const DEEPSEEK_RELAY_KEY: SecretConsumerIdentity = Object.freeze({ kind: "providerRelay", relayId: "deepseek", relayCredentialKind: "apiKey" });
 import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
 import type { SecretManagementService } from "../../../secret-management/services/secret-management-service.js";
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
@@ -22,7 +26,6 @@ const NETWORK_COMMAND_TIMEOUT_MS = 15_000;
 export const createDeepSeekHarnessAgentRuntimeStrategy = (dependencies: Readonly<{
   management?: () => Pick<SecretManagementService, "getStatusForConsumer">;
 }> = {}): AgentRuntimeStrategy => {
-  const relay = createDeepSeekProviderRelay();
   const management = dependencies.management ?? (() => getSecretVaultRuntime().requireService());
   return {
     runtimeKind: RuntimeKind.DEEPSEEK_HARNESS,
@@ -40,9 +43,9 @@ export const createDeepSeekHarnessAgentRuntimeStrategy = (dependencies: Readonly
     /** The vault's value-free status of the DeepSeek key. */
     async readSignIn(): Promise<SignInReading> {
       try {
-        return await management().getStatusForConsumer(relay.consumer) === "CONFIGURED"
+        return await management().getStatusForConsumer(DEEPSEEK_RELAY_KEY) === "CONFIGURED"
           ? { state: "signedIn" }
-          : { state: "signedOut", detail: providerRelayKeyMissingText(relay) };
+          : { state: "signedOut", detail: providerRelayKeyMissingText({ providerName: "DeepSeek" }) };
       } catch (error) {
         return { state: "unknown", detail: error instanceof Error ? error.message : String(error) };
       }

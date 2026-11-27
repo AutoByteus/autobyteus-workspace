@@ -1,5 +1,5 @@
 import path from "node:path";
-import { parseArgs, resolveLaunchCommand, resolveRequestTimeoutMs } from "./codex-app-server-launch-config.js";
+import { resolveCodexAppServerLaunch, resolveLaunchCommand, resolveRequestTimeoutMs } from "./codex-app-server-launch-config.js";
 import { CodexAppServerClient } from "./codex-app-server-client.js";
 
 type CloseListener = (error: Error | null) => void;
@@ -19,9 +19,12 @@ export class CodexAppServerClientManager {
   private readonly closeListeners = new Set<CloseListener>();
   private readonly createClient: (cwd: string) => CodexAppServerClient;
   constructor(options: CodexAppServerClientManagerOptions = {}) {
-    this.createClient = options.createClient ?? ((cwd) => new CodexAppServerClient({
-      command: resolveLaunchCommand(), args: parseArgs(), cwd, requestTimeoutMs: resolveRequestTimeoutMs(),
-    }));
+    this.createClient = options.createClient ?? ((cwd) => {
+      const launch = resolveCodexAppServerLaunch();
+      return new CodexAppServerClient({
+        command: resolveLaunchCommand(), args: launch.args, env: launch.env, cwd, requestTimeoutMs: resolveRequestTimeoutMs(),
+      });
+    });
   }
 
   beginAcquire(cwd: string): CodexAppServerClientLease {

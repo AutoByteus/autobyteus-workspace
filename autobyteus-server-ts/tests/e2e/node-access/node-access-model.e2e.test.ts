@@ -375,7 +375,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     try {
       const gatewayUrl = `http://127.0.0.1:${(gateway.address() as { port: number }).port}/autobyteus`;
       // This test acts as PEER_A's node: its client signs with the secret the two share.
-      const thisNodeSeenFromPeerA = { nodeId: ownNodeId, name: "via-gateway", baseUrl: gatewayUrl, addedAt: new Date().toISOString(), paired: true };
+      const thisNodeSeenFromPeerA = { nodeId: ownNodeId, name: "via-gateway", baseUrl: gatewayUrl, addedAt: new Date().toISOString(), paired: true, role: null };
       const client = new PeerClient({
         peers: { findByName: async () => thisNodeSeenFromPeerA, findByNodeId: async () => thisNodeSeenFromPeerA, peerSecret: async () => PEER_A.secret },
         capability: { isEnabled: () => true },

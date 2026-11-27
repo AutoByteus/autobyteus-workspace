@@ -9,7 +9,8 @@ session per run, for agents, Teams, Orgs and application launches in the studio.
 
 dsh's model calls never hold the DeepSeek key. They go to the credential proxy's DeepSeek **provider relay**
 (see [Credential Proxy](./credential_proxy.md#provider-relays)), which checks the run's pass, adds the key from the
-vault (`provider.deepseek.api-key`, Settings → API Keys) and streams the reply back unchanged. The relay also reports
+vault (`provider.deepseek.api-key`, Settings → API Keys) and streams the reply back unchanged. On a relayed node the
+relay sends the call to the relay node, which adds its own key (autobyteus-581). The relay also reports
 each call to the run's session: that is where dsh's token usage, compaction boundaries and turn liveness come from,
 because dsh reports none of them over ACP.
 
@@ -69,7 +70,7 @@ Environment: the server environment without `DSH_PERMISSION_MODE`, `DEEPSEEK_API
 | Variable | Value |
 | --- | --- |
 | `DSH_HOME` | the AutoByteus-owned home |
-| `DEEPSEEK_BASE_URL` | `http://127.0.0.1:<proxy>/relay/deepseek` (no pass in it) |
+| `DEEPSEEK_BASE_URL` | `http://127.0.0.1:<proxy>/relay/deepseek/anthropic` (no pass in it; dsh appends `/v1/messages`) |
 | `DEEPSEEK_API_KEY` | the run's pass (not a key) |
 | `AUTOBYTEUS_DSH_INSTRUCTIONS_FILE` | `<appData>/runtimes/deepseek-harness/runs/<runId>/instructions.md` |
 | `AUTOBYTEUS_DSH_SKILLS_DIR` | `<workspace>/.dsh/skills` (a skill added to the definition mid-run is linked here too, see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)) |

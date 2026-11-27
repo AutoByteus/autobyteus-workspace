@@ -180,7 +180,7 @@ export const discoverDeepSeekHarnessModels = async (options: DeepSeekHarnessProb
   try {
     const cwd = await home.ensureDiscoveryDir();
     configOptions = await runAcpSessionOptionsDiscovery(options.launchProfile ?? deepSeekHarnessLaunchProfile,
-      { cwd, relayBaseUrl }, { deadline: options.deadline });
+      { cwd, relayBaseUrl, nodeRelayAccess: null }, { deadline: options.deadline });
   } catch (error) {
     throw new DeepSeekHarnessDiscoveryError(error instanceof AcpDiscoveryError && error.kind === "unavailable"
       ? "DEEPSEEK_HARNESS_CLI_UNAVAILABLE" : "DEEPSEEK_HARNESS_DISCOVERY_FAILED", { cause: error });

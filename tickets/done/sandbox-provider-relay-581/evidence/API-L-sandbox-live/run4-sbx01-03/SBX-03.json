@@ -1,0 +1,43 @@
+{
+  "delegatedTo": "/sandbox_worker",
+  "answer": {
+    "content": "done",
+    "referenceFiles": 1
+  },
+  "referenceContentMatches": true,
+  "workspaceFile": "report-59d1f1ee.md",
+  "transcripts": [],
+  "sharedReadOnly": "shared input\ntouch=1",
+  "leakScan": {
+    "needleIds": 11,
+    "sandboxFiles": {
+      "roots": [
+        "/home",
+        "/root",
+        "/run",
+        "/tmp",
+        "/var"
+      ],
+      "bytes": 662343680,
+      "hits": []
+    },
+    "processes": {
+      "count": 45,
+      "bytes": 13339,
+      "hits": []
+    },
+    "containerEnv": [],
+    "workspace": {
+      "hits": {},
+      "files": 1,
+      "links": 0
+    },
+    "runMemory": {
+      "hits": {},
+      "files": 0,
+      "links": 0
+    },
+    "c5Log": [],
+    "toolResults": []
+  }
+}

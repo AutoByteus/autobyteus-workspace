@@ -5,6 +5,7 @@ const specs = [
   ["autobyteus-ts/tools/register-tools.js", "registerTools", "core"],
   ["../agent-tools/project-tasks/project-task-native-tools.js", "registerProjectTaskTools", "project_tasks"],
   ["../agent-tools/memory/memory-native-tools.js", "registerMemoryTools", "memory"],
+  ["../agent-tools/sandboxes/sandbox-native-tools.js", "registerSandboxTools", "sandboxes"],
   ["../agent-tools/browser/register-browser-tools.js", "registerBrowserTools", "browser"],
   ["../agent-tools/task-delegation/register-task-delegation-tools.js", "registerTaskDelegationTools", "task_delegation"],
   ["../agent-tools/agent-communication/register-agent-communication-tools.js", "registerAgentCommunicationTools", "agent_communication"],
@@ -40,7 +41,7 @@ const buildModuleLoader = (input: {
 };
 
 describe("AgentToolRegistryReadiness", () => {
-  it("registers Core first, eight server units next, and Search last with ordered results", async () => {
+  it("registers Core first, nine server units next, and Search last with ordered results", async () => {
     const publisher = { publish: vi.fn() };
     const observations: Array<{ key: string; dependency: unknown }> = [];
     const modules = buildModuleLoader({
@@ -56,6 +57,7 @@ describe("AgentToolRegistryReadiness", () => {
       "core",
       "project_tasks",
       "memory",
+      "sandboxes",
       "browser",
       "task_delegation",
       "agent_communication",

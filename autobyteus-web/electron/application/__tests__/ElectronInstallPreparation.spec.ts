@@ -13,7 +13,7 @@ const mocks = vi.hoisted(() => ({
 }))
 
 vi.mock('electron', () => ({
-  app: { on: vi.fn(), quit: vi.fn(), exit: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), isPackaged: false },
+  app: { on: vi.fn(), quit: vi.fn(), exit: vi.fn(), getPath: vi.fn(() => '/test-owned-data'), getVersion: vi.fn(() => '1.5.15-test'), isPackaged: false },
   BrowserWindow: { getAllWindows: () => [] }, dialog: {}, ipcMain: { handle: vi.fn(), on: vi.fn() }, shell: {},
 }))
 vi.mock('electron-is-dev', () => ({ default: true }))

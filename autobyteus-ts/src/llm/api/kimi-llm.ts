@@ -6,12 +6,13 @@ import { Message } from '../utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { LLMInvocationOptions } from '../base.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import { providerAddressThrough, type LLMEndpoint } from '../llm-endpoint.js';
 
 const KIMI_K3_REASONING_EFFORTS = new Set(['low', 'high', 'max']);
 
 export class KimiLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
-    super(model, 'https://api.moonshot.ai/v1', config, apiKeyResolver, LLMProvider.KIMI);
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) {
+    super(model, providerAddressThrough('https://api.moonshot.ai/v1', endpoint), config, apiKeyResolver, LLMProvider.KIMI);
   }
 
   protected override getRequestConfig(_kwargs: Record<string, unknown>): LLMConfig {

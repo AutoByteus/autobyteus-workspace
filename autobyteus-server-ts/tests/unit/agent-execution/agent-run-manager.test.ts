@@ -316,7 +316,7 @@ describe("AgentRunManager candidate lifecycle", () => {
 
   it("ends an attached run's credential-proxy pass when the run is released, a pass holding only a provider relay too (AR-008)", async () => {
     const passes = new RunPassRegistry();
-    const pass = passes.grantProviderRelay({ runId: "run-released", agentDefinitionId: "agent-a" }, "deepseek");
+    const pass = passes.grantProviderRelay({ runId: "run-released", agentDefinitionId: "agent-a" }, "deepseek", "apiKey");
     const manager = createManager({
       codexBackendFactory: { createBackend: vi.fn(async () => createBackend({ runId: "run-released" })), restoreBackend: vi.fn() },
       runPasses: new RegistryRunPassRevocation(passes),

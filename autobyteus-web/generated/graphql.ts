@@ -2779,6 +2779,7 @@ export type PeerNodeGql = {
   name: Scalars['String']['output'];
   nodeId: Scalars['String']['output'];
   paired: Scalars['Boolean']['output'];
+  role?: Maybe<Scalars['String']['output']>;
 };
 
 export type PeerNodeOfferEntryGql = {
@@ -5444,7 +5445,7 @@ export type AcceptPeerInviteMutationVariables = Exact<{
 }>;
 
 
-export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type RenamePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5452,7 +5453,7 @@ export type RenamePeerNodeMutationVariables = Exact<{
 }>;
 
 
-export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type ChangePeerAddressMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5460,7 +5461,7 @@ export type ChangePeerAddressMutationVariables = Exact<{
 }>;
 
 
-export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
+export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null } };
 
 export type RemovePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -6002,7 +6003,7 @@ export type SearchProjectTasksQuery = { __typename?: 'Query', searchProjectTasks
 
 export type RemoteCollaborationCapabilityFieldsFragment = { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string };
 
-export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean };
+export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null };
 
 export type GetRemoteCollaborationCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6012,7 +6013,7 @@ export type GetRemoteCollaborationCapabilityQuery = { __typename?: 'Query', remo
 export type GetRemoteCollaborationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean }> };
+export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean, role?: string | null }> };
 
 export type GetPeerNodeOfferQueryVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -7062,6 +7063,7 @@ export const PeerNodeFieldsFragmentDoc = gql`
   baseUrl
   addedAt
   paired
+  role
 }
     `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`

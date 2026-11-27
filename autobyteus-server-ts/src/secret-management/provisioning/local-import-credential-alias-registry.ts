@@ -5,6 +5,8 @@ import { TEST_ONLY_SECRET_IDS } from '../catalog/provider-credential-catalog.js'
 const localImportCredentialAliases = Object.freeze({
   OPENAI_API_KEY: secretId('provider.openai.api-key'),
   ANTHROPIC_API_KEY: secretId('provider.anthropic.api-key'),
+  // C9: a `claude setup-token` login token, used only by a relay node with login tokens switched on.
+  CLAUDE_CODE_OAUTH_TOKEN: secretId('provider.anthropic.login-token'),
   MISTRAL_API_KEY: secretId('provider.mistral.api-key'),
   DEEPSEEK_API_KEY: secretId('provider.deepseek.api-key'),
   GROK_API_KEY: secretId('provider.grok.api-key'),

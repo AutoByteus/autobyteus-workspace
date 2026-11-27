@@ -27,7 +27,7 @@ import { NO_FILES_RECEIVED } from "../../helpers/explicit-host-collaborators.js"
  */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true, role: null };
 const pending = async (): Promise<string> => { throw new NodeIdentityNotMigratedError(); };
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 const pendingAnswer = () => answer({ code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration." }, 503);

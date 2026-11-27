@@ -25,6 +25,7 @@ const logger = rootLogger.child('server.base-server-manager')
  * only in the node process's spawn environment; the node removes it from its environment before any other code loads.
  */
 export const LAUNCH_OWNER_CREDENTIAL_ENV = 'AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL'
+export const RELEASE_VERSION_ENV = 'AUTOBYTEUS_RELEASE_VERSION'
 
 const createLaunchOwnerCredential = (): string => `own_${randomBytes(32).toString('base64url')}`
 const stdoutLogger = rootLogger.child('embedded-server.stdout')
@@ -340,6 +341,8 @@ export abstract class BaseServerManager extends EventEmitter {
         runtimeOverrides: this.getRuntimeEnvOverrides(),
       }),
       [LAUNCH_OWNER_CREDENTIAL_ENV]: this.launchOwnerCredential,
+      // autobyteus-581: the release the node runs, so its sandboxes start from the same server image (DESIGN rule 9).
+      [RELEASE_VERSION_ENV]: this.launchConfig.releaseVersion,
     }
   }
 

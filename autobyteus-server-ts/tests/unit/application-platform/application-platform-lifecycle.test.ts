@@ -178,7 +178,7 @@ describe("ApplicationPlatformLifecycle", () => {
         llmProviderService: { getProviderCredentialSetting: vi.fn() } as never,
         signInReader: new AgentRuntimeSignInReader([
           createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never }),
-        ]),
+        ], () => null),
       });
       dependencies.storageLifecycleService = storageLifecycleService as never;
       dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {

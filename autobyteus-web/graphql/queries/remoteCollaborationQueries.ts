@@ -15,6 +15,7 @@ export const PeerNodeFields = gql`
     baseUrl
     addedAt
     paired
+    role
   }
 `
 

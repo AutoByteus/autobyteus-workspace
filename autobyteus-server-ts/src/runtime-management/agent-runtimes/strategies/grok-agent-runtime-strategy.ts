@@ -1,6 +1,7 @@
 import { RuntimeKind } from "../../runtime-kind-enum.js";
 import { grokBuildCommand, grokBuildLaunchProfile } from "../../grok/grok-build-launch-profile.js";
 import { runAcpExtensionRequest } from "../../acp/acp-discovery-handshake.js";
+import { grokNodeRelay } from "../../grok/grok-build-capability.js";
 import { commandTimeout } from "../../read-deadline.js";
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
@@ -40,7 +41,7 @@ export const createGrokAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
   },
   /** Grok's ACP extension `_x.ai/billing` after `initialize` on a short process (no session, 0 tokens). */
   readUsageLimits: async (_executable, _cwd, { deadline }) =>
-    parseGrokUsageLimits(await runAcpExtensionRequest(grokBuildLaunchProfile, "_x.ai/billing", { deadline })),
+    parseGrokUsageLimits(await runAcpExtensionRequest(grokBuildLaunchProfile, "_x.ai/billing", { deadline }, grokNodeRelay())),
   updateArgv: (executable) => [executable, "update"],
   signInArgv: (executable) => [executable, "login", "--oauth"],
 });

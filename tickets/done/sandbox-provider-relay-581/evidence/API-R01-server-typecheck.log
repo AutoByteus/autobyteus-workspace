@@ -1,0 +1,17 @@
+# API-R01 server typecheck (src + tests incl. the new API/E2E test files)
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: 5c6ef6ee86 (code d624f09ce6) + uncommitted API/E2E test files; Node v22.23.1; date 2026-11-26T17:21:24Z
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/sandbox-provider-relay/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.2s
+[typecheck] server tests (tsconfig.tests.json): 972 errors, exit 2, 32.4s
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+exit 0

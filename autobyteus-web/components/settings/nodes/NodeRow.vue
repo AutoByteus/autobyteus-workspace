@@ -34,6 +34,11 @@
               @click="startRename"
             >
               <span class="truncate">{{ row.name }}</span>
+              <span
+                v-if="row.peer?.role === 'sandbox'"
+                class="flex-shrink-0 rounded bg-amber-50 px-1.5 text-[11px] font-medium leading-5 text-amber-700 ring-1 ring-inset ring-amber-200"
+                :data-testid="`node-sandbox-label-${row.key}`"
+              >{{ t(k('row.sandboxLabel')) }}</span>
               <svg class="h-3.5 w-3.5 flex-shrink-0 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m13.5 4.5 2 2M4 16l.7-3.1L13.8 3.8a1.4 1.4 0 0 1 2 0l.4.4a1.4 1.4 0 0 1 0 2l-9.1 9.1L4 16Z" stroke-linecap="round" stroke-linejoin="round" /></svg>
             </button>
             <p v-else class="truncate text-sm font-semibold leading-6 text-slate-900" :data-testid="`node-name-${row.key}`">{{ row.name }}</p>

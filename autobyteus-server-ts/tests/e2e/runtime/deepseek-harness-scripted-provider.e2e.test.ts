@@ -46,7 +46,7 @@ vi.mock("../../../src/credential-proxy/provider-relays/provider-relays.js", asyn
   /** The studio's relays with DeepSeek's origin replaced by this test's scripted endpoint. */
   class ScriptedProviderRelays extends actual.ProviderRelays {
     constructor(relays?: ConstructorParameters<typeof actual.ProviderRelays>[0]) {
-      super(relays ?? [actual.createDeepSeekProviderRelay(scripted.origin)]);
+      super(relays ?? actual.createProviderRelayTable((origin) => (origin === "https://api.deepseek.com" ? scripted.origin : origin)));
     }
   }
   return { ...actual, ProviderRelays: ScriptedProviderRelays };
@@ -68,7 +68,7 @@ const dshReady = spawnSync(dshCommand, ["--version"], { stdio: "ignore" }).statu
 const enabled = process.env.RUN_DEEPSEEK_HARNESS_SCRIPTED_E2E === "1" && dshReady;
 const MODEL = "deepseek-v4-flash";
 const STEP_TIMEOUT_MS = 120_000;
-const KEY_CONSUMER = { kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" } as const;
+const KEY_CONSUMER = { kind: "providerRelay", relayId: "deepseek", relayCredentialKind: "apiKey" } as const;
 const KEY_MISSING_TEXT = "The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.";
 /** dsh's compaction trigger lowered as in the investigation's forced-compaction probe (RT-014). */
 const COMPACTION_PATCH = [

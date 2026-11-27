@@ -12,6 +12,7 @@ import {
 import type { ResolvedModelMetadata } from './metadata/model-metadata-resolver.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
+import type { LLMEndpoint } from './llm-endpoint.js';
 
 /**
  * How compaction asks this model for its summary. `'cached_conversation'`: the agent's own
@@ -27,12 +28,7 @@ export interface LLMModelOptions {
   provider: LLMProvider;
   providerId?: string;
   providerName?: string;
-  llmClass?: new (
-    model: LLMModel,
-    config: LLMConfig,
-    apiKeyResolver?: ProviderApiKeyResolver,
-    geminiRuntimeResolver?: GeminiRuntimeResolver,
-  ) => BaseLLM;
+  llmClass?: LLMClientClass;
   canonicalName: string;
   defaultConfig?: LLMConfig;
   maxContextTokens?: number | null;
@@ -108,6 +104,20 @@ export const parseHostScopedLlmModelIdentifier = (
   return null;
 };
 
+/** A provider client class: `endpoint` sends its calls through another address (a provider relay, `LLMEndpoint`). */
+export type LLMClientClass =
+  | (new (model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, endpoint?: LLMEndpoint) => BaseLLM)
+  | GeminiLLMClientClass;
+
+/** Gemini's client class also takes the runtime it runs on (AI Studio or Vertex). */
+export type GeminiLLMClientClass = new (
+  model: LLMModel,
+  config: LLMConfig,
+  apiKeyResolver: ProviderApiKeyResolver | undefined,
+  geminiRuntimeResolver: GeminiRuntimeResolver | undefined,
+  endpoint?: LLMEndpoint,
+) => BaseLLM;
+
 export class LLMModel {
   private _name: string;
   private _value: string;
@@ -115,12 +125,7 @@ export class LLMModel {
   public provider: LLMProvider;
   public providerId: string;
   public providerName: string;
-  public llmClass?: new (
-    model: LLMModel,
-    config: LLMConfig,
-    apiKeyResolver?: ProviderApiKeyResolver,
-    geminiRuntimeResolver?: GeminiRuntimeResolver,
-  ) => BaseLLM;
+  public llmClass?: LLMClientClass;
   public defaultConfig: LLMConfig;
   public maxContextTokens: number | null;
   public activeContextTokens: number | null;

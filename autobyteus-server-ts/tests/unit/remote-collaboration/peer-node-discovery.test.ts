@@ -11,7 +11,7 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 
 const SELF = "srv_self_node_000000000000000000000000";
 const peer = (name: string, n: number): PeerNode =>
-  ({ nodeId: `srv_${name}_node_00000000000000000000000000`.slice(0, 38) + n, name, baseUrl: `http://${name}:29700`, addedAt: "2026-10-21T09:00:00.000Z", paired: true });
+  ({ nodeId: `srv_${name}_node_00000000000000000000000000`.slice(0, 38) + n, name, baseUrl: `http://${name}:29700`, addedAt: "2026-10-21T09:00:00.000Z", paired: true, role: null });
 const BETA = peer("beta", 1), GAMMA = peer("gamma", 2), DELTA = peer("delta", 3), EPSILON = peer("epsilon", 4), OLD = peer("old", 5), BLACK = peer("black", 6), WRONG = peer("wrong", 7);
 const ALL = [BETA, GAMMA, DELTA, EPSILON, OLD, BLACK, WRONG];
 

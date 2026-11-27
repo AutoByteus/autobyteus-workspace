@@ -1,0 +1,20 @@
+{
+  "model": "claude-haiku-5-5",
+  "directFirstContentMs": [
+    460,
+    480,
+    473,
+    455,
+    430
+  ],
+  "relayedFirstContentMs": [
+    501,
+    470,
+    515,
+    476,
+    468
+  ],
+  "directMedianMs": 460,
+  "relayedMedianMs": 476,
+  "addedMedianMs": 16
+}

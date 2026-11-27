@@ -45,6 +45,11 @@ later slices.
   address refuse `PEER_HOST_REFUSED` with `host` ("<address> refuses the name <host>; add it to
   AUTOBYTEUS_ALLOWED_HOSTS on that node."; `channel/peer-client.ts` `fetchNodeId`), and the address resolution
   below records the attempt as `host_refused` (autobyteus-426). Any other 403 stays not an AutoByteus node.
+- A peer may carry `role: "sandbox"` (`PeerNode.role`, written to `peers.json` only when set): the host's pairing
+  exchange saves it from an invite the host created marked `sandbox` for a sandbox it is creating (the mark never
+  travels in the invite text). It changes no route or permission: a sandbox is a normal paired peer. It only labels
+  the peer on the Nodes page and lets the host's start sweep remove peers of sandboxes that no longer exist
+  ([Sandboxes](./sandboxes.md), autobyteus-581).
 - **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,
   `PeerAddressResolver`): a node's address depends on who calls (the desktop reaches a Docker node at
   `localhost:8001`; the Docker node reaches the desktop only at `host.docker.internal:29695`). `resolvePeerAddress(nodeId,

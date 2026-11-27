@@ -14,9 +14,11 @@ export type SecretConsumerIdentity =
     }
   | {
       kind: "agentRuntime";
-      runtimeKind: "claude_agent_sdk" | "deepseek_harness";
+      runtimeKind: "claude_agent_sdk";
       credentialSlot: "apiKey";
     }
+  /** A provider relay's credential: the API key, or (Claude) the login token (C9), attached by the credential proxy. */
+  | { kind: "providerRelay"; relayId: string; relayCredentialKind: "apiKey" | "loginToken" }
   /** An MCP server value stored as a vault entry (`mcp.<uuid>`); its owner and field live in `mcps.json`. */
   | { kind: "mcpServer"; vaultSecretId: SecretId }
   /** An integration's credential (the credential proxy adds it to a run's outbound calls). */
@@ -35,6 +37,8 @@ export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity
       return `${consumer.kind}:${consumer.vaultSecretId}`;
     case "integration":
       return `${consumer.kind}:${consumer.integrationId}`;
+    case "providerRelay":
+      return `${consumer.kind}:${consumer.relayId}:${consumer.relayCredentialKind}`;
     default:
       return `${consumer.kind}:${consumer.providerId}:${consumer.credentialSlot}`;
   }

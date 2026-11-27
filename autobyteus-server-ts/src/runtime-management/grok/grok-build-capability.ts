@@ -2,6 +2,8 @@ import { spawn } from "node:child_process";
 import type { InitializeResponse } from "@agentclientprotocol/sdk";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { AcpDiscoveryError, runAcpDiscoveryHandshake } from "../acp/acp-discovery-handshake.js";
+import type { AcpDiscoveryLaunchRequest } from "../acp/acp-agent-launch-profile.js";
+import { processNodeRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-process-access.js";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "../read-deadline.js";
 import { armProbeTimeBound } from "../probe-time-bound.js";
 import { compareRuntimeVersions, extractRuntimeVersion } from "../agent-runtimes/runtime-version.js";
@@ -125,12 +127,16 @@ const modelStateOf = (initialize: InitializeResponse): unknown =>
  * its own refresh when it comes within the wait, otherwise the one in its answer. With a deadline, the probes and the
  * handshake share it.
  */
+/** On a relayed node, Grok's short processes ask xAI through the relay with the node pass (unrelayed: Grok's own sign-in). */
+export const grokNodeRelay = (): AcpDiscoveryLaunchRequest =>
+  ({ relayBaseUrl: null, nodeRelayAccess: processNodeRelayAccess("xai", "grok_build") });
+
 export const discoverGrokBuildModels = async (options: GrokBuildProbeOptions = {}): Promise<ModelInfo[]> => {
   await assertGrokBuildCliSupported(options);
   let models: ModelInfo[];
   try {
     const { initialize, followUp } = await runAcpDiscoveryHandshake(grokBuildLaunchProfile,
-      { method: GROK_MODELS_UPDATE_METHOD, withinMs: GROK_MODELS_UPDATE_WAIT_MS }, { deadline: options.deadline });
+      { method: GROK_MODELS_UPDATE_METHOD, withinMs: GROK_MODELS_UPDATE_WAIT_MS }, { deadline: options.deadline }, grokNodeRelay());
     models = normalizeGrokBuildModels(followUp ?? modelStateOf(initialize));
   } catch (error) {
     if (error instanceof AcpDiscoveryError) {

@@ -9,6 +9,7 @@ export type RequiredAgentToolUnitKey =
   | "task_delegation"
   | "project_tasks"
   | "memory"
+  | "sandboxes"
   | "agent_communication"
   | "agent_discovery"
   | "agent_runtimes"
@@ -47,6 +48,7 @@ const coreSpec: LoaderSpec = {
 const serverOwnedSpecs: LoaderSpec[] = [
   {key: "project_tasks", displayName: "Project Task Tools", modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools"},
   {key: "memory", displayName: "Memory Tools", modulePath: "../agent-tools/memory/memory-native-tools.js", exportName: "registerMemoryTools"},
+  {key: "sandboxes", displayName: "Sandbox Tools", modulePath: "../agent-tools/sandboxes/sandbox-native-tools.js", exportName: "registerSandboxTools"},
   {
     key: "browser",
     displayName: "Browser Tools",

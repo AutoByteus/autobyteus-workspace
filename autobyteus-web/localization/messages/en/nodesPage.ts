@@ -20,6 +20,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.list.empty': 'No other nodes yet. Add one to open its window or let agents work with it.',
   'settings.components.settings.NodesPage.row.agentsHint': 'Remote collaboration: let agents on this node and on that node work together',
   'settings.components.settings.NodesPage.row.agentsLabel': 'Let agents work with {{name}}',
+  'settings.components.settings.NodesPage.row.sandboxLabel': 'sandbox',
   'settings.components.settings.NodesPage.row.rename': 'Click to rename',
   'settings.components.settings.NodesPage.row.reachable': 'Reachable now',
   'settings.components.settings.NodesPage.row.notReachable': 'Not reachable now',

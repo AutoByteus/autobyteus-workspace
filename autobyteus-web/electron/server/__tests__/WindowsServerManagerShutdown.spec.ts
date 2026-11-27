@@ -25,7 +25,7 @@ beforeEach(() => {
   mocks.force.mockImplementation((_file, _args, _options, cb) => { child.exitCode = 0; child.emit('exit', 0); cb(null) })
 })
 afterEach(() => vi.useRealTimers())
-const manager = () => new Manager({ clientEndpoint: createEmbeddedServerClientEndpoint(54321), listenerPolicy: 'preserve-backend-default', baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline', developmentRendererOrigin: null })
+const manager = () => new Manager({ clientEndpoint: createEmbeddedServerClientEndpoint(54321), listenerPolicy: 'preserve-backend-default', baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline', developmentRendererOrigin: null, releaseVersion: '1.5.15-test' })
 it('production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit', async () => {
   const owner = manager(); await owner.startServer()
   expect(mocks.spawn.mock.calls[0][2].stdio).toEqual(['ignore', 'pipe', 'pipe', 'ipc'])

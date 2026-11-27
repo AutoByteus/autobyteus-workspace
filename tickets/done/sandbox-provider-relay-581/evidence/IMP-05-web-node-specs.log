@@ -1,0 +1,7 @@
+# IMP-05-web-node-specs.log
+# command: pnpm -C autobyteus-web exec vitest run components/settings/nodes stores/__tests__/{nodeRowStatus,nodeListStore,remoteCollaborationStore}.spec.ts services/nodeCollaboration
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+ Test Files  11 passed (11)
+      Tests  113 passed (113)

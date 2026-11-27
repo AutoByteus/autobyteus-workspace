@@ -1,0 +1,10 @@
+[3.8s] A and B up
+[3.9s] paired: {"aSeesB":[{"name":"relayed-b","paired":true,"role":null}],"bSeesA":[{"name":"relay-a","paired":true,"role":null}],"roleKeyInAPeersJson":false}
+[5.5s] B restarted relayed
+[5.7s] B states {"codex_app_server":"SIGNED_IN","claude_agent_sdk":"SIGNED_IN","antigravity_cli":"SIGNED_OUT","grok_build":"SIGNED_IN","deepseek_harness":"SIGNED_IN"}; native configured ANTHROPIC,DEEPSEEK,GROK,OPENAI
+[6.5s] autobyteus (claude-haiku-5-5): TURN_COMPLETED; 1 relayed lines
+[8.3s] claude_agent_sdk (haiku): TURN_COMPLETED; 1 relayed lines
+[10.2s] codex_app_server (gpt-5.6-luna): TURN_COMPLETED; 2 relayed lines
+[16.2s] grok_build (grok-4.20-0309-non-reasoning): TURN_COMPLETED; 5 relayed lines
+[19.6s] deepseek_harness (deepseek-v4-flash): TURN_COMPLETED; 3 relayed lines
+[20.5s] result Pass

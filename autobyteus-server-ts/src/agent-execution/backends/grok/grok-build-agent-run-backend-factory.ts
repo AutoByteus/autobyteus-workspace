@@ -1,4 +1,5 @@
 import type { IntegrationRunAccess } from "../../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../skills/services/skill-service.js";
 import type { AgentToolMcpRunSessionActivator, AgentToolMcpRunSessionExposure } from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -17,6 +18,8 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   workspaces: AcpWorkingDirectoryResolver;
   mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure;
   integrationRunAccess: IntegrationRunAccess | null;
+  /** The relay of a relayed node's runs; on an unrelayed node Grok calls its provider itself. */
+  providerRelayAccess: ProviderRelayAccess | null;
 }>): AcpAgentRunBackendFactory => new AcpAgentRunBackendFactory({
   launchProfile: grokBuildLaunchProfile,
   sessionProfile: grokBuildSessionProfile,
@@ -26,6 +29,5 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   mcpSessions: input.mcpSessions,
   skillMaterializer: getGrokWorkspaceSkillMaterializer(),
   integrationRunAccess: input.integrationRunAccess,
-  // Grok calls its provider itself.
-  providerRelayAccess: null,
+  providerRelayAccess: input.providerRelayAccess,
 });

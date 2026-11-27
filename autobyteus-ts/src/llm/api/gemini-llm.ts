@@ -26,6 +26,7 @@ import {
   resolveProviderApiKeyResolver,
   type ProviderApiKeyResolver,
 } from '../../secrets/provider-api-key-resolver.js';
+import type { LLMEndpoint } from '../llm-endpoint.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
@@ -117,10 +118,18 @@ export class GeminiLLM extends BaseLLM {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   private readonly runtimeResolver: GeminiRuntimeResolver;
+  private readonly endpoint: LLMEndpoint | undefined;
   private _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
+  constructor(
+    model: LLMModel,
+    config: LLMConfig,
+    apiKeyResolver?: ProviderApiKeyResolver,
+    runtimeResolver?: GeminiRuntimeResolver,
+    endpoint?: LLMEndpoint,
+  ) {
     super(model, config);
+    this.endpoint = endpoint;
     this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
     this.runtimeResolver = runtimeResolver;
@@ -134,7 +143,7 @@ export class GeminiLLM extends BaseLLM {
 
   private async initializeClient(singleAttempt = false): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
     const selection = await this.runtimeResolver();
-    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver, { singleAttempt });
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver, { singleAttempt, endpoint: this.endpoint });
   }
 
   private buildGenerationConfig(messages: Message[], options: LLMInvocationOptions, tools?: Array<Record<string, unknown>>): Record<string, unknown> {

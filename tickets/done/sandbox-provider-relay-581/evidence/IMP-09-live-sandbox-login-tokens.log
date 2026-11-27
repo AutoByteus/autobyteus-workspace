@@ -1,0 +1,21 @@
+# IMP-09-live-sandbox-login-tokens.log
+# command: same, --login-tokens --runtimes=codex_app_server,grok_build,claude_agent_sdk (Claude has no login token in the vault: API key)
+# commit: 1bc0f90811 (code; probe script as in the ticket folder)
+# environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop; date 2026-11-26T15:55Z
+
+[4.7s] host node up at http://127.0.0.1:62489 (data test-owned)
+[16.4s] create_sandbox turn: TURN_COMPLETED; record state: ready; tool error codes: none
+[16.4s] sandbox sbx_f63e083a3c ready 11s after its record; image autobyteus-server:581-local
+[16.4s] result names the imported agent: true; shared folder in result: true
+[16.5s] host peers: sbx_f63e083a3c:paired:sandbox
+[16.5s] sandbox environment names: AUTOBYTEUS_BIND_HOST AUTOBYTEUS_DATA_DIR AUTOBYTEUS_MEMORY_DIR AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKEN_RUNTIMES AUTOBYTEUS_PROVIDER_RELAY_PEER AUTOBYTEUS_PROVIDER_RELAYS AUTOBYTEUS_SERVER_HOST AUTOBYTEUS_SERVER_PORT AUTOBYTEUS_TEMP_WORKSPACE_DIR BROWSER DEBIAN_FRONTEND DISPLAY ENABLE_REMOTE_COLLABORATION GTK_IM_MODULE HOME HOSTNAME IMAGE_VARIANT LANG LANGUAGE LC_ALL NODE_ENV PATH PWD QT_IM_MODULE SCREEN_RESOLUTION SDL_IM_MODULE USER_GID USER_UID XDG_RUNTIME_DIR XMODIFIERS
+[16.6s] sandbox C1: RELAYS=anthropic,openai,xai,deepseek,gemini,kimi,glm LOGIN=codex_app_server
+[17.4s] sandbox runtime sign-ins: codex_app_server=SIGNED_IN, claude_agent_sdk=SIGNED_IN, antigravity_cli=SIGNED_OUT, grok_build=SIGNED_IN, deepseek_harness=not installed
+[17.4s] sandbox native providers usable (R-E): ANTHROPIC, DEEPSEEK, GEMINI, GLM, GROK, KIMI, OPENAI
+[23.7s] codex_app_server (gpt-5.6-luna) in the sandbox: ERROR in 5.1s; SANDBOX-OK: true; error: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a2188f-0e42-74c1-80f3-ed91a3eb32b7","occurred_at":"2026-11-26T15:52:43.206Z"}
+[29.8s] grok_build (grok-4.20-0309-non-reasoning) in the sandbox: TURN_COMPLETED in 0.9s; SANDBOX-OK: true
+[32.2s] claude_agent_sdk (haiku) in the sandbox: TURN_COMPLETED in 1.5s; SANDBOX-OK: true
+[32.2s] host relay activity (C5): {"openai/loginToken/200":19,"xai/apiKey/200":7,"anthropic/apiKey/200":2}; keys per line: at,durationMs,method,path,peerNodeId,relayCredentialKind,relayId,status
+[32.5s] run_in_sandbox: TURN_COMPLETED; read the shared file: true; write refused: true
+[33.4s] destroy_sandbox: TURN_COMPLETED; containers left: none; sandbox peers left: 0; records left: 0; folders kept: true
+[33.6s] cleaned up

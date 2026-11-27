@@ -103,9 +103,10 @@ describe("run passes and run access", () => {
     const passes = new RunPassRegistry();
     const first = passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" }, [grant]);
     expect(first).toMatch(/^rp_[A-Za-z0-9_-]{43}$/);
-    expect(passes.lookup(first)?.grants.get("github")).toEqual(grant);
+    const holderOf = (pass: string) => { const holder = passes.lookup(pass); return holder?.kind === "run" ? holder : null; };
+    expect(holderOf(first)?.grants.get("github")).toEqual(grant);
     expect(passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" }, [])).toBe(first);
-    expect(passes.lookup(first)?.grants.size).toBe(0);
+    expect(holderOf(first)?.grants.size).toBe(0);
     expect(passes.issue({ runId: "run-2", agentDefinitionId: "agent-a" }, [grant])).not.toBe(first);
     passes.revoke("run-1");
     passes.revoke("run-1");
@@ -124,12 +125,13 @@ describe("run passes and run access", () => {
     expect(await access.environmentForRun({ runId: "run-b", agentDefinitionId: "agent-b" }, {})).toEqual({});
     const env = await access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {});
     const pass = /\/r\/(rp_[^/]+)\//.exec(env.AUTOBYTEUS_GITHUB_API_URL ?? "")?.[1];
-    expect(pass && passes.lookup(pass)?.grants.get("github")).toEqual(grant);
+    const holderOf = (value: string) => { const holder = passes.lookup(value); return holder?.kind === "run" ? holder : null; };
+    expect(pass && holderOf(pass)?.grants.get("github")).toEqual(grant);
 
     // The same run prepared again after the skill was removed: its pass stays but grants nothing.
     grantsForAgent.mockResolvedValueOnce([]);
     expect(await access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {})).toEqual({});
-    expect(passes.lookup(pass!)?.grants.size).toBe(0);
+    expect(holderOf(pass!)?.grants.size).toBe(0);
     new RegistryRunPassRevocation(passes).revokeForRun("run-a");
     expect(passes.lookup(pass!)).toBeNull();
   });

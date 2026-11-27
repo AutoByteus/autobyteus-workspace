@@ -376,14 +376,40 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   model provider through a provider relay, adding the key. Not the General MCP
   Gateway or the Agent Tools MCP Server.
 - **Run pass:** the unguessable value in a run's proxy address for integrations
-  (`/r/<pass>/…`) and in the API-key header for a provider relay. One per run,
-  live while the run is active, revoked when the run is released or its
-  activation fails (`RunPassRevocation`). It carries the run's integration grants
-  and its provider relay grant. It is not the token or key, and not a session.
+  (`/r/<pass>/…`) and in the runtime's own credential header for a provider relay
+  (`x-api-key`, `Authorization: Bearer` or `x-goog-api-key`). One per run, live
+  while the run is active, revoked when the run is released or its activation
+  fails (`RunPassRevocation`). It carries the run's integration grants and its
+  provider relay grants, each with its relay credential kind. It is not the token
+  or key, and not a session.
+- **Node pass:** on a relayed node, the one pass its shared processes use (Codex
+  app-servers, model discovery and status reads): it holds provider relay grants
+  only, never an integration, and lives while the node runs.
 - **Provider relay:** the credential proxy's app-owned forwarding of one
-  runtime's model-provider calls, granted to the run by its runtime (DeepSeek
-  Harness → DeepSeek's Messages API, relay `deepseek`, path `/relay/deepseek/…`).
-  Not Model Routing or the Model Router, and not an integration.
+  provider's model calls (`/relay/<relayId>/…`), one relay per provider:
+  `anthropic`, `openai`, `xai`, `deepseek`, `gemini`, `kimi`, `glm`, `qwen`,
+  `mistral`, `minimax`. On an unrelayed node only DeepSeek Harness uses one
+  (relay `deepseek`) and the node's own vault key is attached; on a relayed node
+  every supported runtime's calls go through one to the relay node. Not Model
+  Routing or the Model Router, and not an integration.
+- **Relayed node:** a node with `AUTOBYTEUS_PROVIDER_RELAY_PEER` set (a sandbox,
+  or a node its owner set up): it holds no provider credential and sends every
+  supported runtime's model calls through its relay node. Antigravity cannot run
+  there.
+- **Relay node:** the paired peer a relayed node's calls go to; it attaches its
+  own credential and keeps the provider relay activity log.
+- **Relay credential kind:** `apiKey` or `loginToken`: what the relay node
+  attaches to a relayed call, declared by the relayed node per runtime at its
+  start. Always written with "relay"; not the credential of node access.
+- **Login token:** a subscription credential from a provider's own sign-in: a
+  Claude `setup-token` token in the relay node's vault
+  (`provider.anthropic.login-token`), or the relay node's own Grok login, read and
+  never renewed by AutoByteus (Codex has none through a relay, DEC-115). Used for relayed calls only when the relay
+  node's `AUTOBYTEUS_PROVIDER_RELAY_LOGIN_TOKENS` is `true`.
+- **Provider relay activity:** one line of
+  `<app-data-dir>/provider-relays/activity.jsonl` on a relay node per relayed
+  call or refusal: time, peer node ID, relay, relay credential kind, method, path,
+  status or refusal code, duration (no header value, body, key, token or pass).
 - **Provider call observation:** what a provider relay reports about one
   forwarded call to the run's session: started, stream activity, finished with
   the provider's usage. The session turns them into usage, compaction and
@@ -396,6 +422,19 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   follows their skills.
 - **Activity record:** one line of `<app-data-dir>/integrations/activity.jsonl`
   per proxied call or refusal (no token, pass, query, headers or bodies).
+
+## Sandboxes
+
+- **Sandbox (node):** a disposable AutoByteus node a host node creates for an
+  agent (`create_sandbox`): one container from the host node's own release image,
+  paired with the host as a normal peer and relayed through it, with fresh
+  workspace and run-memory folders on the host computer, read-only shared folders,
+  the requested agent packages imported, and an expiry. Its peer name and ID are
+  its `sandboxId` (`sbx_…`).
+- **Host node:** the node whose sandbox manager created a sandbox; its relay
+  node.
+- **Sandbox peer:** a peer whose record on the host says `role: "sandbox"`: a
+  normal paired peer, marked only so the host can label and clean it up.
 
 ## Context Files
 

@@ -9,7 +9,7 @@ import { useRemoteCollaborationStore } from '../remoteCollaborationStore'
 import { NodeSettingsError } from '~/utils/nodeSettingsError'
 
 const SRV_B = 'srv_peerBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = { nodeId: SRV_B, name: 'docker', baseUrl: 'http://localhost:29700', addedAt: '2026-10-20T09:00:00.000Z', paired: true }
+const peer = { nodeId: SRV_B, name: 'docker', baseUrl: 'http://localhost:29700', addedAt: '2026-10-20T09:00:00.000Z', paired: true, role: null }
 
 /** one-nodes-tab AR-005: the bound node's peers, the one write path for them; refusals keep the server's details. */
 describe('remoteCollaborationStore', () => {
