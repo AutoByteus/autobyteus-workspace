@@ -64,3 +64,25 @@
 - **Result:** code review round 2 passed. CR-646-01, -02 and -03 are resolved (report `code-review-report.md`, commit 5dba382563). The package went to API/E2E. Nothing is owed by implementation.
 - **Accepted by the reviewer:** task kind "runtime switch" for a router-chosen switch's launch source (R-19).
 - **Reviewer's minor note, not a finding:** when the runtime report can't be read at all, the chooser answers `no_fallback`, and the notice's "No other runtime can run now" is then unverified. It is rare and logged.
+
+## IR-003 — Base refresh: merge of origin/personal (Local Fix requested by delivery)
+
+- **Trigger:** delivery round 1 was blocked by a merge conflict with origin/personal, 125 commits ahead (release-deployment-report.md).
+- **Merge commit:** `3a541e3d45`. It merges origin/personal at `8517441116` into the branch at `bd800a81c6`.
+- **Conflict:** one hunk, the imports of `autobyteus-server-ts/src/compositions/build-studio-server.ts`.
+  - Resolved by keeping both: this ticket's `composeRunEvents` and autobyteus-516's extensions imports (`composeExtensions`, `ExtensionManager`, `readExtensionCatalogSource`, `thisPlatform`, `isDesktopEmbeddedNode`).
+  - The file is at 495 non-empty lines.
+- **Start and close order checked:**
+  - Run events are composed before the run supervisor (the detector joins the notice fan-out), and switching starts after Model Routing.
+  - Extensions are composed after the update notifications, from `<appData>/extensions`, which is independent of `run-events/` and `model-routing/`.
+  - On close, extensions stop first and the run events release after Model Routing. Neither depends on the other.
+- **Auto-merged files checked:**
+  - `src/services/server-settings-service.ts`: the usage-limit setting registration stays beside the base's new settings.
+  - `autobyteus-web/generated/graphql.ts`: `codegen:check` says it is current.
+  - `autobyteus-web/docs/settings.md` and `autobyteus-server-ts/docs/modules/README.md`: both sides' rows are kept.
+  - `tests/unit/remote-collaboration/{running-agents-messaging,standalone-remote-delegation,team-remote-delegation}.test.ts`: this ticket's fakes are kept.
+- **Validation on the merge:**
+  - `evidence/IMP-16`: server and web typecheck PASS (server tests at baseline 972), `codegen:check` current, server unit suite 1113 files pass.
+  - `evidence/IMP-17`: built-server E2E UL-01 … UL-12, 12/12.
+  - `evidence/IMP-18`: two-server E2E ULP-01 and ULP-02, 2/2.
+- **Production code:** no change beyond the merge resolution.

@@ -1,0 +1,17 @@
+# command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-web codegen:check
+# commit: 3a541e3d45 (merge of origin/personal 8517441116)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T12:10:51Z
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+[typecheck] PASS
+autobyteus-web/generated/graphql.ts is current.
+
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 3a541e3d45 (merge of origin/personal 8517441116)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T12:13:10Z
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  1113 passed | 5 skipped (1118)
+      Tests  9240 passed | 9 skipped (9249)
+   Duration  715.66s (transform 16.88s, setup 22.59s, import 280.68s, tests 320.62s, environment 611ms)
