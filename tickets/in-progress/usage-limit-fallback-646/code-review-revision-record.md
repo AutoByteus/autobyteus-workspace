@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | [code-review-report.md](code-review-report.md) | Implementation Review, IR-001 from `/implementation_engineer` | N/A | Fail (9.2/10; three categories below 9.2) | CR-646-01, CR-646-02, CR-646-03 |
 | CRR-002 | [code-review-report.md](code-review-report.md) | Implementation Review round 2, IR-002 (SR-011) from `/implementation_engineer` | Fail | Pass (9.4/10) | CR-646-01, CR-646-02, CR-646-03 resolved |
+| CRR-003 | [api-e2e-test-review-report.md](api-e2e-test-review-report.md) | Post-API/E2E test-code review, API-REV-001 from `/api_e2e_engineer` | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -74,3 +75,38 @@ None
   - the not-quiet retry and the delegation's node fallback are unit-tested only;
   - router-chosen switches record `taskKind` "runtime switch" (noted);
   - two files at 498/499 lines.
+
+### CRR-003 — Post-API/E2E test-code review (API-REV-001)
+
+- Canonical review report updated: [api-e2e-test-review-report.md](api-e2e-test-review-report.md)
+- Review entry point and round: post-API/E2E durable test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`, [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md); UL-10, UL-11, UL-12, ULP-02; tests `b5e56fcc50`, evidence `1a7dd13a23`
+- Relevant solution revision IDs: SR-011
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002)
+- Current authoritative result: Pass
+- What changed in the review result and why: the four changed test files cover the items CRR-002 left open:
+  - the not-quiet retry, through its real trigger: a person's next message running while the switch is pending;
+  - the delegation's node fallback, with an inherited launch that can't run (UL-11) and with no inherited launch (ULP-02);
+  - a Team member switched by the node fallback (UL-12).
+
+  Assertions are requirement-level, and the two fixture options are recorded. No `src/` change.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: none. Non-blocking notes:
+  - UL-12 doesn't assert the member's tree `launchSource` (its evidence shows `node_fallback`);
+  - UL-11/UL-12 and ULP-02 depend on earlier cases' state, which the files state.
+- Material score or classification changes: N/A
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty:
+  - live limits Not Tested;
+  - R-6 and DEC-008 with the founder;
+  - FU-646-04, FU-646-05.
