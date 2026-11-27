@@ -314,7 +314,7 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     expect(await inject({ method: "GET", url: "/rest/node-access/owner-credentials", credential: phone.credential })).toMatchObject(notPermitted);
     expect(await inject({ method: "GET", url: "/rest/mcp-gateway/token", credential: phone.credential })).toMatchObject(notPermitted);
     // autobyteus-661: pairing is an owner action (a grant, Pair, Accept); a phone is refused.
-    const grant = await graphql("mutation { createPairingGrant(relation: \"own\") { grant } }", {}, { credential: phone.credential });
+    const grant = await graphql("mutation { createPairingGrant(relation: \"own\", forNodeId: \"srv_nas_phone_target_00000000000000000\") { grant } }", {}, { credential: phone.credential });
     expect(grant.body.errors?.[0]?.extensions?.code).toBe("NODE_ROUTE_NOT_PERMITTED");
     const pair = await graphql("mutation { pairWithNode(address: \"http://198.51.100.8:8000\") { state } }", {}, { credential: phone.credential });
     expect(pair.body.errors?.[0]?.extensions?.code).toBe("NODE_ROUTE_NOT_PERMITTED");
