@@ -13,7 +13,7 @@ import { ROOT, cleanupDirectories, harness } from "./helpers/team-root-collabora
 
 afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
 
-const CAUSE = { kind: "usage_limit" as const, resetAt: "2026-11-27T09:00:00.000Z", chosenBy: "history" as const, reason: null };
+const CAUSE = { kind: "usage_limit" as const, resetAt: "2026-11-27T09:00:00.000Z", chosenBy: "agent_history" as const, reason: null };
 const request = (): AgentRuntimeSwitchRequest => ({
   launch: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null },
   cause: CAUSE,
@@ -45,7 +45,7 @@ describe("RootTeamRun.switchAgentRuntime", () => {
     expect(stored!.rootTeam.members.find((node) => node.agentRunId === "run-coordinator")!.pendingRuntimeSwitch).toEqual(member.pendingRuntimeSwitch);
     expect(coordinator.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", pendingRuntimeSwitch: member.pendingRuntimeSwitch }));
-    expect(coordinator.handle.postMessage.mock.calls.at(-1)![0]).toMatchObject({ content: "Continue the task where you left off." });
+    expect((coordinator.handle.postMessage.mock.calls.at(-1) as unknown[])[0]).toMatchObject({ content: "Continue the task where you left off." });
     // The rest of the Team keeps running.
     expect(worker.finish).not.toHaveBeenCalled();
     expect(f.root.getExecutionTreeSnapshot().rootTeam.members.find((node) => node.agentRunId === "run-worker")!.pendingRuntimeSwitch).toBeUndefined();

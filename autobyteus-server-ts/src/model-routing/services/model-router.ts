@@ -10,17 +10,19 @@ import type { AgentRunInputLifecycle } from "../../agent-execution/input/agent-r
 import type { NodeRuntimesReading } from "../../available-agent-runtimes/available-agent-runtimes-report.js";
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { formatBlockTime, reportedModel } from "../../launch-preferences/launch-usability-check.js";
+import type { RuntimeSwitchRequest, RuntimeSwitchRequestOutcome } from "../domain/runtime-switch-types.js";
 import type {
   DelegationRouting,
   ModelRouterPort,
   ModelRoutingOutcome,
   RoutingRequest,
 } from "../domain/model-routing-types.js";
-import { readModelRouterLaunch, readModelRoutingEnabled, type ModelRouterLaunch } from "../model-routing-settings.js";
+import { readModelRouterLaunch, readModelRoutingEnabled, readUsageLimitSwitchEnabled, type ModelRouterLaunch } from "../model-routing-settings.js";
 import type { ModelRouterAgent } from "./model-router-agent.js";
 import type { ModelRoutingSessions } from "./model-routing-sessions.js";
 import { RoutingRequestQueue } from "./routing-request-queue.js";
 import { buildRoutingRequestText } from "./routing-request-text.js";
+import { buildSwitchRequestText } from "./switch-request-text.js";
 import type { RoutingStatistics } from "./routing-statistics.js";
 
 /** The routing budget: the report read and a valid decision, waiting for the agent included (QR-001, SR-016). */
@@ -32,6 +34,8 @@ export type ModelRoutingReasonCode =
 
 export type ModelRoutingStatus = Readonly<{
   enabled: boolean;
+  /** "Switch runtime when a usage limit is reached" (autobyteus-646 C-6); independent of `enabled`. */
+  usageLimitSwitchEnabled: boolean;
   routerLaunch: ModelRouterLaunch | null;
   active: boolean;
   /** Null when active. */
@@ -108,13 +112,14 @@ export class ModelRouter implements ModelRouterPort {
     const enabled = readModelRoutingEnabled();
     const routerLaunch = readModelRouterLaunch();
     const agentRunId = await this.dependencies.agent.storedRunId();
+    const usageLimitSwitchEnabled = readUsageLimitSwitchEnabled();
     if (!enabled) {
-      return Object.freeze({ enabled, routerLaunch, active: false, reasonCode: "OFF", reasonParams: {}, reasonText: "Model Routing is off", agentRunId });
+      return Object.freeze({ enabled, usageLimitSwitchEnabled, routerLaunch, active: false, reasonCode: "OFF", reasonParams: {}, reasonText: "Model Routing is off", agentRunId });
     }
     const facts = routerLaunch ? await this.readFacts(this.now() + ROUTING_BUDGET_MS) : null;
     const inactive = inactiveReason(routerLaunch, facts);
     return Object.freeze({
-      enabled, routerLaunch, active: !inactive,
+      enabled, usageLimitSwitchEnabled, routerLaunch, active: !inactive,
       reasonCode: inactive?.code ?? null, reasonParams: inactive?.params ?? {}, reasonText: inactive?.text ?? null, agentRunId,
     });
   }
@@ -131,6 +136,24 @@ export class ModelRouter implements ModelRouterPort {
       route: (request: RoutingRequest): Promise<ModelRoutingOutcome> => inactive || !facts || !launch
         ? Promise.resolve({ kind: "not_active" as const, reason: inactive?.text ?? "the router is not active" })
         : this.route(request, launch, facts, deadlineAt),
+    });
+  }
+
+  /**
+   * A switch request (autobyteus-646 C-7): when Model Routing is on and the router active, the router chooses where an
+   * agent continues, through the same one-at-a-time queue and 40 s budget as a routing request. It answers with
+   * `submit_runtime_switch`, checked against `request.usable`.
+   */
+  async requestSwitch(request: RuntimeSwitchRequest): Promise<RuntimeSwitchRequestOutcome> {
+    if (!readModelRoutingEnabled()) return { kind: "failed", reason: "Model Routing is off" };
+    const deadlineAt = this.now() + ROUTING_BUDGET_MS;
+    const launch = readModelRouterLaunch();
+    const inactive = inactiveReason(launch, await this.readFacts(deadlineAt));
+    if (inactive || !launch) return { kind: "failed", reason: `the Model Router is not active (${inactive?.text ?? "the router has no runtime/model"})` };
+    const session = this.dependencies.sessions.openSwitchSession(request);
+    return this.carry(launch, deadlineAt, session, async () => {
+      const knowledge = await this.dependencies.agent.readKnowledge().catch(() => null);
+      return buildSwitchRequestText({ requestId: session.requestId, request, knowledge });
     });
   }
 
@@ -157,13 +180,27 @@ export class ModelRouter implements ModelRouterPort {
    * out ends it.
    */
   private async route(request: RoutingRequest, launch: ModelRouterLaunch, facts: NodeRuntimesReading, deadlineAt: number): Promise<ModelRoutingOutcome> {
+    const session = this.dependencies.sessions.openSession(request, facts);
+    const outcome = await this.carry(launch, deadlineAt, session, async () => {
+      const [knowledge, taskKinds] = await Promise.all([
+        this.dependencies.agent.readKnowledge().catch(() => null),
+        this.dependencies.statistics.taskKindsInUse().catch(() => []),
+      ]);
+      return buildRoutingRequestText({ requestId: session.requestId, request, knowledge, taskKinds });
+    });
+    return outcome.kind === "chosen" ? { kind: "chosen", choices: outcome.choices } : { kind: "failed", reason: outcome.reason };
+  }
+
+  /** Carries one open session's request to the router agent: queued, sent when the agent is free, ended by the budget. */
+  private async carry<O>(launch: ModelRouterLaunch, deadlineAt: number,
+    session: Readonly<{ requestId: string; outcome: Promise<O>; fail(reason: string): void }>, buildText: () => Promise<string>): Promise<O> {
     const startFailure = (error: unknown) => `the Model Router agent could not start (${error instanceof Error ? error.message : String(error)})`;
     try {
       await this.dependencies.agent.ensureRun(launch);
     } catch (error) {
-      return { kind: "failed", reason: startFailure(error) };
+      session.fail(startFailure(error));
+      return session.outcome;
     }
-    const session = this.dependencies.sessions.openSession(request, facts);
     // A request still waiting when its budget ends was never sent: the router was busy, whichever timer fires first.
     let sent = false;
     const budget = setTimeout(() => session.fail(sent ? "no valid answer within 40 seconds" : "the Model Router was busy"),
@@ -181,21 +218,16 @@ export class ModelRouter implements ModelRouterPort {
           session.fail(startFailure(error));
           throw error;
         }
-        return this.send(run, session.requestId, request, (reason) => session.fail(reason));
+        return this.send(run, await buildText(), (reason) => session.fail(reason));
       },
     });
     const outcome = await session.outcome;
     clearTimeout(budget);
-    return outcome.kind === "chosen" ? { kind: "chosen", choices: outcome.choices } : { kind: "failed", reason: outcome.reason };
+    return outcome;
   }
 
   /** Posts the request as a system notice; resolves with when the turn carrying it ends. */
-  private async send(run: AgentRun, requestId: string, request: RoutingRequest, fail: (reason: string) => void): Promise<Readonly<{ turnEnded: Promise<void> }>> {
-    const [knowledge, taskKinds] = await Promise.all([
-      this.dependencies.agent.readKnowledge().catch(() => null),
-      this.dependencies.statistics.taskKindsInUse().catch(() => []),
-    ]);
-    const text = buildRoutingRequestText({ requestId, request, knowledge, taskKinds });
+  private async send(run: AgentRun, text: string, fail: (reason: string) => void): Promise<Readonly<{ turnEnded: Promise<void> }>> {
     let ended!: () => void;
     const turnEnded = new Promise<void>((resolve) => { ended = resolve; });
     // The request's one notice id: on its message, its stored trace and its published notice (autobyteus-526).

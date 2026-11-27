@@ -66,7 +66,7 @@ export type RuntimeSwitchCause = Readonly<{
   kind: "usage_limit";
   /** The failed runtime's reset time, or `null` when it did not say. */
   resetAt: string | null;
-  chosenBy: "model_router" | "history";
+  chosenBy: "model_router" | "agent_history";
   /** The Model Router's sentence; `null` when chosen from history. */
   reason: string | null;
 }>;

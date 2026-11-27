@@ -22,6 +22,7 @@ const runSettingsMessages = {
   'runSettings.delegated.delegatedRun': '委派副本',
   'runSettings.delegated.source.agent_default': '智能体默认配置',
   'runSettings.delegated.source.team_default': '团队默认配置',
+  'runSettings.delegated.source.agent_history': '根据其历史选择',
   'runSettings.delegated.source.inherited': '沿用本次运行',
   'runSettings.delegated.source.configured': '按本次运行的配置',
   'runSettings.delegated.source.notRecorded': '未记录来源',

@@ -62,6 +62,7 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.source.router": "Model Router",
   "settings.modelRouting.source.agent_default": "Agent default",
   "settings.modelRouting.source.team_default": "Team default",
+  "settings.modelRouting.source.agent_history": "Agent history",
   "settings.modelRouting.source.inherited": "Inherited from the run",
   "settings.modelRouting.setup.title": "Configuration",
   "settings.modelRouting.setup.switch.label": "Use the Model Router",

@@ -9,7 +9,7 @@ import type {
 
 /** The active file is sealed once it holds at least this many bytes (the message-log pattern). */
 export const ROUTING_DECISION_LOG_ROTATION_LIMIT_BYTES = SEALED_JSONL_ROTATION_LIMIT_BYTES;
-const SOURCES: ReadonlySet<DecisionLaunchSource> = new Set(["agent_default", "team_default", "model_router", "inherited"]);
+const SOURCES: ReadonlySet<DecisionLaunchSource> = new Set(["agent_default", "team_default", "model_router", "agent_history", "inherited"]);
 
 /** Which records a Decisions list shows: all, those the Model Router chose, or the others. */
 export type DecisionSourceFilter = "router" | "not_router";

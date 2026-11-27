@@ -58,7 +58,7 @@ export const buildRuntimeSwitchBetween = (input: {
 };
 
 /** "Nov 27, 09:00 UTC" for an ISO time; the text itself when it is not one. */
-const resetTimeText = (iso: string): string => {
+export const resetTimeText = (iso: string): string => {
   const time = Date.parse(iso);
   if (!Number.isFinite(time)) return iso;
   const date = new Date(time);

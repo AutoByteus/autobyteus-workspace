@@ -527,6 +527,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -624,6 +625,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -750,6 +752,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -847,6 +850,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -1225,6 +1229,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         origin: z.ZodEnum<{
                             agent_default: "agent_default";
                             team_default: "team_default";
+                            agent_history: "agent_history";
                             inherited: "inherited";
                             configured: "configured";
                             settings: "settings";
@@ -1322,6 +1327,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         origin: z.ZodEnum<{
                             agent_default: "agent_default";
                             team_default: "team_default";
+                            agent_history: "agent_history";
                             inherited: "inherited";
                             configured: "configured";
                             settings: "settings";
@@ -1448,6 +1454,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         origin: z.ZodEnum<{
                             agent_default: "agent_default";
                             team_default: "team_default";
+                            agent_history: "agent_history";
                             inherited: "inherited";
                             configured: "configured";
                             settings: "settings";
@@ -1545,6 +1552,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         origin: z.ZodEnum<{
                             agent_default: "agent_default";
                             team_default: "team_default";
+                            agent_history: "agent_history";
                             inherited: "inherited";
                             configured: "configured";
                             settings: "settings";
@@ -1653,6 +1661,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";

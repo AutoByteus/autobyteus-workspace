@@ -62,6 +62,7 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.source.router": "模型路由器",
   "settings.modelRouting.source.agent_default": "智能体默认",
   "settings.modelRouting.source.team_default": "团队默认",
+  "settings.modelRouting.source.agent_history": "智能体历史",
   "settings.modelRouting.source.inherited": "沿用当前运行",
   "settings.modelRouting.setup.title": "配置",
   "settings.modelRouting.setup.switch.label": "使用模型路由器",

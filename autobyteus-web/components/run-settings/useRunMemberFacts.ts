@@ -15,6 +15,7 @@ const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string | null>> =
   agent_default: 'runSettings.delegated.source.agent_default',
   team_default: 'runSettings.delegated.source.team_default',
   model_router: 'runSettings.delegated.source.model_router',
+  agent_history: 'runSettings.delegated.source.agent_history',
   inherited: 'runSettings.delegated.source.inherited',
   configured: 'runSettings.delegated.source.configured',
   settings: null,

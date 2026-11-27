@@ -26,6 +26,7 @@ const ORIGIN_LABEL: Readonly<Record<LaunchConfigurationOrigin, string>> = {
   agent_default: "its agent default",
   team_default: "its team default",
   model_router: "chosen by the Model Router",
+  agent_history: "chosen from its history",
   inherited: "inherited from the run",
   configured: "as configured in this run",
   settings: "as set in its Settings",
