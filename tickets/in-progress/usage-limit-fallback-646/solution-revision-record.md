@@ -9,6 +9,7 @@
 | SR-002 | Mixed | Founder direction 2026-11-25: run events (telemetry) + the Model Router chooses and learns | N/A | Ready for Approval | Ready for Approval (contract review) | DEC-001, DEC-004, REQ-004, REQ-005, REQ-009, REQ-010 | Data contract and policy drafted for the founder |
 | SR-003 | Mixed | Founder's contract review (2026-11-27) and design completion | N/A | Ready for Approval | Approved; design Ready | C-1/C-2 trimmed, C-7, C-8, hub rules; DEC-002/003/005/006 accepted | Large / High; to architecture review |
 | SR-004 | Design | ARCH-REV-001 Fail | AR-001..AR-005, residuals | design Ready (SR-003) | design Ready (SR-004) | REQ-005, REQ-008, REQ-009, AC-003, BEH-002 | Revisions R-1..R-6; to ARCH-REV-002 |
+| SR-005 | Design | Implementation question IQ-001 (two rows vs REQ-006) | IQ-001 | design Ready (SR-004) | design Ready (SR-005) | REQ-006, C-5 | `PendingRuntimeSwitch.cause` (structured); one row |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -55,3 +56,15 @@
 - **Residuals:** exhaustion rebuild window (R-5), router template gate (R-6), debug log of unrelated reads (R-4).
 - Intended behavior changed: No.
 - Next: ARCH-REV-002.
+
+### SR-005 — One notice row (implementation question)
+
+- Trigger: the implementation engineer.
+  - Every switch already shows the hand-over marker row, and the C-5 row would be a second one.
+  - `PendingRuntimeSwitch` is `{switchId, from}`.
+- Decision, within REQ-006:
+  - an optional structured `cause {kind, resetAt, chosenBy, reason}` on the pending switch, rendered in the marker;
+  - the continue input publishes no row of its own.
+  - Not the stored sentence the implementer's option (a) proposed: structured facts, per the project's rule.
+- Contract change: one optional field on an existing stored record. Existing data is directly usable. It is small and follows the founder-reviewed policy (one row), so the founder is informed with the next result rather than asked.
+- Intended behavior: unchanged (REQ-006 holds). No re-review is needed for this local contract addition; the code review checks it.

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-005` (SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -395,3 +395,37 @@ At startup the view reads `usage_limit_reached` lines from the active file and t
 ### R-6 Router template (residual)
 
 The C-7 text is pending the founder (lesson L1). The implementer adds it only after his approval is recorded in this file. Until then the switch request and tool are built and tested with the text as written here.
+
+### R-7 One notice row: the switch's cause on the pending switch (SR-005, implementation question IQ-001)
+
+The implementer found, in the code at b40ee8d202, that every runtime switch already shows a row: the hand-over marker, rendered at activation by `buildRuntimeSwitchBetween` (`runtime-switch.ts:53`) and presented by `RuntimeHandoverNoticeService.takePreface`. A separate C-5 row would make two, against REQ-006.
+
+**Decision (Solution Designer, within REQ-006):** the marker row is the one row. `PendingRuntimeSwitch` gains one optional structured field, written only by the automatic switch:
+
+```json
+"pendingRuntimeSwitch": { "switchId": "…", "from": { … },
+  "cause": { "kind": "usage_limit", "resetAt": "2026-11-27T09:00:00Z", "chosenBy": "model_router",
+             "reason": "Claude handled this agent's browser tasks well." } }
+```
+
+| Field | Meaning | Reader |
+| --- | --- | --- |
+| `cause.kind` | Why the runtime was switched; `usage_limit` is the only kind now | `buildRuntimeSwitchBetween`, which picks the text |
+| `cause.resetAt` | The failed runtime's reset time, or `null` | the marker text "(resets …)" |
+| `cause.chosenBy` | `model_router` or `history` | the marker text |
+| `cause.reason` | The router's sentence; `null` for history | the marker text |
+
+- **Where it is stored:**
+  - standalone runs: `run_metadata.json`, written by `commitRunRuntimeSwitch`;
+  - Team members: the member's node in the Team tree, written by `TeamMemberRuntimeSwitchCommitter` (R-1).
+- **How it reads:**
+  - With `cause`, the marker reads: "Codex usage limit reached (resets Nov 27, 09:00) — switched to Claude (opus). Chosen by the Model Router: Claude handled this agent's browser tasks well."
+  - Without it, today's text: "Agent runtime changed from … to …".
+- **Structured facts, not a sentence:** the project stores facts and renders text at display (Model Routing SR-017: "no rendered sentence is stored"). A future cause kind (FU-646-01: a cost budget) adds its own fields and text.
+- **Existing records:** directly usable. No `cause` means today's behavior, through the generic reader; no migration.
+- **The continue input:** the C-5 continue message to the agent stays a system input. It **publishes no row of its own** (no lifecycle-observer row, unlike the restart notice), so the person sees exactly one row, the marker, and the agent reads both the marker (through the hand-over) and the continue text.
+- **No fallback** (C-5 Error text): unchanged, one row published by the switch listener, since there is no switch and so no marker.
+- **Rejected:**
+  - option (b), two rows, which goes against REQ-006;
+  - option (c), suppressing the marker, which needs the same field plus a branch;
+  - storing the rendered sentence, which goes against the project's stored-facts rule.
