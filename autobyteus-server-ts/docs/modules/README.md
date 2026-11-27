@@ -49,6 +49,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Sandboxes (disposable sandbox nodes an agent creates, uses and removes; relayed through this node) | [sandboxes.md](./sandboxes.md) |
+| Private Network (the caller socket, visibility, Found lists, the network relay, local DNS-SD discovery) | [private_network.md](./private_network.md) |
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |

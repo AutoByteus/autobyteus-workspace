@@ -55,6 +55,19 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
 - **Pair again:** the state of a pair this node holds no node key for (made
   before node keys, `paired: false`, or a peer whose machine changed): its
   requests are refused until the two nodes pair again.
+- **Private Network:** the private network a node joins through the Private
+  Network extension and its **AutoByteus Network program** (Tailscale's
+  `tsnet`; autobyteus-661). Being on it, or in its machine list, grants nothing:
+  nodes on it still pair. Not the computer's own Tailscale app.
+- **Visible on my private network / Visible on my local network:** a node's two
+  owner switches, off by default (`PRIVATE_NETWORK_VISIBLE`,
+  `LOCAL_NETWORK_VISIBLE`). While one is on, other nodes on that network find
+  this node under **Found on your private network / local network**; the local
+  one announces the node by DNS-SD (`_autobyteus._tcp`).
+- **Network relay:** the AutoByteus Network program's local HTTP CONNECT relay
+  (127.0.0.1, a credential new at every start), through which a node reaches the
+  private addresses of its network (`PeerConnector`, the desktop's proxy). Not a
+  **provider relay**.
 - **Delegation state** (of a remote run): open while an open Task entry on the
   delegating node names the run, closed otherwise. Only the delegating node
   decides it; it sends it to the run's node (`POST

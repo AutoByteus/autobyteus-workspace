@@ -40,6 +40,7 @@ Part 6 and the stored state are AutoByteus-internal and change with the app.
 | `offeredOn` | `desktop-node` (only the desktop app's own node, used by every window) or `every-node` |
 | `platforms` | `<os>-<cpu>` values it supports (`process.platform`-`process.arch`); elsewhere "Not available on this computer" |
 | `translations` | optional; the card's name and description per app language |
+| `provides` | optional (added for autobyteus-661): a role the node itself uses, today only `"private-network"` (the AutoByteus Network program). At most one extension that is on provides a role on a node. An unknown value reads as no role |
 
 ### 2. The package
 
@@ -69,9 +70,16 @@ export default {
   stop(ctx: Context): Promise<void>,             // turned off, updated, removed, or the node stops
   actions: { [name: string]: (ctx: Context, input: { json: unknown; bytes: Uint8Array | null }) => Promise<unknown> },
 }
-type Context = { dir: string; platform: string; log(line: string): void };
+type Context = { dir: string; platform: string; log(line: string): void; privateNetwork?: PrivateNetworkContext };
 type InstallContext = Context & { progress(p: { message: string; percent: number | null }): void };
+type PrivateNetworkContext = { callerSocketPath: string | null; nodePort: number | null };
 ```
+
+`ctx.privateNetwork` (optional, autobyteus-661) is given only to the extension with `provides: "private-network"`:
+where its program hands each private-network connection to the node (a Unix socket, on Windows a named pipe new at
+every start) and the node's port; `null` until the node listens. The provider's actions are its role: `status`,
+`machines`, `relay` (and `signIn`, `useAuthKey`, `leave` for its page); the node reads their answers strictly (module
+doc `private_network.md`).
 
 `ctx.dir` is the extension's own folder (kept on update, deleted on remove); it deletes downloaded archives after
 unpacking. Only the module's own `actions` keys can be called. It registers no routes and opens no ports. It runs inside
@@ -102,6 +110,7 @@ composed in `src/compositions/extensions-composition.ts`.
 | GraphQL `extensionLog(id)` | the last 200 lines of its log |
 | GraphQL `installExtension`, `updateExtension`, `removeExtension`, `setExtensionEnabled` | lifecycle; Install and Update return at once and the page polls the list |
 | `POST /rest/extensions/:id/actions/:action` | one action: `application/json` → `input.json`, `audio/wav` (≤ 100 MB) → `input.bytes`; `200 { output }` or `{ code, message }` with `EXTENSION_NOT_INSTALLED`, `EXTENSION_OFF`, `EXTENSION_BUSY`, `UNKNOWN_ACTION`, `RECORDING_TOO_LONG`, `ACTION_FAILED` |
+| `setExtensionEnabled(id, true)` for a second provider of a role | `EXTENSION_ROLE_TAKEN` (409 on REST): "<id> already provides this on this node: turn it off first" |
 | `GET /rest/extensions/:id/ui/*` | its page files from `package/ui/`, with the sandbox CSP |
 
 - **Catalog fetches** (each bounded at 10 s, shared while one runs): once after the node listens, when the Extensions
@@ -115,6 +124,9 @@ composed in `src/compositions/extensions-composition.ts`.
   `package/`, write `enabled: true`, then `start`. An install cut short leaves no `package/`. **Update:** the same, with
   the old package kept until the swap; a failed update keeps the old version running ("Update to x failed: …"). **Remove:**
   stop, delete `<id>/`, then its entry. One lifecycle operation per extension at a time.
+- **Roles** (`provides`, autobyteus-661): `manager.enabledProvider(role)` names the extension that is on and provides it
+  (the node resolves its Private Network through it at every call, never by importing the extension). Installing a
+  second provider of a role that another extension provides leaves it Off.
 - **Start and stop:** the extensions that are on start in the background after the node listens; turning one on starts
   it, off stops it (a late `start` result after Off is ignored); all stop with the node (5 s each).
 - **Containment:** an unreadable package, a server part that cannot be loaded, or a `status()` that throws or takes more
