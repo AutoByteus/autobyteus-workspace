@@ -39,6 +39,10 @@
 //          frame before its idle status (`fixtures/team-stream-gap.mjs`). With no reselect the page replaces its Team stream
 //          within one attempt (≤ 3 s), shows the member's status as the node has it (Idle) and the other window's message,
 //          shows no notice, and a message sent right after starts its turn on the new stream.
+//   SDD-15 (team)   autobyteus-541 AC-002: the same gap with the node unreachable for the recovery's reads (its checkpoint
+//          queries refused): a message sent meanwhile waits 10 s and comes back with text (a); the fifth failed attempt
+//          shows "Live updates could not recover automatically…"; once the reads pass again, the next attempt recovers
+//          and the notice goes.
 //   SDD-10 (agent)  REQ-003, UC-001  A new run's first message with the path down: text (a), the text back; with the path
 //          back, sending again starts the turn on the same new run.
 //   SDD-11 (agent)  AC-003 (b), design residual  The message reached the node for a run a Stop took offline and the path
@@ -62,7 +66,7 @@ import { attachToBrowserContext, attachToProbeProcess, ownerHeaders, ownerSocket
 import { probeOutputDir, prepareOutputDir } from './fixtures/probe-output-dir.mjs';
 import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
 import { createStopWire } from './fixtures/stop-generation-wire.mjs';
-import { teamStreamGap } from './fixtures/team-stream-gap.mjs';
+import { makeTeamStreamGap, refuseTeamRecoveryReads, teamStreamGap, waitForTeamStreamReplacement } from './fixtures/team-stream-gap.mjs';
 
 attachToProbeProcess();
 const require = createRequire(import.meta.url);
@@ -328,7 +332,7 @@ try {
 
   for (const kind of ['agent', 'team']) {
     const target = targets[kind];
-    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-13', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09', 'SDD-14'];
+    const ids = kind === 'agent' ? ['SDD-01', 'SDD-03', 'SDD-04', 'SDD-05', 'SDD-06', 'SDD-13', 'SDD-07', 'SDD-10', 'SDD-11'] : ['SDD-02', 'SDD-08', 'SDD-12', 'SDD-09', 'SDD-14', 'SDD-15'];
     if (selected && !ids.some((id) => selected.has(id))) continue;
     await open(target);
     // The first message starts the run's runtime.
@@ -631,6 +635,51 @@ try {
         assert(after.status === 'Idle' && after.count >= 1 && !after.notice && recoveryNotice === 0, 'the node\'s status (Idle) and the other window\'s message; no notice', details);
         assert(sends.length === 1 && sends[0].link === gap.replacementLink && sentAfter.count >= 1 && !sentAfter.notice, 'a message right after went on the new stream and was answered', details);
         return details;
+      });
+
+      await runCase('SDD-15', async () => {
+        await dismiss();
+        await textarea().fill('');
+        const marker = `exhausted-${tag}`;
+        const EXHAUSTED = 'Live updates could not recover automatically. Select this Team member again to reload the complete conversation.';
+        const exhausted = () => page.locator('[role="alert"]', { hasText: EXHAUSTED }).count();
+        const reads = await refuseTeamRecoveryReads(page);
+        let released = false;
+        try {
+          const gap = await makeTeamStreamGap({ wire, socketBase: stack.backendUrl.replace(/^http/, 'ws'), teamRunId: target.teamRunId,
+            agentRunId: target.agentRunId, content: `PLAIN ${marker}`, until, consoleLines, withhold: 'first' });
+          // A message while the stream recovers (the member still shows Idle, its last status): it waits for the recovered stream (10 s), then comes back with text (a).
+          await sleep(1_000);
+          await textarea().fill(`PLAIN during-${marker}`);
+          await sleep(300);
+          const sendable = { label: await label(), enabled: await primary().isEnabled().catch(() => null) };
+          await primary().click();
+          const sentAt = Date.now();
+          await waitNotice(30_000);
+          const noticeAfterMs = Date.now() - sentAt;
+          const during = await view(`during-${marker}`);
+          await until('the recovery notice', async () => (await exhausted()) > 0, 45_000).catch(() => undefined);
+          const noticeAfterGapMs = Date.now() - gap.withheld.at;
+          const failuresAtNotice = consoleLines.slice(gap.consoleFrom).filter((line) => line.includes('Team stream recovery of')).length;
+          const shownStatus = (await view()).status;
+          await shot('SDD-15-team-recovery-exhausted');
+          // The node answers the reads again: the next attempt recovers, and the notice goes.
+          await reads.release();
+          released = true;
+          const recovery = await waitForTeamStreamReplacement(gap, { wire, until, consoleLines, timeoutMs: 60_000 });
+          await until('the notice gone', async () => (await exhausted()) === 0, 10_000).catch(() => undefined);
+          const after = await view(marker);
+          const details = { refusedReads: reads.refused(), failuresAtNotice, noticeAfterGapMs, shownStatus, sendable, noticeAfterMs,
+            during: { status: during.status, notice: during.notice, draft: during.draft, count: during.count },
+            recovery, after: { status: after.status, notice: after.notice, count: after.count }, noticeAfterRecovery: await exhausted() };
+          assert(sendable.label === SEND && sendable.enabled === true && during.notice?.certainty === 'not_sent' && during.notice.text === TEXT_A
+            && noticeAfterMs >= 9_000 && during.draft === `PLAIN during-${marker}` && during.count === 0, 'a message while recovering: text (a) after the 10 s wait, the text back', details);
+          assert(failuresAtNotice === 5 && noticeAfterGapMs >= 13_000, 'the notice after the fifth failed attempt (not before)', details);
+          assert(details.noticeAfterRecovery === 0 && after.status === 'Idle' && after.count >= 1, 'once the reads pass, the recovery succeeds and the notice goes', details);
+          return details;
+        } finally {
+          if (!released) await reads.release();
+        }
       });
     }
   }

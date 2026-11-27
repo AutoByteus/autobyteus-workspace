@@ -23,6 +23,8 @@
 //   `AGENT_STATUS` idle toward the page is withheld, never delivered: the idle status arrives past a gap, as after a lost
 //   event, when the Team has finished its work (autobyteus-541 AC-001). While armed, each numbered Team frame waits for the
 //   next one (their order kept); the option disarms itself once it withheld one.
+// - `withholdNextTeamEvent`: the next numbered frame toward the page on a Team stream is withheld, never delivered; the
+//   following one arrives past a gap, and the page keeps the statuses it had (autobyteus-541 AC-002).
 // Each link keeps the order of each direction's frames: one queue per direction, each frame due at its arrival plus the
 // delay or after the frame before it, whichever is later, drained in order by one timer (autobyteus-541 D-A8).
 // Every Stop- and send-related frame is logged with its time (`log`), so a case counts the Stops and messages the page
@@ -84,6 +86,7 @@ export const createStopWire = () => {
     loseNextSend: false,
     dropAfterNextSend: false,
     withholdBeforeTeamIdle: false,
+    withholdNextTeamEvent: false,
     /**
      * `{ at, link, dir, url, ...summary, note? }`: `up` page → node (when the page sent it), `down` node → page (when the page
      * received it), `node` a command answer as the node sent it (when it reached the wire, before any delay: the node's
@@ -191,6 +194,11 @@ export const createStopWire = () => {
         record(link, 'down', sendFrame);
         try { sendToPage(sendText); } catch { /* closed */ }
       }, wire.extraToPageMs);
+      if (wire.withholdNextTeamEvent && path.startsWith('/ws/agent-team/') && Number.isInteger(frame?.payload?.change_sequence)) {
+        wire.withholdNextTeamEvent = false;
+        wire.log.push({ at: Date.now(), link: link.id, dir: 'down', url: path, ...summarize(frame), note: 'withheld by the wire' });
+        return;
+      }
       if ((wire.withholdBeforeTeamIdle || link.heldTeamEvent) && path.startsWith('/ws/agent-team/') && Number.isInteger(frame?.payload?.change_sequence)) {
         const held = link.heldTeamEvent;
         link.heldTeamEvent = null;
@@ -222,7 +230,7 @@ export const createStopWire = () => {
   /** Back to a plain path (between cases). */
   wire.reset = () => {
     Object.assign(wire, { latencyMs: 0, extraToPageMs: 0, down: false, loseNextStop: false, dropAfterNextStop: false, refuseStops: false,
-      loseNextSend: false, dropAfterNextSend: false, withholdBeforeTeamIdle: false });
+      loseNextSend: false, dropAfterNextSend: false, withholdBeforeTeamIdle: false, withholdNextTeamEvent: false });
   };
   /** The log since `from` (an index into `log`). */
   wire.since = (from) => wire.log.slice(from);
