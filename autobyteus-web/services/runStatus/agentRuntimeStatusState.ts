@@ -42,16 +42,6 @@ export const applyLiveAgentStatusEvent = (
   return changed;
 };
 
-export const applyActiveRuntimePlaceholder = (
-  context: AgentContext,
-  options: { preserveExistingLive?: boolean; streamConnected?: boolean } = {},
-): void => {
-  if (options.preserveExistingLive === true && options.streamConnected === true) {
-    return;
-  }
-  context.state.currentStatus = AgentStatus.Initializing;
-};
-
 export const applyMemberOrHistoryStatusSnapshot = (
   target: RuntimeStatusTarget,
   status: string | AgentStatus | null | undefined,

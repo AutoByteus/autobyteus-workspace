@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
-  applyActiveRuntimePlaceholder,
   applyLiveAgentStatusEvent,
   applyMemberOrHistoryStatusSnapshot,
 } from '../agentRuntimeStatusState';
@@ -58,14 +57,6 @@ describe('agentRuntimeStatusState', () => {
     applyLiveAgentStatusEvent(context, { status: 'initializing', background_tasks_running: 0 });
     expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
     expect(context.submissionPending).toBe(false);
-  });
-
-  it('uses initializing rather than a false running placeholder during active bind', () => {
-    const context = buildContext(AgentStatus.Offline);
-
-    applyActiveRuntimePlaceholder(context);
-
-    expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
   });
 
   it('does not let a history snapshot replace an already-live status when preservation is requested', () => {
