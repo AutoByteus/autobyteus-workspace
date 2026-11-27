@@ -1,0 +1,11 @@
+# API-05 fresh clone (the contract package's dist changed): clone, pnpm install --frozen-lockfile, both typechecks; clone removed
+# 2026-11-27T12:02:27Z; code 1bc523124e; tests b5e56fcc50
+commit b5e56fcc50
+install exit 0
+[typecheck] production errors: 0; test-file errors: 972 in 299 files (baseline 972 in 299 files)
+[typecheck] PASS
+server typecheck exit 0
+[typecheck] production errors: 0; test-file errors: 86 in 36 files (baseline 86 in 36 files)
+[typecheck] PASS
+web typecheck exit 0
+removed clone

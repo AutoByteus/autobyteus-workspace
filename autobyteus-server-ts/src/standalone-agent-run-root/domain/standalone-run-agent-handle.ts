@@ -5,12 +5,20 @@ import type {
   StandaloneRunAgentActivationInput,
 } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { StandaloneRunAgentTerminationResult } from "../../agent-execution/services/standalone-run-ports.js";
+import type {
+  AutomaticRuntimeSwitchInput,
+  AutomaticRuntimeSwitchResult,
+} from "../../agent-execution/services/standalone-automatic-runtime-switch.js";
 
 /** The standalone activation mechanics (the lifecycle service, the only writer of `run_metadata.json`). */
 export type StandaloneRunAgentActivationBackend = Readonly<{
   getActiveRun(agentRunId: string): AgentRun | null;
   activateRunAgent(agentRunId: string, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult>;
   terminateRunAgent(agentRunId: string): Promise<StandaloneRunAgentTerminationResult>;
+  /** autobyteus-646 R-11: the automatic switch's checks, without writing; null when it would switch. */
+  checkAutomaticRuntimeSwitch(input: AutomaticRuntimeSwitchInput): Promise<Exclude<AutomaticRuntimeSwitchResult, { kind: "switched" }> | null>;
+  /** autobyteus-646 R-11: the automatic switch of the stopped agent, committed with its pending switch and cause. */
+  switchRuntimeAutomatically(input: AutomaticRuntimeSwitchInput): Promise<AutomaticRuntimeSwitchResult>;
 }>;
 
 export type StandaloneRunAgentReadiness = "offline" | "activating" | "live";
@@ -47,6 +55,17 @@ export class StandaloneRunAgentHandle {
     this.activation = attempt;
     void attempt.finally(() => { if (this.activation === attempt) this.activation = null; }).catch(() => undefined);
     return attempt;
+  }
+
+  /** autobyteus-646 R-11: whether the automatic switch applies (null) or why not, without writing. */
+  checkAutomaticRuntimeSwitch(input: Omit<AutomaticRuntimeSwitchInput, "agentRunId">): Promise<Exclude<AutomaticRuntimeSwitchResult, { kind: "switched" }> | null> {
+    return this.options.backend.checkAutomaticRuntimeSwitch({ agentRunId: this.agentRunId, ...input });
+  }
+
+  /** autobyteus-646 R-11: the stopped agent's automatic switch, after any in-flight activation settles. */
+  async switchRuntimeAutomatically(input: Omit<AutomaticRuntimeSwitchInput, "agentRunId">): Promise<AutomaticRuntimeSwitchResult> {
+    await this.activation?.catch(() => undefined);
+    return this.options.backend.switchRuntimeAutomatically({ agentRunId: this.agentRunId, ...input });
   }
 
   /** Stops the agent after any in-flight activation settles (so a starting agent is not left running). */

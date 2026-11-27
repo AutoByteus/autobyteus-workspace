@@ -1,0 +1,8 @@
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 230bcc534b + uncommitted SR-011 changes
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-11-27T10:25:54Z
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  1103 passed | 5 skipped (1108)
+      Tests  9178 passed | 9 skipped (9187)
+   Duration  746.54s (transform 22.60s, setup 23.68s, import 312.92s, tests 315.17s, environment 826ms)

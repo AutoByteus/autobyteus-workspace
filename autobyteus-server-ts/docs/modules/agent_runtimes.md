@@ -157,6 +157,15 @@ progress (several agents, the page) share it, so their runtime processes never
 overlap. The answer resolves as soon as it is complete; the read stays the one
 in progress until its client holds are released.
 
+`readRuntime(kind)` (autobyteus-646) reads one external runtime the same way,
+its limits and models with their blocks, or `null` when it is not installed or
+signed out. It gives a usage limit's scope and reset to the usage-limit detector
+([run_events.md](run_events.md)), and it answers the limits read that the
+Antigravity, Grok and Claude backends ask after a terminal turn error, to
+classify it late (`ERROR_CLASSIFIED`). Codex classifies its own errors: a
+usage-limit `ERROR` carries `error_kind: "usage_limit"` (`codexErrorInfo:
+usageLimitExceeded`; `backends/codex/events/codex-error-kind.ts`).
+
 **Available** means installed (`strategy.readVersion(...) !== null`, the
 Agent Runtimes page's rule) and not known to be signed out. A runtime whose
 sign-in could not be read is listed with `signIn: "not checked"`. For

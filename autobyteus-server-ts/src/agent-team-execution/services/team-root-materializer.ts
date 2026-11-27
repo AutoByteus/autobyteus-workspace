@@ -27,6 +27,7 @@ import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 import { TeamRunMembership } from "../domain/team-run-membership.js";
 import type { TeamChangeNoticeSource } from "../membership/team-change-notice-source.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 
 export type TeamRootMaterializationInput = Readonly<{
   config: TeamRunConfig;
@@ -43,6 +44,8 @@ export type TeamRootMaterializationInput = Readonly<{
   remoteChannel: RemoteRunChannelAccess;
   /** autobyteus-587: the node's received files, placed for the Team root's members. */
   receivedFiles: ReceivedFilesPlacement;
+  /** autobyteus-646: a member's automatic runtime switch is validated like a save of that member. */
+  modelSelectionValidator: RunModelSelectionValidator;
   /** Where each member's own folder is (autobyteus-587: files from another node land there). */
   memoryLocator: AgentRunMemoryLocator;
   /** Each run's view stream (SR-062). */
@@ -146,6 +149,7 @@ export const materializeTeamRoot = async (
       delegationIndex: input.delegationIndex,
       remoteChannel: input.remoteChannel,
       receivedFiles: input.receivedFiles,
+      modelSelectionValidator: input.modelSelectionValidator,
       memoryLocator: input.memoryLocator,
       closedTasks,
       membership,

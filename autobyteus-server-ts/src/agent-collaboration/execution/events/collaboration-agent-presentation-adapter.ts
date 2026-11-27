@@ -26,6 +26,8 @@ import { parseBackgroundTaskUpdatedPayload } from "../../../agent-execution/doma
 export type AgentRunPresentationAdaptationResult =
   | Readonly<{ kind: "publish"; event: AgentPresentationEvent }>
   | Readonly<{ kind: "filtered_collaboration_duplicate" }>
+  /** An event that is never presented (autobyteus-646 R-16: a late error classification, read only by the detector). */
+  | Readonly<{ kind: "not_presented" }>
   | Readonly<{ kind: "rejected"; code: "AGENT_PRESENTATION_ADMISSION_FAILED"; message: string }>;
 
 export type ResolvePresentationIdentityByAgentRunId = (agentRunId: string) => CollaborationMemberExecutionIdentity | null;
@@ -380,6 +382,9 @@ export class AgentRunPresentationAdapter {
         return correlated({ eventType: "ARTIFACT_PERSISTED", details: { artifactId: required(raw(p, "artifact_id", "id"), "artifact_id"), path: required(p.path, "path"), artifactType: required(raw(p, "artifact_type", "type"), "artifact_type"), status: "available", description: typeof p.description === "string" ? p.description : null, revisionId: required(raw(p, "revision_id", "revisionId"), "revision_id"), createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });
       case AgentRunEventType.FILE_CHANGE:
         return correlated({ eventType: "FILE_CHANGE", details: fileChange(event), statusHint: hint });
+      // autobyteus-646 R-16: read only by the usage-limit detector; never presented.
+      case AgentRunEventType.ERROR_CLASSIFIED:
+        return Object.freeze({ kind: "not_presented" });
       case AgentRunEventType.ERROR:
         return correlated({ eventType: "ERROR", details: {
           code: required(p.code, "code"),

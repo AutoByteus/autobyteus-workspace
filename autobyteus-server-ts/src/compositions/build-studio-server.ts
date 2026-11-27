@@ -94,6 +94,7 @@ import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-pla
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
+import { composeRunEvents } from "./run-events-composition.js";
 import { composeExtensions } from "./extensions-composition.js";
 import type { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { readExtensionCatalogSource } from "../extensions/catalog/extension-catalog-source.js";
@@ -204,6 +205,7 @@ export const buildStudioServer = async (input: {
   let collaboration: Collaboration | null = null;
   let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
+  let releaseRunEvents: (() => void) | null = null;
   let episodicCatalog: EpisodicCatalog | null = null;
   let extensions: ExtensionManager | null = null;
   let processResourcesClosed = false;
@@ -217,6 +219,7 @@ export const buildStudioServer = async (input: {
     releaseRemoteCollaboration?.();
     collaboration?.release();
     releaseModelRouting?.();
+    releaseRunEvents?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
       agentPackageDefinitionFeed,
@@ -294,6 +297,9 @@ export const buildStudioServer = async (input: {
     });
     // autobyteus-448: the pending restart reminders, for the notice slot now and the restart resumer below.
     const restartReminders = new RestartReminderService({ recordPath: restartReminderRecordPath(input.appConfig.getAppDataDir()) });
+    // autobyteus-646: the run event hub, its exhaustion view and the usage-limit detector (a run-lifecycle observer).
+    const runEvents = await composeRunEvents({ appDataDir: input.appConfig.getAppDataDir() });
+    releaseRunEvents = runEvents.close;
     const runtimeHandoverNotices = new RuntimeHandoverNoticeService({
       journals: getWorkJournalService(),
       readPending: readPendingRuntimeHandover,
@@ -316,7 +322,7 @@ export const buildStudioServer = async (input: {
       orgContainers: taskSide.containers,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then the restart reminder, tool list updates, skill notices and background task notices (one notice per input).
-      platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources]),
+      platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, restartReminders, ...platformNotices.sources, runEvents.detector]),
       definitionChanges: hostDefinitionServices.agentDefinitionChanges, teamChangeNotices: platformNotices.teamChangeNotices,
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
       remoteChannel: remote.channel, peerDiscovery: remote.discovery,
@@ -409,6 +415,9 @@ export const buildStudioServer = async (input: {
     });
     // autobyteus-32: the node's Model Routing (it reads the runtime report composed just above).
     releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir(), modelSelectionValidator }).close;
+    // autobyteus-646: the usage-limit switch, once the roots and Model Routing are composed.
+    runEvents.startSwitching({ appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(), rootResolver,
+      agentDefinitions: hostDefinitionServices.agentDefinitionService });
     // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
     const nodeExtensions = extensions = composeExtensions({

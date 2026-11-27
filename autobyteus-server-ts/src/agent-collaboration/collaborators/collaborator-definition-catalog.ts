@@ -9,6 +9,7 @@ import { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
+import { PROCESS_FALLBACK_LAUNCH, PROCESS_RUNTIME_EXHAUSTION } from "../../launch-preferences/launch-fallback-ports.js";
 import { NO_MODEL_ROUTING, type ModelRouterPort } from "../../model-routing/domain/model-routing-types.js";
 
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
@@ -37,8 +38,9 @@ export const createCollaboratorAdmission = (
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
     launches: new CollaboratorLaunchResolver({
-      usability: new LaunchUsabilityCheck({ availability: runtimeAvailability, validator: modelSelectionValidator }),
+      usability: new LaunchUsabilityCheck({ availability: runtimeAvailability, validator: modelSelectionValidator, exhaustion: PROCESS_RUNTIME_EXHAUSTION }),
       router: modelRouter,
+      fallback: PROCESS_FALLBACK_LAUNCH,
     }),
   });
 

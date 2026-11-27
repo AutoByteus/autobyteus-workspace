@@ -3,6 +3,7 @@ import type { NodeRuntimesReading } from "../../available-agent-runtimes/availab
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { blockedDetail, reportedModel } from "../../launch-preferences/launch-usability-check.js";
 import type { LaunchChoice, RoutingRequest } from "../domain/model-routing-types.js";
+import type { RuntimeSwitchRequest, RuntimeSwitchRequestOutcome } from "../domain/runtime-switch-types.js";
 
 /** A task kind is a short label (REQ-011, D7). */
 export const TASK_KIND_MAX_LENGTH = 40;
@@ -34,6 +35,18 @@ export type OpenSession = Readonly<{
 }>;
 
 type Session = { request: RoutingRequest; facts: NodeRuntimesReading; settle(outcome: SessionOutcome): void };
+type SwitchSession = { request: RuntimeSwitchRequest; settle(outcome: RuntimeSwitchRequestOutcome): void };
+
+/** What the router submits for a switch request (C-7), as `submit_runtime_switch` received it. */
+export type SubmittedRuntimeSwitch = Readonly<{ runtime?: unknown; model?: unknown; reason?: unknown }>;
+
+/** An open switch request, as its opener holds it. */
+export type OpenSwitchSession = Readonly<{
+  requestId: string;
+  /** Settles once: with the first valid answer, or the first failure. */
+  outcome: Promise<RuntimeSwitchRequestOutcome>;
+  fail(reason: string): void;
+}>;
 
 export const sessionClosedText = (requestId: string): string =>
   `Routing request ${requestId} is no longer open (answered or timed out); nothing was changed.`;
@@ -48,8 +61,47 @@ const text = (value: unknown): string | null => typeof value === "string" && val
  */
 export class ModelRoutingSessions {
   private readonly open = new Map<string, Session>();
+  private readonly openSwitches = new Map<string, SwitchSession>();
 
-  constructor(private readonly newRequestId: () => string = () => `req_${randomBytes(4).toString("hex")}`) {}
+  constructor(
+    private readonly newRequestId: () => string = () => `req_${randomBytes(4).toString("hex")}`,
+    private readonly newSwitchRequestId: () => string = () => `sw_${randomBytes(4).toString("hex")}`,
+  ) {}
+
+  /** autobyteus-646 C-7: an open switch request; answered by `submitSwitch` or failed by its opener. */
+  openSwitchSession(request: RuntimeSwitchRequest): OpenSwitchSession {
+    const requestId = this.newSwitchRequestId();
+    let settle!: (outcome: RuntimeSwitchRequestOutcome) => void;
+    const outcome = new Promise<RuntimeSwitchRequestOutcome>((resolve) => { settle = resolve; });
+    this.openSwitches.set(requestId, { request, settle: (result) => { if (this.openSwitches.delete(requestId)) settle(result); } });
+    return Object.freeze({ requestId, outcome, fail: (reason: string) => this.openSwitches.get(requestId)?.settle({ kind: "failed", reason }) });
+  }
+
+  /**
+   * `submit_runtime_switch` (C-7): the runtime and model must be in the request's usable list, with a one-sentence reason;
+   * otherwise the reasons are returned so the router corrects them within the time left. A closed or unknown request
+   * changes nothing.
+   */
+  submitSwitch(requestId: string, submitted: SubmittedRuntimeSwitch): SubmitResult {
+    const session = this.openSwitches.get(requestId);
+    if (!session) return { accepted: false, message: `Switch request ${requestId} is no longer open (answered or timed out); nothing was changed.` };
+    const runtime = text(submitted.runtime);
+    const model = text(submitted.model);
+    const reason = text(submitted.reason);
+    const errors: string[] = [];
+    if (!runtime || !model) errors.push("a runtime and a model are required.");
+    else {
+      const usable = session.request.usable.find((entry) => entry.runtimeKind === runtime);
+      if (!usable) errors.push(`${runtime} is not usable now; choose one of: ${session.request.usable.map((entry) => entry.runtimeKind).join(", ")}.`);
+      else if (!usable.models.includes(model)) errors.push(`${model} is not usable on ${runtime} now; choose one of: ${usable.models.join(", ")}.`);
+    }
+    if (!reason) errors.push("a one-sentence reason is required.");
+    if (errors.length) {
+      return { accepted: false, message: `Not accepted; nothing was changed. Correct these and submit again for switch request ${requestId}:\n- ${errors.join("\n- ")}` };
+    }
+    session.settle({ kind: "chosen", launch: { runtimeKind: runtime!, llmModelIdentifier: model! }, reason: reason! });
+    return { accepted: true, message: `Accepted: switch request ${requestId} continues on ${runtime} · ${model}.` };
+  }
 
   openSession(request: RoutingRequest, facts: NodeRuntimesReading): OpenSession {
     const requestId = this.newRequestId();

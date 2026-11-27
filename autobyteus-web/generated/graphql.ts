@@ -2048,6 +2048,7 @@ export type Mutation = {
   setSearchConfig: Scalars['String']['output'];
   setUpdateCheckInterval: UpdateAutomationSettings;
   setUpdateChecksEnabled: UpdateChecksCapability;
+  setUsageLimitSwitchEnabled: Scalars['JSON']['output'];
   startAgentRuntimeSignIn: Scalars['Boolean']['output'];
   startMemoryIndexing: Scalars['Boolean']['output'];
   startMemorySync: MemorySyncRunResultGql;
@@ -2611,6 +2612,11 @@ export type MutationSetUpdateCheckIntervalArgs = {
 
 
 export type MutationSetUpdateChecksEnabledArgs = {
+  enabled: Scalars['Boolean']['input'];
+};
+
+
+export type MutationSetUsageLimitSwitchEnabledArgs = {
   enabled: Scalars['Boolean']['input'];
 };
 
@@ -5341,6 +5347,13 @@ export type SetModelRoutingEnabledMutationVariables = Exact<{
 
 
 export type SetModelRoutingEnabledMutation = { __typename?: 'Mutation', setModelRoutingEnabled: any };
+
+export type SetUsageLimitSwitchEnabledMutationVariables = Exact<{
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetUsageLimitSwitchEnabledMutation = { __typename?: 'Mutation', setUsageLimitSwitchEnabled: any };
 
 export type SetModelRouterLaunchMutationVariables = Exact<{
   runtimeKind: Scalars['String']['input'];
@@ -10199,6 +10212,33 @@ export function useSetModelRoutingEnabledMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<SetModelRoutingEnabledMutation, SetModelRoutingEnabledMutationVariables>(SetModelRoutingEnabledDocument, options);
 }
 export type SetModelRoutingEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetModelRoutingEnabledMutation, SetModelRoutingEnabledMutationVariables>;
+export const SetUsageLimitSwitchEnabledDocument = gql`
+    mutation SetUsageLimitSwitchEnabled($enabled: Boolean!) {
+  setUsageLimitSwitchEnabled(enabled: $enabled)
+}
+    `;
+
+/**
+ * __useSetUsageLimitSwitchEnabledMutation__
+ *
+ * To run a mutation, you first call `useSetUsageLimitSwitchEnabledMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSetUsageLimitSwitchEnabledMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSetUsageLimitSwitchEnabledMutation({
+ *   variables: {
+ *     enabled: // value for 'enabled'
+ *   },
+ * });
+ */
+export function useSetUsageLimitSwitchEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetUsageLimitSwitchEnabledMutation, SetUsageLimitSwitchEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetUsageLimitSwitchEnabledMutation, SetUsageLimitSwitchEnabledMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SetUsageLimitSwitchEnabledMutation, SetUsageLimitSwitchEnabledMutationVariables>(SetUsageLimitSwitchEnabledDocument, options);
+}
+export type SetUsageLimitSwitchEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetUsageLimitSwitchEnabledMutation, SetUsageLimitSwitchEnabledMutationVariables>;
 export const SetModelRouterLaunchDocument = gql`
     mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!, $llmConfig: JSON) {
   setModelRouterLaunch(

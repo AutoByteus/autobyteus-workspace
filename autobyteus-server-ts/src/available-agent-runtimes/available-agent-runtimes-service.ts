@@ -177,6 +177,21 @@ export class AvailableAgentRuntimesService {
     return answer;
   }
 
+  /**
+   * One agent runtime's entry, read fresh with the same steps and caps (autobyteus-646: whether a failed turn's model is
+   * now blocked by a used-up limit); null when the runtime is unknown, not installed or signed out.
+   */
+  async readRuntime(kind: string): Promise<ExternalAgentRuntimeEntry | null> {
+    const strategy = this.dependencies.strategies.find((candidate) => candidate.runtimeKind === kind);
+    if (!strategy) return null;
+    const releases: Promise<void>[] = [];
+    try {
+      return await this.readExternalRuntime(strategy, releases, new Set<AgentRuntimeKind>());
+    } finally {
+      void Promise.allSettled(releases);
+    }
+  }
+
   private async readOnce(releases: Promise<void>[]): Promise<NodeRuntimesReading> {
     const checkedAt = new Date().toISOString();
     const signedOut = new Set<AgentRuntimeKind>();

@@ -214,6 +214,18 @@ try {
     assert(nativeSelects === 0, `no native select on Configuration (${nativeSelects})`);
     assert(evidence.observations.setup.switchChecked === 'true', `switch: ${evidence.observations.setup.switchChecked}`);
     assert(!(await page.locator(tid('model-routing-decisions-inactive-note')).count()), 'no inactive note');
+    // autobyteus-646 C-6: "Switch runtime when a usage limit is reached", on by default, saved by its own mutation.
+    const usageLimit = page.locator(tid('model-routing-usage-limit-switch'));
+    const usageLimitRow = (await textOf(tid('model-routing-usage-limit-switch-row'))).replace(/\s+/g, ' ').trim();
+    const initially = await usageLimit.getAttribute('aria-checked');
+    await usageLimit.click();
+    await waitFor('usage-limit switch off', async () => (await usageLimit.getAttribute('aria-checked')) === 'false', 15000);
+    const savedOff = (await gql(alpha, '{modelRoutingStatus}')).modelRoutingStatus.usageLimitSwitchEnabled;
+    await usageLimit.click();
+    await waitFor('usage-limit switch on', async () => (await usageLimit.getAttribute('aria-checked')) === 'true', 15000);
+    evidence.observations.usageLimitSwitch = { row: usageLimitRow, initially, savedOff };
+    assert(usageLimitRow.startsWith('Switch runtime when a usage limit is reached'), `usage-limit switch row: ${usageLimitRow}`);
+    assert(initially === 'true' && savedOff === false, `usage-limit switch: ${JSON.stringify(evidence.observations.usageLimitSwitch)}`);
     await shot('MRD-01-setup');
   });
 

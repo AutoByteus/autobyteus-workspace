@@ -512,7 +512,13 @@ One visible text also still differs, kept because the run-settings UI/UX spec ma
   at the Agent's next input. The agent runtime can stay the same (a **model hand-over**,
   autobyteus-53): choosing another AutoByteus model whose context window is smaller
   or unknown than the one the run last ran on switches the same way, because there
-  is no saved context to resume into unchecked.
+  is no saved context to resume into unchecked. Since autobyteus-646 a usage limit
+  can also make the switch without the user (an **automatic runtime switch**): when a
+  run's turn fails because its runtime reached a usage limit, the run continues on
+  another usable runtime, chosen by the Model Router, else by the agent's history, else
+  by the node's most-used usable runtime (the switch listener; see
+  [Run Events](autobyteus-server-ts/docs/modules/run_events.md) and
+  [Model Routing](autobyteus-server-ts/docs/modules/model_routing.md#runtime-switch-on-a-usage-limit)).
 - **Lost runtime session:** a run's saved external runtime session that its
   runtime itself reports as not existing when the run is restored (for example
   Claude Code's "No conversation found with session ID", Codex's "no rollout

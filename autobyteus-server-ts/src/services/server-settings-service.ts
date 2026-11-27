@@ -65,6 +65,8 @@ import {
   normalizeModelRouterModelForPersistence,
   normalizeModelRouterRuntimeForPersistence,
   normalizeModelRoutingEnabledForPersistence,
+  normalizeUsageLimitSwitchEnabledForPersistence,
+  USAGE_LIMIT_SWITCH_ENABLED_SETTING_KEY,
 } from "../model-routing/model-routing-settings.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
@@ -251,6 +253,13 @@ export class ServerSettingsService {
       "Model Routing: the node's Model Router chooses a runtime and model for delegated agents that have no usable default (true/false). Default: false. Set on Settings → Model Routing.",
       true,
       { normalizeForPersistence: normalizeModelRoutingEnabledForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      USAGE_LIMIT_SWITCH_ENABLED_SETTING_KEY,
+      "Switch runtime when a usage limit is reached: a run whose runtime reached its usage limit continues on another usable runtime, chosen by the Model Router when it is on, else from the agent's history (true/false). Default: true. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeUsageLimitSwitchEnabledForPersistence },
     );
 
     this.registerPredefinedSetting(

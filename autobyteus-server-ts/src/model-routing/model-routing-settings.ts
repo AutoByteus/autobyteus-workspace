@@ -15,6 +15,12 @@ export const MODEL_ROUTER_MODEL_SETTING_KEY = "AUTOBYTEUS_MODEL_ROUTER_MODEL";
  */
 export const MODEL_ROUTER_LLM_CONFIG_SETTING_KEY = "AUTOBYTEUS_MODEL_ROUTER_LLM_CONFIG";
 
+/**
+ * Switching a run's runtime when its usage limit is reached (autobyteus-646 C-6): `false` turns it off; on by default.
+ * Independent of Model Routing (the router is asked only when Model Routing is on and active).
+ */
+export const USAGE_LIMIT_SWITCH_ENABLED_SETTING_KEY = "AUTOBYTEUS_USAGE_LIMIT_SWITCH_ENABLED";
+
 /** Model settings of a launch: the same `llmConfig` object as any agent's launch configuration. */
 export type ModelRouterLlmConfig = Readonly<Record<string, unknown>>;
 
@@ -52,6 +58,11 @@ export const readModelRoutingEnabled = (
   rawValue: string | undefined = appConfigProvider.config.get(MODEL_ROUTING_ENABLED_SETTING_KEY),
 ): boolean => parseBoolean(rawValue) === true;
 
+/** C-6, read at each usage-limit event: on unless set to `false`. */
+export const readUsageLimitSwitchEnabled = (
+  rawValue: string | undefined = appConfigProvider.config.get(USAGE_LIMIT_SWITCH_ENABLED_SETTING_KEY),
+): boolean => parseBoolean(rawValue) !== false;
+
 /**
  * The router's launch configuration; null until runtime and model are both set (the router is then "not set"). Model
  * settings that cannot be read count as none, with one warning (DESIGN.md rule 7).
@@ -75,6 +86,11 @@ export const readModelRouterLaunch = (
 export const normalizeModelRoutingEnabledForPersistence = (rawValue: string): [true, string] | [false, string] => {
   const parsed = parseBoolean(rawValue);
   return parsed === null ? [false, "Model Routing must be true or false."] : [true, String(parsed)];
+};
+
+export const normalizeUsageLimitSwitchEnabledForPersistence = (rawValue: string): [true, string] | [false, string] => {
+  const parsed = parseBoolean(rawValue);
+  return parsed === null ? [false, "Switching runtime on a usage limit must be true or false."] : [true, String(parsed)];
 };
 
 export const normalizeModelRouterRuntimeForPersistence = (rawValue: string): [true, string] | [false, string] => {
@@ -125,6 +141,11 @@ export class ModelRoutingSettings {
 
   setEnabled(enabled: boolean): void {
     this.write(MODEL_ROUTING_ENABLED_SETTING_KEY, String(enabled));
+  }
+
+  /** C-6: "Switch runtime when a usage limit is reached". */
+  setUsageLimitSwitchEnabled(enabled: boolean): void {
+    this.write(USAGE_LIMIT_SWITCH_ENABLED_SETTING_KEY, String(enabled));
   }
 
   async setRouterLaunch(launch: ModelRouterLaunch): Promise<void> {

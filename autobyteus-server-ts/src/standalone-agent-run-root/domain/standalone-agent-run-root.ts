@@ -43,7 +43,10 @@ import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/re
 import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
+import type { AgentRuntimeSwitchOutcome, AgentRuntimeSwitchRequest } from "../../agent-collaboration/execution/domain/agent-runtime-switch-request.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
+import { isCollaborationEligibleStandaloneRun } from "../../agent-execution/services/standalone-agent-run-eligibility.js";
+import { launchConfigurationOf } from "./standalone-run-launch.js";
 
 /** What a view of the run opens with: its own agent (the runs it delegated are its tree's rows, SR-084). */
 export type StandaloneRootPackageSnapshot = Readonly<{
@@ -181,6 +184,37 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   /** Makes the run's agent ready (activated, restored, or the live run). */
   ensureAgentReady(): Promise<AgentRun> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.readyAgent(); });
+  }
+  /**
+   * autobyteus-646 R-11: the run's agent switches runtime automatically, in the gate. The switch's own checks (R-12: still
+   * on the failed launch, no pending switch), a quiet stop (idle shutdown's, so no `terminatedAt`), the commit with the
+   * pending switch and its cause, the root's own inherited launch (R-15), then the continue message, whose activation
+   * makes the switch real with the hand-over.
+   */
+  switchAgentRuntime(agentRunId: string, request: AgentRuntimeSwitchRequest): Promise<AgentRuntimeSwitchOutcome> {
+    return this.operationGate.run(async () => {
+      this.assertAdmitting();
+      if (agentRunId.trim() !== this.agentRunId) return { kind: "failed", reason: "it is not this run's agent" };
+      const input = { from: request.from, launch: { runtimeKind: request.launch.runtimeKind, llmModelIdentifier: request.launch.llmModelIdentifier }, cause: request.cause };
+      const refusal = await this.options.agentHandle.checkAutomaticRuntimeSwitch(input);
+      if (refusal) return refusal.kind === "already_switched" ? refusal : { kind: "failed", reason: refusal.reason };
+      const live = this.options.agentHandle.getActiveRun();
+      if (live) {
+        if (!this.options.agentRunManager) return { kind: "failed", reason: "this run's agent cannot be stopped quietly" };
+        const prepared = await this.options.agentRunManager.tryPrepareAgentRunTerminationIfQuiescent(live);
+        if (!prepared) return { kind: "not_quiet" };
+        const stopped = await prepared.commit().finish();
+        if (!stopped.accepted) return { kind: "failed", reason: stopped.message ?? stopped.code ?? "its agent did not stop" };
+      }
+      const switched = await this.options.agentHandle.switchRuntimeAutomatically(input);
+      if (switched.kind !== "switched") return switched.kind === "already_switched" ? switched : { kind: "failed", reason: switched.reason };
+      // R-15: the root follows its own switch (what its delegations inherit), as a Save's refresh does (FU-008).
+      if (isCollaborationEligibleStandaloneRun(switched.metadata)) this.setInheritedLaunch(launchConfigurationOf(switched.metadata));
+      const posted = await this.postAgentUserMessage({ message: request.notice, postOptions: request.postOptions ?? {} });
+      if (posted.kind === "posted" && posted.post.accepted) return { kind: "switched" };
+      return { kind: "failed", reason: `the continue message was not taken (${posted.kind === "posted"
+        ? posted.post.message ?? posted.post.code ?? "not accepted" : posted.kind === "refused" ? posted.refusal.message : posted.kind})` };
+    });
   }
   /**
    * A user's (or a peer owner's) message for the run's agent. At the gate head, the closed-Task fence (DS-15): a closed

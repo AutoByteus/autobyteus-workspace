@@ -29,6 +29,8 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       getActiveRun: (agentRunId) => input.agentRunManager.getActiveRun(agentRunId),
       activateRunAgent: (agentRunId, activation) => input.lifecycleService.activateRunAgent(agentRunId, activation),
       terminateRunAgent: (agentRunId) => input.lifecycleService.terminateRunAgent(agentRunId),
+      checkAutomaticRuntimeSwitch: (switchInput) => input.lifecycleService.checkAutomaticRuntimeSwitch(switchInput),
+      switchRuntimeAutomatically: (switchInput) => input.lifecycleService.switchRuntimeAutomatically(switchInput),
       readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
     },
     rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),

@@ -58,7 +58,7 @@ const ChatModelOptionControl = {
  * JSON answers (synthesized). The Runtimes tab is `AgentRuntimesNowSection.spec.ts`.
  */
 const status = (overrides: Partial<ModelRoutingStatus> = {}): ModelRoutingStatus => ({
-  enabled: true, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: { reasoning_effort: 'medium' } }, active: true,
+  enabled: true, usageLimitSwitchEnabled: true, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: { reasoning_effort: 'medium' } }, active: true,
   reasonCode: null, reasonParams: {}, reasonText: null, agentRunId: 'router_run_1', ...overrides,
 })
 const record = (overrides: Partial<RoutingDecisionRecord>): RoutingDecisionRecord => ({
@@ -89,7 +89,7 @@ const decisions = (): RoutingDecisionPage => {
   ] }
 }
 const statistics = (): RoutingStatistics => ({
-  totalAgents: 3, sources: { model_router: 1, agent_default: 1, team_default: 0, inherited: 1 }, routerFailures: 1,
+  totalAgents: 3, sources: { model_router: 1, agent_default: 1, team_default: 0, agent_history: 0, node_fallback: 0, inherited: 1 }, routerFailures: 1,
   taskKinds: [{ taskKind: 'implementation', count: 1, runtimes: [{ runtimeKind: 'codex_app_server', count: 1 }],
     models: [{ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', count: 1 }] }],
   notRouted: { count: 2, runtimes: [{ runtimeKind: 'claude_agent_sdk', count: 2 }], models: [{ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', count: 2 }] },
@@ -127,6 +127,7 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     io.mutate.mockImplementation(async ({ mutation, variables }) => {
       const name = mutation.definitions[0].name.value
       if (name === 'SetModelRoutingEnabled') { current = status({ enabled: variables.enabled }); return { data: { setModelRoutingEnabled: current } } }
+      if (name === 'SetUsageLimitSwitchEnabled') { current = { ...current, usageLimitSwitchEnabled: variables.enabled }; return { data: { setUsageLimitSwitchEnabled: current } } }
       if (name === 'SetModelRouterLaunch') { current = status({ routerLaunch: variables }); return { data: { setModelRouterLaunch: current } } }
       if (name === 'OpenModelRouterAgent') return { data: { openModelRouterAgent: 'router_run_1' } }
       throw new Error(`unexpected mutation ${name}`)
@@ -148,6 +149,19 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     await flushPromises()
     expect(io.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { enabled: true } }))
     expect(get('model-routing-switch').attributes('aria-checked')).toBe('true')
+  })
+
+  it('autobyteus-646 C-6: the usage-limit switch works with Model Routing off and saves through its own mutation', async () => {
+    current = status({ enabled: false, active: false, reasonCode: 'OFF', reasonText: 'Model Routing is off' })
+    await mountPage()
+    expect(get('model-routing-usage-limit-switch-row').text()).toContain('Switch runtime when a usage limit is reached')
+    expect(get('model-routing-usage-limit-switch').attributes('aria-checked')).toBe('true')
+    expect(get('model-routing-usage-limit-switch').attributes('disabled')).toBeUndefined()
+    await get('model-routing-usage-limit-switch').trigger('click')
+    await flushPromises()
+    expect(io.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { enabled: false } }))
+    expect(get('model-routing-usage-limit-switch').attributes('aria-checked')).toBe('false')
+    expect(get('model-routing-switch').attributes('aria-checked')).toBe('false')
   })
 
   it('VIS-003 / AC-001, AC-002: on but not set: the app\'s model menu (no native select) saves runtime, model and the model\'s settings made explicit', async () => {

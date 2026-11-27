@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { presentAsNoticeMetadata } from "autobyteus-ts/agent/message/present-as-notice-metadata.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -634,6 +635,31 @@ describe("RuntimeMemoryEventAccumulator", () => {
     forward(new AgentInputUserMessage("From the user"), "turn-b");
     expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.senderId ?? null]))
       .toEqual([["user", "run-researcher"], ["user", null]]);
+  });
+
+  it("autobyteus-646 R-10: an input presented as a notice is recorded once, as the notice the run publishes, never as a user trace", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordForwardedUserMessage({
+      runId: "run-1",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: "agent-def-1", llmModelIdentifier: "claude",
+        autoExecuteTools: false, memoryDir,
+      }),
+      platformAgentRunId: "session-1",
+      message: new AgentInputUserMessage("Continue the task where you left off.", SenderType.SYSTEM, null, {
+        sender_id: "system.usage_limit", message_id: "continue-1", ...presentAsNoticeMetadata({ senderId: "system.usage_limit" }),
+      }),
+      result: { accepted: true, turnId: "turn-c" },
+      acceptedAt: new Date(1000),
+    });
+    accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+      sender_id: "system.usage_limit", content: "Continue the task where you left off.", message_id: "continue-1", turn_id: "turn-c",
+    }));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.senderId ?? null, trace.content]))
+      .toEqual([["system_task_notification", "system.usage_limit", "Continue the task where you left off."]]);
   });
 
   it("does not substitute an active turn when forwarded input lacks its exact turn identity", async () => {

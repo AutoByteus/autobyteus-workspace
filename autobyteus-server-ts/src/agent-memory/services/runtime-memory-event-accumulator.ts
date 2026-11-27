@@ -23,8 +23,10 @@ import {
   SKILL_UPDATE_NOTICE_SENDER_ID,
   TEAM_CHANGE_NOTICE_SENDER_ID,
   TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
+  USAGE_LIMIT_NOTICE_SENDER_ID,
 } from "../../agent-execution/domain/system-task-notification-senders.js";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+import { readPresentAsNotice } from "autobyteus-ts/agent/message/present-as-notice-metadata.js";
 
 /** Producers whose system notices are recorded (other producers keep their history behavior). */
 const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
@@ -36,6 +38,7 @@ const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
   RESTART_RESUME_NOTICE_SENDER_ID,
   BACKGROUND_TASK_NOTICE_SENDER_ID,
   TEAM_CHANGE_NOTICE_SENDER_ID,
+  USAGE_LIMIT_NOTICE_SENDER_ID,
 ]);
 
 type SegmentState = {
@@ -78,6 +81,8 @@ export class RuntimeMemoryEventAccumulator {
     // A message that is only a platform notice is recorded once, as the system notice the run
     // publishes for it, never as a user message.
     if (readPlatformInputPreface(payload.message.metadata)?.originalContent === null) return;
+    // autobyteus-646 R-10: an input presented as a notice is recorded once, as the notice the run publishes for it.
+    if (readPresentAsNotice(payload.message.metadata)) return;
     const { media, fileAttachments } = extractForwardedMessageAttachments(payload.message);
     this.input.writer.appendRawTrace({
       traceType: "user",

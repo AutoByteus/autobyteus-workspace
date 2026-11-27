@@ -346,6 +346,13 @@ if (arg === "--version") {
       const content = String(JSON.parse(line)?.message?.content ?? "");
       if (process.env.AGY_FAKE_INPUT_LOG) appendFileSync(process.env.AGY_FAKE_INPUT_LOG,
         JSON.stringify({ conversation_id, turns, content }) + "\n");
+      // A message that asks for a tool call is served as an ordinary turn, so an agent on this case can still act (for
+      // example delegate: autobyteus-646 UL-11, a delegator whose own launch is remembered as exhausted).
+      if (content.includes("CALL_TOOL:")) {
+        linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
+          error: String(error?.message ?? error), response: "" } }));
+        return;
+      }
       if (content === "Continue the same work.") {
         reply(turns * 10, "NEXT_USER_TURN_OK");
         emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "NEXT_USER_TURN_OK" } });

@@ -3,7 +3,7 @@ import { actionLine, messageParts, quoted, readLine, textItems, type PlatformToo
 
 /**
  * Small read and answer tools (contract §3): agent, node and runtime discovery, memory search,
- * published artifacts and the Model Router's routing answer.
+ * published artifacts and the Model Router's routing and switch answers.
  */
 
 const listAvailableAgents: PlatformToolConverter = (_call, result) => readLine("List available agents", result);
@@ -33,6 +33,11 @@ const submitLaunchChoices: PlatformToolConverter = (call, result) => {
     messageParts(lines.length ? lines.join("\n") : null));
 };
 
+/** `Submit runtime switch: <runtime> / <model>`, with the reason (autobyteus-646 C-7). */
+const submitRuntimeSwitch: PlatformToolConverter = (call, result) =>
+  actionLine(`Submit runtime switch: ${asText(call.args.runtime) ?? "?"} / ${asText(call.args.model) ?? "?"}`, result,
+    messageParts(asText(call.args.reason) ?? null));
+
 export const discoveryToolConverters: ReadonlyMap<string, PlatformToolConverter> = new Map([
   ["list_available_agents", listAvailableAgents],
   ["list_peer_nodes", listPeerNodes],
@@ -41,4 +46,5 @@ export const discoveryToolConverters: ReadonlyMap<string, PlatformToolConverter>
   ["search_memory", searchMemory],
   ["publish_artifacts", publishArtifacts],
   ["submit_launch_choices", submitLaunchChoices],
+  ["submit_runtime_switch", submitRuntimeSwitch],
 ]);

@@ -1,0 +1,80 @@
+{
+  "delegatorRunId": "delegator_65e005_a347a213c32b405abfc09948ccd10bf4",
+  "peerRunId": "worker_f1e130_903c21d6c2a04122b4c04172286b1781",
+  "resetAt": "2026-11-27T14:11:00.000Z",
+  "codexTurns": [
+    {
+      "threadId": "fake-thread-80410-1",
+      "turnId": "fake-thread-80410-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "You have a new task from the agent with sender run id \"delegator_65e005_a347a213c32b405abfc09948ccd10bf4\" on node \"alpha\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id and node set to \"alpha\".\n\nDescription:\nWrite the release notes.",
+      "mode": "limit"
+    }
+  ],
+  "switchRecords": [
+    {
+      "at": "2026-11-27T11:11:02.554Z",
+      "agentRunId": "worker_f1e130_903c21d6c2a04122b4c04172286b1781",
+      "agentDefinitionId": "worker-f1e130",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "peer-usage-limit-fixture:lmstudio@127.0.0.1:63452"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    }
+  ],
+  "betaMetadata": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "peer-usage-limit-fixture:lmstudio@127.0.0.1:63452",
+    "delegatedFrom": {
+      "delegatingRun": {
+        "kind": "agent",
+        "runId": "delegator_65e005_a347a213c32b405abfc09948ccd10bf4"
+      },
+      "delegatorAgentRunId": "delegator_65e005_a347a213c32b405abfc09948ccd10bf4",
+      "nodeId": "srv_FWF9bLM6T-c7LJPdICEvOUmtro86HvmV"
+    }
+  },
+  "alphaTreeRow": {
+    "key": "peer_agent:worker_f1e130_903c21d6c2a04122b4c04172286b1781",
+    "parentKey": "agent:delegator_65e005_a347a213c32b405abfc09948ccd10bf4",
+    "kind": "peer_agent",
+    "name": "worker f1e130",
+    "address": "/worker_f1e130",
+    "openTarget": {
+      "runKind": "agent",
+      "runId": "worker_f1e130_903c21d6c2a04122b4c04172286b1781",
+      "agentRunId": "worker_f1e130_903c21d6c2a04122b4c04172286b1781",
+      "nodeId": "srv_O6LmDP5beL4B8Ch33qsubmJrYa6igWiC"
+    },
+    "statusIds": [
+      "worker_f1e130_903c21d6c2a04122b4c04172286b1781"
+    ],
+    "peer": {
+      "nodeId": "srv_O6LmDP5beL4B8Ch33qsubmJrYa6igWiC",
+      "nodeName": "beta",
+      "title": "Write the release notes.",
+      "reachable": true
+    },
+    "launch": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "peer-usage-limit-fixture:lmstudio@127.0.0.1:63452",
+      "llmConfig": null,
+      "autoExecuteTools": null,
+      "workspaceRootPath": null,
+      "source": {
+        "origin": "agent_history",
+        "fallbacks": []
+      },
+      "ownSource": true
+    },
+    "depth": 1
+  }
+}

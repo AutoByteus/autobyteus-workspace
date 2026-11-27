@@ -14,6 +14,7 @@ import { isUnavailableModelSelection, runModelSelectionRefusal } from "../llm-ma
 import type { RuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
 import type { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
 import type { DefaultLaunchConfig } from "./default-launch-config.js";
+import type { RuntimeExhaustionPort } from "./launch-fallback-ports.js";
 
 /** Where a candidate takes its workspace and auto-approve from. */
 export type LaunchUsabilityContext = Readonly<{ workspaceRootPath: string | null; autoExecuteTools: boolean }>;
@@ -26,7 +27,7 @@ export type LaunchUsabilityContext = Readonly<{ workspaceRootPath: string | null
 export type LaunchVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
   | Readonly<{ usable: "runtime_only"; runtimeKind: string }>
-  | Readonly<{ usable: false; reason: LaunchConfigurationFallbackReason; detail: string }>;
+  | Readonly<{ usable: false; reason: LaunchConfigurationFallbackReason; detail: string; exhausted?: true }>;
 
 /**
  * The inherited launch's model check: usable with its canonical launch, or the reason it is not; `modelNoLongerOffered`
@@ -34,7 +35,7 @@ export type LaunchVerdict =
  */
 export type InheritedLaunchVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
-  | Readonly<{ usable: false; modelNoLongerOffered: boolean; detail: string }>;
+  | Readonly<{ usable: false; modelNoLongerOffered: boolean; detail: string; exhausted?: true }>;
 
 export type LaunchUsabilityResult = Readonly<{
   /** One per candidate, in order. */
@@ -73,6 +74,9 @@ export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: Ru
       : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
         : "";
 
+/** autobyteus-646 R-2's wording: "<model> is exhausted until <time>." (persisted with the reason `blocked`). */
+export const exhaustedDetail = (model: string, until: string): string => `${model} is exhausted until ${formatBlockTime(until)}.`;
+
 /** "2026-10-30 20:57 UTC" for an ISO time; the text itself when it is not one. */
 export const formatBlockTime = (iso: string): string => {
   const time = Date.parse(iso);
@@ -108,6 +112,11 @@ export class LaunchUsabilityCheck {
   constructor(private readonly dependencies: Readonly<{
     availability: Pick<RuntimeAvailabilityService, "getRuntimeAvailability">;
     validator: RunModelSelectionValidator;
+    /**
+     * autobyteus-646 R-2: exhausted models (C-3), checked for every launch, the inherited one included, whether or not
+     * the node's facts are given. Without it nothing counts as exhausted.
+     */
+    exhaustion?: RuntimeExhaustionPort;
   }>) {}
 
   /** Throws `LaunchModelCheckError` when the model check could not run at all. */
@@ -182,17 +191,28 @@ export class LaunchUsabilityCheck {
         return;
       }
       const blocked = input.facts ? reportedModel(input.facts, launch.runtimeKind, launch.llmModelIdentifier)?.blocked : undefined;
+      const exhausted = this.exhaustedUntil(launch);
       verdicts[index] = blocked
         ? Object.freeze({ usable: false, reason: "blocked", detail: blockedDetail(launch.llmModelIdentifier, blocked) })
-        : Object.freeze({ usable: true, launch: canonicalLaunch(launch, result.selection) });
+        : exhausted
+          ? Object.freeze({ usable: false, reason: "blocked", detail: exhaustedDetail(launch.llmModelIdentifier, exhausted), exhausted: true })
+          : Object.freeze({ usable: true, launch: canonicalLaunch(launch, result.selection) });
     });
     const inheritedResult = results[0];
+    const inheritedExhausted = input.inherited ? this.exhaustedUntil(input.inherited) : null;
     const inherited: InheritedLaunchVerdict | null = !input.inherited ? null
+      : inheritedResult?.kind === "valid" && inheritedExhausted
+        ? Object.freeze({ usable: false, modelNoLongerOffered: false, detail: exhaustedDetail(input.inherited.llmModelIdentifier, inheritedExhausted), exhausted: true })
       : inheritedResult?.kind === "valid"
         ? Object.freeze({ usable: true, launch: canonicalLaunch(input.inherited, inheritedResult.selection) })
         : Object.freeze({ usable: false, modelNoLongerOffered: inheritedResult?.kind === "model_unavailable",
           detail: invalidModelMessage(input.inherited, inheritedResult) });
     return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inherited });
+  }
+
+  /** Until when the launch's model is exhausted (C-3); null when it is not, or nothing is checked. */
+  private exhaustedUntil(launch: AgentLaunchConfiguration): string | null {
+    return this.dependencies.exhaustion?.isExhausted(launch.runtimeKind, launch.llmModelIdentifier)?.until ?? null;
   }
 
   /** U2 available, then U3 signed in (only with the node's facts): why the runtime cannot be used, or null. */

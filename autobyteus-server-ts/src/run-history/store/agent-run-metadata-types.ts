@@ -54,6 +54,21 @@ export type RunProviderBinding = Pick<AgentRunMetadata, "runtimeKind" | "llmMode
 export type PendingRuntimeSwitch = Readonly<{
   switchId: string;
   from: RunProviderBinding;
+  /** Why an automatic switch happened (autobyteus-646 R-7); absent for a person's switch. The marker text is rendered from it. */
+  cause?: RuntimeSwitchCause;
+}>;
+
+/**
+ * The facts of an automatic runtime switch (autobyteus-646 R-7), stored with its pending switch and rendered into the
+ * hand-over marker at activation; no sentence is stored. `usage_limit` is the only kind now; a later kind adds its fields.
+ */
+export type RuntimeSwitchCause = Readonly<{
+  kind: "usage_limit";
+  /** The failed runtime's reset time, or `null` when it did not say. */
+  resetAt: string | null;
+  chosenBy: "model_router" | "agent_history" | "node_fallback";
+  /** The Model Router's sentence; `null` when chosen from history. */
+  reason: string | null;
 }>;
 
 /** The services that own system runs: the Model Router agent's. */

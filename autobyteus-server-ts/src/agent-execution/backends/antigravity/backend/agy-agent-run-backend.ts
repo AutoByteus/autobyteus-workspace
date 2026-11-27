@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { LateUsageLimitClassification } from "../../shared/late-usage-limit-classification.js";
 import { NO_ACTIVE_TURN, type AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type {
@@ -49,6 +50,8 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly listeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly converter: AgyStreamEventConverter;
+  /** autobyteus-646 R-16: AGY gives no usage-limit signal; its limits read after a terminal error classifies it. */
+  private readonly lateClassification: LateUsageLimitClassification;
   private readonly backgroundTasks: AgyBackgroundTaskMonitor;
   private eventQueue: Promise<void> = Promise.resolve();
   private active = true;
@@ -67,6 +70,8 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     private readonly capsuleSkills: AgyCapsuleSkillsBinding) {
     this.toolExposure = agentTools.exposure;
     this.agentToolSessions = agentTools.runSessions;
+    this.lateClassification = new LateUsageLimitClassification({ runId: context.runId, runtimeKind: context.config.runtimeKind,
+      llmModelIdentifier: () => context.config.llmModelIdentifier, deliver: (events) => this.enqueue(() => this.deliver(events)) });
     const conversationId = context.runtimeContext.conversationId;
     // Background-task changes arrive between turns, so they bypass turn-scoped message handling.
     this.backgroundTasks = new AgyBackgroundTaskMonitor({ runId: context.runId, conversationId,
@@ -233,6 +238,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private async deliver(events: readonly AgentRunEvent[]): Promise<void> {
     if (!events.length) return;
     for (const listener of this.listeners) await listener(events);
+    this.lateClassification.observe(events);
   }
 
   private enqueue(task: () => Promise<void>): void {

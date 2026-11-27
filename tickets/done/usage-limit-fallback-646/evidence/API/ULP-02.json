@@ -1,0 +1,21 @@
+{
+  "peerRunId": "fresh_worker_ab5565_8831f78606894310a5b36ce868391639",
+  "worker": "fresh-worker-ab5565",
+  "betaMetadata": {
+    "runtimeKind": "autobyteus",
+    "llmModelIdentifier": "peer-usage-limit-fixture:lmstudio@127.0.0.1:50923",
+    "launchSource": {
+      "origin": "node_fallback",
+      "fallbacks": [
+        {
+          "layer": "agent_default",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e",
+          "reason": "blocked",
+          "detail": "gpt-e2e is exhausted until 2026-11-27 14:28 UTC."
+        }
+      ]
+    }
+  },
+  "alphaResult": "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"e2e-1d10b77e-fad8-46ab-945b-191acb173dc8\",\"dedupeKey\":\"agent_run_input:e2e:c46fecc3-681c-4cf0-b541-4f36da061072\",\"content\":\"CALL_TOOL:{\\\"name\\\":\\\"delegate_task\\\",\\\"arguments\\\":{\\\"node\\\":\\\"beta\\\",\\\"recipient_address\\\":\\\"/fresh_worker_ab5565\\\",\\\"description\\\":\\\"Draft the changelog.\\\"}}\",\"media\":null,\"ts\":1795778847.258},{\"kind\":\"message\",\"role\":\"assistant\",\"turnId\":\"ce053423-724e-45a4-9d44-097f70424889\",\"content\":\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"delegated\\\\\\\":true,\\\\\\\"target_kind\\\\\\\":\\\\\\\"agent\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"fresh_worker_ab5565_8831f78606894310a5b36ce868391639\\\\\\\",\\\\\\\"node\\\\\\\":\\\\\\\"beta\\\\\\\",\\\\\\\"task_id\\\\\\\":\\\\\\\"ad_hoc_task_b52f394d-ee64-459b-8f75-95fca7aa9c1e\\\\\\\",\\\\\\\"launch_notes\\\\\\\":[\\\\\\\"fresh_worker_ab5565: its agent default Codex App Server / gpt-e2e could not be used (gpt-e2e is exhausted until 2026-11-27 14:28 UTC); it runs on AutoByteus / peer-usage-limit-fixture:lmstudio@127.0.0.1:50923 (chosen by the node).\\\\\\\"]}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"fresh_worker_ab5565_8831f78606894310a5b36ce868391639\\\",\\\"node\\\":\\\"beta\\\",\\\"task_id\\\":\\\"ad_hoc_task_b52f394d-ee64-459b-8f75-95fca7aa9c1e\\\",\\\"launch_notes\\\":[\\\"fresh_worker_ab5565: its agent default Codex App Server / gpt-e2e could not be used (gpt-e2e is exhausted until 2026-11-27 14:28 UTC); it runs on AutoByteus / peer-usage-limit-fixture:lmstudio@127.0.0.1:50923 (chosen by the node).\\\"]}}\",\"media\":null,\"ts\":1795778847.625}]"
+}

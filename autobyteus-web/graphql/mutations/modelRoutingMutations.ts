@@ -7,6 +7,13 @@ export const SetModelRoutingEnabled = gql`
   }
 `
 
+/** autobyteus-646 C-6: turns "Switch runtime when a usage limit is reached" on or off; answers the new status. */
+export const SetUsageLimitSwitchEnabled = gql`
+  mutation SetUsageLimitSwitchEnabled($enabled: Boolean!) {
+    setUsageLimitSwitchEnabled(enabled: $enabled)
+  }
+`
+
 /** Sets the Model Router agent's launch configuration (runtime, model, model settings); answers the new status. */
 export const SetModelRouterLaunch = gql`
   mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!, $llmConfig: JSON) {

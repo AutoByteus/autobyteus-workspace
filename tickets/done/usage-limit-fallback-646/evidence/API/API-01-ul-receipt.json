@@ -1,0 +1,616 @@
+{
+  "resetAt": "2026-11-27T14:34:00.000Z",
+  "UL-01": {
+    "runId": "operator_a8b70e_35388e9d51b14fbba492985f14a82d1d",
+    "events": [
+      {
+        "at": "2026-11-27T11:33:48.995Z",
+        "kind": "usage_limit_reached",
+        "agentRunId": "operator_a8b70e_35388e9d51b14fbba492985f14a82d1d",
+        "data": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e",
+          "blockedModels": [
+            "gpt-e2e"
+          ],
+          "resetAt": "2026-11-27T14:34:00.000Z"
+        }
+      }
+    ],
+    "switches": [
+      {
+        "at": "2026-11-27T11:33:49.664Z",
+        "agentRunId": "operator_a8b70e_35388e9d51b14fbba492985f14a82d1d",
+        "agentDefinitionId": "operator-a8b70e",
+        "from": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e"
+        },
+        "routerFailure": "Model Routing is off",
+        "to": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+        },
+        "chosenBy": "agent_history",
+        "reason": "most used by this agent in the last 30 days",
+        "outcome": "switched"
+      }
+    ],
+    "continueRequest": "[System: runtime hand-over]\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\n\nThe journals are in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/memory/agents/operator_a8b70e_35388e9d51b14fbba492985f14a82d1d/work_journal/. The previous agent's most recent work is in work_journal_000001.md.\nBefore you reply or continue the work, read /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/memory/agents/operator_a8b70e_35388e9d51b14fbba492985f14a82d1d/work_journal/work_journal_000001.md completely, from its first line to its last.\nIf it is long, read it in parts until you reach the end.\nwork_journal_active.md starts with this hand-over; your own work is recorded there from now on.\n\nAll journal files, oldest first (the earlier ones are there if you need to look further back):\n  work_journal_000001.md | 2026-11-27 | 445 B, 5 lines\n  work_journal_active.md | 2026-11-27 | 573 B, 5 lines\n\nEach entry is one line, such as \"[HH:MM:SS] User: …\", \"Agent: …\" or \"Command: … → ok\", and ends with a\nlink to the full record. Long output is shortened.\n\nContinue the task where you left off.",
+    "rows": [
+      [
+        "system_task_notification",
+        null,
+        "system.runtime_handover",
+        "Codex App Server usage limit reached (resets Nov 27, 14:34 UTC) — switched to AutoByteus (usage-limit-fixture:lmstudio@127.0.0.1:52443). Chosen from this agent's history."
+      ],
+      [
+        "system_task_notification",
+        null,
+        "system.runtime_handover",
+        "[System: runtime hand-over]"
+      ],
+      [
+        "system_task_notification",
+        null,
+        "system.usage_limit",
+        "Continue the task where you left off."
+      ]
+    ]
+  },
+  "UL-02": {
+    "runId": "writer_e2fb9e_67b9e5b8c695403c8f1ecde7822c1461",
+    "continueRequest": "[System: runtime hand-over]\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\n\nThe journals are in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/memory/agents/writer_e2fb9e_67b9e5b8c695403c8f1ecde7822c1461/work_journal/. The previous agent's most recent work is in work_journal_000001.md.\nBefore you reply or continue the work, read /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/memory/agents/writer_e2fb9e_67b9e5b8c695403c8f1ecde7822c1461/work_journal/work_journal_000001.md completely, from its first line to its last.\nIf it is long, read it in parts until you reach the end.\nwork_journal_active.md starts with this hand-over; your own work is recorded there from now on.\n\nAll journal files, oldest first (the earlier ones are there if you need to look further back):\n  work_journal_000001.md | 2026-11-27 | 726 B, 7 lines\n  work_journal_active.md | 2026-11-27 | 571 B, 5 lines\n\nEach entry is one line, such as \"[HH:MM:SS] User: …\", \"Agent: …\" or \"Command: … → ok\", and ends with a\nlink to the full record. Long output is shortened.\n\nContinue the task where you left off."
+  },
+  "UL-03": {
+    "runId": "planner_df2db3_7050d06755954eb4bccf43eda4100369",
+    "records": [
+      {
+        "at": "2026-11-27T11:33:53.573Z",
+        "agentRunId": "planner_df2db3_7050d06755954eb4bccf43eda4100369",
+        "agentDefinitionId": "planner-df2db3",
+        "from": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e"
+        },
+        "routerFailure": "the Model Router's turn ended without a decision",
+        "to": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+        },
+        "chosenBy": "agent_history",
+        "reason": "most used by this agent in the last 30 days",
+        "outcome": "switched"
+      }
+    ],
+    "routerRequest": "Switch request sw_71d6c977. An agent's runtime cannot continue and it needs another runtime now. Choose one runtime and model from the usable list below and answer with submit_runtime_switch (requestId \"sw_71d6c977\"), with a one-sentence reason.\n\nAgent: planner-df2db3: planner (usage limit E2E)\nWhy: its usage limit was reached on codex_app_server / gpt-e2e; it resets 2026-11-27 14:34 UTC.\nUsable now:\n- antigravity_cli: gemini-3.8-flash-low\n- autobyteus: usage-limit-fixture:lmstudio@127.0.0.1:52443\nThis agent's launches in the last 30 days: codex_app_server / gpt-e2e (1 run, last 2026-11-27); autobyteus / usage-limit-fixture:lmstudio@127.0.0.1:52443 (1 run, last 2026-11-27).\nIt has no earlier switches.\n\nYour knowledge.md is empty."
+  },
+  "UL-04": {
+    "teamRunId": "usage_limit_team_dee1a2_f8aec0b4afb34034a277d013f677b4db",
+    "coordinator": "lead_c63133_d6e62481a4244c89855fed13e1a0927b",
+    "launch": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/workspace"
+    }
+  },
+  "UL-05": {
+    "runId": "lonely_d6ba18_9a8173f02f64498b9b90df2b52ab51e3",
+    "records": [
+      {
+        "at": "2026-11-27T11:33:59.838Z",
+        "agentRunId": "lonely_d6ba18_9a8173f02f64498b9b90df2b52ab51e3",
+        "agentDefinitionId": "lonely-d6ba18",
+        "from": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e"
+        },
+        "routerFailure": null,
+        "to": null,
+        "chosenBy": null,
+        "reason": null,
+        "outcome": "no_fallback"
+      }
+    ],
+    "notice": "Usage limits reached: Codex App Server until Nov 27, 14:34 UTC. No other runtime can run now. Choose one in the run's Settings to continue."
+  },
+  "UL-09": {
+    "runId": "newcomer_ba28d0_4324d0587f734de0946e3957580f47e0",
+    "records": [
+      {
+        "at": "2026-11-27T11:34:00.565Z",
+        "agentRunId": "newcomer_ba28d0_4324d0587f734de0946e3957580f47e0",
+        "agentDefinitionId": "newcomer-ba28d0",
+        "from": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e"
+        },
+        "routerFailure": "Model Routing is off",
+        "to": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+        },
+        "chosenBy": "node_fallback",
+        "reason": "most used on this node in the last 30 days",
+        "outcome": "switched"
+      }
+    ]
+  },
+  "UL-06": {
+    "result": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"coder_993f66_163bdb9f8f71413faad5441c8822b632\",\"task_id\":\"ad_hoc_task_aeeed6a3-31bf-444b-9f83-323a37938991\",\"launch_notes\":[\"coder-993f66: its agent default Codex App Server / gpt-e2e could not be used (gpt-e2e is exhausted until 2026-11-27 14:34 UTC); it runs on AutoByteus / usage-limit-fixture:lmstudio@127.0.0.1:52443 (chosen from its history).\"]}"
+  },
+  "UL-08": {
+    "runId": "researcher_a427de_8b6d36e811b44b7f9ad42167f964ae40",
+    "records": [
+      {
+        "at": "2026-11-27T11:34:08.610Z",
+        "agentRunId": "researcher_a427de_8b6d36e811b44b7f9ad42167f964ae40",
+        "agentDefinitionId": "researcher-a427de",
+        "from": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "agy-limited"
+        },
+        "routerFailure": "Model Routing is off",
+        "to": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+        },
+        "chosenBy": "agent_history",
+        "reason": "most used by this agent in the last 30 days",
+        "outcome": "switched"
+      }
+    ],
+    "shown": [
+      [
+        "system_task_notification",
+        "system.runtime_handover",
+        "Antigravity CLI usage limit reached (resets Nov 27, 14:34 UTC) — switched to AutoByteus (usage-limit-fixture:lmstudio@127.0.0.1:52443). Chosen from this agent's history."
+      ],
+      [
+        "system_task_notification",
+        "system.runtime_handover",
+        "[System: runtime hand-over]"
+      ],
+      [
+        "system_task_notification",
+        "system.usage_limit",
+        "Continue the task where you left off."
+      ]
+    ]
+  },
+  "UL-11": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"tester_ceacae_04144ed7f1c343b7938a67d7705f8bc5\",\"task_id\":\"ad_hoc_task_733ff29f-5585-4334-addf-c284a26b6ade\",\"launch_notes\":[\"tester-ceacae: its agent default Codex App Server / gpt-e2e could not be used (gpt-e2e is exhausted until 2026-11-27 14:34 UTC); it runs on AutoByteus / usage-limit-fixture:lmstudio@127.0.0.1:52443 (chosen by the node).\"]}"
+        }
+      ],
+      "structuredContent": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "tester_ceacae_04144ed7f1c343b7938a67d7705f8bc5",
+        "task_id": "ad_hoc_task_733ff29f-5585-4334-addf-c284a26b6ade",
+        "launch_notes": [
+          "tester-ceacae: its agent default Codex App Server / gpt-e2e could not be used (gpt-e2e is exhausted until 2026-11-27 14:34 UTC); it runs on AutoByteus / usage-limit-fixture:lmstudio@127.0.0.1:52443 (chosen by the node)."
+        ]
+      }
+    },
+    "copyRunId": "tester_ceacae_04144ed7f1c343b7938a67d7705f8bc5",
+    "copyLaunch": {
+      "origin": "node_fallback",
+      "fallbacks": [
+        {
+          "layer": "agent_default",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-e2e",
+          "reason": "blocked",
+          "detail": "gpt-e2e is exhausted until 2026-11-27 14:34 UTC."
+        }
+      ]
+    }
+  },
+  "UL-12": {
+    "teamRunId": "usage_limit_team_nf_84de5c_2eb33221e1d249bba3896ac98db4ae2d",
+    "coordinator": "fresh_lead_f8f4c8_579794f128a84c919188b8f7701a0a13",
+    "launch": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/usage-limit-e2e-HmGI7K/workspace"
+    },
+    "launchSource": {
+      "origin": "node_fallback",
+      "fallbacks": []
+    },
+    "rows": null
+  },
+  "UL-10": {
+    "runId": "analyst_6b0ad7_da6ab0452ae448568bd77df36b6393e1",
+    "events": [
+      "2026-11-27T11:34:11.563Z",
+      "2026-11-27T11:34:15.717Z"
+    ],
+    "heldTurnEndedAt": "2026-11-27T11:34:15.717Z",
+    "switchedAt": "2026-11-27T11:34:16.133Z"
+  },
+  "events": [
+    {
+      "at": "2026-11-27T11:33:48.995Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "operator_a8b70e_35388e9d51b14fbba492985f14a82d1d",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:33:51.029Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "writer_e2fb9e_67b9e5b8c695403c8f1ecde7822c1461",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:33:52.871Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "planner_df2db3_7050d06755954eb4bccf43eda4100369",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:33:54.886Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "lead_c63133_d6e62481a4244c89855fed13e1a0927b",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:33:59.517Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "lonely_d6ba18_9a8173f02f64498b9b90df2b52ab51e3",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:00.189Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "newcomer_ba28d0_4324d0587f734de0946e3957580f47e0",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:03.450Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "idle_4abbe4_e6363f04090345f0bc69070d4d2f2e98",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:08.080Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "researcher_a427de_8b6d36e811b44b7f9ad42167f964ae40",
+      "data": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "agy-limited",
+        "blockedModels": [
+          "agy-limited"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:10.038Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "fresh_lead_f8f4c8_579794f128a84c919188b8f7701a0a13",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:11.563Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "analyst_6b0ad7_da6ab0452ae448568bd77df36b6393e1",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    },
+    {
+      "at": "2026-11-27T11:34:15.717Z",
+      "kind": "usage_limit_reached",
+      "agentRunId": "analyst_6b0ad7_da6ab0452ae448568bd77df36b6393e1",
+      "data": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e",
+        "blockedModels": [
+          "gpt-e2e"
+        ],
+        "resetAt": "2026-11-27T14:34:00.000Z"
+      }
+    }
+  ],
+  "switches": [
+    {
+      "at": "2026-11-27T11:33:49.664Z",
+      "agentRunId": "operator_a8b70e_35388e9d51b14fbba492985f14a82d1d",
+      "agentDefinitionId": "operator-a8b70e",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:33:51.421Z",
+      "agentRunId": "writer_e2fb9e_67b9e5b8c695403c8f1ecde7822c1461",
+      "agentDefinitionId": "writer-e2fb9e",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:33:53.573Z",
+      "agentRunId": "planner_df2db3_7050d06755954eb4bccf43eda4100369",
+      "agentDefinitionId": "planner-df2db3",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "the Model Router's turn ended without a decision",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:33:55.263Z",
+      "agentRunId": "lead_c63133_d6e62481a4244c89855fed13e1a0927b",
+      "agentDefinitionId": "lead-c63133",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:33:59.838Z",
+      "agentRunId": "lonely_d6ba18_9a8173f02f64498b9b90df2b52ab51e3",
+      "agentDefinitionId": "lonely-d6ba18",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": null,
+      "to": null,
+      "chosenBy": null,
+      "reason": null,
+      "outcome": "no_fallback"
+    },
+    {
+      "at": "2026-11-27T11:34:00.565Z",
+      "agentRunId": "newcomer_ba28d0_4324d0587f734de0946e3957580f47e0",
+      "agentDefinitionId": "newcomer-ba28d0",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "node_fallback",
+      "reason": "most used on this node in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:34:08.610Z",
+      "agentRunId": "researcher_a427de_8b6d36e811b44b7f9ad42167f964ae40",
+      "agentDefinitionId": "researcher-a427de",
+      "from": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "agy-limited"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:34:10.423Z",
+      "agentRunId": "fresh_lead_f8f4c8_579794f128a84c919188b8f7701a0a13",
+      "agentDefinitionId": "fresh-lead-f8f4c8",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "node_fallback",
+      "reason": "most used on this node in the last 30 days",
+      "outcome": "switched"
+    },
+    {
+      "at": "2026-11-27T11:34:16.133Z",
+      "agentRunId": "analyst_6b0ad7_da6ab0452ae448568bd77df36b6393e1",
+      "agentDefinitionId": "analyst-6b0ad7",
+      "from": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-e2e"
+      },
+      "routerFailure": "Model Routing is off",
+      "to": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "usage-limit-fixture:lmstudio@127.0.0.1:52443"
+      },
+      "chosenBy": "agent_history",
+      "reason": "most used by this agent in the last 30 days",
+      "outcome": "switched"
+    }
+  ],
+  "codexTurns": [
+    {
+      "threadId": "fake-thread-20027-1",
+      "turnId": "fake-thread-20027-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-01 Book the flight.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-20192-1",
+      "turnId": "fake-thread-20192-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-02 Draft the outline.",
+      "mode": "ok"
+    },
+    {
+      "threadId": "fake-thread-20192-1",
+      "turnId": "fake-thread-20192-1-turn-2",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-02 Now write section two.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-22300-1",
+      "turnId": "fake-thread-22300-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-03 Plan the trip.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-22718-1",
+      "turnId": "fake-thread-22718-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-04 Coordinate the release.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-1",
+      "turnId": "fake-thread-25312-1-turn-1",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-05 Do the work.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-2",
+      "turnId": "fake-thread-25312-2-turn-2",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-09 Start the work.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-3",
+      "turnId": "fake-thread-25312-3-turn-3",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-07 Try it.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-4",
+      "turnId": "fake-thread-25312-4-turn-4",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-12 Coordinate the launch.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-5",
+      "turnId": "fake-thread-25312-5-turn-5",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-10 Analyse the logs.",
+      "mode": "limit"
+    },
+    {
+      "threadId": "fake-thread-25312-5",
+      "turnId": "fake-thread-25312-5-turn-6",
+      "model": "gpt-e2e",
+      "text": "CASE:UL-10 Also check the alerts. HOLD_LIMIT:4000",
+      "mode": "limit"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
-import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
+import { SETTINGS_LAUNCH_SOURCE, type LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
-import type { PendingRuntimeSwitch, RunProviderBinding } from "../store/agent-run-metadata-types.js";
+import type { PendingRuntimeSwitch, RunProviderBinding, RuntimeSwitchCause } from "../store/agent-run-metadata-types.js";
 import type { ConfiguredAgentExecutionNode } from "./run-execution-tree-shared-records.js";
 
 /**
@@ -26,6 +26,8 @@ export type RuntimeSelection = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   continuation: RunContinuation;
+  /** An automatic switch's facts (autobyteus-646 R-7), kept on the pending switch it makes or updates. */
+  cause?: RuntimeSwitchCause;
 }>;
 
 const withoutPending = (state: RuntimeBindingState): Omit<RuntimeBindingState, "pendingRuntimeSwitch"> => {
@@ -72,7 +74,7 @@ export const applyRuntimeSelection = (
       llmConfig,
       platformAgentRunId: null,
     },
-    pendingRuntimeSwitch: pending ?? {
+    pendingRuntimeSwitch: withCause(pending ?? {
       switchId,
       from: {
         runtimeKind: state.binding.runtimeKind,
@@ -80,8 +82,14 @@ export const applyRuntimeSelection = (
         llmConfig: state.binding.llmConfig ?? null,
         platformAgentRunId: state.binding.platformAgentRunId,
       },
-    },
+    }, selection.cause),
   };
+};
+
+/** A save's pending switch with its cause: an automatic switch states it; a person's save leaves none (it replaces one). */
+const withCause = (pending: PendingRuntimeSwitch, cause: RuntimeSwitchCause | undefined): PendingRuntimeSwitch => {
+  const { cause: _previous, ...rest } = pending;
+  return cause ? { ...rest, cause } : rest;
 };
 
 export type RuntimeSwitchConflictReason = "not_pending" | "switch_id_mismatch";
@@ -130,6 +138,18 @@ export const commitRuntimeSwitchOnRecord = <T extends Readonly<{
   return { kind: "committed", record: { ...rest, platformAgentRunId } as unknown as T };
 };
 
+/** The task kind an automatic switch's router choice records (a Model Router source names one; the switch has no Task). */
+export const AUTOMATIC_SWITCH_TASK_KIND = "runtime switch";
+
+/**
+ * autobyteus-646 R-19: the launch source an automatic runtime switch records, who chose it (`model_router`,
+ * `agent_history` or `node_fallback`); a person's Save records `settings`. The router's reason is its choice reason.
+ */
+export const automaticSwitchLaunchSource = (cause: RuntimeSwitchCause): LaunchConfigurationSource => cause.chosenBy === "model_router"
+  ? Object.freeze({ origin: "model_router", fallbacks: Object.freeze([]), choiceReason: cause.reason?.trim() || "Chosen by the Model Router.",
+    taskKind: AUTOMATIC_SWITCH_TASK_KIND })
+  : Object.freeze({ origin: cause.chosenBy, fallbacks: Object.freeze([]) });
+
 /**
  * A settings save on a configured member of a Team or Org (autobyteus-348): the shared rule over the node's own fields. The
  * node's `launchConfiguration` holds the selection (the NEW one while a switch is pending), `platformAgentRunId` the session,
@@ -140,6 +160,8 @@ export const applySelectionToConfiguredMember = (
   member: ConfiguredAgentExecutionNode,
   selection: RuntimeSelection,
   switchId: string,
+  /** autobyteus-646 R-19: the source a changing commit records; a person's Save is `settings`. */
+  launchSource: LaunchConfigurationSource = SETTINGS_LAUNCH_SOURCE,
 ): ConfiguredAgentExecutionNode => {
   const launch = member.launchConfiguration;
   const before: RuntimeBindingState = {
@@ -147,11 +169,11 @@ export const applySelectionToConfiguredMember = (
     ...(member.pendingRuntimeSwitch ? { pendingRuntimeSwitch: member.pendingRuntimeSwitch } : {}),
   };
   const next = applyRuntimeSelection(before, selection, switchId);
-  const { pendingRuntimeSwitch: _pending, launchSource, ...rest } = member;
+  const { pendingRuntimeSwitch: _pending, launchSource: memberSource, ...rest } = member;
   return {
     ...rest,
     // An edit becomes the member's own launch, recorded as one (design V-11): never its team's origin again.
-    ...(isDeepStrictEqual(next, before) ? (launchSource ? { launchSource } : {}) : { launchSource: SETTINGS_LAUNCH_SOURCE }),
+    ...(isDeepStrictEqual(next, before) ? (memberSource ? { launchSource: memberSource } : {}) : { launchSource }),
     platformAgentRunId: next.binding.platformAgentRunId,
     launchConfiguration: Object.freeze({
       ...launch,

@@ -18,6 +18,7 @@ import { ConfiguredAgentExecutionRegistry } from "./registries/configured-agent-
 import { FlatTeamAgentExecutionHandle } from "./flat-team-agent-execution-handle.js";
 import { FlatTeamMemberConfigResolver } from "./registries/flat-team-member-config-resolver.js";
 import type { FrozenTeamRunTerminationScope } from "../domain/frozen-team-run-termination-scope.js";
+import type { TeamMemberSwitchControl } from "../backends/team-run-backend.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 
 /** How long a leaving member that was not quiet waits before it is asked again. */
@@ -137,6 +138,12 @@ export class FlatTeamExecutionManager {
     const handle = this.getDirectAgent(agentRunId);
     if (!handle) throw new Error(`RUN_NOT_FOUND: AgentRun '${agentRunId}' is not direct to TeamRun '${this.context.teamRunId}'.`);
     return handle.getOrCreateAgentRun();
+  }
+
+  /** A direct member's handle as its switch control (autobyteus-646 R-1); null when it is not a direct member. */
+  directAgentControl(agentRunId: string): TeamMemberSwitchControl | null {
+    this.assertActive();
+    return this.getDirectAgent(agentRunId);
   }
 
   /** The members whose execution is live now (a handle that has not stopped): read under the persistence lock (N-14). */

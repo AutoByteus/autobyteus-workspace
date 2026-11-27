@@ -54,3 +54,10 @@ export const RESTART_RESUME_NOTICE_SENDER_ID = "system.restart_resume";
  * by the live-event path.
  */
 export const RUNTIME_HANDOVER_NOTICE_SENDER_ID = "system.runtime_handover";
+
+/**
+ * `sender_id` of the notice a run shows when its runtime reached a usage limit and no other runtime is usable
+ * (autobyteus-646 C-5, REQ-007). Shared by the usage-limit switch listener, which produces it, and agent memory, which
+ * records it in the run's conversation.
+ */
+export const USAGE_LIMIT_NOTICE_SENDER_ID = "system.usage_limit";

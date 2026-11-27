@@ -51,6 +51,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Sandboxes (disposable sandbox nodes an agent creates, uses and removes; relayed through this node) | [sandboxes.md](./sandboxes.md) |
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
+| Run Events (the node's stream of run moments; a usage limit reached, exhaustion, the runtime switch) | [run_events.md](./run_events.md) |
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
 | Restart Resume (busy runs are told after a restart; woken after an update) | [restart_resume.md](./restart_resume.md) |
 | Skills | [skills.md](./skills.md) |

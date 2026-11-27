@@ -106,7 +106,7 @@ export interface ModelRouterPort {
 export const NO_MODEL_ROUTING: ModelRouterPort = Object.freeze({ openDelegation: async () => null });
 
 /** Where a recorded agent's launch came from, as Decisions and Overview group it. */
-export type DecisionLaunchSource = "agent_default" | "team_default" | "model_router" | "inherited";
+export type DecisionLaunchSource = "agent_default" | "team_default" | "model_router" | "agent_history" | "node_fallback" | "inherited";
 
 /**
  * One decision record: one agent of a fresh delegated copy resolved on this node while Model Routing was on (REQ-012).

@@ -434,6 +434,7 @@ export class AgentTeamRunManager {
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
       changeNotices: this.changeNotices,
+      modelSelectionValidator: this.modelSelectionValidator,
     } as const;
   }
 

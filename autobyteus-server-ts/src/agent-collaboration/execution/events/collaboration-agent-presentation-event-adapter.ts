@@ -16,6 +16,7 @@ import { buildMemberInputPresentationEvent } from "./member-input-presentation-e
 export type CollaborationAgentPresentationAdaptationResult =
   | Readonly<{ kind: "publish"; event: AgentPresentationEvent; message: AgentPresentationMessage }>
   | Readonly<{ kind: "filtered_collaboration_duplicate" }>
+  | Readonly<{ kind: "not_presented" }>
   | Readonly<{ kind: "rejected"; code: "AGENT_PRESENTATION_ADMISSION_FAILED"; message: string }>;
 
 const publish = (event: AgentPresentationEvent): CollaborationAgentPresentationAdaptationResult => Object.freeze({

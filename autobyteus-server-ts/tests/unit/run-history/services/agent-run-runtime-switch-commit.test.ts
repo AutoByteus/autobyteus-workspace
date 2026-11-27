@@ -74,6 +74,12 @@ describe("a run's recorded launch source after a settings save (CR-461-078, desi
     expect(buildRuntimeSwitchMetadata({ metadata: stopped(), selection: codex, switchId: AT }).launchSource).toEqual(settings);
   });
 
+  it("autobyteus-646 R-19: an automatic switch records who chose its launch; a Save keeps `settings`", () => {
+    const chosen = { origin: "node_fallback" as const, fallbacks: [] };
+    expect(buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), selection: codex, switchId: AT, launchSource: chosen }).launchSource).toEqual(chosen);
+    expect(buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), selection: codex, switchId: AT }).launchSource).toEqual(settings);
+  });
+
   it("a save of the same selection changes nothing: the source stays", () => {
     const same = buildRuntimeSwitchMetadata({ metadata: stopped({ launchSource: source }), switchId: AT,
       selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, continuation: "same_session" } });

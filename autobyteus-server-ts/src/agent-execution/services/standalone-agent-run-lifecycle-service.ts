@@ -30,6 +30,7 @@ import {
   StandaloneStoppedRunSelectionUpdater,
   type StoppedRunSelectionInput,
 } from "./standalone-stopped-run-selection-updater.js";
+import { StandaloneAutomaticRuntimeSwitch, type AutomaticRuntimeSwitchInput, type AutomaticRuntimeSwitchResult } from "./standalone-automatic-runtime-switch.js";
 
 export type StandaloneAgentRunActivationResult = Readonly<{
   run: AgentRun;
@@ -64,6 +65,7 @@ export class StandaloneAgentRunLifecycleService {
   private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly selectionUpdater: StandaloneStoppedRunSelectionUpdater;
+  private readonly automaticSwitch: StandaloneAutomaticRuntimeSwitch;
   /** The memory and notice ports of an agent runtime switch; none for runs that cannot switch (application-owned runs). */
   private readonly switching: RuntimeSwitching | null;
 
@@ -98,6 +100,8 @@ export class StandaloneAgentRunLifecycleService {
       historyCatalogService: this.historyCatalogService,
       modelSelectionValidator: deps.modelSelectionValidator,
     });
+    this.automaticSwitch = new StandaloneAutomaticRuntimeSwitch({ agentRunManager: this.agentRunManager, metadataService: this.metadataService,
+      historyCatalogService: this.historyCatalogService, modelSelectionValidator: deps.modelSelectionValidator });
   }
 
   /** G-5 (REQ-016): a run whose saved model its runtime no longer offers is refused before its runtime starts. */
@@ -148,6 +152,16 @@ export class StandaloneAgentRunLifecycleService {
   updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     const runId = requiredRunId(input.agentRunId);
     return this.withTransition(runId, () => this.selectionUpdater.update(runId, input));
+  }
+
+  /** autobyteus-646 R-11: the automatic switch's checks, in the transition lane, without writing. */
+  checkAutomaticRuntimeSwitch(input: AutomaticRuntimeSwitchInput): Promise<Exclude<AutomaticRuntimeSwitchResult, { kind: "switched" }> | null> {
+    return this.withTransition(requiredRunId(input.agentRunId), () => this.automaticSwitch.check(input));
+  }
+
+  /** autobyteus-646 R-11: the automatic switch (its own checks, then the commit primitive), in the transition lane. */
+  switchRuntimeAutomatically(input: AutomaticRuntimeSwitchInput): Promise<AutomaticRuntimeSwitchResult> {
+    return this.withTransition(requiredRunId(input.agentRunId), () => this.automaticSwitch.commit(input));
   }
 
   private async resolveInsideTransition(

@@ -77,7 +77,7 @@ export type RunMemberDelegatedFacts = Readonly<{
 
 /** Where a delegated copy's launch came from (`configured`: a copy of an in-run placement). */
 /** `settings`: the user's own Settings edit (autobyteus-461 V-11), shown with no origin text. */
-export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'inherited' | 'configured' | 'settings' | 'not_recorded'
+export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'agent_history' | 'node_fallback' | 'inherited' | 'configured' | 'settings' | 'not_recorded'
 
 /**
  * A copy agent the Model Router chose for (autobyteus-32 REQ-009): why, for which kind of Task, and where its decision

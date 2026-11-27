@@ -752,6 +752,48 @@ describe("CodexThreadEventConverter through CodexThread", () => {
     expect(converted[0].statusHint).toBe("ERROR");
   });
 
+  it.each([
+    ["the plain value", "usageLimitExceeded"],
+    ["the object form", { usageLimitExceeded: null }],
+  ])("autobyteus-646 C-4: a terminal Codex error whose codexErrorInfo is usageLimitExceeded (%s) carries error_kind usage_limit", (_form, codexErrorInfo) => {
+    const converter = createCodexThreadEventHarness("run-limit");
+    const converted = converter.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: { error: { message: "You've hit your usage limit.", codexErrorInfo }, willRetry: false, threadId: "thread-1", turnId: "turn-limit" },
+    });
+    expect(converted.map((event) => event.eventType)).toEqual([AgentRunEventType.ERROR]);
+    expect(converted[0].payload).toMatchObject({ error_effect: "terminal", turn_id: "turn-limit", error_kind: "usage_limit" });
+  });
+
+  it("autobyteus-646 R-13: every ERROR a usage-limit turn emits carries error_kind (the error notification ends the turn first)", () => {
+    const converter = createCodexThreadEventHarness("run-limit-three");
+    converter.thread.markTurnStarted("turn-3");
+    const error = { message: "You've hit your usage limit.", codexErrorInfo: "usageLimitExceeded" };
+    const errors = [
+      ...converter.emitThroughThread({ method: CodexThreadEventName.ERROR, params: { error, willRetry: false, threadId: "thread-1", turnId: "turn-3" } }),
+      ...converter.emitThroughThread({ method: CodexThreadEventName.THREAD_STATUS_CHANGED, params: { threadId: "thread-1", turnId: "turn-3", status: { type: "failed" } } }),
+      ...converter.emitThroughThread({ method: CodexThreadEventName.TURN_COMPLETED, params: { threadId: "thread-1", turn: { id: "turn-3", status: "failed", error } } }),
+    ].filter((event) => event.eventType === AgentRunEventType.ERROR);
+    expect(errors.map((event) => [event.payload.code ?? null, event.payload.turn_id, event.payload.error_kind])).toEqual(
+      errors.map((event) => [event.payload.code ?? null, "turn-3", "usage_limit"]));
+    expect(errors.map((event) => event.payload.code)).toEqual(["RUNTIME_ERROR", "CODEX_TURN_FAILED"]);
+  });
+
+  it("autobyteus-646 C-4: a failed turn whose error is usageLimitExceeded carries error_kind; another codexErrorInfo carries none", () => {
+    const converter = createCodexThreadEventHarness("run-limit-turn");
+    const failedTurn = (turnId: string, codexErrorInfo: unknown) => converter.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { threadId: "thread-1", turn: { id: turnId, status: "failed", error: { message: "stopped", codexErrorInfo } } },
+    }).find((event) => event.eventType === AgentRunEventType.ERROR);
+    expect(failedTurn("turn-a", "usageLimitExceeded")?.payload).toMatchObject({ code: "CODEX_TURN_FAILED", turn_id: "turn-a", error_kind: "usage_limit" });
+    expect(failedTurn("turn-b", "contextWindowExceeded")?.payload).not.toHaveProperty("error_kind");
+    const otherError = converter.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: { error: { message: "rate limited", codexErrorInfo: "rateLimitExceeded" }, willRetry: false, turnId: "turn-c" },
+    });
+    expect(otherError[0]?.payload).not.toHaveProperty("error_kind");
+  });
+
   it("preserves active reasoning and ordered-tool correlation across a retry diagnostic", () => {
     const converter = createCodexThreadEventHarness("run-retry-diagnostic");
     converter.emitThroughThread({

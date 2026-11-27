@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { StandaloneRunAgentHandle } from "../../../src/standalone-agent-run-root/domain/standalone-run-agent-handle.js";
+import { UNUSED_AUTOMATIC_SWITCH } from "../../helpers/runtime-switch-fakes.js";
 
 const HOST = "host-run";
 
@@ -18,6 +19,7 @@ const subject = () => {
       live = { runId: HOST, isActive: () => true };
       return { run: live as never, metadata: {} as never };
     }),
+    ...UNUSED_AUTOMATIC_SWITCH,
     terminateRunAgent: vi.fn(async () => {
       const was = live;
       live = null;

@@ -222,6 +222,7 @@ describe('SystemTaskNotificationSegment', () => {
       ['skill', 'system.skill_update_notifier', notice('[Platform notice — skill updated]', 'Your skill package `x` has been updated.'), 'skillUpdated'],
       ['tools', 'system.tool_list_update_notifier', notice('[Platform notice — tools updated]', 'Your tools changed. Now available: search.'), 'toolsUpdated'],
       ['runtime change', 'system.runtime_handover', 'Agent runtime changed from A to B.', 'runtimeChanged'],
+      ['usage-limit continue notice (autobyteus-646)', 'system.usage_limit', 'Continue the task where you left off.', 'runtimeChanged'],
       ['background tasks', 'system.background_task_notifier', notice('[Platform notice — background tasks finished]', 'build (completed, 3s)'), 'backgroundTasksFinished'],
       ['background tasks, replayed', 'system', notice('[Platform notice — background tasks finished]', 'build (completed, 3s)'), 'backgroundTasksFinished'],
       ['task notice', 'system_task_runner', 'You have a new task.\n\nTask ID: task_0001', 'platformNotice'],

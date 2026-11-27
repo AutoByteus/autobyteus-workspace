@@ -18,6 +18,7 @@ Delegation side: [collaboration_model.md](../design/collaboration_model.md) (CM-
 | `AUTOBYTEUS_MODEL_ROUTER_RUNTIME` | The runtime the Model Router agent runs on. |
 | `AUTOBYTEUS_MODEL_ROUTER_MODEL` | The model it runs on. |
 | `AUTOBYTEUS_MODEL_ROUTER_LLM_CONFIG` | Its model settings (`llmConfig`, e.g. the thinking level) as one JSON object; empty means none (autobyteus-313). |
+| `AUTOBYTEUS_USAGE_LIMIT_SWITCH_ENABLED` | "Switch runtime when a usage limit is reached" (`true`/`false`; on by default; autobyteus-646). Independent of the switch above; see [Runtime switch on a usage limit](#runtime-switch-on-a-usage-limit). |
 
 The last three are the router's launch configuration, the same fields as any
 agent's: runtime, model and model settings. `model-routing-settings.ts` reads
@@ -38,8 +39,14 @@ copy; the router never does:
 1. the agent's own default, when it can run now;
 2. the team's default, when it can run now;
 3. the Model Router, when Model Routing is on and the router is active;
-4. the delegator's launch (inherited), on this node only;
-5. otherwise the delegation is refused, and the refusal says why.
+4. this agent's history (origin `agent_history`, autobyteus-646 R-2/R-8), only
+   when one of its layers was skipped as **exhausted** and the router did not
+   choose: its most-used usable runtime of the last 30 days, with the model it
+   last used there (`FallbackChooser.fallbackLaunch`);
+5. the delegator's launch (inherited), on this node only;
+6. after an exhausted skip, when the inherited launch can't run either (or
+   there is none): the node fallback (origin `node_fallback`, R-17);
+7. otherwise the delegation is refused, and the refusal says why.
 
 "Can run now" (`launch-preferences/launch-usability-check.ts`) checks the
 runtime is installed (U1), signed in (U3), the model exists (U2), its runtime is
@@ -47,6 +54,15 @@ not out of limits (U4) and the model is not blocked (U4b). The signed-out and
 blocked checks apply only while Model Routing is on, because only then does the
 node read its runtimes (`AvailableAgentRuntimesService.readWithSignIn()`). A
 skipped default becomes a launch note ("opus is blocked until …").
+
+Exhaustion (autobyteus-646 C-3) is checked for every layer's launch, the
+inherited one included, whether or not Model Routing is on: a model a recent
+`usage_limit_reached` event lists, until its reset (or one hour), is skipped with
+the persisted reason `blocked` and the detail "<model> is exhausted until
+<time>". A skip for any other reason keeps the order above without the history
+layer. When the history has nothing usable and the inherited launch is exhausted
+too, the delegation is refused with the exhaustion named. The launch note of a
+history launch reads "(chosen from its history)".
 
 ## The router
 
@@ -103,9 +119,50 @@ skipped default becomes a launch note ("opus is blocked until …").
   run cannot be restored, a new one starts. `openModelRouterAgent` opens its run
   for the user.
 
+## Runtime switch on a usage limit
+
+autobyteus-646: when a run's turn fails on a usage limit, the run continues on
+another runtime. The detection and the event are the run event hub's
+([run_events.md](run_events.md)); this module owns the choice and the records.
+
+- **`FallbackChooser`** (`services/fallback-chooser.ts`). The candidates are the
+  runtimes and models usable now: in the node's report (installed, signed in),
+  not blocked, not exhausted. The router is asked first, when Model Routing is
+  on and the router's own launch is not exhausted; then this agent's history;
+  then the node fallback (R-17): the runtime and model most used on this node in
+  the last 30 days across all agents that are usable now, else the first usable
+  runtime in the node's runtime list with its first usable model (never random).
+  There is no fallback only when nothing is usable. The reasons: "most used by
+  this agent in the last 30 days", "most used on this node in the last 30 days",
+  "the first usable runtime on this node".
+- **The switch request** (`ModelRouter.requestSwitch`, C-7). It goes through the
+  same queue and 40 s budget as a routing request, as a system notice from
+  `system.model_router` that starts with "Switch request <id>"
+  (`services/switch-request-text.ts`). It carries the agent, why, the usable
+  runtimes and models, the agent's launches of the last 30 days, its earlier
+  switches and `knowledge.md`. The router answers with
+  `submit_runtime_switch(requestId, runtime, model, reason)`, which
+  `ModelRoutingSessions.submitSwitch` checks against the usable list. The
+  built-in router template does not list the tool or describe switch requests
+  until the founder approves its text (R-6). Until then the router's turn ends
+  without a decision and history decides.
+- **Switch records** (`stores/switch-record-log.ts`, C-2):
+  `<appData>/model-routing/switches_active.jsonl`, sealed at 4 MB, one line per
+  handled event: `at`, `agentRunId`, `agentDefinitionId`, `from`, `to` (null
+  without a fallback), `chosenBy` (`model_router | agent_history | node_fallback`,
+  null without a fallback; the same values as the launch origin, R-19), `reason`, `routerFailure`, `outcome` (`switched | no_fallback |
+  switch_failed`). The switch request reads this agent's records of the last
+  30 days. Sealed files whose last record is older than 90 days are deleted
+  (R-14; DEC-008, the default until the founder decides); the routing decision
+  log keeps everything (its "All" period).
+- **Agent launch history** (`run-history/services/agent-launch-history.ts`,
+  C-8): derived when needed from the agent history index with each run's
+  metadata, and from the Team history index with each Team's tree.
+
 ## Tools of the router's run
 
-The router's tools are its template list (runtimes, `submit_launch_choices`,
+The router's tools are its template list (runtimes, `submit_launch_choices`
+(`submit_runtime_switch` is registered and served, but not listed until R-6),
 `search_web`, `read_url`, `read_file`, `write_file`, `edit_file`), with no
 collaboration tools (it is system-owned), plus the tools its runtime brings.
 It runs like any auto-approved agent on that runtime, with no router-specific
@@ -147,7 +204,8 @@ fit B's 40 s routing; other peer calls keep 20 s.
 
 - Queries: `modelRoutingStatus`, `modelRoutingDecisions(limit, before, source:
   ROUTER | NOT_ROUTER)`, `modelRoutingStatistics(period: DAYS_7 | DAYS_30 | ALL)`.
-- Mutations: `setModelRoutingEnabled(enabled)`, `setModelRouterLaunch(runtimeKind,
+- Mutations: `setModelRoutingEnabled(enabled)`, `setUsageLimitSwitchEnabled(enabled)`
+  (autobyteus-646; the status carries `usageLimitSwitchEnabled`), `setModelRouterLaunch(runtimeKind,
   llmModelIdentifier, llmConfig: JSON)` (refused with the launch check's message;
   answers the status, whose `routerLaunch` carries `llmConfig`),
   `openModelRouterAgent` (the run ID).
@@ -162,7 +220,8 @@ them on shutdown.
 ## Tests
 
 `tests/unit/model-routing/` (queue, sessions, router, agent, log, tools,
-submit tool and records), `tests/unit/agent-collaboration/collaborator-launch-resolver-model-routing.test.ts`,
+submit tool and records; autobyteus-646: `fallback-chooser`, `runtime-switch-request`,
+`switch-records-and-launch-history`), `tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-exhaustion.test.ts`, `tests/unit/agent-collaboration/collaborator-launch-resolver-model-routing.test.ts`,
 and the remote collaboration tests for `task`, `launches` and `modelRouting`.
 E2E: `tests/e2e/model-routing/model-routing-delegation.e2e.test.ts` (MR-01…09, scripted AGY CLI with
 `RUN_AGY_FAILURE_E2E=1`), RC-39…41 in `tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`, and

@@ -113,7 +113,7 @@ const open = ref(new Set<string>())
 const toggle = (kind: string): void => { const next = new Set(open.value); next.has(kind) ? next.delete(kind) : next.add(kind); open.value = next }
 const percent = (part: number, total: number): string => (total ? `${Math.round((part / total) * 100)}%` : '—')
 
-const sourceParts = computed(() => (['model_router', 'agent_default', 'team_default', 'inherited'] as DecisionLaunchSource[])
+const sourceParts = computed(() => (['model_router', 'agent_default', 'team_default', 'agent_history', 'node_fallback', 'inherited'] as DecisionLaunchSource[])
   .map((source) => ({ source, count: statistics.value?.sources[source] ?? 0, label: t(SOURCE_KEY[source]), color: SOURCE_COLORS[source] }))
   .filter((part) => part.count > 0))
 const sourceSummary = computed(() => sourceParts.value.map((part) => `${part.label} ${part.count}`).join(', '))

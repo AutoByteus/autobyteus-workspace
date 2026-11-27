@@ -20,6 +20,7 @@ import type { AgentDefinitionService } from "../../agent-definition/services/age
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { peerDelegatedFromOf, type AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import { launchConfigurationOf } from "../domain/standalone-run-launch.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneAgentRunRoot, StandaloneRootPackageSnapshot } from "../domain/standalone-agent-run-root.js";
 import { StandaloneRunAgentHandle, type StandaloneRunAgentActivationBackend } from "../domain/standalone-run-agent-handle.js";
@@ -60,13 +61,6 @@ export type StandaloneRootInspection = Readonly<{
 }>;
 
 
-const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfiguration => Object.freeze({
-  runtimeKind: metadata.runtimeKind,
-  llmModelIdentifier: metadata.llmModelIdentifier,
-  llmConfig: metadata.llmConfig === null ? null : structuredClone(metadata.llmConfig),
-  autoExecuteTools: metadata.autoExecuteTools,
-  workspaceRootPath: metadata.workspaceRootPath,
-});
 
 /**
  * The registry of `StandaloneAgentRunRoot`s, one per collaboration-eligible standalone run in use (autobyteus-461: a

@@ -21,6 +21,7 @@ import type { RunPackageFileWriteResult } from "../../src/run-history/store/atom
 import { testAgentNode, testTeamRunConfig } from "./current-team-run-fixtures.js";
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../helpers/explicit-host-collaborators.js";
 import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
+import { ACCEPTING_MODEL_SELECTION_VALIDATOR } from "../helpers/runtime-switch-fakes.js";
 
 /**
  * A configured root's placement (org-teams-follow-definition: an Org's mounted Team and direct agents are runs of their
@@ -134,7 +135,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     const built = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     const tree = options.containedIn ? { ...built, containedIn: options.containedIn } : built;
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: (options.receivedFiles ?? NO_FILES_RECEIVED) as never, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
+    const root = await materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: (options.receivedFiles ?? NO_FILES_RECEIVED) as never, memoryLocator: new AgentRunMemoryLocator({ memoryDir }), modelSelectionValidator: ACCEPTING_MODEL_SELECTION_VALIDATOR, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       config, tree: tree as never,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,

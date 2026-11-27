@@ -768,6 +768,14 @@ shows what its Model Router chose (server side:
   keeps the saved launch. The controls are inert and dimmed while Model Routing
   is off or a save runs. A changed launch starts a new router run (its
   `knowledge.md` stays).
+  Below it, the switch **Switch runtime when a usage limit is reached**
+  (autobyteus-646, `setUsageLimitSwitchEnabled`, the status's
+  `usageLimitSwitchEnabled`, on by default) is usable whether or not Model
+  Routing is on: a run whose runtime reaches its usage limit continues on another
+  usable runtime, chosen by the router when Model Routing is on, otherwise the
+  one the agent used most ([Run Events](../../autobyteus-server-ts/docs/modules/run_events.md)).
+  Decisions sources "Agent history" and "Node fallback" mark a delegated launch
+  chosen after an exhausted default (autobyteus-646 R-8, R-17).
 - **Names** (autobyteus-313): the page names runtimes and models as the rest of
   the app does (`modelRoutingNames.ts`): a runtime by its one name
   (`agentRuntimeName`, "Claude Agent SDK"; `GLOSSARY.md`, Agent Runtimes), a model

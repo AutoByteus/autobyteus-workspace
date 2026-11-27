@@ -57,6 +57,14 @@ export class ModelRoutingResolver {
     return current.router.status();
   }
 
+  /** autobyteus-646 C-6: "Switch runtime when a usage limit is reached". */
+  @Mutation(() => GraphQLJSON)
+  async setUsageLimitSwitchEnabled(@Arg("enabled", () => Boolean) enabled: boolean): Promise<ModelRoutingStatus> {
+    const current = routing();
+    try { current.settings.setUsageLimitSwitchEnabled(enabled); } catch (error) { throw invalid(error instanceof Error ? error.message : String(error)); }
+    return current.router.status();
+  }
+
   @Mutation(() => GraphQLJSON)
   async setModelRouterLaunch(
     @Arg("runtimeKind", () => String) runtimeKind: string,

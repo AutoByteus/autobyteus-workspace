@@ -1,5 +1,5 @@
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunMetadata, PendingRuntimeSwitch } from "./agent-run-metadata-types.js";
+import type { AgentRunMetadata, PendingRuntimeSwitch, RuntimeSwitchCause } from "./agent-run-metadata-types.js";
 import { nullableString, objectRecord, requiredString, requireKeys } from "./run-execution-tree-shared-record-schemas.js";
 
 /**
@@ -17,6 +17,7 @@ export const parsePendingRuntimeSwitch = (value: unknown, label = "pendingRuntim
     throw new Error(`${label}.from.runtimeKind must be an agent runtime kind.`);
   }
   const llmConfig = from.llmConfig === null ? null : objectRecord(from.llmConfig, `${label}.from.llmConfig`);
+  const cause = section.cause === undefined ? null : parseRuntimeSwitchCause(section.cause, `${label}.cause`);
   return {
     switchId: requiredString(section.switchId, `${label}.switchId`),
     from: {
@@ -25,7 +26,20 @@ export const parsePendingRuntimeSwitch = (value: unknown, label = "pendingRuntim
       llmConfig,
       platformAgentRunId: nullableString(from.platformAgentRunId, `${label}.from.platformAgentRunId`),
     },
+    ...(cause ? { cause } : {}),
   };
+};
+
+/** An automatic switch's cause (autobyteus-646 R-7), read with its exact fields; a malformed one makes the file unreadable. */
+const parseRuntimeSwitchCause = (value: unknown, label: string): RuntimeSwitchCause => {
+  const cause = objectRecord(value, label);
+  requireKeys(cause, ["kind", "resetAt", "chosenBy", "reason"], label);
+  if (cause.kind !== "usage_limit") throw new Error(`${label}.kind must be usage_limit.`);
+  if (cause.chosenBy !== "model_router" && cause.chosenBy !== "agent_history" && cause.chosenBy !== "node_fallback") {
+    throw new Error(`${label}.chosenBy must be model_router, agent_history or node_fallback.`);
+  }
+  return { kind: "usage_limit", resetAt: nullableString(cause.resetAt, `${label}.resetAt`), chosenBy: cause.chosenBy,
+    reason: nullableString(cause.reason, `${label}.reason`) };
 };
 
 /**

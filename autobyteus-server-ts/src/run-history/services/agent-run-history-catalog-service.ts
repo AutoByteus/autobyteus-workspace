@@ -1,4 +1,5 @@
 import { RootRunPackageReadinessIndex } from "./root-run-package-readiness-index.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -201,6 +202,8 @@ export class AgentRunHistoryCatalogService {
     runId: string;
     selection: RunSelectionToCommit;
     switchId: string;
+    /** autobyteus-646 R-19: who chose an automatic switch's launch; a person's Save records `settings`. */
+    launchSource?: LaunchConfigurationSource;
   }): Promise<AgentRunModelConfigCommitResult> {
     return this.enqueueValue(async () => {
       const runId = input.runId.trim();
@@ -212,6 +215,7 @@ export class AgentRunHistoryCatalogService {
         archived: Boolean(row?.archivedAt),
         selection: input.selection,
         switchId: input.switchId,
+        ...(input.launchSource ? { launchSource: input.launchSource } : {}),
       });
     });
   }

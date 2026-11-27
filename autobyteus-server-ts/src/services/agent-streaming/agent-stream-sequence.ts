@@ -8,7 +8,7 @@ import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-r
 import { AgentMemoryService } from "../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import { SnapshotBarrier, type SnapshotConnection } from "../../utils/snapshot-barrier.js";
-import { getAgentRunEventMessageMapper } from "./agent-run-event-message-mapper.js";
+import { getAgentRunEventMessageMapper, isClientRunEvent } from "./agent-run-event-message-mapper.js";
 import { ServerMessageType, type ServerMessage } from "./models.js";
 import { cloneStreamPayload, streamPayloadsEqual } from "./websocket-egress/stream-payload-equality.js";
 import { logRuntimeEventForDebug } from "./runtime-event-debug.js";
@@ -88,7 +88,7 @@ export class AgentStreamSequence {
 
   /** Numbers one run event; called from the run's listener, subscribed after the memory recorder's. */
   accept(event: AgentRunEvent): void {
-    if (this.disposed || isStoredMarkerEcho(event)) return;
+    if (this.disposed || isStoredMarkerEcho(event) || !isClientRunEvent(event)) return;
     let message: ServerMessage;
     try {
       message = this.deps.map(event);

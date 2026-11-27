@@ -14,6 +14,8 @@ export type ModelRouterLaunch = Readonly<{
 
 export type ModelRoutingStatus = Readonly<{
   enabled: boolean
+  /** autobyteus-646 C-6: "Switch runtime when a usage limit is reached"; independent of `enabled`. */
+  usageLimitSwitchEnabled: boolean
   routerLaunch: ModelRouterLaunch | null
   active: boolean
   reasonCode: ModelRoutingReasonCode | null
@@ -22,7 +24,7 @@ export type ModelRoutingStatus = Readonly<{
   agentRunId: string | null
 }>
 
-export type DecisionLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'inherited'
+export type DecisionLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'agent_history' | 'node_fallback' | 'inherited'
 
 export type RoutingDecisionRecord = Readonly<{
   recordedAt: string

@@ -3,6 +3,7 @@ import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
 import { resolveTurnIdFromAppServerMessage } from "../thread/codex-thread-id-resolver.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import { codexErrorKindFields } from "./codex-error-kind.js";
 import type { CodexCompactionAbandonReason } from "./codex-provider-compaction-status-projector.js";
 
 export type CodexTurnEventConverterContext = {
@@ -74,6 +75,7 @@ export const convertCodexTurnEvent = (
           error_scope: "turn",
           error_effect: "terminal",
           turn_id: turnId,
+          ...codexErrorKindFields(error),
         })];
       }
       return [

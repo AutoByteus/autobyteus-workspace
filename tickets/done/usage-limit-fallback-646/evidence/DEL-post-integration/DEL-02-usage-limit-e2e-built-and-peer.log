@@ -1,0 +1,26 @@
+# Merged state 3a541e3d45, server dist rebuilt from it
+# Command (worktree root): env -i PATH HOME=<fresh temp> TMPDIR USER RUN_USAGE_LIMIT_SWITCH_E2E=1 USAGE_LIMIT_SWITCH_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts --no-watch
+ ✓ tests/e2e/run-events/usage-limit-switch-built-server.e2e.test.ts (12 tests) 31361ms
+     ✓ UL-01 first-turn switch with Model Routing off: one event for three errors, the history runtime, the marker and continue notice rows, the hand-over in the continue turn, C-2  2099ms
+     ✓ UL-02 mid-work switch: an answered Codex turn, then the limit; the new runtime receives the earlier work  1731ms
+     ✓ UL-03 Model Routing on: the router gets the switch request; its turn ends without a decision (R-6 pending), so history decides  2129ms
+     ✓ UL-04 a Team member is switched while the Team runs, and after a graceful restart it answers on AutoByteus  5634ms
+     ✓ UL-05 nothing usable (R-17, R-18): the run stays on Codex with one Error notice that points to Settings; C-2 no_fallback  719ms
+     ✓ UL-09 the agent has no history but AutoByteus is usable (R-17, R-19): it switches by the node fallback, recorded as chosen by the node  681ms
+     ✓ UL-06 delegation: a default on the exhausted Codex model is skipped; the agent starts from its history with the note  1745ms
+     ✓ UL-07 the setting off: the event is logged, nothing is switched or recorded  4283ms
+     ✓ UL-08 Antigravity (no usage-limit signal): the ERROR at once, ERROR_CLASSIFIED after its limits read; exactly one error row, then the switch rows  2044ms
+     ✓ UL-11 delegation by the node fallback: the inherited launch is exhausted, the default is exhausted and there is no history; the copy starts on the node fallback, noted and recorded  956ms
+     ✓ UL-12 a Team member is switched by the node fallback (no history); the Team tree holds its new launch  711ms
+     ✓ UL-10 not quiet: the person's second message is still running on Codex when the switch arrives; the switch waits for that turn's end, then switches once and hands both messages over  5821ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Duration  31.92s (transform 74ms, setup 58ms, import 68ms, tests 31.36s, environment 0ms)
+exit=0
+
+# Command: env -i … RUN_USAGE_LIMIT_PEER_E2E=1 USAGE_LIMIT_PEER_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts --no-watch
+ ✓ tests/e2e/run-events/usage-limit-switch-peer-run.e2e.test.ts (2 tests) 6280ms
+     ✓ ULP-01: the copy alpha delegated fails on beta's Codex, switches on beta to its history runtime, and alpha's tree shows beta's new launch  4685ms
+     ✓ ULP-02: a worker whose default is beta's exhausted Codex model and which has no history there starts on beta's node fallback (no inherited launch on a peer)  1446ms
+      Tests  2 passed (2)
+exit=0
