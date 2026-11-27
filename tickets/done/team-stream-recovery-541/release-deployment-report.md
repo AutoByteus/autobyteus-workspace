@@ -135,3 +135,16 @@ Revert the finalization merge on `personal`. Nothing persisted changes shape: a 
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: by `send_message_to` after the record commit's push and the cleanup
 - Terminal message/reference: the `send_message_to` message to the Solution Designer, address from `get_handoff_rules`
+
+## Finalization Record
+
+Written after the push of the merge, the way earlier tickets recorded theirs.
+
+- Ticket branch `codex/team-stream-recovery-541`: committed (tip `c12f9c1380`) and pushed to `origin` with the explicit refspec `HEAD:refs/heads/codex/team-stream-recovery-541` (`5721f3f2c6..c12f9c1380`; the remote copy was at implementation's `5721f3f2c6`, and API/E2E's `da5802075f` and the code reviewer's `fb5776888e` went up with delivery's push). Secret Gate on `origin/personal..HEAD` before the push: `PASS`, 21 commits.
+- Target refreshed before the merge: `git fetch origin personal` showed `ff912496ff`, which the ticket branch already contained (merge `122cfdbcd3`); no re-integration and no re-verification were needed.
+- Merge: on `finalize/team-stream-recovery-541` (from `origin/personal` `ff912496ff`), `git merge --no-ff codex/team-stream-recovery-541` = `3482be4d4e` (parents `ff912496ff` and `c12f9c1380`; the merged tree equals the ticket branch's tree, `eb78df5dc5`). Secret Gate on the merged state: `PASS`, 22 commits. Hygiene check (`scripts/check_repository_artifact_hygiene.py`) on the archived tree: passed (106 469 tracked files).
+- Push: `git push origin HEAD:personal` `ff912496ff..3482be4d4e`; `origin/personal` = `3482be4d4e` afterwards.
+- Release: none (no tag, no version bump, no pipeline).
+- This record: committed on `finalize/team-stream-recovery-541` and pushed to `origin/personal` as the commit that follows `3482be4d4e`.
+- The user's checkout (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, on `personal`): `git fetch`, then `git merge --ff-only origin/personal` after this record's push, only if it is on `personal` with no local commits and git accepts it; nothing is stashed, reset or checked out there. The result (commit, or why not) is in the terminal message.
+- Cleanup, after this record's push: `git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/team-stream-recovery-541` (only git-ignored and untracked build output remains), `git worktree prune`, delete the local branches `finalize/team-stream-recovery-541` and `codex/team-stream-recovery-541`, and delete delivery's own `/tmp/del541` and `/tmp/del541-*.txt`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). API/E2E keeps `/tmp/api541` until the Solution Designer asks. The result is in the terminal message.
