@@ -9,7 +9,7 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 
 /**
  * Pairing by request across real servers over HTTP (autobyteus-661 contract §2, §3 case 2, §1 key rule; node access
- * model NAS-49…NAS-51, NAS-53). Three built servers (`dist/app.js`), each with its own data root and port on
+ * model NAS-49, NAS-50, NAS-53). Three built servers (`dist/app.js`), each with its own data root and port on
  * 127.0.0.1: alpha and gamma ask, beta answers. Every step enters where its user does: the owners' GraphQL (the Nodes
  * page's API: Pair, the pending and outstanding lists, Accept, Reject, Cancel, a grant) and, for the impostor of
  * NAS-53, a raw `POST /rest/remote/pair` (the route is exempt: any admitted caller can send it). The cases run in order
@@ -127,7 +127,7 @@ const rawPair = async (to: Node, body: Json) => {
 const errorOf = (answer: { errors?: Array<{ message: string; extensions?: Json }> }) =>
   answer.errors?.[0] ? { code: answer.errors[0].extensions?.code, message: answer.errors[0].message } : null;
 
-describe("pairing by request across real servers (autobyteus-661 contract §3 case 2, NAS-49…51, NAS-53)", () => {
+describe("pairing by request across real servers (autobyteus-661 contract §3 case 2, NAS-49, NAS-50, NAS-53)", () => {
   let root = "";
   const nodes: Node[] = [];
   let alpha: Node, beta: Node, gamma: Node;
@@ -186,7 +186,7 @@ describe("pairing by request across real servers (autobyteus-661 contract §3 ca
     expect(storedRecord(beta, gamma)).toBeNull();
   }, 120_000);
 
-  it("PRQ-03 AC-005, NAS-51: after Cancel, the other owner's Accept is refused as withdrawn and nothing stays stored", async () => {
+  it("PRQ-03 AC-005, NAS-50: after Cancel, the other owner's Accept is refused as withdrawn and nothing stays stored", async () => {
     const asked = (await gql(gamma, PAIR, { address: beta.baseUrl })).pairWithNode;
     const waiting = (await pending(beta)).filter((request) => request.nodeId === gamma.nodeId);
     expect(waiting).toHaveLength(1);
