@@ -1,0 +1,12 @@
+# API-06 server unit + integration suites (autobyteus-661 T-3; TESTING: required inputs of owners changed after IMP-03's full unit run at 78d8aca27a)
+# Clone at b59628b4bf (incl. unreviewed 7f723d717b): pnpm -C autobyteus-server-ts test:unit; test:integration (after test:integration:prepare); Node v22.23.1; 2026-11-27
+## unit
+ Test Files  1101 passed | 5 skipped (1106)
+      Tests  9199 passed | 9 skipped (9208)
+   Duration  1022.39s (transform 30.78s, setup 34.96s, import 497.36s, tests 365.40s, environment 1.21s)
+unit exit 0
+## integration
+ Test Files  93 passed | 21 skipped (114)
+      Tests  534 passed | 71 skipped (605)
+   Duration  204.75s (transform 14.18s, setup 2.78s, import 101.45s, tests 89.57s, environment 6ms)
+integration exit 0

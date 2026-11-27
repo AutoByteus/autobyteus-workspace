@@ -1,0 +1,4 @@
+Successfully registered tool definition: 'list_peer_nodes'
+{"level":30,"time":1795770415613,"pid":58665,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53869"}
+{"level":30,"time":1795770415640,"pid":58665,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53855"}
+[2026-11-27T09:06:55.640Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53855

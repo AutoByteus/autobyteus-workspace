@@ -1,0 +1,19 @@
+# API-08 fresh-start build (autobyteus-661 T-3; build input autobyteus-web/generated/graphql.ts changed; TESTING § Fresh-start build)
+# git clone --no-local <worktree> /tmp/661-api/fresh; checkout b59628b4bf (incl. unreviewed 7f723d717b); pnpm install --frozen-lockfile; cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; the release-desktop.yml verify steps; script probes/api-e2e/fresh-start-build.sh; Node v22.23.1; 2026-11-27
+1:b59628b4bf test(node-access): the phone grant check names the node the grant is for (autobyteus-661 CRR-001)
+2:## pnpm install --frozen-lockfile
+4:Lockfile is up to date, resolution step is skipped
+32:## build:electron:mac
+101:[typecheck] Nuxt app (tsconfig.json): 59 errors, exit 2, 38.8s
+102:[typecheck] Electron main (electron/tsconfig.typecheck.json): 26 errors, exit 2, 1.9s
+103:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+104:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.3s
+105:[typecheck] production errors: 0; test-file errors: 85 in 35 files (baseline 85 in 35 files)
+106:[typecheck] PASS
+951:Build completed: [
+957:build exit 0
+958:## Verify bundled Prisma ARM64 engine target
+959:prisma verify: PASS
+960:## Verify packaged terminal runtime ARM64
+970:[terminal-runtime] ok: node-pty spawn probe
+971:terminal runtime verify: PASS

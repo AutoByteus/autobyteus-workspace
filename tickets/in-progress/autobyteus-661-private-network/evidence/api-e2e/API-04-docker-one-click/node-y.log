@@ -1,0 +1,18 @@
+xrdb: Connection refused
+ vncext:      Listening for VNC connections on all interface(s), port 5900
+[42:42:1127/090657.826643:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:130] No usable sandbox! If this is a Debian system, please install the chromium-sandbox package to solve this problem. If you are running on Ubuntu 23.10+ or another Linux distro that has disabled unprivileged user namespaces with AppArmor, see https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md. If you want to live dangerously and need an immediate workaround, you can try using --no-sandbox.
+Errors from xkbcomp are not fatal to the X server
+_IceTransmkdir: ERROR: euid != 0,directory /tmp/.ICE-unix will not be created.
+[165:165:1127/090659.116353:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:130] No usable sandbox! If this is a Debian system, please install the chromium-sandbox package to solve this problem. If you are running on Ubuntu 23.10+ or another Linux distro that has disabled unprivileged user namespaces with AppArmor, see https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md. If you want to live dangerously and need an immediate workaround, you can try using --no-sandbox.
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+** (light-locker:225): ERROR **: 09:06:59.564: session_id is not set, is /proc mounted with hidepid>0?
+(polkit-gnome-authentication-agent-1:218): polkit-gnome-1-WARNING **: 09:06:59.564: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+(nm-applet:214): nm-applet-WARNING **: 09:06:59.607: Error connecting to system D-Bus: Could not connect: No such file or directory
+[363:363:1127/090701.359871:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:130] No usable sandbox! If this is a Debian system, please install the chromium-sandbox package to solve this problem. If you are running on Ubuntu 23.10+ or another Linux distro that has disabled unprivileged user namespaces with AppArmor, see https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md. If you want to live dangerously and need an immediate workaround, you can try using --no-sandbox.
+[385:385:1127/090704.406917:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:130] No usable sandbox! If this is a Debian system, please install the chromium-sandbox package to solve this problem. If you are running on Ubuntu 23.10+ or another Linux distro that has disabled unprivileged user namespaces with AppArmor, see https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md. If you want to live dangerously and need an immediate workaround, you can try using --no-sandbox.
+Successfully registered tool definition: 'list_peer_nodes'
+{"level":30,"time":1795770432887,"pid":92,"hostname":"f3af6f4371e5","msg":"Server listening at http://127.0.0.1:45711"}
+{"level":30,"time":1795770432932,"pid":92,"hostname":"f3af6f4371e5","msg":"Server listening at http://127.0.0.1:8000"}
+{"level":30,"time":1795770432932,"pid":92,"hostname":"f3af6f4371e5","msg":"Server listening at http://172.17.0.7:8000"}
+[2026-11-27T09:07:12.932Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000

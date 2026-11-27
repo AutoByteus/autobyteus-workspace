@@ -1,0 +1,358 @@
+# API-03 the migration on data a released build wrote (autobyteus-661 T-3; AC-011, REQ-012, D-3, D-4)
+# Released: image autobyteus/autobyteus-server:beta = server package 1.5.14-beta.7 (local image 8c29c938dec1; not pulled or retagged). Three nodes a, b, c on test-owned named volumes 661-api-rel-{a,b,c}-data, started as the public launcher does (-e AUTOBYTEUS_SERVER_HOST=http://localhost:<port>, -p 127.0.0.1:<port>:8000); owner credentials by setup code + exchange (kept in a 0600 file, deleted).
+# Released steps (released GraphQL): setRemoteCollaborationEnabled(true) on each; a createPeerInvite -> b and c acceptPeerInvite (invite text, shared secret). Released b->a peerNodeAvailability: available true.
+# Upgrade: containers removed, volumes kept; same volumes and ports with this commit's server package (b59628b4bf, incl. unreviewed 7f723d717b; docker buildx --target server-package linux/arm64; version 1.5.15-beta.2, dataMigrations incl. app-data/peers-to-node-keys) mounted read-only over /opt/autobyteus/server-package. Scripts: probes/api-e2e/released-upgrade/*. 2026-11-27 09:58:05
+
+## released files (peerSecret redacted, length kept)
+{
+ "label": "released-a",
+ "container": "661-api-rel-a",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_KtEDl6_VCCAem898b5e2OLDswXLOI6mf",
+    "name": "node-b",
+    "baseUrl": "http://host.docker.internal:49472",
+    "addedAt": "2026-11-27T08:43:34.377Z",
+    "peerSecret": "<redacted 43 chars>"
+   },
+   {
+    "nodeId": "srv_1_BzO1vzlD9P_WEGhOQLEIJNlSNuLjs7",
+    "name": "node-c",
+    "baseUrl": "http://host.docker.internal:49579",
+    "addedAt": "2026-11-27T08:44:03.118Z",
+    "peerSecret": "<redacted 43 chars>"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL",
+  "ENABLE_REMOTE_COLLABORATION"
+ ],
+ "envSwitchLines": [
+  "ENABLE_REMOTE_COLLABORATION=true"
+ ],
+ "envOtherLinesSha256": "e0c8d00c2496b5f3c18b106c92c351360284024a69157bb599bc3c266410e1d2",
+ "envEndsWithNewline": false
+}
+{
+ "label": "released-b",
+ "container": "661-api-rel-b",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "baseUrl": "http://host.docker.internal:49471",
+    "addedAt": "2026-11-27T08:43:34.384Z",
+    "peerSecret": "<redacted 43 chars>"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL",
+  "ENABLE_REMOTE_COLLABORATION"
+ ],
+ "envSwitchLines": [
+  "ENABLE_REMOTE_COLLABORATION=true"
+ ],
+ "envOtherLinesSha256": "f17b5b1e9804e09d56df26a405535f9021430cd80276307ea7d78c8f6078ad3b",
+ "envEndsWithNewline": false
+}
+{
+ "label": "released-c",
+ "container": "661-api-rel-c",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "baseUrl": "http://host.docker.internal:49471",
+    "addedAt": "2026-11-27T08:44:03.126Z",
+    "peerSecret": "<redacted 43 chars>"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL",
+  "ENABLE_REMOTE_COLLABORATION"
+ ],
+ "envSwitchLines": [
+  "ENABLE_REMOTE_COLLABORATION=true"
+ ],
+ "envOtherLinesSha256": "ea320315772ae68f925a7dece23b8707ef621e9c82d7cdd713f75d7d7a627ce5",
+ "envEndsWithNewline": false
+}
+
+## after the first start of this commit
+{
+ "label": "upgraded-a",
+ "container": "661-api-new-a",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_KtEDl6_VCCAem898b5e2OLDswXLOI6mf",
+    "name": "node-b",
+    "address": "http://host.docker.internal:49472",
+    "addedAt": "2026-11-27T08:43:34.377Z"
+   },
+   {
+    "nodeId": "srv_1_BzO1vzlD9P_WEGhOQLEIJNlSNuLjs7",
+    "name": "node-c",
+    "address": "http://host.docker.internal:49579",
+    "addedAt": "2026-11-27T08:44:03.118Z"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL"
+ ],
+ "envSwitchLines": [],
+ "envOtherLinesSha256": "cd40a0f0a11c78ff457ae2705c5959337b688f00a507d8191a0bd0c960ff6921",
+ "envEndsWithNewline": true
+}
+{
+ "label": "upgraded-b",
+ "container": "661-api-new-b",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "address": "http://host.docker.internal:49471",
+    "addedAt": "2026-11-27T08:43:34.384Z"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL"
+ ],
+ "envSwitchLines": [],
+ "envOtherLinesSha256": "3dde56a1ff6417c18862c1098f84f51ddfe24a73bfd78a7d74ffbbdf5c8d1453",
+ "envEndsWithNewline": true
+}
+{
+ "label": "upgraded-c",
+ "container": "661-api-new-c",
+ "peersFile": {
+  "peers": [
+   {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "address": "http://host.docker.internal:49471",
+    "addedAt": "2026-11-27T08:44:03.126Z"
+   }
+  ]
+ },
+ "modes": [
+  "600 /home/autobyteus/data/remote-collaboration/peers.json",
+  "644 /home/autobyteus/data/.env"
+ ],
+ "envKeys": [
+  "APP_ENV",
+  "AUTOBYTEUS_SERVER_HOST",
+  "DB_TYPE",
+  "LOG_LEVEL"
+ ],
+ "envSwitchLines": [],
+ "envOtherLinesSha256": "ae8fdd01107b019709893eec0de43c3af47a9dfee551744780a59c105634ad9f",
+ "envEndsWithNewline": true
+}
+
+## .env: other lines byte-identical (released sha256 of the non-switch lines == after minus its final newline)
+a: after = released other lines + one final newline: true (lines 4, bytes 95)
+b: after = released other lines + one final newline: true (lines 4, bytes 95)
+c: after = released other lines + one final newline: true (lines 4, bytes 95)
+
+## ledger after the first start (id|migration|name|status|attempts|started|completed|summary|error|log)
+a: 73|20261127_peers_to_node_keys|Peers to node keys migration|SUCCEEDED|1|1795769795008|1795769795018|Scanned 2; migrated 2; skipped 0; failed 0.||/home/autobyteus/data/logs/app-data-migrations/20261127_peers_to_node_keys-2026-11-27T08-56-35-017Z.log|2026-11-27 08:56:35|2026-11-27 08:56:35
+b: 73|20261127_peers_to_node_keys|Peers to node keys migration|SUCCEEDED|1|1795769795044|1795769795053|Scanned 2; migrated 2; skipped 0; failed 0.||/home/autobyteus/data/logs/app-data-migrations/20261127_peers_to_node_keys-2026-11-27T08-56-35-053Z.log|2026-11-27 08:56:35|2026-11-27 08:56:35
+c: 73|20261127_peers_to_node_keys|Peers to node keys migration|SUCCEEDED|1|1795769795017|1795769795026|Scanned 2; migrated 2; skipped 0; failed 0.||/home/autobyteus/data/logs/app-data-migrations/20261127_peers_to_node_keys-2026-11-27T08-56-35-025Z.log|2026-11-27 08:56:35|2026-11-27 08:56:35
+
+## peerNodes after the first start (Pair again: paired false, relation null)
+head: illegal byte count -- 0
+a: 
+head: illegal byte count -- 0
+b: 
+head: illegal byte count -- 0
+c: 
+(recorded before re-pairing, above in this session: a: node-b, node-c; b: node-a; c: node-a; all paired:false relation:null, address host.docker.internal:<port>)
+
+## one click Pair again from a's window (a+b, a+c): grant on the target, pairWithNode at the window's address then the target's addresses; signed requests both ways
+{
+ "a+b": {
+  "windowAddressOfTarget": "http://127.0.0.1:49472",
+  "targetAddresses": [
+   "http://localhost:49472",
+   "http://host.docker.internal:49472",
+   "http://172.17.0.7:49472"
+  ],
+  "before": {
+   "a": {
+    "nodeId": "srv_KtEDl6_VCCAem898b5e2OLDswXLOI6mf",
+    "name": "node-b",
+    "paired": false
+   },
+   "b": {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "paired": false
+   }
+  },
+  "pair": {
+   "state": "paired",
+   "peer": {
+    "nodeId": "srv_KtEDl6_VCCAem898b5e2OLDswXLOI6mf",
+    "name": "node-b",
+    "address": "http://host.docker.internal:49472",
+    "relation": "own",
+    "paired": true
+   }
+  },
+  "after": {
+   "a": {
+    "nodeId": "srv_KtEDl6_VCCAem898b5e2OLDswXLOI6mf",
+    "name": "node-b",
+    "address": "http://host.docker.internal:49472",
+    "relation": "own",
+    "paired": true
+   },
+   "b": {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "address": "http://host.docker.internal:49471",
+    "relation": "own",
+    "paired": true
+   }
+  },
+  "signed": {
+   "a->b": {
+    "peerNodeAvailability": {
+     "available": true,
+     "refusalCode": null
+    },
+    "peerNodeOffer": {
+     "refusalCode": null
+    }
+   },
+   "b->a": {
+    "peerNodeAvailability": {
+     "available": true,
+     "refusalCode": null
+    },
+    "peerNodeOffer": {
+     "refusalCode": null
+    }
+   }
+  }
+ },
+ "a+c": {
+  "windowAddressOfTarget": "http://127.0.0.1:49579",
+  "targetAddresses": [
+   "http://localhost:49579",
+   "http://host.docker.internal:49579",
+   "http://172.17.0.8:49579"
+  ],
+  "before": {
+   "a": {
+    "nodeId": "srv_1_BzO1vzlD9P_WEGhOQLEIJNlSNuLjs7",
+    "name": "node-c",
+    "paired": false
+   },
+   "c": {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "paired": false
+   }
+  },
+  "pair": {
+   "state": "paired",
+   "peer": {
+    "nodeId": "srv_1_BzO1vzlD9P_WEGhOQLEIJNlSNuLjs7",
+    "name": "node-c",
+    "address": "http://host.docker.internal:49579",
+    "relation": "own",
+    "paired": true
+   }
+  },
+  "after": {
+   "a": {
+    "nodeId": "srv_1_BzO1vzlD9P_WEGhOQLEIJNlSNuLjs7",
+    "name": "node-c",
+    "address": "http://host.docker.internal:49579",
+    "relation": "own",
+    "paired": true
+   },
+   "c": {
+    "nodeId": "srv_mXfKs7JYb7lSWupfbsOlX-9f2yCtzRXs",
+    "name": "node-a",
+    "address": "http://host.docker.internal:49471",
+    "relation": "own",
+    "paired": true
+   }
+  },
+  "signed": {
+   "a->c": {
+    "peerNodeAvailability": {
+     "available": true,
+     "refusalCode": null
+    },
+    "peerNodeOffer": {
+     "refusalCode": null
+    }
+   },
+   "c->a": {
+    "peerNodeAvailability": {
+     "available": true,
+     "refusalCode": null
+    },
+    "peerNodeOffer": {
+     "refusalCode": null
+    }
+   }
+  }
+ }
+}
+
+## second start of a
+peers.json + .env sha256 before restart: d60aae864069fb7874d3d8d063cf48f9f19e680dba2348abd63e0b8c5ace99d2 cd40a0f0a11c78ff457ae2705c5959337b688f00a507d8191a0bd0c960ff6921
+peers.json + .env sha256 after restart:  d60aae864069fb7874d3d8d063cf48f9f19e680dba2348abd63e0b8c5ace99d2 cd40a0f0a11c78ff457ae2705c5959337b688f00a507d8191a0bd0c960ff6921
+unchanged: yes
+ledger after second start: 20261127_peers_to_node_keys|SUCCEEDED|1
+rows for that migration: 1
+{"data":{"peerNodes":[{"name":"node-b","paired":true,"relation":"own"},{"name":"node-c","paired":true,"relation":"own"}]}}

@@ -1,0 +1,281 @@
+{
+  "startedAt": "2026-11-27T09:06:53.044Z",
+  "image": "autobyteus/autobyteus-server:beta",
+  "scenarios": {
+    "D-1": {
+      "title": "decision (b): the desktop window pairs this computer's node with a local Docker node in one click; the Docker node keeps host.docker.internal:<port> for it",
+      "result": "Pass",
+      "click": {
+        "targetAddresses": [
+          "http://localhost:53877",
+          "http://host.docker.internal:53877",
+          "http://172.17.0.6:53877"
+        ],
+        "ms": 5056,
+        "answer": {
+          "state": "paired",
+          "peer": {
+            "nodeId": "srv_ZnNWSV8wwzXmIK6GHkDV3dwgk9TQ6G1J",
+            "name": "x",
+            "address": "http://127.0.0.1:53877",
+            "relation": "own",
+            "paired": true
+          }
+        }
+      },
+      "deskOfX": {
+        "nodeId": "srv_ZnNWSV8wwzXmIK6GHkDV3dwgk9TQ6G1J",
+        "name": "x",
+        "address": "http://127.0.0.1:53877",
+        "relation": "own",
+        "paired": true
+      },
+      "xOfDesk": {
+        "nodeId": "srv_wcPNhPah3xyD3_ojUu2cmAi4kc8zFOCt",
+        "name": "desk",
+        "address": "http://host.docker.internal:53855",
+        "relation": "own",
+        "paired": true
+      },
+      "signed": {
+        "desk→x": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        },
+        "x→desk": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        }
+      },
+      "afterUnpair": {
+        "deskOfX": null,
+        "xOfDesk": null
+      }
+    },
+    "D-2a-control": {
+      "title": "negative control: from the Docker node's window, pairing with this computer's node at the window's address alone (127.0.0.1, the container itself) fails",
+      "result": "Pass",
+      "click": {
+        "targetAddresses": [
+          "http://127.0.0.1:53855",
+          "http://host.docker.internal:53855",
+          "http://192.168.2.158:53855",
+          "http://100.127.30.107:53855",
+          "http://[fd7a:115c:a1e0::4336:1e6b]:53855",
+          "http://[2003:ca:5706:4811:58:70d6:4905:88bb]:53855",
+          "http://[2003:ca:5706:4811:d99c:ec7f:e035:9ab8]:53855"
+        ],
+        "ms": 9,
+        "answer": {
+          "error": {
+            "code": "PEER_UNREACHABLE",
+            "message": "That node answers at none of its addresses from this node; the first tried was http://127.0.0.1:53855."
+          }
+        }
+      },
+      "records": {
+        "xOfDesk": null,
+        "deskOfX": null
+      }
+    },
+    "D-2a": {
+      "title": "CR-002 (a): a window bound to a Docker node pairs it with this computer's node, which the window reaches at 127.0.0.1; the Docker node pairs at one of that node's own addresses",
+      "result": "Pass",
+      "click": {
+        "targetAddresses": [
+          "http://127.0.0.1:53855",
+          "http://host.docker.internal:53855",
+          "http://192.168.2.158:53855",
+          "http://100.127.30.107:53855",
+          "http://[fd7a:115c:a1e0::4336:1e6b]:53855",
+          "http://[2003:ca:5706:4811:58:70d6:4905:88bb]:53855",
+          "http://[2003:ca:5706:4811:d99c:ec7f:e035:9ab8]:53855"
+        ],
+        "ms": 5033,
+        "answer": {
+          "state": "paired",
+          "peer": {
+            "nodeId": "srv_wcPNhPah3xyD3_ojUu2cmAi4kc8zFOCt",
+            "name": "desk",
+            "address": "http://host.docker.internal:53855",
+            "relation": "own",
+            "paired": true
+          }
+        }
+      },
+      "xOfDesk": {
+        "nodeId": "srv_wcPNhPah3xyD3_ojUu2cmAi4kc8zFOCt",
+        "name": "desk",
+        "address": "http://host.docker.internal:53855",
+        "relation": "own",
+        "paired": true
+      },
+      "deskOfX": {
+        "nodeId": "srv_ZnNWSV8wwzXmIK6GHkDV3dwgk9TQ6G1J",
+        "name": "x",
+        "address": "http://localhost:53877",
+        "relation": "own",
+        "paired": true
+      },
+      "signed": {
+        "x→desk": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        },
+        "desk→x": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "D-2b": {
+      "title": "CR-002 (b): two Docker nodes both published on 127.0.0.1; the window of one pairs it with the other; each keeps an address that reaches the other",
+      "result": "Pass",
+      "click": {
+        "targetAddresses": [
+          "http://localhost:53878",
+          "http://host.docker.internal:53878",
+          "http://172.17.0.7:53878"
+        ],
+        "ms": 38,
+        "answer": {
+          "state": "paired",
+          "peer": {
+            "nodeId": "srv_1EiB5G4l0HuB8uAlU0QA4r9JBmowo3YI",
+            "name": "y",
+            "address": "http://host.docker.internal:53878",
+            "relation": "own",
+            "paired": true
+          }
+        }
+      },
+      "xOfY": {
+        "nodeId": "srv_1EiB5G4l0HuB8uAlU0QA4r9JBmowo3YI",
+        "name": "y",
+        "address": "http://host.docker.internal:53878",
+        "relation": "own",
+        "paired": true
+      },
+      "yOfX": {
+        "nodeId": "srv_ZnNWSV8wwzXmIK6GHkDV3dwgk9TQ6G1J",
+        "name": "x",
+        "address": "http://host.docker.internal:53877",
+        "relation": "own",
+        "paired": true
+      },
+      "signed": {
+        "x→y": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        },
+        "y→x": {
+          "availability": {
+            "available": true,
+            "refusalCode": null,
+            "unreachableReason": null
+          },
+          "offer": {
+            "refusalCode": null,
+            "unreachableReason": null,
+            "entries": [
+              {
+                "name": "Daily Assistant",
+                "kind": "agent"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "desk": "stopped",
+    "x": "removed",
+    "y": "removed",
+    "root": "removed"
+  },
+  "result": "Pass",
+  "nodes": {
+    "desk": {
+      "kind": "desktop-like",
+      "baseUrl": "http://127.0.0.1:53855",
+      "nodeId": "srv_wcPNhPah3xyD3_ojUu2cmAi4kc8zFOCt"
+    },
+    "x": {
+      "kind": "docker",
+      "baseUrl": "http://127.0.0.1:53877",
+      "nodeId": "srv_ZnNWSV8wwzXmIK6GHkDV3dwgk9TQ6G1J"
+    },
+    "y": {
+      "kind": "docker",
+      "baseUrl": "http://127.0.0.1:53878",
+      "nodeId": "srv_1EiB5G4l0HuB8uAlU0QA4r9JBmowo3YI"
+    }
+  },
+  "finishedAt": "2026-11-27T09:07:27.610Z"
+}

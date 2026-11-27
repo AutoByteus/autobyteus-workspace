@@ -1,0 +1,31 @@
+# API-01/API-02 pairing by request across real servers over HTTP (autobyteus-661 T-3; AC-005, AC-007, NAS-49…51, NAS-53)
+# File: autobyteus-server-ts/tests/e2e/remote-collaboration/pairing-requests-real-servers.e2e.test.ts (new, durable)
+# Command (clone at b59628b4bf, incl. unreviewed 7f723d717b; server built): env -i PATH HOME=<fresh temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/pairing-requests-real-servers.e2e.test.ts --no-watch
+# macOS arm64, Node v22.23.1, load average ~70 (other agents); 2026-11-27
+## run 1: PRQ-05 failed on my expectation: Pair again kept the row's name 'alpha-here' (the handoff's rule: Pair again replaces a row in place and keeps its name), not the grant's nameForAsker. Expectation corrected.
+     ✓ PRQ-01 AC-005/AC-007, NAS-49: Pair by plain address waits for the other owner; Accept pairs both as teammates with each other's actual key; signed requests work both ways  5124ms
+     ✓ PRQ-02 AC-005, NAS-50: Reject tells the asking node ("declined") and stores nothing on either side  5044ms
+     ✓ PRQ-03 AC-005, NAS-51: after Cancel, the other owner's Accept is refused as withdrawn and nothing stays stored  5064ms
+     ✓ PRQ-04 NAS-53: without a grant, a pair request naming paired alpha's node ID with another key is refused 409 PEER_KEY_CONFLICT; no request waits and alpha's record is unchanged 15ms
+     × PRQ-05 NAS-53, CR-001: with a grant made for alpha, another key is refused 409 PEER_KEY_CONFLICT; the grant presented by another node is refused 403 PAIRING_GRANT_INVALID; alpha (same key) pairs again with it, once 15081ms
+-   "name": "alpha-own",
++   "name": "alpha-here",
+      Tests  1 failed | 4 passed (5)
+## run 2
+ ✓ tests/e2e/remote-collaboration/pairing-requests-real-servers.e2e.test.ts (5 tests) 39273ms
+     ✓ PRQ-01 AC-005/AC-007, NAS-49: Pair by plain address waits for the other owner; Accept pairs both as teammates with each other's actual key; signed requests work both ways  5166ms
+     ✓ PRQ-02 AC-005, NAS-50: Reject tells the asking node ("declined") and stores nothing on either side  5051ms
+     ✓ PRQ-03 AC-005, NAS-51: after Cancel, the other owner's Accept is refused as withdrawn and nothing stays stored  5100ms
+     ✓ PRQ-05 NAS-53, CR-001: with a grant made for alpha, another key is refused 409 PEER_KEY_CONFLICT; the grant presented by another node is refused 403 PAIRING_GRANT_INVALID; alpha (same key) pairs again with it, once (its row keeps its name)  20123ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Duration  40.05s (transform 81ms, setup 89ms, import 54ms, tests 39.27s, environment 0ms)
+
+## run on the branch head a40c8b4766 (later T-4 commits; my clone, rebuilt): the same command
+ ✓ tests/e2e/remote-collaboration/pairing-requests-real-servers.e2e.test.ts (5 tests) 40793ms
+     ✓ PRQ-01 AC-005/AC-007, NAS-49: Pair by plain address waits for the other owner; Accept pairs both as teammates with each other's actual key; signed requests work both ways  5186ms
+     ✓ PRQ-02 AC-005, NAS-50: Reject tells the asking node ("declined") and stores nothing on either side  5067ms
+     ✓ PRQ-03 AC-005, NAS-51: after Cancel, the other owner's Accept is refused as withdrawn and nothing stays stored  5077ms
+     ✓ PRQ-05 NAS-53, CR-001: with a grant made for alpha, another key is refused 409 PEER_KEY_CONFLICT; the grant presented by another node is refused 403 PAIRING_GRANT_INVALID; alpha (same key) pairs again with it, once (its row keeps its name)  20116ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
