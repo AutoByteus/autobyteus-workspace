@@ -10,8 +10,8 @@
 - Implementation Handoff / Revision Record: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001)
 - Code Review Report / Revision Record: `code-review-report.md`, `code-review-revision-record.md` (CRR-001, Pass; C-1, C-2 held for evidence)
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (IR-002, fix `376b4bb9c0`)
 - Trigger: code review Pass of IR-001 (reviewed route, Large / High); code head `9e508b3adf`, review docs `bfd6ab97b5`, base `80420a8bf6`
 - Prior Investigation Reviewed: none
 
@@ -96,6 +96,7 @@
 | API-015 | AC-009 | wire | Durable + prototype | `wire-order-stress.mjs` (IMP-003) on base and branch wire; `stop-generation-probe.mjs --cases SGD-06 --latency-ms 150` ×10 | |
 | API-016 | C-2 (held) | desktop | Temporary Probe | a temporary SDD case: the recovery's checkpoint read delayed; the user selects another member during it; which member is focused after the commit | the code review's held edge |
 | API-016b | C-2 (held) | desktop | Durable (SDD-16) | an in-app execution link to another member during a held hydration | the direct-focus path that does not join the recovery |
+| API-018 | AC-001, 002, 003, 004, 010 (round 2) | desktop, phone, web suite | Durable + Temporary (SDD-93) | as API-010…016, plus SDD-93 for CRR-003's held residual | the recovery path changed |
 | API-017 | C-1 (held) | desktop | Temporary Probe (if reachable) | a recovering stopped Team archived, unarchived, reopened; a new gap: does the automatic recovery start | the code review's held edge |
 
 - Test progress log: Yes.

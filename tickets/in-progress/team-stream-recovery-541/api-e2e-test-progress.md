@@ -23,3 +23,9 @@ Ticket autobyteus-541 (team-stream-recovery-541), round 1, code head `9e508b3adf
 | 11:05 | API-016b | Completed: Fail (C-2 reproduced) | SDD-92 with an in-app execution link (router push to the member's `/workspace` execution route, what a Project Task's link does) during the held hydration: mate focused at once, then lead again after the commit |
 | 11:07 | API-016, API-016b | Completed | made durable: SDD-16 (the in-app link during a recovery: Fail, reproduces C-2) and SDD-17 (the run-tree reselect joins the recovery, the chosen member focused after the commit: Pass); 0 browser errors, cleanup clean |
 | 11:08 | Round 1 | Completed: Fail | F-1 (C-2 reproduced); report and revision record written |
+| 11:20 | Round 2 | Started | IR-002 376b4bb9c0 (CR-001); web suite and phone bundle first |
+| 11:27 | Round 2 desktop | Started | SDD-13,07,12,09,14,15,93 (temporary residual),16,17; web suite done: 817 passed, the base font audit only |
+| 11:30 | Round 2 desktop | Completed | SDD-13, 07, 12, 09, 14, 15, 16, 17 Pass (F-1 fixed); temporary SDD-93 (the held residual) reproduced: commit during the link's member load, link rejected (changed before selection commit, a console error), focus stays lead; probe restored |
+| 11:30 | Round 2 phone | Started | MSP-119,MSP-120 |
+| 11:32 | Round 2 phone | Completed: Pass | MSP-119 recovered 27 ms after the gap; MSP-120 notice at 15.0 s, send 10.05 s, Idle throughout, recovered at 31 s |
+| 11:32 | Round 2 | Completed: Pass | documents updated (API-REV-002); FU-002 recorded |
