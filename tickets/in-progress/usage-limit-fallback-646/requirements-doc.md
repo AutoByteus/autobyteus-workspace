@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-009`
+- Current solution revision ID: `SR-011`
 - Package identifier: `usage-limit-fallback-646`
 - Request: autobyteus-646, "Smart runtime fallback on usage limit"
 - Requested by: `/project_task_manager` (for the founder)
@@ -70,12 +70,12 @@ None.
 | REQ-001 | A turn that ends in a terminal error caused by the runtime's usage limit is recognized as such, with the runtime, the model and the reset time when the runtime reports it | BEH-001 | Must | Codex: structured `usageLimitExceeded`; all runtimes: the live limits read after the error shows the model `blocked: {until}` (0 tokens) — notes §3 | Task 1 |
 | REQ-002 | The node remembers each exhausted runtime/model until its reset (or a cooldown when no reset time is known, DEC-006) | BEH-002 | Must | New small record (data contract in design) | Task 1 |
 | REQ-003 | A new delegated run does not start on a remembered-exhausted default; it starts on the fallback (REQ-004), with a launch note | BEH-002 | Must | Delegation layer order exists | Task 1, 2 |
-| REQ-004 | The fallback is a usable runtime and model (installed, signed in, not exhausted). **The node's Model Router agent chooses it** when told of the event, given the usable runtimes now, the agent's runtime/model history and its earlier switches. When the router is off, busy past its budget, or itself exhausted, the agent's most-used usable runtime (last 30 days, with the model it last used there) is taken | BEH-004 | Must | Router exists (40 s budget); history countable from run files (notes §4) | Founder 2026-11-25; DEC-001, DEC-004 |
+| REQ-004 | The fallback is a usable runtime and model (installed, signed in, not exhausted). **The node's Model Router agent chooses it** when told of the event, given the usable runtimes now, the agent's runtime/model history and its earlier switches. When the router is off, busy past its budget, or itself exhausted, the agent's most-used usable runtime (last 30 days, with the model it last used there) is taken; then the node's most-used usable runtime and model (all agents, 30 days); then the first usable runtime in the node's list (SR-011 R-17) | BEH-004 | Must | Router exists (40 s budget); history countable from run files (notes §4) | Founder 2026-11-25; DEC-001, DEC-004 |
 | REQ-009 | A usage-limit failure is published as a **run event** (telemetry) on the node; reacting to it is the job of listeners, not of the run: the exhaustion memory and the Model Router. New event kinds and listeners can be added without changing runs | BEH-001 | Must | No node-wide run event stream exists yet (design) | Founder 2026-11-25 |
 | REQ-010 | The Model Router learns over time: its request includes the agent's history and the outcome of earlier switches, and its decisions are recorded like routing decisions | BEH-004 | Should | Router keeps `knowledge.md` and decision statistics | Founder 2026-11-25 |
 | REQ-005 | A run whose turn fails on a usage limit switches to the fallback through the existing runtime switch and hand-over, and is sent a short "continue" message. The input that failed is already in its conversation and is not sent again; the new runtime sees it through the hand-over | BEH-003 | Must | Runtime switch + hand-over exist | Task 3; founder 2026-11-25 |
 | REQ-006 | The conversation shows the switch plainly: one notice row explaining it ("<Runtime> usage limit reached (resets <time>) — switched to <Runtime> (<model>). Chosen by …"), and the continue instruction the agent receives as a labelled system notice row, never as a message from the person. Nothing the agent is told is hidden from the person | BEH-003 | Must | Platform notice rows exist; every posted input is shown (IQ-003) | Task 3; SR-007 |
-| REQ-007 | When no fallback is usable, the run stays in Error with a message naming each exhausted runtime and its reset time | UC-004 | Must | — | Task |
+| REQ-007 | When no runtime is usable (installed, signed in, not exhausted), the run stays in Error with a notice naming each exhausted runtime and its reset time, and pointing to the run's Settings | UC-004 | Must | — | Task; SR-011 R-18 |
 | REQ-008 | At most one switch per runtime per turn: a fallback that is exhausted too is skipped, and nothing loops | BEH-003 | Must | — | Safety |
 
 ## Acceptance Criteria

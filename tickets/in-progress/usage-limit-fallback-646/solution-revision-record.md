@@ -15,6 +15,7 @@
 | SR-008 | Design | Implementation question IQ-004 (R-9 loses the hand-over) | IQ-004 | design SR-007 | design SR-008 | REQ-005, REQ-006, R-9, R-10 | `presentAsNotice` tag; sender `system.usage_limit` |
 | SR-009 | Design | ARCH-REV-003 Fail (withdrawn pass; bar 9/10) | AR-006..AR-009 | design SR-008 | design SR-009 | DEC-003, REQ-005, C-4, R-1, R-3 | R-11..R-14; DEC-008 to the founder |
 | SR-010 | Design | ARCH-REV-004 Fail (close, about 8.5) | AR-010, AR-011 | design SR-009 | design SR-010 | R-11, R-13, C-4 | R-15, R-16; FU-646-03 |
+| SR-011 | Mixed | Code review CRR-001 (CR-646-01..03) | CR-646-01..03 | Approved SR-009; design SR-010 | Approved SR-011; design SR-011 | REQ-004, REQ-007, C-5, R-8 | node_fallback tier; no-fallback text; origin = who chose; FU-646-04 |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -111,3 +112,10 @@
 - AR-011 → R-16: a late classification is a new run-stream event `ERROR_CLASSIFIED {turn_id, error_kind}`. The `ERROR` stays immediate; the detector acts on either, once per turn. It is not rendered or stored.
 - Residual: FU-646-03 (routing decision log retention, a founder decision). DEC-008 is still pending with the founder (90 days by default).
 - Next: ARCH-REV-005.
+
+### SR-011 — Code review findings
+
+- **CR-646-02** (Requirement Gap) → R-17. A node fallback tier after the agent's history: the node's most-used usable runtime and model, then the first usable runtime in the node's list. Decided by the Solution Designer within DEC-002's direction ("work doesn't stop") and the Task's "not random"; the founder is informed and may override. REQ-004 is updated.
+- **CR-646-01** → R-18. A true no-fallback text that points to Settings; REQ-007 updated.
+- **CR-646-03** → R-19. An automatic switch records who chose (`model_router | agent_history | node_fallback`); `settings` stays the person's edit.
+- **FU-646-04:** MRD-04 probe staleness (pre-existing).

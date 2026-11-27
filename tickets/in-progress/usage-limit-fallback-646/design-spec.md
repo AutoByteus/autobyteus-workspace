@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-010` (ARCH-REV-005 Pass, score 9; AR-012 consumer list added to R-16; SR-010: § R-15, R-16 for ARCH-REV-004; SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-011` (SR-011: § R-17..R-19 for code review CRR-001; ARCH-REV-005 Pass, score 9; AR-012 consumer list added to R-16; SR-010: § R-15, R-16 for ARCH-REV-004; SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -586,3 +586,46 @@ For runtimes classified by a limits read after the error (Antigravity, Grok, and
   - the presentation adapter (`collaboration-agent-presentation-adapter.ts:265-281`) must skip it, not reject it;
   - the trace accumulator and the application stream projector already drop it (no change);
   - the web client receives nothing.
+
+## SR-011 Revisions (code review CRR-001)
+
+### R-17 A node fallback after the agent's history (CR-646-02; completes REQ-004)
+
+**Decision:** Solution Designer, within DEC-002's direction "the point is that work doesn't stop" and the Task's "rather than picking a random runtime". The founder is informed and can override.
+
+The fallback chooser (`FallbackChooser`) tries, in order:
+
+1. **The Model Router** (when on and active; 40 s).
+2. **The agent's history** (`agent_history`): its most-used usable runtime in the last 30 days, with the model it last used there.
+3. **The node fallback** (`node_fallback`), new:
+   - the runtime and model most used on this node in the last 30 days, across all agents' runs (C-8 over every definition), that are usable now;
+   - when the node has no usable history either, the first usable runtime in the node's runtime list (`AvailableAgentRuntimesService` order) with its first usable model.
+
+   This is a deterministic, stated order, never random.
+4. **Nothing usable:** the run stays in Error (REQ-007, R-18).
+
+The same chooser serves the delegation. When a layer was skipped as exhausted (R-2) and the inherited launch is exhausted or unusable too, the chooser's tiers 2–3 come before the refusal. A refusal then means nothing on the node is usable.
+
+### R-18 The no-fallback notice text (CR-646-01; replaces C-5's no-fallback text)
+
+"Usage limits reached: Codex App Server until Nov 27, 09:00 UTC. No other runtime can run now. Choose one in the run's Settings to continue."
+
+- **Why the claim is true now:** with R-17, `no_fallback` is chosen only when no runtime is usable (installed, signed in, not exhausted).
+- **Content:** it names every exhausted runtime with its reset time (REQ-007), or "for about an hour" when none is known, and points the person to the run's Settings.
+
+### R-19 The launch origin of an automatic switch is who chose it (CR-646-03)
+
+An automatic switch records its launch origin as the value of who chose it: `model_router`, `agent_history` or `node_fallback`.
+
+- **The commit primitives** take the origin as a parameter instead of hard-coding `settings`:
+  - `agent-run-runtime-switch-commit.ts:36` for the Agent root;
+  - `runtime-selection-rule.ts:162` for a Team member.
+- **A person's Save** still records `settings`, which keeps its one meaning: the person's own Settings edit.
+- **One vocabulary** (Principle 15). The same values name the same thing in:
+  - `LaunchConfigurationOrigin`;
+  - C-2 `chosenBy`;
+  - R-7 `cause.chosenBy`;
+  - the delegation's launch source (R-8).
+
+  New value `node_fallback` (label "(chosen by the node)") is added wherever R-8 added `agent_history`.
+- **The Run Settings source label** after a switch shows "(chosen by the Model Router)", "(chosen from its history)" or "(chosen by the node)", and the run's own files keep that fact after the pending switch's cause is cleared.
