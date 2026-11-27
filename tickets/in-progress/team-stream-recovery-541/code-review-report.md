@@ -14,8 +14,15 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
+- Current Code Review Revision ID: `CRR-002`. Round 2 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1:
+  - code tested: `9e508b3adf`;
+  - API/E2E's commit: `488e231641`;
+  - reproduction: SDD-16;
+  - control: SDD-17.
+
+  Round 1 below stays as recorded.
+- Previous: `CRR-001`
+- Current Review Round: `2`
 - Review Scope: `Full Review` of `80420a8bf6..9e508b3adf`:
   - source commits `6dd0950606`, `29fc65eaaf`, `5a2ddf0fa2`;
   - probe commits `12105e8360`, `e0a99d6b6d`, `a9ac2b40df`.
@@ -124,9 +131,31 @@ Pass on every check: no compatibility path, the dead code is removed, and no per
 | 9 | No Backward-Compatibility / Legacy | 9.5 | — |
 | 10 | Cleanup Completeness | 9.2 | The stale mock (C-3) |
 
+## Round 2 Failure-Origin Finding (CRR-002)
+
+### CR-001 (F-1, formerly held C-2): a navigation to a member during a recovery is undone at the commit
+
+- **Severity:** Medium. Nothing is lost (D-A6 carries the state per member), but the user's navigation is reverted. That breaks REQ-001 ("a user's reselect during a recovery joins it") and AC-010 ("on the member the user sees").
+- **Where:**
+  - `services/runOpen/teamRunOpenCoordinator.ts`, `runTeamStreamRecovery`: `preferredAgentRunId` is read when the attempt begins and focused on the candidate before `replaceFailedTeamStream` commits it.
+  - The workspace-link path (`openWorkspaceExecutionLink` → `inspectTeamMember`, `workspaceNavigationService.ts:138-143`) focuses the member on the current context directly. It does not join the recovery, unlike the run-tree selection (`runHistorySelectionActions.ts:81-82,122`), which SDD-17 shows works.
+- **Scenario and evidence:** a Project Task's link to a Team member is a supported trigger (it pushes `/workspace?…&workspaceExecutionAgentRunId=<mate>`).
+  - SDD-16 holds the recovery read for 2.5 s to widen the usual 100–500 ms window. Mate is focused at once; at the commit (first attempt, 0 failures) the focus returns to lead. Reproduced twice.
+  - Evidence: `evidence/api-e2e/API-010-016-desktop/sdd-16-17-cases.json`, `SDD-16-link-during-recovery.png`.
+- **Review gap I own:** CRR-001 held C-2 as a narrow window and did not look for navigation paths that focus a member without going through the coordinator.
+- **Required action (Local Fix, implementation, in the coordinator, so any focus path is covered):**
+  - At the commit (`beforeContextCommit`), read the focused member of the context being replaced.
+  - After the commit, if it differs from the candidate's focus and the member is in the new view, load its projection (`ensureAuthoritativeTeamMemberProjection`) and focus it (`focusAgentForInspection`). That is the rule the joined-reselect branch already applies.
+  - The commit itself stays synchronous.
+  - Alternatively, make `inspectTeamMember` join a running recovery. The commit-time rule is preferred because it also covers any other focus path.
+- **Tests:**
+  - a coordinator spec: a focus change on the old context during an automatic attempt's read ends with that member focused after the commit;
+  - SDD-16 turns green, and SDD-17 stays green.
+- **Other candidates:** C-1 is now `Reject`. API/E2E found the UI has no unarchive control, so the same-session reopen cannot happen through the UI. C-3 (the stale mock) stays cosmetic.
+
 ## Findings
 
-None that need action.
+Round 1: none that need action. Round 2: CR-001 (above).
 
 ## Follow-ups
 
@@ -151,6 +180,10 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 2, CRR-002). The failure origin is implementation: CR-001, `Local Fix` in `teamRunOpenCoordinator`.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Recommended Recipient: `/implementation_engineer`. Then a targeted delta code review, then API/E2E (SDD-16, SDD-17).
+- Round 1 result (CRR-001, superseded):
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass` (S-5 investigated and held)
