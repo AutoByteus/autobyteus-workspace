@@ -1,10 +1,11 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { create } from "tar";
 import { ExtensionCatalog } from "../../../src/extensions/catalog/extension-catalog.js";
-import { readExtensionCatalogSource, EXTENSIONS_CATALOG_URL } from "../../../src/extensions/catalog/extension-catalog-source.js";
+import { readExtensionCatalogSource, EXTENSIONS_CATALOG_PUBLIC_KEY_PEM, EXTENSIONS_CATALOG_URL } from "../../../src/extensions/catalog/extension-catalog-source.js";
 import {
   compareExtensionVersions,
   describesSameExtension,
@@ -55,6 +56,32 @@ describe("extension description (contract §1, §3)", () => {
 });
 
 describe("ExtensionCatalog (contract §3; AR-002 fetch policy)", () => {
+  it("verifies the real published catalog with the built-in key (autobyteus-657), offline", async () => {
+    // The `catalog` release's two assets as published on 2026-11-26: the built-in key is the signing key's public half.
+    const published = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/published-extensions-catalog");
+    const files = new Map([
+      [EXTENSIONS_CATALOG_URL, await fs.readFile(path.join(published, "extensions-catalog.json"))],
+      [`${EXTENSIONS_CATALOG_URL}.sig`, await fs.readFile(path.join(published, "extensions-catalog.json.sig"))],
+    ]);
+    const offline: typeof fetch = async (input) => {
+      const body = files.get(String(input));
+      return body ? new Response(new Uint8Array(body)) : new Response("not found", { status: 404 });
+    };
+    const catalog = new ExtensionCatalog(readExtensionCatalogSource({}), offline);
+    const fetched = await catalog.fetch();
+    expect(readExtensionCatalogSource({}).publicKeyPem).toBe(EXTENSIONS_CATALOG_PUBLIC_KEY_PEM);
+    expect(fetched.status).toBe("verified");
+    expect(fetched.entries).toEqual([expect.objectContaining({
+      id: "voice-input", version: "1.0.0", offeredOn: "desktop-node",
+      packageUrl: "https://github.com/AutoByteus/autobyteus-extensions/releases/download/voice-input-v1.0.0/voice-input-1.0.0.tar.gz",
+      sha256: "57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d",
+    })]);
+
+    // One byte more and it no longer verifies.
+    files.set(EXTENSIONS_CATALOG_URL, Buffer.concat([files.get(EXTENSIONS_CATALOG_URL)!, Buffer.from(" ")]));
+    expect((await catalog.fetch()).status).toBe("unverified");
+  });
+
   it("verifies the exact bytes, skips unreadable entries, and keeps the last verified copy", async () => {
     const web = new TestWeb();
     const publisher = new TestCatalogPublisher(web);

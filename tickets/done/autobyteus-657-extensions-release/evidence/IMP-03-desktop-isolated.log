@@ -1,0 +1,14 @@
+# IMP-03 packaged desktop app from this branch, isolated instance (e2e launch profile, own temp data root, port 50621)
+# Command: pnpm --silent isolated-app start --build; node /tmp/657-scripts/desktop.mjs <control> <backend> open|install|dictate; pnpm --silent isolated-app stop iso-50620-7782
+# Commit: a80cd0218f (build AutoByteus 1.5.15-beta.2 from the worktree)
+# Environment: macOS 26 darwin-arm64; data root <tmp>/autobyteus-isolated-root-fEFwyM (removed at stop); never ~/.autobyteus
+# Date: 2026-11-26
+
+open:    {"state":"Not installed","catalogNotes":0,"nodeLine":"Extensions of Embedded Node · this computer"}   (no unverified/unreachable note: the catalog verified with the built-in key)
+install: installed after 68 s: On; ready after 91 s: On
+dictate: {"origin":"file://","status":200,"ms":380,"body":"{\"output\":{\"text\":\"Please summarize the meeting notes and send them to the team.\",\"noSpeech\":false,\"detectedLanguage\":\"en\"}}"}
+         (the packaged window posts the WAV to the embedded node; the desktop credential attacher adds the owner credential)
+memory:  the Memory search microphone button is shown (IMP-03-D5-memory-microphone.png)
+stop:    {"wasRunning":true,"dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true}
+
+Screenshots: IMP-03-D1-verified-not-installed.png, IMP-03-D2-installing.png, IMP-03-D3-installed-and-on-getting-ready.png, IMP-03-D4-on-ready.png, IMP-03-D5-memory-microphone.png
