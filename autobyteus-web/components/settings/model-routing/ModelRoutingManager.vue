@@ -51,7 +51,7 @@
     </div>
 
     <div :id="`model-routing-panel-${activeTab}`" role="tabpanel" :aria-labelledby="`model-routing-tab-${activeTab}`" class="flex flex-col gap-5">
-      <ModelRoutingSetup v-if="activeTab === 'setup'" :status="status" :saving="saving" @choose-launch="setLaunch" @open-agent="openAgent" />
+      <ModelRoutingSetup v-if="activeTab === 'setup'" :status="status" :saving="saving" @choose-launch="setLaunch" @open-agent="openAgent" @set-usage-limit-switch="setUsageLimitSwitch" />
       <ModelRoutingDecisions v-else-if="activeTab === 'decisions'" v-model:source="sourceFilter" :status="status" :focus="focus" @show-setup="select('setup')" @loaded="hasDecisions = $event" />
       <ModelRoutingOverview v-else-if="activeTab === 'overview'" :period="period" :status="status" @show-setup="select('setup')" />
       <AgentRuntimesNowSection v-else />
@@ -67,7 +67,7 @@ import { isOwnNodeWindow } from '~/utils/ownNodeWindow'
 import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { ModelRoutingStatusQuery } from '~/graphql/queries/modelRoutingQueries'
-import { OpenModelRouterAgent, SetModelRouterLaunch, SetModelRoutingEnabled } from '~/graphql/mutations/modelRoutingMutations'
+import { OpenModelRouterAgent, SetModelRouterLaunch, SetModelRoutingEnabled, SetUsageLimitSwitchEnabled } from '~/graphql/mutations/modelRoutingMutations'
 import type { DecisionLocator, ModelRouterLaunch, ModelRoutingStatus } from '~/types/modelRouting'
 import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService'
 import AgentRuntimesNowSection from './AgentRuntimesNowSection.vue'
@@ -113,6 +113,8 @@ const mutate = async (run: () => Promise<ModelRoutingStatus>): Promise<void> => 
 }
 const setEnabled = (next: boolean): Promise<void> => mutate(async () =>
   (await getApolloClient().mutate({ mutation: SetModelRoutingEnabled, variables: { enabled: next } })).data.setModelRoutingEnabled)
+const setUsageLimitSwitch = (next: boolean): Promise<void> => mutate(async () =>
+  (await getApolloClient().mutate({ mutation: SetUsageLimitSwitchEnabled, variables: { enabled: next } })).data.setUsageLimitSwitchEnabled)
 const setLaunch = (launch: ModelRouterLaunch): Promise<void> => mutate(async () =>
   (await getApolloClient().mutate({ mutation: SetModelRouterLaunch, variables: { ...launch } })).data.setModelRouterLaunch)
 

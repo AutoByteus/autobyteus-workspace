@@ -107,6 +107,9 @@ describe("browser, media, discovery (AC-001)", () => {
     expect(lines("submit_launch_choices", { requestId: "r", choices: [
       { address: "/a", runtime: "codex_app_server", model: "m1", taskKind: "build" }, { address: "/b", runtime: "autobyteus", model: "m2" }] }, "{}"))
       .toEqual(["Submit launch choices (2 agents) → ok", `${I}/a: codex_app_server / m1, build`, `${I}/b: autobyteus / m2`]);
+    // autobyteus-646 C-7: the switch answer, with its reason.
+    expect(lines("submit_runtime_switch", { requestId: "sw_1", runtime: "claude_agent_sdk", model: "opus", reason: "It worked before." }, "{}"))
+      .toEqual(["Submit runtime switch: claude_agent_sdk / opus → ok", `${I}It worked before.`]);
   });
 });
 

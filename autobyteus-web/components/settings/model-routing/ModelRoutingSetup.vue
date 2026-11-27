@@ -51,6 +51,27 @@
       >{{ t('settings.modelRouting.setup.router.openConversation') }}</button>
       <p class="mt-2 text-sm text-gray-500">{{ t('settings.modelRouting.setup.router.teachHint') }}</p>
     </div>
+
+    <!-- autobyteus-646 C-6: works whether or not Model Routing is on (the router is asked only when it is). -->
+    <div class="mt-8 flex max-w-2xl items-start justify-between gap-4 border-t border-slate-100 pt-6" data-testid="model-routing-usage-limit-switch-row">
+      <div>
+        <h3 id="model-routing-usage-limit-switch-label" class="text-base font-semibold text-gray-900">{{ t('settings.modelRouting.setup.usageLimitSwitch.label') }}</h3>
+        <p class="mt-1 text-sm text-gray-500">{{ t('settings.modelRouting.setup.usageLimitSwitch.explanation') }}</p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        class="relative mt-1 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+        :class="usageLimitSwitchEnabled ? 'bg-blue-600' : 'bg-slate-300'"
+        :aria-checked="usageLimitSwitchEnabled"
+        aria-labelledby="model-routing-usage-limit-switch-label"
+        :disabled="!status || saving"
+        data-testid="model-routing-usage-limit-switch"
+        @click="emit('set-usage-limit-switch', !usageLimitSwitchEnabled)"
+      >
+        <span aria-hidden="true" class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform" :class="usageLimitSwitchEnabled ? 'translate-x-5' : 'translate-x-0.5'" />
+      </button>
+    </div>
   </section>
 </template>
 
@@ -67,10 +88,12 @@ const props = defineProps<{ status: ModelRoutingStatus | null; saving: boolean }
 const emit = defineEmits<{
   (event: 'choose-launch', launch: ModelRouterLaunch): void
   (event: 'open-agent'): void
+  (event: 'set-usage-limit-switch', enabled: boolean): void
 }>()
 const { t } = useLocalization()
 
 const enabled = computed(() => props.status?.enabled ?? false)
+const usageLimitSwitchEnabled = computed(() => props.status?.usageLimitSwitchEnabled ?? true)
 const controlsDisabled = computed(() => !enabled.value || props.saving)
 const controls = useModelRouterLaunchControls(toRef(props, 'status'), (launch) => emit('choose-launch', launch))
 const modelOptions = computed(() => buildModelOptions(controls.thinkingSchema.value, controls.llmConfig.value, {

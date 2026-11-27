@@ -134,6 +134,8 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.decisions.hasNotes": "有默认设置未被使用，或路由器失败。展开团队查看。",
   "settings.modelRouting.decisions.taskGone": "此任务已不存在。",
   "settings.modelRouting.switchLabel": "使用模型路由器",
+  "settings.modelRouting.setup.usageLimitSwitch.label": "达到用量上限时切换运行时",
+  "settings.modelRouting.setup.usageLimitSwitch.explanation": "运行时达到用量上限的运行会在另一个可用的运行时上继续：开启模型路由时由模型路由器选择，否则选该智能体最常用的运行时。",
   "settings.modelRouting.setup.router.teachHint": "告诉它你的偏好，例如“写作任务用 Antigravity”。它会记住学到的内容。",
   "settings.modelRouting.decisions.agentCountOne": "1 个智能体",
 } satisfies TranslationCatalog;

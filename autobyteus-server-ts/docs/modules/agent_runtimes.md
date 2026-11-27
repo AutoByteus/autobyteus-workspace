@@ -157,6 +157,14 @@ progress (several agents, the page) share it, so their runtime processes never
 overlap. The answer resolves as soon as it is complete; the read stays the one
 in progress until its client holds are released.
 
+`readRuntime(kind)` (autobyteus-646) reads one external runtime the same way,
+its limits and models with their blocks, or `null` when it is not installed or
+signed out. The usage-limit detector ([run_events.md](run_events.md)) reads the
+failed run's runtime after a terminal turn error: Codex for the reset time, the
+other external runtimes to tell whether the run's model is now blocked (a usage
+limit). Codex itself marks a usage-limit `ERROR` with `error_kind: "usage_limit"`
+(`codexErrorInfo: usageLimitExceeded`; `backends/codex/events/codex-error-kind.ts`).
+
 **Available** means installed (`strategy.readVersion(...) !== null`, the
 Agent Runtimes page's rule) and not known to be signed out. A runtime whose
 sign-in could not be read is listed with `signIn: "not checked"`. For

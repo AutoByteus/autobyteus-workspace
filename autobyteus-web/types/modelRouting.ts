@@ -14,6 +14,8 @@ export type ModelRouterLaunch = Readonly<{
 
 export type ModelRoutingStatus = Readonly<{
   enabled: boolean
+  /** autobyteus-646 C-6: "Switch runtime when a usage limit is reached"; independent of `enabled`. */
+  usageLimitSwitchEnabled: boolean
   routerLaunch: ModelRouterLaunch | null
   active: boolean
   reasonCode: ModelRoutingReasonCode | null

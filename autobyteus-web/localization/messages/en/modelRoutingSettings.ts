@@ -134,6 +134,8 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.decisions.hasNotes": "A default was not used, or the router failed. Open the team to see.",
   "settings.modelRouting.decisions.taskGone": "This Task no longer exists.",
   "settings.modelRouting.switchLabel": "Use the Model Router",
+  "settings.modelRouting.setup.usageLimitSwitch.label": "Switch runtime when a usage limit is reached",
+  "settings.modelRouting.setup.usageLimitSwitch.explanation": "A run whose runtime reaches its usage limit continues on another usable runtime, chosen by the Model Router when Model Routing is on, otherwise the one this agent used most.",
   "settings.modelRouting.setup.router.teachHint": "Tell it what you prefer, for example \"use Antigravity for writing\". It remembers what it learns.",
   "settings.modelRouting.decisions.agentCountOne": "1 agent",
 } satisfies TranslationCatalog;
