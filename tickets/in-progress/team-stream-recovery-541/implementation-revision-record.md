@@ -8,6 +8,7 @@ proof of downstream acceptance.
 | Revision | Trigger | Findings | Classification | Related | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `/architecture_reviewer`: ARCH-REV-002 Pass, SR-002 with its amendment (N-4, N-5) | N/A (initial) | Initial; Large / High | SR-001, SR-002; ARCH-REV-001, ARCH-REV-002 | Implementation Complete; to code review |
+| IR-002 | `/code_reviewer` CRR-002 failure-origin review of API/E2E F-1 | CR-001 (Local Fix); C-3 | Local Fix; Large / High | CRR-001, CRR-002, API-REV-001 | Implementation Complete; to delta code review |
 
 ## IR-001 (2026-11-27) — A to E as designed
 
@@ -48,3 +49,22 @@ proof of downstream acceptance.
   - the Apollo devtools-timer unhandled error in a full web run;
   - a live Team stream's invalid snapshot never entering `reopen_required`;
   - a gap in the middle of a turn recovering only after the turn ends (the unchanged verified read).
+
+## IR-002 (2026-11-27) — CR-001: focus kept across the recovery commit
+
+- **Trigger:** CRR-002 CR-001. An in-app execution link (a mounted Team's inspection, which does not join the recovery)
+  moved the user to another member during an automatic attempt's read; the commit put the read's member back (API/E2E
+  SDD-16, F-1).
+- **Delta (`376b4bb9c0`):**
+  - `teamRunOpenCoordinator.runTeamStreamRecovery` reads the replaced context's focus in `beforeContextCommit`;
+  - `keepFocusAcrossRecovery` then loads and focuses that member on the new context (if still in the tree and the focus
+    has not moved since), and rebuilds the navigation projection so the run tree's row follows;
+  - a failed load keeps the read's member;
+  - C-3: the stale `getTeamStreamRecoveryNotice` mock is removed.
+- **Validation:**
+  - 3 new coordinator specs, 2 of which fail on `9e508b3adf`;
+  - adjacent specs and the web typecheck pass;
+  - SDD-16 and SDD-17 pass. The first fix without the projection rebuild left the tree row on lead (IMP-007).
+- **Residual:** an inspection still loading its member at the commit rejects and keeps the user's earlier focus
+  (IMP-007).
+- **Next:** `/code_reviewer` (targeted delta review), then API/E2E.

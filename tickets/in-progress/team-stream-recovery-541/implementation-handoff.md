@@ -14,7 +14,13 @@ Paths are relative to the ticket folder `<worktree>/tickets/in-progress/team-str
 
 ## Summary
 
-**Implementation Complete.** Ready for code review (Large / High). Not runtime acceptance, not delivery.
+**Implementation Complete, IR-002** (Local Fix CR-001 from CRR-002). Ready for a targeted delta code review, then API/E2E. Not runtime acceptance, not delivery.
+
+**IR-002 (`376b4bb9c0`):** the recovery keeps the member the user moved to during it, by any focus path. At the commit it reads
+the replaced context's focus; after the synchronous replacement it loads and focuses that member on the new context and
+rebuilds the navigation projection, so the run tree's row follows. The stale mock (C-3) is dropped. Evidence:
+`evidence/implementation/IMP-007-cr001-focus-across-recovery.md`. SDD-16 and SDD-17 pass; the new coordinator specs fail on
+`9e508b3adf`.
 
 - Source and test commits on `codex/team-stream-recovery-541`:
   - `6dd0950606` A;
