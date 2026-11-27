@@ -16,3 +16,23 @@
   - DEC-004: retry once, then keep the current context;
   - DEC-005: an explicit timeout on the slow spec.
 - Classification: `Large` / `High`. Routing: architecture review.
+
+## SR-002 (2026-11-27)
+
+- Trigger: ARCH-REV-001 failed (AR-001, AR-002 blocking; N-1…N-3).
+- AR-001: the automatic recovery would swap the member contexts under the user.
+  - D-A6: one commit carries the page-local fields.
+  - D-A7: an in-flight send retargets to the member's current context.
+  - `interruptPending` is not carried; the failed service has settled its Stops.
+  - Walks recorded.
+- AR-002: one direction.
+  - The store publishes the recovery state.
+  - A recovery owner, registered by a client plugin, drives the coordinator.
+  - The silent default goes, and a missing owner throws.
+- N-1: the recovery ends without counting a failure when its Team is gone, recovered or stopped.
+- N-2 and N-3: in the design's Guidance.
+- Requirements: REQ-002 says what survives a recovery, and AC-010 is added (existing behavior kept, made explicit). Within the direction, user informed.
+- Classification: still `Large` / `High`. Routing: architecture review.
+- Design cases:
+  - Case 32: replacing an aggregate drops the page's own state on it;
+  - Case 33: a store that starts the work it publishes.

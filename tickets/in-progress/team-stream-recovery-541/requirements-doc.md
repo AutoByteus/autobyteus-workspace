@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (REQ-002 and AC-010 made explicit after ARCH-REV-001; within the direction, user informed)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the founder ("Small follow ups should be merged into one", 2026-11-26)
 - Approved by: Solution Designer within the direction; user informed 2026-11-27. The Task's items are its leads; each decision below records its reasoning.
 
@@ -35,7 +35,7 @@
 | ID | Requirement | Basis |
 | --- | --- | --- |
 | REQ-001 | A Team stream that needs recovery recovers by itself, on desktop and phone, without the user selecting the member again. Attempts follow the reconnect cadence (1, 2, 4, 8, 16, 30 s, none while the page is hidden). A user's reselect during a recovery joins it instead of starting a second one | Task A ("recover by itself"); DEC-001 |
-| REQ-002 | While a Team stream is recovering:<br>- its members keep their last known status;<br>- a send waits for the recovered stream (up to 10 s), then shows the not-sent notice with the text back (540), never "Select this Team member again";<br>- Stop answers "Stop was not sent: not connected…" (533).<br>Only when recovery keeps failing (the fifth consecutive failure) does the view say so, on desktop and phone: "Live updates could not recover automatically. Select this Team member again to reload the complete conversation." (localized). Recovery goes on trying | Task A ("show the truth"); DEC-001 |
+| REQ-002 | While a Team stream is recovering:<br>- its members keep their last known status;<br>- a send waits for the recovered stream (up to 10 s), then shows the not-sent notice with the text back (540), never "Select this Team member again";<br>- Stop answers "Stop was not sent: not connected…" (533).<br>The page's own state survives the recovery: a draft being typed, a returned draft with its notice, and a send waiting for the stream all stay with the member. Only when recovery keeps failing (the fifth consecutive failure) does the view say so, on desktop and phone: "Live updates could not recover automatically. Select this Team member again to reload the complete conversation." (localized). Recovery goes on trying | Task A ("show the truth"); DEC-001 |
 | REQ-003 | While a run's or Team's stream is merely disconnected (not recovering), its shown status and its Send stay as they were. A history refresh does not change them to Initializing. The stream's next snapshot sets the truth | Task C; DEC-002 |
 | REQ-004 | Opening a live run shows its real status: the run's own status as the page knows it (the run-status feed, which the Runs row shows), else Initializing until the stream's first status. Never a Running placeholder, so an idle run never offers Stop at open | Task B FU-002; DEC-003 |
 | REQ-005 | Opening a run whose context another part of the page builds at the same moment never fails and never shows or logs "changed before projection commit". It reads once more, and if the context changed again it shows the context the page now holds | Task B FU-007; DEC-004 |
@@ -55,6 +55,7 @@
 | AC-006 | 005 | An open racing a history refresh building the same run's context: no error is thrown or logged; the run is shown | Web spec reproducing the race (fails on old code) |
 | AC-007 | 006 | zh-CN shows the Chinese labels; en the English | Web spec |
 | AC-008 | 007 | Server and web suites pass; `wc -l` under 500 for both files; no importer of the old file name | Suites; `wc -l`; grep |
+| AC-010 | 002 | Typing across a recovery commit, a send then commit then success, a send timeout then a later commit, and a reselect during recovery: the draft, the notice and the send's outcome are on the member the user sees; nothing lost, nothing shown twice | Web specs (the AR-001 walks) |
 | AC-009 | 008 | The wire prototype gives 0 out-of-order deliveries; SGD-06 ×10 at 150 ms has no gap | Prototype; probe |
 
 ## Decisions

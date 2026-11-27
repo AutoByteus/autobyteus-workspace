@@ -2,7 +2,7 @@
 
 ## Basis
 
-- SR-001. Requirements approved by the Solution Designer within the direction (requirements-doc.md, DEC-001…005).
+- SR-002 (A revised after ARCH-REV-001 AR-001, AR-002, N-1…N-3). SR-001. Requirements approved by the Solution Designer within the direction (requirements-doc.md, DEC-001…005).
 - Authorities read: architecture-design, design-principles (7, 11, 13, 16, 17), `DESIGN.md` (rules 11, 12), design cases 1 and 21.
 - **Data contract:** no stored or exchanged shape changes. The Team, run, Org and run-status stream contracts are unchanged; a page-side state is added in A.
 
@@ -13,27 +13,42 @@
   - A changes the Team stream's lifecycle: an automatic recovery that runs concurrently with the user's selection, sends and Stops, and replaces a live service and context.
   - B changes a concurrent commit rule.
 - Escalation triggers:
-  - the replacement cannot run without a selection intent;
+  - an in-flight send cannot be retargeted without changing the Team stream's admission contract;
   - a send waiting across the replacement cannot reach the new service without a new contract.
 
 ## Design
 
-### A: the Team stream recovers by itself (REQ-001, REQ-002)
+### A: the Team stream recovers by itself (REQ-001, REQ-002; revised in SR-002 after ARCH-REV-001)
+
+**Direction (AR-002).** The store publishes. The recovery owner listens and drives the coordinator. The coordinator commits through the store. The store never starts or knows the recovery.
 
 | D | Owner | Change |
 | --- | --- | --- |
-| D-A1 | New `services/runOpen/teamStreamAutoRecovery.ts` | One recovery per Team root. It starts when the Team's service enters `reopen_required` (the store's `onStreamRecoveryRequired`). Its `LiveStreamReconnectScheduler` (the same cadence and page-resume rules as the Org and every stream) attempts `reopenTeamRunAfterStreamLoss({ teamRunId, selectRun: false })`: success → `connected()` and end; failure → `connectionLost()`. `onPersistentFailure` (the fifth failure) marks the Team's recovery `exhausted`. It ends on success or on `disconnectTeamStream`. The store starts it without importing the coordinator statically (no store ↔ coordinator cycle; for example the store takes a recovery starter from a plugin or a lazy import) |
-| D-A2 | `teamRunOpenCoordinator.reopenTeamRunAfterStreamLoss` | Single-flight per Team: a second call while one runs awaits it. A user's reselect then, when it succeeded, selects the recovered context (its intent rules as today); when it failed, it runs its own attempt |
-| D-A3 | `agentTeamRunStore` | `streamRecoveryNoticesByRootTeamRunId` becomes the Team's recovery state: `recovering` or `exhausted`. `ensureTeamStreamConnected` no longer throws `TEAM_STREAM_REOPEN_REQUIRED`: during recovery it waits, like a connecting stream, for the Team's **current** service (`teamStreamingServices.get`, which is the replacement after commit) to be ready, within the same 10 s, then `MessageNotDeliveredError('not_sent')` (540) |
-| D-A4 | Desktop `TeamWorkspaceView.vue`, phone `components/mobile/runScreen/MobileRunTargetView.vue` | Show `WorkspaceRecoveryNotice` only for `exhausted`, with a new key `workspace.team.recovery.exhausted` (en, zh-CN), wording parallel to the Org's. The English literal goes |
-| D-A5 | `tests/e2e/fixtures/stop-generation-wire.mjs` | `schedule()` keeps one FIFO queue per link and direction: each frame is due at `max(arrival + latency, previous due)`, and one timer drains the queue in order. Never a per-frame `setTimeout` computed from a second clock read |
+| D-A1 | `agentTeamRunStore` | Publishes each Team's recovery state, a fired trigger: `required` (set in `onStreamRecoveryRequired`), then `recovering` and `exhausted` (set by the owner), cleared on commit or `disconnectTeamStream`. `TeamStreamingService`'s `onStreamRecoveryRequired` becomes a required option (no silent `() => undefined` default). A recovery owner registers itself with the store at start (`registerTeamStreamRecoveryOwner()`). Publishing `required` with no owner registered throws, so a missing wiring fails every spec and the page loudly |
+| D-A2 | New `services/runOpen/teamStreamAutoRecovery.ts`, created and registered by a client plugin (`plugins/teamStreamRecovery.client.ts`, the composition root; desktop and phone load the same app) | Watches the store's recovery states. For each Team in `required`, one recovery with its own `LiveStreamReconnectScheduler` (the cadence every stream uses). An attempt calls `reopenTeamRunAfterStreamLoss({ teamRunId, selectRun: false })`. Success ends it. A failure calls `connectionLost()`. `onPersistentFailure` (the fifth) sets `exhausted`, and attempts go on.<br>**It ends without counting a failure (N-1) when:**<br>- the Team's context is removed;<br>- the Team's current service is no longer `reopen_required` (for example a reselect recovered it);<br>- the Team is no longer active (stopped).<br>An attempt checks these before it runs |
+| D-A3 | `teamRunOpenCoordinator.reopenTeamRunAfterStreamLoss` | Single-flight per Team: a call while one runs awaits it. A user's reselect then selects the recovered context when it succeeded (intent rules as today), or runs its own attempt when it failed |
+| D-A4 | `agentTeamRunStore.ensureTeamStreamConnected` | No `TEAM_STREAM_REOPEN_REQUIRED` throw. During recovery it waits, as for a connecting stream, for the Team's **current** service (`teamStreamingServices.get`, the replacement after commit) to be ready, within the same 10 s. Then `MessageNotDeliveredError('not_sent')` (540) |
+| D-A5 | Desktop `TeamWorkspaceView.vue`, phone `components/mobile/runScreen/MobileRunTargetView.vue` | `WorkspaceRecoveryNotice` only for `exhausted`, key `workspace.team.recovery.exhausted` (en, zh-CN); the English literal goes |
+| D-A6 | `agentTeamRunStore.replaceFailedTeamStream`, the one commit point for the automatic recovery and the user's reselect | **The page's own state carries over (AR-001).** In the same synchronous commit, for every member in both the old and the replacement view (by agent run ID), the old member context's page-local fields move to the new one: `requirement`, `contextFilePaths`, `requestedSkillNames`, `requestedMentions`, `messageNotDelivered`, `collaboratorAddFailure` and `submissionPending`. A member no longer in the tree loses them with its context. `interruptPending` is not carried: before any commit, the failed service settled its Stops (`enterReopenRequired` → `settleInterruptsNow`, `connection_lost`), which ends Stopping on the old context, and a Stop it had accepted ends with the old context's status, which no one shows any more. The new context starts without Stopping, and the replacement's snapshot status decides the button (533 D-W7, unchanged). One helper owns the field list (`carryAgentContextPageState(from, to)`, beside `AgentContext`), so a field added later is added in one place |
+| D-A7 | `agentTeamRunStore.sendMessageToFocusedMember` | **An in-flight send follows the member (AR-001).**<br>- When `ensureTeamStreamConnected` returns, and again before any failure is shown, the send resolves the member's **current** context: `getTeamContextById(root)?.view.getAgentContext(target)`.<br>- If that is not `localSubmission.context`, a new `retargetLocalUserSubmissionContext(handle, current)` (in `localUserSubmission.ts`) moves the handle. Its optimistic message goes into the current conversation unless a message with its `messageId` is already there (the server's echo). Its outcome (accept, returned draft with the notice, error) then lands on the context the user sees.<br>- A send cannot reach the node before the commit: the failed service drained its admissions (`teamSends.drain` → `unknown`), and those settled on the old context before the commit, which then carried their notice and returned draft (D-A6) |
+| D-A8 | `tests/e2e/fixtures/stop-generation-wire.mjs` | `schedule()` keeps one FIFO queue per link and direction. Each frame is due at `max(arrival + latency, previous due)`, and one timer drains the queue in order. Never a per-frame `setTimeout` computed from a second clock read |
+
+**Walks (AR-001).**
+
+| Case | Before the commit | At the commit | After |
+| --- | --- | --- | --- |
+| Typing | The user types into the old member context (the composer shows the active context) | D-A6 moves `requirement`, attachments, skills and mentions; the active context becomes the new one with the same text | Typing goes on in the new context. The commit is synchronous, so no keystroke falls between |
+| Send, then commit, then success | The send waits in `ensureTeamStreamConnected` (D-A4); the old context has `submissionPending` and the optimistic row | D-A6 carries `submissionPending`; the composer stays "sending" | The wait returns the new service. D-A7 retargets the handle into the new context (its row is added unless the echo is there). The send goes on the new stream. The echo `MEMBER_INPUT_MESSAGE` resolves the admission, and the outcome lands on the new context |
+| Send, then timeout at 10 s, then a later commit (for example at 15 s) | The send's 10 s wait ends. D-A7 resolves the current context, still the old one. The draft comes back, `messageNotDelivered` is set, `submissionPending` false | D-A6 carries the returned draft and the notice | The new context shows the text and the notice. Send is enabled (DEC-002) |
+| A send that the old stream had taken | The service failure drained it (`unknown`): its draft and notice are on the old context | Carried | The snapshot shows whether the node had it (540's `unknown` rule) |
+| Reselect during recovery | The user's reselect joins the in-flight recovery (D-A3) | The same commit (D-A6) | The selection is applied by the reselect's intent |
+| Stop pressed while recovering | The failed service answers `not_sent` ("Stop was not sent: not connected…", 533); Stopping ends | Nothing to carry | The new context's status decides |
 
 - Unchanged:
   - the gap check;
   - `enterReopenRequired`;
-  - the verified replacement (`replaceFailedTeamStream` with the hydrated candidate and expected base);
+  - the verified replacement (`replaceFailedTeamStream` with the hydrated candidate and its expected base);
   - Stop settlement.
-- While recovering, members keep their last status: nothing writes them until the replacement's snapshot.
 
 ### B: opening a run (REQ-004, REQ-005)
 
@@ -84,9 +99,14 @@
 - The null-run branch.
 - The old file name.
 - The wire's per-frame timers.
+- `onStreamRecoveryRequired`'s silent default.
 - The temporary investigation edits in the wire: `KEEP`, `through` and `from-node`. These are the Solution Designer's and are reverted before handoff.
 
 ## Guidance
+
+- N-2: give every `enterReopenRequired` path a spec that the automatic recovery starts: a gap, an invalid snapshot, and a failed candidate.
+- N-3: give the Offline-then-active context a spec: after DEC-002 it stays Offline until its stream, and a send marks activation pending.
+- The AR-001 walks become specs: typing across a commit; send then commit then success; send then timeout then a later commit; reselect during recovery.
 
 - **AC-001:** create the real gap deterministically, for example a probe wire option that withholds one Team frame, or a node test double. Test on desktop and phone.
 - **AC-004:** run the 540 probe's SDD-12 and SDD-09 on the old code (expect the failure) and on the new code.
