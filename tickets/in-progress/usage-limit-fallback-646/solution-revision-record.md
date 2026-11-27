@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial investigation and options report | N/A | N/A | Ready for Approval | BEH-001..004, REQ-001..008, DEC-001..007 | Sent to the founder for DEC-002..006 |
 
 | SR-002 | Mixed | Founder direction 2026-11-25: run events (telemetry) + the Model Router chooses and learns | N/A | Ready for Approval | Ready for Approval (contract review) | DEC-001, DEC-004, REQ-004, REQ-005, REQ-009, REQ-010 | Data contract and policy drafted for the founder |
+| SR-003 | Mixed | Founder's contract review (2026-11-27) and design completion | N/A | Ready for Approval | Approved; design Ready | C-1/C-2 trimmed, C-7, C-8, hub rules; DEC-002/003/005/006 accepted | Large / High; to architecture review |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -27,3 +28,17 @@
   - DEC-002/003/005/006 carry recommendations to confirm with the contract.
 - design-spec.md: data contract and policy (C-1..C-6, Policy 1–7) for the founder's review, as the Task requires before implementation
 - Next: the founder's answer; then the rest of the design and the architecture review
+
+### SR-003 — Contract reviewed, design complete
+
+- Trigger: the founder's review, 2026-11-26/27.
+  - He accepted the recommendations ("Of course …").
+  - He asked why `rootRunId` and `agentRunId` are both in the event (the fields were removed: no reader).
+  - He asked what `blockedModels` does (explained; kept: it is read by the exhaustion view).
+  - He asked what the existing event types are (two systems exist, per-run streams and platform notices; the hub is the new node-level layer).
+  - He asked how the hub is represented (in-process `RunEventHub` + log, wired at startup).
+  - He set the cost budget out of scope (FU-646-01).
+- Changes: C-1 trimmed to `at, kind, agentRunId, data`; C-2 without `eventId`/`rootRunId`; hub rules C-1b; new C-7 (router switch request + tool + template text), C-8 (launch history); spines, owners and files; lesson L5 recorded
+- Pending the founder: the exact router template text (C-7, lesson L1). It is shown to him in the same message; it does not block the architecture review
+- Classification: Large / High
+- Next: architecture review

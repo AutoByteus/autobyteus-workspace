@@ -2,14 +2,14 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`. Direction set by the founder (SR-002); DEC-002, DEC-003, DEC-005 and DEC-006 carry my recommendations, which he confirms with the data contract review the Task requires before implementation
-- Current solution revision ID: `SR-002`
+- Status: `Approved`
+- Current solution revision ID: `SR-003`
 - Package identifier: `usage-limit-fallback-646`
 - Request: autobyteus-646, "Smart runtime fallback on usage limit"
 - Requested by: `/project_task_manager` (for the founder)
 - Requirements owner: Solution Designer
 - Date: 2026-11-25
-- Approved by: not yet
+- Approved by: **User (the founder)**, in conversation on 2026-11-25…27. Direction: "another agent should be notified … the router agent … find the next available runtime … continue"; "the model router agent will eventually learn a lot". The recommendations DEC-002/003/005/006 were shown twice and answered "Of course …" (2026-11-26). He reviewed the data contract (2026-11-27) and set the cost budget out of scope (FU-646-01)
 - Evidence: [investigation-notes.md](investigation-notes.md)
 
 ## Problem And Desired Outcome
@@ -92,11 +92,11 @@ None.
 | ID | Question | Why it matters | Options | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Who chooses the fallback | Speed, cost, learning, decoupling | A: history ranking; B: the Model Router agent, told through a run event | The founder chose B: the run reports, the router decides and learns over time ("it will be able to make really smart decisions"). History stays as the safety net when the router can't answer | Founder | Decided (B), 2026-11-25 |
-| DEC-002 | Automatic or opt-in | A run changes runtime without being asked | (a) automatic, with a switch in Settings → Model Routing to turn it off, active even while Model Routing (the delegation choice) is off; (b) opt-in, off by default | The point is that work doesn't stop; the notice row makes it visible and the person can switch back. **(a) on by default** | Founder | Recommended; to confirm with the contract |
-| DEC-003 | Which runs | A person picked the runtime of a run they started | (a) every run (started by a person, delegated, Team members); (b) delegated runs and their members only | The same stop happens to a person's run, and the notice says what changed. **(a)** | Founder | Recommended; to confirm with the contract |
+| DEC-002 | Automatic or opt-in | A run changes runtime without being asked | (a) automatic, with a switch in Settings → Model Routing to turn it off, active even while Model Routing (the delegation choice) is off; (b) opt-in, off by default | The point is that work doesn't stop; the notice row makes it visible and the person can switch back. **(a) on by default** | Founder | Decided (recommendation accepted, 2026-11-26) |
+| DEC-003 | Which runs | A person picked the runtime of a run they started | (a) every run (started by a person, delegated, Team members); (b) delegated runs and their members only | The same stop happens to a person's run, and the notice says what changed. **(a)** | Founder | Decided (recommendation accepted, 2026-11-26) |
 | DEC-004 | Fallback order | — | Router first; history when the router is off, past its 40 s budget or exhausted itself; Error when neither finds a usable runtime | Follows DEC-001 B | Founder | Decided, 2026-11-25 |
-| DEC-005 | When the first runtime's limit resets | Cost/quality preference | (a) the run stays on the fallback; new runs use the default again; (b) switch the run back | Switching back mid-work is a second hand-over for no gain. **(a)** | Founder | Recommended; to confirm with the contract |
-| DEC-006 | No reset time known | — | cooldown 1 h, then usable again (a new failure records it again) | Avoids a runtime blocked forever on a wrong guess. **1 h** | Founder | Recommended; to confirm with the contract |
+| DEC-005 | When the first runtime's limit resets | Cost/quality preference | (a) the run stays on the fallback; new runs use the default again; (b) switch the run back | Switching back mid-work is a second hand-over for no gain. **(a)** | Founder | Decided (recommendation accepted, 2026-11-26) |
+| DEC-006 | No reset time known | — | cooldown 1 h, then usable again (a new failure records it again) | Avoids a runtime blocked forever on a wrong guess. **1 h** | Founder | Decided (recommendation accepted, 2026-11-26) |
 | DEC-007 | Several accounts per provider (autobyteus-498) | Future | Keyed per runtime now; per account when 498 lands | No accounts exist yet. **Later** | Solution Designer | Decided |
 
 ## Architecture Phase Input
@@ -112,4 +112,4 @@ None.
 
 ## Readiness Check
 
-- Content ready: Yes. Remaining: the founder's review of the data contract and policy (DEC-002, -003, -005, -006 recommended).
+- Content ready: Yes. Approval recorded: Yes (founder). Ready for design: Yes.
