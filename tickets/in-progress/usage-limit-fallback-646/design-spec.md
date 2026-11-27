@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Current solution revision ID: `SR-010` (SR-010: § R-15, R-16 for ARCH-REV-004; SR-009: § SR-009 Revisions R-11..R-14 for ARCH-REV-003; they govern where earlier sections conflict; SR-008: § R-10 replaces R-9's mechanism; SR-007: § R-9, the continue notice row; SR-006: § R-8, the `agent_history` launch origin; SR-005: § R-7, the one notice row; SR-004: ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
 - Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
@@ -556,3 +556,27 @@ Classification (the backend) and scope (the availability service) each have one 
 | run events (`run-events/`) | 31 days | its readers need at most 31 days (R-5) |
 | switch records (`model-routing/switches_*`) | **90 days, the founder's call** | the router request reads 30 days; the rest is for statistics and the person |
 | routing decisions (`model-routing/decisions_*`) | unchanged: kept | the Model Routing Overview offers "All" (`routing-statistics.ts` period `all`); limiting it changes a visible feature, so it is a separate founder decision, not taken here |
+
+### R-15 The Agent root follows its own switch (AR-010; replaces R-11 step 3)
+
+`StandaloneAgentRunLifecycleService.switchRuntimeAutomatically` does **not** call the root manager. The composition builds the lifecycle before the root manager (general-process-run-supervisor.ts:283-325), and calling back into the driving root inside its gate would reverse the dependency.
+
+Instead:
+
+- it returns the committed metadata;
+- `StandaloneAgentRunRoot.switchAgentRuntime`, still in its gate, sets its own inherited launch from it: `this.setInheritedLaunch(launchConfigurationOf(committed))`. That is all `refreshInheritedLaunch` does (standalone root manager :206-212).
+
+### R-16 A late classification is its own run event (AR-011; completes C-4 and R-13)
+
+For runtimes classified by a limits read after the error (Antigravity, Grok, and Claude if its SDK gives no signal), the `ERROR` is emitted **at once, as today**. When the backend's read finishes, it emits a new run-stream event:
+
+```json
+{ "eventType": "ERROR_CLASSIFIED", "payload": { "turn_id": "…", "error_kind": "usage_limit" } }
+```
+
+- **When it is sent:** only when the read shows the run's model blocked. Nothing is emitted for an unrelated error.
+- **Codex:** keeps `error_kind` on the `ERROR` itself (known at once).
+- **The detector** acts on either `ERROR` with `error_kind: "usage_limit"` or `ERROR_CLASSIFIED` with it, **once per `(agentRunId, turn_id)`** (R-3).
+- **Meanwhile:** the conversation shows the error and the run shows Error, as today. When the switch follows, its marker row and the continue notice appear (R-7, R-10).
+- **Not rendered or stored:** `ERROR_CLASSIFIED` is not rendered as a row and not recorded in the traces. Its only reader is the detector.
+- **Rejected:** holding the `ERROR` until the read completes. It would delay the run's status and every later event by up to 18 s, for every terminal error.

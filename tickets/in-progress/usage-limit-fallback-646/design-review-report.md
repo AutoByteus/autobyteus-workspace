@@ -4,16 +4,16 @@
 
 - Upstream Requirements Doc: `tickets/in-progress/usage-limit-fallback-646/requirements-doc.md` (Approved, SR-003; AC-003 corrected at SR-004)
 - Upstream Investigation Notes: `tickets/in-progress/usage-limit-fallback-646/investigation-notes.md`
-- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-004)
+- Upstream Solution Revision Record: `tickets/in-progress/usage-limit-fallback-646/solution-revision-record.md` (SR-001 … SR-009)
 - Reviewed Design Spec: `tickets/in-progress/usage-limit-fallback-646/design-spec.md` (Ready, SR-004; § SR-004 Revisions governs)
 - Supplemental Task Artifacts Reviewed: None (no supplements); `handoff-architecture-review.md`; `follow-ups.md` (FU-646-01)
-- Relevant Solution Revision IDs: SR-001 … SR-004
+- Relevant Solution Revision IDs: SR-001 … SR-009
 - Architecture Review Revision Record: `tickets/in-progress/usage-limit-fallback-646/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
 - Trigger: Solution Designer handoff "Architecture Design Complete", `Large`/`High`, 2026-11-27. The founder approved the data contract and policy; the router template text (C-7) is pending him and does not block this review.
-- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Pass`); round 1 (ARCH-REV-001, `Fail`)
-- Latest Authoritative Round: 3
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Fail` at the 9-point bar); rounds 1–2
+- Latest Authoritative Round: 4
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646`, branch `codex/usage-limit-fallback-646` at `214300a403` (ticket docs only). Code read at the base `bc4351cad7` with `git show`:
   - `agent-execution/domain/agent-run-lifecycle-observer.ts`; `agent-run-platform-notices.ts:66-90`; `agent-run.ts:210-235`; `events/dispatch-processed-agent-run-events.ts`;
   - Codex: `events/codex-thread-lifecycle-event-converter.ts:48-105`, `events/codex-turn-event-converter.ts:56-85`, `thread/codex-thread-notification-handler.ts:75-110`;
@@ -335,31 +335,77 @@ Code read at `bc4351cad7` for this round:
   - The window for switch history, which the router learns from, is the founder's choice. Propose a default, e.g. 90 days.
 - Recipient: Solution Designer.
 
+## Round 4 Review (ARCH-REV-004, SR-009 at `67b5c2f429`)
+
+**Score: about 8.5.** AR-006 … AR-009 are resolved, and the shape is now close to 9. Two narrow gaps remain; both are one-decision fixes.
+
+Code read at `bc4351cad7` and on the branch for this round:
+- `docs/design/collaboration_model.md` CM-7, CM-10;
+- the 461 records for AR-016;
+- `general-process-run-supervisor.ts:283-325` (the lifecycle service is built first; the root manager receives it as `agentServices.activateRunAgent`);
+- `standalone-agent-run-root-manager.ts:204-212` (`refreshInheritedLaunch` reads the metadata and calls `root.setInheritedLaunch`);
+- `standalone-agent-run-root.ts:279` (`setInheritedLaunch`, a plain setter);
+- `utils/sealed-jsonl-log.ts` (the branch's shared log owner).
+
+| Prior finding | SR-009 response | Verification | Status |
+| --- | --- | --- | --- |
+| AR-006 | R-11: the automatic switch is its own operation per root, with its own checks and texts. It uses the commit primitive `commitRunRuntimeSwitch` (Agent) and the tree mutator's member function through `TeamMemberRuntimeSwitchCommitter` (Team), not the person's Save. Peer-started runs switch on their own node | CM-10: "the node that runs a delegated run owns it: runtime, memory, message log and lifecycle … the run's launches are its own facts on its node, read while a view shows them". The 461 record (AR-016) only assigned the `isPeerStarted` test to switch eligibility; no recorded reason ties the exclusion to anything but the person's Settings. The planned two-server E2E proves it, and DEC-003 holds | Resolved; the root follow's placement is AR-010 |
+| AR-007 | R-12: no map; the root acts only when the current launch equals the failed runtime and model and there is no pending switch, else `already_switched` | One state, also across a restart. It still lets a same-runtime fallback (Opus → Sonnet) act on its own later failure | Resolved |
+| AR-008 | R-13: each backend classifies (`error_kind: usage_limit`); the detector is runtime-agnostic; scope and reset come from the availability service | One owner per fact. Codex carries the signal on all three of a turn's errors | Resolved for Codex; AR-011 for the runtimes that classify by a later read |
+| AR-009 | R-14: `SealedJsonlLog.removeSealedOlderThan`: run events 31 d, switches 90 d (DEC-008, asked of the founder), routing decisions kept | The routing log's "All" period is visible behavior, so that change is the founder's; the reason holds | Resolved (see Residual Risks for the routing log follow-up) |
+
+### AR-010 — The root follow points back against the composition
+
+- Type: `Design Impact`; severity: Low.
+- Protects: Principles 9 and 16 (dependency direction, composition order); FU-008.
+- Problem:
+  - R-11 makes `StandaloneAgentRunRootManager.refreshInheritedLaunch(runId)` step 3 of `StandaloneAgentRunLifecycleService.switchRuntimeAutomatically`.
+  - The composition builds the lifecycle service first and hands it to the root manager (`general-process-run-supervisor.ts:283-325`: `agentServices.activateRunAgent → lifecycleService`). A lifecycle → root-manager call reverses that dependency and needs the manager connected after construction.
+  - It also calls back into the root manager for the very root that is driving the switch, inside its gate.
+- Required update: the root, which drives the switch, sets its own inherited launch from the committed metadata the lifecycle returns (`this.setInheritedLaunch(launchConfigurationOf(committed))`, what `refreshInheritedLaunch` does at `:206-212`). The lifecycle operation stays below the root and does not know the root manager.
+- Recipient: Solution Designer.
+
+### AR-011 — For runtimes classified by a later limits read, how the result reaches the event is not stated
+
+- Type: `Design Impact`; severity: Medium.
+- Protects: REQ-001, REQ-009; Principle 17 (the `ERROR` event's contract, C-4 / R-13).
+- Problem:
+  - R-13 has the Antigravity and Grok backends (and Claude, if the SDK gives no signal) classify by "a limits read after a terminal turn error" (up to 18 s).
+  - The classification is a field on the `ERROR` event, and the detector acts only on `ERROR` with `error_kind`.
+  - The design doesn't say which of two shapes applies: (a) the backend delays its `ERROR` until the read completes, which holds the run's error status and every later event up to 18 s; or (b) it emits `ERROR` at once and a second event when the read classifies it, which needs its kind and fields in the contract, and the detector listening for it.
+- Required update: choose one and write it into C-4 and R-13. My recommendation is (b): an `ERROR` now and an `ERROR_CLASSIFIED {turn_id, error_kind}` (or equivalent) later, with the detector acting on either, still once per `(agentRunId, turn_id)` (R-3). Also say what the run's view shows meanwhile.
+- Recipient: Solution Designer.
+
+## Unresolved Approved-Behavior Or Current-State Gaps
+
+None.
+
 ## Review Decision
 
-`Fail` (round 3, at the 9-point bar). SR-004 is workable, but AR-006 is a defect, and AR-007…AR-009 keep it below 9.
+`Fail` (round 4, at the 9-point bar). The architecture is now about 8.5. AR-010 and AR-011 are the last two gaps; with them resolved I would score it 9.
 
 ## Findings
 
-Open: AR-006 (High), AR-007 (Low), AR-008 (Medium), AR-009 (Low), all in § Round 3 Re-Review. AR-001 … AR-005 stay resolved.
+Open: AR-010 (Low), AR-011 (Medium). AR-001 … AR-009 are resolved.
 
 ## Classification
 
-`Design Impact` (AR-006…AR-009), with a `Requirement Gap` inside AR-006 (peer-started runs) and AR-009 (the retention window). Route: Solution Designer.
+`Design Impact` (AR-010, AR-011). Route: Solution Designer.
 
 ## Recommended Recipient
 
-Solution Designer. The implementation engineer is told to hold the switch, detector and log-retention parts. The hub, the event log format, the exhaustion view and the delegation order are not affected.
+Solution Designer. The implementation engineer may proceed with R-11 (except where the root follow sits), R-12 and R-14, and with Codex's classification. Hold the root-follow placement, and classification for Claude (if no SDK signal), Antigravity and Grok.
 
 ## Residual Risks
 
-- Agent runs and Team members stay two structures in the codebase. Merging how they switch is a larger refactor outside this ticket, so a follow-up is possible.
-- Non-Codex runtimes give no structured signal, so some inference remains; AR-008 only puts it in one owned place per runtime.
-- The router template (R-6) still waits for the founder.
+- **DEC-008** (switch records kept for 90 days) is pending the founder. 90 days is the default until then.
+- **The routing decision log** still grows without bound. Its retention is a founder decision (the "All" period). The Solution Designer should record it as a follow-up.
+- **Peer-started switch:** the two-server E2E planned in R-11 is the proof. If it shows the delegating node caches the launch, that is a Design Impact.
+- **The router template (R-6)** still waits for the founder.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (ARCH-REV-003)
-- Score: about 7.5 now; 9 with AR-006…AR-009 resolved.
-- Material-Premise Gate: `Pass`. AR-006's peer-started case is reachable: a cross-node delegation (autobyteus-587) whose runtime hits its limit.
-- Notes: the strong parts are listed in § Round 3 Re-Review and are not to be reworked.
+- Review Decision: `Fail` (ARCH-REV-004)
+- Score: about 8.5 now; 9 with AR-010 and AR-011 resolved.
+- Material-Premise Gate: `Pass`.
+- Notes: R-11, R-12 and R-14 are accepted as designed; keep them.

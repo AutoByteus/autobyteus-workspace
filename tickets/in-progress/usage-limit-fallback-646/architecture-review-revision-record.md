@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (Large, High) | SR-001 … SR-003 | N/A | Fail | AR-001 … AR-005 |
 | ARCH-REV-002 | Round 2 / SR-004 (fixes for ARCH-REV-001) | SR-004 | Fail | Pass | AR-001 … AR-005 resolved |
 | ARCH-REV-003 | Round 3 / re-review at the 9-point bar (user's direction) | SR-004 | Pass | Fail | AR-006 … AR-009 new |
+| ARCH-REV-004 | Round 4 / SR-009 (fixes for ARCH-REV-003) | SR-009 | Fail | Fail | AR-006 … AR-009 resolved; AR-010, AR-011 new |
 
 ## Revision Entries
 
@@ -97,3 +98,29 @@ None.
 - Material classification changes: None (`Large`/`High`).
 - Recommended recipient: Solution Designer; the implementation engineer is told to hold the affected parts.
 - Remaining risks or uncertainty: the two switch structures (Agent vs Team) stay; non-Codex inference stays within each runtime; the router template waits for the founder.
+
+### ARCH-REV-004 — SR-009: own switch operation, state guard, per-runtime classification, retention; two gaps left
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/usage-limit-fallback-646/tickets/in-progress/usage-limit-fallback-646/design-review-report.md` (§ Round 4 Review)
+- Review round and trigger: round 4. SR-009 at `67b5c2f429` (Solution Designer's message, 2026-11-27).
+- Triggering role, report path, and finding IDs: Solution Designer; design-spec § SR-009 Revisions (R-11 … R-14); AR-006 … AR-009.
+- Relevant solution revision IDs: SR-005 … SR-009. SR-005 … SR-008 are implementation questions answered within REQ-005/006 (the notice rendering, the `agent_history` origin, the continue notice); they were checked and found to have no architectural effect.
+- Prior authoritative decision: `Fail` (ARCH-REV-003).
+- Current authoritative decision: `Fail`, score about 8.5.
+- What changed in the review result:
+  - AR-006 … AR-009 are resolved. The peer-started premise is checked against CM-10 and the 461 AR-016 record.
+  - Two new narrow gaps: the root follow placed in the lifecycle service reverses the composition's dependency (AR-010), and the event contract for a classification found by a later limits read is unspecified (AR-011).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-006 | Open (High) | Resolved | SR-009 R-11 | Own operation per root on commit primitives; own checks and texts; peer-started runs per CM-10, with a two-server E2E |
+| AR-007 | Open (Low) | Resolved | SR-009 R-12 | Guard from the run's current launch and pending switch; no map |
+| AR-008 | Open (Medium) | Resolved (Codex); see AR-011 | SR-009 R-13 | Backends classify; the detector is runtime-agnostic; scope and reset from the availability service |
+| AR-009 | Open (Low) | Resolved | SR-009 R-14 | `SealedJsonlLog.removeSealedOlderThan`; 31 d / 90 d; routing log left to the founder |
+
+- New or remaining finding IDs: AR-010 (Design Impact, Low): the root follow should be done by the driving root, not the lifecycle service; AR-011 (Design Impact, Medium): how a later-read classification reaches the event.
+- Material classification changes: None (`Large`/`High`).
+- Recommended recipient: Solution Designer. The implementation engineer may proceed except on the root-follow placement and the read-based classification.
+- Remaining risks or uncertainty: DEC-008 pending the founder; routing log retention (follow-up); the peer-started E2E; the router template.
