@@ -8,6 +8,7 @@
 
 | SR-002 | Mixed | Founder direction 2026-11-25: run events (telemetry) + the Model Router chooses and learns | N/A | Ready for Approval | Ready for Approval (contract review) | DEC-001, DEC-004, REQ-004, REQ-005, REQ-009, REQ-010 | Data contract and policy drafted for the founder |
 | SR-003 | Mixed | Founder's contract review (2026-11-27) and design completion | N/A | Ready for Approval | Approved; design Ready | C-1/C-2 trimmed, C-7, C-8, hub rules; DEC-002/003/005/006 accepted | Large / High; to architecture review |
+| SR-004 | Design | ARCH-REV-001 Fail | AR-001..AR-005, residuals | design Ready (SR-003) | design Ready (SR-004) | REQ-005, REQ-008, REQ-009, AC-003, BEH-002 | Revisions R-1..R-6; to ARCH-REV-002 |
 ## Revision Entries
 
 ### SR-001 — Investigation and options
@@ -42,3 +43,15 @@
 - Pending the founder: the exact router template text (C-7, lesson L1). It is shown to him in the same message; it does not block the architecture review
 - Classification: Large / High
 - Next: architecture review
+
+### SR-004 — Architecture review round 1
+
+- Trigger: ARCH-REV-001 (Fail).
+- **AR-001:** the switch of a live run is specified per root kind (R-1). Only two kinds exist, because Org units are own runs (CM-3). The Team member path is built from existing primitives: quiet stop of the handle, a new `TeamMemberRuntimeSwitchCommitter` on `commitExecutionTreeMutation`, `replaceSelection`, `post_message`, and the existing member switch at activation. Restart consistency and failures are stated.
+- **AR-002:** the order is preserved. Exhaustion is checked on every layer, and the history layer is used only after an exhausted skip (R-2). No Requirement Gap, because it stays within REQ-003.
+- **AR-003:** one publish per `(agentRunId, turn_id)` and one switch in flight per run (R-3).
+- **AR-004:** attach on `runPublished`; all work runs detached (R-4).
+- **AR-005:** AC-003 fixed (continue notice; no re-send); basis line updated.
+- **Residuals:** exhaustion rebuild window (R-5), router template gate (R-6), debug log of unrelated reads (R-4).
+- Intended behavior changed: No.
+- Next: ARCH-REV-002.

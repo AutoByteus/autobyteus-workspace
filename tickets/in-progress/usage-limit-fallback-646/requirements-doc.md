@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Package identifier: `usage-limit-fallback-646`
 - Request: autobyteus-646, "Smart runtime fallback on usage limit"
 - Requested by: `/project_task_manager` (for the founder)
@@ -84,7 +84,7 @@ None.
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, REQ-002 | A Codex turn ends with `usageLimitExceeded` | Recorded as exhausted until the reset read from Codex's limits | Unit with recorded payloads; gated live case when an account is exhausted |
 | AC-002 | REQ-003 | Delegate an agent whose default is remembered-exhausted | Starts on the fallback; the launch note names why | Server test, two-server E2E |
-| AC-003 | REQ-005, REQ-006 | A run's turn fails on the usage limit (first turn, and mid-work) | Switches, the notice row is shown, the same input runs on the fallback, and the hand-over carries the work journal | Built-server E2E with scripted CLIs |
+| AC-003 | REQ-005, REQ-006 | A run's turn fails on the usage limit (first turn, and mid-work) | Switches; the notice row is shown; the continue notice (C-5) is the new runtime's input, the failed input is not sent again, and the hand-over carries the work journal | Built-server E2E with scripted CLIs |
 | AC-004 | REQ-007, REQ-008 | Every candidate is exhausted | One Error with the list; no loop | Server test |
 
 ## Decisions

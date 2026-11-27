@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
-- Requirements: [requirements-doc.md](requirements-doc.md) SR-002 (direction set by the founder on 2026-11-25; DEC-002/003/005/006 to be confirmed with this contract)
+- Current solution revision ID: `SR-004` (ARCH-REV-001: AR-001..AR-005 and residuals resolved below, § SR-004 Revisions; where a section above conflicts with § SR-004 Revisions, § SR-004 Revisions governs)
+- Requirements: [requirements-doc.md](requirements-doc.md) SR-004, approved by the founder (2026-11-25…27; DEC-002/003/005/006 accepted 2026-11-26)
 - User approval of the design: **Obtained for the data contract and policy** (the Task requires it before implementation).
   - 2026-11-25: "Yeah the model router agent will eventually learn a lot … it will be able to make really smart decisions."
   - 2026-11-26: "Of course … the events stream doesn't copy that", answering "shall I go ahead … including my three recommendations?"
@@ -323,3 +323,75 @@ choose(input: { agentRunId; agentDefinitionId; reason: UsageLimitReached }): Pro
 - Keep every C-1/C-2 field exactly as specified; no field without its reader.
 - Tests named in the Change Sequence step 11, plus unit tests per owner.
 - Live gated cases when a runtime is actually exhausted (as now for Codex until 2026-11-27).
+
+## SR-004 Revisions (ARCH-REV-001)
+
+### R-1 Switching a live run, per root kind (AR-001)
+
+There are only two root kinds to handle:
+
+- **Agent:** a standalone run, a delegated Agent, or an Org's direct agent. Org units are runs of their own (`containedIn`, CM-3).
+- **Team:** a Team run, a delegated Team, or an Org's mounted Team.
+
+An Org container is never asked: `placeOf(agentRunId)` returns the unit's own root (verify in implementation: an Org container root claims no unit agent). The driver is always `RunRuntimeSwitcher`, which resolves the root by `placeOf` and calls the root's `switchAgentRuntime(agentRunId, launch, notice)`. **Each root runs it inside its own gate** (`operationGate` / `materializationGate`), so no input or command interleaves.
+
+**Agent root** (`StandaloneAgentRunRoot.switchAgentRuntime`, in `operationGate`), using existing primitives:
+
+1. **Quiet stop.**
+   - `agentRunManager.tryPrepareAgentRunTerminationIfQuiescent(run)`, then `commit().finish()`: the idle-shutdown stop, which records no `terminatedAt`.
+   - Not quiet (a turn still running): the outcome is `not_quiet`, and the listener retries once after the run's next idle status. A second refusal gives C-2 `switch_failed`.
+2. **Pending switch.** Through the standalone lifecycle's stopped-run selection update (`StandaloneStoppedRunSelectionUpdater.update` in the run's transition lane):
+   - it writes `runtimeKind`, `llmModelIdentifier`, `llmConfig` (the new model's default settings) and `pendingRuntimeSwitch {switchId, from}`;
+   - the persistence owner is `run_metadata.json` through `AgentRunHistoryCatalogService.commitRunRuntimeSwitch`.
+3. **Continue notice.**
+   - `postAgentUserMessage` with the C-5 system input (sender `system.runtime_handover`);
+   - `activateSwitched` makes the switch real with the hand-over marker.
+
+**Team root** (`RootTeamRun.switchAgentRuntime`, in `materializationGate`). This is new and built from existing pieces:
+
+1. **Quiet stop of the member.** The member's handle `tryPrepareTerminationIfQuiescent()`, then `commit().finish()`, as `FlatTeamExecutionManager.tryRetire` does for a leaving member. The handle stays registered and stopped; the rest of the Team keeps running. Not quiet: as for the Agent root.
+2. **Persist the pending switch into the live Team tree.**
+   - A new `TeamMemberRuntimeSwitchCommitter` (beside `TeamAgentPlatformBindingCommitter`, same shape) calls `persistence.commitExecutionTreeMutation`.
+   - Its mutation sets the member's `launchConfiguration.runtimeKind/llmModelIdentifier/llmConfig` and `pendingRuntimeSwitch {switchId, from}`, reusing the stopped-Team mutation for one member (`team-run-selection-mutator.ts` / `team-run-execution-tree-mutator.ts`).
+   - After durability it calls `replaceTree`. The persistence owner is the Team's `team_run_execution_tree.json`, as for every live tree change.
+3. **Update the handle in memory:** `ConfiguredAgentExecutionHandle.replaceSelection({…, pendingRuntimeSwitch})`. The handle is stopped, which `replaceSelection` requires; its first production caller is here.
+4. **Continue notice:**
+   - `executeAgentCommand(agentRunId, {kind: "post_message", message: notice})`.
+   - The member's next activation, in `ConfiguredAgentExecutionHandle.initializeReady`, runs the existing member switch: `beginSwitch` → prepare → `record` → the `runtime_switch` binding commit (`TeamAgentPlatformBindingCommitter`) → publish.
+
+**Restart consistency:**
+
+- **Stop during step 1:** nothing is written, and the member restores on its old launch.
+- **Stop after step 2:** the tree holds the new launch and the pending switch. At the next activation (the restored run's first input) the switch becomes real exactly as for a person's switch of a stopped Team. The continue notice was not sent; the run waits for input, as any run after a restart (autobyteus-638 brings it back idle).
+- **Stop after step 4:** an ordinary switched member.
+
+**Failure:** any step failing before step 2 leaves the run as it was (still in Error). A failure after step 2 leaves a pending switch that applies at the next input. Both give C-2 `switch_failed` with the reason.
+
+### R-2 The delegation order (AR-002)
+
+The preserved order (`model_routing.md` "Which launch an agent of a copy gets") is unchanged, with two additions, both only about exhaustion (REQ-003):
+
+1. **Exhaustion (C-3) is checked for every layer's launch:** the agent's own default, the Team default and the inherited delegator's launch. It applies always, with or without Model Routing. An exhausted launch is skipped with the note "<model> is exhausted until <time>".
+2. **The history layer is used only when at least one layer was skipped as exhausted** and the router did not choose (off, not active, or failed). It goes before the inherited launch, and also when the inherited launch is exhausted. A skip for any other reason (not installed, model missing, signed out) keeps today's order exactly, and the history layer is not used.
+
+If history finds nothing usable and the inherited launch is exhausted, the delegation is refused as today, with the exhaustion named.
+
+### R-3 One event per failed turn, one switch per run (AR-003)
+
+- **Detector:** publishes at most once per `(agentRunId, turn_id)`. It keeps an in-memory set of handled keys, bounded per run (cleared when the run's agent is released). The `error` notification, `CODEX_TURN_FAILED` and `CODEX_THREAD_STATUS_FAILED` of one turn are one key. An `ERROR` without a `turn_id` is keyed by the run and the second (`at` truncated), and is published once.
+- **Switch listener:** at most one switch in flight per `agentRunId` (an in-memory map). An event for a run whose switch is in flight is recorded (C-1, exhaustion) and not acted on again. The entry is removed when the switch outcome is recorded.
+
+### R-4 Where detection attaches, and that it runs detached (AR-004)
+
+- **Source:** `UsageLimitDetector` is a run-lifecycle observer. It implements `AgentRunLifecycleObserver.runPublished(run, kind)` and is registered in `AgentRunPlatformNotices`'s fan-out beside the other notice sources (`runtime-handover-notice-service.ts`, `skill-update-notice-service.ts`). On `runPublished` it calls `run.subscribeToEvents` and filters for a terminal `ERROR`.
+- **Detached:** run listeners are called synchronously inside the run's dispatch queue. So the listener only records the error facts and schedules the work with `void Promise.resolve().then(…)`: the limits read (up to 18 s), the publish, the hub's listeners (router up to 40 s; stopping this same run). Nothing waits in the run's queue, and a failure there is logged.
+- **Which runs:** only runs held by a collaboration root (`placeOf(agentRunId)` not null at detection). Application-owned and system-owned runs, the Model Router's own included, are skipped.
+- **Logging:** a limits read after an error that turns out unrelated (model not blocked) is logged at debug with the run, runtime and the read's result.
+
+### R-5 Exhaustion view at startup (residual)
+
+At startup the view reads `usage_limit_reached` lines from the active file and the sealed files, newest file first. It stops at the first file whose last line is older than 31 days: the longest reset seen is Grok's billing period, at most a month. It keeps only the events still in force (`resetAt > now`, or `at + 1 h > now`).
+
+### R-6 Router template (residual)
+
+The C-7 text is pending the founder (lesson L1). The implementer adds it only after his approval is recorded in this file. Until then the switch request and tool are built and tested with the text as written here.
