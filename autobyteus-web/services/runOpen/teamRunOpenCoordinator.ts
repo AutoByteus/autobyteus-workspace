@@ -15,6 +15,7 @@ import {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 export interface OpenTeamRunWithCoordinatorInput {
@@ -122,14 +123,45 @@ const runTeamStreamRecovery = async (input: OpenTeamRunWithCoordinatorInput): Pr
   const context = hydrated.hydratedContext;
   const focus = context.view.focusAgentForInspection(preferredAgentRunId);
   if (focus.disposition === 'rejected') throw new Error(focus.message);
+  // The member the user moved to while the read ran (any focus path: a link, a mounted Team's inspection), read at the
+  // commit from the context being replaced (autobyteus-541 CR-001).
+  let focusedAtCommit: string | null = null;
   await runStore.replaceFailedTeamStream({
     rootTeamRunId: input.teamRunId,
     candidateContext: context,
     expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
-    beforeContextCommit: () => commitTeamRunHydration(hydrated),
+    beforeContextCommit: () => {
+      focusedAtCommit = useAgentTeamContextsStore().getTeamContextById(input.teamRunId)?.view.getFocusedAgentRunId() ?? null;
+      commitTeamRunHydration(hydrated);
+    },
   });
   markCommittedTeamRunHydrationAuthority(hydrated);
+  await keepFocusAcrossRecovery(input.teamRunId, context, preferredAgentRunId, focusedAtCommit);
   return { context, resumeConfig: hydrated.resumeConfig };
+};
+
+/**
+ * After the commit, the recovered context shows the member the replaced one showed at the commit: loaded first, as a
+ * mounted Team's member is, then focused. Nothing when that member left the tree, or when the focus moved again since.
+ */
+const keepFocusAcrossRecovery = async (
+  teamRunId: string,
+  context: AgentTeamContext,
+  candidateFocus: string,
+  focusedAtCommit: string | null,
+): Promise<void> => {
+  if (!focusedAtCommit || focusedAtCommit === candidateFocus || !context.view.hasAgentRun(focusedAtCommit)) return;
+  try {
+    await ensureAuthoritativeTeamMemberProjection({ team: context, agentRunId: focusedAtCommit });
+  } catch (error) {
+    console.warn(`Team '${teamRunId}' recovered; its member '${focusedAtCommit}' could not be loaded.`, error);
+    return;
+  }
+  if (useAgentTeamContextsStore().getTeamContextById(teamRunId) !== context
+    || context.view.getFocusedAgentRunId() !== candidateFocus) return;
+  if (context.view.focusAgentForInspection(focusedAtCommit).disposition === 'rejected') return;
+  // The run tree's rows show the focus from the navigation projection, which the commit built with the read's member.
+  useRunHistoryStore().refreshRunNavigationTopology('team-stream-recovery-focus');
 };
 
 /**

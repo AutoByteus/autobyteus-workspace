@@ -21,6 +21,7 @@ const {
   commitTeamRunHydrationMock,
   markAuthorityMock,
   ensureMemberProjectionMock,
+  refreshTopologyMock,
 } = vi.hoisted(() => ({
   hydrateLiveTeamRunContextMock: vi.fn(),
   hydrateTeamRunContextForStreamRecoveryMock: vi.fn(),
@@ -37,7 +38,9 @@ const {
   commitTeamRunHydrationMock: vi.fn(),
   markAuthorityMock: vi.fn(),
   ensureMemberProjectionMock: vi.fn(),
+  refreshTopologyMock: vi.fn(),
 }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshRunNavigationTopology: refreshTopologyMock }) }))
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
@@ -388,6 +391,70 @@ describe('openTeamRun current exact execution identity', () => {
       expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenLastCalledWith(expect.objectContaining({ agentRunId: 'run-b' }))
       expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
       expect(selectRunMock).toHaveBeenCalledTimes(1)
+    })
+
+    // CR-001: a focus path that does not join the recovery (an execution link → a mounted Team's inspection) moved the
+    // user to another member while the automatic attempt read the Team; the commit keeps that member.
+    const commitSwapsContext = (replacementOf: () => ReturnType<typeof makeTeam>) => {
+      replaceFailedTeamStreamMock.mockImplementation(async ({ beforeContextCommit }) => {
+        beforeContextCommit()
+        const replacement = replacementOf()
+        getTeamContextByIdMock.mockReturnValue(replacement)
+      })
+    }
+
+    it('keeps the member the user focused on the old context during the read: loaded, then focused', async () => {
+      const old = makeTeam({ focus: 'run-a' })
+      const replacement = makeTeam({ focus: 'run-a' })
+      getTeamContextByIdMock.mockReturnValue(old)
+      commitSwapsContext(() => replacement)
+      const read = deferred()
+      hydrateTeamRunContextForStreamRecoveryMock.mockReturnValue(read.promise)
+      ensureMemberProjectionMock.mockResolvedValue({ disposition: 'authoritative', agentRunId: 'run-b' })
+      const automatic = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      // The link focuses the member on the mounted (old) context while the read runs.
+      old.view.focusAgentForInspection('run-b')
+      read.resolve({ ...hydration(replacement), expectedBaseChangeSequence: 3 })
+
+      await expect(automatic).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
+      expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'run-a' }))
+      expect(ensureMemberProjectionMock).toHaveBeenCalledWith({ team: replacement, agentRunId: 'run-b' })
+      expect(replacement.view.getFocusedAgentRunId()).toBe('run-b')
+      // The run tree's selected row follows (its navigation projection is rebuilt after the focus moved).
+      expect(refreshTopologyMock).toHaveBeenCalledWith('team-stream-recovery-focus')
+      expect(ensureMemberProjectionMock.mock.invocationCallOrder[0])
+        .toBeGreaterThan(replaceFailedTeamStreamMock.mock.invocationCallOrder[0]!)
+    })
+
+    it('loads nothing more when the focus did not move during the read', async () => {
+      const replacement = makeTeam({ focus: 'run-a' })
+      getTeamContextByIdMock.mockReturnValue(makeTeam({ focus: 'run-a' }))
+      commitSwapsContext(() => replacement)
+      hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({ ...hydration(replacement), expectedBaseChangeSequence: 3 })
+
+      await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      expect(ensureMemberProjectionMock).not.toHaveBeenCalled()
+      expect(replacement.view.getFocusedAgentRunId()).toBe('run-a')
+      expect(refreshTopologyMock).not.toHaveBeenCalled()
+    })
+
+    it('keeps the read\'s member when the moved-to member cannot be loaded', async () => {
+      const old = makeTeam({ focus: 'run-a' })
+      const replacement = makeTeam({ focus: 'run-a' })
+      getTeamContextByIdMock.mockReturnValue(old)
+      commitSwapsContext(() => replacement)
+      const read = deferred()
+      hydrateTeamRunContextForStreamRecoveryMock.mockReturnValue(read.promise)
+      ensureMemberProjectionMock.mockRejectedValue(new Error('member read failed'))
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+      const automatic = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      old.view.focusAgentForInspection('run-b')
+      read.resolve({ ...hydration(replacement), expectedBaseChangeSequence: 3 })
+
+      // The stream recovered all the same; the recovery is not counted as failed.
+      await expect(automatic).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-a' })
+      expect(warn).toHaveBeenCalled()
+      warn.mockRestore()
     })
 
     it('a call after a recovery ended starts a new one', async () => {
