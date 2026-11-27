@@ -124,7 +124,6 @@ export class AgentTeamStreamHandler {
     {
       try {
         const message = AgentTeamStreamHandler.parseMessage(raw);
-        const teamRunId = session.view.teamRunId;
         // A command to one of the team's agents (a peer run's through the root); a delegated run is reached by its own
         // stream (SR-061 rule 2).
         const routed: MemberCommands = { executeAgentCommand: (agentRunId, command) => this.memberCommand(session.view, agentRunId, command) };
@@ -134,7 +133,7 @@ export class AgentTeamStreamHandler {
           await handleTeamInterruptGenerationCommand({ payload: message.payload, sink: session.egress, activeRun: routed });
         } else {
           await handleTeamToolApprovalCommand({
-            teamRunId, payload: message.payload, approved: message.type === "APPROVE_TOOL", sink: session.egress, activeRun: routed,
+            payload: message.payload, approved: message.type === "APPROVE_TOOL", sink: session.egress, activeRun: routed,
           });
         }
       } catch (error) {

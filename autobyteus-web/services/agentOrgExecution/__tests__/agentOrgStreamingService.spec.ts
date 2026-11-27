@@ -32,7 +32,7 @@ vi.mock('../agentOrgContextHydration', () => ({
 }))
 
 import { AgentOrgStreamingService } from '../agentOrgStreamingService'
-import { AgentOrgConnectionLostError } from '../agentOrgConnectionLostError'
+import { AgentOrgConnectionLostError } from '../agentOrgCommandFailures'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 class TestWebSocket {

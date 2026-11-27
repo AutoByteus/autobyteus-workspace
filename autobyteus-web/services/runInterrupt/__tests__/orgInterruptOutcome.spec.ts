@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { AgentOrgConnectionLostError } from '~/services/agentOrgExecution/agentOrgConnectionLostError'
+import { AgentOrgConnectionLostError } from '~/services/agentOrgExecution/agentOrgCommandFailures'
 import { orgInterruptOutcome } from '../orgInterruptOutcome'
 
 const service = (ready: boolean, interrupt: () => Promise<void>) => ({ isReady: () => ready, interrupt: vi.fn(interrupt) })
