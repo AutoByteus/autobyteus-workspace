@@ -54,7 +54,8 @@ export type TeamStreamRecoveryNotice = Readonly<{
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
-  onStreamRecoveryRequired?: (notice: TeamStreamRecoveryNotice) => void;
+  /** Required: a failed stream never reconnects, so its owner must hear of it (autobyteus-541 D-A1). */
+  onStreamRecoveryRequired: (notice: TeamStreamRecoveryNotice) => void;
 }
 
 export interface TeamInterruptGenerationTarget { agentRunId: string }
@@ -85,10 +86,10 @@ export class TeamStreamingService {
     resynchronize: () => this.restartTransport(),
   });
 
-  constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
+  constructor(wsEndpoint: string, options: TeamStreamingServiceOptions) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
-    this.onStreamRecoveryRequired = options.onStreamRecoveryRequired ?? (() => undefined);
+    this.onStreamRecoveryRequired = options.onStreamRecoveryRequired;
   }
 
   get connectionState(): ConnectionState { return this.wsClient.state; }

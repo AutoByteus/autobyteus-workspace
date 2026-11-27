@@ -20,6 +20,7 @@ const {
   clearAgentRunConfigMock,
   commitTeamRunHydrationMock,
   markAuthorityMock,
+  ensureMemberProjectionMock,
 } = vi.hoisted(() => ({
   hydrateLiveTeamRunContextMock: vi.fn(),
   hydrateTeamRunContextForStreamRecoveryMock: vi.fn(),
@@ -35,6 +36,7 @@ const {
   clearAgentRunConfigMock: vi.fn(),
   commitTeamRunHydrationMock: vi.fn(),
   markAuthorityMock: vi.fn(),
+  ensureMemberProjectionMock: vi.fn(),
 }))
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
@@ -44,6 +46,9 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
 vi.mock('~/services/runHydration/teamRunHydrationCommit', () => ({
   commitTeamRunHydration: commitTeamRunHydrationMock,
   markCommittedTeamRunHydrationAuthority: markAuthorityMock,
+}))
+vi.mock('~/services/runHydration/teamMemberProjectionHydrationService', () => ({
+  ensureAuthoritativeTeamMemberProjection: ensureMemberProjectionMock,
 }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({
   useAgentTeamContextsStore: () => ({
@@ -313,14 +318,85 @@ describe('openTeamRun current exact execution identity', () => {
     expect(addTeamContextMock).not.toHaveBeenCalled(); expect(commitTeamRunHydrationMock).not.toHaveBeenCalled()
     expect(selectRunMock).not.toHaveBeenCalled(); expect(connectToTeamStreamMock).not.toHaveBeenCalled()
   })
-  it('recovery checks the same guard at stream replacement beforeContextCommit', async () => {
+  // autobyteus-541 D-A3: the recovery is shared, so a superseded selection no longer aborts it; it only selects nothing.
+  it('a reselect superseded during the replacement recovers the stream and selects nothing', async () => {
     const currentTeam = makeTeam(), replacement = makeTeam()
     getTeamContextByIdMock.mockReturnValue(currentTeam)
     hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue(hydration(replacement))
     let current = true
     replaceFailedTeamStreamMock.mockImplementation(async ({ beforeContextCommit }) => { current = false; beforeContextCommit() })
     expect(await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })).toEqual({ disposition: 'superseded' })
-    expect(commitTeamRunHydrationMock).not.toHaveBeenCalled(); expect(markAuthorityMock).not.toHaveBeenCalled(); expect(selectRunMock).not.toHaveBeenCalled()
+    expect(commitTeamRunHydrationMock).toHaveBeenCalledTimes(1); expect(markAuthorityMock).toHaveBeenCalledTimes(1)
+    expect(selectRunMock).not.toHaveBeenCalled()
+  })
+
+  describe('one recovery per Team (autobyteus-541 D-A3, AC-003)', () => {
+    const deferred = () => {
+      let resolve!: (value: unknown) => void, reject!: (error: Error) => void
+      const promise = new Promise((yes, no) => { resolve = yes; reject = no })
+      return { promise, resolve, reject }
+    }
+
+    it('a reselect during the automatic recovery joins it: one read, one replacement, then its selection', async () => {
+      const replacement = makeTeam({ focus: 'run-a' })
+      getTeamContextByIdMock.mockReturnValue(makeTeam({ focus: 'run-a' }))
+      const read = deferred()
+      hydrateTeamRunContextForStreamRecoveryMock.mockReturnValue(read.promise)
+      const automatic = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      const reselect = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'run-a', resolveWorkspaceMetadataByRootPath: vi.fn() })
+      read.resolve({ ...hydration(replacement), expectedBaseChangeSequence: 3 })
+
+      await expect(automatic).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-a' })
+      await expect(reselect).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-a' })
+      expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenCalledTimes(1)
+      expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
+      expect(selectRunMock).toHaveBeenCalledTimes(1)
+      expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
+      expect(ensureMemberProjectionMock).not.toHaveBeenCalled()
+    })
+
+    it('a reselect of another member joins the recovery, then loads and focuses that member', async () => {
+      const replacement = makeTeam({ focus: 'run-a' })
+      getTeamContextByIdMock.mockReturnValue(makeTeam({ focus: 'run-a' }))
+      const read = deferred()
+      hydrateTeamRunContextForStreamRecoveryMock.mockReturnValue(read.promise)
+      ensureMemberProjectionMock.mockResolvedValue({ disposition: 'authoritative', agentRunId: 'run-b' })
+      void reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      const reselect = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'run-b', resolveWorkspaceMetadataByRootPath: vi.fn() })
+      read.resolve({ ...hydration(replacement), expectedBaseChangeSequence: 3 })
+
+      await expect(reselect).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
+      expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
+      expect(ensureMemberProjectionMock).toHaveBeenCalledWith(expect.objectContaining({ team: replacement, agentRunId: 'run-b' }))
+      expect(replacement.view.getFocusedAgentRunId()).toBe('run-b')
+    })
+
+    it('a reselect whose joined recovery failed runs its own attempt', async () => {
+      const replacement = makeTeam({ focus: 'run-b' })
+      getTeamContextByIdMock.mockReturnValue(makeTeam({ focus: 'run-a' }))
+      const failing = deferred()
+      hydrateTeamRunContextForStreamRecoveryMock
+        .mockReturnValueOnce(failing.promise)
+        .mockResolvedValueOnce({ ...hydration(replacement), expectedBaseChangeSequence: 4 })
+      const automatic = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      const reselect = reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'run-b', resolveWorkspaceMetadataByRootPath: vi.fn() })
+      failing.reject(new Error('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: moved'))
+
+      await expect(automatic).rejects.toThrow('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED')
+      await expect(reselect).resolves.toMatchObject({ disposition: 'committed', focusedAgentRunId: 'run-b' })
+      expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenCalledTimes(2)
+      expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenLastCalledWith(expect.objectContaining({ agentRunId: 'run-b' }))
+      expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
+      expect(selectRunMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('a call after a recovery ended starts a new one', async () => {
+      getTeamContextByIdMock.mockReturnValue(makeTeam())
+      hydrateTeamRunContextForStreamRecoveryMock.mockImplementation(async () => ({ ...hydration(makeTeam()), expectedBaseChangeSequence: 1 }))
+      await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectRun: false, resolveWorkspaceMetadataByRootPath: vi.fn() })
+      expect(hydrateTeamRunContextForStreamRecoveryMock).toHaveBeenCalledTimes(2)
+    })
   })
 
 })

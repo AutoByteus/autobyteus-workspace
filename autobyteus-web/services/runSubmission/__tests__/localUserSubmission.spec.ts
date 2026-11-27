@@ -4,9 +4,11 @@ import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmissionContext,
 } from '../localUserSubmission';
 import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { MessageNotDeliveredError } from '../messageNotDelivered';
 
 const { applyRunNavigationEffectMock } = vi.hoisted(() => ({
   applyRunNavigationEffectMock: vi.fn(),
@@ -251,6 +253,65 @@ describe('localUserSubmission', () => {
       expect(failLocalSubmission(handle, new Error('socket closed'))).toBe('failed');
       expect(context.state.conversation.messages.map((message: { type: string }) => message.type)).toEqual(['user', 'ai']);
       expect(context.collaboratorAddFailure ?? null).toBeNull();
+    });
+  });
+
+  // autobyteus-541 D-A7, D-A7a: a send in flight follows its member into the context a stream recovery committed.
+  describe('retargetLocalUserSubmissionContext', () => {
+    const identity = { messageId: 'msg-1', dedupeKey: 'key-1' };
+    const target = { kind: 'team_member' as const, teamRunId: 'team-1', agentRunId: 'run-1' };
+
+    it('moves a shown message into the new conversation, where its outcome then lands', () => {
+      const old = buildContext();
+      const next = buildContext();
+      next.requirement = '';
+      next.contextFilePaths = [];
+      next.requestedSkillNames = [];
+      const handle = beginLocalUserSubmission(old, { text: 'hello', attachments: [], identity, navigationTarget: target });
+
+      retargetLocalUserSubmissionContext(handle, next);
+      expect(handle.context).toBe(next);
+      expect(next.state.conversation.messages).toEqual([expect.objectContaining({ type: 'user', text: 'hello', messageId: 'msg-1' })]);
+
+      // Not sent: the draft and its notice come back on the new member, and its row goes.
+      expect(failLocalSubmission(handle, new MessageNotDeliveredError('not_sent', 'timed out'))).toBe('returned_draft');
+      expect(next.state.conversation.messages).toHaveLength(0);
+      expect(next.requirement).toBe('hello');
+      expect(next.messageNotDelivered).toBe('not_sent');
+    });
+
+    it('adds nothing when the new conversation already has the node\'s echo of it', () => {
+      const old = buildContext();
+      const next = buildContext();
+      next.state.conversation.messages.push({ type: 'user', text: 'hello', messageId: 'msg-1', timestamp: null });
+      const handle = beginLocalUserSubmission(old, { text: 'hello', attachments: [], identity, navigationTarget: target });
+
+      retargetLocalUserSubmissionContext(handle, next);
+      expect(next.state.conversation.messages).toHaveLength(1);
+    });
+
+    it('moves a held send without a row; its acceptance shows it on the new member', () => {
+      const old = buildContext();
+      const next = buildContext();
+      next.requirement = 'ask @Tester';
+      const handle = beginLocalUserSubmission(old, { text: 'ask @Tester', attachments: [], identity, navigationTarget: target,
+        mentions: [{ kind: 'agent', definitionId: 'def', name: 'Tester' }] });
+
+      retargetLocalUserSubmissionContext(handle, next);
+      expect(old.state.conversation.messages).toHaveLength(0);
+      expect(next.state.conversation.messages).toHaveLength(0);
+
+      acceptLocalSubmission(handle);
+      expect(next.state.conversation.messages).toEqual([expect.objectContaining({ text: 'ask @Tester', mentionNames: ['Tester'] })]);
+      expect(next.requirement).toBe('');
+      expect(old.state.conversation.messages).toHaveLength(0);
+    });
+
+    it('does nothing for the context it already names', () => {
+      const context = buildContext();
+      const handle = beginLocalUserSubmission(context, { text: 'hello', attachments: [], identity, navigationTarget: target });
+      retargetLocalUserSubmissionContext(handle, context);
+      expect(context.state.conversation.messages).toHaveLength(1);
     });
   });
 });

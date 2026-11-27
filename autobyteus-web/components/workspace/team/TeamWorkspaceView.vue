@@ -25,7 +25,7 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
-import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
+import { useTeamStreamRecoveryStore } from '~/stores/teamStreamRecoveryStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
@@ -34,19 +34,19 @@ import { useRunStart } from '~/composables/runSettings/useRunStart'
 
 const active = useActiveContextStore()
 const definitions = useAgentDefinitionStore()
-const teamRuns = useAgentTeamRunStore()
+const recoveryStates = useTeamStreamRecoveryStore()
 const center = useWorkspaceCenterViewStore()
 const teamContexts = useAgentTeamContextsStore()
 const selection = useAgentSelectionStore()
 const target = computed(() => active.activeWorkspaceTarget?.kind === 'standalone_team_member'
   ? active.activeWorkspaceTarget
   : null)
-const streamRecoveryNotice = computed(() => target.value
-  && teamRuns.getTeamStreamRecoveryNotice(target.value.team.rootRunId)
-  ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
-  : null)
-
 const { t } = useLocalization()
+// The stream recovers by itself; the view speaks only when that keeps failing (autobyteus-541 D-A5).
+const streamRecoveryNotice = computed(() => target.value
+  && recoveryStates.stateOf(target.value.team.rootRunId) === 'exhausted'
+  ? t('workspace.team.recovery.exhausted')
+  : null)
 const runStart = useRunStart()
 const copyPending = ref(false)
 let mounted = true

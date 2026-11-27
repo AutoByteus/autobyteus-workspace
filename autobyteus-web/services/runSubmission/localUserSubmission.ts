@@ -154,6 +154,23 @@ export const retargetLocalUserSubmission = (
   handle.navigationTarget = navigationTarget;
 };
 
+/**
+ * The member's context was replaced while this send was in flight (a Team stream's recovery, autobyteus-541 D-A7): the
+ * send goes on for the context the user now sees. A shown message moves into its conversation unless the node's echo
+ * (same message ID) is already there; a held one (D-A7a) shows nothing until the root accepts it, then shows there.
+ */
+export const retargetLocalUserSubmissionContext = (handle: LocalUserSubmissionHandle, context: AgentContext): void => {
+  if (handle.context === context) return;
+  handle.context = context;
+  if (handle.held) return;
+  const messages = context.state.conversation.messages;
+  const id = handle.message.messageId;
+  if (id && messages.some((message) => message.type === 'user' && message.messageId === id)) return;
+  messages.push(handle.message);
+  commitRecentEventMonitorEffect(context, 'STRUCTURAL');
+  refreshConversationUpdatedAt(context.state.conversation);
+};
+
 export const finalizeLocalSubmissionAttachments = (
   handle: LocalUserSubmissionHandle,
   attachments: ContextAttachment[],
