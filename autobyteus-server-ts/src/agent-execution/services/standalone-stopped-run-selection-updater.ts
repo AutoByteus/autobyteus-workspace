@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import type { AgentRunMetadata, RuntimeSwitchCause } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
@@ -20,6 +20,8 @@ export type StoppedRunSelectionInput = Readonly<{
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
+  /** An automatic switch's facts (autobyteus-646 R-7), stored with the pending switch; a person's save has none. */
+  cause?: RuntimeSwitchCause;
 }>;
 
 type UpdateResult = RunModelConfigUpdateResult<AgentRunMetadata | null>;
@@ -58,7 +60,7 @@ export class StandaloneStoppedRunSelectionUpdater {
     const { metadata, selection, continuation } = planned;
     const committed = await this.deps.historyCatalogService.commitRunRuntimeSwitch({
       runId,
-      selection: { runtimeKind: input.runtimeKind, ...selection, continuation },
+      selection: { runtimeKind: input.runtimeKind, ...selection, continuation, ...(input.cause ? { cause: input.cause } : {}) },
       switchId: randomUUID(),
     });
     if (committed.kind === "committed" || committed.kind === "unchanged") {

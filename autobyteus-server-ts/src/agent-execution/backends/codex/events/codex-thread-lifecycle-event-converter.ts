@@ -2,6 +2,7 @@ import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import { codexErrorKindFields } from "./codex-error-kind.js";
 import type { CodexCompactionAbandonReason } from "./codex-provider-compaction-status-projector.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
@@ -93,6 +94,7 @@ export const convertCodexThreadLifecycleEvent = (
             ? { error_effect: payload.error_effect }
             : {}),
           ...(turnId ? { turn_id: turnId } : {}),
+          ...codexErrorKindFields(nestedError),
         };
       const errorEvent = context.createEvent(
         codexEventName,

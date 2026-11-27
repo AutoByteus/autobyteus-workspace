@@ -1,6 +1,6 @@
-import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { SEALED_JSONL_ROTATION_LIMIT_BYTES, SealedJsonlLog } from "../../utils/sealed-jsonl-log.js";
 import type {
   DecisionLaunchSource,
   RoutingDecisionRecord,
@@ -8,9 +8,7 @@ import type {
 } from "../domain/model-routing-types.js";
 
 /** The active file is sealed once it holds at least this many bytes (the message-log pattern). */
-export const ROUTING_DECISION_LOG_ROTATION_LIMIT_BYTES = 4 * 1024 * 1024;
-const BASE_NAME = "decisions";
-const SEALED = new RegExp(`^${BASE_NAME}_(\\d{6})\\.jsonl$`);
+export const ROUTING_DECISION_LOG_ROTATION_LIMIT_BYTES = SEALED_JSONL_ROTATION_LIMIT_BYTES;
 const SOURCES: ReadonlySet<DecisionLaunchSource> = new Set(["agent_default", "team_default", "model_router", "inherited"]);
 
 /** Which records a Decisions list shows: all, those the Model Router chose, or the others. */
@@ -38,8 +36,6 @@ export type RoutingDecisionTaskGroup = Readonly<{
 }>;
 
 export type RoutingDecisionPage = Readonly<{ groups: readonly RoutingDecisionTaskGroup[]; totalTasks: number }>;
-
-const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
 
 const nullableString = (value: unknown): value is string | null => value === null || typeof value === "string";
 
@@ -94,43 +90,26 @@ const matches = (record: RoutingDecisionRecord, filter: DecisionSourceFilter | n
  * The node's decision log (REQ-012): one record per agent of a fresh delegated copy resolved here while Model Routing
  * was on, append-only in `<appData>/model-routing/` as `decisions_active.jsonl` plus sealed `decisions_NNNNNN.jsonl`
  * (the message-log pattern, A-24). A line counts only when its `\n` is present; an unreadable line is skipped with a
- * warning (DESIGN.md rule 7). Appends are serialized in this process. Readers never parse files themselves.
+ * warning (DESIGN.md rule 7). The files are a `SealedJsonlLog`'s. Readers never parse files themselves.
  */
 export class RoutingDecisionLog implements RoutingDecisionRecorder {
-  private readonly dir: string;
-  private writes: Promise<void> = Promise.resolve();
+  private readonly log: SealedJsonlLog;
 
   constructor(options: Readonly<{ dir?: string; rotationLimitBytes?: number }> = {}) {
-    this.dir = options.dir ?? path.join(appConfigProvider.config.getAppDataDir(), "model-routing");
-    this.rotationLimitBytes = options.rotationLimitBytes ?? ROUTING_DECISION_LOG_ROTATION_LIMIT_BYTES;
+    this.log = new SealedJsonlLog({ dir: options.dir ?? path.join(appConfigProvider.config.getAppDataDir(), "model-routing"),
+      baseName: "decisions", rotationLimitBytes: options.rotationLimitBytes ?? ROUTING_DECISION_LOG_ROTATION_LIMIT_BYTES });
   }
-
-  private readonly rotationLimitBytes: number;
-
-  private get activePath(): string { return path.join(this.dir, `${BASE_NAME}_active.jsonl`); }
 
   /** Appends the records as one write (one delegation's records stay together). */
   record(records: readonly RoutingDecisionRecord[]): Promise<void> {
-    if (!records.length) return Promise.resolve();
-    const text = records.map((record) => `${JSON.stringify(record)}\n`).join("");
-    const write = this.writes.then(() => this.append(text));
-    this.writes = write.catch(() => undefined);
-    return write;
+    return this.log.append(records);
   }
 
   /** Every readable record, oldest first. */
   async readAll(): Promise<readonly RoutingDecisionRecord[]> {
-    const names = await fs.readdir(this.dir).catch((error: unknown) => {
-      if (isMissing(error)) return [] as string[];
-      throw error;
-    });
-    const files = [...names.filter((name) => SEALED.test(name)).sort(), ...(names.includes(path.basename(this.activePath)) ? [path.basename(this.activePath)] : [])];
     const records: RoutingDecisionRecord[] = [];
-    for (const name of files) {
-      const lines = (await fs.readFile(path.join(this.dir, name), "utf8")).split("\n");
-      lines.pop(); // the text after the last `\n` is an unfinished line
-      lines.forEach((line, index) => {
-        if (!line.trim()) return;
+    for (const name of await this.log.fileNames()) {
+      (await this.log.completeLines(name)).forEach((line, index) => {
         let parsed: RoutingDecisionRecord | string;
         try { parsed = parseRecord(JSON.parse(line)); } catch { parsed = "not valid JSON"; }
         if (typeof parsed === "string") console.warn(`Model Routing: decision log ${name} line ${index + 1} is skipped (${parsed}).`);
@@ -165,33 +144,5 @@ export class RoutingDecisionLog implements RoutingDecisionRecorder {
     }).sort((left, right) => right.latestAt.localeCompare(left.latestAt));
     const after = input.before ? ordered.filter((group) => group.latestAt < input.before!) : ordered;
     return Object.freeze({ groups: Object.freeze(after.slice(0, Math.max(0, input.limit))), totalTasks: ordered.length });
-  }
-
-  private async append(text: string): Promise<void> {
-    await fs.mkdir(this.dir, { recursive: true });
-    const handle = await fs.open(this.activePath, "a+");
-    try {
-      // An unfinished last line (a write that never returned) is cut off before the next one.
-      const { size } = await handle.stat();
-      if (size > 0) {
-        const last = Buffer.alloc(1);
-        await handle.read(last, 0, 1, size - 1);
-        if (last[0] !== 0x0a) {
-          const content = await handle.readFile("utf8");
-          await handle.truncate(Buffer.byteLength(content.slice(0, content.lastIndexOf("\n") + 1)));
-        }
-      }
-      await handle.appendFile(text, "utf8");
-      await handle.sync();
-    } finally {
-      await handle.close();
-    }
-    if ((await fs.stat(this.activePath)).size >= this.rotationLimitBytes) await this.rotate();
-  }
-
-  private async rotate(): Promise<void> {
-    const names = await fs.readdir(this.dir);
-    const last = names.map((name) => SEALED.exec(name)?.[1]).filter(Boolean).map(Number).sort((a, b) => a - b).at(-1) ?? 0;
-    await fs.rename(this.activePath, path.join(this.dir, `${BASE_NAME}_${String(last + 1).padStart(6, "0")}.jsonl`));
   }
 }

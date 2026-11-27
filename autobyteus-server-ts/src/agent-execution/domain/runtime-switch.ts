@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunMetadata, PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
+import type { AgentRunMetadata, PendingRuntimeSwitch, RuntimeSwitchCause } from "../../run-history/store/agent-run-metadata-types.js";
 
 /** The agent runtime and model on one side of a switch. */
 export type RuntimeSwitchSide = Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: string }>;
@@ -50,10 +50,33 @@ export const buildRuntimeSwitchBetween = (input: {
     runId: input.runId,
     from,
     to,
-    markerText: modelHandOver
-      ? `Model changed from ${from.llmModelIdentifier} to ${to.llmModelIdentifier}.`
-      : `Agent runtime changed from ${label(from)} to ${label(to)}.`,
+    markerText: input.pending.cause ? causeMarkerText(input.pending.cause, from, to)
+      : modelHandOver
+        ? `Model changed from ${from.llmModelIdentifier} to ${to.llmModelIdentifier}.`
+        : `Agent runtime changed from ${label(from)} to ${label(to)}.`,
   });
+};
+
+/** "Nov 27, 09:00 UTC" for an ISO time; the text itself when it is not one. */
+const resetTimeText = (iso: string): string => {
+  const time = Date.parse(iso);
+  if (!Number.isFinite(time)) return iso;
+  const date = new Date(time);
+  const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+  return `${month} ${date.getUTCDate()}, ${date.toISOString().slice(11, 16)} UTC`;
+};
+
+/**
+ * An automatic switch's marker (autobyteus-646 R-7), rendered from its stored facts: "Codex usage limit reached (resets
+ * Nov 27, 09:00 UTC) — switched to Claude (opus). Chosen by the Model Router: <reason>." (or "Chosen from this agent's
+ * history.").
+ */
+const causeMarkerText = (cause: RuntimeSwitchCause, from: RuntimeSwitchSide, to: RuntimeSwitchSide): string => {
+  const reset = cause.resetAt ? ` (resets ${resetTimeText(cause.resetAt)})` : "";
+  const chosen = cause.chosenBy === "model_router"
+    ? `Chosen by the Model Router${cause.reason ? `: ${cause.reason.trim().replace(/\.+$/, "")}` : ""}.`
+    : "Chosen from this agent's history.";
+  return `${agentRuntimeName(from.runtimeKind)} usage limit reached${reset} — switched to ${label(to)}. ${chosen}`;
 };
 
 /**

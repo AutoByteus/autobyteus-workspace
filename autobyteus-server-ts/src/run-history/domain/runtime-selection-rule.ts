@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import { SETTINGS_LAUNCH_SOURCE } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunContinuation } from "../../llm-management/domain/run-model-selection.js";
-import type { PendingRuntimeSwitch, RunProviderBinding } from "../store/agent-run-metadata-types.js";
+import type { PendingRuntimeSwitch, RunProviderBinding, RuntimeSwitchCause } from "../store/agent-run-metadata-types.js";
 import type { ConfiguredAgentExecutionNode } from "./run-execution-tree-shared-records.js";
 
 /**
@@ -26,6 +26,8 @@ export type RuntimeSelection = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   continuation: RunContinuation;
+  /** An automatic switch's facts (autobyteus-646 R-7), kept on the pending switch it makes or updates. */
+  cause?: RuntimeSwitchCause;
 }>;
 
 const withoutPending = (state: RuntimeBindingState): Omit<RuntimeBindingState, "pendingRuntimeSwitch"> => {
@@ -72,7 +74,7 @@ export const applyRuntimeSelection = (
       llmConfig,
       platformAgentRunId: null,
     },
-    pendingRuntimeSwitch: pending ?? {
+    pendingRuntimeSwitch: withCause(pending ?? {
       switchId,
       from: {
         runtimeKind: state.binding.runtimeKind,
@@ -80,8 +82,14 @@ export const applyRuntimeSelection = (
         llmConfig: state.binding.llmConfig ?? null,
         platformAgentRunId: state.binding.platformAgentRunId,
       },
-    },
+    }, selection.cause),
   };
+};
+
+/** A save's pending switch with its cause: an automatic switch states it; a person's save leaves none (it replaces one). */
+const withCause = (pending: PendingRuntimeSwitch, cause: RuntimeSwitchCause | undefined): PendingRuntimeSwitch => {
+  const { cause: _previous, ...rest } = pending;
+  return cause ? { ...rest, cause } : rest;
 };
 
 export type RuntimeSwitchConflictReason = "not_pending" | "switch_id_mismatch";
