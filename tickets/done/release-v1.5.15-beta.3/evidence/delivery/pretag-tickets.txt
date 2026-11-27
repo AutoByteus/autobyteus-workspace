@@ -1,0 +1,39 @@
+# git log --merges --first-parent v1.5.15-beta.2..HEAD at 80420a8bf6, 2026-11-27 (72 commits since v1.5.15-beta.2)
+72cdfd1d70 merge(sandbox-provider-relay-581): provider relay through a paired node, and disposable sandbox nodes (autobyteus-581)
+4fee6719c8 Merge branch 'codex/autobyteus-657-extensions-release' into personal
+1d2e9a7e75 Merge branch 'codex/autobyteus-516-extensions' into personal
+7efe1844b2 merge(memory-layout-652): the Memory page layout of the approved design, the file lists show an icon for every kind (autobyteus-652)
+
+# direct (non-merge, first-parent) commits since v1.5.15-beta.2
+80420a8bf6 docs(sandbox-provider-relay-581): record the finalization (release/deployment report, delivery revision record DR-001)
+41f6894d9d docs(autobyteus-657): record the finalization (release/deployment report, delivery revision record DR-001)
+b86817915a docs(autobyteus-516): record the finalization (release/deployment report, delivery revision record DR-001)
+fdde5406fa docs(memory-layout-652): record the finalization (autobyteus-652)
+9f803aa84d docs(release-v1.5.15-beta.2): released and verified (4/4 workflows after one rerun of the failed jobs, 27/27 assets, pre-release, iOS 1.5.15 (363), Docker :beta moved and :latest unchanged 
+
+# released app-data migrations, client-data migrations, prisma, docker, workflows, scripts, RELEASE.md changed since v1.5.15-beta.2 (non-ticket):
+M	autobyteus-web/client-data-migrations/__tests__/electron-file-runner.spec.ts
+M	autobyteus-web/client-data-migrations/electron-file-runner.ts
+A	autobyteus-web/client-data-migrations/migrations/remove-desktop-voice-input-install/remove-desktop-voice-input-install.ts
+# Codex-named files changed since v1.5.15-beta.2 (non-ticket): 2
+autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts
+autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-launch-config.ts
+# Android / iOS paths changed since v1.5.15-beta.2: android 0, ios 0
+# lockfile / package.json changes:
+autobyteus-server-ts/package.json
+autobyteus-web/package.json
+# top-level areas changed (non-ticket files):
+  92 autobyteus-server-ts/src
+  62 autobyteus-server-ts/tests
+  41 autobyteus-web/components
+  23 autobyteus-web/electron
+  16 autobyteus-web/localization
+  14 autobyteus-ts/src
+  12 autobyteus-web/tests
+   9 autobyteus-server-ts/docs
+   8 autobyteus-web/stores
+   5 autobyteus-web/services
+   5 autobyteus-web/docs
+   4 autobyteus-web/types
+   3 autobyteus-web/graphql
+   3 autobyteus-web/client-data-migrations

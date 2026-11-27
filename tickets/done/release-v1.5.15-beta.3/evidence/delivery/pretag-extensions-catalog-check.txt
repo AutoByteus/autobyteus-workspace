@@ -1,0 +1,19 @@
+# Extensions catalog check (RELEASE.md) before the tag, 2026-11-27T05:36:44Z, at 80420a8bf6: public data only; the private signing key was never opened
+## built-in key vs the extensions repository's catalog-public-key.pem, catalog entry
+built-in key present and not empty: True
+built-in key equals the repository's catalog-public-key.pem: True
+catalog top-level keys: ['extensions']
+ids in the catalog: ['voice-input']
+catalog lists voice-input: True
+signature file: 88 chars, base64 decodes to 64 bytes
+## the app's own signature rule (Ed25519 over the raw catalog bytes, node:crypto verify) with the built-in key
+key type: ed25519 | catalog bytes: 894 | signature verifies with the built-in key: true
+## gh release view catalog --repo AutoByteus/autobyteus-extensions
+tag catalog prerelease false published 2026-11-26T18:47:23Z
+  extensions-catalog.json 894 bytes updated 2026-11-26T18:47:25Z
+  extensions-catalog.json.sig 88 bytes updated 2026-11-26T18:47:25Z
+## the catalog entry points at the voice-input package release
+id voice-input version 1.0.0 contractVersion 1 offeredOn desktop-node platforms ['darwin-arm64', 'darwin-x64', 'linux-x64', 'win32-x64']
+packageUrl https://github.com/AutoByteus/autobyteus-extensions/releases/download/voice-input-v1.0.0/voice-input-1.0.0.tar.gz
+sha256 57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d
+voice-input-v1.0.0: prerelease false; voice-input-1.0.0.tar.gz 8483 bytes digest=sha256:57e0a541be18f3af12b0b18c177dfe98f29b63952dfed5dcef8903670a8caf8d; voice-input-1.0.0.tar.gz.sha256 91 bytes digest=sha256:a3dd1002e059bd788b2393bf239684e1e3e3cfc1c4eccc0327eaf9ffafde7d73
