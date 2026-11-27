@@ -329,4 +329,32 @@ describe("ExtensionManager (extension-contract.md §6, §7; design DS-001…DS-0
     expect(await manager.pageFile("hello", "missing.js")).toBeNull();
     expect(await manager.pageFile("nothing", "index.html")).toBeNull();
   });
+
+  it("autobyteus-661: one extension that is on per role; only it gets ctx.privateNetwork, and it is the role's provider", async () => {
+    publisher.publishCatalog([
+      await publisher.publishPackage(describeTestExtension()),
+      await publisher.publishPackage(describeTestExtension({ id: "network-a", name: "Network A", provides: "private-network" })),
+      await publisher.publishPackage(describeTestExtension({ id: "network-b", name: "Network B", provides: "private-network" })),
+    ]);
+    manager = composeExtensions({
+      dataDir: root, platform: TEST_PLATFORM, isDesktopNode: true,
+      catalogSource: { url: CATALOG_URL, publicKeyPem: publisher.publicKeyPem }, fetch: web.fetch,
+      privateNetwork: () => ({ callerSocketPath: "/data/private-network/caller.sock", nodePort: 29695 }),
+    });
+    await expect(manager.enabledProvider("private-network")).resolves.toBeNull();
+    await installed("network-a");
+    await installed("hello");
+    await expect(manager.enabledProvider("private-network")).resolves.toBe("network-a");
+    await expect(manager.callAction("network-a", "privateNetwork", { json: null, bytes: null }))
+      .resolves.toEqual({ callerSocketPath: "/data/private-network/caller.sock", nodePort: 29695 });
+    await expect(manager.callAction("hello", "privateNetwork", { json: null, bytes: null })).resolves.toBeNull();
+    // A second provider installs but stays off, and cannot be turned on while the first is on.
+    await installed("network-b");
+    expect(await itemOf("network-b")).toMatchObject({ state: "installed", enabled: false });
+    await expect(manager.setEnabled("network-b", true)).rejects.toMatchObject({ code: "EXTENSION_ROLE_TAKEN" });
+    await manager.setEnabled("network-a", false);
+    await expect(manager.enabledProvider("private-network")).resolves.toBeNull();
+    await expect(manager.setEnabled("network-b", true)).resolves.toMatchObject({ enabled: true });
+    await expect(manager.enabledProvider("private-network")).resolves.toBe("network-b");
+  });
 });

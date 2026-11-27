@@ -7,6 +7,8 @@ export type ExtensionErrorCode =
   | "EXTENSION_NOT_INSTALLED"
   | "EXTENSION_OFF"
   | "EXTENSION_BUSY"
+  /** autobyteus-661: another extension that is on already provides this extension's role (one per role per node). */
+  | "EXTENSION_ROLE_TAKEN"
   | "UNKNOWN_ACTION"
   | "RECORDING_TOO_LONG"
   | "ACTION_FAILED"

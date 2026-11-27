@@ -1,4 +1,6 @@
 import type http from "node:http";
+import type { AddressInfo } from "node:net";
+import type { PrivateNetworkContext } from "../extensions/server-parts/server-part-host.js";
 import { NodeInfoResponder } from "../private-network/node-info-responder.js";
 import { NodeVisibility } from "../private-network/node-visibility.js";
 import { PrivateNetworkListener } from "../private-network/private-network-listener.js";
@@ -11,10 +13,23 @@ export type PrivateNetwork = Readonly<{
   listener: PrivateNetworkListener;
   visibility: NodeVisibility;
   info: NodeInfoResponder;
+  httpServer(): http.Server;
   close(): Promise<void>;
 }>;
 
 let processPrivateNetwork: PrivateNetwork | null = null;
+
+/**
+ * What the extension that provides `private-network` receives as `ctx.privateNetwork`: where its program hands
+ * connections over, and the node's port. Both `null` until the node composed its private network and listens.
+ */
+export const currentPrivateNetworkContext = (): PrivateNetworkContext => {
+  const address = processPrivateNetwork?.httpServer().address();
+  return Object.freeze({
+    callerSocketPath: processPrivateNetwork?.listener.socketPath() ?? null,
+    nodePort: address && typeof address === "object" ? (address as AddressInfo).port : null,
+  });
+};
 
 /** The process's private network, for the GraphQL resolvers (framework edge); it throws where none is composed. */
 export const getProcessPrivateNetwork = (): PrivateNetwork => {
@@ -36,7 +51,7 @@ export const composePrivateNetwork = async (input: Readonly<{ dataDir: string; h
   });
   const info = new NodeInfoResponder({ visibility, ownNodeId: () => getNodeIdentityService().getNodeId(), ownName: () => readComputerName() });
   const composed: PrivateNetwork = Object.freeze({
-    listener, visibility, info,
+    listener, visibility, info, httpServer: input.httpServer,
     close: async () => {
       if (processPrivateNetwork === composed) processPrivateNetwork = null;
       await listener.close();

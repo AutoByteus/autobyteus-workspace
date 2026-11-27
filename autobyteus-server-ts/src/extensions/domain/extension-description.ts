@@ -11,6 +11,13 @@ export const SUPPORTED_CONTRACT_VERSION = 1;
 /** `desktop-node`: only the desktop app's own node (used by every window); `every-node`: any node. */
 export type ExtensionOfferedOn = "desktop-node" | "every-node";
 
+/**
+ * Optional (autobyteus-661, contract §1 `provides`): a role the node itself uses. At most one extension that is on may
+ * provide a role on a node; an unknown value reads as none (the contract grows by optional fields).
+ */
+export type ExtensionRole = "private-network";
+const EXTENSION_ROLES: readonly ExtensionRole[] = ["private-network"];
+
 /** Optional (DEC-015): the card's name and description per app language, e.g. `{ "zh-CN": { name, description } }`. */
 export type ExtensionTranslations = Readonly<Record<string, Readonly<{ name: string; description: string }>>>;
 
@@ -23,6 +30,7 @@ export type ExtensionDescription = Readonly<{
   offeredOn: ExtensionOfferedOn;
   platforms: readonly string[];
   translations: ExtensionTranslations | null;
+  provides: ExtensionRole | null;
 }>;
 
 export type ExtensionCatalogEntry = ExtensionDescription & Readonly<{ packageUrl: string; sha256: string }>;
@@ -72,6 +80,7 @@ export const readExtensionDescription = (value: unknown): ExtensionDescription =
     offeredOn: value.offeredOn,
     platforms: [...value.platforms] as string[],
     translations: readTranslations(value.translations),
+    provides: EXTENSION_ROLES.includes(value.provides as ExtensionRole) ? value.provides as ExtensionRole : null,
   };
 };
 
@@ -91,7 +100,7 @@ export const readExtensionCatalogEntry = (value: unknown): ExtensionCatalogEntry
 export const describesSameExtension = (packaged: ExtensionDescription, entry: ExtensionCatalogEntry): boolean => {
   const canonical = (description: ExtensionDescription) => JSON.stringify([
     description.id, description.name, description.description, description.version, description.contractVersion,
-    description.offeredOn, description.platforms,
+    description.offeredOn, description.platforms, description.provides,
     Object.entries(description.translations ?? {}).sort(([a], [b]) => a.localeCompare(b))
       .map(([locale, text]) => [locale, text.name, text.description]),
   ]);

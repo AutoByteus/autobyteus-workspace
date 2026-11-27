@@ -2,7 +2,7 @@ import path from "node:path";
 import { ExtensionCatalog } from "../extensions/catalog/extension-catalog.js";
 import type { ExtensionCatalogSource } from "../extensions/catalog/extension-catalog-source.js";
 import { ExtensionPackageInstaller } from "../extensions/packages/extension-package-installer.js";
-import { ServerPartHost } from "../extensions/server-parts/server-part-host.js";
+import { ServerPartHost, type PrivateNetworkContext } from "../extensions/server-parts/server-part-host.js";
 import { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { ExtensionLog } from "../extensions/storage/extension-log.js";
 import { ExtensionStateStore } from "../extensions/storage/extension-state-store.js";
@@ -18,13 +18,15 @@ export const composeExtensions = (input: Readonly<{
   isDesktopNode: boolean;
   catalogSource: ExtensionCatalogSource;
   fetch: typeof fetch;
+  /** autobyteus-661: the node's end of the private network, for the extension that provides it. */
+  privateNetwork?(): PrivateNetworkContext;
 }>): ExtensionManager => {
   const store = new ExtensionStateStore(path.join(input.dataDir, "extensions"));
   const log = new ExtensionLog((id) => store.logFile(id));
   return new ExtensionManager({
     catalog: new ExtensionCatalog(input.catalogSource, input.fetch),
     installer: new ExtensionPackageInstaller(input.fetch),
-    host: new ServerPartHost({ platform: input.platform, log: (id, line) => log.append(id, line) }),
+    host: new ServerPartHost({ platform: input.platform, log: (id, line) => log.append(id, line), privateNetwork: input.privateNetwork }),
     store,
     log,
     platform: input.platform,

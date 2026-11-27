@@ -95,7 +95,7 @@ import { composeUpdateNotifications, type UpdateNotifications } from "./update-n
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
 import { composeExtensions } from "./extensions-composition.js";
-import { composePrivateNetwork, type PrivateNetwork } from "./private-network-composition.js";
+import { composePrivateNetwork, currentPrivateNetworkContext, type PrivateNetwork } from "./private-network-composition.js";
 import type { ExtensionManager } from "../extensions/services/extension-manager.js";
 import { readExtensionCatalogSource } from "../extensions/catalog/extension-catalog-source.js";
 import { thisPlatform } from "../extensions/domain/extension-description.js";
@@ -416,7 +416,7 @@ export const buildStudioServer = async (input: {
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
     const nodeExtensions = extensions = composeExtensions({
       dataDir: input.appConfig.getAppDataDir(), platform: thisPlatform(), isDesktopNode: isDesktopEmbeddedNode(),
-      catalogSource: readExtensionCatalogSource(), fetch: globalThis.fetch,
+      catalogSource: readExtensionCatalogSource(), fetch: globalThis.fetch, privateNetwork: currentPrivateNetworkContext,
     });
 
     const app = fastify({

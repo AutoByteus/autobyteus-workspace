@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { ExtensionCatalog } from "../catalog/extension-catalog.js";
+import type { ExtensionRole } from "../domain/extension-description.js";
 import {
   compareExtensionVersions,
   isExtensionId,
@@ -143,6 +144,8 @@ export class ExtensionManager {
       if ((await this.item(id))?.state !== "installed") {
         throw new ExtensionError("EXTENSION_NOT_INSTALLED", `${id} is not installed.`);
       }
+      const holder = enabled ? await this.otherProviderOf(id) : null;
+      if (holder) throw new ExtensionError("EXTENSION_ROLE_TAKEN", `${holder} already provides this on this node: turn it off first.`);
       await this.deps.store.update((states) => { states[id] = { enabled }; });
       this.startFailures.delete(id);
       this.deps.log.append(id, enabled ? "turned on" : "turned off");
@@ -183,6 +186,29 @@ export class ExtensionManager {
       this.deps.log.append(id, `${action} failed: ${errorMessage(error)}`);
       throw new ExtensionError("ACTION_FAILED", errorMessage(error));
     }
+  }
+
+  /**
+   * The installed extension that is on and provides `role` on this node (autobyteus-661 `PrivateNetworkRole`), or
+   * `null` when none does: the caller says the role is not set up.
+   */
+  async enabledProvider(role: ExtensionRole): Promise<string | null> {
+    const states = await this.deps.store.read();
+    for (const id of Object.keys(states).sort()) {
+      if (states[id]?.enabled !== true) continue;
+      const installed = await this.readInstalled(id);
+      if (installed.kind === "readable" && installed.description.provides === role) return id;
+    }
+    return null;
+  }
+
+  /** Another extension that is on and provides the role this one provides; `null` when this one provides none. */
+  private async otherProviderOf(id: string): Promise<string | null> {
+    const installed = await this.readInstalled(id);
+    const role = installed.kind === "readable" ? installed.description.provides : null;
+    if (!role) return null;
+    const holder = await this.enabledProvider(role);
+    return holder && holder !== id ? holder : null;
   }
 
   /** A file of the installed extension's page (`package/ui/…`); `null` when there is none at that path. */
@@ -353,9 +379,12 @@ export class ExtensionManager {
       this.deps.log.append(id, `install: ${id} ${entry.version} from ${entry.packageUrl}`);
       await this.stageAndPrepare(entry, staged);
       await this.deps.installer.swapIn(staged, this.deps.store.packageDir(id));
-      await this.deps.store.update((states) => { states[id] = { enabled: true }; });
-      this.deps.log.append(id, `install: ${id} ${entry.version} installed and turned on`);
-      installed = true;
+      // One extension per role is on (autobyteus-661): another one already providing it leaves this one off.
+      const holder = await this.otherProviderOf(id);
+      await this.deps.store.update((states) => { states[id] = { enabled: !holder }; });
+      this.deps.log.append(id, holder ? `install: ${id} ${entry.version} installed; left off: ${holder} already provides its role`
+        : `install: ${id} ${entry.version} installed and turned on`);
+      installed = !holder;
     } catch (error) {
       this.installFailures.set(id, errorMessage(error));
       this.deps.log.append(id, `install failed: ${errorMessage(error)}`);
@@ -393,7 +422,7 @@ export class ExtensionManager {
     const { id } = entry;
     await this.deps.installer.stage(entry, staged);
     this.deps.log.append(id, "package verified: its SHA-256 matches the signed list of extensions");
-    const part = await this.deps.host.load(id, staged, this.deps.store.dataDir(id));
+    const part = await this.deps.host.load(id, staged, this.deps.store.dataDir(id), entry.provides);
     await part.install((progress) => {
       const operation = this.operations.get(id);
       if (operation) this.operations.set(id, { ...operation, progress });
@@ -425,7 +454,8 @@ export class ExtensionManager {
   private loadedPart(id: string): Promise<LoadedServerPart> {
     let loading = this.loaded.get(id);
     if (!loading) {
-      loading = this.deps.host.load(id, this.deps.store.packageDir(id), this.deps.store.dataDir(id));
+      loading = this.readInstalled(id).then((installed) => this.deps.host.load(id, this.deps.store.packageDir(id), this.deps.store.dataDir(id),
+        installed.kind === "readable" ? installed.description.provides : null));
       loading.catch(() => undefined);
       this.loaded.set(id, loading);
     }

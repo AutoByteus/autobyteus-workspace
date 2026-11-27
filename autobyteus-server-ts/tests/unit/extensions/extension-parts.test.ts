@@ -32,7 +32,10 @@ describe("extension description (contract §1, §3)", () => {
     const description = readExtensionDescription({
       ...describeTestExtension(), icon: "ignored.png", translations: { "zh-CN": { name: "你好", description: "说你好" }, bad: { name: 1 } },
     });
-    expect(description).toEqual({ ...describeTestExtension(), translations: { "zh-CN": { name: "你好", description: "说你好" } } });
+    expect(description).toEqual({ ...describeTestExtension(), translations: { "zh-CN": { name: "你好", description: "说你好" } }, provides: null });
+    // autobyteus-661: the optional role; an unknown one reads as none.
+    expect(readExtensionDescription({ ...describeTestExtension(), provides: "private-network" }).provides).toBe("private-network");
+    expect(readExtensionDescription({ ...describeTestExtension(), provides: "vpn" }).provides).toBeNull();
     expect(() => readExtensionDescription({ ...describeTestExtension(), id: "Hello World" })).toThrow(/id/);
     expect(() => readExtensionDescription({ ...describeTestExtension(), version: "1.0" })).toThrow(/version/);
     expect(() => readExtensionDescription({ ...describeTestExtension(), offeredOn: "phone" })).toThrow(/offeredOn/);
@@ -43,6 +46,7 @@ describe("extension description (contract §1, §3)", () => {
     const entry = readExtensionCatalogEntry({ ...describeTestExtension(), packageUrl: "https://x/p.tar.gz", sha256: "a".repeat(64) });
     expect(describesSameExtension(readExtensionDescription(describeTestExtension()), entry)).toBe(true);
     expect(describesSameExtension(readExtensionDescription({ ...describeTestExtension(), translations: { "zh-CN": { name: "x", description: "y" } } }), entry)).toBe(false);
+    expect(describesSameExtension(readExtensionDescription({ ...describeTestExtension(), provides: "private-network" }), entry)).toBe(false);
     expect(compareExtensionVersions("1.10.0", "1.9.9")).toBeGreaterThan(0);
     expect(compareExtensionVersions("1.0.0", "1.0.0")).toBe(0);
   });
@@ -146,7 +150,7 @@ describe("ExtensionPackageInstaller (contract §2, §3)", () => {
     const files = { "extension.json": JSON.stringify(description), "server/index.mjs": "export default {}", "ui/index.html": "<p>" };
 
     const withLink = await archiveOf(files, async (dir) => { await fs.symlink("/etc/passwd", path.join(dir, "ui", "secret")); return ["ui/secret"]; });
-    const entry = { ...(await publisher.publishPackage(description)), translations: null };
+    const entry = { ...(await publisher.publishPackage(description)), translations: null, provides: null };
     web.files.set(entry.packageUrl, withLink);
     const sha256 = (await import("node:crypto")).createHash("sha256").update(withLink).digest("hex");
     await expect(installer.stage({ ...entry, sha256 }, path.join(root, "staged"))).rejects.toThrow(/entry it may not have: ui\/secret/);

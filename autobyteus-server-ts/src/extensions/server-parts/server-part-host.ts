@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ExtensionProgress } from "../domain/extension-item.js";
+import type { ExtensionRole } from "../domain/extension-description.js";
 import { errorMessage } from "../domain/extension-error.js";
 
 /** `status()` that does not answer within this time counts as failed: one extension never holds up the list. */
@@ -12,7 +13,14 @@ export const SERVER_PART_STOP_TIMEOUT_MS = 5_000;
 /** What an action receives (contract §4): the JSON body, or the bytes of an audio body. */
 export type ServerPartActionInput = Readonly<{ json: unknown; bytes: Uint8Array | null }>;
 
-type Context = Readonly<{ dir: string; platform: string; log(line: string): void }>;
+/**
+ * Given only to the extension that provides `private-network` (autobyteus-661, contract §4 optional field): where its
+ * network program hands connections over to this node, and the node's own port. Read when used: both are known once
+ * the node listens.
+ */
+export type PrivateNetworkContext = Readonly<{ callerSocketPath: string | null; nodePort: number | null }>;
+
+type Context = Readonly<{ dir: string; platform: string; log(line: string): void; privateNetwork?: PrivateNetworkContext }>;
 type InstallContext = Context & Readonly<{ progress(progress: ExtensionProgress): void }>;
 
 /** The default export of `server/index.mjs` (contract §4). */
@@ -66,9 +74,14 @@ const bounded = <T>(promise: Promise<T>, timeoutMs: number, what: string): Promi
 export class ServerPartHost {
   private loads = 0;
 
-  constructor(private readonly deps: Readonly<{ platform: string; log(id: string, line: string): void }>) {}
+  constructor(private readonly deps: Readonly<{
+    platform: string;
+    log(id: string, line: string): void;
+    /** The node's end of the private network, for the extension that provides it. */
+    privateNetwork?(): PrivateNetworkContext;
+  }>) {}
 
-  async load(id: string, packageDir: string, dataDir: string): Promise<LoadedServerPart> {
+  async load(id: string, packageDir: string, dataDir: string, provides: ExtensionRole | null = null): Promise<LoadedServerPart> {
     const url = pathToFileURL(path.join(packageDir, "server", "index.mjs"));
     url.search = `?load=${++this.loads}`;
     let part: unknown;
@@ -88,15 +101,15 @@ export class ServerPartHost {
     if (!module || missing.length) {
       throw new ServerPartLoadError(`server/index.mjs does not export what an extension needs: ${missing.join(", ") || "a default export"}`);
     }
-    return this.bind(id, module as ServerPartModule, dataDir);
+    return this.bind(id, module as ServerPartModule, dataDir, provides);
   }
 
-  private bind(id: string, module: ServerPartModule, dataDir: string): LoadedServerPart {
-    const ctx: Context = Object.freeze({
-      dir: dataDir,
-      platform: this.deps.platform,
-      log: (line: string) => this.deps.log(id, String(line)),
-    });
+  private bind(id: string, module: ServerPartModule, dataDir: string, provides: ExtensionRole | null): LoadedServerPart {
+    const base = { dir: dataDir, platform: this.deps.platform, log: (line: string) => this.deps.log(id, String(line)) };
+    const privateNetwork = this.deps.privateNetwork;
+    const ctx: Context = Object.freeze(provides === "private-network" && privateNetwork
+      ? Object.defineProperty(base, "privateNetwork", { get: () => Object.freeze({ ...privateNetwork() }), enumerable: true }) as Context
+      : base);
     const ensureDir = () => fs.mkdir(dataDir, { recursive: true });
     return Object.freeze({
       hasStart: isFunction(module.start),

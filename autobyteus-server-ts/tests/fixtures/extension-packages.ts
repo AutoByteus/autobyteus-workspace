@@ -18,6 +18,7 @@ export type TestDescription = {
   offeredOn: "desktop-node" | "every-node";
   platforms: string[];
   translations?: Record<string, { name: string; description: string }>;
+  provides?: string;
 };
 
 export const TEST_PLATFORM = "test-os-arm64";
@@ -70,6 +71,7 @@ export default {
       return { version: "${version}", json: input.json, bytes: input.bytes ? input.bytes.length : null };
     },
     async fail() { throw new Error("echo failed on purpose"); },
+    async privateNetwork(ctx) { return ctx.privateNetwork ?? null; },
   },
 };
 `;
