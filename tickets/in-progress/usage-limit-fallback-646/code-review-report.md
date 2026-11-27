@@ -16,13 +16,13 @@
 - Implementation Revision Record Reviewed As Context: [implementation-revision-record.md](implementation-revision-record.md)
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
+- Current Code Review Revision ID: `CRR-004` (round 3: the base refresh; CRR-003 is the post-API/E2E test review in `api-e2e-test-review-report.md`)
+- Current Review Round: 3
 - Review Scope: `Targeted Delta Review` of the SR-011 rework, plus a re-audit of every file it touches
 - Review Scope Evidence (round 2): `4a4b2d7c32..1bc523124e`, 25 source files. Every changed line was read: the chooser's tiers, the delegation's fallback layers, the no-fallback text, both commit primitives' launch source, the cause parser, the marker, the vocabulary, the web labels, en and zh-CN. Round 1's unchanged code was re-read where the rework calls into it.
 - Trigger: `/implementation_engineer`, IR-002, SR-011 (design-spec § R-17…R-19, commit `230bcc534b`)
 - Prior Review Round Reviewed: 1 (CRR-001, Fail)
-- Latest Authoritative Round: 2
+- Latest Authoritative Round: 3
 - Failure-origin / delivery fields: N/A
 
 Reviewed: round 1 `bc4351cad7..4a4b2d7c32`; round 2 `4a4b2d7c32..1bc523124e` (175 files; about 2,300 source lines in 81 source files, the rest tests, fixtures, docs and generated code).
@@ -258,13 +258,34 @@ N/A (Pass).
 - **Files at the limit:** `standalone-agent-run-lifecycle-service.ts` (499) and `root-team-run.ts` (498).
 - **Design wording:** R-1's "no input interleaves" is not exact for the Agent root (its gate is a counting barrier). The behavior is safe.
 
+## Round 3 — Base Refresh (IR-003, merge `3a541e3d45`)
+
+- **Trigger:** delivery's Local Fix. origin/personal `8517441116` was merged into `bd800a81c6`, and the merge commit `3a541e3d45` resolved one conflict, the imports of `build-studio-server.ts`. The package head is `7d42633456`, the IR-003 record.
+- **Scope:** the merge's correctness for this ticket's code. The base's own changes were reviewed in their tickets.
+- **Method:**
+  - With the merge base `bc4351cad7`, two source files were changed by both sides: `compositions/build-studio-server.ts` and `services/server-settings-service.ts`.
+  - For every source file this ticket changes (83 files), I compared its hunks before the merge (`bc4351cad7..bd800a81c6`) with its hunks on the new base (`8517441116..3a541e3d45`): identical.
+  - For every source file the base changes, I compared the base's hunks with the merge's (`bd800a81c6..3a541e3d45`): identical.
+  - So the merge is an exact union: no line of either side was lost or altered, including the conflict, where both import sets are kept.
+- **Interactions checked:**
+  - The base changed the ACP/AGY/AutoByteus backend factories, not the backends where this ticket's late classification lives. The constructor inputs are unchanged, and the server typecheck passes.
+  - `deepseek_harness` already existed at the base; it is an API-key runtime, outside this ticket's scope.
+  - Start and close order: run events are composed before the run supervisor, and switching starts after Model Routing. The base's `composeExtensions` comes after the update notifications and stops first on close. The two are independent.
+- **Size:** `build-studio-server.ts` is at 495 non-empty lines (under 500).
+- **Evidence on the merge:**
+  - IMP-16: server and web typechecks at baseline; `codegen:check` current; server unit suite 1113 files pass.
+  - IMP-17: built-server E2E UL-01…UL-12, 12/12.
+  - IMP-18: two-server ULP-01/ULP-02, 2/2.
+- **API/E2E re-run:** not required. No production change beyond the resolution: the hunks are identical, so the union equals the reviewed code plus the base. The ticket's own E2E suites already passed on the merged code.
+- **Result:** Pass. All earlier conclusions stand (CRR-002 score 9.4/10).
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2)
+- Review Decision: `Pass` (round 3: the base refresh merge verified)
+- Review Entry Point: `Implementation Review` (round 3, base refresh)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.4 / 10; every category ≥ 9.2 (lowest: 9.3 for files, API/E2E readiness and runtime correctness)
 - Failure Origin: N/A
-- Recommended Recipient: `/api_e2e_engineer`
+- Recommended Recipient: `/delivery_engineer` (round 3: back to delivery; no API/E2E re-run needed)
 - Notes: CR-646-01…03 are resolved as decided in SR-011. The reviewer re-ran the unit tests of the changed owners, run-history included: 796 passed. The release stays held on R-6 (the founder).
