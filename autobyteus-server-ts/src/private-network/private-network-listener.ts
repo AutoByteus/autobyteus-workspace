@@ -46,7 +46,8 @@ export type CallerSocketLocation = Readonly<{ ok: true; path: string }> | Readon
  */
 export const callerSocketLocation = (dataDir: string, platform: NodeJS.Platform = process.platform): CallerSocketLocation => {
   if (platform === "win32") return { ok: true, path: `\\\\.\\pipe\\autobyteus-private-network-${randomBytes(12).toString("hex")}` };
-  const socketPath = path.join(path.resolve(dataDir), "private-network", "caller.sock");
+  // A Unix socket path, whatever computer computes it (a test on Windows asks for Linux's).
+  const socketPath = path.posix.join(platform === process.platform ? path.resolve(dataDir) : dataDir, "private-network", "caller.sock");
   if (Buffer.byteLength(socketPath, "utf8") > MAX_UNIX_SOCKET_PATH_BYTES) {
     return { ok: false, message: `The private network's caller socket path is ${Buffer.byteLength(socketPath, "utf8")} bytes, longer than the `
       + `${MAX_UNIX_SOCKET_PATH_BYTES} bytes a Unix socket path may have: ${socketPath}. Use a shorter data folder path.` };
