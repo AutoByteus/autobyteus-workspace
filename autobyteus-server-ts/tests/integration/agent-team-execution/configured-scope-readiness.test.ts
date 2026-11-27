@@ -20,6 +20,7 @@ import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-ru
 import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../helpers/explicit-host-collaborators.js";
 import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
+import { ACCEPTING_MODEL_SELECTION_VALIDATOR } from "../../helpers/runtime-switch-fakes.js";
 
 const dirs: string[] = [];
 afterEach(() => { for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
@@ -84,7 +85,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
   f.useTeamTree();
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
     ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
-  return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir: f.dir }), delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
+  return materializeTeamRoot({ changeNotices: new TeamChangeNoticeSource(), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, memoryLocator: new AgentRunMemoryLocator({ memoryDir: f.dir }), modelSelectionValidator: ACCEPTING_MODEL_SELECTION_VALIDATOR, delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED), executionTreeStore: new TeamRunExecutionTreeStore(),

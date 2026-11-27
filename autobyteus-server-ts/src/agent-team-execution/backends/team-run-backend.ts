@@ -9,6 +9,13 @@ import type { PreparedLocalExecutionTermination } from "../../agent-collaboratio
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { FrozenTeamRunTerminationScope } from "../domain/frozen-team-run-termination-scope.js";
+import type { ConfiguredAgentSelection } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
+
+/** What an automatic runtime switch needs of one direct member (autobyteus-646 R-1): its quiet stop and its selection swap. */
+export type TeamMemberSwitchControl = Readonly<{
+  tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null>;
+  replaceSelection(selection: ConfiguredAgentSelection): void;
+}>;
 
 /** Exact local boundary for one concrete TeamRun. */
 export interface TeamRunBackend {
@@ -23,6 +30,8 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
+  /** A direct member's switch control; null when the agent is not a direct member. */
+  directAgentControl(agentRunId: string): TeamMemberSwitchControl | null;
   /** This direct member's agent, made ready without input; refuses an agent that is not a direct member. */
   ensureDirectAgentReady(agentRunId: string): Promise<AgentRun>;
   /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */

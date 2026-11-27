@@ -28,6 +28,7 @@ import { configuredRootFixture } from "../../../fixtures/configured-root-first-w
 import {
   FRESH_SESSION, HANDOVER_NOTICE_START, LOST_SESSION, lostSessionClaudeFactory, providerFactoriesWith, seedEarlierWork,
 } from "../../../helpers/session-renewal-wiring.js";
+import { UNUSED_STOPPED_SELECTION_SAVE } from "../../../helpers/runtime-switch-fakes.js";
 
 vi.mock("../../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -105,7 +106,7 @@ describe("SR-016 (587): a file from another node to an Org unit lands in the rec
       definitions: { getAgentDefinitionById: async () => new AgentDefinition({ id: "concierge", name: "Concierge", description: "d", instructions: "x", ownershipScope: "shared" }) },
       orgInstruction: async () => null,
       agentServices: { getActiveRun: () => run as never, activateRunAgent: vi.fn(async () => ({ run: run as never, metadata })),
-        terminateRunAgent: vi.fn(async () => ({ outcome: "terminated" as const, runtimeKind: null })), readMetadata: async () => metadata },
+        terminateRunAgent: vi.fn(async () => ({ outcome: "terminated" as const, runtimeKind: null })), readMetadata: async () => metadata, ...UNUSED_STOPPED_SELECTION_SAVE },
       rootDependencies: { taskRecords: openTaskRecords(), delegationIndex: noDelegations(), viewStreams: testViewStreams(), remoteChannel: () => null, receivedFiles: received },
     });
     const root = (await manager.resolveRoot(runId))!;

@@ -45,6 +45,7 @@ import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/commun
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
+import { UNUSED_STOPPED_SELECTION_SAVE } from "../../helpers/runtime-switch-fakes.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
@@ -199,6 +200,7 @@ const buildNode = async (input: Readonly<{
         return { run: run as never, metadata: metadata.get(runId)! };
       }),
       terminateRunAgent: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
+      ...UNUSED_STOPPED_SELECTION_SAVE,
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
     rootDependencies: {

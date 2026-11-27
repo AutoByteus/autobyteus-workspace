@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../helpers/explicit-host-collaborators.js";
+import { ACCEPTING_MODEL_SELECTION_VALIDATOR } from "../../helpers/runtime-switch-fakes.js";
 
 const applicationId = "app-1";
 const bindingId = "binding-1";
@@ -55,7 +56,7 @@ const buildRootTeamRuntime = () => {
     createdAt: "2026-04-19T09:10:00.000Z",
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
-  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
+  const root = new RootTeamRun({ modelSelectionValidator: ACCEPTING_MODEL_SELECTION_VALIDATOR, delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
     remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED,
     rootRun: {
       teamRunId,

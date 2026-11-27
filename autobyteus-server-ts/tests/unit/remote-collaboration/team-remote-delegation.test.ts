@@ -53,6 +53,7 @@ import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/se
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { PeerRunNodes } from "../../../src/agent-collaboration/execution/remote/peer-run-nodes.js";
+import { UNUSED_STOPPED_SELECTION_SAVE } from "../../helpers/runtime-switch-fakes.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -135,6 +136,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
       getActiveRun: () => (hostActive ? host as never : null),
       activateRunAgent: vi.fn(async () => { hostActive = true; return { run: host as never, metadata: metadata.get(DELEGATOR)! }; }),
       terminateRunAgent: vi.fn(async () => { hostActive = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
+      ...UNUSED_STOPPED_SELECTION_SAVE,
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
     rootDependencies: {

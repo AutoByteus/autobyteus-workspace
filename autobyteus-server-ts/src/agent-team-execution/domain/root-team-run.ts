@@ -15,8 +15,9 @@ import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
-import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "./team-agent-status.js";
-import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { TeamAgentStatusSnapshot } from "./team-agent-status.js";
+import { teamLeafAgentStatusSnapshots } from "./team-leaf-agent-statuses.js";
+import { createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
@@ -52,6 +53,10 @@ import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/servi
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
+import { TeamMemberRuntimeSwitchCommitter } from "../services/team-member-runtime-switch-committer.js";
+import { TeamMemberRuntimeSwitch } from "../services/team-member-runtime-switch.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { AgentRuntimeSwitchOutcome, AgentRuntimeSwitchRequest } from "../../agent-collaboration/execution/domain/agent-runtime-switch-request.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
@@ -91,6 +96,7 @@ export class RootTeamRun {
   private readonly teamRunResolver: TeamRunResolver;
   private readonly communication: RootCommunicationEngine;
   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
+  private readonly memberSwitch: TeamMemberRuntimeSwitch;
   private readonly membershipChanges: TeamMembershipCommitter;
   private readonly members: TeamRunMemberAuthority;
   private readonly materializationGate: RootTeamRunMaterializationGate;
@@ -125,6 +131,8 @@ export class RootTeamRun {
     /** The host's file transfer between nodes (autobyteus-587). */
     /** The node's received files, placed into a member's folder (autobyteus-587). */
     receivedFiles: ReceivedFilesPlacement;
+    /** autobyteus-646: a member's automatic runtime switch is validated like a save of that member. */
+    modelSelectionValidator: RunModelSelectionValidator;
     /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
     closedTasks: Pick<ClosedTaskFence, "refusal">;
     memoryLocator?: AgentRunMemoryLocator;
@@ -183,13 +191,13 @@ export class RootTeamRun {
       receivedFiles: options.receivedFiles,
       memberFolderOf: (agentRunId) => this.memberFolderOf(agentRunId),
     });
-    this.platformBindings = new TeamAgentPlatformBindingCommitter({
-      persistence: options.persistence,
-      getTree: () => this.tree,
-      assertAdmitting: () => this.assertAdmitting(),
-      replaceTree: (tree) => this.replaceTree(tree),
-      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
-    });
+    const treeCommits = { persistence: options.persistence, getTree: () => this.tree, assertAdmitting: () => this.assertAdmitting(),
+      replaceTree: (tree: TeamRunExecutionTreeSnapshot) => this.replaceTree(tree), enterLifecycleFailStop: () => this.enterLifecycleFailStop() };
+    this.platformBindings = new TeamAgentPlatformBindingCommitter(treeCommits);
+    this.memberSwitch = new TeamMemberRuntimeSwitch({ getTree: () => this.tree, validator: options.modelSelectionValidator,
+      committer: new TeamMemberRuntimeSwitchCommitter(treeCommits),
+      memberControl: async (agentRunId) => (await this.requireContainingTeamRun(agentRunId)).directAgentControl(agentRunId),
+      post: (agentRunId, message) => this.executeAgentCommand(agentRunId, { kind: "post_message", message }) });
     this.membershipChanges = new TeamMembershipCommitter({ rootIdentity: this.rootIdentity, persistence: options.persistence, getTree: () => this.tree,
       assertAdmitting: () => this.assertAdmitting(), isAdmitting: () => this.isAdmitting(), replaceTree: (tree) => this.replaceTree(tree),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
@@ -221,16 +229,7 @@ export class RootTeamRun {
   }
   /** Live leaves plus `offline` for every tree agent without a live execution (shut-down children). */
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[] {
-    const live = this.options.rootRun.getLeafAgentStatusSnapshots();
-    const reported = new Set(live.map((snapshot) => snapshot.execution.agentRunId));
-    const root = createTeamRootExecutionIdentity(this.teamRunId);
-    const dormant = this.index.listAgentExecutions()
-      .filter((agent) => !reported.has(agent.agentRunId))
-      .map((agent) => createTeamAgentStatusSnapshot({
-        execution: createCollaborationMemberExecutionIdentity({ root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
-        details: createTeamAgentStatusDetails({ status: "offline", backgroundTasksRunning: 0 }),
-      }));
-    return Object.freeze([...live, ...dormant]);
+    return teamLeafAgentStatusSnapshots(this.teamRunId, this.options.rootRun.getLeafAgentStatusSnapshots(), this.index);
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
   getInputStateSnapshots() { return this.options.rootRun.getInputStateSnapshots(); }
@@ -383,6 +382,11 @@ export class RootTeamRun {
       if (!this.index.getAgent(agentRunId)) throw new CollaborationMemberNotFoundError(`RUN_NOT_FOUND: AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.`);
       return (await this.requireContainingTeamRun(agentRunId)).ensureDirectAgentReady(agentRunId);
     });
+  }
+
+  /** autobyteus-646 R-1: one member switches runtime in this run's gate; the other members keep running. */
+  switchAgentRuntime(agentRunId: string, request: AgentRuntimeSwitchRequest): Promise<AgentRuntimeSwitchOutcome> {
+    return this.materializationGate.run(async () => { this.assertAdmitting(); return this.memberSwitch.run(agentRunId, request); });
   }
 
   subscribeToEvents(listener: RootEventListener<TeamRunEvent>): () => void {

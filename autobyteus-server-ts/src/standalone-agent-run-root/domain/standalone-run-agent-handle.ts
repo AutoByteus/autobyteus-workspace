@@ -5,12 +5,17 @@ import type {
   StandaloneRunAgentActivationInput,
 } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { StandaloneRunAgentTerminationResult } from "../../agent-execution/services/standalone-run-ports.js";
+import type { StoppedRunSelectionInput } from "../../agent-execution/services/standalone-stopped-run-selection-updater.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 
 /** The standalone activation mechanics (the lifecycle service, the only writer of `run_metadata.json`). */
 export type StandaloneRunAgentActivationBackend = Readonly<{
   getActiveRun(agentRunId: string): AgentRun | null;
   activateRunAgent(agentRunId: string, input: StandaloneRunAgentActivationInput): Promise<StandaloneAgentRunActivationResult>;
   terminateRunAgent(agentRunId: string): Promise<StandaloneRunAgentTerminationResult>;
+  /** Saves a stopped run's selection; a runtime change becomes a pending switch its next input makes real. */
+  updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>>;
 }>;
 
 export type StandaloneRunAgentReadiness = "offline" | "activating" | "live";
@@ -47,6 +52,12 @@ export class StandaloneRunAgentHandle {
     this.activation = attempt;
     void attempt.finally(() => { if (this.activation === attempt) this.activation = null; }).catch(() => undefined);
     return attempt;
+  }
+
+  /** Saves the stopped agent's selection (autobyteus-646 R-1: an automatic switch), after any in-flight activation settles. */
+  async saveStoppedSelection(selection: Omit<StoppedRunSelectionInput, "agentRunId">): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    await this.activation?.catch(() => undefined);
+    return this.options.backend.updateStoppedSelection({ agentRunId: this.agentRunId, ...selection });
   }
 
   /** Stops the agent after any in-flight activation settles (so a starting agent is not left running). */

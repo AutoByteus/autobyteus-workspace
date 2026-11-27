@@ -29,6 +29,8 @@ export class TeamRun {
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.backend.executeDirectAgentCommand(agentRunId, command);
   }
+  /** A direct member's quiet stop and selection swap (autobyteus-646 R-1); null when it is not a direct member. */
+  directAgentControl(agentRunId: string) { return this.backend.directAgentControl(agentRunId); }
   /** This direct member's agent, made ready without input (activated, restored, or the live run). */
   ensureDirectAgentReady(agentRunId: string) { return this.backend.ensureDirectAgentReady(agentRunId); }
   /** The leaving members stop (each when quiet); `stopped` is told for each one (DS-004). */

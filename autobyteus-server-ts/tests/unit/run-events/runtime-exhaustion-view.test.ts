@@ -13,7 +13,7 @@ const limit = (input: Partial<RunEvent<"usage_limit_reached">["data"]> & { at?: 
     blockedModels: input.blockedModels ?? ["gpt-6.1-terra"], resetAt: input.resetAt === undefined ? "2026-11-27T09:00:00.000Z" : input.resetAt },
 });
 const view = (events: RunEvent<"usage_limit_reached">[], now = () => NOW) =>
-  new RuntimeExhaustionView({ log: { readSince: async () => events }, now });
+  new RuntimeExhaustionView({ log: { readSince: (async () => events) as never }, now });
 
 describe("RuntimeExhaustionView", () => {
   it("lists a blocked model of the runtime until its reset; another runtime's same model ID is not exhausted", async () => {

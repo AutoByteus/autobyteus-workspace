@@ -18,6 +18,7 @@ import type { MemberExecutionContext } from "../../../../src/agent-collaboration
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL } from "../../../helpers/explicit-host-collaborators.js";
+import { UNUSED_STOPPED_SELECTION_SAVE } from "../../../helpers/runtime-switch-fakes.js";
 
 /** A standalone run's root with real persistence: its agent is a double that records reservations and restores. */
 export const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
@@ -92,7 +93,9 @@ export const hostRun = () => {
 
 /** A standalone run's root (autobyteus-461: its own agent only) with real persistence of its own log. */
 export const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources(),
-  delegationIndex: DelegationIndex = noDelegations()) => {
+  delegationIndex: DelegationIndex = noDelegations(),
+  /** autobyteus-646: the quiet stop and the stopped selection save an automatic runtime switch uses. */
+  switching: Readonly<{ agentRunManager?: unknown; updateStoppedSelection?: (input: unknown) => Promise<unknown> }> = {}) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
   const host = hostRun();
   // The run's activation backend (the standalone lifecycle): records the root-built member context.
@@ -115,6 +118,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     agentServices: {
       getActiveRun: () => (host.run.isActive() ? host.run as never : null),
       activateRunAgent: restores,
+      ...(switching.updateStoppedSelection ? { updateStoppedSelection: switching.updateStoppedSelection as never } : UNUSED_STOPPED_SELECTION_SAVE),
       terminateRunAgent: vi.fn(async () => {
         await heldTermination;
         const wasActive = host.run.isActive();
@@ -123,7 +127,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       }),
       readMetadata: async () => currentMetadata,
     },
-    rootDependencies: { remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
+    rootDependencies: { ...(switching.agentRunManager ? { agentRunManager: switching.agentRunManager as never } : {}), remoteChannel: NO_PEER_CHANNEL, receivedFiles: NO_FILES_RECEIVED, taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
   const agentIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,

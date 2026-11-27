@@ -21,7 +21,7 @@ const entry = (models: Array<{ id: string; blocked?: { until: string | null; by:
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const detector = (input: { held?: boolean; read?: unknown } = {}) => {
-  const publish = vi.fn(async () => undefined);
+  const publish = vi.fn(async (_event: unknown) => undefined);
   const readRuntime = vi.fn(async () => input.read === undefined ? null : input.read);
   const created = new UsageLimitDetector({ publish, roots: { placeOf: () => (input.held === false ? null : { root: {}, place: "host" }) as never },
     runtimes: { readRuntime } as never, now: () => new Date("2026-11-25T06:42:41.500Z") });

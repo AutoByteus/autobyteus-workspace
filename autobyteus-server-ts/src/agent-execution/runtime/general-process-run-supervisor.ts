@@ -300,6 +300,7 @@ export class GeneralProcessRunSupervisor {
           getActiveRun: (agentRunId) => activeAgentRuns.getActiveRun(agentRunId),
           activateRunAgent: (agentRunId, activation) => lifecycleService.activateRunAgent(agentRunId, activation),
           terminateRunAgent: (agentRunId) => lifecycleService.terminateRunAgent(agentRunId),
+          updateStoppedSelection: (selection) => lifecycleService.updateStoppedSelection(selection),
           readMetadata: (agentRunId) => metadataService.readMetadata(agentRunId),
         },
         rootDependencies: {

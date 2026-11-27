@@ -28,6 +28,7 @@ import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution
 import { testTaskSide } from "../../../helpers/task-side-binding.js";
 import { NO_FILES_RECEIVED, NO_PEER_CHANNEL, OFFERED_MODEL_EXECUTION_FACTORY } from "../../../helpers/explicit-host-collaborators.js";
 import { AgentRunMemoryLocator } from "../../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
+import { ACCEPTING_MODEL_SELECTION_VALIDATOR } from "../../../helpers/runtime-switch-fakes.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -80,6 +81,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     taskRecords: taskExecutionResources,
     delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
     onTerminated: vi.fn(),
+    modelSelectionValidator: ACCEPTING_MODEL_SELECTION_VALIDATOR,
   };
   const config = testTeamRunConfig({
     rootTeamRunId: ROOT, rootTeamDefinitionId: "se-team", coordinatorAddress: "/coordinator",

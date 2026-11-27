@@ -43,6 +43,7 @@ import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/re
 import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
+import type { AgentRuntimeSwitchOutcome, AgentRuntimeSwitchRequest } from "../../agent-collaboration/execution/domain/agent-runtime-switch-request.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 /** What a view of the run opens with: its own agent (the runs it delegated are its tree's rows, SR-084). */
@@ -181,6 +182,31 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   /** Makes the run's agent ready (activated, restored, or the live run). */
   ensureAgentReady(): Promise<AgentRun> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.readyAgent(); });
+  }
+  /**
+   * autobyteus-646 R-1: the run's agent switches runtime, in the gate. A quiet stop (idle shutdown's, so no
+   * `terminatedAt`), then the stopped selection saved with the pending switch and its cause, then the continue message,
+   * whose activation makes the switch real with the hand-over.
+   */
+  switchAgentRuntime(agentRunId: string, request: AgentRuntimeSwitchRequest): Promise<AgentRuntimeSwitchOutcome> {
+    return this.operationGate.run(async () => {
+      this.assertAdmitting();
+      if (agentRunId.trim() !== this.agentRunId) return { kind: "failed", reason: "it is not this run's agent" };
+      const live = this.options.agentHandle.getActiveRun();
+      if (live) {
+        if (!this.options.agentRunManager) return { kind: "failed", reason: "this run's agent cannot be stopped quietly" };
+        const prepared = await this.options.agentRunManager.tryPrepareAgentRunTerminationIfQuiescent(live);
+        if (!prepared) return { kind: "not_quiet" };
+        const stopped = await prepared.commit().finish();
+        if (!stopped.accepted) return { kind: "failed", reason: stopped.message ?? stopped.code ?? "its agent did not stop" };
+      }
+      const saved = await this.options.agentHandle.saveStoppedSelection({ ...request.launch, cause: request.cause });
+      if (!saved.success) return { kind: "failed", reason: saved.message };
+      const posted = await this.postAgentUserMessage({ message: request.notice, postOptions: {} });
+      if (posted.kind === "posted" && posted.post.accepted) return { kind: "switched" };
+      return { kind: "failed", reason: `the continue message was not taken (${posted.kind === "posted"
+        ? posted.post.message ?? posted.post.code ?? "not accepted" : posted.kind === "refused" ? posted.refusal.message : posted.kind})` };
+    });
   }
   /**
    * A user's (or a peer owner's) message for the run's agent. At the gate head, the closed-Task fence (DS-15): a closed

@@ -9,6 +9,7 @@ import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execut
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { ACCEPTING_MODEL_SELECTION_VALIDATOR } from "../../helpers/runtime-switch-fakes.js";
 
 const deferred = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -53,7 +54,7 @@ const buildRoot = (input: {
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, receivedFiles: NO_FILES_RECEIVED,
+  const root = new RootTeamRun({ modelSelectionValidator: ACCEPTING_MODEL_SELECTION_VALIDATOR, delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null }, receivedFiles: NO_FILES_RECEIVED,
     rootRun: rootRun as never,
     config,
     tree,
