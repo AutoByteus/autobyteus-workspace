@@ -16,15 +16,16 @@
 - Implementation Revision Record Reviewed As Context: [implementation-revision-record.md](implementation-revision-record.md)
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: `/implementation_engineer`, implementation complete, IR-001, `Large`/`High`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review` of the SR-011 rework, plus a re-audit of every file it touches
+- Review Scope Evidence (round 2): `4a4b2d7c32..1bc523124e`, 25 source files. Every changed line was read: the chooser's tiers, the delegation's fallback layers, the no-fallback text, both commit primitives' launch source, the cause parser, the marker, the vocabulary, the web labels, en and zh-CN. Round 1's unchanged code was re-read where the rework calls into it.
+- Trigger: `/implementation_engineer`, IR-002, SR-011 (design-spec § R-17…R-19, commit `230bcc534b`)
+- Prior Review Round Reviewed: 1 (CRR-001, Fail)
+- Latest Authoritative Round: 2
 - Failure-origin / delivery fields: N/A
 
-Reviewed: `bc4351cad7..4a4b2d7c32` (175 files; about 2,300 source lines in 81 source files, the rest tests, fixtures, docs and generated code).
+Reviewed: round 1 `bc4351cad7..4a4b2d7c32`; round 2 `4a4b2d7c32..1bc523124e` (175 files; about 2,300 source lines in 81 source files, the rest tests, fixtures, docs and generated code).
 
 ## Routing Classification Review
 
@@ -79,15 +80,15 @@ Reviewed: `bc4351cad7..4a4b2d7c32` (175 files; about 2,300 source lines in 81 so
   - R-14: retention;
   - R-15: the root follows its own switch.
 - Design review report and round confirmed: ARCH-REV-005 Pass.
-- Behavior-basis status: `Confirmed` for the implemented paths. BEH-003/BEH-004 have the gap recorded as CR-646-02 (a scenario the requirements leave open, not a contradiction of the code with the design).
-- Remaining material ambiguity: CR-646-02 (a founder decision).
+- Behavior-basis status: `Confirmed`. Round 1's gap (CR-646-02) was closed by SR-011's REQ-004/REQ-007 update (R-17, R-18).
+- Remaining material ambiguity: none (R-6 and DEC-008 stay with the founder; neither changes the code's behavior).
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting / New Evidence |
 | --- | --- | --- | --- |
 | BEH-001 | Confirmed | Codex `codexErrorKindFields` on the `error` notification and the failed turn. AGY/ACP/Claude use `LateUsageLimitClassification` (the limits read after a terminal unclassified `ERROR`, then `ERROR_CLASSIFIED`). The detector acts once per (run, turn) and only for runs `placeOf` holds; its scope and reset come from `readRuntime`. UL-01 (three errors, one event), UL-08 (AGY) | — |
 | BEH-002 | Confirmed | `RuntimeExhaustionView` loaded from the log (31 days) and kept current by the hub. `LaunchUsabilityCheck.exhaustedUntil` checks every layer, including the inherited launch. UL-06 | — |
-| BEH-003 | Confirmed (with CR-646-01/02) | Listener → chooser → switcher → root. Agent root: own checks → quiet stop → `commitRunRuntimeSwitch` with `cause` → `setInheritedLaunch` → continue input. Team: own checks → handle quiet stop → tree commit → `replaceSelection` → post. Marker from `cause`; the continue input carries `present_as_notice`. UL-01/02/04, ULP-01 | The no-fallback text and the history-only safety net (CR-646-01/02) |
-| BEH-004 | Confirmed (with CR-646-02) | `historyPick`: of the agent's 30-day launches usable now, most runs (ties: most recent), with the model last used there | An agent with no usable runtime in its history gets no fallback even when runtimes are usable (UL-05) |
+| BEH-003 | Confirmed | Listener → chooser → switcher → root. Agent root: own checks → quiet stop → `commitRunRuntimeSwitch` with `cause` → `setInheritedLaunch` → continue input. Team: own checks → handle quiet stop → tree commit → `replaceSelection` → post. Marker from `cause`; the continue input carries `present_as_notice`. UL-01/02/04, ULP-01 | Resolved in round 2 (R-17, R-18) |
+| BEH-004 | Confirmed | `historyPick`: of the agent's 30-day launches usable now, most runs (ties: most recent), with the model last used there | Resolved in round 2: the node fallback (R-17); UL-09 |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
@@ -104,9 +105,9 @@ Reviewed: `bc4351cad7..4a4b2d7c32` (175 files; about 2,300 source lines in 81 so
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | The no-fallback notice states "No other runtime is usable." when other runtimes are usable but none is in the agent's history | S-02, REQ-007, C-5 | Default configuration, any single-runtime agent | The person is told something false and has no hint to switch manually | `noFallbackText`; UL-05 asserts the text with AutoByteus usable | Promote → CR-646-01 | This ticket (text this ticket adds) | The C-5 text is approved design wording, so its correction is the designer's |
-| C-02 | With Model Routing off, an agent whose 30-day history has no usable runtime but the exhausted one is never switched, though other runtimes are usable | S-02, REQ-004 vs the problem statement and DEC-002 | Same | The run stays in Error: UC-002 doesn't happen for these agents | UL-05; the E2E cases that switch all seed history first | Promote → CR-646-02 | Requirement Gap | REQ-004 approved history-only; whether to go further is the founder's |
-| C-03 | An automatic switch stores `launchSource.origin = settings`, documented as "the user's own Settings edit" | S-05, P15, P17, R-8's "no false fact" | Every automatic switch | False stored fact. The row's source label disappears after the switch (`settings` has no label), and after activation clears the pending switch, nothing on the run records that the launch came from an automatic switch | Commit paths above; handoff "Source of a switched Team member" (the Agent root's path does the same) | Promote → CR-646-03 | This ticket (introduced here; `launch-configuration-source.ts` is edited by it) | A vocabulary decision: the designer's |
+| C-01 | The no-fallback notice states "No other runtime is usable." when other runtimes are usable but none is in the agent's history | S-02, REQ-007, C-5 | Default configuration, any single-runtime agent | The person is told something false and has no hint to switch manually | `noFallbackText`; UL-05 asserts the text with AutoByteus usable | Promote → CR-646-01 (resolved round 2, R-18) | This ticket (text this ticket adds) | The C-5 text is approved design wording, so its correction is the designer's |
+| C-02 | With Model Routing off, an agent whose 30-day history has no usable runtime but the exhausted one is never switched, though other runtimes are usable | S-02, REQ-004 vs the problem statement and DEC-002 | Same | The run stays in Error: UC-002 doesn't happen for these agents | UL-05; the E2E cases that switch all seed history first | Promote → CR-646-02 (resolved round 2, R-17) | Requirement Gap | REQ-004 approved history-only; whether to go further is the founder's |
+| C-03 | An automatic switch stores `launchSource.origin = settings`, documented as "the user's own Settings edit" | S-05, P15, P17, R-8's "no false fact" | Every automatic switch | False stored fact. The row's source label disappears after the switch (`settings` has no label), and after activation clears the pending switch, nothing on the run records that the launch came from an automatic switch | Commit paths above; handoff "Source of a switched Team member" (the Agent root's path does the same) | Promote → CR-646-03 (resolved round 2, R-19) | This ticket (introduced here; `launch-configuration-source.ts` is edited by it) | A vocabulary decision: the designer's |
 | C-04 | R-6 pending: with Model Routing on, each event spends a router turn (a model call) and up to 40 s before history decides | S-06 | Model Routing on | Delay and cost, no wrong outcome | UL-03 | Reject as a finding; release condition | — | Designed and recorded (R-6). It must land, with the founder's approval, before release |
 | C-05 | The Agent root's "gate" is a counting barrier, not a mutex: a person's input can activate the agent between the quiet stop and the commit | R-1/R-11 premise "no input interleaves" | Input at the switch moment | The commit refuses ("its agent is still running") → `switch_failed`; the old runtime fails again → a new event → a new switch | `RootOperationGate`; `StandaloneAutomaticRuntimeSwitch.commit` | Reject | — | Self-healing, and the person's input wins. Noted for the design's wording |
 | C-06 | Codex `not_quiet` → `nextIdle` waits for an `idle` status (2 min) | R-1 retry | A switch decided while the turn ends | Unexercised end to end | Unit only | Hold for Evidence | — | API/E2E may cover it |
@@ -124,7 +125,7 @@ Reviewed: `bc4351cad7..4a4b2d7c32` (175 files; about 2,300 source lines in 81 so
 | Off-spine concern clarity | Pass | Logging per publish, listener failure and outcome; retention in `SealedJsonlLog` | — |
 | Existing capability/subsystem reuse check | Pass | `commitRunRuntimeSwitch`, `commitExecutionTreeMutation`, `replaceSelection`, `RoutingRequestQueue` (through `carry`), the hand-over and marker | — |
 | Reusable owned structures check | Pass | `SealedJsonlLog` serves three logs; `automaticSwitchRefusal` is shared by both roots | — |
-| Shared-structure/data-model tightness check | Fail (CR-646-03) | `launchSource.origin = settings` gets a second meaning | Designer decides the origin of an automatically switched launch |
+| Shared-structure/data-model tightness check | Pass (round 2) | R-19: the launch source is the chooser; `settings` keeps one meaning | — |
 | Repeated coordination ownership check | Pass | One listener, one chooser for the switch and the delegation history layer | — |
 | Empty indirection check | Pass | The `RunRuntimeSwitcher` lookup (`placeOf` → live root) has a reason; the ports have production bindings and fakes | — |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | — | — |
@@ -134,11 +135,11 @@ Reviewed: `bc4351cad7..4a4b2d7c32` (175 files; about 2,300 source lines in 81 so
 | File placement check | Pass | — | — |
 | Flat-vs-over-split layout judgment | Pass | — | — |
 | Interface/API/query/command/service-method boundary clarity | Pass | `switchAgentRuntime(agentRunId, request)` with explicit outcomes; `submit_runtime_switch` checked against the request's usable list | — |
-| Naming quality and naming-to-responsibility alignment (P15) | Fail (CR-646-03) | `settings` origin, see above. Everything else is consistent (`agent_history` in C-2, R-7 and R-8 alike) | — |
+| Naming quality and naming-to-responsibility alignment (P15) | Pass (round 2) | One vocabulary (`model_router`/`agent_history`/`node_fallback`) in the origin, C-2 `chosenBy`, R-7 `cause.chosenBy`, the decision source and the web | — |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | Decision-log file handling moved into `SealedJsonlLog`, not copied | — |
 | Patch-on-patch complexity control | Pass | SR-009's replacements removed the earlier map and detector branches | — |
 | Dead code removed in the touched files and modules (P7) | Pass | — | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass, one note | Unit tests per owner. E2E UL-01…UL-08, ULP-01. UL-05 asserts the false text (CR-646-01) | Follows CR-646-01 |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Unit tests per owner. E2E UL-01…UL-09, ULP-01. UL-05 now sets up "nothing usable"; UL-09 covers the node fallback; UL-01/ULP-01/UL-09 assert the stored launch source | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The scripted Codex app-server fixture | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | — | — |
 | API/E2E readiness for the next workflow stage | Pass after the findings | — | — |
@@ -177,20 +178,18 @@ None.
 - C-2: matches. `chosenBy` and `to` are null for `no_fallback`.
 - C-3: derived, with the 1 h cooldown and the 31-day startup read.
 - C-4/R-16: `error_kind`, and `ERROR_CLASSIFIED` with the consumers that drop it.
-- C-5 text: CR-646-01.
+- C-5 text: replaced by R-18 (round 2), true under R-17.
 - C-6: matches.
 - C-7: matches, with R-6 pending.
 - C-8: matches.
 - R-7 `cause`: written by the automatic path only, and strictly parsed.
-- One stored fact not covered by the contract: the launch origin an automatic switch records (CR-646-03).
+- The launch origin an automatic switch records: R-19 (round 2), the chooser's value, matching `cause.chosenBy`.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`. New `run_events.md`; `model_routing.md`, `agent_runtimes.md`, `agent_tools*.md`, CM-12 and the web settings doc are updated.
 - These follow the findings:
-  - the C-5 wording wherever it is documented (CR-646-01);
-  - the safety-net rule if it changes (CR-646-02);
-  - the `settings` origin's documented meaning (CR-646-03).
+  - Round 2: R-17…R-19 are reflected in `model_routing.md`, `run_events.md` and the vocabulary's docstring (`launch-configuration-source.ts`). No stale "No other runtime is usable" text remains (`git grep`).
 
 ## Additional Material Premise Validation
 
@@ -198,83 +197,74 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.2 / 10 (simple average; not the decision rule)
+- Overall score: 9.4 / 10 (simple average; not the decision rule). Round 1 was 9.2, with three categories below 9.2.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Five spines exactly as designed; the hub decoupling holds | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Classification, scope, policy, switch and persistence each have one owner | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.4 | Explicit outcomes (`switched`/`not_quiet`/`already_switched`/`failed`); the tool checked against the usable list | — | — |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Five spines exactly as designed; the hub decoupling holds; R-17's tier sits inside the chooser, which already owned the choice | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Classification, scope, policy, choice, switch and persistence each have one owner. The commit primitives take the source and don't decide it | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | Explicit outcomes. `fallbackLaunch(agentDefinitionId, withNodeFallback)` states R-17's delegation condition at the call | — | — |
 | 4 | Separation of Concerns and File Placement | 9.3 | — | Two files at 498/499 | Keep them from growing |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.8 | `SealedJsonlLog`, C-1/C-2 tight | CR-646-03: `settings` origin with a second, false meaning | Designer decides the origin |
-| 6 | Naming Quality and Local Readability | 9.0 | `agent_history` consistent | CR-646-03 (P15) | As above |
-| 7 | API/E2E Readiness | 9.3 | 8 built-server cases plus a two-server case | Not-quiet retry unexercised; live limits pending | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Detection, dedupe, switch, hand-over and notice rows proven | CR-646-01: false user-visible text in the default configuration's common case. CR-646-02: the switch doesn't happen for agents without other-runtime history | Designer and founder decide; then the text and, if decided, the safety net |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.4 | R-19: one source value per chooser. `launchesOf`/`launchesOfNode` share one `launchesWhere` | `taskKind: "runtime switch"` for a router-chosen switch, a constant the schema requires (accepted, see notes) | — |
+| 6 | Naming Quality and Local Readability | 9.4 | One vocabulary across origin, C-2, `cause`, decision source and the web (en and zh-CN) | — | — |
+| 7 | API/E2E Readiness | 9.3 | 9 built-server cases (UL-09 new), ULP-01, full unit and integration suites | Not-quiet retry and the delegation's node-fallback path not exercised end to end; live limits pending | API/E2E covers them |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | R-17 makes `no_fallback` mean "nothing usable", so R-18's text is true. Ordering is deterministic. Exhausted models are left out before any tier | When the runtime report itself can't be read, the chooser also answers `no_fallback`, and the text then says no runtime can run (a rare read failure; logged) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — | — | — |
-| 10 | Cleanup Completeness | 9.4 | Earlier mechanisms removed with SR-009 | — | — |
+| 10 | Cleanup Completeness | 9.4 | `PROCESS_AGENT_HISTORY_LAUNCH` and `historyLaunch` replaced, not kept beside the new port; docs updated | — | — |
 
 ## Findings
 
-### CR-646-01 — The no-fallback notice says "No other runtime is usable." when other runtimes are usable (`Design Impact`, this ticket)
+Round 1's findings are all resolved (see the Prior Finding Resolution table in `code-review-revision-record.md`, CRR-002):
 
-- **Where:** `run-events/listeners/usage-limit-switch-listener.ts` `noFallbackText`. The text comes from the approved C-5, and the C-5 text includes this clause.
-- **Scenario:** S-02. Model Routing off (the default), and the agent's last 30 days hold runs only on the exhausted runtime. The chooser returns `no_fallback` because the history pick is empty, not because nothing is usable. UL-05 builds this case: AutoByteus is usable on the node, and UL-01 switches to it. UL-05 then asserts "Usage limits reached: Codex App Server until …. No other runtime is usable."
-- **Consequence:** the person reads a false statement. They aren't told that a usable runtime exists and that they can switch to it by hand.
-  - REQ-007 asks for a message that names each exhausted runtime and its reset time, not this claim.
-  - REQ-006: "Nothing the agent is told is hidden": the person must be able to trust the notice.
-- **Required action (Solution Designer):** give the C-5 no-fallback text for the case where usable runtimes exist outside the history (or for every case), consistent with CR-646-02's decision. Then the implementer updates `noFallbackText`, its unit test and UL-05.
+- **CR-646-01 — Resolved (R-18).**
+  - `noFallbackText` names every exhausted runtime, with its earliest known reset or "for about an hour", and then says "No other runtime can run now. Choose one in the run's Settings to continue."
+  - With R-17 it is shown only when nothing is usable, so the claim is true.
+  - UL-05 now sets up "nothing usable": AutoByteus' model server is down and every AGY model is used up.
+- **CR-646-02 — Resolved (R-17, SR-011; the founder is informed).**
+  - The `node_fallback` tier comes after agent history: the node's most-used usable launch over 30 days, else the first usable runtime in the report's order with its first usable model.
+  - Delegation: after an exhausted skip, agent history comes before the inherited launch, and the node fallback only when the inherited launch can't run (or there is none), before a refusal.
+  - UL-09 shows an agent with no history switching by the node fallback.
+- **CR-646-03 — Resolved (R-19).**
+  - Both commit primitives take the launch source: `buildRuntimeSwitchMetadata`/`commitRunRuntimeSwitch` (`launchSource`) and `applySelectionToConfiguredMember` (4th parameter).
+  - A person's Save still defaults to `settings`. Both roots' automatic paths pass `automaticSwitchLaunchSource(cause)`.
+  - The value is added everywhere `agent_history` was: the vocabulary, `node_fallback`'s schema, the contracts DTO, `DecisionLaunchSource`, the labels and the web.
+  - UL-01 and ULP-01 check the stored `agent_history`; UL-09 checks `node_fallback`.
 
-### CR-646-02 — With Model Routing off, an agent with no other runtime in its history is not switched at all (`Requirement Gap`)
+No new findings.
 
-- **Behavior:** REQ-004's safety net is history only: "the agent's most-used usable runtime (last 30 days)". With Model Routing off (the default, DEC-002 (a)), an agent whose last 30 days hold runs only on its default runtime has no fallback. The run stays in Error even when other runtimes are installed, signed in and not exhausted.
-  - This is common: an agent is normally run on its configured default.
-  - Every E2E case that switches (UL-01, UL-04, UL-06, ULP-01) first seeds a run on the fallback runtime.
-- **Why it is a gap:** the problem statement's outcome is "a run that hits the limit switches to the best usable runtime for that agent and continues by itself". DEC-002's reason is "the point is that work doesn't stop". REQ-004 doesn't say what happens when the history holds nothing usable; the result is UC-004's Error.
-- **Required action (Solution Designer, the founder's decision):** decide whether, after the router and the history, a further rule applies (for example a usable runtime chosen by a stated order), or whether the run stays in Error. Record the decision in REQ-004/REQ-007. CR-646-01's text follows it.
-- **Delegation:** R-2 already falls to the inherited launch after an empty history, so delegation is less affected. The same question applies there when the inherited launch is exhausted.
+Notes, not findings:
 
-### CR-646-03 — An automatic switch records the launch origin `settings`, "the user's own Settings edit" (`Design Impact`, low, this ticket)
-
-- **Where:** both commit primitives record `launchSource: SETTINGS_LAUNCH_SOURCE` on any change:
-  - Agent root: `run-history/services/agent-run-runtime-switch-commit.ts:36`;
-  - Team member: `run-history/domain/runtime-selection-rule.ts:162`.
-- **The vocabulary:** `launch-configuration-source.ts:13-16`, a file this ticket edits, defines `settings` as "the user's own Settings edit".
-- **Consequence:**
-  - A false stored fact (P15, P17; the design's own R-8 rejected `inherited` because "it would store a false fact").
-  - In Run Settings the row's source label disappears after the switch (`settings` has no label).
-  - Once activation clears the pending switch and its `cause`, the run's own files no longer record that the launch came from an automatic switch. Only C-2 and the marker trace do.
-- **Required action (Solution Designer):** decide the stored origin of an automatically switched launch.
-  - Either keep `settings` and redefine it ("the run's own launch, changed after it started: a person's Settings save or an automatic switch, whose facts are on its pending switch and in the switch record"), updating its docstring;
-  - or add an origin (with its label), and have the automatic paths pass it to the commit primitives.
+- **Router-chosen switches record `taskKind: "runtime switch"`.** The source schema requires a task kind for `model_router`, and an automatic switch has no Task. The constant says truthfully what the router was asked to decide, and the router's sentence is kept as the choice reason. This path waits on R-6 anyway. If a later reader groups by task kind (Model Routing statistics read the decision log, not run files), it should know this value.
+- **Runtime report unreadable** (`readNodeRuntimes` fails): the chooser answers `no_fallback`. The person then reads "No other runtime can run now", which hasn't been verified in that case. It is rare, logged, and has the same outcome (the run stays in Error).
 
 ## Follow-ups
 
-- Follow-ups this review added: None. All three findings are this ticket's or a Requirement Gap. The probe staleness MRD-04 the implementer reported is the Solution Designer's to record.
+- Follow-ups this review added: None. MRD-04 is FU-646-04, recorded by the Solution Designer.
 
 ## Classification
 
-- `Design Impact` (CR-646-01, CR-646-03) and `Requirement Gap` (CR-646-02).
+N/A (Pass).
 
 ## Recommended Recipient
 
-- `/solution_designer`. After its decision, the implementer applies the text, any added rule and the origin. This review then rechecks those items and re-audits the code they touch.
+- `/api_e2e_engineer` (pass), with an informational notice to `/implementation_engineer`.
 
 ## Residual Risks
 
-- **R-6 (release condition):** until the founder approves the template text and `submit_runtime_switch` joins the router's tools, every usage-limit event with Model Routing on spends a router turn and up to 40 s before history decides (UL-03).
-- **DEC-008** still reads "Needs user" in the requirements (90 days applied as the default).
-- **Codex `not_quiet` retry** (`nextIdle`) is not exercised end to end.
+- **R-6 (release condition):** the Solution Designer holds the release until the founder approves the router template. Until then, with Model Routing on, every event spends a router turn and up to 40 s before history or the node fallback decides (UL-03).
+- **DEC-008** stays with the founder (90 days applied).
+- **Codex `not_quiet` retry** (`nextIdle`) and the **delegation's node-fallback path** are exercised by unit tests only.
 - **Real runtimes at a real limit:** the Claude SDK signal and non-Codex payloads are unrecorded (live API/E2E when an account is exhausted).
 - **Files at the limit:** `standalone-agent-run-lifecycle-service.ts` (499) and `root-team-run.ts` (498).
-- **Design wording:** the Agent root's gate is not exclusive (premise reclassified above). The behavior is safe.
+- **Design wording:** R-1's "no input interleaves" is not exact for the Agent root (its gate is a counting barrier). The behavior is safe.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (one premise reclassified, safe)
-- Score Summary: 9.2 / 10; below 9.2: Runtime Correctness 8.6, Data-Model Tightness 8.8, Naming 9.0
-- Failure Origin: upstream (C-5 text; REQ-004's safety net; the launch-origin vocabulary)
-- Recommended Recipient: `/solution_designer`
-- Notes: the implementation itself is careful and close to the design. The blocking items are a false user-visible text and an open requirement case, both in the default configuration.
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.4 / 10; every category ≥ 9.2 (lowest: 9.3 for files, API/E2E readiness and runtime correctness)
+- Failure Origin: N/A
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: CR-646-01…03 are resolved as decided in SR-011. The reviewer re-ran the unit tests of the changed owners, run-history included: 796 passed. The release stays held on R-6 (the founder).
