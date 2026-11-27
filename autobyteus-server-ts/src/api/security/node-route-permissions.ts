@@ -58,6 +58,8 @@ const EXEMPT_EXCHANGES = new Set([
   "/rest/remote/pair",
   "/rest/remote/pair-accepted",
   "/rest/remote/pair-rejected",
+  // autobyteus-661 contract §2, §4: who this node is, answered only while it is visible on that network.
+  "/rest/remote/info",
 ]);
 
 /**

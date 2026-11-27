@@ -2046,6 +2046,7 @@ export type Mutation = {
   setExtensionEnabled?: Maybe<ExtensionItemGql>;
   setModelRouterLaunch: Scalars['JSON']['output'];
   setModelRoutingEnabled: Scalars['JSON']['output'];
+  setNodeVisibility: NodeVisibilityGql;
   setSearchConfig: Scalars['String']['output'];
   setUpdateCheckInterval: UpdateAutomationSettings;
   setUpdateChecksEnabled: UpdateChecksCapability;
@@ -2613,6 +2614,12 @@ export type MutationSetModelRoutingEnabledArgs = {
 };
 
 
+export type MutationSetNodeVisibilityArgs = {
+  localNetwork?: InputMaybe<Scalars['Boolean']['input']>;
+  privateNetwork?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
 export type MutationSetSearchConfigArgs = {
   provider: Scalars['String']['input'];
   serpapiApiKey?: InputMaybe<Scalars['String']['input']>;
@@ -2780,6 +2787,12 @@ export type MutationWriteFileContentArgs = {
   content: Scalars['String']['input'];
   filePath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+export type NodeVisibilityGql = {
+  __typename?: 'NodeVisibilityGql';
+  localNetwork: Scalars['Boolean']['output'];
+  privateNetwork: Scalars['Boolean']['output'];
 };
 
 export type OutstandingPairRequestGql = {
@@ -3110,6 +3123,7 @@ export type Query = {
   modelRoutingDecisions: Scalars['JSON']['output'];
   modelRoutingStatistics: Scalars['JSON']['output'];
   modelRoutingStatus: Scalars['JSON']['output'];
+  nodeVisibility: NodeVisibilityGql;
   outstandingPairRequests: Array<OutstandingPairRequestGql>;
   peerNodeAvailability: PeerNodeAvailabilityGql;
   peerNodeOffer: PeerNodeOfferGql;

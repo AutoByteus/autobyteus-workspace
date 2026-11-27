@@ -17,6 +17,8 @@ import { registerApplicationExecutionResourceRoutes } from "./application-execut
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
 import { registerRemoteCollaborationRoutes } from "./remote.js";
+import { registerPrivateNetworkRoutes } from "./private-network.js";
+import type { PrivateNetwork } from "../../compositions/private-network-composition.js";
 import { registerNodeUpdateRoutes } from "../../node-update/node-update-routes.js";
 import { registerNodeDesktopRoutes } from "./node-desktop.js";
 import { registerNodeAccessRoutes } from "./node-access.js";
@@ -36,6 +38,8 @@ export async function registerRestRoutes(
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The studio's remote collaboration, behind `/rest/remote/*` (autobyteus-500 FU-011). */
     remoteCollaboration: RemoteCollaborationServices;
+    /** autobyteus-661: the private network's routes (`/rest/remote/info`); a host without one has none. */
+    privateNetwork?: Pick<PrivateNetwork, "info">;
     /** autobyteus-581: this node as a relay node, behind `/rest/remote/provider-relays/*`. */
     providerRelayPeerHandler: ProviderRelayPeerHandler;
     /** The node's extensions, behind `/rest/extensions/*` (autobyteus-516). */
@@ -50,6 +54,7 @@ export async function registerRestRoutes(
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
   await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration, dependencies.providerRelayPeerHandler);
+  if (dependencies.privateNetwork) await registerPrivateNetworkRoutes(app, { info: dependencies.privateNetwork.info });
   await registerExtensionRoutes(app, { extensions: dependencies.extensions });
   await registerFileRoutes(app);
   await registerMediaRoutes(app);

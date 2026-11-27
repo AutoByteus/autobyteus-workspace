@@ -7,6 +7,7 @@ import {
 import { SANDBOX_IMAGE_SETTING } from "../sandboxes/sandbox-settings.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { LOCAL_NETWORK_VISIBLE_SETTING, PRIVATE_NETWORK_VISIBLE_SETTING } from "../private-network/node-visibility.js";
 import {
   AUTO_UPDATE_SETTING_KEYS,
   UPDATE_CHECK_INTERVAL_SETTING_KEYS,
@@ -168,6 +169,16 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       "Controls whether the Applications module is available for this node at runtime.",
+    );
+
+    this.registerPredefinedSetting(
+      PRIVATE_NETWORK_VISIBLE_SETTING,
+      "Visible on my private network: other AutoByteus nodes there may find this node's name and ask to pair. Defaults to off.",
+    );
+
+    this.registerPredefinedSetting(
+      LOCAL_NETWORK_VISIBLE_SETTING,
+      "Visible on my local network: this node announces its name and address on its local network. Needs local-network connections allowed. Defaults to off.",
     );
 
     this.registerPredefinedSetting(

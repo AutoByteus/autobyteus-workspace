@@ -454,7 +454,7 @@ export const buildStudioServer = async (input: {
           application: currentApplicationRuntime.rest,
           nodeAccess: currentNodeAccess, remoteCollaboration: remoteCollaboration.services,
           providerRelayPeerHandler: currentCredentialProxyHost.providerRelayPeerHandler,
-          extensions: nodeExtensions,
+          extensions: nodeExtensions, privateNetwork: privateNetwork ?? undefined,
         }),
         { prefix: "/rest" },
       );
