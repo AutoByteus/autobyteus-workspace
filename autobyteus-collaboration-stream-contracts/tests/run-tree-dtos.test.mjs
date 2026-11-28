@@ -18,6 +18,13 @@ test("run-tree (autobyteus-461 SR-084): a row with its launch and peer answer; a
   assert.deepEqual(runTreeDtoSchema.parse({ kind: "agent", runId: "manager", rows: [row("manager", null, 0)] }).rows.length, 1);
 });
 
+test("run-tree (autobyteus-669 S-4): a row names its run's definition, optionally; an empty one is refused", () => {
+  const withDefinition = row("writer", "manager", 1, { definitionId: "release-notes-writer" });
+  assert.deepEqual(runTreeRowDtoSchema.parse(withDefinition), withDefinition);
+  assert.equal(runTreeRowDtoSchema.parse(row("peer", null, 0)).definitionId, undefined);
+  assert.throws(() => runTreeRowDtoSchema.parse(row("a", null, 0, { definitionId: "" })));
+});
+
 test("run-tree: the view stream's tree snapshot and a numbered change event (agent and org views)", () => {
   const snapshot = { type: "RUN_TREE_SNAPSHOT", payload: { root_subject_kind: "agent", root_run_id: "manager", base_change_sequence: 4, rows: [row("manager", null, 0)] } };
   assert.deepEqual(CollaborationStreamServerMessageSchema.parse(snapshot), snapshot);

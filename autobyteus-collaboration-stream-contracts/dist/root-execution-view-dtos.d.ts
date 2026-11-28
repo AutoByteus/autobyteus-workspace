@@ -587,6 +587,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         removed: z.ZodArray<z.ZodString>;
         updated: z.ZodArray<z.ZodObject<{
@@ -686,6 +687,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         kind: z.ZodLiteral<"run_tree_changed">;
     }, z.core.$strict>], "kind">;
@@ -814,6 +816,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         removed: z.ZodArray<z.ZodString>;
         updated: z.ZodArray<z.ZodObject<{
@@ -913,6 +916,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         kind: z.ZodLiteral<"run_tree_changed">;
     }, z.core.$strict>], "kind">;
@@ -1293,6 +1297,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     reachable: z.ZodNullable<z.ZodBoolean>;
                 }, z.core.$strict>>;
                 leaving: z.ZodOptional<z.ZodLiteral<true>>;
+                definitionId: z.ZodOptional<z.ZodString>;
             }, z.core.$strict>>;
             removed: z.ZodArray<z.ZodString>;
             updated: z.ZodArray<z.ZodObject<{
@@ -1392,6 +1397,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     reachable: z.ZodNullable<z.ZodBoolean>;
                 }, z.core.$strict>>;
                 leaving: z.ZodOptional<z.ZodLiteral<true>>;
+                definitionId: z.ZodOptional<z.ZodString>;
             }, z.core.$strict>>;
             kind: z.ZodLiteral<"run_tree_changed">;
         }, z.core.$strict>], "kind">;
@@ -1520,6 +1526,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     reachable: z.ZodNullable<z.ZodBoolean>;
                 }, z.core.$strict>>;
                 leaving: z.ZodOptional<z.ZodLiteral<true>>;
+                definitionId: z.ZodOptional<z.ZodString>;
             }, z.core.$strict>>;
             removed: z.ZodArray<z.ZodString>;
             updated: z.ZodArray<z.ZodObject<{
@@ -1619,6 +1626,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     reachable: z.ZodNullable<z.ZodBoolean>;
                 }, z.core.$strict>>;
                 leaving: z.ZodOptional<z.ZodLiteral<true>>;
+                definitionId: z.ZodOptional<z.ZodString>;
             }, z.core.$strict>>;
             kind: z.ZodLiteral<"run_tree_changed">;
         }, z.core.$strict>], "kind">;
@@ -1729,6 +1737,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{

@@ -191,6 +191,7 @@ export declare const runTreeRowDtoSchema: z.ZodObject<{
         reachable: z.ZodNullable<z.ZodBoolean>;
     }, z.core.$strict>>;
     leaving: z.ZodOptional<z.ZodLiteral<true>>;
+    definitionId: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>;
 export type RunTreeRowDto = Readonly<z.infer<typeof runTreeRowDtoSchema>>;
 /** What changed since the rows a view had: rows that came (in the tree's order), keys of rows that left, rows that changed. */
@@ -292,6 +293,7 @@ export declare const runTreeChangeDtoSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
     removed: z.ZodArray<z.ZodString>;
     updated: z.ZodArray<z.ZodObject<{
@@ -391,6 +393,7 @@ export declare const runTreeChangeDtoSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
 }, z.core.$strict>;
 export type RunTreeChangeDto = Readonly<z.infer<typeof runTreeChangeDtoSchema>>;
@@ -493,6 +496,7 @@ export declare const runTreeChangedEventDtoSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
     removed: z.ZodArray<z.ZodString>;
     updated: z.ZodArray<z.ZodObject<{
@@ -592,6 +596,7 @@ export declare const runTreeChangedEventDtoSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
     kind: z.ZodLiteral<"run_tree_changed">;
 }, z.core.$strict>;
@@ -700,6 +705,7 @@ export declare const runTreeDtoSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
 }, z.core.$strict>;
 export type RunTreeDto = Readonly<z.infer<typeof runTreeDtoSchema>>;

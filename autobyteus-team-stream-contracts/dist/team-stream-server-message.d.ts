@@ -173,6 +173,8 @@ export declare const teamRunTreeSnapshotPayloadSchema: z.ZodObject<{
                 origin: z.ZodEnum<{
                     agent_default: "agent_default";
                     team_default: "team_default";
+                    agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -231,6 +233,7 @@ export declare const teamRunTreeSnapshotPayloadSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
 }, z.core.$strict>;
 /** The Team view's tree changed, numbered in its one sequence (an empty change still counts). */
@@ -272,6 +275,8 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
                 origin: z.ZodEnum<{
                     agent_default: "agent_default";
                     team_default: "team_default";
+                    agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -330,6 +335,7 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
     removed: z.ZodArray<z.ZodString>;
     updated: z.ZodArray<z.ZodObject<{
@@ -369,6 +375,8 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
                 origin: z.ZodEnum<{
                     agent_default: "agent_default";
                     team_default: "team_default";
+                    agent_history: "agent_history";
+                    node_fallback: "node_fallback";
                     inherited: "inherited";
                     configured: "configured";
                     settings: "settings";
@@ -427,6 +435,7 @@ export declare const teamRunTreeChangedPayloadSchema: z.ZodObject<{
             reachable: z.ZodNullable<z.ZodBoolean>;
         }, z.core.$strict>>;
         leaving: z.ZodOptional<z.ZodLiteral<true>>;
+        definitionId: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>>;
     change_sequence: z.ZodNumber;
 }, z.core.$strict>;
@@ -1365,6 +1374,8 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
+                        node_fallback: "node_fallback";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -1423,6 +1434,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
@@ -1465,6 +1477,8 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
+                        node_fallback: "node_fallback";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -1523,6 +1537,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         removed: z.ZodArray<z.ZodString>;
         updated: z.ZodArray<z.ZodObject<{
@@ -1562,6 +1577,8 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                     origin: z.ZodEnum<{
                         agent_default: "agent_default";
                         team_default: "team_default";
+                        agent_history: "agent_history";
+                        node_fallback: "node_fallback";
                         inherited: "inherited";
                         configured: "configured";
                         settings: "settings";
@@ -1620,6 +1637,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 reachable: z.ZodNullable<z.ZodBoolean>;
             }, z.core.$strict>>;
             leaving: z.ZodOptional<z.ZodLiteral<true>>;
+            definitionId: z.ZodOptional<z.ZodString>;
         }, z.core.$strict>>;
         change_sequence: z.ZodNumber;
     }, z.core.$strict>;

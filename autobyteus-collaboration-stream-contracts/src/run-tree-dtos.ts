@@ -54,6 +54,11 @@ export const runTreeRowDtoSchema = z.object({
   }).strict().optional(),
   /** A team member removed from its team, still finishing its turn while the team run is live: shown "Leaving", still opens. */
   leaving: z.literal(true).optional(),
+  /**
+   * The definition of the row's agent run (`agent`, `team_member`, `org_agent`) or team run (`team`, `org_team`), from the
+   * run's own record: a client shows its picture (autobyteus-669 S-4). Absent for a peer row and when the record names none.
+   */
+  definitionId: nonEmptyStringSchema.optional(),
 }).strict();
 export type RunTreeRowDto = Readonly<z.infer<typeof runTreeRowDtoSchema>>;
 
