@@ -44,11 +44,19 @@ const bytesAreOfType = (mimeType: string, bytes: Buffer): boolean => {
   return false;
 };
 
+/** What identifies one version of a file for the cache: all from one `lstat`. */
+type FileIdentity = Readonly<{ size: number; mtimeMs: number; ctimeMs: number; ino: number }>;
+
 /**
- * Per file path: the last size and modification time read, and what its bytes were (their hash, or not of their type).
- * A reload reuses it while both are unchanged, so an unchanged picture is not read again (ARCH-REV-002 N-3).
+ * Per file path: the identity last read and what its bytes were (their hash, or not of their type). A reload reuses it
+ * while the identity is unchanged, so an untouched picture is not read again (ARCH-REV-002 N-3). Size and mtime alone
+ * are not enough (CR-001): tar and other time-preserving tools replace a file with one of the same size and the same
+ * whole-second mtime. A replacement always changes `ctime`, which no tool can set, and normally the inode.
  */
-const contentByPath = new Map<string, Readonly<{ size: number; mtimeMs: number; hash: string | null }>>();
+const contentByPath = new Map<string, FileIdentity & Readonly<{ hash: string | null }>>();
+
+const sameIdentity = (cached: FileIdentity, stat: Stats): boolean =>
+  cached.size === stat.size && cached.mtimeMs === stat.mtimeMs && cached.ctimeMs === stat.ctimeMs && cached.ino === stat.ino;
 
 /** Reads a regular file without following a link at its last part (no-op flag where the platform has none). */
 const readRegularFile = async (filePath: string): Promise<Buffer> => {
@@ -91,7 +99,7 @@ export const readDefinitionAvatar = async (folder: string): Promise<DefinitionAv
     return { status: "invalid", reason: `${fileName} is larger than 1 MiB (${stat.size} bytes)` };
   }
   let content = contentByPath.get(filePath);
-  if (!content || content.size !== stat.size || content.mtimeMs !== stat.mtimeMs) {
+  if (!content || !sameIdentity(content, stat)) {
     let bytes: Buffer;
     try {
       bytes = await readRegularFile(filePath);
@@ -104,6 +112,8 @@ export const readDefinitionAvatar = async (folder: string): Promise<DefinitionAv
     content = {
       size: stat.size,
       mtimeMs: stat.mtimeMs,
+      ctimeMs: stat.ctimeMs,
+      ino: stat.ino,
       hash: bytesAreOfType(mimeType, bytes) ? createHash("sha256").update(bytes).digest("hex") : null,
     };
     contentByPath.set(filePath, content);

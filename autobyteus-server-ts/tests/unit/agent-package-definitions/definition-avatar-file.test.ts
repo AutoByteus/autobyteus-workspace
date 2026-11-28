@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -76,18 +77,33 @@ describe("readDefinitionAvatar", () => {
     expect(second.status === "valid" && second.avatar.hash).toBe(sha(other));
   });
 
-  it("does not read an unchanged picture again: the hash is kept while its size and time are unchanged (N-3)", async () => {
+  it("does not read an untouched picture again (N-3)", async () => {
+    write("avatar.png", PNG);
+    const open = vi.spyOn(fsPromises, "open");
+    const first = await readDefinitionAvatar(folder);
+    expect(open).toHaveBeenCalledTimes(1);
+    const second = await readDefinitionAvatar(folder);
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(second).toEqual(first);
+  });
+
+  it("reads a replaced picture again, even of the same size with the same whole-second time (N-3, CR-001)", async () => {
     write("avatar.png", PNG);
     const filePath = path.join(folder, "avatar.png");
-    const time = 1_700_000_000; // whole seconds: the same time again, exactly
+    const time = 1_700_000_000; // whole seconds, as tar and other time-preserving tools keep them
     fs.utimesSync(filePath, time, time);
     const first = await readDefinitionAvatar(folder);
-    // The same size and time, other bytes: the kept hash shows the file was not read again.
-    const same = Buffer.from(PNG); same[PNG.length - 1] ^= 0xff;
-    fs.writeFileSync(filePath, same);
+    // An update writes a new file and renames it over the old one, then the tool restores the old time.
+    const replacement = Buffer.from(PNG); replacement[PNG.length - 1] ^= 0xff;
+    const next = path.join(folder, "next.tmp");
+    fs.writeFileSync(next, replacement);
+    fs.renameSync(next, filePath);
     fs.utimesSync(filePath, time, time);
+    expect(fs.statSync(filePath).size).toBe(PNG.length);
+    expect(fs.statSync(filePath).mtimeMs).toBe(time * 1000);
     const second = await readDefinitionAvatar(folder);
-    expect(second).toEqual(first);
+    expect(second.status === "valid" && second.avatar.hash).toBe(sha(replacement));
+    expect(second.status === "valid" && first.status === "valid" && second.avatar.version).not.toBe(first.status === "valid" && first.avatar.version);
   });
 });
 
