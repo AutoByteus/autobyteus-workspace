@@ -1,0 +1,21 @@
+[2026-11-28T16:32:32.236Z] A-001 start: Imported packages: each definition's avatarUrl is its package picture; the route sends its bytes; a broken picture is ignored and logged
+[2026-11-28T16:32:32.309Z] A-001 Pass
+[2026-11-28T16:32:32.310Z] A-002 start: A replaced picture: the watcher (agent) and a package reload (team) give a new version and the new bytes
+[2026-11-28T16:32:32.343Z] A-002 Pass
+[2026-11-28T16:32:32.343Z] A-003 start: The user's own picture wins; the package's address saved as the user's clears it; null clears
+[2026-11-28T16:32:32.393Z] A-003 Pass
+[2026-11-28T16:32:50.114Z] D-001 start: Desktop (nuxt dev, 1440×900): every surface shows the definitions' pictures in their slots; 20 copies, one picture
+[2026-11-28T16:33:23.079Z] D-001 Pass
+[2026-11-28T16:33:23.080Z] P-001 start: Phone (390×844): 20 rows of one team, one picture fetch per address, credential in the Authorization header only
+[2026-11-28T16:33:30.670Z] P-001 Pass
+[2026-11-28T16:33:30.670Z] D-002 start: Desktop agent editor (AC-003, AC-006): upload then save shows the user's picture; saving another field keeps it; Remove then save shows the package's again
+[2026-11-28T16:33:47.011Z] D-002 Pass
+[2026-11-28T16:33:47.011Z] D-003 start: Desktop team editor (AC-003, AC-006, CRR-001 C-2): upload then save; saving another field keeps the user's picture; Remove then save shows the package's again
+[2026-11-28T16:34:03.261Z] D-003 Pass
+[2026-11-28T16:34:03.262Z] P-002 start: Phone (CRR-001 C-3, held): the first fetch of a picture fails once; its rows show the fallback; whether they recover without a reload; after a reload, the picture
+[2026-11-28T16:34:21.503Z] P-002 Pass
+[2026-11-28T16:34:21.503Z] P-003 start: Phone (CRR-001 C-3, held): the first read of the agents' pictures fails once; the rows show the fallback; whether a definition change or only a reload brings them back
+[2026-11-28T16:34:40.058Z] P-003 Pass
+[2026-11-28T16:34:40.059Z] E-001 start: The installed file:// window (isolated instance on a copy of this data root): pictures load from the node
+[2026-11-28T16:35:08.505Z] E-001 Pass
+definition-avatars probe: 10 passed, 0 failed

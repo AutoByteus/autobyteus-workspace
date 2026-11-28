@@ -1,0 +1,6 @@
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 843ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8703ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 5526ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 6467ms
+ Test Files  4 passed (4)
+      Tests  16 passed (16)

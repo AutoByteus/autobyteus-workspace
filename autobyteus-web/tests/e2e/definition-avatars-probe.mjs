@@ -25,6 +25,14 @@
 //   P-001 AC-004, AC-005  Phone (390×844): the run list with the hub's twenty copies (one team definition) and six runs
 //                  of the agent: one fetch per picture address however many rows show it, with the credential in the
 //                  Authorization header and nowhere in the address.
+//   D-002 AC-003, AC-006  The desktop agent editor (autobyteus-669 API/E2E): upload a picture and save (the user's, shown);
+//                  reopen and save another field only (the user's picture stays: input `avatarUrl` null now clears);
+//                  Remove and save (the package's picture again, captioned, no Remove).
+//   D-003 AC-003, AC-006  The same in the desktop team editor (Crew), from the package's captioned preview first.
+//   P-002 C-3 (held)  The phone: the first fetch of one picture fails; its rows show the fallback; recorded whether they
+//                  recover without a reload (the design remembers a failure for the session); after a reload, the picture.
+//   P-003 C-3 (held)  The phone: the first read of the agents' pictures (GetAgentDefinitionAvatars) fails; the rows show
+//                  the fallback; recorded whether they recover by themselves or after a definition change; after a reload, the picture.
 //   Optional --installed-app <AutoByteus.app>: E-001 AC-004  the installed `file://` window on a copy of this data root
 //                  (`pnpm isolated-app start --app … --data-root …`): pictures load from the node, not `file:///rest/…`.
 //
@@ -518,6 +526,205 @@ const main = async () => {
     await context.close();
     return { rows: rows.length, pictureRows: pictureRows.length, copyRows: copyRows.length, distinctObjectUrls: new Set(pictureRows.map((r) => r.src)).size,
       fetchesPerAddress: Object.fromEntries(byAddress), fetches };
+  });
+
+  await runCase('D-002', 'Desktop agent editor (AC-003, AC-006): upload then save shows the user\'s picture; saving another field keeps it; Remove then save shows the package\'s again', async () => {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+    await attachToBrowserContext(context);
+    const page = await context.newPage(); watchPage(page, 'desktop'); casePage = page;
+    const id = ids['Story Writer'];
+    const packageAddress = `/rest/definition-avatars/agent/${encodeURIComponent(id)}`;
+    const stored = async () => (await gql('query{agentDefinitions{id description avatarUrl userAvatarUrl personalSettings}}')).agentDefinitions.find((a) => a.id === id);
+    const preview = () => page.locator('[data-test="agent-avatar-preview"]').evaluate((n) => ({ state: n.getAttribute('data-avatar-state'), src: n.querySelector('img')?.getAttribute('src') ?? null }));
+    const openEditor = async () => {
+      await page.goto(`${stack.frontendUrl}/agents?view=edit&id=${encodeURIComponent(id)}`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      await nuxtReady(page);
+      await page.locator('[data-test="agent-avatar-preview"]').waitFor({ timeout: 60_000 });
+      await page.waitForTimeout(1_500);
+    };
+    const save = async () => {
+      await page.locator('button[type="submit"]').last().click();
+      await page.waitForTimeout(2_500);
+    };
+    const before = await stored();
+    // 1. Upload a picture (a synthetic one), then save.
+    await openEditor();
+    const uploadFile = path.join(root, 'upload-user-picture.png');
+    await fsp.writeFile(uploadFile, syntheticPng('U', COLOURS.pink));
+    await page.locator('input[type="file"][accept*="image"]').setInputFiles(uploadFile);
+    await waitFor('the upload previewed', async () => ((await preview()).src ?? '').includes('/rest/files/'), 30_000);
+    await save();
+    const afterUpload = await stored();
+    // 2. Reopen; change only the description; save: the user's picture stays.
+    await openEditor();
+    const caption1 = await page.locator('[data-test="agent-avatar-from-package"]').count();
+    const remove1 = await page.locator('[data-test="agent-avatar-remove"]').count();
+    await page.locator('#description').fill(`${before.description} (edited)`);
+    await save();
+    const afterOtherField = await stored();
+    // 3. Reopen; Remove; save: the package's picture is the display one again, captioned, no Remove.
+    await openEditor();
+    await page.locator('[data-test="agent-avatar-remove"]').click();
+    await save();
+    const afterRemove = await stored();
+    await openEditor();
+    const refill = { preview: await preview(), caption: await page.locator('[data-test="agent-avatar-from-package"]').count(), remove: await page.locator('[data-test="agent-avatar-remove"]').count() };
+    await shot(page, 'desktop-1440x900-agent-editor-after-remove');
+    // Put the description back for the later cases.
+    await gql('mutation($i:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$i){id}}', { i: { id, description: before.description } }).catch(() => undefined);
+    await context.close();
+    const details = { before: { avatarUrl: before.avatarUrl, userAvatarUrl: before.userAvatarUrl },
+      afterUpload: { avatarUrl: afterUpload.avatarUrl, userAvatarUrl: afterUpload.userAvatarUrl, personal: afterUpload.personalSettings },
+      reopenedWithUserPicture: { caption: caption1, remove: remove1 },
+      afterOtherField: { description: afterOtherField.description, avatarUrl: afterOtherField.avatarUrl, userAvatarUrl: afterOtherField.userAvatarUrl },
+      afterRemove: { avatarUrl: afterRemove.avatarUrl, userAvatarUrl: afterRemove.userAvatarUrl, personal: afterRemove.personalSettings }, refill };
+    assert((afterUpload.userAvatarUrl ?? '').includes('/rest/files/') && afterUpload.avatarUrl === afterUpload.userAvatarUrl, 'the upload is the user\'s picture and the one shown', details);
+    assert(caption1 === 0 && remove1 === 1, 'with the user\'s picture: no package caption, Remove offered', details);
+    assert(afterOtherField.description.endsWith('(edited)') && afterOtherField.userAvatarUrl === afterUpload.userAvatarUrl, 'saving another field keeps the user\'s picture', details);
+    assert(afterRemove.userAvatarUrl === null && (afterRemove.avatarUrl ?? '').startsWith(packageAddress), 'Remove then save: the package\'s picture shows again', details);
+    assert(refill.preview.state === 'picture' && (refill.preview.src ?? '').includes(packageAddress) && refill.caption === 1 && refill.remove === 0, 'the editor previews the package\'s picture, captioned, no Remove', details);
+    return details;
+  });
+
+  await runCase('D-003', 'Desktop team editor (AC-003, AC-006, CRR-001 C-2): upload then save; saving another field keeps the user\'s picture; Remove then save shows the package\'s again', async () => {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+    await attachToBrowserContext(context);
+    const page = await context.newPage(); watchPage(page, 'desktop'); casePage = page;
+    const id = ids['Crew'];
+    const packageAddress = `/rest/definition-avatars/agent_team/${encodeURIComponent(id)}`;
+    const stored = async () => (await gql('query{agentTeamDefinitions{id description avatarUrl userAvatarUrl}}')).agentTeamDefinitions.find((t) => t.id === id);
+    const preview = () => page.locator('[data-test="team-avatar-preview"]').evaluate((n) => ({ state: n.getAttribute('data-avatar-state'), src: n.querySelector('img')?.getAttribute('src') ?? null }));
+    const openEditor = async () => {
+      await page.goto(`${stack.frontendUrl}/agent-teams?view=team-edit&id=${encodeURIComponent(id)}`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      await nuxtReady(page);
+      await page.locator('[data-test="team-avatar-preview"]').waitFor({ timeout: 60_000 });
+      await page.waitForTimeout(1_500);
+    };
+    const save = async () => {
+      await page.locator('button[type="submit"]').last().click();
+      await page.waitForTimeout(2_500);
+    };
+    const before = await stored();
+    await openEditor();
+    const initial = { preview: await preview(), caption: await page.locator('[data-test="team-avatar-from-package"]').count(), remove: await page.locator('[data-test="team-avatar-remove"]').count() };
+    const uploadFile = path.join(root, 'upload-team-picture.png');
+    await fsp.writeFile(uploadFile, syntheticPng('L', COLOURS.red));
+    await page.locator('input[type="file"][accept*="image"]').setInputFiles(uploadFile);
+    await waitFor('the upload previewed', async () => ((await preview()).src ?? '').includes('/rest/files/'), 30_000);
+    await save();
+    const afterUpload = await stored();
+    await openEditor();
+    const reopened = { caption: await page.locator('[data-test="team-avatar-from-package"]').count(), remove: await page.locator('[data-test="team-avatar-remove"]').count() };
+    await page.locator('#team-description').fill(`${before.description} (edited)`);
+    await save();
+    const afterOtherField = await stored();
+    await openEditor();
+    await page.locator('[data-test="team-avatar-remove"]').click();
+    await save();
+    const afterRemove = await stored();
+    await openEditor();
+    const refill = { preview: await preview(), caption: await page.locator('[data-test="team-avatar-from-package"]').count(), remove: await page.locator('[data-test="team-avatar-remove"]').count() };
+    await shot(page, 'desktop-1440x900-team-editor-after-remove');
+    await gql('mutation($i:UpdateAgentTeamDefinitionInput!){updateAgentTeamDefinition(input:$i){id}}', { i: { id, description: before.description } }).catch(() => undefined);
+    await context.close();
+    const details = { before: { avatarUrl: before.avatarUrl, userAvatarUrl: before.userAvatarUrl }, initial,
+      afterUpload: { avatarUrl: afterUpload.avatarUrl, userAvatarUrl: afterUpload.userAvatarUrl }, reopened,
+      afterOtherField: { description: afterOtherField.description, avatarUrl: afterOtherField.avatarUrl, userAvatarUrl: afterOtherField.userAvatarUrl },
+      afterRemove: { avatarUrl: afterRemove.avatarUrl, userAvatarUrl: afterRemove.userAvatarUrl }, refill };
+    assert(initial.preview.state === 'picture' && (initial.preview.src ?? '').includes(packageAddress) && initial.caption === 1 && initial.remove === 0, 'before: the package\'s picture previewed, captioned, no Remove', details);
+    assert((afterUpload.userAvatarUrl ?? '').includes('/rest/files/') && afterUpload.avatarUrl === afterUpload.userAvatarUrl, 'the upload is the user\'s picture and the one shown', details);
+    assert(reopened.caption === 0 && reopened.remove === 1, 'with the user\'s picture: no package caption, Remove offered', details);
+    assert(afterOtherField.description.endsWith('(edited)') && afterOtherField.userAvatarUrl === afterUpload.userAvatarUrl, 'saving another field keeps the user\'s picture', details);
+    assert(afterRemove.userAvatarUrl === null && (afterRemove.avatarUrl ?? '').startsWith(packageAddress), 'Remove then save: the package\'s picture shows again', details);
+    assert(refill.preview.state === 'picture' && (refill.preview.src ?? '').includes(packageAddress) && refill.caption === 1 && refill.remove === 0, 'the editor previews the package\'s picture again', details);
+    return details;
+  });
+
+  await runCase('P-002', 'Phone (CRR-001 C-3, held): the first fetch of a picture fails once; its rows show the fallback; whether they recover without a reload; after a reload, the picture', async () => {
+    const phoneOrigin = `http://${PHONE_HOST}:${stack.port}`;
+    const pairing = await rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: phoneOrigin, serverName: 'Avatar Probe Node', trustedPrivateHttpAcknowledged: true });
+    assert(pairing.status === 201 && pairing.body.mobileUrl, 'pairing session', pairing.status);
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' });
+    const page = await context.newPage(); watchPage(page, 'phone-c3'); casePage = page;
+    await page.goto(pairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 60_000 });
+    await page.locator('[data-testid="mobile-pair-button"]').waitFor({ state: 'detached', timeout: 60_000 });
+    const hubPath = `/rest/definition-avatars/agent/${encodeURIComponent(ids['Hub Manager'])}`;
+    let failed = 0;
+    await page.route((u) => u.pathname === hubPath, async (route) => { if (failed === 0) { failed += 1; return route.abort('failed'); } return route.fallback(); });
+    await page.goto(`${phoneOrigin}/mobile/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+    const hubRow = () => page.evaluate((name) => {
+      const row = [...document.querySelectorAll('[data-testid^="mobile-run-row-"]')].find((r) => r.querySelector('[data-testid="mobile-run-name"]')?.textContent.trim() === name);
+      const avatar = row?.querySelector('[data-test="definition-avatar"]');
+      return row ? { state: avatar?.getAttribute('data-avatar-state') ?? null, drawn: Boolean(avatar?.querySelector('img')?.naturalWidth) } : null;
+    }, 'Hub Manager');
+    await waitFor('the hub row', async () => Boolean(await hubRow()), 60_000);
+    await waitFor('the failed fetch', async () => failed >= 1, 30_000);
+    await page.waitForTimeout(2_000);
+    const afterFailure = await hubRow();
+    await page.waitForTimeout(15_000);
+    const after15s = await hubRow();
+    await shot(page, 'phone-390x844-c3-after-failure');
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+    let afterReload = null;
+    await waitFor('the hub row\'s picture after a reload', async () => (afterReload = await hubRow())?.state === 'picture' && afterReload.drawn, 30_000).catch(() => undefined);
+    await context.close();
+    const details = { failedFetches: failed, afterFailure, after15s, afterReload, recoveredWithoutReload: after15s?.state === 'picture' };
+    assert(afterFailure?.state === 'fallback', 'a failed picture fetch shows the fallback (initials), nothing broken', details);
+    assert(afterReload?.state === 'picture' && afterReload.drawn, 'after a reload the picture shows', details);
+    return details;
+  });
+
+  await runCase('P-003', 'Phone (CRR-001 C-3, held): the first read of the agents\' pictures fails once; the rows show the fallback; whether a definition change or only a reload brings them back', async () => {
+    const phoneOrigin = `http://${PHONE_HOST}:${stack.port}`;
+    const pairing = await rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: phoneOrigin, serverName: 'Avatar Probe Node', trustedPrivateHttpAcknowledged: true });
+    assert(pairing.status === 201 && pairing.body.mobileUrl, 'pairing session', pairing.status);
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' });
+    const page = await context.newPage(); watchPage(page, 'phone-c3'); casePage = page;
+    await page.goto(pairing.body.mobileUrl, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 60_000 });
+    await page.locator('[data-testid="mobile-pair-button"]').waitFor({ state: 'detached', timeout: 60_000 });
+    let failed = 0; let reads = 0;
+    await page.route((u) => u.pathname.endsWith('/graphql'), async (route) => {
+      if (!(route.request().postData() ?? '').includes('GetAgentDefinitionAvatars')) return route.fallback();
+      reads += 1;
+      if (failed === 0) { failed += 1; return route.abort('failed'); }
+      return route.fallback();
+    });
+    await page.goto(`${phoneOrigin}/mobile/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+    const hubRow = () => page.evaluate((name) => {
+      const row = [...document.querySelectorAll('[data-testid^="mobile-run-row-"]')].find((r) => r.querySelector('[data-testid="mobile-run-name"]')?.textContent.trim() === name);
+      const avatar = row?.querySelector('[data-test="definition-avatar"]');
+      return row ? { state: avatar?.getAttribute('data-avatar-state') ?? null, drawn: Boolean(avatar?.querySelector('img')?.naturalWidth) } : null;
+    }, 'Hub Manager');
+    await waitFor('the hub row', async () => Boolean(await hubRow()), 60_000);
+    await waitFor('the failed read', async () => failed >= 1, 30_000);
+    await page.waitForTimeout(2_000);
+    const afterFailure = await hubRow();
+    const teamPictureAfterFailure = await page.evaluate(() => [...document.querySelectorAll('[data-test="definition-avatar"][data-avatar-kind="team"]')].some((n) => n.getAttribute('data-avatar-state') === 'picture'));
+    await page.waitForTimeout(15_000);
+    const after15s = await hubRow();
+    await shot(page, 'phone-390x844-c3-definitions-read-failed');
+    // A definition change (the change feed): does it bring the agents' pictures back?
+    const hub = (await gql('query{agentDefinitions{id description}}')).agentDefinitions.find((a) => a.id === ids['Hub Manager']);
+    await gql('mutation($i:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$i){id}}', { i: { id: hub.id, description: `${hub.description} (P-003)` } });
+    let afterChange = null;
+    await waitFor('the hub row\'s picture after a definition change', async () => (afterChange = await hubRow())?.state === 'picture', 20_000).catch(() => undefined);
+    const readsAfterChange = reads;
+    await gql('mutation($i:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$i){id}}', { i: { id: hub.id, description: hub.description } }).catch(() => undefined);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
+    let afterReload = null;
+    await waitFor('the hub row\'s picture after a reload', async () => (afterReload = await hubRow())?.state === 'picture' && afterReload.drawn, 30_000).catch(() => undefined);
+    await context.close();
+    const details = { failedReads: failed, reads, readsAfterChange, afterFailure, teamPictureAfterFailure, after15s, recoveredWithoutChange: after15s?.state === 'picture',
+      afterChange, recoveredByChange: afterChange?.state === 'picture', afterReload };
+    assert(afterFailure?.state === 'fallback', 'a failed read shows the fallback (initials), nothing broken', details);
+    assert(afterReload?.state === 'picture' && afterReload.drawn, 'after a reload the picture shows', details);
+    return details;
   });
 
   if (installedApp) {

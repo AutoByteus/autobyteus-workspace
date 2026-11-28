@@ -197,6 +197,9 @@
 //                  answered. MSP-120 AC-002: with the recovery's reads refused, a message meanwhile comes back with text (a),
 //                  the fifth failure shows the notice, and the recovery succeeds once the reads pass:
 //                  `mobile-team-stream-recovery-cases.mjs` (after 540's cases, before MSP-13).
+//   MSP-121 autobyteus-669 REQ-004, DEC-006  A peer node's run shows the fallback avatar, though this node has a picture
+//                  for a definition of the same ID: the PTM's row of beta's Publisher run, on the phone and the desktop
+//                  Workspaces tree: `mobile-definition-avatar-cases.mjs` (after 541's cases, before MSP-13).
 //   MSP-67…72 autobyteus-522  Settings for every run the phone opens, decided by the run that holds the opened agent: a
 //                  PTM's task team member (the founder's case) and task agent, a Team lead's task agent (its own settings, not
 //                  the lead's), an Org's task agent and task team member (each stop stops that delegated run, not the Org),
@@ -254,6 +257,7 @@ import { runEveryRunSettingsCases } from './mobile-every-run-settings-cases.mjs'
 import { runStopGenerationCases } from './mobile-stop-generation-cases.mjs';
 import { runSendDeliveryCases } from './mobile-send-delivery-cases.mjs';
 import { runTeamStreamRecoveryCases } from './mobile-team-stream-recovery-cases.mjs';
+import { runDefinitionAvatarPeerCases } from './mobile-definition-avatar-cases.mjs';
 import { createStopWire } from './fixtures/stop-generation-wire.mjs';
 
 const require = createRequire(import.meta.url);
@@ -2645,6 +2649,8 @@ const runCases = async () => {
   await runSendDeliveryCases({ runCase, page, stack, alpha, peer: PEER, sel, toList, openRow, ensureUnfolded, rowsOf, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
   // autobyteus-541: a Team stream recovers by itself on the phone (`mobile-team-stream-recovery-cases.mjs`), before MSP-13.
   await runTeamStreamRecoveryCases({ runCase, page, stack, alpha, sel, toList, openRow, runScreen, shot, waitFor, sleep, assert, selected, phoneWire });
+  // autobyteus-669: a peer node's run shows the fallback avatar on the phone and the desktop (`mobile-definition-avatar-cases.mjs`), before MSP-13.
+  await runDefinitionAvatarPeerCases({ runCase, page, stack, alpha, beta, toList, openRow, rowsOf, shot, waitFor, sleep, assert, selected, browser, desktopRunsView, outputDir });
 
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next

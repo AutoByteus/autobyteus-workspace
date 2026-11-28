@@ -1,0 +1,58 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/__tests__/mobileBuildChecks.spec.ts > the demo coverage of the web source, without a build (autobyteus-584) > every operation the web source defines is answered by the demo or listed with its reason, and the list holds nothing else
+AssertionError: expected { …(3) } to deeply equal { unanswered: [], stale: [], …(1) }
+
+- Expected
++ Received
+
+  {
+    "stale": [],
+-   "unanswered": [],
++   "unanswered": [
++     "SetUsageLimitSwitchEnabled",
++   ],
+    "unexplained": [],
+  }
+
+ ❯ scripts/__tests__/mobileBuildChecks.spec.ts:89:107
+     87|     const coverage = demoOperationCoverage(sourceOperations(webRoot), …
+     88|     // The names, so a failure says what to add to or remove from demo…
+     89|     expect({ unanswered: coverage.unanswered, stale: coverage.stale, u…
+       |                                                                                                           ^
+     90|     expect(coverage.compiled).toBeGreaterThan(200);
+     91|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/app-font-size-fixed-px-audit.integration.test.ts > app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "components/settings/nodes/NodeRow.vue -> Tailwind arbitrary text-[Npx] @ line 39: class=\"flex-shrink-0 rounded bg-amber-50 px-1.5 text-[11px] font-medium leading-5 text-amber-700 ring-1 ring-inset ring-amber-200\"",
++ ]
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts:124:22
+    122|     );
+    123| 
+    124|     expect(failures).toEqual([]);
+       |                      ^
+    125|   });
+    126| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 819 passed (821)
+      Tests  2 failed | 6399 passed (6401)
+   Start at  16:57:38
+   Duration  262.51s (transform 28.28s, setup 1736.15s, collect 164.78s, tests 92.00s, environment 141.46s, prepare 86.44s)
+
+ Test Files  2 failed | 819 passed (821)
+      Tests  2 failed | 6399 passed (6401)
+   Start at  16:57:38
+   Duration  262.51s (transform 28.28s, setup 1736.15s, collect 164.78s, tests 92.00s, environment 141.46s, prepare 86.44s)

@@ -1,0 +1,90 @@
+⎯⎯⎯⎯⎯⎯ Failed Suites 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)
+Error: Brief Studio importable package missing (~/autobyteus_org/autobyteus-worktrees/agent-avatars-669/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ❯ Module.assertBriefStudioPackageBuilt tests/e2e/helpers/brief-studio-package.ts:13:11
+     11| export const assertBriefStudioPackageBuilt = (): void => {
+     12|   if (!fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "…
+     13|     throw new Error(
+       |           ^
+     14|       `Brief Studio importable package missing (${BRIEF_STUDIO_PACKAGE…
+     15|     );
+ ❯ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts:65:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/e2e/runtime/application-import-codex-launch.e2e.test.ts > Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)
+Error: Brief Studio importable package missing (~/autobyteus_org/autobyteus-worktrees/agent-avatars-669/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ❯ Module.assertBriefStudioPackageBuilt tests/e2e/helpers/brief-studio-package.ts:13:11
+     11| export const assertBriefStudioPackageBuilt = (): void => {
+     12|   if (!fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "…
+     13|     throw new Error(
+       |           ^
+     14|       `Brief Studio importable package missing (${BRIEF_STUDIO_PACKAGE…
+     15|     );
+ ❯ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts:85:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs)
+Error: Brief Studio importable package missing (~/autobyteus_org/autobyteus-worktrees/agent-avatars-669/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ❯ Module.assertBriefStudioPackageBuilt tests/e2e/helpers/brief-studio-package.ts:13:11
+     11| export const assertBriefStudioPackageBuilt = (): void => {
+     12|   if (!fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "…
+     13|     throw new Error(
+       |           ^
+     14|       `Brief Studio importable package missing (${BRIEF_STUDIO_PACKAGE…
+     15|     );
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:112:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-definitions/definition-avatars-github.e2e.test.ts > Package pictures through the real GitHub import and update (fake GitHub) at the HTTP boundary > AV-02 (AC-001…003, AC-006): the user's picture wins across an update; the update replaces, removes and ignores pictures; reset shows the package's
+AssertionError: expected '/rest/definition-avatars/agent/writer…' not to be '/rest/definition-avatars/agent/writer…' // Object.is equality
+ ❯ tests/e2e/agent-definitions/definition-avatars-github.e2e.test.ts:218:34
+    216|     expect(writer.userAvatarUrl).toBeNull();
+    217|     expect(writer.avatarUrl).toMatch(ADDRESS("agent", "writer"));
+    218|     expect(writer.avatarUrl).not.toBe(firstAddress.writer);
+       |                                  ^
+    219|     const served = await route(writer.avatarUrl);
+    220|     expect(served.status).toBe(200);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+AssertionError: expected 'printf "__AB_TERMINAL_HOME_OK__:%s\n"…' to contain '__AB_TERMINAL_HOME_OK__:/tmp/api669/h…'
+
+- Expected
++ Received
+
+- __AB_TERMINAL_HOME_OK__:/tmp/api669/home-btr8
++ printf "__AB_TERMINAL_HOME_OK__:%s\n" "$PWD"
++ 
++ The default interactive shell is now zsh.
++ To update your account to use zsh, please run `chsh -s /bin/zsh`.
++ For more details, please visit https://support.apple.com/kb/HT208050.
++ [?1034h/private/tmp/api669/home-btr8 $ printf "__AB_TER
+
+ ❯ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts:237:20
+    235|     const output = await outputPromise;
+    236|
+    237|     expect(output).toContain(`__AB_TERMINAL_HOME_OK__:${expectedCwd}`);
+       |                    ^
+    238|
+    239|     socket.close();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  5 failed | 124 passed | 178 skipped (307)
+      Tests  2 failed | 563 passed | 855 skipped (1420)
+   Start at  17:03:16
+   Duration  1126.00s (transform 14.98s, setup 5.91s, import 337.74s, tests 757.50s, environment 15ms)
+
+~/autobyteus_org/autobyteus-worktrees/agent-avatars-669/autobyteus-server-ts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  autobyteus-server-ts@0.1.1 test: `vitest --run tests/e2e`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,43 @@
+{
+ "startedAt": "2026-11-28T16:37:09.809Z",
+ "finishedAt": "2026-11-28T16:38:24.093Z",
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-121": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ },
+ "browserErrors": [],
+ "cases": {
+  "MSP-121": {
+   "result": "Pass",
+   "seconds": 18.7,
+   "peerDefinitionId": "publisher",
+   "pickedUpBy": "the folder watcher",
+   "alphaPicture": "/rest/definition-avatars/agent/publisher?v=9d37f1c22167",
+   "phone": {
+    "key": "agent:project_task_manager_6454a41caaf1488cb2f45ca96de34d1e/peer_agent:publisher_a6d71bca74d84882ac73b69c043b5e53",
+    "state": "fallback",
+    "kind": "agent",
+    "src": null
+   },
+   "desktop": {
+    "state": "fallback",
+    "kind": "agent",
+    "src": null,
+    "text": [
+     "beta-node",
+     "P",
+     "publisher"
+    ],
+    "matchedBy": "run id"
+   }
+  }
+ }
+}
