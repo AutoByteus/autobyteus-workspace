@@ -11,7 +11,8 @@
   - `30132f3351`: the watcher allow-list;
   - `ebba269dbc`: web;
   - `5a2ff965e6`: docs;
-  - then the probe and ticket-files commit.
+  - `bc14dfc507`: the probe and ticket files;
+  - `8a185cc850`: a test's temp-file cleanup.
 - Deviations and choices: see `implementation-handoff.md` "Deviations And Implementation Choices":
   - the route serves `packageAvatar.folder`;
   - the watcher allow-list;

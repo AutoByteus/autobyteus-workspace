@@ -33,7 +33,8 @@ Commits on `codex/agent-avatars-669`:
 | `30132f3351` | server: the watcher watches `avatar.*` (S-1, found while writing the docs; see Deviations) |
 | `ebba269dbc` | web: W-1…W-6, the phone demo answers, spec updates |
 | `5a2ff965e6` | docs (REQ-008, AC-007) |
-| the next commit | the probe script, this handoff, the revision record and the evidence |
+| `bc14dfc507` | the probe script, this handoff, the revision record and the evidence |
+| `8a185cc850` | test: the symlink case keeps its link target inside its temp folder (no file left in the system temp folder) |
 
 Revision: IR-001 in `implementation-revision-record.md`.
 
