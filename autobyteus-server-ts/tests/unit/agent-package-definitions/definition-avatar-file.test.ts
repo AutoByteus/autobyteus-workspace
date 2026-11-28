@@ -48,7 +48,9 @@ describe("readDefinitionAvatar", () => {
     ["two candidates", () => { write("avatar.png", PNG); write("avatar.webp", WEBP); }, /more than one picture \(avatar\.png, avatar\.webp\)/],
     ["a folder named avatar.png", () => fs.mkdirSync(path.join(folder, "avatar.png")), /not a regular file/],
     ["a symbolic link (N-1)", () => {
-      const elsewhere = path.join(folder, "..", `${path.basename(folder)}-elsewhere.png`);
+      // The link's target is a valid picture in a folder of its own (inside the test's folder, removed with it).
+      const elsewhere = path.join(folder, "elsewhere", "picture.png");
+      fs.mkdirSync(path.dirname(elsewhere));
       fs.writeFileSync(elsewhere, PNG);
       fs.symlinkSync(elsewhere, path.join(folder, "avatar.png"));
     }, /symbolic link/],
