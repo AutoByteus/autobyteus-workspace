@@ -1,0 +1,299 @@
+{
+  "probe": "definition-avatars",
+  "head": "5a2ff965e6",
+  "startedAt": "2026-11-28T15:34:16.005Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "A-001": {
+      "result": "Pass",
+      "description": "Imported packages: each definition's avatarUrl is its package picture; the route sends its bytes; a broken picture is ignored and logged",
+      "ms": 73,
+      "details": {
+        "checked": [
+          {
+            "name": "Story Writer",
+            "id": "writer",
+            "avatarUrl": "/rest/definition-avatars/agent/writer?v=6f0596b0176f",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 255
+          },
+          {
+            "name": "Hub Manager",
+            "id": "hub",
+            "avatarUrl": "/rest/definition-avatars/agent/hub?v=6978db30d5b2",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 253
+          },
+          {
+            "name": "Crew Lead",
+            "id": "team-local-agent:crew:lead",
+            "avatarUrl": "/rest/definition-avatars/agent/team-local-agent%3Acrew%3Alead?v=4a5cd84ca8fa",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 243
+          },
+          {
+            "name": "Clone Reviewer",
+            "id": "reviewer",
+            "avatarUrl": "/rest/definition-avatars/agent/reviewer?v=6d84b4e14f70",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 250
+          },
+          {
+            "name": "Crew",
+            "id": "crew",
+            "avatarUrl": "/rest/definition-avatars/agent_team/crew?v=c5ffc4f8172a",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 246
+          },
+          {
+            "name": "Story Studio",
+            "id": "studio",
+            "avatarUrl": "/rest/definition-avatars/agent_org/studio?v=ae394efbb575",
+            "status": 200,
+            "type": "image/png",
+            "bytes": 244
+          }
+        ],
+        "broken": {
+          "name": "Broken Picture",
+          "avatarUrl": null
+        },
+        "log": [
+          "DEFINITION_AVATAR_IGNORED: the picture in <probe-root>/packages/avatar-studio-pack/agents/broken is ignored: avatar.png is not a PNG picture."
+        ]
+      }
+    },
+    "A-002": {
+      "result": "Pass",
+      "description": "A replaced picture: the watcher (agent) and a package reload (team) give a new version and the new bytes",
+      "ms": 37,
+      "details": {
+        "agent": {
+          "before": "/rest/definition-avatars/agent/writer?v=6f0596b0176f",
+          "after": "/rest/definition-avatars/agent/writer?v=11d8d7e4c988",
+          "oldAddressStatus": 200,
+          "oldAddressSendsCurrentFile": true
+        },
+        "team": {
+          "before": "/rest/definition-avatars/agent_team/crew?v=c5ffc4f8172a",
+          "after": "/rest/definition-avatars/agent_team/crew?v=d62c83fc0017",
+          "via": "reloadAgentPackage"
+        }
+      }
+    },
+    "A-003": {
+      "result": "Pass",
+      "description": "The user's own picture wins; the package's address saved as the user's clears it; null clears",
+      "ms": 46,
+      "details": {
+        "upload": "/rest/files/images/73856b21-442c-4ded-8f44-86a6d9b725a7.png",
+        "mine": {
+          "id": "reviewer",
+          "avatarUrl": "/rest/files/images/73856b21-442c-4ded-8f44-86a6d9b725a7.png",
+          "userAvatarUrl": "/rest/files/images/73856b21-442c-4ded-8f44-86a6d9b725a7.png",
+          "personalSettings": [
+            "AVATAR"
+          ]
+        },
+        "packageAddress": "/rest/definition-avatars/agent/reviewer?v=6d84b4e14f70",
+        "afterPinningPackageAddress": {
+          "id": "reviewer",
+          "avatarUrl": "/rest/definition-avatars/agent/reviewer?v=6d84b4e14f70",
+          "userAvatarUrl": null,
+          "personalSettings": []
+        },
+        "afterNull": {
+          "id": "reviewer",
+          "avatarUrl": "/rest/definition-avatars/agent/reviewer?v=6d84b4e14f70",
+          "userAvatarUrl": null,
+          "personalSettings": []
+        }
+      }
+    },
+    "D-001": {
+      "result": "Pass",
+      "description": "Desktop (nuxt dev, 1440×900): every surface shows the definitions' pictures in their slots; 20 copies, one picture",
+      "ms": 32743,
+      "details": {
+        "summary": {
+          "agents-catalog": {
+            "pictures": 3,
+            "fallbacks": 2,
+            "sizes": [
+              "64x64"
+            ]
+          },
+          "teams-catalog": {
+            "pictures": 1,
+            "fallbacks": 0,
+            "sizes": [
+              "64x64"
+            ]
+          },
+          "orgs-catalog": {
+            "pictures": 1,
+            "fallbacks": 0,
+            "sizes": [
+              "64x64"
+            ]
+          },
+          "team-detail": {
+            "pictures": 1,
+            "fallbacks": 0,
+            "sizes": [
+              "64x64"
+            ]
+          },
+          "workspaces-tree": {
+            "pictures": 22,
+            "fallbacks": 0,
+            "sizes": [
+              "20x20",
+              "16x16"
+            ]
+          },
+          "agent-editor": {
+            "pictures": 0,
+            "fallbacks": 0,
+            "sizes": []
+          },
+          "conversation": {
+            "pictures": 4,
+            "fallbacks": 0,
+            "sizes": [
+              "20x20",
+              "32x32",
+              "36x36"
+            ]
+          },
+          "runs-view": {
+            "pictures": 27,
+            "fallbacks": 0,
+            "sizes": [
+              "20x20",
+              "16x16",
+              "32x32",
+              "36x36"
+            ]
+          }
+        },
+        "copies": {
+          "count": 20,
+          "distinctSources": [
+            "http://127.0.0.1:50058/rest/definition-avatars/agent_team/crew?v=d62c83fc0017"
+          ]
+        },
+        "editor": {
+          "caption": 1,
+          "remove": 0,
+          "preview": "picture"
+        }
+      }
+    },
+    "P-001": {
+      "result": "Pass",
+      "description": "Phone (390×844): 20 rows of one team, one picture fetch per address, credential in the Authorization header only",
+      "ms": 7572,
+      "details": {
+        "rows": 25,
+        "pictureRows": 25,
+        "copyRows": 20,
+        "distinctObjectUrls": 3,
+        "fetchesPerAddress": {
+          "/rest/definition-avatars/agent/hub?v=6978db30d5b2": 1,
+          "/rest/definition-avatars/agent/writer?v=11d8d7e4c988": 1,
+          "/rest/definition-avatars/agent_team/crew?v=d62c83fc0017": 1
+        },
+        "fetches": [
+          {
+            "path": "/rest/definition-avatars/agent/hub?v=6978db30d5b2",
+            "origin": "http://192.168.77.69:<port>",
+            "authorization": "Bearer <phone credential>"
+          },
+          {
+            "path": "/rest/definition-avatars/agent/writer?v=11d8d7e4c988",
+            "origin": "http://192.168.77.69:<port>",
+            "authorization": "Bearer <phone credential>"
+          },
+          {
+            "path": "/rest/definition-avatars/agent_team/crew?v=d62c83fc0017",
+            "origin": "http://192.168.77.69:<port>",
+            "authorization": "Bearer <phone credential>"
+          }
+        ]
+      }
+    },
+    "E-001": {
+      "result": "Pass",
+      "description": "The installed file:// window (isolated instance on a copy of this data root): pictures load from the node",
+      "ms": 28469,
+      "details": {
+        "pageUrl": "file://…",
+        "pictures": 26,
+        "sources": [
+          "http://127.0.0.1:<port>/rest/definition-avatars/agent/reviewer?v=6d84b4e14f70",
+          "http://127.0.0.1:<port>/rest/definition-avatars/agent/hub?v=6978db30d5b2",
+          "http://127.0.0.1:<port>/rest/definition-avatars/agent/writer?v=11d8d7e4c988",
+          "http://127.0.0.1:<port>/rest/definition-avatars/agent_team/crew?v=d62c83fc0017"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "installed": "stopped",
+    "frontend": "not-running",
+    "backend": "not-running",
+    "root": "removed"
+  },
+  "browserErrors": [
+    {
+      "page": "phone",
+      "line": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "page": "phone",
+      "line": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "page": "phone",
+      "line": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    }
+  ],
+  "data": {
+    "writerRuns": 6,
+    "hub": "hub_manager_39653a3e8f9f44088d658f9c15656c4d",
+    "copies": [
+      "crew_a00b1c1b091341e7b0b5d28306bce586",
+      "crew_537a90e1918c418889f3d833931884f4",
+      "crew_d2b7596ef8d1447f8e33660d1f8f22e2",
+      "crew_068e3d1361144391bc1111655e4c3af1",
+      "crew_413aaec3cfee451a89806e2ca7c287e7",
+      "crew_5fe34cd1ee8043a4b9b34f17d35c0ce2",
+      "crew_5af727e0fd9d4cbbab2676efb19f6f37",
+      "crew_1a2e72252a32470c8b12a2ffca449e87",
+      "crew_e6b12a58180b4fcf8aecb4a2a63c7882",
+      "crew_570f27effb90475aae600da49b159f19",
+      "crew_58b36e3979c34e1bb223468881361a3a",
+      "crew_4cee5bd0281e477e9d4b36d5ba8eea58",
+      "crew_2801ef7717524c68bb305bd958d52092",
+      "crew_03bf7b120a9f43f2aaa27c5bbde77ba1",
+      "crew_99a8eae1340c455fa872d6bed1dee9e9",
+      "crew_280a71c8d2204be4a381c8a1e7b09257",
+      "crew_59e12c2e55fc41738a7ba3dd5b54ed2e",
+      "crew_1a531174c44f463197bb186f4b4c55b9",
+      "crew_866f3dbbb35541b5acd4de59e7da92c3",
+      "crew_9c074e0f1da848c09bb244136ee51881"
+    ]
+  },
+  "installed": {
+    "instanceId": "iso-50358-27dd",
+    "controlEndpoint": "http://127.0.0.1:50358"
+  },
+  "finishedAt": "2026-11-28T15:35:44.849Z"
+}
