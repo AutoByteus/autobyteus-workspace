@@ -7,19 +7,23 @@ import type {
   KindFolderName,
   RegisteredPackageRoot,
 } from "../domain/agent-package-definition-types.js";
+import { DEFINITION_AVATAR_FILES } from "../domain/definition-avatar-file.js";
 
 /**
  * The agent package folder layout the watcher watches (allow-list). Everything else — skills, docs,
  * scripts, `.git`, dependency folders, other files and `_`-prefixed templates — is not watched.
  *
- *   agents/<a>/[agent.md | agent-config.json]
- *   agent-teams/<t>/[team.md | team-config.json | agents/<a>/[agent files]]
- *   agent-orgs/<o>/[org.md | org-config.json | agents/<a>/[agent files]
+ *   agents/<a>/[agent.md | agent-config.json | avatar.*]
+ *   agent-teams/<t>/[team.md | team-config.json | avatar.* | agents/<a>/[agent files]]
+ *   agent-orgs/<o>/[org.md | org-config.json | avatar.* | agents/<a>/[agent files]
  *                  | agent-teams/<t>/[team files | agents/<a>/[agent files]]]
+ *
+ * `avatar.*` is a definition's package picture (autobyteus-669 S-1): part of its definition, so a changed one reloads it.
  */
-const AGENT_FILES = new Set(["agent.md", "agent-config.json"]);
-const TEAM_FILES = new Set(["team.md", "team-config.json"]);
-const ORG_FILES = new Set(["org.md", "org-config.json"]);
+const PICTURE_FILES = Object.keys(DEFINITION_AVATAR_FILES);
+const AGENT_FILES = new Set(["agent.md", "agent-config.json", ...PICTURE_FILES]);
+const TEAM_FILES = new Set(["team.md", "team-config.json", ...PICTURE_FILES]);
+const ORG_FILES = new Set(["org.md", "org-config.json", ...PICTURE_FILES]);
 
 const KIND_OF_FOLDER: Readonly<Record<KindFolderName, AgentPackageDefinitionKind>> = {
   agents: "agent",

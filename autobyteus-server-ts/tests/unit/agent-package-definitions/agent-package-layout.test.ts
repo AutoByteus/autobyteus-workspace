@@ -65,6 +65,25 @@ describe("definition structure allow-list", () => {
     expect(isWatchedPackagePath(root, target)).toBe(false);
   });
 
+  // autobyteus-669 S-1: a definition's package picture is part of its definition, so a changed one reloads it.
+  it.each([
+    p("agents", "a", "avatar.png"),
+    p("agent-teams", "t", "avatar.jpg"),
+    p("agent-teams", "t", "agents", "a", "avatar.jpeg"),
+    p("agent-orgs", "o", "avatar.webp"),
+    p("agent-orgs", "o", "agent-teams", "t", "agents", "a", "avatar.png"),
+  ])("watches the package picture %s, and reloads its definition folder", (target) => {
+    expect(isWatchedPackagePath(root, target, false)).toBe(true);
+    expect(findDefinitionFolderForPath(root, target)).not.toBeNull();
+  });
+
+  it.each([p("agents", "a", "avatar.svg"), p("agents", "a", "avatar.gif"), p("agents", "a", "images", "avatar.png")])(
+    "does not watch %s (not a package picture)",
+    (target) => {
+      expect(isWatchedPackagePath(root, target)).toBe(false);
+    },
+  );
+
   it("uses the known path type: a file where a folder belongs is not watched", () => {
     expect(isWatchedPackagePath(root, p("agents", "readme.md"), false)).toBe(false);
     expect(isWatchedPackagePath(root, p("agents", "a", "agent.md"), true)).toBe(false);
