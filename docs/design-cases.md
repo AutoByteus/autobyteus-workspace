@@ -462,3 +462,20 @@ Principle 16 (one composition root, visible dependencies).
   - A recovery owner created at the composition root (a client plugin) watches it and drives the coordinator.
   - The callback is required, and publishing with no registered owner throws.
 - **Notice it by:** "a lazy import" or "a callback the store calls" used to break a cycle. Ask which side owns the decision, make the trigger data the owner watches, and make a missing owner fail loudly.
+
+### Case 34: A Field Given A Second Meaning Keeps Its Old Consumers (autobyteus-669, ARCH-REV-001 AR-001)
+
+Principle 11 (one owner per fact) and Principle 15 (one word, one meaning).
+
+- **The design said:** a definition's `avatarUrl` becomes the effective picture: the user's, else the package's, else none. The server computes it once, and every client shows it.
+- **What the code does:** the edit forms also read `avatarUrl` to decide whether there is a picture to remove, and save it back as the user's picture (`AgentDefinitionForm.vue`; the team and org forms alike). With the new meaning:
+  - the forms would offer Remove for a picture the user never set;
+  - `''` on Remove would be read either as a new "hide the package picture" or as nothing;
+  - a form opened before a package update would hold a stale `?v=` and save the package's address as the user's picture.
+- **The fix (SR-002):**
+  - a separate `userAvatarUrl`, the one owner of "is there a user picture", which the forms edit;
+  - `avatarUrl` is only for display;
+  - the server refuses `''` and any package-picture address as a user picture, through one helper that recognizes the route by path;
+  - walks for package and own definitions of every kind.
+- **Why it mattered:** the user's own picture, which the founder ranked first, could have been silently replaced by the package's, or become unremovable.
+- **Notice it by:** a design that widens what an existing field means. List every reader and writer of the field (here grep `avatarUrl`, `avatar_url`), mark which meaning each one needs, and give the old meaning its own field when any consumer still needs it.

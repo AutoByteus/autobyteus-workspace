@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (REQ-003 made precise after ARCH-REV-001; within the direction, user informed)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the founder (2026-11-26 and 2026-11-28: avatars so the product feels more human; the order is his).
 - Approved by: Solution Designer within the direction; user informed 2026-11-28.
 
@@ -32,7 +32,7 @@
 | --- | --- | --- |
 | REQ-001 | An agent, team or org package can carry its picture: one file `avatar.png`, `avatar.jpg`/`avatar.jpeg` or `avatar.webp` in the definition's folder, beside `agent.md` / `team.md` / the org's file. At most 1 MiB; its bytes must be of its type; square recommended, 256 px or more. It works the same for packages from GitHub and from a local folder, at import and at every package update | Task; DEC-001 |
 | REQ-002 | A missing file means no package picture. An invalid one (too large, not its type, more than one candidate, unreadable) is ignored: the node logs why once per read, and the fallback shows. Nothing fails to load because of a picture | Task; DEC-001 |
-| REQ-003 | The order: the user's picture (the personal setting; for the user's own definitions, their config's `avatarUrl`), then the package's picture, then the fallback. The fallback is initials for an agent, the team icon for a team and the org icon for an org, also when a picture fails to load. Reset removes the user's picture and the package's shows again | Founder's rule; DEC-002 |
+| REQ-003 | The order: the user's picture (the personal setting; for the user's own definitions, their config's `avatarUrl`), then the package's picture, then the fallback. The fallback is initials for an agent, the team icon for a team and the org icon for an org, also when a picture fails to load. Reset removes the user's picture and the package's shows again. Remove is offered only for the user's own picture, and it clears it; no save ever makes the package's picture the user's | Founder's rule; DEC-002 |
 | REQ-004 | The picture shows on desktop and phone wherever the agent or team is shown. Desktop: Runs view rows, Workspaces tree rows (the Project Task Manager, its delegated task agents and task agent teams, team members), the chat assistant row, the workspace headers, cards and details. Phone: the run list's rows at every depth. A peer node's run shows the fallback | Task; DEC-006 |
 | REQ-005 | Copies of one definition show one picture; the row's text tells them apart | Product team proposal; DEC-003 |
 | REQ-006 | The phone gets a picture with the node's credential in a header, never in the address. A node that may not read it (a peer) cannot. One picture is read once per address per page session, not once per row | Task (autobyteus-574's way); DEC-004 |
