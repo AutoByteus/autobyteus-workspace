@@ -93,8 +93,10 @@ Every definition, nested ones included, is applied independently:
   A team or org ID must be unique across packages. A duplicated team or org is
   unavailable to **every** reader: it is not launchable, not listed, and not
   offered by `list_available_agents` or `@`.
-- Changes are detected by a SHA-256 fingerprint of each definition's two files,
-  so in-app save echoes and unchanged rewrites announce nothing.
+- Changes are detected by a SHA-256 fingerprint of each definition's two files
+  and of its package picture, if any (autobyteus-669,
+  [Package Pictures](./agent_packages.md#package-pictures)), so in-app save
+  echoes and unchanged rewrites announce nothing.
 - Reads always return copies; callers cannot mutate a stored last working
   version.
 
@@ -109,16 +111,17 @@ registered package, GitHub-managed ones included. A structural allow-list limits
 watching to the package layout:
 
 ```
-agents/<a>/{agent.md,agent-config.json}
-agent-teams/<t>/{team.md,team-config.json}
+agents/<a>/{agent.md,agent-config.json,avatar.*}
+agent-teams/<t>/{team.md,team-config.json,avatar.*}
 agent-teams/<t>/agents/<a>/{agent files}
-agent-orgs/<o>/{org.md,org-config.json}
+agent-orgs/<o>/{org.md,org-config.json,avatar.*}
 agent-orgs/<o>/agents/<a>/{agent files}
 agent-orgs/<o>/agent-teams/<t>/{team files | agents/<a>/{agent files}}
 ```
 
-Skills, docs, scripts, `.git`, `node_modules`, other files and `_`-prefixed
-names are not watched. A skill edit is therefore never announced on this feed;
+`avatar.*` is a definition's package picture (`avatar.png`, `.jpg`, `.jpeg` or
+`.webp`). Skills, docs, scripts, `.git`, `node_modules`, other files and
+`_`-prefixed names are not watched. A skill edit is therefore never announced on this feed;
 runtime bootstrap reads skills from disk anyway (see [Skills](./skills.md)).
 Active runs that use a changed skill are told separately, by
 [Skill Update Notices](./skill_update_notices.md). That subsystem also listens

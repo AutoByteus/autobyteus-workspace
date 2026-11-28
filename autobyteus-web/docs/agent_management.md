@@ -239,6 +239,47 @@ Teams and Orgs from a package have two: avatar and default runtime/model.
   lists, so the same definition often arrives again; that keeps the user's
   unsaved edits.
 
+## Avatars
+
+An agent, team or org shows one picture everywhere: its definition's
+`avatarUrl` as the server computes it (autobyteus-669). The order is the
+user's picture (a personal setting, or the config's `avatarUrl` of the user's
+own definition), then the package's picture (its config's `avatarUrl`, else
+the `avatar.png`/`.jpg`/`.jpeg`/`.webp` in its definition folder,
+[server contract](../../autobyteus-server-ts/docs/modules/agent_packages.md#package-pictures)),
+then the fallback: initials for an agent, the team icon for a team, the org icon
+for an org, also when a picture cannot be loaded.
+
+- `components/common/DefinitionAvatar.vue` is the one avatar: it fills the slot
+  the caller sized and shaped (`class`), with the picture (`object-cover`) or
+  its fallback (`#fallback` slot for a caller's own initials). Conversation
+  messages, run headers, the run-target switcher, catalog cards and details,
+  the Runs view, the Workspaces tree and the phone's run list all use it.
+- `composables/useAvatarObjectUrl.ts` resolves a node-relative `/rest/...`
+  address against the window's bound node (`nuxt dev`, the installed `file://`
+  window and the phone alike). Where the node's credential must be sent (a
+  paired phone; `/rest/definition-avatars/` is a protected prefix in
+  `utils/remoteAccess/authorizedResourceUrl.ts`), the picture is read once per
+  address and credential by an authorized fetch (`Authorization` header, no key
+  in the address) into one object URL every avatar of that address shares,
+  revoked 60 s after the last one went away. A failed read or an `<img>` error
+  is remembered for the session; a new picture version is a new address. A late
+  error of a picture since replaced changes nothing.
+- `stores/definitionAvatarStore.ts` keeps each definition's address by kind for
+  the rows that know only a definition ID (`avatarOf(kind, id)`): one light
+  query per kind (`graphql/queries/definitionAvatarQueries.ts`) on its first
+  use, read again when the definitions feed announces that kind and after this
+  window's own save or reset. Run-tree rows carry their own `definitionId`, so
+  ten copies of one definition show its one picture; a peer node's row has none
+  and shows the fallback.
+- The editors (`AgentDefinitionForm.vue`, `AgentTeamDefinitionForm.vue`,
+  `AgentOrgAvatarEditor.vue` in `AgentOrgExperience.vue`) fill and save only
+  `userAvatarUrl`, the user's own picture. With none, the preview shows the
+  package's picture captioned "From the package", and there is no Remove;
+  Remove is offered only for the user's own picture and saves `null`. After an
+  unsaved Remove the preview shows the fallback until the save, whose refill
+  shows the package's picture again.
+
 ## Package Refresh Behavior
 
 Agent package import, removal, local reload, and managed GitHub update flows

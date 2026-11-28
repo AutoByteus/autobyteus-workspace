@@ -94,8 +94,10 @@ apply, the service:
    is; a runtime/model that does not name both is not personal;
 5. returns the effective definition.
 
-Teams and Orgs: an absent or `null` avatar in the update input means "not sent";
-`""` clears the personal avatar back to the base value. The Team editor sends
+Agents, Teams and Orgs: an absent avatar in the update input means "not sent";
+`null`, `""` or a definition-picture address (`/rest/definition-avatars/...`,
+autobyteus-669) clears the personal avatar back to the base value, storing
+nothing, so the package's picture is never stored as the user's. The Team editor sends
 trimmed name, description, category and instructions: a text equal to the
 files' up to surrounding whitespace (e.g. the final newline of `team.md`) keeps
 the files' text, so it is not counted as a change.

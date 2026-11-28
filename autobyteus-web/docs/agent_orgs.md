@@ -100,8 +100,10 @@ Create/Edit supports image upload, preview and Remove through the existing uploa
 service. Save waits while upload is pending; failed upload/save retains the draft
 for correction or retry. Cancel does not save the avatar reference, and a late
 upload from a retired editor cannot update another Org. An unchanged edit omits
-`avatarUrl`; an explicit removal sends the empty-string clear intent through the
-existing writer (a null update is not a clear). Removing a reference does not
+`avatarUrl`; the editor holds only the user's own picture (`userAvatarUrl`), and
+an explicit removal sends `null`, which clears it (autobyteus-669; see
+[Avatars](./agent_management.md#avatars)). An Org with no picture of the user's
+previews its package's picture, captioned, with no Remove. Removing a reference does not
 delete the uploaded media file. Existing members, handoffs and hidden metadata
 retain their normal save semantics.
 
@@ -741,7 +743,8 @@ report for the exact acceptance scope.
 - `components/agentOrgs/AgentOrgExperience.vue`: catalog/detail/authoring and
   captured-identity Delete confirmation.
 - `components/agentOrgs/AgentOrgAvatar.vue` and `AgentOrgAvatarEditor.vue`:
-  Org image/initials presentation and draft upload/preview/remove.
+  Org image/initials presentation (through `DefinitionAvatar`) and draft
+  upload/preview/remove of the user's own picture.
 - `components/run-settings/OrgLaunchPage.vue`: the Org launch page (heading
   switcher, settings card with Run, status line, members line).
 - `components/run-settings/ExistingRunSettings.vue` (view) behind

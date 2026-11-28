@@ -129,6 +129,42 @@ folder are detected and applied automatically. Reload remains the manual
 fallback for package folders that are not being watched. See
 [Agent Package Definitions](./agent_package_definitions.md).
 
+## Package Pictures
+
+An agent, team or org of a package shows its picture when its definition folder
+(beside `agent.md`, `team.md` or `org.md`) holds one `avatar.png`,
+`avatar.jpg`, `avatar.jpeg` or `avatar.webp` (autobyteus-669). The rule is one,
+for every kind (`readDefinitionAvatar` in
+`src/agent-package-definitions/domain/definition-avatar-file.ts`):
+
+- at most 1 MiB, a regular file (a symbolic link is refused), and its bytes are
+  of the type its name says (PNG, JPEG or WebP signature). SVG and GIF are not
+  read;
+- more than one candidate, or any other fault, makes the picture invalid: the
+  definition still loads, with no picture, and the node logs
+  `DEFINITION_AVATAR_IGNORED` with the reason once per folder until the reason
+  changes;
+- the picture is read with the definition, never copied or stored; its
+  SHA-256 is part of the definition's fingerprint, so replacing, adding or
+  removing it reloads that definition and announces its list, like a changed
+  definition file. An unchanged file (same size and time) is not read again.
+
+The node serves it at `GET /rest/definition-avatars/<kind>/<id>?v=<version>`
+(`kind` is `agent`, `agent_team` or `agent_org`; `version` is the first 12 hex
+digits of the hash), from `src/api/rest/definition-avatars.ts`. The route takes
+no path from the request: it looks the definition up, checks the file again and
+sends it with its type, `ETag`, `Cache-Control: no-cache` and `nosniff`; an
+unknown kind or definition, or a picture no longer valid, is 404. Its access
+class is the default owner rule with the phone allowed; a peer node is refused.
+The address is node-relative: each client resolves it against its own node, and
+the phone sends its credential in the `Authorization` header, never in the
+address.
+
+The address is the definition's `avatarUrl` when the user has no picture of
+their own: the order is the user's picture, then the package's picture (the
+package config's `avatarUrl` if set, else its folder picture), then the
+client's fallback. See [Agent Definition](./agent_definition.md#avatar).
+
 ## Keeping The User's Edits At An Update
 
 Tools, skills, avatar and default runtime/model of a package definition are

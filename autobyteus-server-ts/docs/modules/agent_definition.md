@@ -219,6 +219,30 @@ retired-id list or cleanup loop to the bootstrapper. The built-in Project Task
 Manager (`autobyteus-project-task-manager`) was retired this way by migration
 `20261006_remove_built_in_project_task_manager` (see the server README).
 
+## Avatar
+
+Agent, team and org definitions carry two GraphQL picture fields
+(autobyteus-669), computed once in
+`src/agent-package-definitions/domain/definition-avatar-address.ts` and set by
+`toGraphqlDefinitionAvatar` for every kind:
+
+| Field | Value |
+| --- | --- |
+| `avatarUrl` | What every client shows: the user's picture, else the package's (the config's `avatarUrl`, else the folder picture's `/rest/definition-avatars/...` address, see [Agent Packages](./agent_packages.md#package-pictures)), else null and the client's fallback. Display only. |
+| `userAvatarUrl` | The user's own picture only: the personal setting of a package or built-in definition; the config's `avatarUrl` of the user's own definition. A package definition's config `avatarUrl` is the package's, never the user's. The editors fill and save this one. |
+
+The input `avatarUrl` of the create, update and personal-settings mutations is
+the user's picture (`userAvatarInput`): absent leaves it as it is; `null`, `""`
+or a definition-picture address (by its path, any version or origin) clears it,
+storing nothing; any other value is stored trimmed. So no save makes the
+package's picture the user's, and a form opened before a package update cannot
+pin an old version.
+
+Each run-tree row (`RunTreeRowDto.definitionId`, the collaboration stream
+contract) names its own agent's or team's definition, from the run's own
+metadata, so a client shows every copy of one definition with the one picture
+of that definition; a peer node's row has none and shows the fallback.
+
 ## Notes
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
