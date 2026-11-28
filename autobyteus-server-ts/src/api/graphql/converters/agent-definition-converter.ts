@@ -9,6 +9,7 @@ import { toGraphqlDefinitionLoadIssue } from "../types/definition-problems.js";
 import type { DefinitionLoadIssue } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
 import { toGraphqlPersonalSettings } from "../types/personal-settings.js";
+import { toGraphqlDefinitionAvatar } from "../types/definition-avatar-fields.js";
 import { getAgentSemanticMemory } from "../../../agent-memory/services/agent-semantic-memory.js";
 
 const logger = {
@@ -45,7 +46,7 @@ export class AgentDefinitionConverter {
         description: domainDefinition.description,
         instructions: domainDefinition.instructions,
         category: domainDefinition.category ?? null,
-        avatarUrl: domainDefinition.avatarUrl ?? null,
+        ...toGraphqlDefinitionAvatar("agent", domainDefinition, personalSettings),
         toolNames: domainDefinition.toolNames,
         inputProcessorNames: domainDefinition.inputProcessorNames,
         llmResponseProcessorNames: domainDefinition.llmResponseProcessorNames,

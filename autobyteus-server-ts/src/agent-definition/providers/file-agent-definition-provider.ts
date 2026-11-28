@@ -30,6 +30,7 @@ import {
   mergeAgentConfigRecord,
 } from "./agent-definition-config.js";
 import { buildAgentDefinitionFromFiles, type AgentDefinitionOwnership } from "./agent-definition-node-reader.js";
+import { readPackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 import {
   ensureWritableAgentSourcePaths,
   findAgentSourcePaths,
@@ -107,13 +108,15 @@ export class FileAgentDefinitionProvider {
     try {
       const mdContent = await fs.readFile(mdPath, "utf-8");
       const config = await readJsonFile<AgentConfigRecord>(configPath, defaultAgentConfig());
-      return buildAgentDefinitionFromFiles({
+      const definition = buildAgentDefinitionFromFiles({
         mdContent,
         mdPath,
         config,
         definitionId: resolvedAgentDefinitionId,
         ownership,
       });
+      definition.packageAvatar = await readPackageAvatar(path.dirname(mdPath));
+      return definition;
     } catch (error) {
       if (error instanceof AgentMdParseError) {
         throw error;

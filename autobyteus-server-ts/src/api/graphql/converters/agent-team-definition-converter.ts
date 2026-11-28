@@ -12,6 +12,7 @@ import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js"
 import { toGraphqlDefinitionLoadIssueEntries } from "../types/definition-problems.js";
 import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
 import { toGraphqlPersonalSettings } from "../types/personal-settings.js";
+import { toGraphqlDefinitionAvatar } from "../types/definition-avatar-fields.js";
 import type { DefinitionLoadIssueEntry } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 
 const logger = {
@@ -68,7 +69,7 @@ export class AgentTeamDefinitionConverter {
         description: domainDefinition.description,
         instructions: domainDefinition.instructions,
         category: domainDefinition.category ?? null,
-        avatarUrl: domainDefinition.avatarUrl ?? null,
+        ...toGraphqlDefinitionAvatar("agent_team", domainDefinition, personalSettings),
         nodes: graphqlNodes,
         coordinatorMemberName: domainDefinition.coordinatorMemberName,
         handoffs: graphqlHandoffs,

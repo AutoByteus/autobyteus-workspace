@@ -109,6 +109,49 @@ describe("RunTreeView (SR-082, SR-084)", () => {
     expect(by.get("peer_member:studio:studio-checker")).toMatchObject({ peer: { reachable: null }, statusIds: ["studio-checker"] });
   });
 
+  // autobyteus-669 S-4: each row names its run's definition (a client shows its picture); a peer's run names none.
+  it("each local row carries its definition from its run's record; peer rows and records naming none carry none", async () => {
+    const { runTree } = view({
+      own: { kind: "agent", agentRunId: "manager", address: "/manager", definitionId: "project-task-manager" },
+      rows: [
+        row(manager, { agentRunId: "writer" }, "manager"),
+        row(manager, { teamRunId: "squad" }, "manager"),
+        row(manager, { agentRunId: "plain" }, "manager"),
+        row(manager, { agentRunId: "publisher" }, "manager", { nodeId: "beta-id" }),
+      ],
+      records: {
+        writer: { ...agentRecord("writer", "/writer"), definitionId: "writer-def" } as ChildRowRecord,
+        squad: { ...teamRecord("squad", "/squad", "squad-lead"), definitionId: "squad-def",
+          members: [{ address: "/lead", agentRunId: "squad-lead", definitionId: "lead-def", launch: null }] } as ChildRowRecord,
+        plain: agentRecord("plain", "/plain"),
+        publisher: peerAgentRecord("publisher"),
+      },
+    });
+    const definitionOf = Object.fromEntries((await runTree.rowsOf(manager)).map((r) => [r.key, r.definitionId ?? null]));
+    expect(definitionOf).toEqual({
+      "agent:manager": "project-task-manager",
+      "agent:writer": "writer-def",
+      "team:squad": "squad-def",
+      "team_member:squad:squad-lead": "lead-def",
+      "agent:plain": null,
+      "peer_agent:publisher": null,
+    });
+  });
+
+  it("an org run's agents, mounted teams and their members carry their definitions", async () => {
+    const org = orgRun("org-1");
+    const { runTree } = view({
+      own: { kind: "agent_org", orgRunId: "org-1", container: true, parts: [
+        { kind: "agent", address: "/ceo", agentRunId: "ceo", definitionId: "ceo-def" },
+        { kind: "team", address: "/dev", teamRunId: "dev", coordinatorAddress: "/dev/lead", definitionId: "dev-def",
+          members: [{ address: "/dev/lead", agentRunId: "dev-lead", definitionId: "lead-def" }] },
+      ] },
+      rows: [], records: {},
+    });
+    const rows = await runTree.rowsOf(org);
+    expect(rows.map((r) => [r.kind, r.definitionId ?? null])).toEqual([["org_agent", "ceo-def"], ["org_team", "dev-def"], ["team_member", "lead-def"]]);
+  });
+
   it("a row's key is its identities only: a refresh that adds and removes other rows keeps every other row's key and parent", async () => {
     const tree = agentTree();
     const before = await tree.runTree.rowsOf(manager);

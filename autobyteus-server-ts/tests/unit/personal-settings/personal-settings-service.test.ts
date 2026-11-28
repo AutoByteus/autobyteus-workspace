@@ -115,6 +115,22 @@ describe("edits and resets (contract §6)", () => {
     expect(fileJson()).toEqual({});
   });
 
+  // autobyteus-669 S-2 (SR-002 AR-001): null, "" and a package-picture address clear the user's picture; none is stored.
+  it.each([null, "", "  ", "/rest/definition-avatars/agent/solution-designer?v=0123456789ab", "http://127.0.0.1:1/rest/definition-avatars/agent/x?v=old"])(
+    "clears the user's picture for %j, storing nothing", (value) => {
+      const service = create();
+      service.setEdited("agent", "solution-designer", agent(), { avatarUrl: "/mine.png" });
+      service.setEdited("agent", "solution-designer", agent(), { avatarUrl: value });
+      expect(fileJson()).toEqual({});
+      expect(service.personalSettingsOf("agent", "solution-designer")).toEqual([]);
+    });
+
+  it("never stores a package-picture address as the user's picture", () => {
+    const service = create();
+    service.setEdited("agent_team", "crew", { avatarUrl: null, defaultLaunchConfig: null }, { avatarUrl: "/rest/definition-avatars/agent_team/crew?v=1" });
+    expect(fs.existsSync(filePath)).toBe(false);
+  });
+
   it("leaves an absent field as it is, and drops a runtime/model that does not name both", () => {
     const service = create();
     service.setEdited("agent", "solution-designer", agent(), { defaultLaunchConfig: launch });

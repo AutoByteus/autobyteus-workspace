@@ -1,4 +1,5 @@
 import path from "node:path";
+import { userAvatarInput } from "../../agent-package-definitions/domain/definition-avatar-address.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { BUILT_IN_AGENT_DEFINITIONS } from "../../built-in-agents/built-in-agent-registry.js";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
@@ -194,7 +195,8 @@ export class PersonalSettingsService {
       }
     }
     if (edited.avatarUrl !== undefined) {
-      const avatarUrl = edited.avatarUrl?.trim() || null;
+      // A definition-avatar address is never the user's picture: it clears, as null and "" do (autobyteus-669 S-2).
+      const avatarUrl = userAvatarInput(edited.avatarUrl) ?? null;
       next.avatarUrl = avatarUrl === null || avatarUrl === (base.avatarUrl ?? null) ? undefined : avatarUrl;
     }
     if (edited.defaultLaunchConfig !== undefined) {

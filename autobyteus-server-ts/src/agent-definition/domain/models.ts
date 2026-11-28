@@ -1,4 +1,5 @@
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import type { PackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 
 export type AgentDefinitionOwnershipScope = "shared" | "team_local" | "agent_org_owned" | "application_owned";
 
@@ -49,6 +50,8 @@ export class AgentDefinition {
    */
   internal: boolean;
   sourceInfo?: AgentDefinitionSourceInfo | null;
+  /** The picture file in its folder (autobyteus-669), read with it; never stored. */
+  packageAvatar: PackageAvatar | null;
 
   constructor(options: {
     name: string;
@@ -78,6 +81,7 @@ export class AgentDefinition {
     defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
     internal?: boolean;
     sourceInfo?: AgentDefinitionSourceInfo | null;
+    packageAvatar?: PackageAvatar | null;
   }) {
     this.name = options.name;
     this.role = options.role;
@@ -106,6 +110,7 @@ export class AgentDefinition {
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
     this.internal = options.internal === true;
     this.sourceInfo = options.sourceInfo ?? null;
+    this.packageAvatar = options.packageAvatar ?? null;
   }
 }
 

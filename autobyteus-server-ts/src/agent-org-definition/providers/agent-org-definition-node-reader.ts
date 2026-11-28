@@ -6,6 +6,7 @@ import { readAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
 import type { DefinitionSourceDescriptor } from "../../collaboration-definition-admission/domain/definition-source-descriptor.js";
 import type { DefinitionReadResult } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 import { errorMessage, fingerprintOf, pathExists, readOptionalText } from "../../agent-package-definitions/domain/definition-files.js";
+import { readPackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 
 const ORG_FILES = ["org.md", "org-config.json"] as const;
 
@@ -78,13 +79,16 @@ export const readAgentOrgDefinitionNode = async (input: {
   } catch (error) {
     return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
   }
+  let definition: AgentOrgDefinition;
   try {
-    const definition = buildAgentOrgDefinitionFromFiles({
+    definition = buildAgentOrgDefinitionFromFiles({
       definitionId: input.definitionId, mdPath, mdContent, configContent, descriptor: input.descriptor,
     });
-    return { status: "valid", definition, fingerprint: fingerprintOf([mdContent, configContent]) };
   } catch (error) {
     const reason = error instanceof SyntaxError ? `Invalid JSON: ${error.message}` : errorMessage(error);
     return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason, definitionPath: configPath };
   }
+  // Its picture travels with the folder (autobyteus-669 S-1); a changed or added picture reloads it like org.md.
+  definition.packageAvatar = await readPackageAvatar(input.orgDir);
+  return { status: "valid", definition, fingerprint: fingerprintOf([mdContent, configContent, definition.packageAvatar?.hash ?? null]) };
 };

@@ -1,4 +1,5 @@
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { userAvatarInput } from "../../agent-package-definitions/domain/definition-avatar-address.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import { DefinitionEndpointCatalog, type DefinitionEndpointCatalogProjection } from "../../agent-collaboration/definition/definition-endpoint-catalog.js";
@@ -137,6 +138,7 @@ export class AgentOrgDefinitionService {
   }
   async createDefinition(definition: AgentOrgDefinition): Promise<AgentOrgDefinition> {
     if (definition.id) throw new Error("Cannot create an AgentOrg that already has an id.");
+    definition.avatarUrl = userAvatarInput(definition.avatarUrl) ?? null;
     await this.validate(definition, "__new_agent_org_candidate__");
     const created = await this.fileStore.create(definition);
     if (created.id) await this.packageDefinitions.reloader.reloadFoldersNow("agent_org", [created.id]);
@@ -161,7 +163,7 @@ export class AgentOrgDefinitionService {
       id, name: v.name ?? existing.name, description: v.description ?? existing.description,
       instructions: v.instructions ?? existing.instructions, category: v.category ?? existing.category,
       members: v.members ?? existing.members, handoffs: v.handoffs ?? existing.handoffs,
-      avatarUrl: personal ? existing.avatarUrl : v.avatarUrl ?? existing.avatarUrl,
+      avatarUrl: personal || v.avatarUrl === undefined ? existing.avatarUrl : userAvatarInput(v.avatarUrl) ?? null,
       defaultLaunchConfig: personal || v.defaultLaunchConfig === undefined ? existing.defaultLaunchConfig : v.defaultLaunchConfig,
       revision: update.values.expectedRevision, source: existing.source,
     });
@@ -172,8 +174,8 @@ export class AgentOrgDefinitionService {
       if (!personal) return updated;
     }
     this.personalSettings.setEdited("agent_org", id, existing, {
-      // null or absent means "not sent" (as for the files); "" clears the personal avatar, back to the base.
-      ...(v.avatarUrl !== undefined && v.avatarUrl !== null ? { avatarUrl: v.avatarUrl.trim() || null } : {}),
+      // Absent leaves the personal avatar; null, "" and a definition-avatar address clear it, back to the base.
+      ...(v.avatarUrl !== undefined ? { avatarUrl: userAvatarInput(v.avatarUrl) } : {}),
       ...(v.defaultLaunchConfig !== undefined ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(v.defaultLaunchConfig) ?? null } : {}),
     });
     return (await this.getDefinitionById(id)) ?? this.effective(existing, base.sourceClass);

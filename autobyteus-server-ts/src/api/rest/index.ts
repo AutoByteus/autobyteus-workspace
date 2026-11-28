@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify";
 import type { ProviderRelayPeerHandler } from "../../credential-proxy/provider-relay-peer/provider-relay-peer-handler.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerFileRoutes } from "./files.js";
+import { registerDefinitionAvatarRoutes } from "./definition-avatars.js";
 import { registerMediaRoutes } from "./media.js";
 import { registerUploadRoutes } from "./upload-file.js";
 import { registerWorkspaceRoutes } from "./workspaces.js";
@@ -52,6 +53,7 @@ export async function registerRestRoutes(
   await registerRemoteCollaborationRoutes(app, dependencies.remoteCollaboration, dependencies.providerRelayPeerHandler);
   await registerExtensionRoutes(app, { extensions: dependencies.extensions });
   await registerFileRoutes(app);
+  await registerDefinitionAvatarRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);

@@ -62,6 +62,10 @@ export class AgentDefinition {
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
 
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  @Field(() => String, { nullable: true })
+  userAvatarUrl?: string | null;
+
   @Field(() => [String])
   toolNames!: string[];
 

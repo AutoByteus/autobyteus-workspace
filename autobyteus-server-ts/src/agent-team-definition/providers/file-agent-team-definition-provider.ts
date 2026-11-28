@@ -20,6 +20,7 @@ import {
   type ResolvedTeamSourcePaths,
 } from "./team-definition-source-paths.js";
 import { buildAgentTeamDefinitionFromFiles } from "./agent-team-definition-node-reader.js";
+import { readPackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 import {
   createDefinitionSourceDescriptor,
   assertDefinitionSourceWritableByRuntime,
@@ -78,9 +79,11 @@ export class FileAgentTeamDefinitionProvider {
     try {
       const mdContent = await fs.readFile(source.mdPath, "utf8");
       const configContent = await fs.readFile(source.configPath, "utf8");
-      return buildAgentTeamDefinitionFromFiles({
+      const definition = buildAgentTeamDefinitionFromFiles({
         source, mdContent, configContent, descriptor: this.sourceDescriptor(source),
       });
+      definition.packageAvatar = await readPackageAvatar(source.teamDir);
+      return definition;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw error;

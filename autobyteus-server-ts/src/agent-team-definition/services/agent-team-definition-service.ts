@@ -1,3 +1,4 @@
+import { userAvatarInput } from "../../agent-package-definitions/domain/definition-avatar-address.js";
 import {
   AgentTeamDefinition,
   AgentTeamDefinitionUpdate,
@@ -68,14 +69,6 @@ type AgentTeamDefinitionServiceOptions = {
   personalSettings?: PersonalSettingsService;
 };
 
-const normalizeOptionalString = (value: unknown): string | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-};
-
 const assertValidCoordinatorMember = (
   coordinatorMemberName: string,
   nodes: Array<{ memberName: string }>,
@@ -134,9 +127,8 @@ const buildDefinitionUpdateCandidate = (
     ? updateData.coordinatorMemberName
     : existing.coordinatorMemberName,
   handoffs: hasUpdateValue(updateData.handoffs) ? updateData.handoffs : existing.handoffs,
-  avatarUrl: hasUpdateValue(updateData.avatarUrl)
-    ? normalizeOptionalString(updateData.avatarUrl)
-    : existing.avatarUrl,
+  // The user's picture: absent leaves it; null, "" and a definition-avatar address clear it (autobyteus-669 S-2).
+  avatarUrl: updateData.avatarUrl !== undefined ? userAvatarInput(updateData.avatarUrl) ?? null : existing.avatarUrl,
   defaultLaunchConfig: updateData.defaultLaunchConfig === undefined
     ? cloneDefaultLaunchConfig(existing.defaultLaunchConfig)
     : normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null,
@@ -208,7 +200,7 @@ export class AgentTeamDefinitionService {
 
     assertValidTeamMembers(definition.nodes);
     assertValidCoordinatorMember(definition.coordinatorMemberName, definition.nodes);
-    definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
+    definition.avatarUrl = userAvatarInput(definition.avatarUrl) ?? null;
     definition.defaultLaunchConfig =
       normalizeDefaultLaunchConfigInput(definition.defaultLaunchConfig) ?? null;
     const validationCandidate = new AgentTeamDefinition({
@@ -355,10 +347,8 @@ export class AgentTeamDefinitionService {
       }
     }
     this.personalSettings.setEdited("agent_team", definitionId, existing, {
-      // null means "not sent" (as for the files); "" clears the personal avatar, back to the base.
-      ...(updateData.avatarUrl !== undefined && updateData.avatarUrl !== null
-        ? { avatarUrl: normalizeOptionalString(updateData.avatarUrl) }
-        : {}),
+      // Absent leaves the personal avatar; null, "" and a definition-avatar address clear it, back to the base.
+      ...(updateData.avatarUrl !== undefined ? { avatarUrl: userAvatarInput(updateData.avatarUrl) } : {}),
       ...(updateData.defaultLaunchConfig !== undefined
         ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null }
         : {}),

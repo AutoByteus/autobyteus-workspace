@@ -4,6 +4,7 @@ import {
   type CollaborationHandoff,
 } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { DefinitionSourceDescriptor } from "../../collaboration-definition-admission/domain/definition-source-descriptor.js";
+import type { PackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 
 export type AgentOrgMemberRefScope = "shared" | "org_local" | "application_owned";
 
@@ -38,6 +39,8 @@ export class AgentOrgDefinition {
   defaultLaunchConfig: DefaultLaunchConfig | null;
   revision: string | null;
   source: DefinitionSourceDescriptor | null;
+  /** The picture file in its folder (autobyteus-669), read with it; never stored. */
+  packageAvatar: PackageAvatar | null;
 
   constructor(input: {
     id?: string | null;
@@ -51,6 +54,7 @@ export class AgentOrgDefinition {
     defaultLaunchConfig?: DefaultLaunchConfig | null;
     revision?: string | null;
     source?: DefinitionSourceDescriptor | null;
+    packageAvatar?: PackageAvatar | null;
   }) {
     this.id = input.id?.trim() || null;
     this.name = input.name;
@@ -71,6 +75,7 @@ export class AgentOrgDefinition {
       : null;
     this.revision = input.revision ?? null;
     this.source = input.source ?? null;
+    this.packageAvatar = input.packageAvatar ?? null;
   }
 }
 

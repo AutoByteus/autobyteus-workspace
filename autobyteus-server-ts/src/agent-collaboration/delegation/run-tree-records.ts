@@ -30,9 +30,9 @@ export type RunLaunchRecord = Readonly<{
  * node's latest answer. No view DTO is built for it.
  */
 export type ChildRowRecord =
-  | Readonly<{ kind: "agent"; agentRunId: string; address: string; launch: RunLaunchRecord }>
+  | Readonly<{ kind: "agent"; agentRunId: string; address: string; launch: RunLaunchRecord; definitionId?: string }>
   | Readonly<{
-      kind: "agent_team"; teamRunId: string; address: string; coordinatorAddress: string; launch: RunLaunchRecord;
+      kind: "agent_team"; teamRunId: string; address: string; coordinatorAddress: string; launch: RunLaunchRecord; definitionId?: string;
       /** Its own members as its file has them (`ownTreeOf`: leaving ones marked); `teamMemberRowsOf` decides the rows. */
       members: readonly (RunOwnMember & Readonly<{ launch: RunLaunchRecord | null }>)[];
     }>
@@ -82,7 +82,7 @@ export const localChildRecord = async (child: DelegatedChild, memoryDir: string,
     if (!agent.address) throw new Error(`Agent run '${childRun.agentRunId}' has no address.`);
     const metadata = await new AgentRunMetadataStore(memoryDir).readMetadata(childRun.agentRunId);
     return metadata ? Object.freeze({ kind: "agent", agentRunId: childRun.agentRunId, address: agent.address,
-      launch: launchRecordOf(metadata, metadata.launchSource, true) }) : null;
+      launch: launchRecordOf(metadata, metadata.launchSource, true), ...(metadata.agentDefinitionId ? { definitionId: metadata.agentDefinitionId } : {}) }) : null;
   }
   const own = await ownTreeOf({ rootSubjectKind: "agent_team", rootRunId: childRun.teamRunId });
   if (own?.kind !== "agent_team" || !own.members.length) return null;
@@ -93,6 +93,7 @@ export const localChildRecord = async (child: DelegatedChild, memoryDir: string,
   return Object.freeze({
     kind: "agent_team", teamRunId: childRun.teamRunId, address: child.recipientAddress, coordinatorAddress: team.coordinatorAddress,
     launch: launchRecordOf(team.defaultLaunchConfiguration, team.defaultLaunchSource, true),
+    ...(team.teamDefinitionId ? { definitionId: team.teamDefinitionId } : {}),
     members: Object.freeze(own.members.map((member) => {
       const recorded = nodes.find((node) => node.agentRunId === member.agentRunId);
       return Object.freeze({ ...member,

@@ -7,6 +7,7 @@ import { AgentOrgDefinition as DomainOrg, AgentOrgDefinitionUpdate, AgentOrgMemb
 import { GraphqlDefaultLaunchConfig, GraphqlDefaultLaunchConfigInput, toDomainDefaultLaunchConfig, toGraphqlDefaultLaunchConfig } from "./default-launch-config.js";
 import { PersonalSetting, PersonalSettingsBase, toDomainPersonalSetting, toGraphqlPersonalSettings } from "./personal-settings.js";
 import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
+import { toGraphqlDefinitionAvatar } from "./definition-avatar-fields.js";
 
 export enum AgentOrgMemberType { AGENT = "AGENT", AGENT_TEAM = "AGENT_TEAM" }
 export enum AgentOrgMemberScope { SHARED = "SHARED", AGENT_ORG_OWNED = "AGENT_ORG_OWNED", APPLICATION_OWNED = "APPLICATION_OWNED" }
@@ -36,6 +37,8 @@ registerEnumType(AgentOrgMemberScope, { name: "AgentOrgMemberScope" });
   @Field(() => [AgentOrgMember]) members!: AgentOrgMember[];
   @Field(() => [AgentOrgHandoff]) handoffs!: AgentOrgHandoff[];
   @Field(() => String, { nullable: true }) avatarUrl!: string | null;
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  @Field(() => String, { nullable: true }) userAvatarUrl!: string | null;
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true }) defaultLaunchConfig!: GraphqlDefaultLaunchConfig | null;
   @Field(() => String, { nullable: true }) revision!: string | null;
   /** Set when the AgentOrg is served from its last working version; names the file and reason. */
@@ -105,7 +108,7 @@ const project = (
   loadIssues: toGraphqlDefinitionLoadIssueEntries(issues),
   ...toGraphqlPersonalSettings(personal),
   id: value.id ?? "", name: value.name, description: value.description, instructions: value.instructions,
-  category: value.category, avatarUrl: value.avatarUrl, revision: value.revision,
+  category: value.category, ...toGraphqlDefinitionAvatar("agent_org", value, personal), revision: value.revision,
   defaultLaunchConfig: toGraphqlDefaultLaunchConfig(value.defaultLaunchConfig),
   handoffs: value.handoffs.map((item) => ({ from: item.from, to: item.to, rules: [...item.rules] })),
   members: value.members.map((item) => ({

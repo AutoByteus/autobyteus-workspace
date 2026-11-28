@@ -5,6 +5,7 @@ import { parseAgentMd } from "../utils/agent-md-parser.js";
 import { defaultAgentConfig, normalizeAgentConfigRecord, type AgentConfigRecord } from "./agent-definition-config.js";
 import type { DefinitionReadResult } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 import { errorMessage, fingerprintOf, readOptionalText } from "../../agent-package-definitions/domain/definition-files.js";
+import { readPackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 
 export type AgentDefinitionOwnership = Readonly<{
   ownershipScope: AgentDefinitionOwnershipScope;
@@ -102,6 +103,8 @@ export const readAgentDefinitionNode = async (input: {
   } catch (error) {
     return { status: "invalid", code: "DEFINITION_CONTRACT_INVALID", reason: errorMessage(error), definitionPath: mdPath };
   }
+  // Its picture travels with the folder (autobyteus-669 S-1); a changed or added picture reloads it like agent.md.
+  definition.packageAvatar = await readPackageAvatar(input.agentDir);
   const ownership = input.ownership;
   return {
     status: "valid",
@@ -114,6 +117,7 @@ export const readAgentDefinitionNode = async (input: {
       ownership.ownerTeamName ?? null,
       ownership.ownerOrgId ?? null,
       ownership.ownerOrgName ?? null,
+      definition.packageAvatar?.hash ?? null,
     ]),
   };
 };

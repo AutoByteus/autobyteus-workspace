@@ -15,6 +15,7 @@ import {
   parseAgentOrgDefinitionConfig,
 } from "./agent-org-definition-config.js";
 import { buildAgentOrgDefinitionFromFiles } from "./agent-org-definition-node-reader.js";
+import { readPackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 const slug = (value: string): string => value.toLowerCase().trim().replace(/[_\s]+/g, "-")
   .replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-+|-+$/g, "") || "agent-org";
 
@@ -71,9 +72,11 @@ export class FileAgentOrgDefinitionProvider {
     try {
       const mdContent = await fs.readFile(source.mdPath, "utf8");
       const configContent = await fs.readFile(source.configPath, "utf8");
-      return buildAgentOrgDefinitionFromFiles({
+      const definition = buildAgentOrgDefinitionFromFiles({
         definitionId: source.id, mdPath: source.mdPath, mdContent, configContent, descriptor: this.descriptor(source),
       });
+      definition.packageAvatar = await readPackageAvatar(path.dirname(source.mdPath));
+      return definition;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw error;

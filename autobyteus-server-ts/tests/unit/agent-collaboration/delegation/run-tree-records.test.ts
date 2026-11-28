@@ -38,7 +38,9 @@ describe("RunTreeView's records", () => {
     const ownTreeOf = async (run: { rootRunId: string }) => run.rootRunId === "se-run" ? { kind: "agent_team" as const, teamRunId: "se-run", coordinatorAddress: "/lead",
       members: [{ agentRunId: "lead-run", address: "/lead" }, { agentRunId: "ie-run", address: "/ie" }] } : null;
     const record = await localChildRecord({ run: { teamRunId: "se-run" }, recipientAddress: "/se" } as never, dir, tree as never, ownTreeOf as never);
+    // autobyteus-669 S-4: the team's definition from its own file, with no other read.
     expect(record).toMatchObject({ kind: "agent_team", teamRunId: "se-run", address: "/se", coordinatorAddress: "/lead",
+      definitionId: teamFile().rootTeam.teamDefinitionId,
       launch: { llmModelIdentifier: "opus", source: { origin: "inherited", fallbacks: [fallback] }, ownSource: true },
       members: [
         { address: "/lead", agentRunId: "lead-run", launch: { llmModelIdentifier: "opus", source: { origin: "inherited" }, ownSource: false } },

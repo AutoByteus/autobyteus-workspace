@@ -163,6 +163,19 @@ describe("AgentTeamDefinitionService flat Team authority", () => {
     expect(preserved.defaultLaunchConfig).toBeNull();
   });
 
+  // autobyteus-669 S-2 (SR-002 AR-001): the user's own Team's picture: absent keeps it; null, "" and a package-picture
+  // address clear it.
+  it("keeps the picture when the field is absent, and clears it for null, \"\" and a package-picture address", async () => {
+    stored = new AgentTeamDefinition({ ...definition({ id: "team-1", revision: "rev-1" }), avatarUrl: "/rest/files/images/team.png" });
+    const kept = await service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({ description: "Edited.", expectedRevision: "rev-1" }));
+    expect(kept.avatarUrl).toBe("/rest/files/images/team.png");
+    for (const value of [null, "", "/rest/definition-avatars/agent_team/team-1?v=0123456789ab"]) {
+      stored = new AgentTeamDefinition({ ...stored!, avatarUrl: "/rest/files/images/team.png", revision: "rev-1" });
+      const cleared = await service().updateDefinition("team-1", new AgentTeamDefinitionUpdate({ avatarUrl: value, expectedRevision: "rev-1" }));
+      expect(cleared.avatarUrl).toBeNull();
+    }
+  });
+
   it("deletes only an existing shared Team", async () => {
     await expect(service().deleteDefinition("missing")).rejects.toThrow("not found");
     await expect(service().deleteDefinition("team-1")).resolves.toBe(true);

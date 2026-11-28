@@ -26,6 +26,8 @@ describe("route permissions", () => {
   it("NA-2: an endpoint nobody listed needs an owner or phone credential; a WebSocket nobody listed, an owner's", () => {
     expect(permitted(http("POST", "/rest/a-route-added-later"))).toEqual(["owner", "phone"]);
     expect(permitted(http("GET", "/rest/files/*"))).toEqual(["owner", "phone"]);
+    // autobyteus-669: a definition's package picture, the default rule (a peer cannot read it).
+    expect(permitted(http("GET", "/rest/definition-avatars/:kind/:definitionId"))).toEqual(["owner", "phone"]);
     expect(permitted(http("POST", "/graphql"))).toEqual(["owner", "phone"]);
     expect(permitted(http("GET", "/graphql"))).toEqual(["owner", "phone"]);
     expect(permitted(upgrade("/ws/a-socket-added-later"))).toEqual(["owner"]);

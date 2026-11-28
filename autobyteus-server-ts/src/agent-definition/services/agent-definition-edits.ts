@@ -1,15 +1,7 @@
 import type { AgentDefinition, AgentDefinitionUpdate } from "../domain/models.js";
+import { userAvatarInput } from "../../agent-package-definitions/domain/definition-avatar-address.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 import type { PersonalSettingEdits } from "../../personal-settings/services/personal-settings-service.js";
-
-/** A trimmed non-empty string, or null. */
-export const normalizeOptionalString = (value: unknown): string | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-};
 
 /** A copy that keeps the class (and copies the arrays it patches). */
 export const cloneAgent = (definition: AgentDefinition): AgentDefinition => Object.assign(
@@ -30,6 +22,6 @@ export const cloneAgent = (definition: AgentDefinition): AgentDefinition => Obje
 export const personalEditsOf = (data: AgentDefinitionUpdate): PersonalSettingEdits => ({
   ...(data.toolNames !== undefined && data.toolNames !== null ? { toolNames: data.toolNames } : {}),
   ...(data.skillNames !== undefined && data.skillNames !== null ? { skillNames: data.skillNames } : {}),
-  ...(data.avatarUrl !== undefined ? { avatarUrl: normalizeOptionalString(data.avatarUrl) } : {}),
+  ...(data.avatarUrl !== undefined ? { avatarUrl: userAvatarInput(data.avatarUrl) } : {}),
   ...(data.defaultLaunchConfig !== undefined ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null } : {}),
 });

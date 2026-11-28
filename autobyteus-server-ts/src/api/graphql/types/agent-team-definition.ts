@@ -122,6 +122,10 @@ export class AgentTeamDefinition {
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
 
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  @Field(() => String, { nullable: true })
+  userAvatarUrl?: string | null;
+
   @Field(() => AgentTeamDefinitionOwnershipScope)
   ownershipScope!: AgentTeamDefinitionOwnershipScope;
 
@@ -392,7 +396,8 @@ export class AgentTeamDefinitionResolver {
         nodes: nodesUpdate,
         coordinatorMemberName: input.coordinatorMemberName ?? null,
         handoffs: input.handoffs ?? null,
-        avatarUrl: input.avatarUrl ?? null,
+        // Absent stays absent: null clears the user's picture (autobyteus-669 S-2).
+        avatarUrl: input.avatarUrl,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
         expectedRevision: input.expectedRevision,
       });

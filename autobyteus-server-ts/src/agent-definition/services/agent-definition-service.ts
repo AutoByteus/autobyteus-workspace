@@ -1,3 +1,4 @@
+import { userAvatarInput } from "../../agent-package-definitions/domain/definition-avatar-address.js";
 import {
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
@@ -32,7 +33,7 @@ import {
 import type { PersonalSetting } from "../../personal-settings/domain/personal-setting-record.js";
 import { getInternalAgentVisibility, type InternalAgentVisibility } from "./internal-agent-visibility.js";
 import type { AgentDefinitionChangeSignal } from "./agent-definition-change-signal.js";
-import { cloneAgent, normalizeOptionalString, personalEditsOf } from "./agent-definition-edits.js";
+import { cloneAgent, personalEditsOf } from "./agent-definition-edits.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -201,7 +202,7 @@ export class AgentDefinitionService {
       description: data.description,
       instructions: data.instructions ?? "",
       category: data.category,
-      avatarUrl: normalizeOptionalString(data.avatarUrl),
+      avatarUrl: userAvatarInput(data.avatarUrl) ?? null,
       toolNames: data.toolNames ?? [],
       inputProcessorNames: filterOptionalProcessorNames(
         data.inputProcessorNames ?? [],
@@ -417,7 +418,7 @@ export class AgentDefinitionService {
           nextValue = filterOptionalProcessorNames(value as string[], this.registries.lifecycle);
           break;
         case "avatarUrl":
-          nextValue = normalizeOptionalString(value);
+          nextValue = userAvatarInput(value as string | null) ?? null;
           break;
         case "defaultLaunchConfig":
           nextValue = normalizeDefaultLaunchConfigInput(value) ?? null;

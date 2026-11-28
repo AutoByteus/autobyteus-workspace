@@ -4,6 +4,7 @@ import {
   type CollaborationHandoff,
 } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { DefinitionSourceDescriptor } from "../../collaboration-definition-admission/domain/definition-source-descriptor.js";
+import type { PackageAvatar } from "../../agent-package-definitions/domain/definition-avatar-file.js";
 
 export type TeamMemberRefScope = "shared" | "team_local" | "application_owned";
 export type AgentTeamDefinitionOwnershipScope = "shared" | "agent_org_owned" | "application_owned";
@@ -46,6 +47,8 @@ export class AgentTeamDefinition {
   ownerLocalApplicationId?: string | null;
   revision: string | null;
   source: DefinitionSourceDescriptor | null;
+  /** The picture file in its folder (autobyteus-669), read with it; never stored. */
+  packageAvatar: PackageAvatar | null;
 
   constructor(options: {
     name: string;
@@ -69,6 +72,7 @@ export class AgentTeamDefinition {
     ownerLocalApplicationId?: string | null;
     revision?: string | null;
     source?: DefinitionSourceDescriptor | null;
+    packageAvatar?: PackageAvatar | null;
   }) {
     this.name = options.name;
     this.description = options.description;
@@ -91,6 +95,7 @@ export class AgentTeamDefinition {
     this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
     this.revision = options.revision ?? null;
     this.source = options.source ?? null;
+    this.packageAvatar = options.packageAvatar ?? null;
   }
 }
 
@@ -127,7 +132,8 @@ export class AgentTeamDefinitionUpdate {
     this.handoffs = options.handoffs === undefined || options.handoffs === null
       ? null
       : cloneCollaborationHandoffs(options.handoffs);
-    this.avatarUrl = options.avatarUrl ?? null;
+    // Absent stays absent (the picture is kept); null clears it (autobyteus-669 S-2), as for the launch defaults.
+    this.avatarUrl = options.avatarUrl;
     this.defaultLaunchConfig = options.defaultLaunchConfig;
     this.expectedRevision = options.expectedRevision ?? null;
   }

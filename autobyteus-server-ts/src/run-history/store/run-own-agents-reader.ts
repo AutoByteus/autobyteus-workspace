@@ -34,7 +34,8 @@ const agentsOfMembers = (members: readonly MemberNode[]): RunAgent[] => members.
   ? [{ agentRunId: member.agentRunId, address: member.address ?? null, agentDefinitionId: member.agentDefinitionId ?? null }]
   : agentsOfMembers(member.members ?? []));
 const membersOf = (members: readonly MemberNode[]): RunOwnMember[] =>
-  members.flatMap((member) => member.agentRunId && member.address ? [{ address: member.address, agentRunId: member.agentRunId }] : []);
+  members.flatMap((member) => member.agentRunId && member.address ? [{ address: member.address, agentRunId: member.agentRunId,
+    ...(member.agentDefinitionId ? { definitionId: member.agentDefinitionId } : {}) }] : []);
 
 /**
  * A run's parts from its own file only (469 D-11): an agent run's own agent with its stored address (stored once it
@@ -101,14 +102,16 @@ export class RunOwnAgentsReader implements RunFilesReader {
     const leaving = file.rootOrg.formerUnits.filter((unit) => unit.leaving && !current.has(unit.address));
     for (const unit of [...file.rootOrg.units, ...leaving]) {
       const tag = unit.leaving ? { leaving: true as const } : {};
-      if (unit.kind === "agent") { parts.push({ kind: "agent", address: unit.address, agentRunId: unit.runId, ...tag }); continue; }
+      // Each unit's definition from the container file itself (ARCH-REV-002 N-6); a Team unit's members' from its team file.
+      const definition = unit.definitionId ? { definitionId: unit.definitionId } : {};
+      if (unit.kind === "agent") { parts.push({ kind: "agent", address: unit.address, agentRunId: unit.runId, ...tag, ...definition }); continue; }
       const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: unit.runId, ancestorTeamRunIds: [] }), unit.runId).catch(() => null);
       if (!tree) { console.warn(`Org unit ${unit.address} (Team run '${unit.runId}') has no row: its file cannot be read.`); continue; }
       const space = ContainedTeamAddressSpace.of({ orgRunId: file.rootOrg.orgRunId, address: unit.address })!;
       parts.push({ kind: "team", address: unit.address, teamRunId: unit.runId, coordinatorAddress: space.toOrg(tree.rootTeam.coordinatorAddress),
         // Its members as the Org shows them (the one owner): current, then still leaving (rows decide by the unit's liveness).
         members: teamUnitMembersInOrg(tree, space, true).map((member) => Object.freeze({ address: member.address as string, agentRunId: member.agentRunId,
-          ...(member.leaving ? { leaving: true as const } : {}) })), ...tag });
+          ...(member.leaving ? { leaving: true as const } : {}), ...(member.agentDefinitionId ? { definitionId: member.agentDefinitionId } : {}) })), ...tag, ...definition });
     }
     return { kind: "agent_org", orgRunId: file.rootOrg.orgRunId, parts, container: true };
   }
@@ -122,11 +125,13 @@ export class RunOwnAgentsReader implements RunFilesReader {
     switch (run.rootSubjectKind) {
       case "agent": {
         const metadata = await this.stores.agents.readMetadata(run.rootRunId);
-        return metadata ? { kind: "agent", agentRunId: run.rootRunId, address: metadata.address ?? null } : null;
+        return metadata ? { kind: "agent", agentRunId: run.rootRunId, address: metadata.address ?? null,
+          ...(metadata.agentDefinitionId ? { definitionId: metadata.agentDefinitionId } : {}) } : null;
       }
       case "agent_team": {
         const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
         return tree ? { kind: "agent_team", teamRunId: run.rootRunId, coordinatorAddress: tree.rootTeam.coordinatorAddress,
+          ...(tree.rootTeam.teamDefinitionId ? { definitionId: tree.rootTeam.teamDefinitionId } : {}),
           members: [...membersOf(tree.rootTeam.members as readonly MemberNode[]),
             ...membersOf((tree.rootTeam.formerMembers ?? []).filter((member) => member.leaving) as readonly MemberNode[])
               .map((member) => Object.freeze({ ...member, leaving: true as const }))] } : null;

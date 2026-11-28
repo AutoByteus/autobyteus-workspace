@@ -50,16 +50,22 @@ export type RunTreeRow = Readonly<{
   peer?: Readonly<{ nodeId: string; nodeName: string; title: string | null; reachable: boolean | null }>;
   /** A team member removed from its team that is still finishing its turn (SR-009): shown "Leaving", still opens. */
   leaving?: true;
+  /**
+   * The definition of its agent run (`agent`, `team_member`, `org_agent`) or team run (`team`, `org_team`), from the run's
+   * own record (autobyteus-669 S-4): a client shows its picture. Absent for a peer row and when the record names none.
+   */
+  definitionId?: string;
 }>;
 
 /** A run's own parts, from its own file (`RunOwnAgentsReader.ownTreeOf`); `leaving`: a former member marked so (SR-010). */
-export type RunOwnMember = Readonly<{ address: string; agentRunId: string; leaving?: true }>;
+/** `definitionId`: each part's definition, as its own record names it (autobyteus-669 S-4); absent when it names none. */
+export type RunOwnMember = Readonly<{ address: string; agentRunId: string; leaving?: true; definitionId?: string }>;
 export type RunOwnTree =
-  | Readonly<{ kind: "agent"; agentRunId: string; address: string | null }>
-  | Readonly<{ kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[] }>
+  | Readonly<{ kind: "agent"; agentRunId: string; address: string | null; definitionId?: string }>
+  | Readonly<{ kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[]; definitionId?: string }>
   | Readonly<{ kind: "agent_org"; orgRunId: string; parts: readonly (
-    | Readonly<{ kind: "agent"; address: string; agentRunId: string; leaving?: true }>
-    | Readonly<{ kind: "team"; address: string; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[]; leaving?: true }>)[];
+    | Readonly<{ kind: "agent"; address: string; agentRunId: string; leaving?: true; definitionId?: string }>
+    | Readonly<{ kind: "team"; address: string; teamRunId: string; coordinatorAddress: string; members: readonly RunOwnMember[]; leaving?: true; definitionId?: string }>)[];
     /** An Org container (org-teams-follow-definition): each part is a unit run of its own, the delegating run of its agents' delegations. */
     container?: true }>;
 
@@ -103,6 +109,9 @@ export const runTreeRowKey = (kind: RunTreeRowKind, runId: string, agentRunId?: 
   agentRunId === undefined ? `${kind}:${runId}` : `${kind}:${runId}:${agentRunId}`;
 
 type Draft = Omit<RunTreeRow, "depth">;
+
+/** The row's `definitionId` field, when its record names one. */
+const definitionOf = (definitionId: string | null | undefined): { definitionId?: string } => definitionId ? { definitionId } : {};
 
 /** A row's launch, from its run's record (CR-461-086). */
 const launchOf = (launch: RunLaunchRecord): RunTreeLaunch => Object.freeze({
@@ -174,19 +183,19 @@ export class RunTreeView {
     if (own.kind === "agent") {
       const key = runTreeRowKey("agent", own.agentRunId);
       drafts.push(Object.freeze({ key, parentKey: null, kind: "agent", name: rowNameOf(own.address, own.agentRunId), address: own.address,
-        openTarget: openTargetOf({ agentRunId: own.agentRunId }), statusIds: Object.freeze([own.agentRunId]) }));
+        openTarget: openTargetOf({ agentRunId: own.agentRunId }), statusIds: Object.freeze([own.agentRunId]), ...definitionOf(own.definitionId) }));
       anchor(run, own.agentRunId, key);
       return key;
     }
     if (own.kind === "agent_team") {
       const key = runTreeRowKey("team", own.teamRunId);
       drafts.push(Object.freeze({ key, parentKey: null, kind: "team", name: rowNameOf(null, own.teamRunId), address: null,
-        openTarget: openTargetOf({ teamRunId: own.teamRunId }, own), statusIds: Object.freeze([own.teamRunId]) }));
+        openTarget: openTargetOf({ teamRunId: own.teamRunId }, own), statusIds: Object.freeze([own.teamRunId]), ...definitionOf(own.definitionId) }));
       for (const member of teamMemberRowsOf(own.members, this.sources.isLiveTeamRun(own.teamRunId))) {
         const memberKey = runTreeRowKey("team_member", own.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
           openTarget: Object.freeze({ runKind: "agent_team" as const, runId: own.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
-          ...(member.leaving ? { leaving: true as const } : {}) }));
+          ...(member.leaving ? { leaving: true as const } : {}), ...definitionOf(member.definitionId) }));
         anchor(run, member.agentRunId, memberKey);
       }
       return key;
@@ -199,7 +208,8 @@ export class RunTreeView {
       if (part.kind === "agent") {
         const key = runTreeRowKey("org_agent", own.orgRunId, part.agentRunId);
         drafts.push(Object.freeze({ key, parentKey: null, kind: "org_agent", name: rowNameOf(part.address, part.agentRunId), address: part.address,
-          openTarget: inOrg(part.agentRunId), statusIds: Object.freeze([part.agentRunId]), ...(part.leaving ? { leaving: true as const } : {}) }));
+          openTarget: inOrg(part.agentRunId), statusIds: Object.freeze([part.agentRunId]), ...(part.leaving ? { leaving: true as const } : {}),
+          ...definitionOf(part.definitionId) }));
         anchor(holderOf(part), part.agentRunId, key);
         continue;
       }
@@ -208,12 +218,13 @@ export class RunTreeView {
       if (!coordinator) console.warn(`Row error: the org's mounted team at '${part.address}' has no coordinator among its members; its row has no open target.`);
       drafts.push(Object.freeze({ key: teamKey, parentKey: null, kind: "org_team", name: rowNameOf(part.address, part.teamRunId), address: part.address,
         openTarget: coordinator ? inOrg(coordinator.agentRunId) : null, statusIds: Object.freeze(part.members.map((member) => member.agentRunId)),
-        ...(part.leaving ? { leaving: true as const } : {}) }));
+        ...(part.leaving ? { leaving: true as const } : {}), ...definitionOf(part.definitionId) }));
       // A member leaving its Team unit is a row tagged leaving only while that Team unit runs (SR-010, as a Team's own rows).
       for (const member of teamMemberRowsOf(part.members, this.sources.isLiveTeamRun(part.teamRunId))) {
         const memberKey = runTreeRowKey("team_member", part.teamRunId, member.agentRunId);
         drafts.push(Object.freeze({ key: memberKey, parentKey: teamKey, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
-          openTarget: inOrg(member.agentRunId), statusIds: Object.freeze([member.agentRunId]), ...(part.leaving || member.leaving ? { leaving: true as const } : {}) }));
+          openTarget: inOrg(member.agentRunId), statusIds: Object.freeze([member.agentRunId]), ...(part.leaving || member.leaving ? { leaving: true as const } : {}),
+          ...definitionOf(member.definitionId) }));
         anchor(holderOf(part), member.agentRunId, memberKey);
       }
     }
@@ -228,18 +239,20 @@ export class RunTreeView {
       const key = runTreeRowKey("agent", record.agentRunId);
       anchor(holder, record.agentRunId, key);
       return [Object.freeze({ key, parentKey: null, kind: "agent", name: displayNameOf({ delegated: true, address: record.address }) ?? record.agentRunId, address: record.address,
-        openTarget: openTargetOf({ agentRunId: record.agentRunId }), statusIds: Object.freeze([record.agentRunId]), launch: launchOf(record.launch) })];
+        openTarget: openTargetOf({ agentRunId: record.agentRunId }), statusIds: Object.freeze([record.agentRunId]), launch: launchOf(record.launch),
+        ...definitionOf(record.definitionId) })];
     }
     const key = runTreeRowKey("team", record.teamRunId);
     // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
     const rows: Draft[] = [Object.freeze({ key, parentKey: null, kind: "team", name: displayNameOf({ delegated: true, address: record.address }) ?? record.teamRunId, address: record.address,
-      openTarget: openTargetOf({ teamRunId: record.teamRunId }, record), statusIds: Object.freeze([record.teamRunId]), launch: launchOf(record.launch) })];
+      openTarget: openTargetOf({ teamRunId: record.teamRunId }, record), statusIds: Object.freeze([record.teamRunId]), launch: launchOf(record.launch),
+      ...definitionOf(record.definitionId) })];
     for (const member of teamMemberRowsOf(record.members, this.sources.isLiveTeamRun(record.teamRunId))) {
       const memberKey = runTreeRowKey("team_member", record.teamRunId, member.agentRunId);
       anchor(holder, member.agentRunId, memberKey);
       rows.push(Object.freeze({ key: memberKey, parentKey: key, kind: "team_member", name: rowNameOf(member.address, member.agentRunId), address: member.address,
         openTarget: Object.freeze({ runKind: "agent_team" as const, runId: record.teamRunId, agentRunId: member.agentRunId }), statusIds: Object.freeze([member.agentRunId]),
-        ...(member.launch ? { launch: launchOf(member.launch) } : {}), ...(member.leaving ? { leaving: true as const } : {}) }));
+        ...(member.launch ? { launch: launchOf(member.launch) } : {}), ...(member.leaving ? { leaving: true as const } : {}), ...definitionOf(member.definitionId) }));
     }
     return rows;
   }

@@ -58,9 +58,29 @@ describe("RunOwnAgentsReader", () => {
     const [lead, writer, old] = tree.rootTeam.members;
     await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload({ ...tree, handoffs: [],
       rootTeam: { ...tree.rootTeam, members: [lead!], formerMembers: [old!, { ...writer!, leaving: true }] } }, "team-l"));
+    // Each part with the definition its file names (autobyteus-669 S-4): the team's and each member's.
     expect(await new RunOwnAgentsReader(memory).ownTreeOf({ rootSubjectKind: "agent_team", rootRunId: "team-l" } as never)).toEqual({
-      kind: "agent_team", teamRunId: "team-l", coordinatorAddress: "/lead",
-      members: [{ address: "/lead", agentRunId: "lead-l" }, { address: "/writer", agentRunId: "writer-l", leaving: true }] });
+      kind: "agent_team", teamRunId: "team-l", coordinatorAddress: "/lead", definitionId: tree.rootTeam.teamDefinitionId,
+      members: [{ address: "/lead", agentRunId: "lead-l", definitionId: (lead as { agentDefinitionId: string }).agentDefinitionId },
+        { address: "/writer", agentRunId: "writer-l", leaving: true, definitionId: (writer as { agentDefinitionId: string }).agentDefinitionId }] });
+  });
+
+  // autobyteus-669 S-4 (N-5, N-6): every own part names its definition from the files the tree already reads.
+  it("ownTreeOf names each part's definition: an agent run's from its metadata, an Org unit's from the container, a Team unit's members' from its file", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-tree-definitions-"));
+    roots.push(memory);
+    await writeStoredOrgContainer(memory, { orgRunId: "org-d", units: [
+      { kind: "agent", address: "/ceo", runId: "ceo-d", agentDefinitionId: "ceo-def" },
+      { kind: "agent_team", address: "/dev", runId: "dev-d", teamDefinitionId: "dev-team-def", coordinatorAddress: "/lead",
+        members: [{ address: "/lead", agentRunId: "lead-d", agentDefinitionId: "lead-def" }] },
+    ] } as never);
+    const reader = new RunOwnAgentsReader(memory);
+    expect(await reader.ownTreeOf({ rootSubjectKind: "agent", rootRunId: "ceo-d" })).toMatchObject({ kind: "agent", agentRunId: "ceo-d", definitionId: "ceo-def" });
+    const org = await reader.ownTreeOf({ rootSubjectKind: "agent_org", rootRunId: "org-d" });
+    expect(org).toMatchObject({ kind: "agent_org", parts: [
+      { kind: "agent", agentRunId: "ceo-d", definitionId: "ceo-def" },
+      { kind: "team", teamRunId: "dev-d", definitionId: "dev-team-def", members: [{ agentRunId: "lead-d", definitionId: "lead-def" }] },
+    ] });
   });
 
   it("partsOf (contract §2.3, model.py standing): an agent run's stored address, or none before it collaborates; an org's agents, mounted members and mounted teams", async () => {
