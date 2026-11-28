@@ -386,6 +386,18 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
 }));
 
+// Each definition's picture address, as the definition avatar store reads it (autobyteus-669 W-3): here, the catalogs'.
+vi.mock('~/stores/definitionAvatarStore', () => ({
+  useDefinitionAvatarStore: () => ({
+    avatarOf: (kind: string, id: string | null | undefined) => {
+      const list: { id: string; avatarUrl?: string | null }[] = kind === 'agent' ? agentDefinitionStoreMock.agentDefinitions
+        : kind === 'team' ? agentTeamDefinitionStoreMock.agentTeamDefinitions : orgCatalog.definitions;
+      return list.find((definition) => definition.id === id)?.avatarUrl?.trim() || null;
+    },
+    reloadIfLoaded: async () => undefined,
+  }),
+}));
+
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
@@ -822,32 +834,18 @@ describe('RunSectionPanel', () => {
     }
   });
 
-  it('renders agent avatar image when the tree node provides avatar URL', async () => {
+  // autobyteus-669 W-5: the agent's group shows its definition's current picture, not the one a run recorded.
+  it('renders the agent definition\'s avatar image on its group', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandWorkspace(wrapper);
 
     const avatar = wrapper.find('img[alt="SuperAgent avatar"]');
     expect(avatar.exists()).toBe(true);
-    expect(avatar.attributes('src')).toBe('https://example.com/superagent.png');
+    expect(avatar.attributes('src')).toBe('https://example.com/team-member.png');
   });
 
-  it('tracks broken avatar per URL key so a changed avatar URL can recover', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-
-    const vm = wrapper.vm as any;
-    const workspaceRootPath = '/ws/a';
-    const agentDefinitionId = 'agent-def-1';
-    const firstAvatarUrl = 'https://example.com/superagent.png';
-    const replacementAvatarUrl = 'https://example.com/superagent-v2.png';
-
-    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(true);
-    vm.onAgentAvatarError(workspaceRootPath, agentDefinitionId, firstAvatarUrl);
-    await nextTick();
-    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(false);
-    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, replacementAvatarUrl)).toBe(true);
-  });
+  // A broken picture's fallback and its recovery on a new address: components/common/__tests__/DefinitionAvatar.spec.ts.
 
   it('selects run via runHistoryStore.selectTreeRun and emits run-selected', async () => {
     const wrapper = mountComponent();
@@ -1222,6 +1220,13 @@ describe('RunSectionPanel', () => {
       },
     ];
 
+    // The member's definition, as the server's run tree names it (autobyteus-669 S-4).
+    useRunTreeStore().streamSnapshot({ kind: 'agent_team', runId: 'team-1' }, [
+      { key: 'team:team-1', parentKey: null, depth: 0, kind: 'team', name: 'Team Alpha', address: '/team_alpha',
+        openTarget: { runKind: 'agent_team', runId: 'team-1', agentRunId: 'member-run-1' }, statusIds: ['team-1'], definitionId: 'team-def-1' },
+      { key: 'team_member:team-1:member-run-1', parentKey: 'team:team-1', depth: 1, kind: 'team_member', name: 'Super Agent', address: '/super_agent',
+        openTarget: { runKind: 'agent_team', runId: 'team-1', agentRunId: 'member-run-1' }, statusIds: ['member-run-1'], definitionId: 'agent-def-1' },
+    ]);
     const wrapper = mountComponent();
     await flushPromises();
     await expandTeamDefinitionGroup(wrapper);

@@ -38,7 +38,7 @@ function selected(source: any, selectionSet: any, fragments: Map<string, any>): 
 }
 const agent = {
   __typename: 'AgentDefinition', id: 'existing-agent', name: 'Existing Agent', description: 'Healthy definition',
-  instructions: 'Inspect only', role: null, category: null, avatarUrl: null,
+  instructions: 'Inspect only', role: null, category: null, avatarUrl: null, userAvatarUrl: null,
   toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], skillScope: 'CONFIGURED',
   ownershipScope: 'SHARED', ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null,
@@ -47,7 +47,7 @@ const agent = {
 }
 const org = {
   __typename: 'AgentOrgDefinition', id: 'existing-org', name: 'Existing Org', description: 'Healthy definition',
-  instructions: '', category: null, avatarUrl: null, revision: 'revision-1', handoffs: [],
+  instructions: '', category: null, avatarUrl: null, userAvatarUrl: null, revision: 'revision-1', handoffs: [],
   members: [{ __typename: 'AgentOrgMember' as const, memberName: 'worker', ref: agent.id, refType: 'AGENT' as const, refScope: 'SHARED' as const }],
   defaultLaunchConfig: null, loadIssues: [], personalSettings: [], personalSettingsBase: null,
 }

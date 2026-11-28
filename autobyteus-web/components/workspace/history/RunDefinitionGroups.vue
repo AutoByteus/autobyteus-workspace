@@ -24,18 +24,13 @@
           class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
           :class="state.isAgentExpanded(workspacePresentationId, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
         />
-        <span
-          class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
-        >
-          <img
-            v-if="avatars.showAgentAvatar(node.workspaceRootPath, agentNode.agentDefinitionId, agentNode.agentAvatarUrl)"
-            :src="agentNode.agentAvatarUrl || ''"
-            :alt="`${agentNode.agentName} avatar`"
-            class="h-full w-full object-cover"
-            @error="avatars.onAgentAvatarError(node.workspaceRootPath, agentNode.agentDefinitionId, agentNode.agentAvatarUrl)"
-          >
-          <span v-else>{{ avatars.getAgentInitials(agentNode.agentName) }}</span>
-        </span>
+        <DefinitionAvatar
+          class="mr-1.5 h-5 w-5 rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
+          kind="agent"
+          :name="agentNode.agentName"
+          :avatar-url="definitionAvatars.avatarOf('agent', agentNode.agentDefinitionId)"
+          :initials="avatars.getAgentInitials(agentNode.agentName)"
+        />
         <span class="truncate font-medium">{{ agentNode.agentName }}</span>
         <span class="ml-1 text-xs text-gray-400">({{ agentNode.runs.length }})</span>
       </button>
@@ -178,19 +173,13 @@
           :status="teamDefinitionGroupStatus(group.runs)"
           :background-tasks-running="teamDefinitionGroupBackgroundTasks(group.runs)"
         />
-        <span
-          class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
-        >
-          <img
-            v-if="avatars.showTeamAvatar(group.representativeRun)"
-            :key="avatars.getTeamAvatarUrl(group.representativeRun)"
-            :src="avatars.getTeamAvatarUrl(group.representativeRun)"
-            :alt="`${group.teamDefinitionName} avatar`"
-            class="h-full w-full object-cover"
-            @error="avatars.onTeamAvatarError(group.representativeRun, ($event.target as HTMLImageElement).getAttribute('src') || '')"
-          >
-          <Icon v-else icon="heroicons:user-group-20-solid" class="h-3.5 w-3.5" />
-        </span>
+        <DefinitionAvatar
+          class="mr-1.5 h-5 w-5 rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
+          kind="team"
+          :name="group.teamDefinitionName"
+          :avatar-url="definitionAvatars.avatarOf('team', group.representativeRun.teamDefinitionId)"
+          icon-class="h-3.5 w-3.5"
+        />
         <span class="truncate font-medium">{{ group.teamDefinitionName }}</span>
         <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
       </button>
@@ -305,7 +294,6 @@
   </div>
 
   <WorkspaceAgentOrgHistoryCollection
-    :avatars="avatars"
     :workspace-id="workspacePresentationId"
     :groups="node.agentOrgDefinitions ?? []"
     :state="state"
@@ -350,6 +338,10 @@ import {
   canArchiveAgentGroup,
   teamGroupArchiveKey,
 } from '~/composables/useWorkspaceHistoryGroupArchive';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore';
+
+const definitionAvatars = useDefinitionAvatarStore();
 
 const props = defineProps<{
   /** The section's node: its agent groups and Org groups; its `stableKey` keys the groups' expansion. */

@@ -10,6 +10,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunListStore } from '~/stores/runListStore';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 import type { RunListEntry } from '~/utils/runListProjection';
@@ -86,6 +87,7 @@ export function useMobileRunTree() {
   // The listed Task workers' current Tasks (the desktop's second line; summaries only, no locating on the phone).
   const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => treeDisplayRowsOf(entry, sources).map((display) => display.row)));
 
+  const definitionAvatars = useDefinitionAvatarStore();
   const rows = computed<MobileRunTreeRow[]>(() => buildMobileRunListRows({
     entries: runListStore.shownEntries,
     ...sources,
@@ -96,6 +98,7 @@ export function useMobileRunTree() {
     isRunExpanded: disclosure.isRunExpanded,
     isTeamExpanded: disclosure.isTeamExpanded,
     isAgentOrgRunExpanded: disclosure.isAgentOrgRunExpanded,
+    avatarOf: definitionAvatars.avatarOf,
   }));
 
   /** The open target's agent; its row is the open row. */

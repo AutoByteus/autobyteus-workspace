@@ -60,19 +60,16 @@
         <span class="member-status inline-flex flex-shrink-0 items-center">
           <StatusDot class="mr-1.5" :status="row.row.currentStatus" :background-tasks-running="backgroundTasksRunning" />
         </span>
-        <span
-          class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
+        <!-- Its definition's picture (autobyteus-669 W-5), by the server tree's definition; else its initials. -->
+        <DefinitionAvatar
+          class="mr-1.5 h-4 w-4 rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
           data-test="workspace-team-member-avatar"
+          :kind="row.memberKind === 'agent_team' ? 'team' : 'agent'"
+          :name="avatars.getTeamMemberDisplayName(row.row)"
+          :avatar-url="definitionAvatars.avatarOf(row.memberKind === 'agent_team' ? 'team' : 'agent', row.definitionId)"
         >
-          <img
-            v-if="avatars.showTeamMemberAvatar(row.row)"
-            :src="avatars.getTeamMemberAvatarUrl(row.row)"
-            :alt="`${avatars.getTeamMemberDisplayName(row.row)} avatar`"
-            class="h-full w-full object-cover"
-            @error="avatars.onTeamMemberAvatarError(row.row)"
-          >
-          <span v-else>{{ avatars.getTeamMemberInitials(row.row) }}</span>
-        </span>
+          <template #fallback><span>{{ avatars.getTeamMemberInitials(row.row) }}</span></template>
+        </DefinitionAvatar>
         <span class="min-w-0 flex-1 truncate">{{ displayName }}</span>
         <span
           v-if="row.leaving"
@@ -123,6 +120,10 @@ import type { RunHistoryStableExecutionRow } from '~/stores/runHistoryTypes';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunStatusStore } from '~/stores/runStatusStore';
 import { agentActivityLabel } from '~/utils/agentActivityPresentation';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore';
+
+const definitionAvatars = useDefinitionAvatarStore();
 
 const props = defineProps<{
   row: RunHistoryStableExecutionRow;

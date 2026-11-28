@@ -76,6 +76,7 @@ const messages = {
   'agentTeams.components.agentTeams.SearchableGroupedSelect.recommended': 'Recommended',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics': 'Basics',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.removeAvatar': 'Remove',
+  'agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarFromPackage': 'From the package',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.descriptionPlaceholder': 'Describe the team\'s purpose and goals...',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.category': 'Category',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.instructions': 'Instructions',

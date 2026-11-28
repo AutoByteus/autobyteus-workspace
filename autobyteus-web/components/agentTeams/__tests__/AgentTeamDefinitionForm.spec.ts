@@ -280,12 +280,12 @@ describe('AgentTeamDefinitionForm', () => {
   it('a package Team: the note and the avatar mark; reset takes the base avatar and keeps the unsaved name (package-personal-settings)', async () => {
     const packageTeam = (overrides: Record<string, unknown> = {}) => ({
       id: 'se-team', name: 'SE Team', description: 'Ships', instructions: 'Ship.', coordinatorMemberName: 'lead', revision: 'r1',
-      avatarUrl: '/mine.png', defaultLaunchConfig: null, personalSettings: ['AVATAR'], personalSettingsBase: 'PACKAGE',
+      avatarUrl: '/mine.png', userAvatarUrl: '/mine.png', defaultLaunchConfig: null, personalSettings: ['AVATAR'], personalSettingsBase: 'PACKAGE',
       nodes: [{ memberName: 'lead', ref: 'agent-1', refScope: 'SHARED' }], ...overrides,
     })
     const wrapper = createWrapper(packageTeam())
     expect(wrapper.get('[data-testid="personal-settings-note"]').text()).toBe('personalSettings.note.collaboration.package')
-    const afterReset = packageTeam({ avatarUrl: '/package.png', personalSettings: [] })
+    const afterReset = packageTeam({ avatarUrl: '/package.png', userAvatarUrl: null, personalSettings: [] })
     mockAgentTeamDefinitionStore.resetAgentTeamPersonalSetting.mockImplementation(async () => {
       await wrapper.setProps({ initialData: afterReset })
       return afterReset
@@ -299,6 +299,37 @@ describe('AgentTeamDefinitionForm', () => {
     expect(wrapper.find('[data-testid="personal-setting-mark"]').exists()).toBe(false)
     await wrapper.setProps({ initialData: { ...afterReset } }) // the list reload after the announced change
     await wrapper.get('form').trigger('submit.prevent')
-    expect(wrapper.emitted('submit')?.[0]?.[0]).toMatchObject({ name: 'SE Team (not saved yet)', avatarUrl: '/package.png' })
+    // The package's picture is shown, not saved as the user's own (autobyteus-669 W-6).
+    expect(wrapper.emitted('submit')?.[0]?.[0]).toMatchObject({ name: 'SE Team (not saved yet)', avatarUrl: null })
+  })
+
+  // autobyteus-669 W-6 (REQ-003): the form edits the user's own picture only; the package's is previewed, captioned.
+  describe('the picture', () => {
+    const team = (overrides: Record<string, unknown> = {}) => ({
+      id: 'crew', name: 'Crew', description: 'Ships', instructions: 'Ship.', coordinatorMemberName: 'lead', revision: 'r1',
+      avatarUrl: '/rest/definition-avatars/agent_team/crew?v=1', userAvatarUrl: null, defaultLaunchConfig: null,
+      nodes: [{ memberName: 'lead', ref: 'agent-1', refScope: 'SHARED' }], ...overrides,
+    })
+    const submittedAvatar = async (wrapper: ReturnType<typeof createWrapper>) => {
+      await wrapper.get('form').trigger('submit.prevent')
+      return (wrapper.emitted('submit')?.at(-1)?.[0] as Record<string, unknown>).avatarUrl
+    }
+
+    it('previews the package\'s picture, captioned, with no Remove, and saves no picture of the user\'s', async () => {
+      const wrapper = createWrapper(team())
+      expect(wrapper.get('[data-test="team-avatar-preview"] img').attributes('src')).toContain('/rest/definition-avatars/agent_team/crew?v=1')
+      expect(wrapper.find('[data-test="team-avatar-from-package"]').exists()).toBe(true)
+      expect(wrapper.find('[data-test="team-avatar-remove"]').exists()).toBe(false)
+      expect(await submittedAvatar(wrapper)).toBeNull()
+    })
+
+    it('fills the user\'s own picture, with Remove and no caption; Remove saves null', async () => {
+      const wrapper = createWrapper(team({ avatarUrl: '/rest/files/mine.png', userAvatarUrl: '/rest/files/mine.png' }))
+      expect(wrapper.find('[data-test="team-avatar-from-package"]').exists()).toBe(false)
+      expect(await submittedAvatar(wrapper)).toBe('/rest/files/mine.png')
+      await wrapper.get('[data-test="team-avatar-remove"]').trigger('click')
+      expect(wrapper.find('[data-test="team-avatar-remove"]').exists()).toBe(false)
+      expect(await submittedAvatar(wrapper)).toBeNull()
+    })
   })
 })

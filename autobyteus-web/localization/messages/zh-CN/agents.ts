@@ -74,6 +74,7 @@ const messages = {
   'agents.components.agents.AgentDefinitionForm.instructionsPlaceholder': '输入该智能体的系统指令...',
   'agents.components.agents.AgentDefinitionForm.avatar': '头像',
   'agents.components.agents.AgentDefinitionForm.removeAvatar': '移除',
+  'agents.components.agents.AgentDefinitionForm.avatarFromPackage': '来自软件包',
   'agents.components.agents.AgentDefinitionForm.skillsLabel': '技能',
   'agents.components.agents.AgentDefinitionForm.toolsLabel': '工具',
   'agents.components.agents.AgentDefinitionForm.clearSelection': '清除',

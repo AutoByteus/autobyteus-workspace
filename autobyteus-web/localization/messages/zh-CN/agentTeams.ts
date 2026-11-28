@@ -76,6 +76,7 @@ const messages = {
   'agentTeams.components.agentTeams.SearchableGroupedSelect.recommended': '推荐',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics': '基础信息',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.removeAvatar': '移除',
+  'agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarFromPackage': '来自软件包',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.descriptionPlaceholder': '描述该团队的目标与职责...',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.category': '分类',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.instructions': '指令',

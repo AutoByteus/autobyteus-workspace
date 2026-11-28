@@ -156,12 +156,7 @@ const disclosure = useRunListDisclosure({
 const scrollRef = ref<HTMLElement | null>(null)
 useRevealSelectedTreeRow(scrollRef, toRef(props, 'runShown'))
 
-const avatars: WorkspaceHistoryAvatarBindings = useRunHistoryAvatarState({
-  loading: computed(() => runHistoryStore.loading),
-  agentDefinitions: computed(() => agentDefinitionStore.agentDefinitions),
-  teamDefinitions: computed(() => agentTeamDefinitionStore.agentTeamDefinitions),
-  orgDefinitions: computed(() => agentOrgDefinitionStore.definitions),
-})
+const avatars: WorkspaceHistoryAvatarBindings = useRunHistoryAvatarState()
 
 /** Leaves the Agent Org route when the open Org run was archived or deleted. */
 const leaveRemovedAgentOrgRoute = async (orgRunId: string): Promise<void> => {

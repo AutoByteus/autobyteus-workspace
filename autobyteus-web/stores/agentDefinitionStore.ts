@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
@@ -33,6 +34,8 @@ export interface AgentDefinition extends PersonalSettingsFields {
   instructions: string
   category?: string | null
   avatarUrl?: string | null
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  userAvatarUrl?: string | null
   toolNames: string[]
   inputProcessorNames: string[]
   llmResponseProcessorNames: string[]
@@ -271,6 +274,8 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       }
 
       replaceInList(data.updateAgentDefinition)
+      // The rows show its picture by its ID (autobyteus-669 W-3): read again after this window's own save.
+      void useDefinitionAvatarStore().reloadIfLoaded(['agent'])
       return data.updateAgentDefinition
     } catch (cause) {
       error.value = cause
@@ -300,6 +305,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     const reset = data?.resetAgentPersonalSetting as AgentDefinition | undefined
     if (!reset) throw new Error(`The personal setting of agent ${definitionId} was not reset.`)
     replaceInList(reset)
+    void useDefinitionAvatarStore().reloadIfLoaded(['agent'])
     return reset
   }
 

@@ -35,6 +35,6 @@ const isPersonal = (setting: PersonalSetting): boolean => Boolean(props.org.pers
 const reset = (setting: PersonalSetting) => runReset(
   setting,
   () => useAgentOrgDefinitionStore().resetPersonalSetting(props.org.id, setting),
-  (updated) => { if (setting === 'AVATAR') emit('avatarReset', updated.avatarUrl || '') },
+  (updated) => { if (setting === 'AVATAR') emit('avatarReset', updated.userAvatarUrl || '') },
 )
 </script>

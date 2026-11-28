@@ -13,12 +13,8 @@
         @click="toggleDefinition(group.definitionId)"
       >
         <Icon icon="heroicons:chevron-down-20-solid" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform" :class="isDefinitionExpanded(group.definitionId) ? '' : '-rotate-90'" />
-        <span class="mr-1.5 inline-flex h-5 w-5 flex-none items-center justify-center overflow-hidden rounded bg-gray-100 text-gray-600">
-          <img v-if="avatars.showOrgAvatar(group.definitionId)" :key="avatars.getOrgAvatarUrl(group.definitionId)"
-            :src="avatars.getOrgAvatarUrl(group.definitionId)" :alt="group.name" class="h-full w-full object-cover"
-            @error="avatars.onOrgAvatarError(group.definitionId, ($event.target as HTMLImageElement).getAttribute('src') || '')" >
-          <Icon v-else icon="heroicons:building-office-2-20-solid" class="h-3.5 w-3.5" />
-        </span>
+        <DefinitionAvatar class="mr-1.5 h-5 w-5 rounded bg-gray-100 text-gray-600" kind="org" :name="group.name"
+          :avatar-url="definitionAvatars.avatarOf('org', group.definitionId)" icon-class="h-3.5 w-3.5" :alt="group.name" />
         <span class="truncate font-medium">{{ group.name }}</span>
         <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
       </button>
@@ -116,16 +112,19 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import AgentOrgRunMemberTree from './AgentOrgRunMemberTree.vue'
-import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
+import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import { agentOrgGroupArchiveKey } from '~/composables/useWorkspaceHistoryGroupArchive'
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue'
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore'
+
+const definitionAvatars = useDefinitionAvatarStore()
 
 const props = defineProps<{
   workspaceId: string
   groups: AgentOrgHistoryDefinitionGroup[]
   state: WorkspaceHistorySectionState
-  avatars: Pick<WorkspaceHistoryAvatarBindings, 'getOrgAvatarUrl' | 'showOrgAvatar' | 'onOrgAvatarError'>
   actions: WorkspaceHistorySectionActions
 }>()
 const { t } = useLocalization()

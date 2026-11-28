@@ -23,7 +23,7 @@ const defaultLaunchConfig = { __typename: 'DefaultLaunchConfig' as const, llmMod
 
 const agentDefinition = (definition: DemoDefinition): GetAgentDefinitionsQuery['agentDefinitions'][number] => ({
   __typename: 'AgentDefinition', id: definition.id, name: definition.name, role: null, description: descriptionOf(definition.name),
-  instructions: `You are ${definition.name}. ${descriptionOf(definition.name)}`, category: null, avatarUrl: null,
+  instructions: `You are ${definition.name}. ${descriptionOf(definition.name)}`, category: null, avatarUrl: null, userAvatarUrl: null,
   toolNames: ['read_file', 'write_file', 'edit_file', 'list_directory', 'run_terminal_command'], inputProcessorNames: [],
   llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [],
   skillNames: [], skillScope: AgentSkillScope.Configured, ownershipScope: AgentDefinitionOwnershipScope.Shared, ownerTeamId: null,
@@ -41,7 +41,7 @@ const memberRef = (world: DemoWorld, memberName: string, run: DemoDefinition): s
 
 const teamDefinition = (world: DemoWorld, definition: DemoDefinition): GetAgentTeamDefinitionsQuery['agentTeamDefinitions'][number] => ({
   __typename: 'AgentTeamDefinition', id: definition.id, name: definition.name, description: descriptionOf(definition.name),
-  instructions: descriptionOf(definition.name), category: null, avatarUrl: null, coordinatorMemberName: definition.members[0]!, revision: null,
+  instructions: descriptionOf(definition.name), category: null, avatarUrl: null, userAvatarUrl: null, coordinatorMemberName: definition.members[0]!, revision: null,
   ownershipScope: AgentTeamDefinitionOwnershipScope.Shared, ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null,
   ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null, personalSettings: [], personalSettingsBase: null,
   handoffs: [], defaultLaunchConfig,
@@ -51,7 +51,7 @@ const teamDefinition = (world: DemoWorld, definition: DemoDefinition): GetAgentT
 
 const orgDefinition = (world: DemoWorld, definition: DemoDefinition): GetAgentOrgDefinitionsQuery['agentOrgDefinitions'][number] => ({
   __typename: 'AgentOrgDefinition', id: definition.id, name: definition.name, description: descriptionOf(definition.name),
-  instructions: descriptionOf(definition.name), category: null, avatarUrl: null, revision: null, personalSettings: [], personalSettingsBase: null,
+  instructions: descriptionOf(definition.name), category: null, avatarUrl: null, userAvatarUrl: null, revision: null, personalSettings: [], personalSettingsBase: null,
   handoffs: [],
   members: definition.members.map((memberName) => ({ __typename: 'AgentOrgMember', memberName, ref: memberRef(world, memberName, definition), refType: AgentOrgMemberType.Agent, refScope: AgentOrgMemberScope.Shared })),
   defaultLaunchConfig, loadIssues: [],
@@ -68,5 +68,9 @@ export const definitionHandlers = {
   GetAgentDefinitions: (_variables, world) => ({ __typename: 'Query', agentDefinitions: world.definitions('agent').sort(byName).map(agentDefinition) }),
   GetAgentTeamDefinitions: (_variables, world) => ({ __typename: 'Query', agentTeamDefinitions: world.definitions('team').sort(byName).map((definition) => teamDefinition(world, definition)) }),
   GetAgentOrgDefinitions: (_variables, world) => ({ __typename: 'Query', agentOrgDefinitions: world.definitions('org').sort(byName).map((definition) => orgDefinition(world, definition)) }),
+  // The demo's definitions have no pictures (autobyteus-669 W-3): every row shows its fallback.
+  GetAgentDefinitionAvatars: (_variables, world) => ({ __typename: 'Query', agentDefinitions: world.definitions('agent').map(({ id }) => ({ __typename: 'AgentDefinition', id, avatarUrl: null })) }),
+  GetAgentTeamDefinitionAvatars: (_variables, world) => ({ __typename: 'Query', agentTeamDefinitions: world.definitions('team').map(({ id }) => ({ __typename: 'AgentTeamDefinition', id, avatarUrl: null })) }),
+  GetAgentOrgDefinitionAvatars: (_variables, world) => ({ __typename: 'Query', agentOrgDefinitions: world.definitions('org').map(({ id }) => ({ __typename: 'AgentOrgDefinition', id, avatarUrl: null })) }),
   GetAllWorkspaces: () => ({ __typename: 'Query', workspaces: [demoWorkspace()] }),
 } satisfies Partial<DemoGraphqlHandlers>;

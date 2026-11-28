@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { computed, defineComponent, h, nextTick, reactive, ref } from 'vue';
+import { defineComponent, h, nextTick, reactive, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import RunListRow from '../RunListRow.vue';
 import { useRunTreeStore } from '~/stores/runTreeStore';
@@ -11,6 +11,11 @@ import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes';
 import type { RunListEntry } from '~/utils/runListProjection';
 import type { RunListSectionState } from '~/components/runList/runListSectionContracts';
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
+// The definitions' picture addresses, as the definition avatar store reads them (autobyteus-669 W-3).
+const pictures = vi.hoisted(() => ({ definitions: null as null | { value: {id: string; avatarUrl?: string | null}[] } }));
+vi.mock('~/stores/definitionAvatarStore', () => ({ useDefinitionAvatarStore: () => ({
+  avatarOf: (_kind: string, id: string | null | undefined) => pictures.definitions?.value.find((definition) => definition.id === id)?.avatarUrl?.trim() || null,
+}) }));
 
 const agentOrgRun = (): AgentOrgRunHistoryItem => {
   const launch = {
@@ -70,13 +75,14 @@ const harness = (active = true, selected = true) => {
   const history = reactive({ selectedRunId: null, selectedTeamRunId: null, navigationTopologyRevision: 0, getTeamMemberNavigationAncestorRowKeys: () => [] });
   const actions = { onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
   const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
+  pictures.definitions = definitions;
   const deleting = ref(false);
   let tree: ReturnType<typeof useRunListDisclosure>;
   let avatars: ReturnType<typeof useRunHistoryAvatarState>;
   const wrapper = mount(defineComponent({ setup() {
     tree = useRunListDisclosure({ runHistoryStore: history, runListStore: runList, selectionStore: {selectedType: null, selectedRunId: null}, selectedAgentOrg: selectedOrg });
     if (!selected) { tree.toggleAgentOrgRun('org-run'); tree.toggleAgentOrgTeam('org-run', '/software'); }
-    avatars = useRunHistoryAvatarState({ loading: ref(false), agentDefinitions: computed(() => []), teamDefinitions: computed(() => []), orgDefinitions: computed(() => definitions.value) });
+    avatars = useRunHistoryAvatarState();
     const state = { ...tree, isAgentOrgDeleting: () => deleting.value, isAgentOrgArchiving: () => false, isAgentOrgTerminating: () => false,
       agentOrgTerminationError: () => null, agentOrgContextFor: () => null } as unknown as RunListSectionState;
     return () => h(RunListRow, { entry: runList.entries[0]!, state, actions, avatars, folderLabel: 'a', relative: () => '3d' });
@@ -187,7 +193,7 @@ describe('an Org run row in "Your runs" (UIT-003)', () => {
   });
 
   it('reactively renders the Org avatar and isolates late old-URL failures', async () => {
-    const {wrapper, definitions, avatars} = harness();
+    const {wrapper, definitions} = harness();
     const row = () => wrapper.get('[data-test="agent-org-run-open-org-run"]');
     expect(row().find('[data-icon="heroicons:building-office-2-20-solid"]').exists()).toBe(true);
     definitions.value = [{id:'org-definition', avatarUrl:' /old.png '}]; await nextTick();
@@ -195,7 +201,6 @@ describe('an Org run row in "Your runs" (UIT-003)', () => {
     expect(oldImage.attributes('src')).toBe('/old.png');
     definitions.value = [{id:'org-definition', avatarUrl:'/new.png'}]; await nextTick();
     await oldImage.trigger('error');
-    expect(avatars.showOrgAvatar('org-definition')).toBe(true);
     expect(row().get('img').attributes('src')).toBe('/new.png');
     await row().get('img').trigger('error');
     expect(row().find('img').exists()).toBe(false);

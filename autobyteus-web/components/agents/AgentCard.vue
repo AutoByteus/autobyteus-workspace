@@ -1,16 +1,13 @@
 <template>
   <div class="group h-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-start">
-      <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100">
-        <img
-          v-if="showAvatarImage"
-          :src="avatarUrl"
-          :alt="`${agentDef.name} avatar`"
-          class="h-full w-full object-cover"
-          @error="avatarLoadError = true"
-        />
-        <span v-else class="text-2xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
-      </div>
+      <DefinitionAvatar
+        class="h-16 w-16 shrink-0 rounded-xl bg-slate-100 text-2xl font-semibold tracking-wide text-slate-600"
+        kind="agent"
+        :name="agentDef.name"
+        :avatar-url="agentDef.avatarUrl"
+        :initials="avatarInitials"
+      />
 
       <div class="min-w-0">
         <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
@@ -96,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, toRefs } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions';
 import DefinitionLoadIssueBadge from '~/components/definitions/DefinitionLoadIssueBadge.vue';
@@ -104,6 +101,7 @@ import {
   formatApplicationOwnershipLabel,
   normalizeDefinitionOwnershipScope,
 } from '~/utils/definitionOwnership';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   agentDef: AgentDefinition;
@@ -113,7 +111,6 @@ defineEmits(['view-details', 'run-agent']);
 
 const { agentDef } = toRefs(props);
 const { $t } = useNuxtApp();
-const avatarLoadError = ref(false);
 
 const MAX_TAG_PREVIEW = 3;
 
@@ -130,10 +127,6 @@ const visibleSkills = computed(() => skillNames.value.slice(0, MAX_TAG_PREVIEW))
 const remainingToolsCount = computed(() => Math.max(0, totalTools.value - MAX_TAG_PREVIEW));
 const remainingSkillsCount = computed(() => Math.max(0, totalSkills.value - MAX_TAG_PREVIEW));
 
-watch(() => agentDef.value.avatarUrl, () => {
-  avatarLoadError.value = false;
-});
-
 /** A listed agent is always usable, so its own issue means its last working version is in use. */
 const loadIssues = computed<DefinitionLoadIssueEntry[]>(() => {
   const issue = agentDef.value.loadIssue;
@@ -142,8 +135,6 @@ const loadIssues = computed<DefinitionLoadIssueEntry[]>(() => {
     : [];
 });
 
-const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
-const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
 const descriptionText = computed(() => agentDef.value.description?.trim() || $t('agents.components.agents.AgentCard.noDescription'));
 const ownershipScope = computed(() => normalizeDefinitionOwnershipScope(agentDef.value));
 const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');

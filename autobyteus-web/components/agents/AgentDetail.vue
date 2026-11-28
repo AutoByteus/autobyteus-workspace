@@ -28,15 +28,15 @@
       <div v-else-if="agentDef" class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
         <div class="grid grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)] gap-8">
           <aside class="rounded-2xl border border-indigo-100 bg-gradient-to-b from-indigo-50 to-white p-5 space-y-5">
-            <div class="mx-auto h-48 w-48 overflow-hidden rounded-3xl bg-slate-100 flex items-center justify-center shadow-sm">
-              <img
-                v-if="showAvatarImage"
-                :src="avatarUrl"
+            <div class="mx-auto flex h-48 w-48 shadow-sm rounded-3xl">
+              <DefinitionAvatar
+                class="h-48 w-48 rounded-3xl bg-slate-100 text-6xl font-semibold tracking-wide text-slate-600"
+                kind="agent"
+                :name="agentDef.name"
+                :avatar-url="avatarUrl"
+                :initials="avatarInitials"
                 :alt="$t('agents.components.agents.AgentDetail.avatarAlt', { name: agentDef.name })"
-                class="h-full w-full object-cover"
-                @error="avatarLoadError = true"
               />
-              <span v-else class="text-6xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
             </div>
 
               <div class="text-center">
@@ -96,13 +96,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, toRefs, watch } from 'vue';
+import { ref, computed, onMounted, toRefs } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import AgentDefinitionDetailSections from '~/components/agents/AgentDefinitionDetailSections.vue';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
 import { useLocalization } from '~/composables/useLocalization';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   agentDefinitionId: string;
@@ -117,7 +118,6 @@ const runStart = useRunStart();
 const { t: $t } = useLocalization();
 const agentDef = computed<AgentDefinition | null>(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value) ?? null);
 const loading = ref(false);
-const avatarLoadError = ref(false);
 
 const showDeleteConfirm = ref(false);
 const agentDefinitionIdToDelete = ref<string | null>(null);
@@ -131,8 +131,7 @@ const backButtonLabel = computed(() => (returnToTeamId.value
   ? $t('agents.components.agents.AgentDetail.back_to_team')
   : $t('agents.components.agents.AgentDetail.back_to_agents')));
 
-const avatarUrl = computed(() => agentDef.value?.avatarUrl || '');
-const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
+const avatarUrl = computed(() => agentDef.value?.avatarUrl || null);
 const ownershipScope = computed(() => agentDef.value?.ownershipScope ?? 'SHARED');
 const isShared = computed(() => ownershipScope.value === 'SHARED');
 const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
@@ -170,9 +169,6 @@ const avatarInitials = computed(() => {
   return initials || 'AI';
 });
 
-watch(avatarUrl, () => {
-  avatarLoadError.value = false;
-});
 
 onMounted(async () => {
   if (agentDefinitionStore.agentDefinitions.length === 0) {

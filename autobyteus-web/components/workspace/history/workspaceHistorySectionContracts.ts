@@ -60,27 +60,7 @@ export interface WorkspaceHistorySectionState {
 }
 
 export interface WorkspaceHistoryAvatarBindings {
-  getOrgAvatarUrl: (definitionId: string) => string;
-  showOrgAvatar: (definitionId: string) => boolean;
-  onOrgAvatarError: (definitionId: string, failedUrl: string) => void;
-  showAgentAvatar: (
-    workspaceRootPath: string,
-    agentDefinitionId: string,
-    avatarUrl?: string | null,
-  ) => boolean;
-  onAgentAvatarError: (
-    workspaceRootPath: string,
-    agentDefinitionId: string,
-    avatarUrl?: string | null,
-  ) => void;
   getAgentInitials: (agentName: string) => string;
-  showTeamAvatar: (team: TeamTreeNode) => boolean;
-  getTeamAvatarUrl: (team: TeamTreeNode) => string;
-  onTeamAvatarError: (team: TeamTreeNode, failedUrl: string) => void;
-
-  showTeamMemberAvatar: (member: TeamMemberTreeRow) => boolean;
-  getTeamMemberAvatarUrl: (member: TeamMemberTreeRow) => string;
-  onTeamMemberAvatarError: (member: TeamMemberTreeRow) => void;
   getTeamMemberDisplayName: (member: TeamMemberTreeRow) => string;
   getTeamMemberInitials: (member: TeamMemberTreeRow) => string;
 }

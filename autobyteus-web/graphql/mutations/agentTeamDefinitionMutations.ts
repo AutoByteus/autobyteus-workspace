@@ -9,6 +9,7 @@ const AgentTeamDefinitionMutationFields = gql`
     instructions
     category
     avatarUrl
+    userAvatarUrl
     coordinatorMemberName
     revision
     handoffs { from to rules }

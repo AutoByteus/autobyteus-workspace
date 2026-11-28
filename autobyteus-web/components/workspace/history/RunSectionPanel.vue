@@ -156,27 +156,7 @@ const treeScrollRef = ref<HTMLElement | null>(null);
 useRevealSelectedTreeRow(treeScrollRef, computed(() => props.runShown));
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions();
-const {
-  getOrgAvatarUrl,
-  showOrgAvatar,
-  onOrgAvatarError,
-  getAgentInitials,
-  getTeamAvatarUrl,
-  getTeamMemberDisplayName,
-  getTeamMemberInitials,
-  getTeamMemberAvatarUrl,
-  showAgentAvatar,
-  showTeamAvatar,
-  showTeamMemberAvatar,
-  onAgentAvatarError,
-  onTeamAvatarError,
-  onTeamMemberAvatarError,
-} = useRunHistoryAvatarState({
-  loading: computed(() => runHistoryStore.loading),
-  agentDefinitions: computed(() => agentDefinitionStore.agentDefinitions),
-  teamDefinitions: computed(() => agentTeamDefinitionStore.agentTeamDefinitions),
-  orgDefinitions: computed(() => agentOrgDefinitionStore.definitions),
-});
+const { getAgentInitials, getTeamMemberDisplayName, getTeamMemberInitials } = useRunHistoryAvatarState();
 
 /** Leaves the Agent Org route when the open Org run was archived or deleted. */
 const leaveRemovedAgentOrgRoute = async (orgRunId: string): Promise<void> => {
@@ -334,18 +314,7 @@ const sectionState: WorkspaceHistorySectionState = {
 
 
 const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
-  showAgentAvatar,
-  onAgentAvatarError,
-  getOrgAvatarUrl,
-  showOrgAvatar,
-  onOrgAvatarError,
   getAgentInitials,
-  showTeamAvatar,
-  getTeamAvatarUrl,
-  onTeamAvatarError,
-  showTeamMemberAvatar,
-  getTeamMemberAvatarUrl,
-  onTeamMemberAvatarError,
   getTeamMemberDisplayName,
   getTeamMemberInitials,
 };

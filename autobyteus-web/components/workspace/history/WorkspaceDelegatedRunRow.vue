@@ -83,19 +83,28 @@
       </span>
       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
         <!-- Teams share the people-group identity, in the tree's slate. -->
-        <span
+        <!-- Its definition's picture (autobyteus-669 W-5), the same one for every copy; else the icon or initials. -->
+        <DefinitionAvatar
           v-if="row.memberKind === 'agent_team'"
-          class="inline-flex h-4 w-4 items-center justify-center text-slate-500"
+          class="h-4 w-4 rounded-full text-slate-500"
           data-team-icon="temporary-task-team"
-        >
-          <Icon icon="heroicons:user-group-20-solid" class="h-4 w-4" />
-        </span>
+          kind="team"
+          :name="row.displayName"
+          :avatar-url="definitionAvatars.avatarOf('team', row.definitionId)"
+          icon-class="h-4 w-4"
+          alt=""
+        />
         <!-- A task Agent shows the same solid status dot and initials as a member. -->
-        <span
+        <DefinitionAvatar
           v-else
-          class="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
+          class="h-4 w-4 rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
           data-test="workspace-task-agent-avatar"
-        >{{ initials }}</span>
+          kind="agent"
+          :name="row.displayName"
+          :avatar-url="definitionAvatars.avatarOf('agent', row.definitionId)"
+          :initials="initials"
+          alt=""
+        />
       </span>
       <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
@@ -196,6 +205,10 @@ import { useRunStatusStore } from '~/stores/runStatusStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { teamActivityOf, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { agentActivityLabel } from '~/utils/agentActivityPresentation';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore';
+
+const definitionAvatars = useDefinitionAvatarStore();
 
 const props = withDefaults(defineProps<{
   row: RunHistoryDelegatedRunRow;

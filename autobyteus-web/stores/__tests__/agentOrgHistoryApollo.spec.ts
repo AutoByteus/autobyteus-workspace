@@ -13,6 +13,8 @@ const io = vi.hoisted(() => ({ client: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ agentDefinitions: [], fetchAllAgentDefinitions: async () => undefined }) }))
+// The definitions' pictures are their own light read (autobyteus-669 W-3), not this history's I/O.
+vi.mock('~/stores/definitionAvatarStore', () => ({ useDefinitionAvatarStore: () => ({ avatarOf: () => null, reloadIfLoaded: async () => undefined }) }))
 let recovery: ReturnType<typeof vi.spyOn>, wrapper: ReturnType<typeof mount>
 let transport: ControlledOrgApollo, store: ReturnType<typeof useRunHistoryStore>
 const HISTORY = 'ListCollaborationRootHistory', ROOT = 'GetAgentOrgRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'

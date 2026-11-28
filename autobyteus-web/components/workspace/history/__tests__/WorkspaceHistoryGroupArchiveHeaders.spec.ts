@@ -60,11 +60,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
       workspaceNode, workspaceTeams: [teamRun('team-1'), teamRun('team-2', true)], workspaceTeamHistoryGroups: [],
       state, actions,
       avatars: {
-        showAgentAvatar: () => false, onAgentAvatarError: vi.fn(), getAgentInitials: () => 'A',
-        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', onTeamAvatarError: vi.fn(),
-        getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: vi.fn(),
-        showTeamMemberAvatar: () => false, getTeamMemberAvatarUrl: () => '', onTeamMemberAvatarError: vi.fn(),
-        getTeamMemberDisplayName: () => '', getTeamMemberInitials: () => '',
+        getAgentInitials: () => 'A', getTeamMemberDisplayName: () => '', getTeamMemberInitials: () => '',
       },
     },
     global: { mocks: { $t: (key: string) => key } },

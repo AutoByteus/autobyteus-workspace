@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries'
@@ -34,6 +35,8 @@ export interface AgentTeamDefinition extends PersonalSettingsFields {
   instructions: string
   category?: string | null
   avatarUrl?: string | null
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  userAvatarUrl?: string | null
   revision?: string | null
   handoffs?: TeamDefinitionHandoff[]
   coordinatorMemberName: string
@@ -256,6 +259,8 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' }).then((result: { data: { agentTeamDefinitions?: AgentTeamDefinition[] } }) => {
         agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
       })
+      // The rows show its picture by its ID (autobyteus-669 W-3): read again after this window's own save.
+      void useDefinitionAvatarStore().reloadIfLoaded(['team'])
       return getCatalogAgentTeamDefinitionById.value(data.updateAgentTeamDefinition.id)
     } catch (cause) {
       error.value = cause
@@ -277,6 +282,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     if (!data?.resetAgentTeamPersonalSetting) throw new Error(`The personal setting of Team ${definitionId} was not reset.`)
     const result = await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' })
     agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+    void useDefinitionAvatarStore().reloadIfLoaded(['team'])
     return getCatalogAgentTeamDefinitionById.value(definitionId)
   }
 

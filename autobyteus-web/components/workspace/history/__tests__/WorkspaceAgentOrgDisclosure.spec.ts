@@ -1,15 +1,19 @@
 import { useRunTreeStore } from '~/stores/runTreeStore';
 import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { mount } from '@vue/test-utils';
-import { computed, defineComponent, h, nextTick, reactive, ref } from 'vue';
+import { defineComponent, h, nextTick, reactive, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
-import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
 import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
 import type { WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts';
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
+// The definitions' picture addresses, as the definition avatar store reads them (autobyteus-669 W-3).
+const pictures = vi.hoisted(() => ({ definitions: null as null | { value: {id: string; avatarUrl?: string | null}[] } }));
+vi.mock('~/stores/definitionAvatarStore', () => ({ useDefinitionAvatarStore: () => ({
+  avatarOf: (_kind: string, id: string | null | undefined) => pictures.definitions?.value.find((definition) => definition.id === id)?.avatarUrl?.trim() || null,
+}) }));
 
 const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
   const launch = {
@@ -73,8 +77,8 @@ const harness = (active = true, selected = true) => {
   });
   const actions = { onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
   const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
+  pictures.definitions = definitions;
   let tree: ReturnType<typeof useWorkspaceHistoryTreeState>;
-  let avatars: ReturnType<typeof useRunHistoryAvatarState>;
   const wrapper = mount(defineComponent({ setup() {
     tree = useWorkspaceHistoryTreeState({ runHistoryStore: history, selectionStore: {selectedType: null, selectedRunId: null}, selectedAgentOrg: selectedOrg });
     Object.assign(tree, {
@@ -87,10 +91,9 @@ const harness = (active = true, selected = true) => {
     if (!selected) {
       tree.toggleAgentOrgDefinition('ws', 'org-definition'); tree.toggleAgentOrgRun('org-run'); tree.toggleAgentOrgTeam('org-run', '/software');
     }
-    avatars = useRunHistoryAvatarState({ loading: ref(false), agentDefinitions: computed(() => []), teamDefinitions: computed(() => []), orgDefinitions: computed(() => definitions.value) });
-    return () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state: tree as unknown as WorkspaceHistorySectionState, actions, avatars });
+    return () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state: tree as unknown as WorkspaceHistorySectionState, actions });
   } }));
-  return { wrapper, tree: tree!, avatars: avatars!, group, history, selectedOrg, draft, actions, definitions };
+  return { wrapper, tree: tree!, group, history, selectedOrg, draft, actions, definitions };
 };
 
 describe('Org disclosure through real tree and rendered hierarchy', () => {
@@ -239,7 +242,7 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
   });
 
   it('reactively renders Org avatars and isolates late old-URL failures', async () => {
-    const {wrapper, definitions, avatars} = harness();
+    const {wrapper, definitions} = harness();
     const header = () => wrapper.get('[data-test="agent-org-definition-org-definition"]');
     expect(header().find('[data-icon="heroicons:building-office-2-20-solid"]').exists()).toBe(true);
     definitions.value = [{id:'org-definition', avatarUrl:' /old.png '}]; await nextTick();
@@ -247,7 +250,6 @@ describe('Org disclosure through real tree and rendered hierarchy', () => {
     expect(oldImage.attributes('src')).toBe('/old.png');
     definitions.value = [{id:'org-definition', avatarUrl:'/new.png'}]; await nextTick();
     await oldImage.trigger('error');
-    expect(avatars.showOrgAvatar('org-definition')).toBe(true);
     expect(header().get('img').attributes('src')).toBe('/new.png');
     await header().get('img').trigger('error');
     expect(header().find('img').exists()).toBe(false);

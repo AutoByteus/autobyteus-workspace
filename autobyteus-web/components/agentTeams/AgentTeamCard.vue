@@ -1,16 +1,14 @@
 <template>
   <div class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-start">
-      <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-slate-700">
-        <img
-          v-if="showAvatarImage"
-          :src="avatarUrl"
-          :alt="`${teamDef.name} avatar`"
-          class="h-full w-full object-cover"
-          @error="avatarLoadError = true"
-        />
-        <span v-else class="text-2xl font-semibold tracking-wide">{{ avatarInitials }}</span>
-      </div>
+      <DefinitionAvatar
+        class="h-16 w-16 shrink-0 rounded-xl bg-slate-100 text-slate-700"
+        kind="team"
+        :name="teamDef.name"
+        :avatar-url="avatarUrl"
+      >
+        <template #fallback><span class="text-2xl font-semibold tracking-wide">{{ avatarInitials }}</span></template>
+      </DefinitionAvatar>
 
       <div class="min-w-0">
         <h3 class="truncate text-xl font-semibold text-slate-900">{{ teamDef.name }}</h3>
@@ -77,10 +75,11 @@
 
 <script setup lang="ts">
 import DefinitionLoadIssueBadge from '~/components/definitions/DefinitionLoadIssueBadge.vue';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, toRefs } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   teamDef: AgentTeamDefinition;
@@ -90,7 +89,6 @@ defineEmits(['view-details', 'run-team']);
 
 const { teamDef } = toRefs(props);
 const { t } = useLocalization();
-const avatarLoadError = ref(false);
 
 const MAX_MEMBER_PREVIEW = 4;
 
@@ -100,12 +98,7 @@ const teamNodes = computed(() =>
 const previewNodes = computed(() => teamNodes.value.slice(0, MAX_MEMBER_PREVIEW));
 const remainingNodesCount = computed(() => Math.max(0, teamNodes.value.length - MAX_MEMBER_PREVIEW));
 
-const avatarUrl = computed(() => (teamDef.value.avatarUrl || '').trim());
-const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
-
-watch(avatarUrl, () => {
-  avatarLoadError.value = false;
-});
+const avatarUrl = computed(() => (teamDef.value.avatarUrl || '').trim() || null);
 
 const descriptionText = computed(() => teamDef.value.description?.trim() || t('agentTeams.components.agentTeams.AgentTeamCard.noDescription'));
 const ownershipScope = computed(() => teamDef.value.ownershipScope ?? 'SHARED');

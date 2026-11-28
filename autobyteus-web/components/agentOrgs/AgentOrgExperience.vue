@@ -91,7 +91,8 @@
         <header class="mb-6"><h1 class="text-3xl font-bold tracking-tight text-slate-950">{{ view === 'org-create' ? t('agentOrgs.experience.catalog.create') : t('agentOrgs.experience.form.editTitle', { name: selectedOrg.name }) }}</h1><p class="mt-2 max-w-3xl text-base text-slate-600">{{ t('agentOrgs.experience.form.description') }}</p></header>
         <form class="space-y-4" @submit.prevent="saveOrg">
           <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <AgentOrgAvatarEditor :key="`${view}:${selectedOrg.id}`" v-model="formAvatarUrl" :name="formName" :disabled="saving" @pending="avatarPending = $event" />
+            <AgentOrgAvatarEditor :key="`${view}:${selectedOrg.id}`" v-model="formAvatarUrl" :name="formName" :disabled="saving"
+              :package-avatar-url="view === 'org-edit' && !selectedOrg.userAvatarUrl ? selectedOrg.avatarUrl : null" @pending="avatarPending = $event" />
             <AgentOrgPersonalSettings v-if="view === 'org-edit'" :org="selectedOrg" :disabled="saving || avatarPending" @avatar-reset="(url) => { formAvatarUrl = url; initialAvatarUrl = url }" />
           </section>
           <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><h2 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.form.basics') }}</h2><div class="mt-4 space-y-4"><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.form.name') }}</span><input v-model="formName" required class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></label><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.detail.description') }}</span><textarea v-model="formDescription" rows="3" class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></textarea></label></div></section>
@@ -365,7 +366,8 @@ const formOrgHandoffOptions = computed(() => buildFormHandoffOptions(formMembers
 const hydrateForm = (): void => {
   const org = selectedOrg.value
   formGeneration += 1
-  formAvatarUrl.value = view.value === 'org-create' ? '' : org.avatarUrl || ''
+  // The editable picture is the user's own only (autobyteus-669 W-6): never the package's shown one.
+  formAvatarUrl.value = view.value === 'org-create' ? '' : org.userAvatarUrl || ''
   initialAvatarUrl.value = formAvatarUrl.value
   avatarPending.value = false
   formName.value = view.value === 'org-create' ? '' : org.name
@@ -491,10 +493,10 @@ const saveOrg = async (): Promise<void> => {
     } else {
       const updated = await orgStore.update(editedOrg.id, editedOrg.revision, {
         ...visibleInput,
-        ...(formAvatarUrl.value !== initialAvatarUrl.value ? { avatarUrl: formAvatarUrl.value } : {}),
+        ...(formAvatarUrl.value !== initialAvatarUrl.value ? { avatarUrl: formAvatarUrl.value || null } : {}),
       })
       if (generation !== formGeneration) return
-      initialAvatarUrl.value = updated.avatarUrl || ''
+      initialAvatarUrl.value = updated.userAvatarUrl || ''
       formAvatarUrl.value = initialAvatarUrl.value
     }
     await nextTick(); orgHandoffManager.value?.clearStatus(); saved.value = true

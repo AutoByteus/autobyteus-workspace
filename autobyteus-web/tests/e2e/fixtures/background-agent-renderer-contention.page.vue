@@ -435,10 +435,9 @@ const historyState: WorkspaceHistorySectionState = {
   canTerminateTeam: () => false,
 };
 const avatars: WorkspaceHistoryAvatarBindings = {
-  showAgentAvatar: () => false, onAgentAvatarError: () => {}, getAgentInitials: () => 'A',
-  showTeamAvatar: () => false, getTeamAvatarUrl: () => '', getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {}, onTeamAvatarError: () => {},
-  showTeamMemberAvatar: () => false, getTeamMemberAvatarUrl: () => '', onTeamMemberAvatarError: () => {},
-  getTeamMemberDisplayName: (member) => member.displayName || member.memberName, getTeamMemberInitials: () => 'M',
+  getAgentInitials: () => 'A',
+  getTeamMemberDisplayName: (member) => member.displayName || member.memberName,
+  getTeamMemberInitials: () => 'M',
 };
 const actions: WorkspaceHistorySectionActions = {
   onCreateRun: () => {}, onSelectRun: () => {}, onOpenAgentRun: () => {},

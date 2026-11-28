@@ -30,6 +30,8 @@ export type MobileRunTreeRow = Readonly<{
   depth: number;
   /** The avatar: an agent's initials, the Team icon or the Org icon. */
   avatar: 'agent' | 'team' | 'org';
+  /** Its definition's picture (autobyteus-669 W-4), shown in the avatar's slot; null: the fallback (a peer's run). */
+  avatarUrl: string | null;
   name: string;
   /** The run's title, or a delegated row's Task summary or peer title; empty when the row has none. */
   title: string;
@@ -62,6 +64,8 @@ export interface MobileRunListSources {
   isRunExpanded(runId: string): boolean;
   isTeamExpanded(teamRunId: string): boolean;
   isAgentOrgRunExpanded(rootRunId: string): boolean;
+  /** A definition's picture address (`definitionAvatarStore`); null without one. */
+  avatarOf(kind: 'agent' | 'team' | 'org', definitionId: string | null | undefined): string | null;
 }
 
 /** The tree a listed run shows (SR-084). */
@@ -88,6 +92,8 @@ const treeRowsOf = (entry: RunListEntry, sources: MobileRunListSources): MobileR
   const peer = tree.peer && tree.kind !== 'peer_member' ? tree.peer : null;
   return Object.freeze({
     key: `${entry.key}/${tree.key}`, depth: display.row.depth + 1, avatar: team ? 'team' : 'agent', name: tree.name,
+    // A peer's run shows the fallback: this node cannot vouch for another node's definition (DEC-006).
+    avatarUrl: tree.peer ? null : sources.avatarOf(team ? 'team' : 'agent', tree.definitionId),
     title: sources.taskSummary(display.row) || peer?.title || '',
     ...activityOf(team, String((team ? display.teamStatus : display.row.currentStatus) ?? AgentStatus.Offline),
       tree.statusIds[0] ? sources.backgroundTasksOf(tree, tree.statusIds[0]) : 0),
@@ -100,8 +106,10 @@ const treeRowsOf = (entry: RunListEntry, sources: MobileRunListSources): MobileR
   });
 });
 
-const topLevelRow = (entry: RunListEntry, hasChildren: boolean, expanded: boolean): MobileRunTreeRow => {
-  const base = { key: entry.key, depth: 0, name: entry.name, remote: null, hasChildren, expanded, lastActivityAt: entry.lastActivityAt };
+const topLevelRow = (entry: RunListEntry, hasChildren: boolean, expanded: boolean, sources: MobileRunListSources): MobileRunTreeRow => {
+  const avatarUrl = entry.kind === 'agent' ? sources.avatarOf('agent', entry.agentDefinitionId)
+    : entry.kind === 'team' ? sources.avatarOf('team', entry.team.teamDefinitionId) : sources.avatarOf('org', entry.definitionId);
+  const base = { avatarUrl, key: entry.key, depth: 0, name: entry.name, remote: null, hasChildren, expanded, lastActivityAt: entry.lastActivityAt };
   if (entry.kind === 'agent') {
     return Object.freeze({ ...base, avatar: 'agent', title: formatRunLabel(entry.run.summary),
       ...activityOf(false, String(entry.run.currentStatus || AgentStatus.Offline), agentRunBackgroundTasks(entry.runId)),
@@ -129,7 +137,7 @@ export const buildMobileRunListRows = (sources: MobileRunListSources): MobileRun
   const children = treeRowsOf(entry, sources);
   const hasChildren = entry.kind === 'agent' ? children.length > 0
     : entry.kind === 'team' ? entry.team.executionRows.length > 0 : entry.orgRun.executionTree.rootOrg.members.length > 0;
-  return [topLevelRow(entry, hasChildren, expanded && hasChildren), ...(expanded && hasChildren ? children : [])];
+  return [topLevelRow(entry, hasChildren, expanded && hasChildren, sources), ...(expanded && hasChildren ? children : [])];
 });
 
 /** The agent a row opens, for marking the open row; Team and Org rows are never the open row themselves. */

@@ -45,4 +45,15 @@ describe('Org avatar presentation and real upload store', () => {
     await pick(w); expect(w.emitted('pending')).toEqual([[true]]); w.unmount(); resolve({ data: { fileUrl: '/late.png' } }); await flushPromises()
     expect(publish).not.toHaveBeenCalled()
   })
+  // autobyteus-669 W-6 (REQ-003): the editor edits the user's own picture only; the package's is previewed, captioned.
+  it('previews the package\'s picture, captioned, with no Remove, while the user has none of their own', async () => {
+    const w = mount(Editor, { props: { modelValue: '', name: 'Studio', packageAvatarUrl: '/rest/definition-avatars/agent_org/studio?v=1' } }); wrappers.push(w)
+    expect(w.get('img').attributes('src')).toContain('/rest/definition-avatars/agent_org/studio?v=1')
+    expect(w.find('[data-test="org-avatar-from-package"]').text()).toBe('From the package')
+    expect(w.findAll('button')).toHaveLength(1) // Upload only
+    await w.setProps({ modelValue: '/mine.png' })
+    expect(w.get('img').attributes('src')).toBe('/mine.png')
+    expect(w.find('[data-test="org-avatar-from-package"]').exists()).toBe(false)
+    expect(w.findAll('button')).toHaveLength(2) // Upload and Remove
+  })
 })

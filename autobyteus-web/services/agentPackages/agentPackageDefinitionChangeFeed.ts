@@ -5,6 +5,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 import { useDefinitionProblemsStore } from '~/stores/definitionProblemsStore'
+import { useDefinitionAvatarStore, type DefinitionAvatarKind } from '~/stores/definitionAvatarStore'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport'
 import { NodeChangeFeed, type NodeChangeSocket } from '~/services/nodeChangeFeed/nodeChangeFeed'
@@ -35,6 +36,12 @@ export const reloadAgentPackageDefinitionLists = async (changedLists: readonly A
   if (changedLists.includes('agent_orgs')) { reloads.push(useAgentOrgDefinitionStore().reloadIfLoaded()); problemKinds.push('AGENT_ORG') }
   if (changedLists.includes('agent_packages')) reloads.push(useAgentPackagesStore().reloadIfLoaded())
   if (problemKinds.length > 0) reloads.push(useDefinitionProblemsStore().reloadIfLoaded(problemKinds))
+  // The rows' pictures (autobyteus-669 W-3): package changes and personal-setting changes from any window come here.
+  const avatarKinds: DefinitionAvatarKind[] = []
+  if (changedLists.includes('agents')) avatarKinds.push('agent')
+  if (changedLists.includes('agent_teams')) avatarKinds.push('team')
+  if (changedLists.includes('agent_orgs')) avatarKinds.push('org')
+  if (avatarKinds.length > 0) reloads.push(useDefinitionAvatarStore().reloadIfLoaded(avatarKinds))
   await Promise.all(reloads)
 }
 

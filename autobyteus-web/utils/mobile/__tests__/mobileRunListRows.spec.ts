@@ -15,13 +15,32 @@ const peer: RunTreeRowDto = { key: 'peer_agent:pub', parentKey: 'agent:host', de
   peer: { nodeId: 'beta', nodeName: 'beta-node', title: 'Publish the draft.', reachable: false } }
 const tree: RunTreeRowDto[] = [agentRow('host', null, 0), agentRow('writer', 'agent:host', 1), agentRow('helper', 'agent:writer', 2),
   ...teamRows('squad', 'agent:host', 1, ['lead', 'dev']), peer]
+/** A definition's picture address, as the definition avatar store answers it (autobyteus-669 W-3). */
+const pictureOf = (kind: string, id: string | null | undefined) => id ? `/rest/definition-avatars/${kind}/${id}?v=1` : null
 const sources = (expanded: ReadonlySet<string> = new Set()): MobileRunListSources => ({
-  entries: [agentEntry], treeRows: () => tree, statusOf: (row, id) => row.kind === 'team' ? 'running' : id === 'writer' ? 'running' : 'idle', backgroundTasksOf: () => 0,
+  entries: [agentEntry], treeRows: () => tree, avatarOf: pictureOf, statusOf: (row, id) => row.kind === 'team' ? 'running' : id === 'writer' ? 'running' : 'idle', backgroundTasksOf: () => 0,
   isTreeRowExpanded: (_entry, row) => row.kind === 'team' ? expanded.has(row.key) : true, taskSummary: () => null,
   isRunExpanded: () => true, isTeamExpanded: () => true, isAgentOrgRunExpanded: () => true,
 })
 
 describe('buildMobileRunListRows (SR-084, F-73)', () => {
+  // autobyteus-669 W-4 (REQ-004, AC-004): each row shows its own definition's picture; a peer's row its fallback.
+  it('gives each row its definition\'s picture: the listed run\'s, a tree row\'s by its definition ID, none for a peer', () => {
+    const entry = { ...(agentEntry as object), agentDefinitionId: 'manager' } as never
+    const withDefinitions: RunTreeRowDto[] = [agentRow('host', null, 0), { ...agentRow('writer', 'agent:host', 1), definitionId: 'writer-def' },
+      { ...agentRow('helper', 'agent:host', 1) }, ...teamRows('squad', 'agent:host', 1, ['lead']).map((row) => ({ ...row, definitionId: row.kind === 'team' ? 'squad-def' : 'lead-def' })),
+      { ...peer, definitionId: 'their-def' }]
+    const rows = buildMobileRunListRows({ ...sources(new Set(['team:squad'])), entries: [entry], treeRows: () => withDefinitions })
+    expect(Object.fromEntries(rows.map((row) => [row.key, row.avatarUrl]))).toEqual({
+      'agent:host': '/rest/definition-avatars/agent/manager?v=1',
+      'agent:host/agent:writer': '/rest/definition-avatars/agent/writer-def?v=1',
+      'agent:host/agent:helper': null,
+      'agent:host/team:squad': '/rest/definition-avatars/team/squad-def?v=1',
+      'agent:host/team_member:squad:lead': '/rest/definition-avatars/agent/lead-def?v=1',
+      'agent:host/peer_agent:pub': null,
+    })
+  })
+
   it('lists the run, then its tree\'s rows under its own row, as the desktop shows them (same keys, order and depth)', () => {
     const rows = buildMobileRunListRows(sources())
     const desktop = treeDisplayRowsOf(agentEntry, sources())

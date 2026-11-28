@@ -2,13 +2,14 @@
   <div class="space-y-3" data-test="org-avatar-editor">
     <p class="text-sm font-semibold text-slate-900">{{ t('agentOrgs.avatar.label') }}</p>
     <div class="flex flex-wrap items-center gap-4">
-      <AgentOrgAvatar :name="name" :avatar-url="modelValue" />
+      <AgentOrgAvatar :name="name" :avatar-url="modelValue || packageAvatarUrl || null" />
       <div class="space-y-2">
         <input ref="picker" type="file" accept="image/jpeg,image/png,image/gif,image/webp" class="sr-only" tabindex="-1" :disabled="disabled || pending" :aria-label="t('agentOrgs.avatar.upload')" @change="upload">
         <div class="flex gap-2">
           <button type="button" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50" :disabled="disabled || pending" @click="picker?.click()">{{ t('agentOrgs.avatar.upload') }}</button>
           <button v-if="modelValue" type="button" class="rounded-lg px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50" :disabled="disabled || pending" @click="remove">{{ t('agentOrgs.avatar.remove') }}</button>
         </div>
+        <p v-if="!modelValue && packageAvatarUrl" class="text-xs text-slate-500" data-test="org-avatar-from-package">{{ t('agentOrgs.avatar.fromPackage') }}</p>
         <p class="text-xs text-slate-500">{{ t('agentOrgs.avatar.formats') }}</p>
       </div>
     </div>
@@ -22,7 +23,11 @@ import { onBeforeUnmount, ref } from 'vue'
 import AgentOrgAvatar from './AgentOrgAvatar.vue'
 import { useFileUploadStore } from '~/stores/fileUploadStore'
 import { useLocalization } from '~/composables/useLocalization'
-const props = defineProps<{ modelValue: string; name: string; disabled?: boolean }>()
+/**
+ * `modelValue`: the user's own picture (autobyteus-669 W-6), the only one Remove removes. `packageAvatarUrl`: the package's
+ * picture, previewed (captioned) while the user has none.
+ */
+const props = defineProps<{ modelValue: string; name: string; disabled?: boolean; packageAvatarUrl?: string | null }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string]; pending: [value: boolean] }>()
 const { t } = useLocalization()
 const uploadStore = useFileUploadStore()

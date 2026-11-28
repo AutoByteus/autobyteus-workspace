@@ -2,16 +2,13 @@
   <div class="flex h-full flex-col bg-white" data-testid="agent-workspace-surface">
     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 px-3 py-2 sm:px-4" :class="remote ? 'min-h-14' : ''">
       <div class="flex min-w-0 flex-1 items-center space-x-3">
-        <div class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100">
-          <img
-            v-if="showAvatar"
-            :src="avatarUrl"
-            :alt="`${agentName} avatar`"
-            class="h-full w-full object-cover"
-            @error="avatarFailed = true"
-          />
-          <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">{{ initials }}</span>
-        </div>
+        <DefinitionAvatar
+          class="h-8 w-8 shrink-0 rounded-lg bg-slate-100 text-[0.625rem] font-semibold tracking-wide text-slate-600"
+          kind="agent"
+          :name="agentName"
+          :avatar-url="avatarUrl"
+          :initials="initials"
+        />
         <h4 class="truncate text-base font-medium text-gray-800" :title="headerFullTitle" data-test="agent-workspace-title">{{ headerTitle }}</h4>
         <!-- autobyteus-278: the node that runs this run, next to its name. -->
         <RemoteNodeChip v-if="remote" :node-name="remote.nodeName" size="header" />
@@ -49,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue'
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue'
@@ -61,6 +58,7 @@ import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue'
 
 const props = withDefaults(defineProps<{
   target: ActiveAgentWorkspaceTarget
@@ -76,14 +74,12 @@ const props = withDefaults(defineProps<{
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
-const avatarFailed = ref(false)
 // autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, a notice when its node did not answer, and a box naming it.
 const { displayName: agentName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target)
 const remote = remoteView.remote
 const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.trim()
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
   || '')
-const showAvatar = computed(() => Boolean(avatarUrl.value) && !avatarFailed.value)
 const initials = computed(() => agentName.value.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI')
 // A standalone run is titled by its run summary (the first message), like its Workspaces tree row.
@@ -101,5 +97,4 @@ const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' |
 const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
 const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
 
-watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

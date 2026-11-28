@@ -39,38 +39,25 @@
           <TeamAggregateStatusDot v-else-if="entry.kind === 'team'" class="mr-1.5" :status="teamRunStatus(entry.team)" :background-tasks-running="teamRunBackgroundTasks(entry.team)" />
           <span v-else class="mr-1.5 h-2 w-2 rounded-full" :class="entry.isActive ? 'bg-emerald-500' : 'bg-gray-300'" :aria-label="t(entry.isActive ? 'workspace.agentOrg.history.running' : 'workspace.agentOrg.history.stopped')" />
         </span>
-        <span v-if="entry.kind === 'agent'" class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600" aria-hidden="true">
-          <img
-            v-if="avatars.showAgentAvatar(entry.folderRootPath ?? '', entry.agentDefinitionId, entry.avatarUrl)"
-            :src="entry.avatarUrl || ''"
-            alt=""
-            class="h-full w-full object-cover"
-            @error="avatars.onAgentAvatarError(entry.folderRootPath ?? '', entry.agentDefinitionId, entry.avatarUrl)"
-          >
-          <span v-else>{{ avatars.getAgentInitials(entry.name) }}</span>
-        </span>
-        <span v-else-if="entry.kind === 'team'" class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-gray-600" aria-hidden="true">
-          <img
-            v-if="avatars.showTeamAvatar(entry.team)"
-            :key="avatars.getTeamAvatarUrl(entry.team)"
-            :src="avatars.getTeamAvatarUrl(entry.team)"
-            alt=""
-            class="h-full w-full object-cover"
-            @error="avatars.onTeamAvatarError(entry.team, ($event.target as HTMLImageElement).getAttribute('src') || '')"
-          >
-          <Icon v-else icon="heroicons:user-group-20-solid" class="h-3.5 w-3.5" />
-        </span>
-        <span v-else class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-gray-100 text-gray-600" aria-hidden="true">
-          <img
-            v-if="avatars.showOrgAvatar(entry.definitionId)"
-            :key="avatars.getOrgAvatarUrl(entry.definitionId)"
-            :src="avatars.getOrgAvatarUrl(entry.definitionId)"
-            alt=""
-            class="h-full w-full object-cover"
-            @error="avatars.onOrgAvatarError(entry.definitionId, ($event.target as HTMLImageElement).getAttribute('src') || '')"
-          >
-          <Icon v-else icon="heroicons:building-office-2-20-solid" class="h-3.5 w-3.5" />
-        </span>
+        <!-- Its definition's picture in the slot (autobyteus-669 W-5); else initials, the Team icon or the Org icon. -->
+        <DefinitionAvatar
+          v-if="entry.kind === 'agent'"
+          class="mr-1.5 h-5 w-5 rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
+          kind="agent" :name="entry.name" :avatar-url="definitionAvatars.avatarOf('agent', entry.agentDefinitionId)"
+          :initials="avatars.getAgentInitials(entry.name)" alt="" aria-hidden="true"
+        />
+        <DefinitionAvatar
+          v-else-if="entry.kind === 'team'"
+          class="mr-1.5 h-5 w-5 rounded-full bg-gray-200 text-gray-600"
+          kind="team" :name="entry.name" :avatar-url="definitionAvatars.avatarOf('team', entry.team.teamDefinitionId)"
+          icon-class="h-3.5 w-3.5" alt="" aria-hidden="true"
+        />
+        <DefinitionAvatar
+          v-else
+          class="mr-1.5 h-5 w-5 rounded bg-gray-100 text-gray-600"
+          kind="org" :name="entry.name" :avatar-url="definitionAvatars.avatarOf('org', entry.definitionId)"
+          icon-class="h-3.5 w-3.5" alt="" aria-hidden="true"
+        />
         <span class="min-w-0 flex-1">
           <span class="block truncate" :class="entry.kind === 'agent' ? 'font-medium' : 'font-semibold'" data-test="run-list-row-name">{{ entry.name }}</span>
           <span class="block truncate text-[0.6875rem] font-normal leading-4" :class="selected ? 'text-indigo-700' : 'text-gray-500'" data-test="run-list-row-title">{{ label }}</span>
@@ -150,6 +137,10 @@ import { useHeldRunStates } from '~/composables/useHeldRunStates'
 import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes'
 import type { RunTreeRow } from '~/utils/runTreeProjection'
 import type { RunListEntry } from '~/utils/runListProjection'
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue'
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore'
+
+const definitionAvatars = useDefinitionAvatarStore()
 
 const props = defineProps<{
   entry: RunListEntry

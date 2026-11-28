@@ -63,6 +63,7 @@ const messages = {
   "agentOrgs.avatar.label": "Avatar (optional)",
   "agentOrgs.avatar.upload": "Upload image",
   "agentOrgs.avatar.remove": "Remove image",
+  "agentOrgs.avatar.fromPackage": "From the package",
   "agentOrgs.avatar.formats": "JPEG, PNG, GIF or WebP. Saved with the Org.",
   "agentOrgs.avatar.uploading": "Uploading image…",
   "agentOrgs.avatar.invalidType": "Choose a JPEG, PNG, GIF or WebP image.",

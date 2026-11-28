@@ -1,53 +1,26 @@
-import { computed, effectScope, nextTick, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { useRunHistoryAvatarState } from '../useRunHistoryAvatarState';
-import type { TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
 
-const harness = () => {
-  const loading = ref(false);
-  const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
-  const scope = effectScope();
-  const avatars = scope.run(() => useRunHistoryAvatarState({ loading,
-    agentDefinitions: computed(() => []), teamDefinitions: computed(() => definitions.value), orgDefinitions: computed(() => definitions.value),
-  }))!;
-  return { loading, definitions, avatars, scope };
-};
+// The rows' pictures, their loading and their failures are each row's DefinitionAvatar now (autobyteus-669 W-1; see
+// components/common/__tests__/DefinitionAvatar.spec.ts); what is left here is the names and initials the fallbacks show.
+describe('run history avatar names and initials', () => {
+  const avatars = useRunHistoryAvatarState();
+  const member = (displayName: string, memberAddress: string) => ({ displayName, memberAddress }) as TeamMemberTreeRow;
 
-describe('sidebar container avatar metadata', () => {
-  it.each([undefined, null, '', '  '])('falls back for absent/blank avatar %s', avatarUrl => {
-    const { definitions, avatars, scope } = harness();
-    definitions.value = [{id:'definition', avatarUrl}];
-    expect(avatars.showOrgAvatar('definition')).toBe(false);
-    expect(avatars.showTeamAvatar({teamDefinitionId:'definition', teamRunId:'run'} as TeamTreeNode)).toBe(false);
-    scope.stop();
+  it.each([
+    ['Test Agent', 'TA'],
+    ['writer', 'W'],
+    ['  Three Word Name ', 'TW'],
+    ['', 'A'],
+  ])('an agent %j shows %s', (name, initials) => {
+    expect(avatars.getAgentInitials(name)).toBe(initials);
   });
 
-  it('isolates exact Org IDs, Team/Org failure namespaces and obsolete URL errors', async () => {
-    const {loading, definitions, avatars, scope} = harness();
-    const team = {teamDefinitionId:'one', teamRunId:'run'} as TeamTreeNode;
-    expect(avatars.showOrgAvatar('one')).toBe(false);
-    definitions.value = [{id:'one', avatarUrl:' /first.png '}, {id:'two', avatarUrl:'/first.png'}];
-    expect(avatars.showOrgAvatar('one')).toBe(true);
-    expect(avatars.getOrgAvatarUrl('one')).toBe('/first.png');
-    avatars.onOrgAvatarError('one', '/first.png');
-    expect(avatars.showOrgAvatar('one')).toBe(false);
-    expect(avatars.showOrgAvatar('two')).toBe(true);
-    expect(avatars.showTeamAvatar(team)).toBe(true);
-    avatars.onTeamAvatarError(team, '/first.png');
-    expect(avatars.showTeamAvatar(team)).toBe(false);
-    definitions.value = [{id:'one', avatarUrl:'/second.png'}];
-    avatars.onOrgAvatarError('one', '/first.png');
-    avatars.onTeamAvatarError(team, '/first.png');
-    expect(avatars.showOrgAvatar('one')).toBe(true);
-    expect(avatars.showTeamAvatar(team)).toBe(true);
-    avatars.onOrgAvatarError('one','/second.png');
-    loading.value = true; await nextTick(); loading.value = false; await nextTick();
-    expect(avatars.showOrgAvatar('one')).toBe(true);
-    // Agent policy remains independent and still uses initials/image failure fallback.
-    expect(avatars.getAgentInitials('Test Agent')).toBe('TA');
-    expect(avatars.showAgentAvatar('/ws','agent','/avatar.png')).toBe(true);
-    avatars.onAgentAvatarError('/ws','agent','/avatar.png');
-    expect(avatars.showAgentAvatar('/ws','agent','/avatar.png')).toBe(false);
-    scope.stop();
+  it('a member shows its display name, else the last part of its address, else "Member"', () => {
+    expect(avatars.getTeamMemberDisplayName(member(' Lead Writer ', '/crew/lead'))).toBe('Lead Writer');
+    expect(avatars.getTeamMemberDisplayName(member(' ', '/crew/lead'))).toBe('lead');
+    expect(avatars.getTeamMemberDisplayName(member('', ''))).toBe('Member');
+    expect(avatars.getTeamMemberInitials(member('Lead Writer', '/crew/lead'))).toBe('LW');
   });
 });

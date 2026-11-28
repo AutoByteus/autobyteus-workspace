@@ -10,6 +10,7 @@ const AgentDefinitionMutationFields = gql`
     instructions
     category
     avatarUrl
+    userAvatarUrl
     toolNames
     inputProcessorNames
     llmResponseProcessorNames

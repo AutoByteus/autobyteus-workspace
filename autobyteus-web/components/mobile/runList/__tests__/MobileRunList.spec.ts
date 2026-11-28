@@ -8,7 +8,7 @@ import { useRunListStore } from '~/stores/runListStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const row = (patch: Partial<MobileRunTreeRow>): MobileRunTreeRow => ({
-  key: 'agent:a', depth: 0, avatar: 'agent', name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', backgroundTasksRunning: 0, remote: null,
+  key: 'agent:a', depth: 0, avatar: 'agent', avatarUrl: null, name: 'Project Task Manager', title: 'Dispatch the approved Task', status: 'running', backgroundTasksRunning: 0, remote: null,
   hasChildren: false, expanded: false, fold: null, open: { kind: 'agentRun', run: { runId: 'a' } as never }, lastActivityAt: '2026-11-06T10:00:00.000Z', ...patch,
 });
 

@@ -10,7 +10,7 @@ vi.mock('~/services/api', () => ({ default: { post: mocks.post } }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => mocks.store }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ sharedAgentDefinitions: [], getAgentDefinitionById: vi.fn(), fetchAllAgentDefinitions: vi.fn() }) }))
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => ({ sharedAgentTeamDefinitions: [], getCatalogAgentTeamDefinitionById: vi.fn(), fetchAllAgentTeamDefinitions: vi.fn() }) }))
-const org = (id = 'one') => ({ id, name: id === 'one' ? '<img src=x> Research Org' : 'Second Org', description: 'Description', instructions: 'Hidden', revision: 'r1', avatarUrl: `/${id}.png`, members: [], handoffs: [], category: 'retained', defaultLaunchConfig: null })
+const org = (id = 'one') => ({ id, name: id === 'one' ? '<img src=x> Research Org' : 'Second Org', description: 'Description', instructions: 'Hidden', revision: 'r1', avatarUrl: `/${id}.png`, userAvatarUrl: `/${id}.png`, members: [], handoffs: [], category: 'retained', defaultLaunchConfig: null })
 let wrapper: VueWrapper
 const open = async (view = 'org-edit') => { mocks.route.query = { view, id: 'one' }; wrapper = mount(Experience, { global: { stubs: { teleport: true } } }); await flushPromises() }
 const button = (text: string, scope = wrapper) => scope.findAll('button').find(b => b.text() === text)!
@@ -33,12 +33,12 @@ describe('Org authoring controls with real editor, upload store and modal', () =
     expect(dialog.text()).toContain('Separately shared'); expect(dialog.text()).toContain('history')
     await button('Cancel', dialog as any).trigger('click'); expect(mocks.store.remove).not.toHaveBeenCalled(); expect(wrapper.find('[role=dialog]').exists()).toBe(false)
   })
-  it('keeps unchanged avatar omitted, sends empty string on explicit clear, and omits it on subsequent unchanged Save', async () => {
+  it('keeps unchanged avatar omitted, sends null on explicit clear (autobyteus-669 W-6), and omits it on subsequent unchanged Save', async () => {
     await open(); await wrapper.get('form').trigger('submit'); await flushPromises()
     expect(mocks.store.update.mock.calls[0][2]).not.toHaveProperty('avatarUrl')
     await button('Remove image').trigger('click'); expect(wrapper.find('img').exists()).toBe(false)
     await wrapper.get('form').trigger('submit'); await flushPromises()
-    expect(mocks.store.update.mock.calls[1][2]).toMatchObject({ avatarUrl: '' }); expect(mocks.store.update.mock.calls[1][2]).not.toHaveProperty('instructions')
+    expect(mocks.store.update.mock.calls[1][2]).toMatchObject({ avatarUrl: null }); expect(mocks.store.update.mock.calls[1][2]).not.toHaveProperty('instructions')
     await wrapper.get('form').trigger('submit'); await flushPromises(); expect(mocks.store.update.mock.calls[2][2]).not.toHaveProperty('avatarUrl')
   })
   it('blocks Save during upload then saves the actual returned preview URL, without mutating persisted state before Save', async () => {
@@ -90,7 +90,7 @@ describe('Org authoring controls with real editor, upload store and modal', () =
     expect(wrapper.get('[role=alert]').text()).toBe('Revision conflict'); expect(wrapper.find('img').exists()).toBe(false)
     expect(mocks.store.byId('one').avatarUrl).toBe('/one.png'); expect(mocks.push).not.toHaveBeenCalled()
     await wrapper.get('form').trigger('submit'); await flushPromises()
-    expect(mocks.store.update.mock.calls.map((call: any[]) => call[2].avatarUrl)).toEqual(['', ''])
+    expect(mocks.store.update.mock.calls.map((call: any[]) => call[2].avatarUrl)).toEqual([null, null])
   })
   it('creates an avatar-free Org with null, and handles a resolved router navigation failure after deletion', async () => {
     await open('org-create'); await wrapper.get('form input:not([type=file])').setValue('No avatar')

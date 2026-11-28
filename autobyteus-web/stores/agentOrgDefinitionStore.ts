@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useDefinitionAvatarStore } from '~/stores/definitionAvatarStore'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetAgentOrgDefinitions } from '~/graphql/queries/agentOrgDefinitionQueries'
@@ -25,6 +26,8 @@ export type AgentOrgDefinition = PersonalSettingsFields & {
   instructions: string
   category?: string | null
   avatarUrl?: string | null
+  /** The user's own picture (autobyteus-669): the one the forms edit; `avatarUrl` is what is shown. */
+  userAvatarUrl?: string | null
   revision: string
   members: AgentOrgMember[]
   handoffs: DefinitionHandoff[]
@@ -96,6 +99,8 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
       if (entityId) client.cache.evict({ id: entityId })
     }
     definitions.value = replace(definitions.value)
+    // The rows show its picture by its ID (autobyteus-669 W-3): read again after this window's own save.
+    void useDefinitionAvatarStore().reloadIfLoaded(['org'])
   }
   const create = async (input: AgentOrgDefinitionDraft): Promise<AgentOrgDefinition> => {
     const mutationInput = { ...input, members: toMutationMembers(input.members) }

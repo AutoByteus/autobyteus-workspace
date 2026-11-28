@@ -74,6 +74,7 @@ const messages = {
   'agents.components.agents.AgentDefinitionForm.instructionsPlaceholder': 'Enter the agent\'s system instructions...',
   'agents.components.agents.AgentDefinitionForm.avatar': 'Avatar',
   'agents.components.agents.AgentDefinitionForm.removeAvatar': 'Remove',
+  'agents.components.agents.AgentDefinitionForm.avatarFromPackage': 'From the package',
   'agents.components.agents.AgentDefinitionForm.skillsLabel': 'Skills',
   'agents.components.agents.AgentDefinitionForm.toolsLabel': 'Tools',
   'agents.components.agents.AgentDefinitionForm.clearSelection': 'Clear',

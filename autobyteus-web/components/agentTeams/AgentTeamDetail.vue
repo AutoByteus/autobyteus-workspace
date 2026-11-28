@@ -18,10 +18,10 @@
         <header class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div class="flex min-w-0 items-start gap-4">
-              <span class="inline-flex h-16 w-16 flex-none items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-2xl font-semibold text-slate-700">
-                <img v-if="teamDef.avatarUrl" :src="teamDef.avatarUrl" :alt="teamDef.name" class="h-full w-full object-cover" />
-                <template v-else>{{ initials(teamDef.name) }}</template>
-              </span>
+              <DefinitionAvatar class="h-16 w-16 flex-none rounded-xl bg-slate-100 text-2xl font-semibold text-slate-700" kind="team"
+                :name="teamDef.name" :avatar-url="teamDef.avatarUrl" :alt="teamDef.name">
+                <template #fallback>{{ initials(teamDef.name) }}</template>
+              </DefinitionAvatar>
               <div class="min-w-0">
                 <h1 class="truncate text-3xl font-bold tracking-tight text-slate-950">{{ teamDef.name }}</h1>
                 <span class="mt-2 inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ teamDef.category || $t('agentTeams.components.agentTeams.AgentTeamDetail.uncategorized') }}</span>
@@ -88,6 +88,7 @@ import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { useLocalization } from '~/composables/useLocalization'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 import { toEditableHandoffs, type HandoffEndpointOption } from '~/types/collaboration/handoffs'
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue'
 
 const props = defineProps<{ teamDefinitionId: string; returnToOrgId?: string }>()
 const { teamDefinitionId, returnToOrgId } = toRefs(props)

@@ -1,16 +1,13 @@
 <template>
   <div>
     <div class="conv-turn flex items-start gap-3 pr-8">
-      <div class="conv-avatar h-9 w-9 shrink-0 overflow-hidden rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-        <img
-          v-if="showAvatarImage"
-          :src="avatarUrl"
-          :alt="`${displayAgentName} avatar`"
-          class="h-full w-full object-cover"
-          @error="avatarLoadError = true"
-        />
-        <span v-else class="text-xs font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
-      </div>
+      <DefinitionAvatar
+        class="conv-avatar h-9 w-9 shrink-0 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold tracking-wide text-slate-600"
+        kind="agent"
+        :name="displayAgentName"
+        :avatar-url="avatarUrl"
+        :initials="avatarInitials"
+      />
 
       <!-- The phone's speaker line (autobyteus-506); hidden on the desktop. -->
       <span class="conv-speaker" aria-hidden="true">{{ displayAgentName }}</span>
@@ -73,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import type { AIMessage } from '~/types/conversation';
 import TextSegment from '~/components/conversation/segments/TextSegment.vue';
 import TerminalCommandSegment from '~/components/conversation/segments/TerminalCommandSegment.vue';
@@ -85,6 +82,7 @@ import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ErrorSegment from '~/components/conversation/segments/ErrorSegment.vue';
 import EditFileCommandSegment from '~/components/conversation/segments/EditFileCommandSegment.vue';
 import type { ConversationFileLink } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   message: AIMessage;
@@ -100,24 +98,17 @@ const emit = defineEmits<{
   (event: 'file-path-action', action: ConversationFileLink): void;
 }>();
 
-const avatarLoadError = ref(false);
-
 const displayAgentName = computed(() => {
   const raw = props.agentName?.trim() || '';
   return raw || 'Agent';
 });
 
-const avatarUrl = computed(() => props.agentAvatarUrl || '');
-const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
+const avatarUrl = computed(() => props.agentAvatarUrl || null);
 
 const avatarInitials = computed(() => {
   const parts = displayAgentName.value.split(/\s+/).filter(Boolean).slice(0, 2);
   const initials = parts.map(part => part[0]?.toUpperCase() || '').join('');
   return initials || 'AI';
-});
-
-watch(() => props.agentAvatarUrl, () => {
-  avatarLoadError.value = false;
 });
 
 const resolveInterAgentSenderDisplayName = (senderAgentRunId: string): string | undefined => {

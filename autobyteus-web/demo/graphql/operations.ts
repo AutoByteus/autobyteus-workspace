@@ -17,7 +17,9 @@ export type DemoOperations = {
   CollaborationParticipantMessages: [{ rootKind: string; rootRunId: string; agentRunId: string }, { collaborationParticipantMessages: CollaborationParticipantMessagesDto }];
   CreateWorkspace: [G.CreateWorkspaceMutationVariables, G.CreateWorkspaceMutation];
   EnsureProviderModelCatalog: [G.EnsureProviderModelCatalogMutationVariables, G.EnsureProviderModelCatalogMutation];
+  GetAgentDefinitionAvatars: [G.GetAgentDefinitionAvatarsQueryVariables, G.GetAgentDefinitionAvatarsQuery];
   GetAgentDefinitions: [G.GetAgentDefinitionsQueryVariables, G.GetAgentDefinitionsQuery];
+  GetAgentOrgDefinitionAvatars: [G.GetAgentOrgDefinitionAvatarsQueryVariables, G.GetAgentOrgDefinitionAvatarsQuery];
   GetAgentOrgDefinitions: [G.GetAgentOrgDefinitionsQueryVariables, G.GetAgentOrgDefinitionsQuery];
   GetAgentOrgExecutionCheckpoint: [G.GetAgentOrgExecutionCheckpointQueryVariables, G.GetAgentOrgExecutionCheckpointQuery];
   GetAgentOrgMemberFileChanges: [G.GetAgentOrgMemberFileChangesQueryVariables, G.GetAgentOrgMemberFileChangesQuery];
@@ -26,6 +28,7 @@ export type DemoOperations = {
   GetAgentOrgRunInspection: [G.GetAgentOrgRunInspectionQueryVariables, G.GetAgentOrgRunInspectionQuery];
   GetAgentRunCollaboration: [G.GetAgentRunCollaborationQueryVariables, G.GetAgentRunCollaborationQuery];
   GetAgentRunResumeConfig: [G.GetAgentRunResumeConfigQueryVariables, G.GetAgentRunResumeConfigQuery];
+  GetAgentTeamDefinitionAvatars: [G.GetAgentTeamDefinitionAvatarsQueryVariables, G.GetAgentTeamDefinitionAvatarsQuery];
   GetAgentTeamDefinitions: [G.GetAgentTeamDefinitionsQueryVariables, G.GetAgentTeamDefinitionsQuery];
   GetAllWorkspaces: [G.GetAllWorkspacesQueryVariables, G.GetAllWorkspacesQuery];
   GetCollaboratorMentionCandidates: [G.GetCollaboratorMentionCandidatesQueryVariables, G.GetCollaboratorMentionCandidatesQuery];

@@ -31,7 +31,7 @@ import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 const disclosure = { setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn(() => true) };
 const run = { runId: 'host' } as never;
 const row = (open: MobileRunTreeRow['open'], key = 'agent:host'): MobileRunTreeRow => ({
-  key, depth: 0, avatar: 'agent', name: 'n', title: '', status: 'idle', backgroundTasksRunning: 0, remote: null, hasChildren: false, expanded: false, fold: null, open, lastActivityAt: null,
+  key, depth: 0, avatar: 'agent', avatarUrl: null, name: 'n', title: '', status: 'idle', backgroundTasksRunning: 0, remote: null, hasChildren: false, expanded: false, fold: null, open, lastActivityAt: null,
 });
 const orgRun = { rootRunId: 'org-1', isActive: true, executionTree: { rootOrg: { orgDefinitionId: 'org-def', members: [{ address: '/software_team', teamRunId: 't' }, { address: '/director', agentRunId: 'd' }] } } } as never;
 const ORG_KEYS = { rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-1', mode: 'active' };

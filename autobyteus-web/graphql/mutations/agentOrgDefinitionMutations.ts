@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag'
 const Fields = gql`
   fragment AgentOrgDefinitionFields on AgentOrgDefinition {
-    id name description instructions category avatarUrl revision personalSettings personalSettingsBase
+    id name description instructions category avatarUrl userAvatarUrl revision personalSettings personalSettingsBase
     handoffs { from to rules }
     members { memberName ref refType refScope }
     defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }

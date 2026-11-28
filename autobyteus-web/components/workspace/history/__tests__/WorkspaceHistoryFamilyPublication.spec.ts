@@ -49,6 +49,10 @@ beforeEach(() => {
     if(name==='GetAgentOrgRootHistory') return {data:{getAgentOrgRootHistory:buildAgentOrgHistoryRow({rootRunId:variables.orgRunId,workspaceRootPath:'/fixture',definitionName:'History Org'})}};
     if(name==='GetWorkspaceRunHistory') return catalog.promise.then(()=>({data:{workspaceRunHistory:historyWorkspaceFixture()}}));
     if(name==='GetAgentOrgRunInspection') return orgInspectionResponse();
+    // The definitions' pictures (autobyteus-669 W-3): the agents' arrive with the later avatar enrichment.
+    if(name==='GetAgentDefinitionAvatars') return avatar.promise.then(()=>({data:{agentDefinitions:useAgentDefinitionStore().agentDefinitions.map(({id,avatarUrl})=>({id,avatarUrl}))}}));
+    if(name==='GetAgentTeamDefinitionAvatars') return {data:{agentTeamDefinitions:[]}};
+    if(name==='GetAgentOrgDefinitionAvatars') return {data:{agentOrgDefinitions:[]}};
     if(name==='GetAgentOrgMemberRunProjection') return { data: { getAgentOrgMemberRunProjection: {
       agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
       summary: 'History member', lastActivityAt: '2026-09-03T00:00:00.000Z',

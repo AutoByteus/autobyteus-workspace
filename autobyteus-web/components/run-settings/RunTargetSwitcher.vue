@@ -14,7 +14,7 @@
       data-test="run-target-switcher-trigger"
       @click="toggle"
     >
-      <img v-if="avatarUrl" :src="avatarUrl" :alt="''" class="h-10 w-10 flex-shrink-0 rounded-full object-cover" data-test="run-target-avatar">
+      <DefinitionAvatar v-if="avatarUrl" class="h-10 w-10 rounded-full bg-emerald-50 text-sm font-semibold text-slate-600" kind="agent" :name="name" :avatar-url="avatarUrl" :alt="''" data-test="run-target-avatar" />
       <h1 class="min-w-0 break-words text-center text-[1.5rem] font-semibold leading-tight tracking-tight text-gray-900 sm:text-[1.75rem]" data-test="run-target-name">{{ name }}</h1>
       <Icon
         v-if="!disabled"
@@ -101,6 +101,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue'
 
 /** One entry in the switcher: an Agent, an Agent Team or an Agent Org. */
 export type RunTargetChoice = Readonly<{ kind: 'agent' | 'team' | 'org'; definitionId: string }>

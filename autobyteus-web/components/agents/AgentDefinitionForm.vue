@@ -71,16 +71,15 @@
         <p class="mt-1 text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.upload_an_image_to_represent_this') }}</p>
         <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div class="h-24 w-24 rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 p-0.5">
-            <div class="h-full w-full overflow-hidden rounded-2xl bg-slate-900 flex items-center justify-center">
-              <img
-                v-if="formData.avatar_url && !avatarPreviewBroken"
-                :src="formData.avatar_url"
-                :alt="$t('agents.components.agents.AgentDefinitionForm.agent_avatar_preview')"
-                class="h-full w-full object-cover"
-                @error="avatarPreviewBroken = true"
-              />
-              <span v-else class="text-xl font-semibold tracking-wide text-white">{{ avatarInitials }}</span>
-            </div>
+            <DefinitionAvatar
+              class="h-full w-full rounded-2xl bg-slate-900 text-xl font-semibold tracking-wide text-white"
+              kind="agent"
+              :name="formData.name || 'Agent'"
+              :avatar-url="previewAvatarUrl"
+              :initials="avatarInitials"
+              :alt="$t('agents.components.agents.AgentDefinitionForm.agent_avatar_preview')"
+              data-test="agent-avatar-preview"
+            />
           </div>
 
           <div class="space-y-2">
@@ -91,15 +90,18 @@
                 :disabled="fileUploadStore.isUploading"
                 @click="triggerAvatarPicker"
               >{{ $t('agents.components.agents.AgentDefinitionForm.upload_avatar') }}</button>
+              <!-- Only the user's own picture can be removed (autobyteus-669 W-6); the package's is not theirs. -->
               <button
                 v-if="formData.avatar_url"
                 type="button"
+                data-test="agent-avatar-remove"
                 class="inline-flex items-center rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-100"
                 @click="clearAvatar"
               >
                 {{ $t('agents.components.agents.AgentDefinitionForm.removeAvatar') }}
               </button>
             </div>
+            <p v-if="previewFromPackage" class="text-sm text-gray-500" data-test="agent-avatar-from-package">{{ $t('agents.components.agents.AgentDefinitionForm.avatarFromPackage') }}</p>
             <p v-if="fileUploadStore.isUploading" class="text-sm text-indigo-600">{{ $t('agents.components.agents.AgentDefinitionForm.uploading_avatar') }}</p>
             <p v-else-if="avatarUploadError" class="text-sm text-red-600">{{ avatarUploadError }}</p>
             <p v-else class="text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.supported_jpg_png_gif_webp') }}</p>
@@ -255,6 +257,7 @@ import {
   normalizeDefaultLaunchConfig,
   toEditableDefaultLaunchConfig,
 } from '~/types/launch/defaultLaunchConfig';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   initialData?: any;
@@ -279,7 +282,6 @@ const fileUploadStore = useFileUploadStore();
 const { t } = useLocalization();
 const avatarFileInputRef = ref<HTMLInputElement | null>(null);
 const avatarUploadError = ref<string | null>(null);
-const avatarPreviewBroken = ref(false);
 
 // Fetch required data on mount
 onMounted(async () => {
@@ -385,7 +387,7 @@ const useAllInstalledSkills = ref(false);
 
 /** What the form fills from a loaded definition; a re-delivery with the same values keeps the user's unsaved edits. */
 const filledValuesOf = (data: any): string => JSON.stringify(data ? [
-  data.name, data.role, data.category, data.description, data.instructions, data.avatarUrl || data.avatar_url || '',
+  data.name, data.role, data.category, data.description, data.instructions, data.userAvatarUrl || '', data.avatarUrl || '',
   data.defaultLaunchConfig ?? null, data.skillScope, ...componentFields.value.map(f => data[f.camelCase] || data[f.name] || []),
 ] : null);
 let filledFrom: string | null = null;
@@ -402,7 +404,8 @@ watch(initialData, (newData) => {
     formData.category = newData.category || '';
     formData.description = newData.description || '';
     formData.instructions = newData.instructions || '';
-    formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
+    // The editable picture is the user's own only (autobyteus-669 W-6): never the package's shown one.
+    formData.avatar_url = newData.userAvatarUrl || '';
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
     useAllInstalledSkills.value = newData.skillScope === 'ALL_INSTALLED';
     componentFields.value.forEach(field => {
@@ -426,14 +429,18 @@ const resetPersonal = (setting: PersonalSetting) => runReset(
     filledFrom = filledValuesOf(reset);
     if (setting === 'TOOLS') formData.tool_names = [...reset.toolNames];
     else if (setting === 'SKILLS') formData.skill_names = [...reset.skillNames];
-    else if (setting === 'AVATAR') formData.avatar_url = reset.avatarUrl || '';
+    else if (setting === 'AVATAR') formData.avatar_url = reset.userAvatarUrl || '';
     else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset.defaultLaunchConfig));
   },
 );
 
-watch(() => formData.avatar_url, () => {
-  avatarPreviewBroken.value = false;
-});
+/**
+ * The preview: the user's picture as edited; with none, the package's (the definition's shown picture when it had no
+ * user picture), captioned "From the package"; else the initials.
+ */
+const packageAvatarUrl = computed(() => (!isCreateMode.value && !initialData.value?.userAvatarUrl ? initialData.value?.avatarUrl || null : null));
+const previewAvatarUrl = computed(() => formData.avatar_url || packageAvatarUrl.value);
+const previewFromPackage = computed(() => !formData.avatar_url && Boolean(packageAvatarUrl.value));
 
 function handleAddAllTools(groupName: string) {
   let toolsToAdd: string[] = [];
@@ -511,7 +518,8 @@ const handleSubmit = () => {
     category: formData.category || undefined,
     description: formData.description,
     instructions: formData.instructions,
-    avatarUrl: formData.avatar_url,
+    // The user's picture only, or null to clear it; never the shown (package) one (autobyteus-669 W-6).
+    avatarUrl: formData.avatar_url || null,
     skillNames: formData.skill_names,
     skillScope: useAllInstalledSkills.value ? 'ALL_INSTALLED' : 'CONFIGURED',
     toolNames: formData.tool_names,

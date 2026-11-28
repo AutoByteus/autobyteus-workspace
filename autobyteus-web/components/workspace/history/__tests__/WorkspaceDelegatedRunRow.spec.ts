@@ -43,7 +43,9 @@ describe('WorkspaceDelegatedRunRow clean delegated-row style', () => {
   it.each([false, true])('keeps a 16px slate people-group for Teams (collaborator opensOnAppear=%s)', (opensOnAppear) => {
     const element = mount(WorkspaceDelegatedRunRow, { props: { row: { ...teamRow(), opensOnAppear }, hasChildren: true, expanded: true } });
     const icon = element.get('[data-team-icon="temporary-task-team"]');
-    expect(icon.classes()).toEqual(['inline-flex', 'h-4', 'w-4', 'items-center', 'justify-center', 'text-slate-500']);
+    // The Team's avatar slot (autobyteus-669 W-1): the same 16px slate slot, which its definition's picture would fill.
+    expect(icon.classes()).toEqual(expect.arrayContaining(['inline-flex', 'h-4', 'w-4', 'items-center', 'justify-center', 'text-slate-500']));
+    expect(icon.attributes('data-avatar-state')).toBe('fallback');
     const group = icon.get('[data-icon="heroicons:user-group-20-solid"]');
     expect(element.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
     expect(group.classes()).toEqual(['h-4', 'w-4']);

@@ -10,16 +10,16 @@
         <div class="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-[16rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
           <div>
             <div class="flex items-start gap-3">
-              <div class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100 text-slate-700">
-                <img
-                  v-if="formData.avatarUrl && !avatarPreviewBroken"
-                  :src="formData.avatarUrl"
-                  :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar_preview')"
-                  class="h-full w-full object-cover"
-                  @error="avatarPreviewBroken = true"
-                />
-                <span v-else class="text-xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
-              </div>
+              <DefinitionAvatar
+                class="h-24 w-24 shrink-0 rounded-xl border border-slate-200 bg-slate-100 text-slate-700"
+                kind="team"
+                :name="formData.name || 'Team'"
+                :avatar-url="previewAvatarUrl"
+                :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar_preview')"
+                data-test="team-avatar-preview"
+              >
+                <template #fallback><span class="text-xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span></template>
+              </DefinitionAvatar>
               <div class="space-y-2">
                 <div class="flex flex-wrap items-center gap-2">
                   <button
@@ -31,6 +31,7 @@
                   <button
                     v-if="formData.avatarUrl"
                     type="button"
+                    data-test="team-avatar-remove"
                     class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
                     @click="clearAvatar"
                   >
@@ -39,6 +40,7 @@
                 </div>
                 <p class="text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.png_jpg_square_recommended') }}</p>
                 <PersonalSettingMark :base="personalBase" :active="isPersonal('AVATAR')" :busy="resetting !== null" @reset="resetPersonal('AVATAR')" />
+                <p v-if="previewFromPackage" class="text-xs text-slate-500" data-test="team-avatar-from-package">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarFromPackage') }}</p>
                 <p v-if="fileUploadStore.isUploading" class="text-xs text-blue-600">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.uploading_avatar') }}</p>
                 <p v-else-if="avatarUploadError" class="text-xs text-red-600">{{ avatarUploadError }}</p>
               </div>
@@ -129,10 +131,10 @@
           <div class="flex items-center justify-between gap-2">
             <h3 class="text-sm font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_canvas') }}</h3>
             <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-700">
-              <div class="h-6 w-6 overflow-hidden rounded-md bg-slate-200">
-                <img v-if="formData.avatarUrl && !avatarPreviewBroken" :src="formData.avatarUrl" :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar')" class="h-full w-full object-cover" />
-                <div v-else class="flex h-full w-full items-center justify-center text-[10px] font-semibold text-slate-700">{{ avatarInitials }}</div>
-              </div>
+              <DefinitionAvatar class="h-6 w-6 rounded-md bg-slate-200 text-[10px] font-semibold text-slate-700" kind="team" :name="formData.name || 'Team'"
+                :avatar-url="previewAvatarUrl" :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar')">
+                <template #fallback>{{ avatarInitials }}</template>
+              </DefinitionAvatar>
               <span class="max-w-[10rem] truncate">{{ formData.name || $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.untitledTeam') }}</span>
             </div>
           </div>
@@ -298,6 +300,7 @@ import {
   type EditableHandoff,
   type HandoffEndpointOption,
 } from '~/types/collaboration/handoffs';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 
 const props = defineProps<{
   initialData?: any;
@@ -314,7 +317,6 @@ const { t } = useLocalization();
 
 const avatarFileInputRef = ref<HTMLInputElement | null>(null);
 const avatarUploadError = ref<string | null>(null);
-const avatarPreviewBroken = ref(false);
 
 const formErrors = reactive<Record<string, string>>({});
 const formData = reactive(createInitialFormData());
@@ -326,7 +328,7 @@ const personalBase = computed(() => initialData.value?.personalSettingsBase ?? n
 const isPersonal = (setting: PersonalSetting): boolean => Boolean(initialData.value?.personalSettings?.includes(setting));
 /** What the form fills from a loaded Team; a re-delivery with the same values keeps the user's unsaved edits. */
 const filledValuesOf = (data: any): string => JSON.stringify(data ? [
-  data.name, data.category, data.description, data.instructions, data.coordinatorMemberName, data.avatarUrl || data.avatar_url || '',
+  data.name, data.category, data.description, data.instructions, data.coordinatorMemberName, data.userAvatarUrl || '', data.avatarUrl || '',
   data.defaultLaunchConfig ?? null, data.nodes ?? [], data.handoffs ?? [],
 ] : null);
 let filledFrom: string | null = null;
@@ -335,7 +337,7 @@ const resetPersonal = (setting: PersonalSetting) => runReset(
   () => useAgentTeamDefinitionStore().resetAgentTeamPersonalSetting(initialData.value.id, setting),
   (reset) => {
     filledFrom = filledValuesOf(reset);
-    if (setting === 'AVATAR') formData.avatarUrl = reset?.avatarUrl || '';
+    if (setting === 'AVATAR') formData.avatarUrl = reset?.userAvatarUrl || '';
     else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset?.defaultLaunchConfig ?? null));
   },
 );
@@ -484,7 +486,8 @@ const handleSubmit = () => {
     coordinatorMemberName: formData.coordinatorMemberName,
     nodes: buildSubmitNodes(formData.nodes),
     handoffs: toDefinitionHandoffs(handoffs.value),
-    avatarUrl: formData.avatarUrl,
+    // The user's picture only, or null to clear it; never the shown (package) one (autobyteus-669 W-6).
+    avatarUrl: formData.avatarUrl || null,
     defaultLaunchConfig: normalizeDefaultLaunchConfig(launchPreferences),
   };
 
@@ -508,7 +511,8 @@ watch(
       formData.description = newData.description || '';
       formData.instructions = newData.instructions || '';
       formData.coordinatorMemberName = newData.coordinatorMemberName || '';
-      formData.avatarUrl = newData.avatarUrl || newData.avatar_url || '';
+      // The editable picture is the user's own only (autobyteus-669 W-6): never the package's shown one.
+      formData.avatarUrl = newData.userAvatarUrl || '';
       Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
       formData.nodes = mapInitialTeamNodes(newData.nodes || []);
       handoffs.value = toEditableHandoffs(newData.handoffs);
@@ -522,12 +526,13 @@ watch(
   { immediate: true, deep: true },
 );
 
-watch(
-  () => formData.avatarUrl,
-  () => {
-    avatarPreviewBroken.value = false;
-  },
-);
+/**
+ * The preview: the user's picture as edited; with none, the package's (the Team's shown picture when it had no user
+ * picture), captioned "From the package"; else the initials.
+ */
+const packageAvatarUrl = computed(() => (initialData.value?.id && !initialData.value?.userAvatarUrl ? initialData.value?.avatarUrl || null : null));
+const previewAvatarUrl = computed(() => formData.avatarUrl || packageAvatarUrl.value);
+const previewFromPackage = computed(() => !formData.avatarUrl && Boolean(packageAvatarUrl.value));
 
 onMounted(() => {
   if (agentDefStore.agentDefinitions.length === 0) {

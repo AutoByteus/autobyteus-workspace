@@ -118,4 +118,32 @@ describe('AgentDefinitionForm personal settings', () => {
     await flushPromises()
     expect(wrapper.text()).toContain('personalSettings.reset.failed {"error":"offline"}')
   })
+
+  // autobyteus-669 W-6 (REQ-003): the form edits the user's own picture only; the package's is previewed, captioned.
+  describe('the picture', () => {
+    const PACKAGE_PICTURE = '/rest/definition-avatars/agent/solution-designer?v=1'
+
+    it('previews the package\'s picture, captioned, with no Remove, and saves no picture of the user\'s', async () => {
+      const wrapper = mountForm(packageAgent({ avatarUrl: PACKAGE_PICTURE, userAvatarUrl: null }))
+      expect(wrapper.get('[data-test="agent-avatar-preview"] img').attributes('src')).toContain(PACKAGE_PICTURE)
+      expect(wrapper.find('[data-test="agent-avatar-from-package"]').exists()).toBe(true)
+      expect(wrapper.find('[data-test="agent-avatar-remove"]').exists()).toBe(false)
+      expect((await submitted(wrapper)).avatarUrl).toBeNull()
+    })
+
+    it('fills the user\'s own picture, with Remove and no caption; Remove saves null', async () => {
+      const wrapper = mountForm(packageAgent({ avatarUrl: '/rest/files/mine.png', userAvatarUrl: '/rest/files/mine.png' }))
+      expect(wrapper.find('[data-test="agent-avatar-from-package"]').exists()).toBe(false)
+      expect((await submitted(wrapper)).avatarUrl).toBe('/rest/files/mine.png')
+      await wrapper.get('[data-test="agent-avatar-remove"]').trigger('click')
+      expect(wrapper.find('[data-test="agent-avatar-remove"]').exists()).toBe(false)
+      expect((await submitted(wrapper)).avatarUrl).toBeNull()
+    })
+
+    it('a new agent shows no package picture', () => {
+      const wrapper = mountForm(undefined, true)
+      expect(wrapper.find('[data-test="agent-avatar-from-package"]').exists()).toBe(false)
+      expect(wrapper.get('[data-test="agent-avatar-preview"]').attributes('data-avatar-state')).toBe('fallback')
+    })
+  })
 })

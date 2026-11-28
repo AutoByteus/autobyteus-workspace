@@ -188,18 +188,7 @@ const historyState: WorkspaceHistorySectionState = {
 };
 
 const avatars: WorkspaceHistoryAvatarBindings = {
-  showAgentAvatar: () => false,
-  onAgentAvatarError: () => {},
   getAgentInitials: () => 'A',
-  showTeamAvatar: () => false,
-  getTeamAvatarUrl: () => '',
-  getOrgAvatarUrl: () => '',
-  showOrgAvatar: () => false,
-  onOrgAvatarError: () => {},
-  onTeamAvatarError: () => {},
-  showTeamMemberAvatar: () => false,
-  getTeamMemberAvatarUrl: () => '',
-  onTeamMemberAvatarError: () => {},
   getTeamMemberDisplayName: (member) => member.displayName || member.memberName,
   getTeamMemberInitials: () => 'C',
 };

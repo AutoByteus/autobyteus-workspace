@@ -63,6 +63,7 @@ const messages = {
   "agentOrgs.avatar.label": "头像（可选）",
   "agentOrgs.avatar.upload": "上传图片",
   "agentOrgs.avatar.remove": "移除图片",
+  "agentOrgs.avatar.fromPackage": "来自软件包",
   "agentOrgs.avatar.formats": "支持 JPEG、PNG、GIF 或 WebP。随组织一起保存。",
   "agentOrgs.avatar.uploading": "正在上传图片…",
   "agentOrgs.avatar.invalidType": "请选择 JPEG、PNG、GIF 或 WebP 图片。",

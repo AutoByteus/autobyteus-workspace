@@ -11,7 +11,7 @@ import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
 const rowOf = (key: string): MobileRunTreeRow => ({
-  key, depth: key.includes('/') ? 1 : 0, avatar: 'agent', name: 'n', title: '', status: 'idle', backgroundTasksRunning: 0, remote: null, hasChildren: false,
+  key, depth: key.includes('/') ? 1 : 0, avatar: 'agent', avatarUrl: null, name: 'n', title: '', status: 'idle', backgroundTasksRunning: 0, remote: null, hasChildren: false,
   expanded: false, fold: null, open: { kind: 'agentRun', run: { runId: key } as never }, lastActivityAt: null,
 });
 const deferred = () => {

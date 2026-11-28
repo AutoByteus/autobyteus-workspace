@@ -23,17 +23,20 @@
       @click="$emit('open', row)"
     >
       <span class="relative mt-0.5 flex-shrink-0" aria-hidden="true">
-        <span
-          class="flex items-center justify-center font-semibold"
+        <!-- Its definition's picture in the slot (autobyteus-669 W-4); else initials, the Team icon or the Org icon. -->
+        <DefinitionAvatar
+          class="font-semibold"
           :class="[
             row.depth === 0 ? 'h-9 w-9 text-xs' : 'h-7 w-7 text-[0.6875rem]',
             row.avatar === 'org' ? 'rounded-lg bg-slate-100 text-slate-500' : row.avatar === 'team' ? 'rounded-full bg-slate-100 text-slate-500' : 'rounded-full bg-slate-200 text-slate-600',
           ]"
-        >
-          <Icon v-if="row.avatar === 'team'" icon="heroicons:user-group-20-solid" :class="row.depth === 0 ? 'h-5 w-5' : 'h-4 w-4'" />
-          <Icon v-else-if="row.avatar === 'org'" icon="heroicons:building-office-2-20-solid" :class="row.depth === 0 ? 'h-5 w-5' : 'h-4 w-4'" />
-          <template v-else>{{ initials }}</template>
-        </span>
+          :kind="row.avatar"
+          :name="row.name"
+          :avatar-url="row.avatarUrl"
+          :initials="initials"
+          :icon-class="row.depth === 0 ? 'h-5 w-5' : 'h-4 w-4'"
+          alt=""
+        />
         <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2" :class="[dotClass, open ? 'ring-blue-50' : 'ring-white']" data-testid="mobile-run-status-dot" :data-status="presentation.kind === 'background' ? 'background' : shownStatus" />
       </span>
       <span class="min-w-0 flex-1">
@@ -65,6 +68,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
+import DefinitionAvatar from '~/components/common/DefinitionAvatar.vue';
 import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunListRows';
 import { agentActivityPresentation } from '~/utils/agentActivityPresentation';
 import { mobileRunActivityLabel } from '~/utils/mobile/mobileRunStatusLabel';

@@ -79,6 +79,8 @@ export const runTreeDisplayRows = (input: Readonly<{
         ? Object.freeze({ runId: target.runId, nodeName: tree.peer.nodeName, reachable: tree.peer.reachable, title: tree.peer.title })
         : null,
       ...(tree.leaving ? { leaving: true } : {}),
+      // Its definition's picture (autobyteus-669); a peer's run shows the fallback (DEC-006).
+      definitionId: tree.peer ? null : tree.definitionId ?? null,
     }
     return Object.freeze({
       tree, row,

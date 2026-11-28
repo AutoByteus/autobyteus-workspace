@@ -1,7 +1,7 @@
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { computed, effectScope, nextTick, reactive, ref, type Component } from 'vue';
+import { effectScope, nextTick, reactive, ref, type Component } from 'vue';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -23,6 +23,11 @@ import {
 } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
+// The definitions' picture addresses, as the definition avatar store reads them (autobyteus-669 W-3).
+const pictures = vi.hoisted(() => ({ definitions: null as null | { value: {id: string; avatarUrl?: string | null}[] } }));
+vi.mock('~/stores/definitionAvatarStore', () => ({ useDefinitionAvatarStore: () => ({
+  avatarOf: (_kind: string, id: string | null | undefined) => pictures.definitions?.value.find((definition) => definition.id === id)?.avatarUrl?.trim() || null,
+}) }));
 
 const stableAgent = (
   memberAddress: string,
@@ -221,10 +226,7 @@ const mountSubject = (options: {
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,
       avatars: options.avatars ?? {
-        showAgentAvatar: () => false, onAgentAvatarError: vi.fn(), getAgentInitials: () => 'A',
-        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {}, onTeamAvatarError: vi.fn(),
-        showTeamMemberAvatar: () => false, getTeamMemberAvatarUrl: () => '', onTeamMemberAvatarError: vi.fn(),
-        getTeamMemberDisplayName: (member: any) => member.displayName, getTeamMemberInitials: () => 'W',
+        getAgentInitials: () => 'A', getTeamMemberDisplayName: (member: any) => member.displayName, getTeamMemberInitials: () => 'W',
       },
       actions,
     },
@@ -293,10 +295,9 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
 
   it('keeps supplied Team images and uses the group glyph for missing or broken images', async () => {
     const definitions = ref<{id: string; avatarUrl?: string}[]>([]);
+    pictures.definitions = definitions;
     const scope = effectScope();
-    const avatars = scope.run(() => useRunHistoryAvatarState({loading: ref(false),
-      agentDefinitions: computed(() => []), orgDefinitions: computed(() => []), teamDefinitions: computed(() => definitions.value),
-    }))!;
+    const avatars = scope.run(() => useRunHistoryAvatarState())!;
     const {wrapper} = mountSubject({avatars});
     const header = () => wrapper.get('[data-test^="workspace-team-definition-row-"]');
     expect(header().find('img').exists()).toBe(false);

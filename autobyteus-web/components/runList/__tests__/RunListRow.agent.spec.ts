@@ -14,6 +14,8 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
   hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
 }));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }));
+// The definitions' pictures are their own light read (autobyteus-669 W-3), not the tree's.
+vi.mock('~/stores/definitionAvatarStore', () => ({ useDefinitionAvatarStore: () => ({ avatarOf: () => null, reloadIfLoaded: async () => undefined }) }));
 // The run's tree, as the server builds it (SR-084): read once when the row is first listed.
 const treeReads = vi.hoisted(() => ({ count: 0, answer: null as null | ((runId: string) => unknown) }));
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: { variables: { runId: string } }) => {
@@ -46,11 +48,7 @@ const agentEntry = (): RunListEntry => ({
   } as never,
 });
 
-const AVATARS = {
-  showAgentAvatar: () => false, getAgentInitials: () => 'PM', onAgentAvatarError: () => {},
-  showTeamAvatar: () => false, getTeamAvatarUrl: () => '', onTeamAvatarError: () => {},
-  showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: () => {},
-} as never;
+const AVATARS = { getAgentInitials: () => 'PM', getTeamMemberDisplayName: () => '', getTeamMemberInitials: () => '' } as never;
 
 const render = () => {
   // Partial: an Agent row's fold reaches none of the actions.

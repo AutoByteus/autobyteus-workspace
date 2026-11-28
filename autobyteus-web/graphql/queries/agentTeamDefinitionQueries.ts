@@ -10,6 +10,7 @@ export const GetAgentTeamDefinitions = gql`
       instructions
       category
       avatarUrl
+      userAvatarUrl
       coordinatorMemberName
       revision
       handoffs { from to rules }

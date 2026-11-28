@@ -18,6 +18,8 @@ const PROTECTED_REST_PREFIXES = [
   '/rest/collaboration-messages/',
   '/rest/applications/',
   '/rest/application-bundles/',
+  // A definition's package picture (autobyteus-669): read with the credential, never in the address.
+  '/rest/definition-avatars/',
 ];
 
 const browserBaseUrl = (): string => {
