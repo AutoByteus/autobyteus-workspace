@@ -24,3 +24,17 @@
   - `IMP-002-checks.md`;
   - `IMP-003-probe.md`, with `IMP-003-probe-evidence.json` and 12 screenshots.
 - Classification unchanged: Large / High. No Design Impact. Next: `/code_reviewer`.
+
+## IR-002 (2026-11-28) — Local Fix CR-001
+
+- Trigger: CRR-002 failure-origin review of API/E2E F-1 (AV-02). Origin: implementation.
+- Problem: a package picture replaced by one of the same size with the same whole-second mtime kept its cached hash, so
+  its address kept the old `?v=`.
+- Fix (`da2500e220`): `contentByPath` reuses a hash only while `size`, `mtimeMs`, `ctimeMs` and `ino` from one `lstat`
+  are unchanged. The N-3 unit case is rewritten: an untouched file is not read again; a same-size, same-mtime
+  replacement is read again and gets a new hash.
+- Refinement recorded: N-3's signal is size, mtime, ctime and inode.
+- Evidence: `evidence/implementation/IMP-004-cr001-cache-identity.md`. The unit case and AV-02 are red on `950061c296` and
+  green now (AV-02 3 of 3). Server typecheck at baseline; server unit suite 9309 passed.
+- Not changed: the shared user-file ETag (FU-002, the Solution Designer's).
+- Classification unchanged: Large / High. No Design Impact. Next: `/code_reviewer` (targeted delta review).

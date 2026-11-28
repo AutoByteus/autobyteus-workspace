@@ -15,7 +15,15 @@ Paths are relative to the ticket folder `<worktree>/tickets/in-progress/agent-av
 
 ## Summary
 
-**Implementation Complete, IR-001.** Ready for code review; this is not runtime acceptance or delivery.
+**Implementation Complete, IR-002** (Local Fix CR-001 from CRR-002). Ready for a targeted delta code review, then
+API/E2E (AV-02), then the test-code review. This is not runtime acceptance or delivery.
+
+**IR-002 (`da2500e220`):** the package-picture cache (N-3) now reuses a path's hash only while `size`, `mtimeMs`,
+`ctimeMs` and `ino` are unchanged, all from one `lstat`. Before, a picture replaced by one of the same size with the same
+whole-second time (tar and other time-preserving tools) kept its old hash and `?v=`. The N-3 unit case is rewritten to
+state N-3's purpose: an untouched file is not read again, and a same-size, same-mtime replacement is. Evidence:
+`evidence/implementation/IMP-004-cr001-cache-identity.md`. The new case and AV-02 fail on `950061c296` and pass now
+(AV-02 3 of 3).
 
 A definition's package picture now shows on every surface, desktop and phone:
 - the file is `avatar.{png,jpg,jpeg,webp}` beside `agent.md`, `team.md` or `org.md`;
@@ -35,13 +43,14 @@ Commits on `codex/agent-avatars-669`:
 | `5a2ff965e6` | docs (REQ-008, AC-007) |
 | `bc14dfc507` | the probe script, this handoff, the revision record and the evidence |
 | `8a185cc850` | test: the symlink case keeps its link target inside its temp folder (no file left in the system temp folder) |
+| `da2500e220` | IR-002: the picture cache keys on size, mtime, ctime and inode (CR-001) |
 
-Revision: IR-001 in `implementation-revision-record.md`.
+Revisions: IR-001 and IR-002 in `implementation-revision-record.md`.
 
 ## Routing
 
 - `task_size`: Large; `architectural_risk`: High, unchanged from the design.
-- Next: `/code_reviewer`.
+- Next: `/code_reviewer` (targeted delta review of IR-002).
 - No Design Impact. Neither escalation trigger fired:
   - every run record names its definition from its own file: an agent run's metadata, a team run's
     `teamDefinitionId`, and each member's `agentDefinitionId`. An Org's units come from the container file
@@ -53,7 +62,7 @@ Revision: IR-001 in `implementation-revision-record.md`.
 
 | D | Files | What it does |
 | --- | --- | --- |
-| S-1 | `agent-package-definitions/domain/definition-avatar-file.ts` (new); the agent, team and org node readers and file providers; the three domain models (`packageAvatar`); `monitor/agent-package-layout.ts` | `readDefinitionAvatar(folder)` returns none, valid or invalid. It reads the four names only and accepts one at most. It refuses a non-regular file or a symlink (`lstat`, then an `O_NOFOLLOW` read; N-1). It rejects anything over 1 MiB and checks the signature (PNG, JPEG, WebP). The hash is cached per path while size and mtime are unchanged (N-3). `readPackageAvatar` warns `DEFINITION_AVATAR_IGNORED` only when a folder's reason changes (N-2). The hash joins each definition's `fingerprintOf`. The watcher's allow-list now holds the four names |
+| S-1 | `agent-package-definitions/domain/definition-avatar-file.ts` (new); the agent, team and org node readers and file providers; the three domain models (`packageAvatar`); `monitor/agent-package-layout.ts` | `readDefinitionAvatar(folder)` returns none, valid or invalid. It reads the four names only and accepts one at most. It refuses a non-regular file or a symlink (`lstat`, then an `O_NOFOLLOW` read; N-1). It rejects anything over 1 MiB and checks the signature (PNG, JPEG, WebP). The hash is cached per path while size, mtime, ctime and inode are unchanged (N-3; ctime and inode since IR-002, CR-001). `readPackageAvatar` warns `DEFINITION_AVATAR_IGNORED` only when a folder's reason changes (N-2). The hash joins each definition's `fingerprintOf`. The watcher's allow-list now holds the four names |
 | S-2 | `agent-package-definitions/domain/definition-avatar-address.ts` (new); `api/graphql/types/definition-avatar-fields.ts` (new); the agent, team and org converters and GraphQL types; the agent, team and org services; `personal-settings-service.ts` | One module owns the address rules: `definitionAvatarAddress`, `isDefinitionAvatarAddress` (by path, any origin or version), `userAvatarInput`, `effectiveBaseAvatarUrl` and `userAvatarUrlOf`. GraphQL `avatarUrl` is display only: the user's picture, else the config's, else the package's address. The new `userAvatarUrl` is the user's own picture. **Input:** absent keeps; `null`, `''` or a definition-picture address clears, storing nothing. It applies in agent, team and org create and update, `personalEditsOf` and `PersonalSettingsService.setEdited`. The team update keeps an absent `avatarUrl` undefined (it was defaulted to null before) |
 | S-3 | `api/rest/definition-avatars.ts` (new), `api/rest/index.ts` | `GET /rest/definition-avatars/:kind/:definitionId` for `agent`, `agent_team` and `agent_org`. It takes no path from the request: it looks the definition up, re-reads its picture with `readDefinitionAvatar`, and sends it with `sendUserFile` (type, ETag, `no-cache`, `nosniff`, 304). Access is the default owner-and-phone class; a peer gets 403 and no credential 401 |
 | S-4 | `run-tree-dtos.ts` (contract), `run-tree-records.ts`, `run-tree-view.ts`, `run-own-agents-reader.ts` | Every local row carries `definitionId`; peer rows have none. **Child records:** from metadata `agentDefinitionId`, `team.teamDefinitionId`, and each member's. **Own trees:** from the agent and team runs. **Org container:** a unit's `definitionId` and a team unit's members |
