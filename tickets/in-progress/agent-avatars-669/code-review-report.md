@@ -11,8 +11,9 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002 Pass; N-1…N-5). It is untracked and was left as found.
 - Implementation Handoff / Revision Record: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
+- Current Code Review Revision ID: `CRR-002`. Round 2 is the `API/E2E Failure-Origin Review` of API-REV-001 F-1 (code tested `950061c296`, API/E2E commit `befbfcd154`, reproduction AV-02). Round 1 below stays as recorded.
+- Previous: `CRR-001`
+- Current Review Round: `2`
 - Review Scope: `Full Review` of `ea787a37b1..950061c296` (code commits `785fa286a9`…`8a185cc850`)
 - Trigger: implementation engineer, IR-001, Large / High
 
@@ -106,9 +107,34 @@ Yes, done in the change: `agent_packages.md`, `agent_definition.md`, the web doc
 
 - Overall: 9.3 / 10. Every category is ≥ 9.2. Separation of concerns is 9.2, for C-4's forms at the limit.
 
+## Round 2 Failure-Origin Finding (CRR-002)
+
+### CR-001 (F-1): a package picture replaced with one of the same size and the same whole second keeps its old version
+
+- **Severity:** Medium. Rare, but silent: AC-001's "replace the file and update: the version changes and the new picture shows" fails for that input.
+- **Where:** `autobyteus-server-ts/src/agent-package-definitions/domain/definition-avatar-file.ts`. `contentByPath` reuses the hash while `size` and `mtimeMs` are unchanged.
+- **Cause:** a package update writes new bytes (a new inode), but tar and other time-preserving tools keep whole-second times. With the same size and the same second, the old hash, so the old `?v=`, survives. Then:
+  - the address is unchanged, so the phone's object URL (keyed by address) and any cached `<img>` keep the old picture;
+  - the route sends the new bytes under the old user-file ETag, so a revalidation gets 304.
+
+  This lasts until the file changes again or the node restarts.
+- **Evidence:**
+  - AV-02 (`tests/e2e/agent-definitions/definition-avatars-github.e2e.test.ts`, fake GitHub, two revisions) is red 3 of 3 with revision 2 pinned to revision 1's time, and red 1 run in 3 with natural timing.
+  - API/E2E's uncommitted diagnosis: adding `ino` and `ctimeMs` to the check made it pass 2 of 2.
+- **Origin and classification:** N-3 chose the change signal "size and mtime" for a purpose: do not re-hash an unchanged picture. The signal is too weak to mean "unchanged". A replacement always changes the file's `ctime` (no tool can set it) and normally its inode. Strengthening the signal keeps N-3's purpose and AC-001 both. So this is an implementation `Local Fix` with a recorded refinement of N-3, not a design change. The unit spec that pins the weak signal ("other bytes, same size and time keep the old hash") was written to the signal, not to the purpose, and changes with it.
+- **Required action (Local Fix, implementation):**
+  1. Key the cache's reuse on `size`, `mtimeMs`, `ctimeMs` and `ino` from the same `lstat`.
+  2. Rewrite the N-3 unit case to say what N-3 means:
+     - an untouched file is not read again;
+     - a file replaced by one of the same size and mtime, but another inode or ctime, is read again and gets a new hash (`fs.rename` of a new file over it, then `utimes` back to the old time).
+  3. AV-02 green, including the pinned-time variant.
+  4. Record the refinement in the handoff (N-3's signal is size, mtime, ctime and inode).
+- **Review gap I own:** CRR-001 accepted N-3's cache as specified without asking whether size and mtime can stay equal across a replacement. Archive tools' whole-second times make that a real input.
+- **Follow-up:** the node's user-file ETag (`user-file-reply.ts:27`, `"<size>-<floor(mtimeMs)>"`, 574 D-1) has the same weakness for every file route. It is recorded as FU-002 in `follow-ups.md`, for the Solution Designer to send. This ticket's `?v=` fix gives a new address, so the avatar does not depend on it.
+
 ## Findings
 
-None that need action.
+Round 1: none. Round 2: CR-001 (above).
 
 ## Follow-ups
 
@@ -126,6 +152,10 @@ None added.
 
 ## Latest Authoritative Result
 
+- Review Decision: `Fail` (round 2, CRR-002). The origin is implementation: CR-001, `Local Fix` (a stronger cache identity; N-3's purpose kept and recorded).
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Recommended Recipient: `/implementation_engineer`. Then a targeted delta review, then API/E2E (AV-02), then the test-code review.
+- Round 1 result (CRR-001, superseded):
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Score Summary: 9.3 / 10

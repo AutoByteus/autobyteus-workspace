@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
+| CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-1) | Pass | Fail: implementation Local Fix | CR-001 (new) |
 
 ## Revision Entries
 
@@ -37,3 +38,34 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: C-3 (a transient phone failure shows fallbacks for the session); C-4 (forms at the size limit).
+
+### CRR-002: failure-origin review of API-REV-001 F-1 (a replaced picture keeps its version)
+
+- Canonical review report updated: `tickets/in-progress/agent-avatars-669/code-review-report.md` ("Round 2 Failure-Origin Finding"); `follow-ups.md` (FU-002 added)
+- Review entry point and round: API/E2E Failure-Origin Review, round 2
+- Review scope: `N/A` (failure-origin). Read: `definition-avatar-file.ts` (`contentByPath`), `user-file-reply.ts:27`, and the F-1 evidence.
+- Triggering role, report path, and finding or scenario IDs: API/E2E, `api-e2e-execution-coverage-report.md` (commit `befbfcd154`): F-1 (AV-02)
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002 (N-3)
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-001)
+- Current authoritative result: Fail. The origin is implementation: CR-001, `Local Fix`.
+- What changed in the review result and why:
+  - The cache's change signal (size and mtime) misses a replacement with the same size in the same whole second, which tar produces, so `?v=` stays old and AC-001 fails for that input.
+  - Adding `ctimeMs` and `ino` keeps N-3's purpose (no re-hash of an unchanged file) and fixes it, so this is not a design change. The pinning unit spec is rewritten to the purpose.
+  - The shared user-file ETag has the same weakness: FU-002.
+- **Review gap I own:** CRR-001 did not test N-3's signal against time-preserving replacements.
+- Supported product scenario / material-premise basis changes: S-1 now includes package updates made by time-preserving tools.
+
+#### Prior Finding Resolution
+
+None (CRR-001 had no findings).
+
+- New or remaining finding IDs: CR-001
+- Material score or classification changes: runtime correctness is below 9.2 until CR-001 is fixed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty:
+  - FU-002 (the shared ETag);
+  - C-3, measured by API/E2E (P-002, P-003) as held.
